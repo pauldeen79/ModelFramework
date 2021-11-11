@@ -4,6 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
+    <PackageId>pauldeen79.ModelFramework.Generators.Shared</PackageId>
+    <RepositoryUrl>https://github.com/pauldeen79/ModelFramework</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
