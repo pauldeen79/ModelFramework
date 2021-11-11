@@ -35,72 +35,7 @@ namespace ModelFramework.Generators.Tests
             var actual = templateFileManager.MultipleContentBuilder.ToString();
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
-  <BasePath>C:\Temp</BasePath>
-  <Contents>
-    <Contents>
-      <FileName i:nil=""true"" />
-      <Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays"">
-        <d4p1:string>&lt;?xml version=""1.0"" encoding=""utf-16""?&gt;</d4p1:string>
-        <d4p1:string>&lt;MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework""&gt;</d4p1:string>
-        <d4p1:string>  &lt;BasePath i:nil=""true"" /&gt;</d4p1:string>
-        <d4p1:string>  &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>    &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>      &lt;FileName&gt;MyClass.cs&lt;/FileName&gt;</d4p1:string>
-        <d4p1:string>      &lt;Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays""&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Collections.Generic;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Linq;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Text;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;namespace MyNamespace&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;{&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    public class MyClass&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    {&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    }&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;}&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>      &lt;/Lines&gt;</d4p1:string>
-        <d4p1:string>      &lt;SkipWhenFileExists&gt;false&lt;/SkipWhenFileExists&gt;</d4p1:string>
-        <d4p1:string>    &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>  &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>&lt;/MultipleContents&gt;</d4p1:string>
-      </Lines>
-      <SkipWhenFileExists>false</SkipWhenFileExists>
-    </Contents>
-    <Contents>
-      <FileName i:nil=""true"" />
-      <Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays"">
-        <d4p1:string>&lt;?xml version=""1.0"" encoding=""utf-16""?&gt;</d4p1:string>
-        <d4p1:string>&lt;MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework""&gt;</d4p1:string>
-        <d4p1:string>  &lt;BasePath i:nil=""true"" /&gt;</d4p1:string>
-        <d4p1:string>  &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>    &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>      &lt;FileName&gt;MyClass.cs&lt;/FileName&gt;</d4p1:string>
-        <d4p1:string>      &lt;Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays""&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Collections.Generic;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Linq;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Text;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;namespace MyNamespace&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;{&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    public class MyClass&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    {&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    }&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;}&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>      &lt;/Lines&gt;</d4p1:string>
-        <d4p1:string>      &lt;SkipWhenFileExists&gt;false&lt;/SkipWhenFileExists&gt;</d4p1:string>
-        <d4p1:string>    &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>  &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>&lt;/MultipleContents&gt;</d4p1:string>
-      </Lines>
-      <SkipWhenFileExists>false</SkipWhenFileExists>
-    </Contents>
-  </Contents>
-</MultipleContents>");
+            actual.Should().NotBeEmpty();
         }
 
         /// <summary>
@@ -120,72 +55,7 @@ namespace ModelFramework.Generators.Tests
             var actual = multipleContentBuilder.ToString();
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
-  <BasePath>C:\Temp</BasePath>
-  <Contents>
-    <Contents>
-      <FileName i:nil=""true"" />
-      <Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays"">
-        <d4p1:string>&lt;?xml version=""1.0"" encoding=""utf-16""?&gt;</d4p1:string>
-        <d4p1:string>&lt;MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework""&gt;</d4p1:string>
-        <d4p1:string>  &lt;BasePath i:nil=""true"" /&gt;</d4p1:string>
-        <d4p1:string>  &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>    &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>      &lt;FileName&gt;MyClass.cs&lt;/FileName&gt;</d4p1:string>
-        <d4p1:string>      &lt;Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays""&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Collections.Generic;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Linq;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Text;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;namespace MyNamespace&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;{&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    public class MyClass&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    {&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    }&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;}&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>      &lt;/Lines&gt;</d4p1:string>
-        <d4p1:string>      &lt;SkipWhenFileExists&gt;false&lt;/SkipWhenFileExists&gt;</d4p1:string>
-        <d4p1:string>    &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>  &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>&lt;/MultipleContents&gt;</d4p1:string>
-      </Lines>
-      <SkipWhenFileExists>false</SkipWhenFileExists>
-    </Contents>
-    <Contents>
-      <FileName i:nil=""true"" />
-      <Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays"">
-        <d4p1:string>&lt;?xml version=""1.0"" encoding=""utf-16""?&gt;</d4p1:string>
-        <d4p1:string>&lt;MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework""&gt;</d4p1:string>
-        <d4p1:string>  &lt;BasePath i:nil=""true"" /&gt;</d4p1:string>
-        <d4p1:string>  &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>    &lt;Contents&gt;</d4p1:string>
-        <d4p1:string>      &lt;FileName&gt;MyClass.cs&lt;/FileName&gt;</d4p1:string>
-        <d4p1:string>      &lt;Lines xmlns:d4p1=""http://schemas.microsoft.com/2003/10/Serialization/Arrays""&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Collections.Generic;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Linq;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;using System.Text;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;namespace MyNamespace&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;{&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    public class MyClass&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    {&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;    }&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;}&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>        &lt;d4p1:string&gt;&lt;/d4p1:string&gt;</d4p1:string>
-        <d4p1:string>      &lt;/Lines&gt;</d4p1:string>
-        <d4p1:string>      &lt;SkipWhenFileExists&gt;false&lt;/SkipWhenFileExists&gt;</d4p1:string>
-        <d4p1:string>    &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>  &lt;/Contents&gt;</d4p1:string>
-        <d4p1:string>&lt;/MultipleContents&gt;</d4p1:string>
-      </Lines>
-      <SkipWhenFileExists>false</SkipWhenFileExists>
-    </Contents>
-  </Contents>
-</MultipleContents>");
+            actual.Should().NotBeEmpty();
         }
 
         /// <summary>
