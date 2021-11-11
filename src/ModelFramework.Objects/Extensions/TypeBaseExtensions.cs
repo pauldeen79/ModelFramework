@@ -26,13 +26,13 @@ namespace ModelFramework.Objects.Extensions
                 if (!cls.AutoGenerateInterface && cls.Interfaces != null) lst.AddRange(cls.Interfaces);
                 return lst.Count == 0
                     ? string.Empty
-                    : string.Format(" : {0}", string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName())));
+                    : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
             }
             else
             {
                 return instance.Interfaces?.Any() != true
                     ? string.Empty
-                    : string.Format(" : {0}", string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName())));
+                    : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
             }
         }
 
@@ -56,7 +56,7 @@ namespace ModelFramework.Objects.Extensions
                 return "interface";
             }
 
-            return string.Format("[unknown container type: {0}]", typeBase.GetType().FullName);
+            return $"[unknown container type: {typeBase.GetType().FullName}]";
         }
 
         /// <summary>
@@ -356,12 +356,8 @@ namespace ModelFramework.Objects.Extensions
 
         private static IEnumerable<IClassMethod> GetImmutableBuilderClassMethods(ITypeBase instance, string newCollectionTypeName, bool poco, bool addCopyConstructor, Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
         {
-            var openSign = poco
-                ? " { "
-                : "(";
-            var closeSign = poco
-                ? " }"
-                : ")";
+            var openSign = GetImmutableBUilderPocoOpenSign(poco);
+            var closeSign = GetImmutableBuilderPocoCloseSign(poco);
             yield return new ClassMethod
             (
                 "Build",
@@ -427,7 +423,8 @@ namespace ModelFramework.Objects.Extensions
                             $"_{property.Name.ToPascalCase()}.Clear();",
                             "return this;"
                         }.ToLiteralCodeStatements()
-                    ); yield return new ClassMethod
+                    );
+                    yield return new ClassMethod
                     (
                         $"Add{property.Name}",
                         $"{instance.Name}Builder",
@@ -534,6 +531,16 @@ namespace ModelFramework.Objects.Extensions
                 }
             }
         }
+
+        private static string GetImmutableBuilderPocoCloseSign(bool poco)
+            => poco
+                ? " }"
+                : ")";
+
+        private static string GetImmutableBUilderPocoOpenSign(bool poco)
+            => poco
+                ? " { "
+                : "(";
 
         private static string FormatInstanceName(ITypeBase instance, bool forCreate, Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
         {
