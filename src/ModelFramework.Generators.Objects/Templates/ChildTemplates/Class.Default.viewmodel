@@ -1,0 +1,50 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultClassViewModel" #>
+<#@ model type="ITypeBase" #>
+<#@ copyPropertiesToViewModel enabled="false" #>
+<#@ templateContext #>
+<#+
+    public CSharpClassGenerator Root => TemplateContext.GetContextByType<CSharpClassGenerator>();
+    public bool GenerateMultipleFiles => Root.GenerateMultipleFiles;
+    public IClass Class => Model as IClass;
+    public bool HasSubclasses
+    {
+        get
+        {
+            var cls = Class;
+            return cls != null && cls.SubClasses != null && cls.SubClasses.Any();
+        }
+    }
+    public IEnumerable<object> SubItems
+    {
+        get
+        {
+            var cls = Class;
+            return cls == null
+                ? Model.Properties.Cast<object>().Concat(Model.Methods)
+                : Model.Properties.Cast<object>().Concat(Model.Methods).Concat(cls.Constructors).Concat(cls.Fields).Concat(cls.Enums);
+        }
+    }
+    public StringBuilder StartNewFile()
+        => Root.ViewModel.TemplateFileManager.StartNewFile(Model.Name + (Root.FileNameSuffix ?? string.Empty) + ".cs");
+    public CSharpClassGenerator CreateChildGenerator(CSharpClassGeneratorBase rootTemplate)
+    {
+        if (!HasSubclasses)
+        {
+            throw new InvalidOperationException("Cannot create a child generator on an interface or on a class without subclasses");
+        }
+        var childGen = new CSharpClassGenerator
+        {
+            Session = new Dictionary<string, object>
+            {
+                {
+                    nameof(CSharpClassGenerator.Model), Class.SubClasses
+                }
+            }
+        };
+        childGen.Initialize();
+        childGen.TemplateContext = TemplateContext.CreateChildContext(childGen, Class.SubClasses);
+        childGen.PushIndent(rootTemplate.CurrentIndent + "    ");
+        return childGen;
+    }
+#>

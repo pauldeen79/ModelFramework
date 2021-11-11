@@ -1,0 +1,7 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultUniqueConstraintTemplate" #>
+<#@ model type="IUniqueConstraint" #>
+ CONSTRAINT [<#= Model.Name.FormatAsDatabaseIdentifier() #>] UNIQUE NONCLUSTERED
+(
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultUniqueConstraintFieldTemplate" model="Model.Fields" customResolverDelegate="ResolveFromMetadata" #>
+) ON [<#= Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier() #>]

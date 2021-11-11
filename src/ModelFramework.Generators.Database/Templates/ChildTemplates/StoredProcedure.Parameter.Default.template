@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate" #>
+<#@ model type="IStoredProcedureParameter" #>
+	@<#= Model.Name.FormatAsDatabaseIdentifier() #> <#= Model.Type #><# if (!string.IsNullOrEmpty(Model.DefaultValue)) { #> = <#= Model.DefaultValue #><# } #><# if (!TemplateContext.IsLastIteration) { #>,<# } #>
+

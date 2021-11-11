@@ -1,0 +1,10 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewOrderByFieldsTemplate" #>
+<#@ model type="IView" #>
+<# if (Model.OrderByFields.Any())
+   { #>
+ORDER BY
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate" model="Model.OrderByFields" separatorTemplateName="CommaAndNewLine" customResolverDelegate="ResolveFromMetadata" #>
+<#
+       WriteLine("");
+   } #>

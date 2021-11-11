@@ -1,0 +1,17 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.ViewModel" #>
+<#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Objects.Contracts.ITypeBase" #>
+<#+
+        public IEnumerable<string> Namespaces
+            => Model.DefaultWhenNull()
+                    .Select(typeBase => typeBase.Namespace.WhenNullOrEmpty("GeneratedNamespace"))
+                    .Distinct()
+                    .OrderBy(ns => ns);
+
+        public IEnumerable<ITypeBase> GetClassesByNamespace(string ns)
+            => Model.Where(typeBase => typeBase.Namespace.WhenNullOrEmpty("GeneratedNamespace") == ns)
+                    .SelectMany(typeBase => typeBase is IClass cls && cls.AutoGenerateInterface ? new ITypeBase[] { cls, cls.ToInterface() } : new ITypeBase[] { typeBase })
+                    .OrderBy(typeBase => typeBase.Name);
+
+        public TemplateFileManager TemplateFileManager { get; internal set; }
+#>

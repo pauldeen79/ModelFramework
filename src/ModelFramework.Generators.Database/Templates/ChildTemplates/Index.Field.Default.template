@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultIndexFieldTemplate" #>
+<#@ model type="IIndexField" #>
+	[<#= Model.Name.FormatAsDatabaseIdentifier() #>] <# if (Model.IsDescending) { #>DESC<# } else { #>ASC<# } #><# if (!TemplateContext.IsLastIteration) { #>,<# } #>
+

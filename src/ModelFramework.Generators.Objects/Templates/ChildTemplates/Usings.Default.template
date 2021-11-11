@@ -1,0 +1,8 @@
+<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultUsingsTemplate" #>
+<#@ model type="IEnumerable<ITypeBase>" #>
+<#@ viewModel name="CSharpClassGenerator.DefaultUsingsViewModel" model="Model" #>
+<# foreach (var item in ViewModel.Usings)
+   { #>
+using <#= item #>;
+<# } #>

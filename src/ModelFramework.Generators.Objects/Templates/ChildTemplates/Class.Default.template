@@ -1,0 +1,30 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultClassTemplate" #>
+<#@ model type="ITypeBase" #>
+<#@ viewModel name="CSharpClassGenerator.DefaultClassViewModel" model="Model" #>
+<# if (ViewModel.GenerateMultipleFiles)
+   {
+       this.GenerationEnvironment = ViewModel.StartNewFile(); #>
+<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="ViewModel.Root.CreateCodeGenerationHeader" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultUsingsTemplate" model="ViewModel.Root.Model" enumerable="false" customResolverDelegate="ResolveFromMetadata" #>
+
+namespace <#= Model.Namespace #>
+{
+<# } #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
+    <#= Model.GetModifiers() #> <#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #>
+    {
+<#@ renderChildTemplate model="ViewModel.SubItems" customResolverDelegate="ResolveFromMetadata" separatorTemplateName="NewLine" footerTemplateName="NewLine" footerCondition="ViewModel.HasSubclasses" customTemplateNameDelegate="GetTemplateName" #>
+<#      if (ViewModel.HasSubclasses)
+        {
+            var childGen = ViewModel.CreateChildGenerator(RootTemplate);
+            Write("    "); //fix indentation on first line
+            childGen.Render(GenerationEnvironment);
+            Write(RootTemplate.CurrentIndent);
+        } #>
+    }
+<# if (ViewModel.GenerateMultipleFiles)
+   { #>
+}
+<#     ViewModel.Root.ViewModel.TemplateFileManager.ResetToDefaultOutput(); 
+   } #>

@@ -1,0 +1,12 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultParameterAttributeViewModel" #>
+<#@ model type="IAttribute" #>
+<#@ templateContext #>
+<#+
+    public bool ShouldRenderParameters => Model.Parameters != null && Model.Parameters.Any();
+    public string ParametersText => string.Join(", ", Model.Parameters.Select(p =>
+        string.IsNullOrEmpty(p.Name)
+            ? p.Value.CsharpFormat()
+            : string.Format("{0} = {1}", p.Name, p.Value.CsharpFormat())
+        ));
+#>

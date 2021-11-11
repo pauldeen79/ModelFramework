@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultFieldTemplate" #>
+<#@ model type="ITableField" #>
+	[<#= Model.Name.FormatAsDatabaseIdentifier() #>] <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultFieldTypeTemplate" model="Model" customResolverDelegate="ResolveFieldTypeTemplateFromMetadata" #><# if(Model.IsIdentity) { #> IDENTITY(1, 1)<# } #> <# if (Model.IsRequired) { #>NOT NULL<# } else { #>NULL<# } #><#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultFieldCheckConstraintTemplate" model="Model" customResolverDelegate="ResolveFieldCheckConstraintTemplateFromMetadata" #><# if (!TemplateContext.IsLastIteration) { #>,<# } #>
+

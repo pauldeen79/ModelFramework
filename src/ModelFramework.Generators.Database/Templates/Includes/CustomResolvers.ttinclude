@@ -1,0 +1,32 @@
+﻿<#%
+        public bool ResolveDatabaseCodeTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        {
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.CodeTemplateName);
+        }
+
+        public bool ResolveFieldTypeTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        {
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.FieldTypeTemplateName);
+        }
+
+        public bool ResolveFieldCheckConstraintTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        {
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.FieldCheckConstraintTemplateName);
+        }
+
+        public bool ResolveFieldAndPrimaryKeyFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        {
+            return ResolveFromMetadata(templateName.WhenNullOrEmpty(() => model is IMetadataContainer ? ((IMetadataContainer)model).Metadata.GetMetadataStringValue(ModelFramework.Common.MetadataNames.CustomTemplateName) : null).WhenNullOrEmpty(() => GetTemplateNameByModelType(model)), childTemplateName, childTemplateModelType, model, ModelFramework.Common.MetadataNames.CustomTemplateName);
+        }
+
+        protected override string GetTemplateNameByModelType(object model)
+        {
+            return model is ModelFramework.Database.Contracts.ITableField
+                ? "SqlServerDatabaseSchemaGenerator.DefaultFieldTemplate"
+                : model is ModelFramework.Database.Contracts.IPrimaryKeyConstraint
+                    ? "SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintTemplate"
+                    : model is ModelFramework.Database.Contracts.IUniqueConstraint
+                        ? "SqlServerDatabaseSchemaGenerator.DefaultUniqueConstraintTemplate"
+                        : null;
+        }
+#>

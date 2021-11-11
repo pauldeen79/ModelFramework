@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultFieldTemplate" #>
+<#@ model type="IClassField" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
+        <#= Model.GetModifiers() #><# if (Model.Event) Write(" event"); #> <#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><# if (Model.DefaultValue != null) { #> = <#= Model.DefaultValue.CsharpFormat() #><# } #>;

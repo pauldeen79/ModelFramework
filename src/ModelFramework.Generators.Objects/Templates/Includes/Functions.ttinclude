@@ -1,0 +1,26 @@
+﻿<#%
+        public string GetTemplateName(object model)
+        {
+            if (model is IClassProperty)
+            {
+                return "CSharpClassGenerator.DefaultPropertyTemplate";
+            }
+            if (model is IClassMethod)
+            {
+                return "CSharpClassGenerator.DefaultMethodTemplate";
+            }
+            if (model is IClassConstructor)
+            {
+                return "CSharpClassGenerator.DefaultCtorTemplate";
+            }
+            if (model is IClassField)
+            {
+                return "CSharpClassGenerator.DefaultFieldTemplate";
+            }
+            if (model is IEnum)
+            {
+                return "CSharpClassGenerator.DefaultEnumTemplate";
+            }
+            return null;
+        }
+#>

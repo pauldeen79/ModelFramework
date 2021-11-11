@@ -1,0 +1,16 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultAttributeViewModel" #>
+<#@ model type="IAttribute" #>
+<#@ templateContext #>
+<#+
+    public string Prefix
+        => !(TemplateContext.ParentContext != null && TemplateContext.ParentContext.Model is ITypeBase)
+            ? "    "
+            : string.Empty;
+    public bool ShouldRenderParameters => Model.Parameters != null && Model.Parameters.Any();
+    public string ParametersText => string.Join(", ", Model.Parameters.Select(p =>
+        string.IsNullOrEmpty(p.Name)
+            ? p.Value.CsharpFormat()
+            : string.Format("{0} = {1}", p.Name, p.Value.CsharpFormat())
+        ));
+#>

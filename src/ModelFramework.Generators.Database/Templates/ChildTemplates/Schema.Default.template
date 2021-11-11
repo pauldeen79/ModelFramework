@@ -1,0 +1,7 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate" #>
+<#@ model type="ISchema" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultTableTemplate" model="Model.Tables" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyTemplate" model="Model.Tables" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureTemplate" model="Model.StoredProcedures" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewTemplate" model="Model.Views" customResolverDelegate="ResolveFromMetadata" #>

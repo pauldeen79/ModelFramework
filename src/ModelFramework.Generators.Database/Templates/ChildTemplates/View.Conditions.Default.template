@@ -1,0 +1,10 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewConditionsTemplate" #>
+<#@ model type="IView" #>
+<# if (Model.Conditions != null && Model.Conditions.Any())
+   { #>
+WHERE
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewConditionTemplate" model="Model.Conditions.Select(c => c.AsFirstCondition()).Take(1).Concat(Model.Conditions.Skip(1))" separatorTemplateName="NewLine" customResolverDelegate="ResolveFromMetadata" #>
+<#
+       WriteLine("");
+   } #>

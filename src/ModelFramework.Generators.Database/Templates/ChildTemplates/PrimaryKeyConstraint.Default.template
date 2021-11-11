@@ -1,0 +1,7 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintTemplate" #>
+<#@ model type="IPrimaryKeyConstraint" #>
+ CONSTRAINT [<#= Model.Name.FormatAsDatabaseIdentifier() #>] PRIMARY KEY CLUSTERED
+(
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintFieldTemplate" model="Model.Fields" customResolverDelegate="ResolveFromMetadata" #>
+) ON [<#= Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier() #>]

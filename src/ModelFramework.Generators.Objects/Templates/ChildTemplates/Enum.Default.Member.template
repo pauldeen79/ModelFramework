@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultEnumMemberTemplate" #>
+<#@ model type="IEnumMember" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
+            <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><# if (Model.Value != null) { #> = <#= Model.Value.CsharpFormat() #><# } #>

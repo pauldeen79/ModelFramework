@@ -1,0 +1,17 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureTemplate" #>
+<#@ model type="IStoredProcedure" #>
+<#
+var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+/****** Object:  StoredProcedure [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.Name.FormatAsDatabaseIdentifier() #>] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.Name.FormatAsDatabaseIdentifier() #>]
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate" model="Model.Parameters" customResolverDelegate="ResolveFromMetadata" #>
+AS
+BEGIN
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate" model="Model" customResolverDelegate="ResolveDatabaseCodeTemplateFromMetadata" #>
+END
+GO

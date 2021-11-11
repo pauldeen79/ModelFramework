@@ -1,0 +1,14 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintTemplate" #>
+<#@ model type="IForeignKeyConstraint" #>
+<#
+var tableEntity = TemplateContext.GetModelFromContextByType<ITable>();
+var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+/****** Object:  ForeignKey [<#= Model.Name.FormatAsDatabaseIdentifier() #>] ******/
+ALTER TABLE [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>]  WITH CHECK ADD  CONSTRAINT [<#= Model.Name.FormatAsDatabaseIdentifier() #>] FOREIGN KEY(<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate" model="Model.LocalFields" customResolverDelegate="ResolveFromMetadata" #>)
+REFERENCES [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.ForeignTableName.FormatAsDatabaseIdentifier() #>] (<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate" model="Model.ForeignFields" customResolverDelegate="ResolveFromMetadata" #>)
+ON UPDATE <#= Model.CascadeUpdate.ToSql() #>
+ON DELETE <#= Model.CascadeDelete.ToSql() #>
+GO
+ALTER TABLE [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>] CHECK CONSTRAINT [<#= Model.Name.FormatAsDatabaseIdentifier() #>]
+GO

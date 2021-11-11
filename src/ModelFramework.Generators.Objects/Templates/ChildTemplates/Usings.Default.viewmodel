@@ -1,0 +1,23 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultUsingsViewModel" #>
+<#@ model type="IEnumerable<ITypeBase>" #>
+<#+
+        private readonly static string[] DefaultUsings = new[]
+        {
+            "System",
+            "System.Collections.Generic",
+            "System.Linq",
+            "System.Text"
+        };
+        
+        public IEnumerable<string> Usings
+            => DefaultUsings
+                .Union
+                (
+                    Model
+                    .DefaultWhenNull()
+                    .SelectMany(classItem => classItem.Metadata.GetMetadataStringValues(ModelFramework.Objects.MetadataNames.CustomUsing))
+                )
+                .OrderBy(ns => ns)
+                .Distinct();
+#>

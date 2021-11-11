@@ -1,0 +1,6 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate" #>
+<#@ model type="IDefaultValueConstraint" #>
+<#@ viewModel name="SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintViewModel" #>
+ALTER TABLE [<#= ViewModel.TableEntityName #>] ADD CONSTRAINT [<#= ViewModel.Name #>] DEFAULT (<#= ViewModel.DefaultValue #>) FOR [<#= ViewModel.FieldName #>]
+GO

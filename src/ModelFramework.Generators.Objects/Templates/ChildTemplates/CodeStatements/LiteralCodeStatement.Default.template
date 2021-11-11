@@ -1,0 +1,4 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultLiteralCodeStatementTemplate" #>
+<#@ model type="LiteralCodeStatement" #>
+<#= Model.Statement #>

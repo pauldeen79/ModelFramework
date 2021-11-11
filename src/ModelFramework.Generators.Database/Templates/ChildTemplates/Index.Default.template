@@ -1,0 +1,11 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultIndexTemplate" #>
+<#@ model type="IIndex" #>
+<#
+var tableEntity = TemplateContext.GetModelFromContextByType<ITable>();
+var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+CREATE <# if (Model.Unique) { #>UNIQUE <# } #>NONCLUSTERED INDEX [<#= Model.Name.FormatAsDatabaseIdentifier() #>] ON [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>]
+(
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultIndexFieldTemplate" model="Model.Fields" customResolverDelegate="ResolveFromMetadata" #>
+) ON [<#= Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier() #>]
+GO

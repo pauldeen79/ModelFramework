@@ -1,0 +1,6 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewSelectFieldsTemplate" #>
+<#@ model type="IView" #>
+
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate" model="Model.SelectFields" separatorTemplateName="CommaAndNewLine" customResolverDelegate="ResolveFromMetadata" #>
+

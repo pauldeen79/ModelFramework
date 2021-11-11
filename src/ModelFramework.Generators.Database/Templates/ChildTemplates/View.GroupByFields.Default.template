@@ -1,0 +1,10 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewGroupByFieldsTemplate" #>
+<#@ model type="IView" #>
+<# if (Model.GroupByFields != null && Model.GroupByFields.Any())
+   { #>
+GROUP BY
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate" model="Model.GroupByFields" separatorTemplateName="CommaAndNewLine" customResolverDelegate="ResolveFromMetadata" #>
+<#
+       WriteLine("");
+   } #>

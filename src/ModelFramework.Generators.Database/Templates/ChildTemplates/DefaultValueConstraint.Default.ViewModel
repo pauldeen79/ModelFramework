@@ -1,0 +1,10 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintViewModel" #>
+<#@ model type="IDefaultValueConstraint" #>
+<#@ templateContext #>
+<#+
+        public string TableEntityName => TemplateContext.GetModelFromContextByType<ITable>().Name.FormatAsDatabaseIdentifier();
+        public string Name => Model.Name.FormatAsDatabaseIdentifier();
+        public string DefaultValue => Model.DefaultValue;
+        public string FieldName => Model.FieldName.FormatAsDatabaseIdentifier();
+#>

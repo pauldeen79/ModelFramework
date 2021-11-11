@@ -1,0 +1,8 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate" #>
+<#@ model type="IViewSource" #>
+    <# if (!string.IsNullOrEmpty(Model.SourceSchemaName))
+   { #>[<#= Model.SourceSchemaName #>].<#
+   } #>[<#= Model.SourceObjectName.WhenNullOrEmpty(Model.Name) #>]<# if(!string.IsNullOrEmpty(Model.Alias))
+   { #> AS [<#= Model.Alias #>]<#
+   } #>

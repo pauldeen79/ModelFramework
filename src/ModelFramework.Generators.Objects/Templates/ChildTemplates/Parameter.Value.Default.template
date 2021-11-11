@@ -1,0 +1,4 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultParameterValueTemplate" #>
+<#@ model type="IParameter" #>
+<#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><# if (Model.DefaultValue != null) { #> = <#= Model.DefaultValue.CsharpFormat() #><# } #>

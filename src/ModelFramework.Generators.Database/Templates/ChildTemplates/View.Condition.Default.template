@@ -1,0 +1,4 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewConditionTemplate" #>
+<#@ model type="IViewCondition" #>
+    <# if (!string.IsNullOrEmpty(Model.Combination)) { #><#= Model.Combination #> <# } #><#= Model.Expression #>

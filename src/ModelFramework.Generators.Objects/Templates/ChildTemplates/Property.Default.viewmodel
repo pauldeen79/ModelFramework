@@ -1,0 +1,8 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultPropertyViewModel" #>
+<#@ model type="IClassProperty" #>
+<#@ templateContext #>
+<#+
+    public bool ShouldRenderModifiers => !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
+    public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
+#>

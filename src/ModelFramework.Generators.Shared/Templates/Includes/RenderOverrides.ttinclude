@@ -1,0 +1,60 @@
+﻿<#%
+        protected override object GetChildTemplate(string templateName, object model = null, bool silentlyContinueOnError = false, Func<string, string, Type, object, bool> customResolverDelegate = null)
+        {
+            if (model is IMetadataContainer && base.GetChildTemplate(templateName, model, true, customResolverDelegate) == null)
+            {
+                return ((IMetadataContainer)model).Metadata.GetMetadataValues<object>(templateName) ?? base.GetChildTemplate(templateName, model, silentlyContinueOnError, customResolverDelegate);
+            }
+            return base.GetChildTemplate(templateName, model, silentlyContinueOnError, customResolverDelegate);
+        }
+
+        public override void RenderTemplate(object template, object model, int? iterationNumber = null, int? iterationCount = null, string resolveTemplateName = null)
+        {
+            var metadata = template as IEnumerable<object>;
+            if (metadata != null)
+            {
+                var first = true;
+                foreach (var item in metadata)
+                {
+                    var contextualLiteral = item as ContextualLiteral;
+                    if (contextualLiteral != null)
+                    {
+                        var str = contextualLiteral.ToString(template, model);
+                        if (str == null) continue;
+                        if (first)
+                        {
+                            first = false;
+                        }
+                        else
+                        {
+                            GenerationEnvironment.AppendLine();
+                        }
+                        GenerationEnvironment.Append(str);
+                    }
+                    else
+                    {
+                        if (first)
+                        {
+                            first = false;
+                        }
+                        else
+                        {
+                            GenerationEnvironment.AppendLine();
+                        }
+
+                        var literal = item as Literal;
+                        if (literal != null)
+                        {
+                            GenerationEnvironment.Append(literal.Value);
+                        }
+                        else
+                        {
+                            GenerationEnvironment.Append(item.ToString());
+                        }
+                    }
+                }
+                return;
+            }
+            base.RenderTemplate(template, model, iterationNumber, iterationCount, resolveTemplateName);
+        }
+#>

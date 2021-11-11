@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultUniqueConstraintFieldTemplate" #>
+<#@ model type="IUniqueConstraintField" #>
+	[<#= Model.Name.FormatAsDatabaseIdentifier() #>]<# if (!TemplateContext.IsLastIteration) { #>,<# } #>
+

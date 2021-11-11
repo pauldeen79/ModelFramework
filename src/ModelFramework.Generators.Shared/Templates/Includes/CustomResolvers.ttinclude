@@ -1,0 +1,39 @@
+﻿<#%
+        public bool ResolveFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        {
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Common.MetadataNames.CustomTemplateName);
+        }
+
+        protected virtual string GetTemplateNameByModelType(object model)
+        {
+            return null;
+        }
+
+        protected bool ResolveFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model, string metadataPropertyName, string defaultTemplateName = null)
+        {
+            var metadataContainer = model as IMetadataContainer;
+            var defaultImplementation = new Func<string, string, Type, object, bool>((tn, ctn, ctmt, m) =>
+            {
+                var retValue =  string.IsNullOrEmpty(tn) && m != null
+                       ? ctmt != null && ctmt == m.GetType()
+                       : tn == ctn;
+
+                if (!retValue && string.IsNullOrEmpty(tn) && model != null)
+                {
+                    retValue = ctmt != null && ctmt.IsAssignableFrom(m.GetType());
+                }
+
+                return retValue;
+            });
+
+            var customTemplateName = metadataContainer == null || metadataPropertyName == null || metadataContainer.Metadata.GetMetadataValue<object>(metadataPropertyName) == null
+                ? null
+                : metadataContainer.Metadata.GetMetadataStringValue(metadataPropertyName);
+
+            return customTemplateName == null
+                ? defaultTemplateName == null
+                    ? defaultImplementation(templateName, childTemplateName, childTemplateModelType, model)
+                    : childTemplateName == defaultTemplateName
+                : childTemplateName == customTemplateName;
+        }
+#>

@@ -1,0 +1,9 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultEnumTemplate" #>
+<#@ model type="IEnum" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
+        <#= Model.GetModifiers() #> enum <#= Model.Name.Sanitize().GetCsharpFriendlyName() #>
+        {
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultEnumMemberTemplate" model="Model.Members" separatorTemplateName="CommaAndNewLine" customResolverDelegate="ResolveFromMetadata" #>
+
+        }

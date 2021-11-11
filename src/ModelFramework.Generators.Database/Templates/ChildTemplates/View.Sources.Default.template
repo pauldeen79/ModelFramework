@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate" #>
+<#@ model type="IView" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate" model="Model.Sources" separatorTemplateName="CommaAndNewLine" customResolverDelegate="ResolveFromMetadata" #>
+

@@ -1,0 +1,10 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultCtorViewModel" #>
+<#@ model type="IClassConstructor" #>
+<#@ templateContext #>
+<#+
+    public string Name => TemplateContext.GetModelFromContextByType<ITypeBase>().Name.Sanitize().GetCsharpFriendlyName();
+    public bool ShouldRenderChainCall => !string.IsNullOrEmpty(Model.ChainCall);
+    public bool OmitCode => TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface || Model.Abstract;
+    public bool ShouldRenderCodeStatements => Model.CodeStatements.Any();
+#>

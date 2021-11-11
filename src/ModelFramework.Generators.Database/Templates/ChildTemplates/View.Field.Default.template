@@ -1,0 +1,27 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate" #>
+<#@ model type="IViewField" #>
+    <# if (!string.IsNullOrEmpty(Model.Expression))
+   { #><#= Model.Expression #>
+<# }
+   else
+   {
+       if (!string.IsNullOrEmpty(Model.SourceSchemaName))
+       { #>[<#= Model.SourceSchemaName #>].<#
+       } #>[<#= Model.SourceObjectName.WhenNullOrEmpty(Model.Name) #>]<#
+       if (!string.IsNullOrEmpty(Model.Alias))
+       { #> AS [<#= Model.Alias #>]<#
+       }
+       var orderByField = Model as IViewOrderByField;
+       if (orderByField != null)
+       {
+           if (orderByField.Descending)
+           {
+               Write(" DESC");
+           }
+           else
+           {
+               Write(" ASC");
+           }
+       }
+   } #>

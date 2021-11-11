@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyTemplate" #>
+<#@ model type="ITable" #>
+<# var tableEntity = Model; #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintTemplate" model="tableEntity.ForeignKeyConstraints" customResolverDelegate="ResolveFromMetadata" #>

@@ -1,0 +1,60 @@
+﻿<#@ template language="C#" className="ModelFramework.Generators.Objects.CSharpClassGenerator" #>
+<#@ skipInitializationCode #>
+<#@ addChildTemplateCode override="true" clearFieldsOnOverride="true" #>
+<#@ baseClassInheritsFrom type="ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase" #>
+<#@ output extension="cs" #>
+<#@ assembly name="ModelFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ assembly name="TextTemplateTransformationFramework.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ assembly hintPath="$(BasePath)ModelFramework\bin\Debug\netstandard2.0" #>
+<#@ assembly hintPath="$(BasePath)TextTemplateTransformationFramework.Runtime\bin\Debug\netstandard2.0" #>
+<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Objects\Templates\ChildTemplates" searchPattern="*.template" recurse="true" #>
+<#@ registerViewModels path="$(BasePath)ModelFramework.Generators.Objects\Templates" searchPattern="*.viewmodel" recurse="true" #>
+<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Shared\Templates\ChildTemplates" searchPattern="*.template" #>
+<#@ includes Path="$(BasePath)ModelFramework.Generators.Objects\Templates\Includes" SearchPattern="*.ttinclude" Recurse="true" #>
+<#@ additionalActionDelegate #>
+<#@ import namespace="ModelFramework.Common" #>
+<#@ import namespace="ModelFramework.Common.Contracts" #>
+<#@ import namespace="ModelFramework.Common.Extensions" #>
+<#@ import namespace="ModelFramework.Objects.Contracts" #>
+<#@ import namespace="ModelFramework.Objects.CodeStatements" #>
+<#@ import namespace="ModelFramework.Objects.Extensions" #>
+<#@ import namespace="TextTemplateTransformationFramework.Runtime" #>
+<#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Objects.Contracts.ITypeBase" #>
+<#@ property name="GenerateMultipleFiles" type="System.Boolean" #>
+<#@ property name="CreateCodeGenerationHeader" type="System.Boolean" #>
+<#@ property name="BasePath" type="System.String" #>
+<#@ property name="FileNameSuffix" type="System.String" #>
+<#@ viewModel name="CSharpClassGenerator.ViewModel" model="Model" #>
+<#          if (TemplateContext.IsRootContext)
+            {
+                ViewModel.TemplateFileManager = new TemplateFileManager(b => this.GenerationEnvironment = b, () => this.GenerationEnvironment, BasePath);
+                if (!GenerateMultipleFiles)
+                { #>
+<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="CreateCodeGenerationHeader" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultUsingsTemplate" model="Model" enumerable="false" customResolverDelegate="ResolveFromMetadata" #><#
+                }
+            }
+            else if (!GenerateMultipleFiles)
+            { #>
+<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="CreateCodeGenerationHeader" #>
+<#          }
+            foreach (var ns in ViewModel.Namespaces)
+            {
+                if (TemplateContext.IsRootContext && !GenerateMultipleFiles)
+                { #>
+
+namespace <#= ns #>
+{
+<#              } #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultClassTemplate" model="ViewModel.GetClassesByNamespace(ns)" customResolverDelegate="ResolveFromMetadata" separatorTemplateName="NewLine" #>
+<#              if (TemplateContext.IsRootContext && !GenerateMultipleFiles)
+                { #>
+}
+<#              }
+            }
+
+            if (TemplateContext.IsRootContext)
+            {
+                ViewModel.TemplateFileManager.Process(GenerateMultipleFiles);
+            }
+#>

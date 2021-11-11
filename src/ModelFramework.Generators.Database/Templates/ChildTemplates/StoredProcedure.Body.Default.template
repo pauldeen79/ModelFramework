@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate" #>
+<#@ model type="IStoredProcedure" #>
+    <#= Model.Body #>
+

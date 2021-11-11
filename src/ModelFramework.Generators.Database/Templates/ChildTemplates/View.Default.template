@@ -1,0 +1,27 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultViewTemplate" #>
+<#@ model type="IView" #>
+<#
+var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+/****** Object:  View [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.Name.FormatAsDatabaseIdentifier() #>] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.Name.FormatAsDatabaseIdentifier() #>]
+AS
+<# if (!string.IsNullOrEmpty(Model.Definition))
+   { #>
+<#= Model.Definition #>
+<# }
+   else
+   { #>
+SELECT<# if (Model.Distinct) { #> DISTINCT<# } #><# if (Model.Top.HasValue) { #> TOP <#= Model.Top #><# } #><# if (Model.Top.HasValue && Model.TopPercent) { #> PERCENT<# } #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewSelectFieldsTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>
+FROM
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewConditionsTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewGroupByFieldsTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultViewOrderByFieldsTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>
+<# } #>
+GO

@@ -1,0 +1,4 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate" #>
+<#@ model type="IForeignKeyConstraintField" #>
+[<#= Model.Name.FormatAsDatabaseIdentifier() #>]<# if (!TemplateContext.IsLastIteration) { #>,<# } #>

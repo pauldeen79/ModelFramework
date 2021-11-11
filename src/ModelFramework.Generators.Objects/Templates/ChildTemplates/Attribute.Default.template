@@ -1,0 +1,6 @@
+<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultAttributeTemplate" #>
+<#@ model type="IAttribute" #>
+<#@ viewModel name="CSharpClassGenerator.DefaultAttributeViewModel" model="Model" #>
+    <#= ViewModel.Prefix #>[<#= Model.Name #><# if (ViewModel.ShouldRenderParameters)
+                         { #>(<#= ViewModel.ParametersText #>)<#         } #>]

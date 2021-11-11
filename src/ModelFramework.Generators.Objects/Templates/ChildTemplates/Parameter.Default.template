@@ -1,0 +1,5 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="CSharpClassGenerator.DefaultParameterTemplate" #>
+<#@ model type="IParameter" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterValueTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>

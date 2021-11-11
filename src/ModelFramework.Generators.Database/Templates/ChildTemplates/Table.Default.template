@@ -1,0 +1,29 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultTableTemplate" #>
+<#@ model type="ITable" #>
+<#
+var tableEntity = Model;
+var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+/****** Object:  Table [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>](
+<#@ renderChildTemplate model="GetFieldsAndPrimaryKeyConstraints(tableEntity)" customResolverDelegate="ResolveFieldAndPrimaryKeyFromMetadata" #>
+) ON [<#= tableEntity.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier() #>]
+GO
+SET ANSI_PADDING OFF
+GO
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultIndexTemplate" model="tableEntity.Indexes" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate" model="tableEntity.DefaultValueConstraints" customResolverDelegate="ResolveFromMetadata" #>
+<#+
+        protected virtual IEnumerable<IMetadataContainer> GetFieldsAndPrimaryKeyConstraints(ITable table)
+        {
+            return table.Fields.Cast<IMetadataContainer>()
+                .Concat(table.PrimaryKeyConstraints.Cast<IMetadataContainer>())
+                .Concat(table.UniqueConstraints.Cast<IMetadataContainer>());
+        }
+#>

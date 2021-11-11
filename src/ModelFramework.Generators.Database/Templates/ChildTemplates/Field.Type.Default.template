@@ -1,0 +1,20 @@
+﻿<#@ template language="c#" #>
+<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultFieldTypeTemplate" #>
+<#@ model type="ITableField" #>
+<#= Model.Type #><# if (Model.Type.IsDatabaseStringType())
+   {
+#>(<#
+       if (Model.IsStringMaxLength == true)
+	   {
+#>MAX<#
+	   }
+	   else
+	   {
+#><#= Model.StringLength.GetValueOrDefault(32) #><#
+	   }
+#>)<#
+   }
+   else if(Model.Type.IsDatabaseFloatingPointNumericType())
+   {
+#>(<#= Model.NumericPrecision.GetValueOrDefault(8) #>,<#= Model.NumericScale.GetValueOrDefault(0) #>)<#
+   } #>
