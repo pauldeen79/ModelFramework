@@ -5,7 +5,7 @@
 <#@ templateGenerationEnvironmentAccessor Value="public" #>
 <#@ additionalActionDelegate #>
 <#@ output extension="cs" #>
-<#@ assembly name="ModelFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ assembly name="ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
 <#@ assembly hintPath="$(BasePath)ModelFramework\bin\Debug\netstandard2.0" #>
 <#@ import namespace="ModelFramework.Common" #>
 <#@ import namespace="ModelFramework.Common.Contracts" #>

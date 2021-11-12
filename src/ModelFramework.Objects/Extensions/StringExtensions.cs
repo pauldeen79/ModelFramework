@@ -29,7 +29,8 @@ namespace ModelFramework.Objects.Extensions
                 .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<")
                 .Replace("System.Collections.ObjectModel.ObservableCollection<", newCollectionTypeName + "<")
                 .Replace("System.Collections.ObjectModel.ReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.List<", newCollectionTypeName + "<");
+                .Replace("System.Collections.Generic.List<", newCollectionTypeName + "<")
+                .Replace("CrossCutting.Common.ValueCollection<", newCollectionTypeName + "<");
 
         public static string FixBuilderCollectionTypeName(this string typeName, string newCollectionTypeName)
             => typeName
@@ -41,7 +42,8 @@ namespace ModelFramework.Objects.Extensions
                 .Replace("System.Collections.Generic.IReadOnlyCollection<", newCollectionTypeName + "<")
                 .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<")
                 .Replace("System.Collections.ObjectModel.ReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.ObservableCollection<", newCollectionTypeName + "<");
+                .Replace("System.Collections.ObjectModel.ObservableCollection<", newCollectionTypeName + "<")
+                .Replace("CrossCutting.Common.ValueCollection<", newCollectionTypeName + "<");
 
         public static string ConvertTypeNameToArray(this string typeName)
             => typeName
@@ -52,6 +54,7 @@ namespace ModelFramework.Objects.Extensions
                 .ReplaceGeneric("System.Collections.Generic.ICollection")
                 .ReplaceGeneric("System.Collections.ObjectModel.Collection")
                 .ReplaceGeneric("System.Collections.ObjectModel.ObservableCollection")
+                .ReplaceGeneric("CrossCutting.Common.ValueCollection")
                 + "[]";
 
         public static string FixObservableCollectionTypeName(this string typeName, string newCollectionTypeName)
@@ -63,7 +66,8 @@ namespace ModelFramework.Objects.Extensions
                 .Replace("System.Collections.Generic.ICollection<", newCollectionTypeName + "<")
                 .Replace("System.Collections.Generic.IReadOnlyCollection<", newCollectionTypeName + "<")
                 .Replace("System.Collections.ObjectModel.ReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<");
+                .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<")
+                .Replace("CrossCutting.Common.ValueCollection<", newCollectionTypeName + "<");
 
         public static bool IsCollectionTypeName(this string typeName)
             => typeName.FixTypeName().StartsWithAny
@@ -75,7 +79,8 @@ namespace ModelFramework.Objects.Extensions
                     "System.Collections.Generic.IReadOnlyCollection<",
                     "System.Collections.ObjectModel.Collection<",
                     "System.Collections.ObjectModel.ReadOnlyCollection<",
-                    "System.Collections.ObjectModel.ObservableCollection<"
+                    "System.Collections.ObjectModel.ObservableCollection<",
+                    "CrossCutting.Common.ValueCollection<"
                 );
 
         public static string RemoveInterfacePrefix(this string name)

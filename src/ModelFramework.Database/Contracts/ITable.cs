@@ -1,15 +1,15 @@
-﻿using ModelFramework.Common.Contracts;
-using System.Collections.Generic;
+﻿using CrossCutting.Common;
+using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Database.Contracts
 {
     public interface ITable : INameContainer, IMetadataContainer, IFileGroupNameContainer
     {
-        IReadOnlyCollection<IPrimaryKeyConstraint> PrimaryKeyConstraints { get; }
-        IReadOnlyCollection<IUniqueConstraint> UniqueConstraints { get; }
-        IReadOnlyCollection<IDefaultValueConstraint> DefaultValueConstraints { get; }
-        IReadOnlyCollection<IForeignKeyConstraint> ForeignKeyConstraints { get; }
-        IReadOnlyCollection<IIndex> Indexes { get; }
-        IReadOnlyCollection<ITableField> Fields { get; }
+        ValueCollection<IPrimaryKeyConstraint> PrimaryKeyConstraints { get; }
+        ValueCollection<IUniqueConstraint> UniqueConstraints { get; }
+        ValueCollection<IDefaultValueConstraint> DefaultValueConstraints { get; }
+        ValueCollection<IForeignKeyConstraint> ForeignKeyConstraints { get; }
+        ValueCollection<IIndex> Indexes { get; }
+        ValueCollection<ITableField> Fields { get; }
     }
 }

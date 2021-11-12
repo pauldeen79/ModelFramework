@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -63,7 +63,7 @@ namespace ModelFramework.Database.Builders
                 StringCollation = source.StringCollation;
                 IsStringMaxLength = source.IsStringMaxLength;
                 Name = source.Name;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 CheckConstraint = source.CheckConstraint;
             }
             return this;
@@ -164,10 +164,11 @@ namespace ModelFramework.Database.Builders
                 StringCollation = source.StringCollation;
                 IsStringMaxLength = source.IsStringMaxLength;
                 Name = source.Name;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
                 CheckConstraint = source.CheckConstraint;
             }
         }
+#pragma warning disable S107 // Methods should not have too many parameters
         public TableFieldBuilder(string name,
                                  string type,
                                  bool isRequired = false,
@@ -179,6 +180,7 @@ namespace ModelFramework.Database.Builders
                                  bool? isStringMaxLength = null,
                                  ITableFieldCheckConstraint checkConstraint = null,
                                  IEnumerable<IMetadata> metadata = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             Metadata = new List<MetadataBuilder>();
             Type = type;

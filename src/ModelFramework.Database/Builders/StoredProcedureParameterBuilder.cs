@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -16,6 +16,29 @@ namespace ModelFramework.Database.Builders
         public IStoredProcedureParameter Build()
         {
             return new StoredProcedureParameter(Name, Type, DefaultValue, Metadata.Select(x => x.Build()));
+        }
+        public StoredProcedureParameterBuilder Clear()
+        {
+            Type = default;
+            DefaultValue = default;
+            Name = default;
+            Metadata.Clear();
+            return this;
+        }
+        public StoredProcedureParameterBuilder Update(IStoredProcedureParameter source)
+        {
+            Type = default;
+            DefaultValue = default;
+            Name = default;
+            Metadata = new List<MetadataBuilder>();
+            if (source != null)
+            {
+                Type = source.Type;
+                DefaultValue = source.DefaultValue;
+                Name = source.Name;
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            }
+            return this;
         }
         public StoredProcedureParameterBuilder WithType(string type)
         {
@@ -67,7 +90,7 @@ namespace ModelFramework.Database.Builders
                 Type = source.Type;
                 DefaultValue = source.DefaultValue;
                 Name = source.Name;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             }
         }
         public StoredProcedureParameterBuilder(string name,

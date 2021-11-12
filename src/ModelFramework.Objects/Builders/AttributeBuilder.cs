@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -23,8 +23,8 @@ namespace ModelFramework.Objects.Builders
             Name = default;
             if (source != null)
             {
-                Parameters.AddRange(source.Parameters.Select(x => new AttributeParameterBuilder(x)));
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new AttributeParameterBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Name = source.Name;
             }
             return this;
@@ -97,8 +97,8 @@ namespace ModelFramework.Objects.Builders
         {
             if (source != null)
             {
-                Parameters = new List<AttributeParameterBuilder>(source.Parameters.Select(x => new AttributeParameterBuilder(x)));
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Parameters != null) Parameters = new List<AttributeParameterBuilder>(source.Parameters?.Select(x => new AttributeParameterBuilder(x)) ?? Enumerable.Empty<AttributeParameterBuilder>());
+                if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Name = source.Name;
             }
             else

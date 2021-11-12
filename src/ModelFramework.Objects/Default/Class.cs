@@ -1,13 +1,15 @@
-﻿using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CrossCutting.Common;
+using ModelFramework.Common.Contracts;
+using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Default
 {
-    public class Class : IClass
+    public record Class : IClass
     {
+#pragma warning disable S107 // Methods should not have too many parameters
         public Class(string name,
                      string @namespace,
                      Visibility visibility = Visibility.Public,
@@ -27,6 +29,7 @@ namespace ModelFramework.Objects.Default
                      IEnumerable<IClass> subClasses = null,
                      IEnumerable<IEnum> enums = null,
                      IEnumerable<string> genericTypeArguments = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
 
@@ -39,35 +42,35 @@ namespace ModelFramework.Objects.Default
             Partial = partial;
             AutoGenerateInterface = autoGenerateInterface;
             Record = record;
-            Interfaces = new List<string>(interfaces ?? Enumerable.Empty<string>());
-            Fields = new List<IClassField>(fields ?? Enumerable.Empty<IClassField>());
-            Properties = new List<IClassProperty>(properties ?? Enumerable.Empty<IClassProperty>());
-            Methods = new List<IClassMethod>(methods ?? Enumerable.Empty<IClassMethod>());
-            Constructors = new List<IClassConstructor>(constructors ?? Enumerable.Empty<IClassConstructor>());
-            Attributes = new List<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            Metadata = new List<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
-            SubClasses = new List<IClass>(subClasses ?? Enumerable.Empty<IClass>());
-            Enums = new List<IEnum>(enums ?? Enumerable.Empty<IEnum>());
+            Interfaces = new ValueCollection<string>(interfaces ?? Enumerable.Empty<string>());
+            Fields = new ValueCollection<IClassField>(fields ?? Enumerable.Empty<IClassField>());
+            Properties = new ValueCollection<IClassProperty>(properties ?? Enumerable.Empty<IClassProperty>());
+            Methods = new ValueCollection<IClassMethod>(methods ?? Enumerable.Empty<IClassMethod>());
+            Constructors = new ValueCollection<IClassConstructor>(constructors ?? Enumerable.Empty<IClassConstructor>());
+            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
+            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            SubClasses = new ValueCollection<IClass>(subClasses ?? Enumerable.Empty<IClass>());
+            Enums = new ValueCollection<IEnum>(enums ?? Enumerable.Empty<IEnum>());
             GenericTypeArguments = genericTypeArguments?.ToArray() ?? Array.Empty<string>();
         }
 
-        public IReadOnlyCollection<string> Interfaces { get; }
-        public IReadOnlyCollection<IClassField> Fields  { get; }
-        public IReadOnlyCollection<IClassProperty> Properties  { get; }
+        public ValueCollection<string> Interfaces { get; }
+        public ValueCollection<IClassField> Fields  { get; }
+        public ValueCollection<IClassProperty> Properties  { get; }
         public bool Static  { get; }
         public bool Sealed  { get; }
         public bool Partial { get; }
         public bool AutoGenerateInterface { get; }
         public bool Record { get; }
-        public IReadOnlyCollection<IMetadata> Metadata  { get; }
+        public ValueCollection<IMetadata> Metadata  { get; }
         public Visibility Visibility  { get; }
         public string Name  { get; }
-        public IReadOnlyCollection<IAttribute> Attributes  { get; }
-        public IReadOnlyCollection<IClass> SubClasses { get; }
-        public IReadOnlyCollection<IEnum> Enums { get; }
+        public ValueCollection<IAttribute> Attributes  { get; }
+        public ValueCollection<IClass> SubClasses { get; }
+        public ValueCollection<IEnum> Enums { get; }
         public string Namespace { get; }
-        public IReadOnlyCollection<IClassConstructor> Constructors { get; }
-        public IReadOnlyCollection<IClassMethod> Methods { get; }
+        public ValueCollection<IClassConstructor> Constructors { get; }
+        public ValueCollection<IClassMethod> Methods { get; }
         public string BaseClass { get; }
         public string[] GenericTypeArguments { get; }
 

@@ -1,8 +1,8 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.CodeStatements.Builders
 {
@@ -55,12 +55,23 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             Metadata.Clear();
             return this;
         }
+        public LiteralCodeStatementBuilder Update(LiteralCodeStatement source)
+        {
+            Metadata = new List<MetadataBuilder>();
+            Statement = default;
+            if (source != null)
+            {
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Statement = source.Statement;
+            }
+            return this;
+        }
         public LiteralCodeStatementBuilder(LiteralCodeStatement source = null)
         {
             if (source != null)
             {
                 Statement = source.Statement;
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
             }
             else
             {

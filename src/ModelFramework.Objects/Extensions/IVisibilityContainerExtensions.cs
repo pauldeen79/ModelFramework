@@ -1,20 +1,13 @@
-﻿using ModelFramework.Common.Contracts;
+﻿using System.Globalization;
+using System.Text;
+using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Contracts;
-using System.Globalization;
-using System.Text;
 
 namespace ModelFramework.Objects.Extensions
 {
     public static class IVisibilityContainerExtensions
     {
-        /// <summary>
-        /// Gets the modifiers.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// Modifiers in csharp format
-        /// </returns>
         public static string GetModifiers<T>(this T instance)
             where T : IMetadataContainer, IVisibilityContainer
         {

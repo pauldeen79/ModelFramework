@@ -294,9 +294,9 @@ namespace MyNamespace
             if (source != null)
             {
                 _property1 = source.Property1;
-                foreach (var x in source.Property2) _property2.Add(x);
+                if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
                 _property3 = new MyCustomTypeBuilder(source.Property3);
-                _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
+                if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
             }
             return this;
         }
@@ -389,9 +389,9 @@ namespace MyNamespace
             if (source != null)
             {
                 _property1 = source.Property1;
-                foreach (var x in source.Property2) _property2.Add(x);
+                if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
                 _property3 = new MyCustomTypeBuilder(source.Property3);
-                _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
+                if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
             }
         }
 

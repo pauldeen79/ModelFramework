@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 
 namespace ModelFramework.Objects.Contracts
 {
     public interface IClass : ITypeBase, IEnumsContainer
     {
-        IReadOnlyCollection<IClassField> Fields { get; }
+        ValueCollection<IClassField> Fields { get; }
         bool Static { get; }
         bool Sealed { get; }
-        IReadOnlyCollection<IClass> SubClasses { get; }
-        IReadOnlyCollection<IClassConstructor> Constructors { get; }
+        ValueCollection<IClass> SubClasses { get; }
+        ValueCollection<IClassConstructor> Constructors { get; }
         string BaseClass { get; }
         bool AutoGenerateInterface { get; }
         bool Record { get; }

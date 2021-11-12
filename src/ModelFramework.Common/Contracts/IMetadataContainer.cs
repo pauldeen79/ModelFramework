@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 
 namespace ModelFramework.Common.Contracts
 {
     public interface IMetadataContainer
     {
-        IReadOnlyCollection<IMetadata> Metadata { get; }
+        ValueCollection<IMetadata> Metadata { get; }
     }
 }

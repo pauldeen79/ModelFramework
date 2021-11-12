@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 
 namespace ModelFramework.Objects.Contracts
 {
     public interface IEnumsContainer
     {
-        IReadOnlyCollection<IEnum> Enums { get; }
+        ValueCollection<IEnum> Enums { get; }
     }
 }

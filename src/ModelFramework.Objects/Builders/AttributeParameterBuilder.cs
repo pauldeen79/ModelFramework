@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -31,7 +31,7 @@ namespace ModelFramework.Objects.Builders
             if (source != null)
             {
                 Value = source.Value;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Name = source.Name;
             }
             return this;
@@ -80,7 +80,7 @@ namespace ModelFramework.Objects.Builders
             if (source != null)
             {
                 Value = source.Value;
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Name = source.Name;
             }
             else

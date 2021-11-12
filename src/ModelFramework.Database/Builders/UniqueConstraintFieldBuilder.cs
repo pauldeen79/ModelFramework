@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -28,7 +28,7 @@ namespace ModelFramework.Database.Builders
             if (source != null)
             {
                 Name = source.Name;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             }
             return this;
         }
@@ -75,7 +75,7 @@ namespace ModelFramework.Database.Builders
             if (source != null)
             {
                 Name = source.Name;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             }
         }
         public UniqueConstraintFieldBuilder(string name, IEnumerable<IMetadata> metadata = null)

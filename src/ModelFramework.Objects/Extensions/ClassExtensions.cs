@@ -1,6 +1,6 @@
-﻿using ModelFramework.Objects.Contracts;
-using System;
+﻿using System;
 using System.Linq;
+using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Extensions
 {

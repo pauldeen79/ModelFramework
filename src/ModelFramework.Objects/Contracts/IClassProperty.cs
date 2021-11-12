@@ -1,5 +1,5 @@
-﻿using ModelFramework.Common.Contracts;
-using System.Collections.Generic;
+﻿using CrossCutting.Common;
+using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Objects.Contracts
 {
@@ -14,8 +14,8 @@ namespace ModelFramework.Objects.Contracts
         string GetterBody { get; }
         string SetterBody { get; }
         string InitBody { get; }
-        IReadOnlyCollection<ICodeStatement> GetterCodeStatements { get; }
-        IReadOnlyCollection<ICodeStatement> SetterCodeStatements { get; }
-        IReadOnlyCollection<ICodeStatement> InitCodeStatements { get; }
+        ValueCollection<ICodeStatement> GetterCodeStatements { get; }
+        ValueCollection<ICodeStatement> SetterCodeStatements { get; }
+        ValueCollection<ICodeStatement> InitCodeStatements { get; }
     }
 }

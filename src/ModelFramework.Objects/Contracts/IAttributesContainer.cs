@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 
 namespace ModelFramework.Objects.Contracts
 {
     public interface IAttributesContainer
     {
-        IReadOnlyCollection<IAttribute> Attributes { get; }
+        ValueCollection<IAttribute> Attributes { get; }
     }
 }

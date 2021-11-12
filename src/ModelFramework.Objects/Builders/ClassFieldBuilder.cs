@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -67,10 +67,10 @@ namespace ModelFramework.Objects.Builders
                 ReadOnly = source.ReadOnly;
                 Constant = source.Constant;
                 DefaultValue = source.DefaultValue;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Visibility = source.Visibility;
                 Name = source.Name;
-                Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
+                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
                 TypeName = source.TypeName;
                 Virtual = source.Virtual;
                 Abstract = source.Abstract;
@@ -206,10 +206,10 @@ namespace ModelFramework.Objects.Builders
                 ReadOnly = source.ReadOnly;
                 Constant = source.Constant;
                 DefaultValue = source.DefaultValue;
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Visibility = source.Visibility;
                 Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
                 TypeName = source.TypeName;
                 Virtual = source.Virtual;
                 Abstract = source.Abstract;
@@ -223,6 +223,7 @@ namespace ModelFramework.Objects.Builders
                 Attributes = new List<AttributeBuilder>();
             }
         }
+#pragma warning disable S107 // Methods should not have too many parameters
         public ClassFieldBuilder(string name,
                                  string typeName,
                                  bool @static = false,
@@ -237,6 +238,7 @@ namespace ModelFramework.Objects.Builders
                                  Visibility visibility = Visibility.Private,
                                  IEnumerable<IMetadata> metadata = null,
                                  IEnumerable<IAttribute> attributes = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();

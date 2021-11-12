@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 
 namespace ModelFramework.Objects.Contracts
 {
     public interface IParametersContainer
     {
-        IReadOnlyCollection<IParameter> Parameters { get; }
+        ValueCollection<IParameter> Parameters { get; }
     }
 }

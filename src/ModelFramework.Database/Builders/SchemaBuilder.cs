@@ -36,11 +36,11 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             if (source != null)
             {
-                Tables.AddRange(source.Tables.Select(x => new TableBuilder(x)));
-                StoredProcedures.AddRange(source.StoredProcedures.Select(x => new StoredProcedureBuilder(x)));
-                Views.AddRange(source.Views.Select(x => new ViewBuilder(x)));
+                if (source.Tables != null) Tables.AddRange(source.Tables.Select(x => new TableBuilder(x)));
+                if (source.StoredProcedures!= null) StoredProcedures.AddRange(source.StoredProcedures.Select(x => new StoredProcedureBuilder(x)));
+                if (source.Views != null) Views.AddRange(source.Views.Select(x => new ViewBuilder(x)));
                 Name = source.Name;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             }
             return this;
         }
@@ -186,7 +186,9 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
+#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
         public SchemaBuilder(ISchema source = null)
+#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
         {
             Tables = new List<TableBuilder>();
             StoredProcedures = new List<StoredProcedureBuilder>();
@@ -194,11 +196,11 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             if (source != null)
             {
-                foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
-                foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
-                foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
+                if (source.Tables != null) foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
+                if (source.StoredProcedures != null) foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
+                if (source.Views != null) foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
                 Name = source.Name;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             }
         }
         public SchemaBuilder(string name,
