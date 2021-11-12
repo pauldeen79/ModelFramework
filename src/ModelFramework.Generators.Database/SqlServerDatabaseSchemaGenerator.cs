@@ -224,7 +224,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -295,7 +295,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -383,7 +383,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -469,7 +469,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -532,7 +532,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -632,7 +632,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -698,7 +698,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -782,7 +782,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -858,7 +858,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -928,7 +928,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1004,7 +1004,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1074,7 +1074,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1141,7 +1141,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1241,7 +1241,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1316,7 +1316,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1410,7 +1410,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1487,7 +1487,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1555,7 +1555,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1621,7 +1621,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1690,7 +1690,7 @@ GO
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1814,7 +1814,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1914,7 +1914,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -1983,7 +1983,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2052,7 +2052,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2117,7 +2117,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2195,7 +2195,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2258,7 +2258,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2317,7 +2317,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2377,7 +2377,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2435,7 +2435,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
@@ -2494,7 +2494,7 @@ AS
 
         }
 
-        public ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase RootTemplate { get; set; }
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
 
         public override void Write(string textToAppend)
         {
