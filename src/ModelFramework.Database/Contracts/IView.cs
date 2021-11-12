@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Database.Contracts
 {
     public interface IView : INameContainer, IMetadataContainer
     {
-        IReadOnlyCollection<IViewField> SelectFields { get; }
-        IReadOnlyCollection<IViewOrderByField> OrderByFields { get; }
-        IReadOnlyCollection<IViewField> GroupByFields { get; }
-        IReadOnlyCollection<IViewSource> Sources { get; }
-        IReadOnlyCollection<IViewCondition> Conditions { get; }
-        //bool WithCheckOption { get; }
-        //bool Encryption { get; }
-        //bool SchemaBinding { get; }
-        //bool ViewMetadata { get; }
+        ValueCollection<IViewField> SelectFields { get; }
+        ValueCollection<IViewOrderByField> OrderByFields { get; }
+        ValueCollection<IViewField> GroupByFields { get; }
+        ValueCollection<IViewSource> Sources { get; }
+        ValueCollection<IViewCondition> Conditions { get; }
         int? Top { get; }
         bool TopPercent { get; }
         bool Distinct { get; }

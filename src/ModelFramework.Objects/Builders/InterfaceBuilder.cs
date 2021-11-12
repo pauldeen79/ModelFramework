@@ -1,10 +1,10 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -47,18 +47,18 @@ namespace ModelFramework.Objects.Builders
             Visibility = default;
             Name = default;
             Attributes = new List<AttributeBuilder>();
-            GenericTypeArguments = default;
+            GenericTypeArguments = new List<string>();
             if (source != null)
             {
                 Namespace = source.Namespace;
-                foreach (var x in source.Interfaces) Interfaces.Add(x);
-                Properties.AddRange(source.Properties.Select(x => new ClassPropertyBuilder(x)));
-                Methods.AddRange(source.Methods.Select(x => new ClassMethodBuilder(x)));
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Interfaces != null) Interfaces.AddRange(source.Interfaces);
+                if (source.Properties != null) Properties.AddRange(source.Properties.Select(x => new ClassPropertyBuilder(x)));
+                if (source.Methods != null) Methods.AddRange(source.Methods.Select(x => new ClassMethodBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Visibility = source.Visibility;
                 Name = source.Name;
-                Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                GenericTypeArguments = new List<string>(source.GenericTypeArguments ?? Array.Empty<string>());
+                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
+                if (source.GenericTypeArguments != null ) GenericTypeArguments = new List<string>(source.GenericTypeArguments);
             }
             return this;
         }
@@ -237,13 +237,13 @@ namespace ModelFramework.Objects.Builders
             if (source != null)
             {
                 Namespace = source.Namespace;
-                Interfaces = new List<string>(source.Interfaces);
-                Properties = new List<ClassPropertyBuilder>(source.Properties.Select(x => new ClassPropertyBuilder(x)));
-                Methods = new List<ClassMethodBuilder>(source.Methods.Select(x => new ClassMethodBuilder(x)));
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Interfaces = new List<string>(source?.Interfaces ?? Enumerable.Empty<string>());
+                Properties = new List<ClassPropertyBuilder>(source.Properties?.Select(x => new ClassPropertyBuilder(x)) ?? Enumerable.Empty<ClassPropertyBuilder>());
+                Methods = new List<ClassMethodBuilder>(source.Methods?.Select(x => new ClassMethodBuilder(x)) ?? Enumerable.Empty<ClassMethodBuilder>());
+                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Visibility = source.Visibility;
                 Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
                 GenericTypeArguments = new List<string>(source.GenericTypeArguments ?? Array.Empty<string>());
             }
             else
@@ -256,6 +256,7 @@ namespace ModelFramework.Objects.Builders
                 GenericTypeArguments = new List<string>();
             }
         }
+#pragma warning disable S107 // Methods should not have too many parameters
         public InterfaceBuilder(string name,
                                 string @namespace,
                                 Visibility visibility = Visibility.Public,
@@ -266,6 +267,7 @@ namespace ModelFramework.Objects.Builders
                                 IEnumerable<IMetadata> metadata = null,
                                 IEnumerable<IAttribute> attributes = null,
                                 IEnumerable<string> genericTypeArguments = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             Interfaces = new List<string>();
             Properties = new List<ClassPropertyBuilder>();

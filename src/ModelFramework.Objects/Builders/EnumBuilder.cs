@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -36,10 +36,10 @@ namespace ModelFramework.Objects.Builders
             Visibility = default;
             if (source != null)
             {
-                Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                Members.AddRange(source.Members.Select(x => new EnumMemberBuilder(x)));
+                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
+                if (source.Members != null) Members.AddRange(source.Members.Select(x => new EnumMemberBuilder(x)));
                 Name = source.Name;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Visibility = source.Visibility;
             }
             return this;
@@ -145,10 +145,10 @@ namespace ModelFramework.Objects.Builders
         {
             if (source != null)
             {
-                Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
-                Members = new List<EnumMemberBuilder>(source.Members.Select(x => new EnumMemberBuilder(x)));
+                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+                Members = new List<EnumMemberBuilder>(source.Members?.Select(x => new EnumMemberBuilder(x)) ?? Enumerable.Empty<EnumMemberBuilder>());
                 Name = source.Name;
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Visibility = source.Visibility;
             }
             else

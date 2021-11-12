@@ -1,11 +1,11 @@
-﻿using ModelFramework.Common.Contracts;
-using ModelFramework.Common.Extensions;
-using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using ModelFramework.Common.Contracts;
+using ModelFramework.Common.Extensions;
+using ModelFramework.Objects.Contracts;
+using ModelFramework.Objects.Default;
 
 namespace ModelFramework.Objects.Extensions
 {
@@ -172,12 +172,12 @@ namespace ModelFramework.Objects.Extensions
             => attributes.OfType<System.Attribute>().Select(x => new Default.Attribute
             (
                 x.GetType().FullName
-                //TODO: full parameters
             ));
 
         private static IEnumerable<IClass> GetSubClasses(Type instance, bool partial)
             => instance.GetNestedTypes().Select(t => t.ToClass(null, null, partial));
 
+#pragma warning disable S107 // Methods should not have too many parameters
         public static IClass ToWrapperClass(this Type type,
                                             string name,
                                             string @namespace,
@@ -200,6 +200,7 @@ namespace ModelFramework.Objects.Extensions
                                             Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null,
                                             Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null
         ) => new Class(name.WhenNullOrEmpty(type.Name),
+#pragma warning restore S107 // Methods should not have too many parameters
                        type.FullName.GetNamespaceWithDefault(@namespace),
                        visibility,
                        baseClass,
@@ -353,6 +354,7 @@ namespace ModelFramework.Objects.Extensions
             return results;
         }
 
-        private static bool IsRecord(this Type type) => type.GetMethod("<Clone>$") != null;
+        private static bool IsRecord(this Type type)
+            => type.GetMethod("<Clone>$") != null;
     }
 }

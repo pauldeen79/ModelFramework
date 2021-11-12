@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -74,7 +74,7 @@ namespace ModelFramework.Objects.Builders
             {
                 Partial = source.Partial;
                 ExtensionMethod = source.ExtensionMethod;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Static = source.Static;
                 Virtual = source.Virtual;
                 Abstract = source.Abstract;
@@ -83,12 +83,12 @@ namespace ModelFramework.Objects.Builders
                 Operator = source.Operator;
                 Visibility = source.Visibility;
                 Name = source.Name;
-                Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
+                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
                 Body = source.Body;
-                Parameters.AddRange(source.Parameters.Select(x => new ParameterBuilder(x)));
+                if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new ParameterBuilder(x)));
                 TypeName = source.TypeName;
                 ExplicitInterfaceName = source.ExplicitInterfaceName;
-                CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
+                if (source.CodeStatements != null) CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
             }
             return this;
         }
@@ -279,7 +279,7 @@ namespace ModelFramework.Objects.Builders
             {
                 Partial = source.Partial;
                 ExtensionMethod = source.ExtensionMethod;
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Static = source.Static;
                 Virtual = source.Virtual;
                 Abstract = source.Abstract;
@@ -288,12 +288,12 @@ namespace ModelFramework.Objects.Builders
                 Operator = source.Operator;
                 Visibility = source.Visibility;
                 Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
                 Body = source.Body;
-                Parameters = new List<ParameterBuilder>(source.Parameters.Select(x => new ParameterBuilder(x)));
+                Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
                 TypeName = source.TypeName;
                 ExplicitInterfaceName = source.ExplicitInterfaceName;
-                CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements.Select(x => x.CreateBuilder()));
+                CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
             }
             else
             {
@@ -303,6 +303,7 @@ namespace ModelFramework.Objects.Builders
                 CodeStatements = new List<ICodeStatementBuilder>();
             }
         }
+#pragma warning disable S107 // Methods should not have too many parameters
         public ClassMethodBuilder(string name,
                                   string typeName,
                                   Visibility visibility = Visibility.Public,
@@ -320,6 +321,7 @@ namespace ModelFramework.Objects.Builders
                                   IEnumerable<IAttribute> attributes = null,
                                   IEnumerable<ICodeStatement> codeStatements = null,
                                   IEnumerable<IMetadata> metadata = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();

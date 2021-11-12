@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Contracts;
-using System;
-using System.Collections.Generic;
 
 namespace ModelFramework.Objects.Extensions
 {
@@ -12,7 +12,7 @@ namespace ModelFramework.Objects.Extensions
         public static string CreateImmutableBuilderInitializationCode(this IClassProperty property)
         {
             var defaultValue = property.TypeName.IsCollectionTypeName()
-                ? $"    foreach (var x in source.{property.Name}) _{property.Name.ToPascalCase()}.Add(x);"
+                ? $"    if (source.{property.Name} != null) foreach (var x in source.{property.Name}) _{property.Name.ToPascalCase()}.Add(x);"
                 : $"    _{property.Name.ToPascalCase()} = source.{property.Name};";
 
             return property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, defaultValue, o => string.Format(o?.ToString() ?? string.Empty, property.Name, property.Name.ToPascalCase(), property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(), property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()));

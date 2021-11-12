@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -119,7 +119,7 @@ namespace ModelFramework.Objects.Builders
                 HasGetter = source.HasGetter;
                 HasSetter = source.HasSetter;
                 HasInit = source.HasInit;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Visibility = source.Visibility;
                 GetterVisibility = source.GetterVisibility;
                 SetterVisibility = source.SetterVisibility;
@@ -128,16 +128,16 @@ namespace ModelFramework.Objects.Builders
                 SetterBody = source.SetterBody;
                 InitBody = source.InitBody;
                 Name = source.Name;
-                Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
+                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
                 TypeName = source.TypeName;
                 Virtual = source.Virtual;
                 Abstract = source.Abstract;
                 Protected = source.Protected;
                 Override = source.Override;
                 ExplicitInterfaceName = source.ExplicitInterfaceName;
-                GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
-                SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
-                InitCodeStatements.AddRange(source.InitCodeStatements.Select(x => x.CreateBuilder()));
+                if (source.GetterCodeStatements != null) GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
+                if (source.SetterCodeStatements != null) SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
+                if (source.InitCodeStatements != null) InitCodeStatements.AddRange(source.InitCodeStatements.Select(x => x.CreateBuilder()));
             }
             return this;
         }
@@ -392,7 +392,7 @@ namespace ModelFramework.Objects.Builders
                 HasGetter = source.HasGetter;
                 HasSetter = source.HasSetter;
                 HasInit = source.HasInit;
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Visibility = source.Visibility;
                 GetterVisibility = source.GetterVisibility;
                 SetterVisibility = source.SetterVisibility;
@@ -401,16 +401,16 @@ namespace ModelFramework.Objects.Builders
                 SetterBody = source.SetterBody;
                 InitBody = source.InitBody;
                 Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
                 TypeName = source.TypeName;
                 Virtual = source.Virtual;
                 Abstract = source.Abstract;
                 Protected = source.Protected;
                 Override = source.Override;
                 ExplicitInterfaceName = source.ExplicitInterfaceName;
-                GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
-                SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
-                InitCodeStatements = new List<ICodeStatementBuilder>(source.InitCodeStatements.Select(x => x.CreateBuilder()));
+                GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+                SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+                InitCodeStatements = new List<ICodeStatementBuilder>(source.InitCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
             }
             else
             {
@@ -423,6 +423,7 @@ namespace ModelFramework.Objects.Builders
                 InitCodeStatements = new List<ICodeStatementBuilder>();
             }
         }
+#pragma warning disable S107 // Methods should not have too many parameters
         public ClassPropertyBuilder(string name,
                                     string typeName,
                                     bool @static = false,
@@ -446,6 +447,7 @@ namespace ModelFramework.Objects.Builders
                                     IEnumerable<ICodeStatement> getterCodeStatements = null,
                                     IEnumerable<ICodeStatement> setterCodeStatements = null,
                                     IEnumerable<ICodeStatement> initCodeStatements = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();

@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -36,11 +36,11 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             if (source != null)
             {
-                Fields.AddRange(source.Fields.Select(x => new IndexFieldBuilder(x)));
+                if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new IndexFieldBuilder(x)));
                 Unique = source.Unique;
                 Name = source.Name;
                 FileGroupName = source.FileGroupName;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             }
             return this;
         }
@@ -129,11 +129,11 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             if (source != null)
             {
-                foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
+                if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
                 Unique = source.Unique;
                 Name = source.Name;
                 FileGroupName = source.FileGroupName;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             }
         }
         public IndexBuilder(string name,

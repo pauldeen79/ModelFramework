@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 
 namespace ModelFramework.Objects.Contracts
 {
     public interface ICodeStatementsContainer
     {
-        IReadOnlyCollection<ICodeStatement> CodeStatements { get; }
+        ValueCollection<ICodeStatement> CodeStatements { get; }
     }
 }

@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -40,7 +40,7 @@ namespace ModelFramework.Database.Builders
                 Name = source.Name;
                 SourceSchemaName = source.SourceSchemaName;
                 SourceObjectName = source.SourceObjectName;
-                Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             }
             return this;
         }
@@ -105,7 +105,7 @@ namespace ModelFramework.Database.Builders
                 Name = source.Name;
                 SourceSchemaName = source.SourceSchemaName;
                 SourceObjectName = source.SourceObjectName;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             }
         }
         public ViewSourceBuilder(string name,

@@ -8,18 +8,8 @@ using System.Text.RegularExpressions;
 
 namespace ModelFramework.Common.Extensions
 {
-    /// <summary>
-    /// Class which contains extension methods for the String class.
-    /// </summary>
     public static class StringExtensions
     {
-        /// <summary>
-        /// Converts a string to camel case.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        /// camel cased string (first character upper case, remaining characters unchanged)
-        /// </returns>
         public static string ToCamelCase(this string value)
         {
             if (string.IsNullOrEmpty(value) || value.Length < 1)
@@ -30,13 +20,6 @@ namespace ModelFramework.Common.Extensions
             return value.Substring(0, 1).ToUpper(CultureInfo.InvariantCulture) + value.Substring(1);
         }
 
-        /// <summary>
-        /// Converts a string to pascal case.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        /// pascal cased string (first character lower case, remaining characters unchanged)
-        /// </returns>
         public static string ToPascalCase(this string value)
         {
             if (string.IsNullOrEmpty(value) || value.Length < 1)
@@ -47,13 +30,6 @@ namespace ModelFramework.Common.Extensions
             return value.Substring(0, 1).ToLower(CultureInfo.InvariantCulture) + value.Substring(1);
         }
 
-        /// <summary>
-        /// SQL encodes the string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns>
-        /// The SQL encoded string. ('{value with ' replaced by ''}])
-        /// </returns>
         public static string SqlEncode(this string value)
         {
             if (value == null)
@@ -64,12 +40,6 @@ namespace ModelFramework.Common.Extensions
             return "'" + value.Replace("'", "''") + "'";
         }
 
-        /// <summary>
-        /// Returns the first number of characters of a string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="length">The length.</param>
-        /// <returns></returns>
         public static string Left(this string value, int length)
         {
             if (string.IsNullOrEmpty(value) || value.Length < length)
@@ -80,12 +50,6 @@ namespace ModelFramework.Common.Extensions
             return value.Substring(0, length);
         }
 
-        /// <summary>
-        /// Returns the last number of characters of a string.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="length">The length.</param>
-        /// <returns></returns>
         public static string Right(this string value, int length)
         {
             if (string.IsNullOrEmpty(value) || value.Length < length)
@@ -96,15 +60,6 @@ namespace ModelFramework.Common.Extensions
             return value.Substring(value.Length - length);
         }
 
-        /// <summary>
-        /// Returns a default value when the string value is empty, or otherwise the current string value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <param name="actionWhenNull">Optional action to perform when the value is null.</param>
-        /// <returns>
-        /// Default value when null, otherwise the current value.
-        /// </returns>
         public static string WhenNull(this string value, string defaultValue = "", Action actionWhenNull = null)
         {
             if (value == null && actionWhenNull != null)
@@ -115,11 +70,6 @@ namespace ModelFramework.Common.Extensions
             return value ?? defaultValue;
         }
 
-        /// <summary>
-        /// Fixes the name of the type.
-        /// </summary>
-        /// <param name="instance">The type name to fix.</param>
-        /// <returns></returns>
         public static string FixTypeName(this string instance)
         {
             if (instance == null)
@@ -304,11 +254,6 @@ namespace ModelFramework.Common.Extensions
                 : instance;
         }
 
-        /// <summary>
-        /// Gets the generic arguments.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
         public static string GetGenericArguments(this string value)
         {
             var fixedTypeName = value.FixTypeName();
@@ -341,46 +286,23 @@ namespace ModelFramework.Common.Extensions
         private static readonly string[] _trueKeywords = new[] { "true", "t", "1", "y", "yes", "ja", "j"};
         private static readonly string[] _falseKeywords = new[] { "false", "f", "0", "n", "no", "nee" };
 
-        /// <summary>
-        /// Determines whether the specified instance is true.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns></returns>
         public static bool IsTrue(this string instance)
         {
             return instance != null && _trueKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
         }
 
-        /// <summary>
-        /// Determines whether the specified instance is false.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns></returns>
         public static bool IsFalse(this string instance)
         {
             return instance != null && _falseKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
         }
 
-        /// <summary>
-        /// Converts the string instance to a nullable boolean.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// null when empty, true when the instance is any value representing true, or otherwise false.
-        /// </returns>
         public static bool? ToNullableBoolean(this string instance)
         {
             return string.IsNullOrEmpty(instance)
-                ? (bool?)null
+                ? null
                 : instance.IsTrue();
         }
 
-        /// <summary>
-        /// Formats the specified string
-        /// </summary>
-        /// <param name="str">The string to format.</param>
-        /// <param name="args">The args.</param>
-        /// <returns></returns>
         public static string Format(this string str, params Expression<Func<string, object[], object>>[] args)
         {
             var parameters = args.ToDictionary(e => string.Format("{{{0}}}", e.Parameters[0].Name), e => e.Compile()(e.Parameters[0].Name, args));
@@ -394,12 +316,6 @@ namespace ModelFramework.Common.Extensions
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Performs a is null or empty check, and returns another value when this evaluates to true.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="whenNullOrEmpty">The when null or empty.</param>
-        /// <returns></returns>
         public static string WhenNullOrEmpty(this string instance, string whenNullOrEmpty)
         {
             if (string.IsNullOrEmpty(instance))
@@ -410,12 +326,6 @@ namespace ModelFramework.Common.Extensions
             return instance;
         }
 
-        /// <summary>
-        /// Performs a is null or empty check, and returns another value when this evaluates to true.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="whenNullOrEmptyDelegate">The delegate to invoke when null or empty.</param>
-        /// <returns></returns>
         public static string WhenNullOrEmpty(this string instance, Func<string> whenNullOrEmptyDelegate)
         {
             if (string.IsNullOrEmpty(instance))
@@ -431,12 +341,6 @@ namespace ModelFramework.Common.Extensions
             return instance;
         }
 
-        /// <summary>
-        /// Performs a is null or whitespace check, and returns another value when this evaluates to true.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="whenNullOrWhiteSpace">The when null or white space.</param>
-        /// <returns></returns>
         public static string WhenNullOrWhitespace(this string instance, string whenNullOrWhiteSpace)
         {
             if (string.IsNullOrWhiteSpace(instance))
@@ -447,12 +351,6 @@ namespace ModelFramework.Common.Extensions
             return instance;
         }
 
-        /// <summary>
-        /// Performs a is null or whitespace check, and returns another value when this evaluates to true.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="whenNullOrWhiteSpaceDelegate">The when null or white space.</param>
-        /// <returns></returns>
         public static string WhenNullOrWhitespace(this string instance, Func<string> whenNullOrWhiteSpaceDelegate)
         {
             if (string.IsNullOrWhiteSpace(instance))
@@ -468,42 +366,12 @@ namespace ModelFramework.Common.Extensions
             return instance;
         }
 
-        /// <summary>
-        /// Determines whether the specified value is contained within the specified sequence.
-        /// </summary>
-        /// <param name="value">The value to search for.</param>
-        /// <param name="values">The sequence to search in.</param>
-        /// <param name="stringComparison">The string comparison.</param>
-        /// <returns>
-        /// true when found, otherwise false.
-        /// </returns>
         public static bool In(this string value, IEnumerable<string> values, StringComparison stringComparison)
-        {
-            return values.Any(i => i.Equals(value, stringComparison));
-        }
+            => values.Any(i => i.Equals(value, stringComparison));
 
-        /// <summary>
-        /// Determines whether the specified value is contained within the specified sequence.
-        /// </summary>
-        /// <param name="value">The value to search for.</param>
-        /// <param name="stringComparison">The string comparison.</param>
-        /// <param name="values">The sequence to search in.</param>
-        /// <returns>
-        /// true when found, otherwise false.
-        /// </returns>
         public static bool In(this string value, StringComparison stringComparison, params string[] values)
-        {
-            return values.Any(i => i.Equals(value, stringComparison));
-        }
+            => values.Any(i => i.Equals(value, stringComparison));
 
-        /// <summary>
-        /// Returns a new string in which all occurrences of a specified Unicode character in this instance are replaced with another specified Unicode character.
-        /// </summary>
-        /// <param name="str">The STR.</param>
-        /// <param name="oldValue">The old value.</param>
-        /// <param name="newValue">The new value.</param>
-        /// <param name="comparison">The comparison.</param>
-        /// <returns></returns>
         public static string Replace(this string str, string oldValue, string newValue, StringComparison comparison)
         {
             if (oldValue == null)
@@ -534,15 +402,6 @@ namespace ModelFramework.Common.Extensions
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Encodes the XML value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="allowNullEncoding">if set to <c>true</c> [allow null encoding].</param>
-        /// <returns></returns>
-        /// <remarks>
-        /// Currently, ASCII 0 through 31 (except 9, 10 ad 13) are replaced with a question mark.
-        /// </remarks>
         public static string EncodeXmlValue(this string value, bool allowNullEncoding = false)
         {
             if (value == null)
@@ -566,11 +425,6 @@ namespace ModelFramework.Common.Extensions
             return invalidList.Aggregate(value, (current, item) => current.Replace(((char)item).ToString(CultureInfo.InvariantCulture), "?"));
         }
 
-        /// <summary>
-        /// Sanitizes the specified token.
-        /// </summary>
-        /// <param name="token">The token.</param>
-        /// <returns></returns>
         public static string Sanitize(this string token)
         {
             if (token == null)
@@ -587,89 +441,30 @@ namespace ModelFramework.Common.Extensions
             return token;
         }
 
-        /// <summary>
-        /// Indicates whether the string instance starts with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool StartsWithAny(this string instance, params string[] values) =>
-            instance.StartsWithAny((IEnumerable<string>)values);
+        public static bool StartsWithAny(this string instance, params string[] values)
+            => instance.StartsWithAny((IEnumerable<string>)values);
 
-        /// <summary>
-        /// Indicates whether the string instance starts with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool StartsWithAny(this string instance, IEnumerable<string> values) =>
-            values.Any(v => instance.StartsWith(v));
+        public static bool StartsWithAny(this string instance, IEnumerable<string> values)
+            => values.Any(v => instance.StartsWith(v));
 
-        /// <summary>
-        /// Indicates whether the string instance starts with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="comparisonType">Type of the comparison.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool StartsWithAny(this string instance, StringComparison comparisonType, params string[] values) =>
-            instance.StartsWithAny(comparisonType, (IEnumerable<string>)values);
+        public static bool StartsWithAny(this string instance, StringComparison comparisonType, params string[] values)
+            => instance.StartsWithAny(comparisonType, (IEnumerable<string>)values);
 
-        /// <summary>
-        /// Indicates whether the string instance starts with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="comparisonType">Type of the comparison.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool StartsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values) =>
-            values.Any(v => instance.StartsWith(v, comparisonType));
+        public static bool StartsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
+            => values.Any(v => instance.StartsWith(v, comparisonType));
 
-        /// <summary>
-        /// Indicates whether the string instance ends with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, params string[] values) =>
-            instance.EndsWithAny((IEnumerable<string>)values);
+        public static bool EndsWithAny(this string instance, params string[] values)
+            => instance.EndsWithAny((IEnumerable<string>)values);
 
-        /// <summary>
-        /// Indicates whether the string instance ends with any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, IEnumerable<string> values) =>
-            values.Any(v => instance.EndsWith(v));
+        public static bool EndsWithAny(this string instance, IEnumerable<string> values)
+            => values.Any(v => instance.EndsWith(v));
 
-        /// <summary>
-        /// Indicates whether the string instance ends any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="comparisonType">Type of the comparison.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, params string[] values) =>
-            instance.EndsWithAny(comparisonType, (IEnumerable<string>)values);
+        public static bool EndsWithAny(this string instance, StringComparison comparisonType, params string[] values)
+            => instance.EndsWithAny(comparisonType, (IEnumerable<string>)values);
 
-        /// <summary>
-        /// Indicates whether the string instance ends any of the specified values.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="comparisonType">Type of the comparison.</param>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values) =>
-            values.Any(v => instance.EndsWith(v, comparisonType));
+        public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
+            => values.Any(v => instance.EndsWith(v, comparisonType));
 
-        /// <summary>
-        /// Parses the value as enum.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value">The value.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns></returns>
         public static T ParseEnum<T>(this string value, T defaultValue = default)
             where T : struct
         {
@@ -681,12 +476,6 @@ namespace ModelFramework.Common.Extensions
             return result;
         }
 
-        /// <summary>
-        /// Parses the value as boolean with default value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="defaultValue">if set to <c>true</c> [default value].</param>
-        /// <returns></returns>
         public static bool ParseBooleanWithDefault(this string value, bool defaultValue = default)
         {
             if (!bool.TryParse(value, out bool result))
@@ -697,12 +486,6 @@ namespace ModelFramework.Common.Extensions
             return result;
         }
 
-        /// <summary>
-        /// Parses the value as Int32 with default value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="defaultValue">if set to <c>true</c> [default value].</param>
-        /// <returns></returns>
         public static int ParseInt32WithDefault(this string value, int defaultValue = default)
         {
             if (!int.TryParse(value, out int result))
@@ -713,12 +496,6 @@ namespace ModelFramework.Common.Extensions
             return result;
         }
 
-        /// <summary>
-        /// Parses the value as Int64 with default value.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="defaultValue">if set to <c>true</c> [default value].</param>
-        /// <returns></returns>
         public static long ParseInt64WithDefault(this string value, long defaultValue = default)
         {
             if (!long.TryParse(value, out long result))
@@ -729,25 +506,9 @@ namespace ModelFramework.Common.Extensions
             return result;
         }
 
-        /// <summary>
-        /// Determines whether the specified instance is a required enumeration.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// false when instance is null or empty, or the instance is not an enumeration type, otherwise true.
-        /// </returns>
         public static bool IsRequiredEnum(this string instance)
-        {
-            return !string.IsNullOrEmpty(instance) && (Type.GetType(instance) ?? typeof(object)).IsEnum;
-        }
+            => !string.IsNullOrEmpty(instance) && (Type.GetType(instance) ?? typeof(object)).IsEnum;
 
-        /// <summary>
-        /// Determines whether the specified instance is an optional enumeration.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <returns>
-        /// false when instance is null or empty, or the instance is not a nullable enumeration type, otherwise true.
-        /// </returns>
         public static bool IsOptionalEnum(this string instance)
         {
             if (string.IsNullOrEmpty(instance))
@@ -765,11 +526,6 @@ namespace ModelFramework.Common.Extensions
             return u?.IsEnum == true;
         }
 
-        /// <summary>
-        /// Gets the name of the class.
-        /// </summary>
-        /// <param name="fullyQualifiedClassName">Fully qualified class name.</param>
-        /// <returns></returns>
         public static string GetClassNameWithDefault(this string fullyQualifiedClassName)
         {
             var idx = fullyQualifiedClassName.LastIndexOf(".");
@@ -778,12 +534,6 @@ namespace ModelFramework.Common.Extensions
                 : fullyQualifiedClassName.Substring(idx + 1);
         }
 
-        /// <summary>
-        /// Gets the namespace.
-        /// </summary>
-        /// <param name="fullyQualifiedClassName">Fully qualified class name.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <returns></returns>
         public static string GetNamespaceWithDefault(this string fullyQualifiedClassName, string defaultValue)
         {
             var idx = fullyQualifiedClassName.LastIndexOf(".");
@@ -792,8 +542,9 @@ namespace ModelFramework.Common.Extensions
                 : fullyQualifiedClassName.Substring(0, idx).WhenNullOrEmpty(defaultValue);
         }
 
-        public static char? GetCharacterAt(this string value, int position) => position >= value.Length
-                ? (char?)null
+        public static char? GetCharacterAt(this string value, int position)
+            => position >= value.Length
+                ? null
                 : value[position];
 
         public static string RemoveSuffix(this string instance, string suffix)
@@ -856,13 +607,5 @@ namespace ModelFramework.Common.Extensions
             => string.IsNullOrEmpty(genericTypeParameter)
                 ? instance
                 : $"{instance}<{genericTypeParameter}>";
-
-        public static bool IsUnitTestAssembly(this string instance)
-            => instance.StartsWithAny(StringComparison.OrdinalIgnoreCase,
-                                      "Microsoft.VisualStudio",
-                                      "Microsoft.TestPlatform",
-                                      "xunit",
-                                      "testhost",
-                                      "msdia140");
     }
 }

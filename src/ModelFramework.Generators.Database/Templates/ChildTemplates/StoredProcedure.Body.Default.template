@@ -1,5 +1,7 @@
 ﻿<#@ template language="c#" #>
 <#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate" #>
 <#@ model type="IStoredProcedure" #>
+<# if (!string.IsNullOrEmpty(Model.Body))
+   { #>
     <#= Model.Body #>
-
+<# } #>

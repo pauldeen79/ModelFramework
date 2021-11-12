@@ -4,10 +4,6 @@ namespace ModelFramework.Database.Extensions
 {
     public static class CascadeActionExtensions
     {
-        /// <summary>
-        /// Converts the CascadeAction value to a string for T-SQL statements.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
         public static string ToSql(this CascadeAction instance)
         {
             //NO ACTION | CASCADE | SET NULL | SET DEFAULT 

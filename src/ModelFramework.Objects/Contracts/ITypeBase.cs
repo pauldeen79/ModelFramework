@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Objects.Contracts
@@ -7,9 +7,9 @@ namespace ModelFramework.Objects.Contracts
     {
         string Namespace { get; }
         bool Partial { get; }
-        IReadOnlyCollection<string> Interfaces { get; }
-        IReadOnlyCollection<IClassProperty> Properties { get; }
-        IReadOnlyCollection<IClassMethod> Methods { get; }
+        ValueCollection<string> Interfaces { get; }
+        ValueCollection<IClassProperty> Properties { get; }
+        ValueCollection<IClassMethod> Methods { get; }
         string[] GenericTypeArguments { get; }
     }
 }

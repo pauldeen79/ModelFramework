@@ -7,27 +7,12 @@ namespace ModelFramework.Common.Extensions
 {
     public static class EnumerableOfIMetadataExtensions
     {
-        /// <summary>
-        /// Gets the metadata value as a string.
-        /// </summary>
-        /// <param name="metadata">The metadata.</param>
-        /// <param name="metadataName">Name of the metadata.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <param name="convertFunction">The convert function.</param>
         public static string GetMetadataStringValue(this IEnumerable<IMetadata> metadata,
                                                     string metadataName,
                                                     string defaultValue = default,
                                                     Func<object, string> convertFunction = null)
             => GetMetadataValue(metadata, metadataName, defaultValue, convertFunction);
 
-        /// <summary>
-        /// Gets the metadata value.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="metadata">The metadata.</param>
-        /// <param name="metadataName">Name of the metadata.</param>
-        /// <param name="defaultValue">The default value.</param>
-        /// <param name="convertFunction">The convert function.</param>
         public static T GetMetadataValue<T>(this IEnumerable<IMetadata> metadata,
                                             string metadataName,
                                             T defaultValue = default,
@@ -65,24 +50,11 @@ namespace ModelFramework.Common.Extensions
             return (T)Convert.ChangeType(metadataItem.Value, typeof(T));
         }
 
-        /// <summary>
-        /// Gets the metadata values.
-        /// </summary>
-        /// <param name="metadata">The metadata.</param>
-        /// <param name="metadataName">Name of the metadata.</param>
-        /// <param name="convertFunction">The convert function.</param>
         public static IEnumerable<string> GetMetadataStringValues(this IEnumerable<IMetadata> metadata,
                                                                   string metadataName,
                                                                   Func<object, string> convertFunction = null)
             => GetMetadataValues(metadata, metadataName, convertFunction);
 
-        /// <summary>
-        /// Gets the metadata values.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="metadata">The metadata.</param>
-        /// <param name="metadataName">Name of the metadata.</param>
-        /// <param name="convertFunction">The convert function.</param>
         public static IEnumerable<T> GetMetadataValues<T>(this IEnumerable<IMetadata> metadata,
                                                           string metadataName,
                                                           Func<object, T> convertFunction = null)

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Database.Contracts
@@ -6,6 +6,7 @@ namespace ModelFramework.Database.Contracts
     public interface IStoredProcedure : INameContainer, IMetadataContainer
     {
         string Body { get; }
-        IReadOnlyCollection<IStoredProcedureParameter> Parameters { get; }
+        ValueCollection<ISqlStatement> Statements { get; }
+        ValueCollection<IStoredProcedureParameter> Parameters { get; }
     }
 }

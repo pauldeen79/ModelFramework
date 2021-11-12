@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CrossCutting.Common;
 using ModelFramework.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
@@ -12,10 +13,6 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class TypeBaseExtensions
     {
-        /// <summary>
-        /// Gets the inherited classes.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
         public static string GetInheritedClasses(this ITypeBase instance)
         {
             if (instance is IClass cls)
@@ -36,13 +33,6 @@ namespace ModelFramework.Objects.Extensions
             }
         }
 
-        /// <summary>
-        /// Gets the type of the container.
-        /// </summary>
-        /// <param name="typeBase">The type base.</param>
-        /// <returns>
-        /// class, record or interface
-        /// </returns>
         public static string GetContainerType(this ITypeBase typeBase)
         {
             if (typeBase is IClass cls)
@@ -59,22 +49,8 @@ namespace ModelFramework.Objects.Extensions
             return $"[unknown container type: {typeBase.GetType().FullName}]";
         }
 
-        /// <summary>
-        /// Creates an interface class from this class instance.
-        /// </summary>
-        /// <param name="instance">The instance.</param>
-        /// <param name="overrideVisibility">The override visibility.</param>
-        /// <param name="overrideName">Name of the override.</param>
-        /// <param name="overrideNamespace">The override namespace.</param>
-        /// <param name="overrideInterfaces">The override interfaces.</param>
-        /// <param name="propertyFilter">The property filter.</param>
-        /// <param name="methodFilter">The method filter.</param>
-        /// <param name="metadataFilter">The metadata filter.</param>
-        /// <param name="attributeFilter">The attribute filter.</param>
-        /// <param name="applyGenericTypes">Apply generic types to certain typenames</param>
-        /// <param name="changePropertiesToReadOnly">If set to <c>true</c> [change properties to read-only]</param>
-        /// <param name="makePartial">If set to <c>true</c> make partial. If set to null, copy partial from source instance.</param>
         public static IInterface ToInterface
+#pragma warning disable S107 // Methods should not have too many parameters
         (
             this ITypeBase instance,
             Visibility? overrideVisibility = null,
@@ -89,6 +65,7 @@ namespace ModelFramework.Objects.Extensions
             bool changePropertiesToReadOnly = false,
             bool? makePartial = null
         ) => new Interface
+#pragma warning restore S107 // Methods should not have too many parameters
             (
                 overrideName ?? "I" + instance.Name,
                 overrideNamespace ?? instance.Namespace,
@@ -334,7 +311,7 @@ namespace ModelFramework.Objects.Extensions
             if (addCopyConstructor)
             {
                 var cls = instance as IClass;
-                var ctors = cls?.Constructors ?? new List<IClassConstructor>();
+                var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
                 var properties = poco
                     ? instance.Properties
                     : ctors.First(x => x.Parameters.Count > 0).Parameters
@@ -579,7 +556,7 @@ namespace ModelFramework.Objects.Extensions
         private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
         {
             var cls = instance as IClass;
-            var ctors = cls?.Constructors ?? new List<IClassConstructor>();
+            var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
 
             var properties = poco
                 ? instance.Properties
@@ -795,9 +772,7 @@ namespace ModelFramework.Objects.Extensions
         }
 
         private static string GetEqualsProperties(ITypeBase instance)
-        {
-            return string.Join(" &&" + Environment.NewLine + "       ", instance.Properties.Select(p => $"{p.Name} == other.{p.Name}"));
-        }
+            => string.Join(" &&" + Environment.NewLine + "       ", instance.Properties.Select(p => $"{p.Name} == other.{p.Name}"));
 
         private static string GetInstanceName(bool extensionMethod)
             => extensionMethod

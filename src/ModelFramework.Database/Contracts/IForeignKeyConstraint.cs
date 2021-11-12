@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Database.Contracts
 {
     public interface IForeignKeyConstraint : INameContainer, IMetadataContainer
     {
-        IReadOnlyCollection<IForeignKeyConstraintField> LocalFields { get; }
-        IReadOnlyCollection<IForeignKeyConstraintField> ForeignFields { get; }
+        ValueCollection<IForeignKeyConstraintField> LocalFields { get; }
+        ValueCollection<IForeignKeyConstraintField> ForeignFields { get; }
         string ForeignTableName { get; }
         CascadeAction CascadeUpdate { get; }
         CascadeAction CascadeDelete { get; }

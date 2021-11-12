@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Objects.Contracts
 {
     public interface IAttribute : IMetadataContainer, INameContainer
     {
-        IReadOnlyCollection<IAttributeParameter> Parameters { get; }
+        ValueCollection<IAttributeParameter> Parameters { get; }
     }
 }

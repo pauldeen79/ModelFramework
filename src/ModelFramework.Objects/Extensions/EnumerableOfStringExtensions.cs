@@ -1,8 +1,8 @@
-﻿using ModelFramework.Objects.CodeStatements;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Objects.Extensions
 {

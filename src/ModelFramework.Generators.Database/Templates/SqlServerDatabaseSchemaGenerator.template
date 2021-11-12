@@ -3,11 +3,12 @@
 <#@ addChildTemplateCode override="true" clearFieldsOnOverride="true" #>
 <#@ baseClassInheritsFrom type="ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase" #>
 <#@ output extension="sql" #>
-<#@ assembly name="ModelFramework, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ assembly name="ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ assembly name="ModelFramework.Database, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
 <#@ assembly name="TextTemplateTransformationFramework.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
 <#@ assembly hintPath="$(BasePath)ModelFramework\bin\Debug\netstandard2.0" #>
 <#@ assembly hintPath="$(BasePath)TextTemplateTransformationFramework.Runtime\bin\Debug\netstandard2.0" #>
-<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Database\Templates\ChildTemplates" searchPattern="*.template" #>
+<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Database\Templates\ChildTemplates" searchPattern="*.template" recurse="true" #>
 <#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Shared\Templates\ChildTemplates" searchPattern="*.template" #>
 <#@ registerViewModels path="$(BasePath)ModelFramework.Generators.Database\Templates\ChildTemplates" searchPattern="*.viewmodel" #>
 <#@ includes Path="$(BasePath)ModelFramework.Generators.Database\Templates\Includes" SearchPattern="*.ttinclude" Recurse="true" #>
@@ -17,6 +18,7 @@
 <#@ import namespace="ModelFramework.Common.Extensions" #>
 <#@ import namespace="ModelFramework.Database.Contracts" #>
 <#@ import namespace="ModelFramework.Database.Extensions" #>
+<#@ import namespace="ModelFramework.Database.SqlStatements" #>
 <#@ import namespace="TextTemplateTransformationFramework.Runtime" #>
 <#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Database.Contracts.ISchema" #>
 <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>

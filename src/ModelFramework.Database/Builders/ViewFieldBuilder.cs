@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -18,6 +18,35 @@ namespace ModelFramework.Database.Builders
         public IViewField Build()
         {
             return new ViewField(Name, SourceSchemaName, SourceObjectName, Expression, Alias, Metadata.Select(x => x.Build()));
+        }
+        public ViewFieldBuilder Clear()
+        {
+            SourceSchemaName = default;
+            SourceObjectName = default;
+            Expression = default;
+            Alias = default;
+            Name = default;
+            Metadata.Clear();
+            return this;
+        }
+        public ViewFieldBuilder Update(ViewField source)
+        {
+            SourceSchemaName = default;
+            SourceObjectName = default;
+            Expression = default;
+            Alias = default;
+            Name = default;
+            Metadata = new List<MetadataBuilder>();
+            if (source != null)
+            {
+                SourceSchemaName = source.SourceSchemaName;
+                SourceObjectName = source.SourceObjectName;
+                Expression = source.Expression;
+                Alias = source.Alias;
+                Name = source.Name;
+                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            }
+            return this;
         }
         public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
         {
@@ -86,7 +115,7 @@ namespace ModelFramework.Database.Builders
                 Expression = source.Expression;
                 Alias = source.Alias;
                 Name = source.Name;
-                foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             }
         }
         public ViewFieldBuilder(string name,
