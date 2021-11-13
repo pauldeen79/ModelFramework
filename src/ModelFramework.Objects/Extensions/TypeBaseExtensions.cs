@@ -52,24 +52,19 @@ namespace ModelFramework.Objects.Extensions
         }
 
         public static InterfaceBuilder ToInterface(this ITypeBase instance,
-                                                   Visibility? overrideVisibility = null,
-                                                   string overrideName = null,
-                                                   string overrideNamespace = null,
-                                                   IEnumerable<string> overrideInterfaces = null,
                                                    Func<IClassProperty, bool> propertyFilter = null,
                                                    Func<IClassMethod, bool> methodFilter = null,
                                                    Func<IMetadata, bool> metadataFilter = null,
                                                    Func<IAttribute, bool> attributeFilter = null,
                                                    IDictionary<string, string> applyGenericTypes = null,
-                                                   bool changePropertiesToReadOnly = false,
-                                                   bool? makePartial = null)
+                                                   bool changePropertiesToReadOnly = false)
         => new InterfaceBuilder
             (
-                overrideName ?? "I" + instance.Name,
-                overrideNamespace ?? instance.Namespace,
-                overrideVisibility ?? instance.Visibility,
-                makePartial ?? instance.Partial,
-                overrideInterfaces ?? instance.Interfaces.Where(i => i != "I" + instance.Name && i != instance.Namespace + ".I" + instance.Name),
+                "I" + instance.Name,
+                instance.Namespace,
+                instance.Visibility,
+                instance.Partial,
+                instance.Interfaces.Where(i => i != "I" + instance.Name && i != instance.Namespace + ".I" + instance.Name),
                 propertyFilter == null
                     ? instance.Properties.Select(p => ChangeProperty(p, applyGenericTypes, changePropertiesToReadOnly))
                     : instance.Properties.Where(propertyFilter).Select(p => ChangeProperty(p, applyGenericTypes, changePropertiesToReadOnly)),
