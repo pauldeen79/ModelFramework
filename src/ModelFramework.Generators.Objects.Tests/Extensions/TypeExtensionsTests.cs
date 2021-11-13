@@ -27,7 +27,10 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
             // Act
             var model = new[]
             {
-                typeof(TestClass).ToWrapperClass("GeneratedTestClass", "MyNamespace", methodCodeStatementsDelegate: methodCodeStatementsDelegate, propertyCodeStatementsDelegate: propertyCodeSTatementsDelegate)
+                typeof(TestClass).ToWrapperClass(methodCodeStatementsDelegate: methodCodeStatementsDelegate, propertyCodeStatementsDelegate: propertyCodeSTatementsDelegate)
+                .WithNamespace("MyNamespace")
+                .WithName("GeneratedTestClass")
+                .Build()
             };
 
             // Assert
@@ -39,7 +42,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ModelFramework.Generators.Objects.Tests.Extensions
+namespace MyNamespace
 {
     public class GeneratedTestClass
     {

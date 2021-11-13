@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 
@@ -177,45 +178,14 @@ namespace ModelFramework.Objects.Extensions
         private static IEnumerable<IClass> GetSubClasses(Type instance, bool partial)
             => instance.GetNestedTypes().Select(t => t.ToClass(null, null, partial));
 
-        public static IClass ToWrapperClass(this Type type,
-                                            string name,
-                                            string @namespace,
-                                            Visibility visibility = Visibility.Public,
-                                            string baseClass = null,
-                                            bool @static = false,
-                                            bool @sealed = false,
-                                            bool partial = false,
-                                            bool autoGenerateInterface = false,
-                                            bool record = false,
-                                            IEnumerable<string> interfaces = null,
-                                            IEnumerable<IClassField> fields = null,
-                                            IEnumerable<IClassProperty> properties = null,
-                                            IEnumerable<IClassMethod> methods = null,
-                                            IEnumerable<IClassConstructor> constructors = null,
-                                            IEnumerable<IMetadata> metadata = null,
-                                            IEnumerable<IAttribute> attributes = null,
-                                            IEnumerable<IClass> subClasses = null,
-                                            IEnumerable<IEnum> enums = null,
-                                            Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null,
-                                            Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null
-        ) => new Class(name.WhenNullOrEmpty(type.Name),
-                       type.FullName.GetNamespaceWithDefault(@namespace),
-                       visibility,
-                       baseClass,
-                       @static,
-                       @sealed,
-                       partial,
-                       autoGenerateInterface,
-                       record,
-                       interfaces,
-                       GeneratedFields(type).Concat(fields ?? Enumerable.Empty<IClassField>()),
-                       GeneratedProperties(type, propertyCodeStatementsDelegate).Concat(properties ?? Enumerable.Empty<IClassProperty>()),
-                       GeneratedMethods(type, methodCodeStatementsDelegate).Concat(methods ?? Enumerable.Empty<IClassMethod>()),
-                       GeneratedCtors(type).Concat(constructors ?? Enumerable.Empty<IClassConstructor>()),
-                       metadata,
-                       attributes,
-                       subClasses,
-                       enums);
+        public static ClassBuilder ToWrapperClass(this Type type,
+                                                  Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null,
+                                                  Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null
+        ) => new ClassBuilder()
+            .AddFields(GeneratedFields(type))
+            .AddProperties(GeneratedProperties(type, propertyCodeStatementsDelegate))
+            .AddMethods(GeneratedMethods(type, methodCodeStatementsDelegate))
+            .AddConstructors(GeneratedCtors(type));
 
         private static IEnumerable<IClassProperty> GeneratedProperties(Type type, Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null)
             => type.GetPropertiesRecursively()
