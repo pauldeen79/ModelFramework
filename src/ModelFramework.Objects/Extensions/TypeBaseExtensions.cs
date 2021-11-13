@@ -305,7 +305,7 @@ namespace ModelFramework.Objects.Extensions
             {
                 var cls = instance as IClass;
                 var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
-                var properties = settings.Poco != false
+                var properties = settings.Poco
                     ? instance.Properties
                     : ctors.First(x => x.Parameters.Count > 0).Parameters
                         .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
@@ -331,15 +331,15 @@ namespace ModelFramework.Objects.Extensions
 
         private static IEnumerable<IClassMethod> GetImmutableBuilderClassMethods(ITypeBase instance, ImmutableBuilderClassSettings settings)
         {
-            var openSign = GetImmutableBuilderPocoOpenSign(settings.Poco != false);
-            var closeSign = GetImmutableBuilderPocoCloseSign(settings.Poco != false);
+            var openSign = GetImmutableBuilderPocoOpenSign(settings.Poco);
+            var closeSign = GetImmutableBuilderPocoCloseSign(settings.Poco);
             yield return new ClassMethod
             (
                 "Build",
                 FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate),
                 codeStatements: new[]
                 {
-                    new LiteralCodeStatement($"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco != false)}{closeSign};")
+                    new LiteralCodeStatement($"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};")
                 }
             );
             yield return new ClassMethod
