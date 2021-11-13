@@ -12,14 +12,14 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class TypeExtensions
     {
-        public static IClass ToClass(this Type instance,
-                                     string name = null,
-                                     string @namespace = null,
-                                     bool partial = false,
-                                     bool createConstructors = false,
-                                     bool autoGenerateInterface = false,
-                                     bool? record = null)
-            => new Class
+        public static ClassBuilder ToClass(this Type instance,
+                                           string name = null,
+                                           string @namespace = null,
+                                           bool partial = false,
+                                           bool createConstructors = false,
+                                           bool autoGenerateInterface = false,
+                                           bool? record = null)
+            => new ClassBuilder
             (
                 name ?? instance.Name,
                 @namespace ?? instance.FullName.GetNamespaceWithDefault(null),
@@ -176,7 +176,7 @@ namespace ModelFramework.Objects.Extensions
             ));
 
         private static IEnumerable<IClass> GetSubClasses(Type instance, bool partial)
-            => instance.GetNestedTypes().Select(t => t.ToClass(null, null, partial));
+            => instance.GetNestedTypes().Select(t => t.ToClass(null, null, partial).Build());
 
         public static ClassBuilder ToWrapperClass(this Type type,
                                                   Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null,

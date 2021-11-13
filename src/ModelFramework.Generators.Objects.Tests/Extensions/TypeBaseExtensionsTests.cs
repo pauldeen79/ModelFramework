@@ -20,7 +20,7 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
             var input = new Class("Test", "MyNamespace", methods: new[] { new ClassMethod("MyMethod", "MyType", parameters: new[] { new Parameter("param1", "MyType") }) });
 
             // Act
-            var actual = input.ToInterface();
+            var actual = input.ToInterface().Build();
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -51,7 +51,7 @@ namespace MyNamespace
             });
 
             // Act
-            var actual = input.ToInterface();
+            var actual = input.ToInterface().Build();
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -78,7 +78,7 @@ namespace MyNamespace
             var input = new Class("Test", "MyNamespace", methods: new[] { new ClassMethod("MyMethod", "MyType", parameters: new[] { new Parameter("param1", "MyType") }) });
 
             // Act
-            var actual = input.ToInterface(applyGenericTypes: new Dictionary<string, string> { { "MyType", "T" } });
+            var actual = input.ToInterface(applyGenericTypes: new Dictionary<string, string> { { "MyType", "T" } }).Build();
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -119,7 +119,7 @@ namespace MyNamespace
             );
 
             // Act
-            var actual = input.ToInterface();
+            var actual = input.ToInterface().Build();
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -161,10 +161,10 @@ namespace MyNamespace
                         setterCodeStatements: new[] { "_test = value;" }.ToLiteralCodeStatements()
                     )
                 }
-            ).ToImmutableClass(implementIEquatable: true);
+            ).ToImmutableClass(implementIEquatable: true).Build();
 
             // Act
-            var actual = input.ToInterface();
+            var actual = input.ToInterface().Build();
 
             // Assert
             var generator = new CSharpClassGenerator();

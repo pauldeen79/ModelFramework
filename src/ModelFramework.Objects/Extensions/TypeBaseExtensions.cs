@@ -5,6 +5,7 @@ using CrossCutting.Common;
 using ModelFramework.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
@@ -50,21 +51,19 @@ namespace ModelFramework.Objects.Extensions
             return $"[unknown container type: {typeBase.GetType().FullName}]";
         }
 
-        public static IInterface ToInterface
-        (
-            this ITypeBase instance,
-            Visibility? overrideVisibility = null,
-            string overrideName = null,
-            string overrideNamespace = null,
-            IEnumerable<string> overrideInterfaces = null,
-            Func<IClassProperty, bool> propertyFilter = null,
-            Func<IClassMethod, bool> methodFilter = null,
-            Func<IMetadata, bool> metadataFilter = null,
-            Func<IAttribute, bool> attributeFilter = null,
-            IDictionary<string, string> applyGenericTypes = null,
-            bool changePropertiesToReadOnly = false,
-            bool? makePartial = null
-        ) => new Interface
+        public static InterfaceBuilder ToInterface(this ITypeBase instance,
+                                                   Visibility? overrideVisibility = null,
+                                                   string overrideName = null,
+                                                   string overrideNamespace = null,
+                                                   IEnumerable<string> overrideInterfaces = null,
+                                                   Func<IClassProperty, bool> propertyFilter = null,
+                                                   Func<IClassMethod, bool> methodFilter = null,
+                                                   Func<IMetadata, bool> metadataFilter = null,
+                                                   Func<IAttribute, bool> attributeFilter = null,
+                                                   IDictionary<string, string> applyGenericTypes = null,
+                                                   bool changePropertiesToReadOnly = false,
+                                                   bool? makePartial = null)
+        => new InterfaceBuilder
             (
                 overrideName ?? "I" + instance.Name,
                 overrideNamespace ?? instance.Namespace,
@@ -92,13 +91,11 @@ namespace ModelFramework.Objects.Extensions
                 GenerateGenericTypeArguments(applyGenericTypes)
             );
 
-        public static IClass ToImmutableClass
-        (
-            this ITypeBase instance,
-            string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
-            bool createWithMethod = false,
-            bool implementIEquatable = false
-        ) => new Class
+        public static ClassBuilder ToImmutableClass(this ITypeBase instance,
+                                                    string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
+                                                    bool createWithMethod = false,
+                                                    bool implementIEquatable = false)
+        => new ClassBuilder
             (
                 instance.Name,
                 instance.Namespace,
@@ -147,11 +144,9 @@ namespace ModelFramework.Objects.Extensions
                 interfaces: implementIEquatable ? new[] { $"IEquatable<{instance.Name}>" } : Enumerable.Empty<string>()
             );
 
-        public static IClass ToImmutableExtensionClass
-        (
-            this ITypeBase instance,
-            string newCollectionTypeName = "System.Collections.Immutable.IImmutableList"
-        ) => new Class
+        public static ClassBuilder ToImmutableExtensionClass(this ITypeBase instance,
+                                                             string newCollectionTypeName = "System.Collections.Immutable.IImmutableList")
+        => new ClassBuilder
             (
                 instance.Name + "Extensions",
                 instance.Namespace,
@@ -159,8 +154,8 @@ namespace ModelFramework.Objects.Extensions
                 @static: true
             );
 
-        public static IClass ToPocoClass(this ITypeBase instance, string newCollectionTypeName = "System.Collections.Generic.ICollection")
-            => new Class
+        public static ClassBuilder ToPocoClass(this ITypeBase instance, string newCollectionTypeName = "System.Collections.Generic.ICollection")
+            => new ClassBuilder
             (
                 instance.Name,
                 instance.Namespace,
@@ -198,8 +193,8 @@ namespace ModelFramework.Objects.Extensions
                         )
             );
 
-        public static IClass ToObservableClass(this ITypeBase instance, string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
-            => new Class
+        public static ClassBuilder ToObservableClass(this ITypeBase instance, string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
+            => new ClassBuilder
             (
                 instance.Name,
                 instance.Namespace,
@@ -257,8 +252,8 @@ namespace ModelFramework.Objects.Extensions
                 }
             );
 
-        public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
-            => new Class
+        public static ClassBuilder ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
+            => new ClassBuilder
             (
                 instance.Name + "Builder",
                 settings.NewNamespace ?? instance.Namespace,

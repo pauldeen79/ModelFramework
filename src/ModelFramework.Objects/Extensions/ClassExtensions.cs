@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Settings;
 
@@ -6,7 +7,7 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class ClassExtensions
     {
-        public static IClass ToImmutableBuilderClass(this IClass instance, ImmutableBuilderClassSettings settings)
+        public static ClassBuilder ToImmutableBuilderClass(this IClass instance, ImmutableBuilderClassSettings settings)
             => ((ITypeBase)instance).ToImmutableBuilderClass(settings.WithPoco(instance.IsPoco()));
 
         public static bool IsPoco(this IClass instance)
