@@ -177,7 +177,6 @@ namespace ModelFramework.Objects.Extensions
         private static IEnumerable<IClass> GetSubClasses(Type instance, bool partial)
             => instance.GetNestedTypes().Select(t => t.ToClass(null, null, partial));
 
-#pragma warning disable S107 // Methods should not have too many parameters
         public static IClass ToWrapperClass(this Type type,
                                             string name,
                                             string @namespace,
@@ -200,7 +199,6 @@ namespace ModelFramework.Objects.Extensions
                                             Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null,
                                             Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null
         ) => new Class(name.WhenNullOrEmpty(type.Name),
-#pragma warning restore S107 // Methods should not have too many parameters
                        type.FullName.GetNamespaceWithDefault(@namespace),
                        visibility,
                        baseClass,

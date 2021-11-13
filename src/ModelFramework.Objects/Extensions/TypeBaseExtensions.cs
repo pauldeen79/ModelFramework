@@ -51,7 +51,6 @@ namespace ModelFramework.Objects.Extensions
         }
 
         public static IInterface ToInterface
-#pragma warning disable S107 // Methods should not have too many parameters
         (
             this ITypeBase instance,
             Visibility? overrideVisibility = null,
@@ -66,7 +65,6 @@ namespace ModelFramework.Objects.Extensions
             bool changePropertiesToReadOnly = false,
             bool? makePartial = null
         ) => new Interface
-#pragma warning restore S107 // Methods should not have too many parameters
             (
                 overrideName ?? "I" + instance.Name,
                 overrideNamespace ?? instance.Namespace,
