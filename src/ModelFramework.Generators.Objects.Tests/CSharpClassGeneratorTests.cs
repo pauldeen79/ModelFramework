@@ -1652,7 +1652,7 @@ namespace MyNamespace
             var model = new[]
             {
                 cls,
-                cls.ToImmutableBuilderClass("System.Collections.Generic.List", addCopyConstructor: true)
+                cls.ToImmutableBuilderClass("System.Collections.Generic.List", addCopyConstructor: true, addNullChecks: true)
             };
             var sut = new CSharpClassGenerator();
 

@@ -266,6 +266,7 @@ namespace ModelFramework.Objects.Extensions
             bool addCopyConstructor = false,
             string newNamespace = null,
             bool poco = true,
+            bool addNullChecks = false,
             Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate = null
         ) => new Class
             (
@@ -283,12 +284,17 @@ namespace ModelFramework.Objects.Extensions
                                 visibility: Visibility.Private
                             )
                         ),
-                constructors: GetImmutableBuilderClassConstructors(instance, newCollectionTypeName, poco, addCopyConstructor, formatInstanceTypeNameDelegate),
-                methods: GetImmutableBuilderClassMethods(instance, newCollectionTypeName, poco, addCopyConstructor, formatInstanceTypeNameDelegate),
+                constructors: GetImmutableBuilderClassConstructors(instance, newCollectionTypeName, poco, addCopyConstructor, addNullChecks, formatInstanceTypeNameDelegate),
+                methods: GetImmutableBuilderClassMethods(instance, newCollectionTypeName, poco, addCopyConstructor, addNullChecks, formatInstanceTypeNameDelegate),
                 properties: GetImmutableBuilderClassProperties(instance, newCollectionTypeName, addProperties)
             );
 
-        private static IEnumerable<IClassConstructor> GetImmutableBuilderClassConstructors(ITypeBase instance, string newCollectionTypeName, bool poco, bool addCopyConstructor, Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
+        private static IEnumerable<IClassConstructor> GetImmutableBuilderClassConstructors(ITypeBase instance,
+                                                                                           string newCollectionTypeName,
+                                                                                           bool poco,
+                                                                                           bool addCopyConstructor,
+                                                                                           bool addNullChecks,
+                                                                                           Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
         {
             yield return new ClassConstructor
             (
@@ -301,7 +307,7 @@ namespace ModelFramework.Objects.Extensions
                         new LiteralCodeStatement("if (source != null)"),
                         new LiteralCodeStatement("{")
                     })
-                    .Concat(instance.Properties.Select(p => new LiteralCodeStatement(p.CreateImmutableBuilderInitializationCode())))
+                    .Concat(instance.Properties.Select(p => new LiteralCodeStatement(p.CreateImmutableBuilderInitializationCode(addNullChecks))))
                     .Concat(new[]
                     {
                         new LiteralCodeStatement("}")
@@ -325,15 +331,25 @@ namespace ModelFramework.Objects.Extensions
                     .Select(p => new LiteralCodeStatement($"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}();"))
                     .Concat(instance.Properties
                         .Select(p => p.TypeName.IsCollectionTypeName()
-                            ? new LiteralCodeStatement($"if ({p.Name.ToPascalCase()} != null) foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);")
+                            ? new LiteralCodeStatement(CreateCtorStatementForCollection(p, addNullChecks))
                             : new LiteralCodeStatement($"_{p.Name.ToPascalCase()} = {p.Name.ToPascalCase()};")))
                 );
             }
         }
 
-        private static IEnumerable<IClassMethod> GetImmutableBuilderClassMethods(ITypeBase instance, string newCollectionTypeName, bool poco, bool addCopyConstructor, Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
+        private static string CreateCtorStatementForCollection(IClassProperty p, bool addNullChecks)
+            => addNullChecks
+                ? $"if ({p.Name.ToPascalCase()} != null) foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);"
+                : $"foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);";
+
+        private static IEnumerable<IClassMethod> GetImmutableBuilderClassMethods(ITypeBase instance,
+                                                                                 string newCollectionTypeName,
+                                                                                 bool poco,
+                                                                                 bool addCopyConstructor,
+                                                                                 bool addNullChecks,
+                                                                                 Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
         {
-            var openSign = GetImmutableBUilderPocoOpenSign(poco);
+            var openSign = GetImmutableBuilderPocoOpenSign(poco);
             var closeSign = GetImmutableBuilderPocoCloseSign(poco);
             yield return new ClassMethod
             (
@@ -374,7 +390,7 @@ namespace ModelFramework.Objects.Extensions
                             "if (source != null)",
                             "{"
                         })
-                        .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode()))
+                        .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(addNullChecks)))
                         .Concat(new[]
                         {
                             "}",
@@ -514,7 +530,7 @@ namespace ModelFramework.Objects.Extensions
                 ? " }"
                 : ")";
 
-        private static string GetImmutableBUilderPocoOpenSign(bool poco)
+        private static string GetImmutableBuilderPocoOpenSign(bool poco)
             => poco
                 ? " { "
                 : "(";
