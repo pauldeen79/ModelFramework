@@ -11,6 +11,7 @@ using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 using ModelFramework.Objects.Extensions;
+using ModelFramework.Objects.Settings;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -1644,15 +1645,15 @@ namespace MyNamespace
                 new ClassPropertyBuilder("Property3", "MyCustomType").ConvertSinglePropertyToBuilder(),
                 new ClassPropertyBuilder("Property4", typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder()
             };
-
             var cls = new ClassBuilder("MyRecord", "MyNamespace")
                 .AddProperties(properties)
                 .Build()
                 .ToImmutableClass("System.Collections.Generic.IReadOnlyCollection");
+            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true, addNullChecks: true);
             var model = new[]
             {
                 cls,
-                cls.ToImmutableBuilderClass("System.Collections.Generic.List", addCopyConstructor: true, addNullChecks: true)
+                cls.ToImmutableBuilderClass(settings)
             };
             var sut = new CSharpClassGenerator();
 
@@ -1671,11 +1672,11 @@ namespace MyNamespace
                 .AddProperties(new ClassPropertyBuilder("Static", typeof(bool).FullName))
                 .Build()
                 .ToImmutableClass();
-
+            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true);
             var model = new[]
             {
                 cls,
-                cls.ToImmutableBuilderClass("System.Collections.Generic.List", addCopyConstructor: true)
+                cls.ToImmutableBuilderClass(settings)
             };
             var sut = new CSharpClassGenerator();
 
@@ -2111,19 +2112,12 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
                 .ToArray();
 
             FixImmutableBuilderProperties(models);
-
+            var settings = new ImmutableBuilderClassSettings(addProperties: true,
+                                                             addCopyConstructor: true,
+                                                             newNamespace: "ModelFramework.Objects.Builders",
+                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
             // Act
-            var builderModels = models.SelectMany(c => new[]
-            {
-                c.Build().ToImmutableBuilderClass
-                (
-                    "System.Collections.Generic.List",
-                    addProperties: true,
-                    addCopyConstructor: true,
-                    newNamespace: "ModelFramework.Objects.Builders",
-                    formatInstanceTypeNameDelegate: FormatInstanceTypeName
-                )
-            }).ToArray();
+            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClass(settings) }).ToArray();
             var sut = new CSharpClassGenerator();
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
 
@@ -2139,18 +2133,14 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
                 .Select(t => new ClassBuilder(t.ToClass(t.Name, createConstructors: true)).WithNamespace(FixNamespace(t)))
                 .ToArray();
             FixImmutableBuilderProperties(models);
+            var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection",
+                                                             addProperties: true,
+                                                             addCopyConstructor: true,
+                                                             newNamespace: "ModelFramework.Common.Builders",
+                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
 
             // Act
-            var builderModels = models.SelectMany(c => new[]
-            {
-                c.Build().ToImmutableBuilderClass
-                (
-                    "System.Collections.Generic.IReadOnlyCollection",
-                    addProperties: true,
-                    addCopyConstructor: true,
-                    newNamespace: "ModelFramework.Common.Builders",
-                    formatInstanceTypeNameDelegate: FormatInstanceTypeName)
-            }).ToArray();
+            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClass(settings) }).ToArray();
             var sut = new CSharpClassGenerator();
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
 
@@ -2163,13 +2153,11 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
         {
             // Arrange
             var input = typeof(Person).ToClass("Person", createConstructors: true);
+            var settings = new ImmutableBuilderClassSettings(addProperties: true,
+                                                             addCopyConstructor: true);
 
             // Act
-            var builder = input.ToImmutableBuilderClass
-            (
-                addProperties: true,
-                addCopyConstructor: true
-            );
+            var builder = input.ToImmutableBuilderClass(settings);
             var sut = new CSharpClassGenerator();
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, new[] { builder });
 
