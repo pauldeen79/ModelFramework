@@ -798,7 +798,7 @@ namespace MyNamespace
             var input = typeof(Person);
 
             // Act
-            var actual = input.ToClass().Build();
+            var actual = input.ToClass(new ClassSettings()).Build();
             var sut = new CSharpClassGenerator();
             var code = TemplateRenderHelper.GetTemplateOutput(sut, new[] { actual });
 
@@ -1567,7 +1567,7 @@ namespace Namespace2
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1595,7 +1595,7 @@ namespace Namespace2
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(implementIEquatable: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1679,7 +1679,7 @@ namespace MyNamespace
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: false).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: false)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1709,7 +1709,7 @@ namespace MyNamespace
 
             var model = new[]
             {
-                cls.ToImmutableClass(createWithMethod: false).Build(),
+                cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false)).Build(),
                 cls.ToImmutableExtensionClass().Build()
             };
             var sut = new CSharpClassGenerator();
@@ -1735,7 +1735,7 @@ namespace MyNamespace
             var cls = new ClassBuilder("MyRecord", "MyNamespace")
                 .AddProperties(properties)
                 .Build()
-                .ToImmutableClass("System.Collections.Generic.IReadOnlyCollection")
+                .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"))
                 .Build();
             var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true, addNullChecks: true);
             var model = new[]
@@ -1759,7 +1759,7 @@ namespace MyNamespace
             var cls = new ClassBuilder("MyRecord", "MyNamespace")
                 .AddProperties(new ClassPropertyBuilder("Static", typeof(bool).FullName))
                 .Build()
-                .ToImmutableClass()
+                .ToImmutableClass(new ImmutableClassSettings())
                 .Build();
             var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true);
             var model = new[]
@@ -1889,7 +1889,7 @@ namespace MyNamespace
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1922,7 +1922,7 @@ namespace MyNamespace
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1955,7 +1955,7 @@ namespace MyNamespace
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1988,7 +1988,7 @@ namespace MyNamespace
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2021,7 +2021,7 @@ namespace MyNamespace
                     "MyRecord",
                     "MyNamespace",
                     properties: properties
-                ).ToImmutableClass(createWithMethod: true).Build()
+                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true)).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2039,7 +2039,7 @@ namespace MyNamespace
             var input = new Class("MyClass", "MyNamespace");
 
             // Act & Assert
-            input.Invoking(x => x.ToImmutableClass())
+            input.Invoking(x => x.ToImmutableClass(new ImmutableClassSettings()))
                  .Should().Throw<System.InvalidOperationException>()
                  .WithMessage("To create an immutable class, there must be at least one property");
         }
@@ -2190,7 +2190,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
                 {
                     Property1 = "Hello",
                     Property2 = false
-                }.GetType().ToClass("MyRecord", "MyNamespace").Build().ToImmutableClass().Build()
+                }.GetType().ToClass(new ClassSettings("MyRecord", "MyNamespace")).Build().ToImmutableClass(new ImmutableClassSettings()).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2207,7 +2207,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
             // Arrange
             var models = typeof(Class).Assembly.GetExportedTypes()
                 .Where(t => t.FullName.StartsWith("ModelFramework.Objects.Default."))
-                .Select(t => t.ToClass(t.Name, createConstructors: true).WithNamespace(FixNamespace(t)))
+                .Select(t => t.ToClass(new ClassSettings(t.Name, createConstructors: true)).WithNamespace(FixNamespace(t)))
                 .ToArray();
 
             FixImmutableBuilderProperties(models);
@@ -2229,7 +2229,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
             // Arrange
             var models = typeof(Metadata).Assembly.GetExportedTypes()
                 .Where(t => t.FullName.StartsWith("ModelFramework.Common.Default."))
-                .Select(t => t.ToClass(t.Name, createConstructors: true).WithNamespace(FixNamespace(t)))
+                .Select(t => t.ToClass(new ClassSettings(t.Name, createConstructors: true)).WithNamespace(FixNamespace(t)))
                 .ToArray();
             FixImmutableBuilderProperties(models);
             var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection",
@@ -2251,7 +2251,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
         public void GeneratesImmutableBuilderClassForRecord()
         {
             // Arrange
-            var input = typeof(Person).ToClass("Person", createConstructors: true).Build();
+            var input = typeof(Person).ToClass(new ClassSettings("Person", createConstructors: true)).Build();
             var settings = new ImmutableBuilderClassSettings(addProperties: true,
                                                              addCopyConstructor: true);
 

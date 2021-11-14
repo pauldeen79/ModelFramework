@@ -5,6 +5,7 @@ using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.Objects.Builders
 {
@@ -17,6 +18,7 @@ namespace ModelFramework.Objects.Builders
         public bool Sealed { get; set; }
         public bool Partial { get; set; }
         public bool AutoGenerateInterface { get; set; }
+        public InterfaceSettingsBuilder AutoGenerateInterfaceSettings { get; set; }
         public bool Record { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
         public Visibility Visibility { get; set; }
@@ -31,7 +33,7 @@ namespace ModelFramework.Objects.Builders
         public List<string> GenericTypeArguments { get; set; }
         public IClass Build()
         {
-            return new Class(Name, Namespace, Visibility, BaseClass, Static, Sealed, Partial, AutoGenerateInterface, Record, Interfaces, Fields.Select(x => x.Build()), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), Constructors.Select(x => x.Build()), Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()), SubClasses.Select(x => x.Build()), Enums.Select(x => x.Build()), GenericTypeArguments);
+            return new Class(Name, Namespace, Visibility, BaseClass, Static, Sealed, Partial, AutoGenerateInterface, AutoGenerateInterfaceSettings.Build(), Record, Interfaces, Fields.Select(x => x.Build()), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), Constructors.Select(x => x.Build()), Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()), SubClasses.Select(x => x.Build()), Enums.Select(x => x.Build()), GenericTypeArguments);
         }
         public ClassBuilder Clear()
         {
@@ -42,6 +44,7 @@ namespace ModelFramework.Objects.Builders
             Sealed = default;
             Partial = default;
             AutoGenerateInterface = default;
+            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
             Record = default;
             Metadata.Clear();
             Visibility = default;
@@ -67,6 +70,7 @@ namespace ModelFramework.Objects.Builders
             Sealed = default;
             Partial = default;
             AutoGenerateInterface = default;
+            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
             Record = default;
             Metadata = new List<MetadataBuilder>();
             Visibility = default;
@@ -88,6 +92,7 @@ namespace ModelFramework.Objects.Builders
                 Sealed = source.Sealed;
                 Partial = source.Partial;
                 AutoGenerateInterface = source.AutoGenerateInterface;
+                AutoGenerateInterfaceSettings.Update(source.AutoGenerateInterfaceSettings);
                 Record = source.Record;
                 if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Visibility = source.Visibility;
@@ -196,6 +201,16 @@ namespace ModelFramework.Objects.Builders
         public ClassBuilder WithAutoGenerateInterface(bool autoGenerateInterface)
         {
             AutoGenerateInterface = autoGenerateInterface;
+            return this;
+        }
+        public ClassBuilder WithAutoGenerateInterfaceSettings(InterfaceSettings autoGenerateInterfaceSettings)
+        {
+            AutoGenerateInterfaceSettings.Update(autoGenerateInterfaceSettings);
+            return this;
+        }
+        public ClassBuilder WithAutoGenerateInterfaceSettings(InterfaceSettingsBuilder autoGenerateInterfaceSettingsBuilder)
+        {
+            AutoGenerateInterfaceSettings = autoGenerateInterfaceSettingsBuilder;
             return this;
         }
         public ClassBuilder WithRecord(bool record)
@@ -420,6 +435,7 @@ namespace ModelFramework.Objects.Builders
                 Sealed = source.Sealed;
                 Partial = source.Partial;
                 AutoGenerateInterface = source.AutoGenerateInterface;
+                AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder(source.AutoGenerateInterfaceSettings);
                 Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
                 Visibility = source.Visibility;
                 Name = source.Name;
@@ -437,6 +453,7 @@ namespace ModelFramework.Objects.Builders
                 Interfaces = new List<string>();
                 Fields = new List<ClassFieldBuilder>();
                 Properties = new List<ClassPropertyBuilder>();
+                AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
                 Metadata = new List<MetadataBuilder>();
                 Attributes = new List<AttributeBuilder>();
                 SubClasses = new List<ClassBuilder>();
@@ -455,6 +472,7 @@ namespace ModelFramework.Objects.Builders
                             bool @sealed = false,
                             bool partial = false,
                             bool autoGenerateInterface = false,
+                            InterfaceSettings autoGenerateInterfaceSettings = null,
                             bool record = false,
                             IEnumerable<string> interfaces = null,
                             IEnumerable<IClassField> fields = null,
@@ -485,6 +503,7 @@ namespace ModelFramework.Objects.Builders
             Static = @static;
             Sealed = @sealed;
             Partial = partial;
+            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder(autoGenerateInterfaceSettings);
             AutoGenerateInterface = autoGenerateInterface;
             Record = record;
             if (interfaces != null) Interfaces.AddRange(interfaces);

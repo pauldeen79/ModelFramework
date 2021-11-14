@@ -19,6 +19,7 @@
 <#@ import namespace="ModelFramework.Objects.Contracts" #>
 <#@ import namespace="ModelFramework.Objects.CodeStatements" #>
 <#@ import namespace="ModelFramework.Objects.Extensions" #>
+<#@ import namespace="ModelFramework.Objects.Settings" #>
 <#@ import namespace="TextTemplateTransformationFramework.Runtime" #>
 <#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Objects.Contracts.ITypeBase" #>
 <#@ property name="GenerateMultipleFiles" type="System.Boolean" #>

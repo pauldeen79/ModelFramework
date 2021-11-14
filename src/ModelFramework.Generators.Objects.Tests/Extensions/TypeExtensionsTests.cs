@@ -9,6 +9,7 @@ using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Extensions;
+using ModelFramework.Objects.Settings;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -22,12 +23,13 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
         {
             // Arrange
             var methodCodeStatementsDelegate = new Func<MethodInfo, IEnumerable<ICodeStatement>>(mi => CreateMethodCodeStatements(mi));
-            var propertyCodeSTatementsDelegate = new Func<PropertyInfo, IEnumerable<ICodeStatement>>(pi => CreatePropertyCodeStatements(pi));
+            var propertyCodeStatementsDelegate = new Func<PropertyInfo, IEnumerable<ICodeStatement>>(pi => CreatePropertyCodeStatements(pi));
 
             // Act
             var model = new[]
             {
-                typeof(TestClass).ToWrapperClass(methodCodeStatementsDelegate: methodCodeStatementsDelegate, propertyCodeStatementsDelegate: propertyCodeSTatementsDelegate)
+                typeof(TestClass).ToWrapperClass(new WrapperClassSettings(methodCodeStatementsDelegate: methodCodeStatementsDelegate,
+                                                                          propertyCodeStatementsDelegate: propertyCodeStatementsDelegate))
                 .WithNamespace("MyNamespace")
                 .WithName("GeneratedTestClass")
                 .Build()
@@ -94,7 +96,7 @@ namespace MyNamespace
         public void Can_Use_ToClass_And_Then_Add_Data()
         {
             // Act
-            var cls = new ClassBuilder(typeof(TestClass).ToClass("GeneratedTestClass", "MyNamespace").Build());
+            var cls = new ClassBuilder(typeof(TestClass).ToClass(new ClassSettings("GeneratedTestClass", "MyNamespace")).Build());
             cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatement("Hello world!")));
             var model = new[]
             {

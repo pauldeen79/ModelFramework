@@ -7,22 +7,17 @@ using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.Objects.Extensions
 {
     public static class TypeExtensions
     {
-        public static ClassBuilder ToClass(this Type instance,
-                                           string name = null,
-                                           string @namespace = null,
-                                           bool partial = false,
-                                           bool createConstructors = false,
-                                           bool autoGenerateInterface = false,
-                                           bool? record = null)
+        public static ClassBuilder ToClass(this Type instance, ClassSettings settings)
             => new ClassBuilder
             (
-                name ?? instance.Name,
-                @namespace ?? instance.FullName.GetNamespaceWithDefault(null),
+                settings.Name ?? instance.Name,
+                settings.Namespace ?? instance.FullName.GetNamespaceWithDefault(null),
                 instance.IsPublic
                     ? Visibility.Public
                     : Visibility.Private,
@@ -31,19 +26,27 @@ namespace ModelFramework.Objects.Extensions
                     : instance.BaseType.FullName,
                 instance.IsAbstract && instance.IsSealed,
                 instance.IsSealed,
-                partial,
-                autoGenerateInterface,
-                record ?? instance.IsRecord(),
+                settings.Partial,
+                settings.AutoGenerateInterface,
+                settings.AutoGenerateInterfaceSettings,
+                settings.Record ?? instance.IsRecord(),
                 GetInterfaces(instance),
                 GetFields(instance),
                 GetProperties(instance),
                 GetMethods(instance),
-                GetConstructors(instance, createConstructors),
+                GetConstructors(instance, settings.CreateConstructors),
                 Array.Empty<IMetadata>(),
                 GetAttributes(instance.GetCustomAttributes(false)),
-                GetSubClasses(instance, partial),
+                GetSubClasses(instance, settings.Partial),
                 Array.Empty<IEnum>()
             );
+
+        public static ClassBuilder ToWrapperClass(this Type type, WrapperClassSettings settings)
+            => new ClassBuilder()
+                .AddFields(GeneratedFields(type))
+                .AddProperties(GeneratedProperties(type, settings.PropertyCodeStatementsDelegate))
+                .AddMethods(GeneratedMethods(type, settings.MethodCodeStatementsDelegate))
+                .AddConstructors(GeneratedCtors(type));
 
         private static IEnumerable<string> GetInterfaces(Type instance)
             => instance.GetInterfaces().Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName))).Select(t => t.FullName);
@@ -176,16 +179,7 @@ namespace ModelFramework.Objects.Extensions
             ));
 
         private static IEnumerable<IClass> GetSubClasses(Type instance, bool partial)
-            => instance.GetNestedTypes().Select(t => t.ToClass(null, null, partial).Build());
-
-        public static ClassBuilder ToWrapperClass(this Type type,
-                                                  Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null,
-                                                  Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null
-        ) => new ClassBuilder()
-            .AddFields(GeneratedFields(type))
-            .AddProperties(GeneratedProperties(type, propertyCodeStatementsDelegate))
-            .AddMethods(GeneratedMethods(type, methodCodeStatementsDelegate))
-            .AddConstructors(GeneratedCtors(type));
+            => instance.GetNestedTypes().Select(t => t.ToClass(new ClassSettings(partial: partial)).Build());
 
         private static IEnumerable<IClassProperty> GeneratedProperties(Type type, Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null)
             => type.GetPropertiesRecursively()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common;
-using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements;
@@ -51,13 +50,7 @@ namespace ModelFramework.Objects.Extensions
             return $"[unknown container type: {typeBase.GetType().FullName}]";
         }
 
-        public static InterfaceBuilder ToInterface(this ITypeBase instance,
-                                                   Func<IClassProperty, bool> propertyFilter = null,
-                                                   Func<IClassMethod, bool> methodFilter = null,
-                                                   Func<IMetadata, bool> metadataFilter = null,
-                                                   Func<IAttribute, bool> attributeFilter = null,
-                                                   IDictionary<string, string> applyGenericTypes = null,
-                                                   bool changePropertiesToReadOnly = false)
+        public static InterfaceBuilder ToInterface(this ITypeBase instance, InterfaceSettings settings)
         => new InterfaceBuilder
             (
                 "I" + instance.Name,
@@ -65,31 +58,28 @@ namespace ModelFramework.Objects.Extensions
                 instance.Visibility,
                 instance.Partial,
                 instance.Interfaces.Where(i => i != "I" + instance.Name && i != instance.Namespace + ".I" + instance.Name),
-                propertyFilter == null
-                    ? instance.Properties.Select(p => ChangeProperty(p, applyGenericTypes, changePropertiesToReadOnly))
-                    : instance.Properties.Where(propertyFilter).Select(p => ChangeProperty(p, applyGenericTypes, changePropertiesToReadOnly)),
-                methodFilter == null
+                settings.PropertyFilter == null
+                    ? instance.Properties.Select(p => ChangeProperty(p, settings.ApplyGenericTypes, settings.ChangePropertiesToReadOnly))
+                    : instance.Properties.Where(settings.PropertyFilter).Select(p => ChangeProperty(p, settings.ApplyGenericTypes, settings.ChangePropertiesToReadOnly)),
+                settings.MethodFilter == null
                     ? instance.Methods.Where(m => !m.Static
                         && !m.Override
                         && !m.Operator
                         && !m.IsInterfaceMethod()
                         && !m.SkipOnAutoGenerateInterface()
                         && string.IsNullOrEmpty(m.ExplicitInterfaceName)
-                        && m.Visibility == Visibility.Public).Select(m => ChangeArgumentsAndReturnType(m, applyGenericTypes))
-                    : instance.Methods.Where(methodFilter).Select(m => ChangeArgumentsAndReturnType(m, applyGenericTypes)),
-                metadataFilter == null
+                        && m.Visibility == Visibility.Public).Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes))
+                    : instance.Methods.Where(settings.MethodFilter).Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes)),
+                settings.MetadataFilter == null
                     ? instance.Metadata
-                    : instance.Metadata.Where(metadataFilter),
-                attributeFilter == null
+                    : instance.Metadata.Where(settings.MetadataFilter),
+                settings.AttributeFilter == null
                     ? instance.Attributes
-                    : instance.Attributes.Where(attributeFilter),
-                GenerateGenericTypeArguments(applyGenericTypes)
+                    : instance.Attributes.Where(settings.AttributeFilter),
+                GenerateGenericTypeArguments(settings.ApplyGenericTypes)
             );
 
-        public static ClassBuilder ToImmutableClass(this ITypeBase instance,
-                                                    string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
-                                                    bool createWithMethod = false,
-                                                    bool implementIEquatable = false)
+        public static ClassBuilder ToImmutableClass(this ITypeBase instance, ImmutableClassSettings settings)
         {
             if (!instance.Properties.Any())
             {
@@ -108,7 +98,7 @@ namespace ModelFramework.Objects.Extensions
                             p => new ClassProperty
                             (
                                 p.Name,
-                                p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName),
+                                p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName),
                                 p.Static,
                                 p.Virtual,
                                 p.Abstract,
@@ -125,7 +115,7 @@ namespace ModelFramework.Objects.Extensions
                                 p.SetterBody,
                                 p.InitBody,
                                 p.ExplicitInterfaceName,
-                                p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
+                                p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)),
                                 p.Attributes,
                                 p.GetterCodeStatements,
                                 p.SetterCodeStatements,
@@ -135,14 +125,19 @@ namespace ModelFramework.Objects.Extensions
                 constructors:
                     new[]
                     {
-            new ClassConstructor
-            (
-                parameters: instance.Properties.Select(p => new Parameter(p.Name.ToPascalCase(), p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments())))),
-                codeStatements: instance.Properties.Select(p => new LiteralCodeStatement($"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName(), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))};"))
-            )
+                        new ClassConstructor
+                        (
+                            parameters: instance.Properties.Select(p => new Parameter(p.Name.ToPascalCase(), p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments())))),
+                            codeStatements: instance.Properties.Select(p => new LiteralCodeStatement($"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName(), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))};"))
+                            .Concat(settings.ValidateArgumentsInConstructor
+                                ? new[] { new LiteralCodeStatement("System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new ValidationContext(this, null, null), true);") }
+                                : Enumerable.Empty<LiteralCodeStatement>())
+                        )
                     },
-                methods: GetImmutableClassMethods(instance, newCollectionTypeName, createWithMethod, implementIEquatable, false),
-                interfaces: implementIEquatable ? new[] { $"IEquatable<{instance.Name}>" } : Enumerable.Empty<string>()
+                methods: GetImmutableClassMethods(instance, settings.NewCollectionTypeName, settings.CreateWithMethod, settings.ImplementIEquatable, false),
+                interfaces: settings.ImplementIEquatable
+                    ? new[] { $"IEquatable<{instance.Name}>" }
+                    : Enumerable.Empty<string>()
             );
         }
 
@@ -281,6 +276,16 @@ namespace ModelFramework.Objects.Extensions
                 methods: GetImmutableBuilderClassMethods(instance, settings),
                 properties: GetImmutableBuilderClassProperties(instance, settings)
             );
+        }
+
+        public static string GetGenericTypeArgumentsString(this ITypeBase instance)
+        {
+            if (instance.GenericTypeArguments == null || instance.GenericTypeArguments.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            return $"<{string.Join(", ", instance.GenericTypeArguments)}>";
         }
 
         private static IEnumerable<IClassConstructor> GetImmutableBuilderClassConstructors(ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -562,16 +567,6 @@ namespace ModelFramework.Objects.Extensions
                 : new Func<IClassProperty, string>(p => $"_{p.Name.ToPascalCase()}");
 
             return string.Join(", ", properties.Select(p => p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderMethodParameterExpression, defaultValueDelegate(p), o => string.Format(o?.ToString() ?? string.Empty, p.Name, p.Name.ToPascalCase()))));
-        }
-
-        public static string GetGenericTypeArgumentsString(this ITypeBase instance)
-        {
-            if (instance.GenericTypeArguments == null || instance.GenericTypeArguments.Length == 0)
-            {
-                return string.Empty;
-            }
-
-            return $"<{string.Join(", ", instance.GenericTypeArguments)}>";
         }
 
         private static IClassProperty ChangeProperty(IClassProperty property, IDictionary<string, string> applyGenericTypes, bool changePropertiesToReadOnly)
