@@ -17,7 +17,7 @@ namespace ModelFramework.Objects.Extensions
             (
                 new Metadata(MetadataNames.CustomImmutableBuilderArgumentType, "{0}Builder"),
                 new Metadata(MetadataNames.CustomImmutableBuilderMethodParameterExpression, "_{1}.Build()"),
-                new Metadata(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, "    _{1} = new {2}Builder(source.{0});"),
+                new Metadata(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, "_{1} = new {2}Builder(source.{0});"),
                 new Metadata(MetadataNames.CustomImmutableBuilderWithOverloadArgumentType, "{0}"),
                 new Metadata(MetadataNames.CustomImmutableBuilderWithOverloadInitializeExpression, "_{0} = new {1}Builder({0});")
             );
@@ -27,7 +27,7 @@ namespace ModelFramework.Objects.Extensions
             (
                 new Metadata(MetadataNames.CustomImmutableBuilderArgumentType, "System.Collections.Generic.IEnumerable<{1}Builder>"),
                 new Metadata(MetadataNames.CustomImmutableBuilderMethodParameterExpression, "_{1}.Select(x => x.Build())"),
-                new Metadata(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, "    if (source.{0} != null) _{1}.AddRange(source.{0}.Select(x => new {3}Builder(x)));"),
+                new Metadata(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, "if (source.{0} != null) _{1}.AddRange(source.{0}.Select(x => new {3}Builder(x)));"),
                 new Metadata(MetadataNames.CustomImmutableBuilderWithOverloadArgumentType, "{0}"),
                 new Metadata(MetadataNames.CustomImmutableBuilderWithOverloadInitializeExpression, "        _{0}.Add(new {2}Builder(itemToAdd));")
             );

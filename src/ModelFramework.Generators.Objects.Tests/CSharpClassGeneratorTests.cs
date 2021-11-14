@@ -292,13 +292,10 @@ namespace MyNamespace
             _property2 = new System.Collections.Generic.List<string>();
             _property3 = default;
             _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            if (source != null)
-            {
-                _property1 = source.Property1;
-                if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
-                _property3 = new MyCustomTypeBuilder(source.Property3);
-                if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-            }
+            _property1 = source.Property1;
+            if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
+            _property3 = new MyCustomTypeBuilder(source.Property3);
+            if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
             return this;
         }
 
@@ -383,17 +380,20 @@ namespace MyNamespace
             return this;
         }
 
-        public MyRecordBuilder(MyNamespace.MyRecord source = null)
+        public MyRecordBuilder()
         {
             _property2 = new System.Collections.Generic.List<string>();
             _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            if (source != null)
-            {
-                _property1 = source.Property1;
-                if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
-                _property3 = new MyCustomTypeBuilder(source.Property3);
-                if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-            }
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            _property2 = new System.Collections.Generic.List<string>();
+            _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            _property1 = source.Property1;
+            if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
+            _property3 = new MyCustomTypeBuilder(source.Property3);
+            if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
         }
 
         public MyRecordBuilder(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
@@ -1722,10 +1722,7 @@ namespace MyNamespace
         public MyRecordBuilder Update(MyNamespace.MyRecord source)
         {
             _static = default;
-            if (source != null)
-            {
-                _static = source.Static;
-            }
+            _static = source.Static;
             return this;
         }
 
@@ -1735,12 +1732,13 @@ namespace MyNamespace
             return this;
         }
 
-        public MyRecordBuilder(MyNamespace.MyRecord source = null)
+        public MyRecordBuilder()
         {
-            if (source != null)
-            {
-                _static = source.Static;
-            }
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            _static = source.Static;
         }
 
         public MyRecordBuilder(bool @static)
@@ -1945,6 +1943,18 @@ namespace MyNamespace
 
             // Assert
             actual.Should().Be(ImmutableClassCodeWithCollection);
+        }
+
+        [Fact]
+        public void Generating_ImmutableClass_From_Class_Without_Properties_Throws_Exception()
+        {
+            // Arrange
+            var input = new Class("MyClass", "MyNamespace");
+
+            // Act & Assert
+            input.Invoking(x => x.ToImmutableClass())
+                 .Should().Throw<System.InvalidOperationException>()
+                 .WithMessage("To create an immutable class, there must be at least one property");
         }
 
         [Fact]
@@ -2213,11 +2223,8 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             _firstName = default;
             _lastName = default;
-            if (source != null)
-            {
-                _firstName = source.FirstName;
-                _lastName = source.LastName;
-            }
+            _firstName = source.FirstName;
+            _lastName = source.LastName;
             return this;
         }
 
@@ -2233,13 +2240,14 @@ namespace ModelFramework.Generators.Objects.Tests
             return this;
         }
 
-        public PersonBuilder(ModelFramework.Generators.Objects.Tests.Person source = null)
+        public PersonBuilder()
         {
-            if (source != null)
-            {
-                _firstName = source.FirstName;
-                _lastName = source.LastName;
-            }
+        }
+
+        public PersonBuilder(ModelFramework.Generators.Objects.Tests.Person source)
+        {
+            _firstName = source.FirstName;
+            _lastName = source.LastName;
         }
 
         public PersonBuilder(string firstName, string lastName)
@@ -2254,6 +2262,18 @@ namespace ModelFramework.Generators.Objects.Tests
     }
 }
 ");
+        }
+
+        [Fact]
+        public void Generating_ImmutableBuilderClass_From_Class_Without_Properties_Throws_Exception()
+        {
+            // Arrange
+            var input = new Class("MyClass", "MyNamespace");
+
+            // Act & Assert
+            input.Invoking(x => x.ToImmutableBuilderClass(new ImmutableBuilderClassSettings()))
+                 .Should().Throw<System.InvalidOperationException>()
+                 .WithMessage("To create an immutable builder class, there must be at least one property");
         }
 
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)

@@ -90,7 +90,13 @@ namespace ModelFramework.Objects.Extensions
                                                     string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
                                                     bool createWithMethod = false,
                                                     bool implementIEquatable = false)
-        => new ClassBuilder
+        {
+            if (!instance.Properties.Any())
+            {
+                throw new InvalidOperationException("To create an immutable class, there must be at least one property");
+            }
+
+            return new ClassBuilder
             (
                 instance.Name,
                 instance.Namespace,
@@ -129,15 +135,16 @@ namespace ModelFramework.Objects.Extensions
                 constructors:
                     new[]
                     {
-                        new ClassConstructor
-                        (
-                            parameters: instance.Properties.Select(p => new Parameter(p.Name.ToPascalCase(), p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments())))),
-                            codeStatements: instance.Properties.Select(p => new LiteralCodeStatement($"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName(), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))};"))
-                        )
+            new ClassConstructor
+            (
+                parameters: instance.Properties.Select(p => new Parameter(p.Name.ToPascalCase(), p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments())))),
+                codeStatements: instance.Properties.Select(p => new LiteralCodeStatement($"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName(), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))};"))
+            )
                     },
                 methods: GetImmutableClassMethods(instance, newCollectionTypeName, createWithMethod, implementIEquatable, false),
                 interfaces: implementIEquatable ? new[] { $"IEquatable<{instance.Name}>" } : Enumerable.Empty<string>()
             );
+        }
 
         public static ClassBuilder ToImmutableExtensionClass(this ITypeBase instance,
                                                              string newCollectionTypeName = "System.Collections.Immutable.IImmutableList")
@@ -248,7 +255,13 @@ namespace ModelFramework.Objects.Extensions
             );
 
         public static ClassBuilder ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
-            => new ClassBuilder
+        {
+            if (!instance.Properties.Any())
+            {
+                throw new InvalidOperationException("To create an immutable builder class, there must be at least one property");
+            }
+
+            return new ClassBuilder
             (
                 instance.Name + "Builder",
                 settings.NewNamespace ?? instance.Namespace,
@@ -268,25 +281,24 @@ namespace ModelFramework.Objects.Extensions
                 methods: GetImmutableBuilderClassMethods(instance, settings),
                 properties: GetImmutableBuilderClassProperties(instance, settings)
             );
+        }
 
         private static IEnumerable<IClassConstructor> GetImmutableBuilderClassConstructors(ITypeBase instance, ImmutableBuilderClassSettings settings)
         {
             yield return new ClassConstructor
             (
-                parameters: new[] { new Parameter("source", FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate), new Literal("null")) },
                 codeStatements: instance.Properties
                     .Where(p => p.TypeName.IsCollectionTypeName())
                     .Select(p => new LiteralCodeStatement($"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"))
-                    .Concat(new[]
-                    {
-                        new LiteralCodeStatement("if (source != null)"),
-                        new LiteralCodeStatement("{")
-                    })
+            );
+
+            yield return new ClassConstructor
+            (
+                parameters: new[] { new Parameter("source", FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate)) },
+                codeStatements: instance.Properties
+                    .Where(p => p.TypeName.IsCollectionTypeName())
+                    .Select(p => new LiteralCodeStatement($"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"))
                     .Concat(instance.Properties.Select(p => new LiteralCodeStatement(p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks))))
-                    .Concat(new[]
-                    {
-                        new LiteralCodeStatement("}")
-                    })
             );
 
             if (settings.AddCopyConstructor)
@@ -356,15 +368,9 @@ namespace ModelFramework.Objects.Extensions
                                 ? $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
                                 : $"_{p.Name.ToPascalCase()} = default;"
                         )
-                        .Concat(new[]
-                        {
-                            "if (source != null)",
-                            "{"
-                        })
                         .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks)))
                         .Concat(new[]
                         {
-                            "}",
                             "return this;"
                         })
                         .ToLiteralCodeStatements()
