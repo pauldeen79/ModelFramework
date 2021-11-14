@@ -544,6 +544,64 @@ using System.Text;
         }
 
         [Fact]
+        public void Generates_Class_With_GeneratedCodeAttribute()
+        {
+            // Arrange
+            var model = new[]
+            {
+                new ClassBuilder("MyClass", "MyNamespace").AddGeneratedCodeAttribute("MyGenerator", "1.2.3.4").Build()
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@""MyGenerator"", @""1.2.3.4"")]
+    public class MyClass
+    {
+    }
+}
+");
+        }
+
+        [Fact]
+        public void Generates_Class_With_ExcludeFromCodeCoverageAttribute()
+        {
+            // Arrange
+            var model = new[]
+            {
+                new ClassBuilder("MyClass", "MyNamespace").AddExcludeFromCodeCoverageAttribute().Build()
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
+    public class MyClass
+    {
+    }
+}
+");
+        }
+
+        [Fact]
         public void GeneratesClassWithDefaultParameters()
         {
             // Arrange
@@ -665,6 +723,35 @@ using System.Text;
 namespace MyNamespace
 {
     public interface IMyInterface
+    {
+    }
+}
+");
+        }
+
+        [Fact]
+        public void Generates_Interface_With_GeneratedCodeAttribute()
+        {
+            // Arrange
+            var model = new[]
+            {
+                new InterfaceBuilder("MyClass", "MyNamespace").AddGeneratedCodeAttribute("MyGenerator", "1.2.3.4").Build()
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@""MyGenerator"", @""1.2.3.4"")]
+    public interface MyClass
     {
     }
 }
