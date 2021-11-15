@@ -9,13 +9,19 @@ namespace ModelFramework.Objects.Default
 {
     public record Parameter : IParameter
     {
-        public Parameter(string name, string typeName, object defaultValue = null, IEnumerable<IAttribute> attributes = null, IEnumerable<IMetadata> metadata = null)
+        public Parameter(string name,
+                         string typeName,
+                         object defaultValue = null,
+                         bool isNullable = false,
+                         IEnumerable<IAttribute> attributes = null,
+                         IEnumerable<IMetadata> metadata = null)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
             if (string.IsNullOrWhiteSpace(typeName)) throw new ArgumentOutOfRangeException(nameof(typeName), "Name cannot be null or whitespace");
             Name = name;
             TypeName = typeName;
             DefaultValue = defaultValue;
+            IsNullable = isNullable;
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
         }
@@ -25,6 +31,7 @@ namespace ModelFramework.Objects.Default
         public ValueCollection<IMetadata> Metadata { get; }
         public string Name { get; }
         public object DefaultValue { get; }
+        public bool IsNullable { get; }
 
         public override string ToString() => Name;
     }

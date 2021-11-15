@@ -1,5 +1,6 @@
 ﻿using System;
 using ModelFramework.Common.Extensions;
+using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Extensions
 {
@@ -96,5 +97,14 @@ namespace ModelFramework.Objects.Extensions
             }
             return name.Substring(index + 1);
         }
+
+        public static string AppendNullableAnnotation(this string instance, ITypeContainer typeContainer, bool enableNullableReferenceTypes)
+            => !string.IsNullOrEmpty(instance)
+                && !instance.StartsWith("System.Nullable")
+                && !instance.EndsWith("?")
+                && typeContainer.IsNullable
+                && enableNullableReferenceTypes
+                    ? $"{instance}?"
+                    : instance;
     }
 }

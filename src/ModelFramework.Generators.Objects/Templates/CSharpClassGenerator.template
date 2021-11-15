@@ -26,6 +26,7 @@
 <#@ property name="CreateCodeGenerationHeader" type="System.Boolean" #>
 <#@ property name="BasePath" type="System.String" #>
 <#@ property name="FileNameSuffix" type="System.String" #>
+<#@ property name="EnableNullableContext" type="System.Boolean" #>
 <#@ viewModel name="CSharpClassGenerator.ViewModel" model="Model" #>
 <#          if (TemplateContext.IsRootContext)
             {

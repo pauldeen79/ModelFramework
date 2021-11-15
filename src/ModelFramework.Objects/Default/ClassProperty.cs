@@ -20,6 +20,7 @@ namespace ModelFramework.Objects.Default
                              bool hasGetter = true,
                              bool hasSetter = true,
                              bool hasInit = false,
+                             bool isNullable = false,
                              Visibility visibility = Visibility.Public,
                              Visibility getterVisibility = Visibility.Public,
                              Visibility setterVisibility = Visibility.Public,
@@ -48,6 +49,7 @@ namespace ModelFramework.Objects.Default
             HasGetter = hasGetter;
             HasSetter = hasSetter && !hasInit;
             HasInit = hasInit;
+            IsNullable = isNullable;
             Visibility = visibility;
             GetterVisibility = getterVisibility;
             SetterVisibility = setterVisibility;
@@ -82,6 +84,7 @@ namespace ModelFramework.Objects.Default
         public bool Abstract { get; }
         public bool Protected { get; }
         public bool Override { get; }
+        public bool IsNullable { get; }
         public string ExplicitInterfaceName { get; }
         public ValueCollection<ICodeStatement> GetterCodeStatements { get; }
         public ValueCollection<ICodeStatement> SetterCodeStatements { get; }

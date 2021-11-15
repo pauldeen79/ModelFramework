@@ -21,6 +21,7 @@ namespace ModelFramework.Objects.Default
                            bool @override = false,
                            bool extensionMethod = false,
                            bool @operator = false,
+                           bool isNullable = false,
                            string body = null,
                            string explicitInterfaceName = null,
                            IEnumerable<IParameter> parameters = null,
@@ -42,6 +43,7 @@ namespace ModelFramework.Objects.Default
             Override = @override;
             ExtensionMethod = extensionMethod;
             Operator = @operator;
+            IsNullable = isNullable;
             Body = body;
             ExplicitInterfaceName = explicitInterfaceName;
             Parameters = new ValueCollection<IParameter>(parameters ?? Enumerable.Empty<IParameter>());
@@ -59,6 +61,7 @@ namespace ModelFramework.Objects.Default
         public bool Abstract{ get; }
         public bool Protected { get; }
         public bool Override { get; }
+        public bool IsNullable { get; }
         public Visibility Visibility { get; }
         public string Name { get; }
         public ValueCollection<IAttribute> Attributes { get; }

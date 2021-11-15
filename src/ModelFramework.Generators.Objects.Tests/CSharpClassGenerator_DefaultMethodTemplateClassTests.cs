@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using FluentAssertions;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Default;
@@ -90,9 +91,9 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesNoCodeBodyOnInterface()
         {
             // Arrange
-            var rootModel = new Interface("IMyInterface", "MyNamespace");
+            var rootModel = new[] { new Interface("IMyInterface", "MyNamespace") }.Cast<ModelFramework.Objects.Contracts.ITypeBase>();
             var model = new ClassMethod("Name", "string", body: "throw new NotImplementedException();");
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel, iterationContextModel: rootModel.First());
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);

@@ -20,6 +20,7 @@ namespace ModelFramework.Objects.Default
                           bool @protected = false,
                           bool @override = false,
                           bool @event = false,
+                          bool isNullable = false,
                           object defaultValue = null,
                           Visibility visibility = Visibility.Private,
                           IEnumerable<IMetadata> metadata = null,
@@ -39,6 +40,7 @@ namespace ModelFramework.Objects.Default
             Protected = @protected;
             Override = @override;
             Event = @event;
+            IsNullable = isNullable;
             DefaultValue = defaultValue;
             Visibility = visibility;
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
@@ -59,6 +61,7 @@ namespace ModelFramework.Objects.Default
         public bool Protected { get; }
         public bool Override { get; }
         public bool Event { get; }
+        public bool IsNullable { get; }
 
         public override string ToString() => Name;
     }

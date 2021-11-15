@@ -146,6 +146,18 @@ namespace ModelFramework.Generators.Objects
                 return this._fileNameSuffixField;
             }
         }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+        }
         protected CSharpClassGenerator_ViewModel _viewModelField;
 
         /// <summary>
@@ -289,6 +301,24 @@ namespace ModelFramework.Generators.Objects
             {
                 this._fileNameSuffixField = default(System.String);
                 fileNameSuffixValueAcquired = true;
+            }
+            bool enableNullableContextValueAcquired = false;
+            if (this.Session != null && this.Session.ContainsKey("EnableNullableContext") && this.Session["EnableNullableContext"] != null)
+            {
+                if ((typeof(System.Boolean).IsAssignableFrom(this.Session["EnableNullableContext"].GetType()) == false))
+                {
+                    this.Error("The type \'System.Boolean\' of the parameter \'EnableNullableContext\' did not match the type of the data passed to the template.");
+                }
+                else
+                {
+                    this._enableNullableContextField = ((System.Boolean)(this.Session["EnableNullableContext"]));
+                    enableNullableContextValueAcquired = true;
+                }
+            }
+            if ((enableNullableContextValueAcquired == false))
+            {
+                this._enableNullableContextField = default(System.Boolean);
+                enableNullableContextValueAcquired = true;
             }
             ViewModel = GetViewModel(@"CSharpClassGenerator.ViewModel", Model) as CSharpClassGenerator_ViewModel;
 
@@ -1079,7 +1109,7 @@ namespace ModelFramework.Generators.Objects
             if (Model.Event) Write(" event");
 
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName()));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             if (Model.DefaultValue != null) {
@@ -1346,7 +1376,7 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName()));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             if (Model.DefaultValue != null) {
@@ -1708,7 +1738,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"."));
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName()));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             Write(this.ToStringHelper.ToStringWithCulture(@"
@@ -2027,6 +2057,23 @@ namespace ModelFramework.Generators.Objects
                  this._fileNameSuffixField = value;
             }
         }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
+            }
+        }
         public IEnumerable<string> Namespaces
             => Model.DefaultWhenNull()
                     .Select(typeBase => typeBase.Namespace.WhenNullOrEmpty("GeneratedNamespace"))
@@ -2113,6 +2160,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._fileNameSuffixField = value;
+            }
+        }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
             }
         }
         protected CSharpClassGenerator_ViewModel _viewModelField;
@@ -2217,6 +2281,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._fileNameSuffixField = value;
+            }
+        }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
             }
         }
         protected CSharpClassGenerator_ViewModel _viewModelField;
@@ -2371,6 +2452,23 @@ namespace ModelFramework.Generators.Objects
                  this._fileNameSuffixField = value;
             }
         }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
+            }
+        }
         protected CSharpClassGenerator_ViewModel _viewModelField;
 
         /// <summary>
@@ -2469,6 +2567,23 @@ namespace ModelFramework.Generators.Objects
                  this._fileNameSuffixField = value;
             }
         }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
+            }
+        }
         protected CSharpClassGenerator_ViewModel _viewModelField;
 
         /// <summary>
@@ -2487,7 +2602,7 @@ namespace ModelFramework.Generators.Objects
             }
         }
         public bool ShouldRenderModifiers => string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
-    public string ReturnTypeName => Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().WhenNullOrEmpty("void");
+    public string ReturnTypeName => Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).WhenNullOrEmpty("void");
     public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
     public string Name => Model.Operator
         ? "operator " + Model.Name
@@ -2571,6 +2686,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._fileNameSuffixField = value;
+            }
+        }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
             }
         }
         protected CSharpClassGenerator_ViewModel _viewModelField;
@@ -2667,6 +2799,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._fileNameSuffixField = value;
+            }
+        }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
             }
         }
         protected CSharpClassGenerator_ViewModel _viewModelField;

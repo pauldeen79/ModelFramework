@@ -72,6 +72,21 @@ namespace ModelFramework.Generators.Objects.Tests
 ");
         }
 
+        [Fact]
+        public void GeneratesNullableField()
+        {
+            // Arrange
+            var model = new ClassField("Test", typeof(string).FullName, isNullable: true);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        private string? Test;
+");
+        }
+
         //Modifiers
     }
 }

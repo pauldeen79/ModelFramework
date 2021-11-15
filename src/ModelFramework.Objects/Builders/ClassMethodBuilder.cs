@@ -18,6 +18,7 @@ namespace ModelFramework.Objects.Builders
         public bool Protected { get; set; }
         public bool Override { get; set; }
         public bool Operator { get; set; }
+        public bool IsNullable { get; set; }
         public Visibility Visibility { get; set; }
         public string Name { get; set; }
         public List<AttributeBuilder> Attributes { get; set; }
@@ -28,7 +29,24 @@ namespace ModelFramework.Objects.Builders
         public List<ICodeStatementBuilder> CodeStatements { get; set; }
         public IClassMethod Build()
         {
-            return new ClassMethod(Name, TypeName, Visibility, Static, Virtual, Abstract, Protected, Partial, Override, ExtensionMethod, Operator, Body, ExplicitInterfaceName, Parameters.Select(x => x.Build()), Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ClassMethod(Name,
+                                   TypeName,
+                                   Visibility,
+                                   Static,
+                                   Virtual,
+                                   Abstract,
+                                   Protected,
+                                   Partial,
+                                   Override,
+                                   ExtensionMethod,
+                                   Operator,
+                                   IsNullable,
+                                   Body,
+                                   ExplicitInterfaceName,
+                                   Parameters.Select(x => x.Build()),
+                                   Attributes.Select(x => x.Build()),
+                                   CodeStatements.Select(x => x.Build()),
+                                   Metadata.Select(x => x.Build()));
         }
         public ClassMethodBuilder Clear()
         {
@@ -41,6 +59,7 @@ namespace ModelFramework.Objects.Builders
             Protected = default;
             Override = default;
             Operator = default;
+            IsNullable = default;
             Visibility = default;
             Name = default;
             Attributes.Clear();
@@ -61,6 +80,7 @@ namespace ModelFramework.Objects.Builders
             Abstract = default;
             Protected = default;
             Override = default;
+            IsNullable = default;
             Operator = default;
             Visibility = default;
             Name = default;
@@ -81,6 +101,7 @@ namespace ModelFramework.Objects.Builders
                 Protected = source.Protected;
                 Override = source.Override;
                 Operator = source.Operator;
+                IsNullable = source.IsNullable;
                 Visibility = source.Visibility;
                 Name = source.Name;
                 if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
@@ -159,6 +180,11 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder WithOverride(bool @override)
         {
             Override = @override;
+            return this;
+        }
+        public ClassMethodBuilder WithIsNullable(bool isNullable)
+        {
+            IsNullable = isNullable;
             return this;
         }
         public ClassMethodBuilder WithVisibility(Visibility visibility)
@@ -286,6 +312,7 @@ namespace ModelFramework.Objects.Builders
                 Protected = source.Protected;
                 Override = source.Override;
                 Operator = source.Operator;
+                IsNullable = source.IsNullable;
                 Visibility = source.Visibility;
                 Name = source.Name;
                 Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
@@ -315,6 +342,7 @@ namespace ModelFramework.Objects.Builders
                                   bool @override = false,
                                   bool extensionMethod = false,
                                   bool @operator = false,
+                                  bool isNullable = false,
                                   string body = null,
                                   string explicitInterfaceName = null,
                                   IEnumerable<IParameter> parameters = null,
@@ -338,6 +366,7 @@ namespace ModelFramework.Objects.Builders
             Override = @override;
             ExtensionMethod = extensionMethod;
             Operator = @operator;
+            IsNullable = isNullable;
             Body = body;
             ExplicitInterfaceName = explicitInterfaceName;
             if (parameters != null) Parameters.AddRange(parameters.Select(x => new ParameterBuilder(x)));

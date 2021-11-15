@@ -3,7 +3,7 @@
 <#@ model type="IClassProperty" #>
 <#@ viewModel name="CSharpClassGenerator.DefaultPropertyViewModel" model="Model" #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" #>
-        <# if (ViewModel.ShouldRenderModifiers) { #><#= Model.GetModifiers() #> <# } #><# if (ViewModel.ShouldRenderExplicitInterfaceName) { #><#= Model.ExplicitInterfaceName #>.<# } #><#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #>
+        <# if (ViewModel.ShouldRenderModifiers) { #><#= Model.GetModifiers() #> <# } #><# if (ViewModel.ShouldRenderExplicitInterfaceName) { #><#= Model.ExplicitInterfaceName #>.<# } #><#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext) #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #>
         {
 <# if (Model.HasGetter) { #>            <#= Model.Metadata.GetMetadataStringValue(ModelFramework.Objects.MetadataNames.PropertyGetterVisibility) #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultPropertyGetterBodyTemplate" model="Model" customResolverDelegate="ResolvePropertyGetterTemplateFromMetadata" #><# } #>
 <# if (Model.HasSetter) { #>            <#= Model.Metadata.GetMetadataStringValue(ModelFramework.Objects.MetadataNames.PropertySetterVisibility) #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultPropertySetterBodyTemplate" model="Model" customResolverDelegate="ResolvePropertySetterTemplateFromMetadata" #><# } #>

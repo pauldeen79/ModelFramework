@@ -28,6 +28,7 @@ namespace ModelFramework.Objects.Builders
         public bool Abstract { get; set; }
         public bool Protected { get; set; }
         public bool Override { get; set; }
+        public bool IsNullable { get; set; }
         public string ExplicitInterfaceName { get; set; }
         public List<ICodeStatementBuilder> GetterCodeStatements { get; set; }
         public List<ICodeStatementBuilder> SetterCodeStatements { get; set; }
@@ -46,6 +47,7 @@ namespace ModelFramework.Objects.Builders
                 HasGetter,
                 HasSetter, 
                 HasInit,
+                IsNullable,
                 Visibility,
                 GetterVisibility,
                 SetterVisibility,
@@ -82,6 +84,7 @@ namespace ModelFramework.Objects.Builders
             Abstract = default;
             Protected = default;
             Override = default;
+            IsNullable = default;
             ExplicitInterfaceName = default;
             GetterCodeStatements.Clear();
             SetterCodeStatements.Clear();
@@ -109,6 +112,7 @@ namespace ModelFramework.Objects.Builders
             Abstract = default;
             Protected = default;
             Override = default;
+            IsNullable = default;
             ExplicitInterfaceName = default;
             GetterCodeStatements = new List<ICodeStatementBuilder>();
             SetterCodeStatements = new List<ICodeStatementBuilder>();
@@ -134,6 +138,7 @@ namespace ModelFramework.Objects.Builders
                 Abstract = source.Abstract;
                 Protected = source.Protected;
                 Override = source.Override;
+                IsNullable = source.IsNullable;
                 ExplicitInterfaceName = source.ExplicitInterfaceName;
                 if (source.GetterCodeStatements != null) GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
                 if (source.SetterCodeStatements != null) SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
@@ -292,6 +297,11 @@ namespace ModelFramework.Objects.Builders
             Override = @override;
             return this;
         }
+        public ClassPropertyBuilder WithIsNullable(bool isNullable)
+        {
+            IsNullable = isNullable;
+            return this;
+        }
         public ClassPropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
         {
             ExplicitInterfaceName = explicitInterfaceName;
@@ -407,6 +417,7 @@ namespace ModelFramework.Objects.Builders
                 Abstract = source.Abstract;
                 Protected = source.Protected;
                 Override = source.Override;
+                IsNullable = source.IsNullable;
                 ExplicitInterfaceName = source.ExplicitInterfaceName;
                 GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
                 SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
@@ -434,6 +445,7 @@ namespace ModelFramework.Objects.Builders
                                     bool hasGetter = true,
                                     bool hasSetter = true,
                                     bool hasInit = false,
+                                    bool isNullable = false,
                                     Visibility visibility = Visibility.Public,
                                     Visibility getterVisibility = Visibility.Public,
                                     Visibility setterVisibility = Visibility.Public,
@@ -464,6 +476,7 @@ namespace ModelFramework.Objects.Builders
             HasGetter = hasGetter;
             HasSetter = hasSetter;
             HasInit = hasInit;
+            IsNullable = isNullable;
             Visibility = visibility;
             GetterVisibility = getterVisibility;
             SetterVisibility = setterVisibility;

@@ -23,9 +23,24 @@ namespace ModelFramework.Objects.Builders
         public bool Protected { get; set; }
         public bool Override { get; set; }
         public bool Event { get; set; }
+        public bool IsNullable { get; set; }
         public IClassField Build()
         {
-            return new ClassField(Name, TypeName, Static, Constant, ReadOnly, Virtual, Abstract, Protected, Override, Event, DefaultValue, Visibility, Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()));
+            return new ClassField(Name,
+                                  TypeName,
+                                  Static,
+                                  Constant,
+                                  ReadOnly,
+                                  Virtual,
+                                  Abstract,
+                                  Protected,
+                                  Override,
+                                  Event,
+                                  IsNullable,
+                                  DefaultValue,
+                                  Visibility,
+                                  Metadata.Select(x => x.Build()),
+                                  Attributes.Select(x => x.Build()));
         }
         public ClassFieldBuilder Clear()
         {
@@ -43,6 +58,7 @@ namespace ModelFramework.Objects.Builders
             Protected = default;
             Override = default;
             Event = default;
+            IsNullable = default;
             return this;
         }
         public ClassFieldBuilder Update(IClassField source)
@@ -61,6 +77,7 @@ namespace ModelFramework.Objects.Builders
             Protected = default;
             Override = default;
             Event = default;
+            IsNullable = default;
             if (source != null)
             {
                 Static = source.Static;
@@ -77,6 +94,7 @@ namespace ModelFramework.Objects.Builders
                 Protected = source.Protected;
                 Override = source.Override;
                 Event = source.Event;
+                IsNullable = source.IsNullable;
             }
             return this;
         }
@@ -198,6 +216,11 @@ namespace ModelFramework.Objects.Builders
             Event = @event;
             return this;
         }
+        public ClassFieldBuilder WithIsNullable(bool isNullable)
+        {
+            IsNullable = isNullable;
+            return this;
+        }
         public ClassFieldBuilder(IClassField source = null)
         {
             if (source != null)
@@ -216,6 +239,7 @@ namespace ModelFramework.Objects.Builders
                 Protected = source.Protected;
                 Override = source.Override;
                 Event = source.Event;
+                IsNullable = source.IsNullable;
             }
             else
             {
@@ -234,6 +258,7 @@ namespace ModelFramework.Objects.Builders
                                  bool @protected = false,
                                  bool @override = false,
                                  bool @event = false,
+                                 bool isNullable = false,
                                  object defaultValue = null,
                                  Visibility visibility = Visibility.Private,
                                  IEnumerable<IMetadata> metadata = null,
@@ -252,6 +277,7 @@ namespace ModelFramework.Objects.Builders
             Protected = @protected;
             Override = @override;
             Event = @event;
+            IsNullable = isNullable;
             DefaultValue = defaultValue;
             Visibility = visibility;
             if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));

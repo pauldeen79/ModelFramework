@@ -14,9 +14,14 @@ namespace ModelFramework.Objects.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public string Name { get; set; }
         public object DefaultValue { get; set; }
+        public bool IsNullable { get; set; }
         public IParameter Build()
         {
-            return new Parameter(Name, TypeName, DefaultValue, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new Parameter(Name,
+                                 TypeName,
+                                 DefaultValue,
+                                 IsNullable,
+                                 Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
         }
         public ParameterBuilder Clear()
         {
@@ -25,6 +30,7 @@ namespace ModelFramework.Objects.Builders
             Metadata.Clear();
             Name = default;
             DefaultValue = default;
+            IsNullable = default;
             return this;
         }
         public ParameterBuilder Update(IParameter source)
@@ -117,6 +123,11 @@ namespace ModelFramework.Objects.Builders
             DefaultValue = defaultValue;
             return this;
         }
+        public ParameterBuilder WithIsNullable(bool isNullable)
+        {
+            IsNullable = isNullable;
+            return this;
+        }
         public ParameterBuilder(IParameter source = null)
         {
             if (source != null)
@@ -126,6 +137,7 @@ namespace ModelFramework.Objects.Builders
                 Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
                 Name = source.Name;
                 DefaultValue = source.DefaultValue;
+                IsNullable = source.IsNullable;
             }
             else
             {
@@ -136,6 +148,7 @@ namespace ModelFramework.Objects.Builders
         public ParameterBuilder(string name,
                                 string typeName,
                                 object defaultValue = null,
+                                bool isNullable = false,
                                 IEnumerable<IAttribute> attributes = null,
                                 IEnumerable<IMetadata> metadata = null)
         {
@@ -144,6 +157,7 @@ namespace ModelFramework.Objects.Builders
             Name = name;
             TypeName = typeName;
             DefaultValue = defaultValue;
+            IsNullable = isNullable;
             if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
         }

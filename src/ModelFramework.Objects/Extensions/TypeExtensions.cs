@@ -67,6 +67,7 @@ namespace ModelFramework.Objects.Extensions
                         false,
                         false,
                         false,
+                        f.IsNullable(),
                         null,
                         f.IsPublic
                             ? Visibility.Public
@@ -92,6 +93,7 @@ namespace ModelFramework.Objects.Extensions
                     p.GetGetMethod() != null,
                     p.GetSetMethod() != null,
                     p.IsInitOnly(),
+                    p.IsNullable(),
                     p.GetAccessors().Any(m => m.IsPublic)
                         ? Visibility.Public
                         : Visibility.Private,
@@ -135,6 +137,7 @@ namespace ModelFramework.Objects.Extensions
                             false, //override
                             false, //extension method
                             false, //operator
+                            m.ReturnTypeIsNullable(),
                             null, //body
                             null, //explicit interface name
                             m.GetParameters().Select
@@ -145,6 +148,7 @@ namespace ModelFramework.Objects.Extensions
                                     p.Name,
                                     p.ParameterType.FullName.FixTypeName(),
                                     null,
+                                    p.IsNullable(),
                                     GetAttributes(p.GetCustomAttributes(true)),
                                     null //metadata
                                 )
@@ -166,6 +170,7 @@ namespace ModelFramework.Objects.Extensions
                         p.Name,
                         p.ParameterType.FullName.FixTypeName(),
                         null,
+                        p.IsNullable(),
                         GetAttributes(p.GetCustomAttributes(true)),
                         null //metadata
                     )

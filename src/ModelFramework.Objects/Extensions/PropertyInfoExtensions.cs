@@ -20,5 +20,8 @@ namespace ModelFramework.Objects.Extensions
             // Init-only properties are marked with the IsExternalInit type.
             return setMethodReturnParameterModifiers.Any(t => t.FullName == "System.Runtime.CompilerServices.IsExternalInit");
         }
+
+        public static bool IsNullable(this PropertyInfo property)
+            => NullableHelper.IsNullable(property.PropertyType, property.DeclaringType, property.CustomAttributes);
     }
 }
