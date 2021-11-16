@@ -96,7 +96,10 @@ namespace MyNamespace
         public void Can_Use_ToClass_And_Then_Add_Data()
         {
             // Act
-            var cls = new ClassBuilder(typeof(TestClass).ToClass(new ClassSettings("GeneratedTestClass", "MyNamespace")).Build());
+            var cls = new ClassBuilder(typeof(TestClass).ToClass(new ClassSettings())
+                .WithName("GeneratedTestClass")
+                .WithNamespace("MyNamespace")
+                .Build());
             cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatement("Hello world!")));
             var model = new[]
             {

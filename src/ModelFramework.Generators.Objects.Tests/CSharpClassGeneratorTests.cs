@@ -2209,7 +2209,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
                 {
                     Property1 = "Hello",
                     Property2 = false
-                }.GetType().ToClass(new ClassSettings("MyRecord", "MyNamespace")).Build().ToImmutableClass(new ImmutableClassSettings()).Build()
+                }.GetType().ToClass(new ClassSettings()).WithName("MyRecord").WithNamespace("MyNamespace").Build().ToImmutableClass(new ImmutableClassSettings()).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2226,7 +2226,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
             // Arrange
             var models = typeof(Class).Assembly.GetExportedTypes()
                 .Where(t => t.FullName.StartsWith("ModelFramework.Objects.Default."))
-                .Select(t => t.ToClass(new ClassSettings(t.Name, createConstructors: true)).WithNamespace(FixNamespace(t)))
+                .Select(t => t.ToClass(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
                 .ToArray();
 
             FixImmutableBuilderProperties(models);
@@ -2247,7 +2247,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
             // Arrange
             var models = typeof(Metadata).Assembly.GetExportedTypes()
                 .Where(t => t.FullName.StartsWith("ModelFramework.Common.Default."))
-                .Select(t => t.ToClass(new ClassSettings(t.Name, createConstructors: true)).WithNamespace(FixNamespace(t)))
+                .Select(t => t.ToClass(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
                 .ToArray();
             FixImmutableBuilderProperties(models);
             var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection",
@@ -2268,7 +2268,7 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
         public void GeneratesImmutableBuilderClassForRecord()
         {
             // Arrange
-            var input = typeof(Person).ToClass(new ClassSettings("Person", createConstructors: true)).Build();
+            var input = typeof(Person).ToClass(new ClassSettings(createConstructors: true)).Build();
             var settings = new ImmutableBuilderClassSettings(addProperties: true,
                                                              addCopyConstructor: true);
 

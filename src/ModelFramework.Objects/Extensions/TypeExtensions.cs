@@ -14,8 +14,8 @@ namespace ModelFramework.Objects.Extensions
         public static ClassBuilder ToClass(this Type instance, ClassSettings settings)
             => new ClassBuilder
             {
-                Name = settings.Name ?? instance.Name,
-                Namespace = settings.Namespace ?? instance.FullName.GetNamespaceWithDefault(null),
+                Name = instance.Name,
+                Namespace = instance.FullName.GetNamespaceWithDefault(null),
                 Visibility = instance.IsPublic
                     ? Visibility.Public
                     : Visibility.Private,
@@ -29,7 +29,7 @@ namespace ModelFramework.Objects.Extensions
                 AutoGenerateInterfaceSettings = settings.AutoGenerateInterfaceSettings == null
                     ? null
                     : new InterfaceSettingsBuilder(settings.AutoGenerateInterfaceSettings),
-                Record = settings.Record ?? instance.IsRecord(),
+                Record = instance.IsRecord(),
                 Interfaces = GetInterfaces(instance).ToList(),
                 Fields = GetFields(instance).ToList(),
                 Properties = GetProperties(instance).ToList(),
