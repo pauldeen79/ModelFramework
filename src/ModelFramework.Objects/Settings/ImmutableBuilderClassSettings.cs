@@ -8,7 +8,6 @@ namespace ModelFramework.Objects.Settings
         public string NewCollectionTypeName { get; }
         public bool AddProperties { get; }
         public bool AddCopyConstructor { get; }
-        public string NewNamespace { get; }
         public bool Poco { get; }
         public bool AddNullChecks { get; }
         public Func<ITypeBase, bool, string> FormatInstanceTypeNameDelegate { get; }
@@ -16,7 +15,6 @@ namespace ModelFramework.Objects.Settings
         public ImmutableBuilderClassSettings(string newCollectionTypeName = "System.Collections.Generic.List",
                                              bool addProperties = false,
                                              bool addCopyConstructor = false,
-                                             string newNamespace = null,
                                              bool poco = false,
                                              bool addNullChecks = false,
                                              Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate = null)
@@ -24,7 +22,6 @@ namespace ModelFramework.Objects.Settings
             NewCollectionTypeName = newCollectionTypeName;
             AddProperties = addProperties;
             AddCopyConstructor = addCopyConstructor;
-            NewNamespace = newNamespace;
             Poco = poco;
             AddNullChecks = addNullChecks;
             FormatInstanceTypeNameDelegate = formatInstanceTypeNameDelegate;
@@ -34,7 +31,6 @@ namespace ModelFramework.Objects.Settings
             => new ImmutableBuilderClassSettings(NewCollectionTypeName,
                                                  AddProperties,
                                                  AddCopyConstructor,
-                                                 NewNamespace,
                                                  Poco || isPoco,
                                                  AddNullChecks,
                                                  FormatInstanceTypeNameDelegate);

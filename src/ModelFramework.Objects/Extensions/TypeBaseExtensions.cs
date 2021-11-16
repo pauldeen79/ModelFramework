@@ -195,7 +195,8 @@ namespace ModelFramework.Objects.Extensions
                 Static = true
             };
 
-        public static ClassBuilder ToPocoClass(this ITypeBase instance, string newCollectionTypeName = "System.Collections.Generic.ICollection")
+        public static ClassBuilder ToPocoClass(this ITypeBase instance,
+                                               string newCollectionTypeName = "System.Collections.Generic.ICollection")
             => new ClassBuilder
             {
                 Name = instance.Name,
@@ -236,7 +237,8 @@ namespace ModelFramework.Objects.Extensions
                         ).ToList()
             };
 
-        public static ClassBuilder ToObservableClass(this ITypeBase instance, string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
+        public static ClassBuilder ToObservableClass(this ITypeBase instance,
+                                                     string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
             => new ClassBuilder
             {
                 Name = instance.Name,
@@ -309,7 +311,7 @@ namespace ModelFramework.Objects.Extensions
             return new ClassBuilder
             {
                 Name = instance.Name + "Builder",
-                Namespace = settings.NewNamespace ?? instance.Namespace,
+                Namespace = instance.Namespace,
                 Fields =
                     instance
                         .Properties
@@ -333,7 +335,8 @@ namespace ModelFramework.Objects.Extensions
                 ? $"<{string.Join(", ", instance.GenericTypeArguments)}>"
                 : string.Empty;
 
-        private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance, ImmutableBuilderClassSettings settings)
+        private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
+                                                                                                 ImmutableBuilderClassSettings settings)
         {
             yield return new ClassConstructorBuilder
             {
@@ -399,7 +402,8 @@ namespace ModelFramework.Objects.Extensions
                 ? $"if ({p.Name.ToPascalCase()} != null) foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);"
                 : $"foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);";
 
-        private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance, ImmutableBuilderClassSettings settings)
+        private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
+                                                                                       ImmutableBuilderClassSettings settings)
         {
             var openSign = GetImmutableBuilderPocoOpenSign(settings.Poco);
             var closeSign = GetImmutableBuilderPocoCloseSign(settings.Poco);
@@ -612,7 +616,9 @@ namespace ModelFramework.Objects.Extensions
                 ? " { "
                 : "(";
 
-        private static string FormatInstanceName(ITypeBase instance, bool forCreate, Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
+        private static string FormatInstanceName(ITypeBase instance,
+                                                 bool forCreate,
+                                                 Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate)
         {
             if (formatInstanceTypeNameDelegate != null)
             {
@@ -627,7 +633,8 @@ namespace ModelFramework.Objects.Extensions
             return (ns + instance.Name).GetCsharpFriendlyTypeName();
         }
 
-        private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance, ImmutableBuilderClassSettings settings)
+        private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance,
+                                                                                            ImmutableBuilderClassSettings settings)
         {
             if (!settings.AddProperties)
             {
@@ -664,7 +671,9 @@ namespace ModelFramework.Objects.Extensions
             return string.Join(", ", properties.Select(p => p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderMethodParameterExpression, defaultValueDelegate(p), o => string.Format(o?.ToString() ?? string.Empty, p.Name, p.Name.ToPascalCase()))));
         }
 
-        private static IClassProperty ChangeProperty(IClassProperty property, IDictionary<string, string> applyGenericTypes, bool changePropertiesToReadOnly)
+        private static IClassProperty ChangeProperty(IClassProperty property,
+                                                     IDictionary<string, string> applyGenericTypes,
+                                                     bool changePropertiesToReadOnly)
             => !changePropertiesToReadOnly
                 ? property
                 : new ClassProperty(property.Name,
@@ -760,14 +769,11 @@ namespace ModelFramework.Objects.Extensions
                 ? applyGenericTypes.Values.ToList()
                 : new List<string>();
 
-        private static IEnumerable<ClassMethodBuilder> GetImmutableClassMethods
-        (
-            ITypeBase instance,
-            string newCollectionTypeName,
-            bool createWithMethod,
-            bool implementIEquatable,
-            bool extensionMethod
-        )
+        private static IEnumerable<ClassMethodBuilder> GetImmutableClassMethods(ITypeBase instance,
+                                                                                string newCollectionTypeName,
+                                                                                bool createWithMethod,
+                                                                                bool implementIEquatable,
+                                                                                bool extensionMethod)
         {
             if (createWithMethod)
             {

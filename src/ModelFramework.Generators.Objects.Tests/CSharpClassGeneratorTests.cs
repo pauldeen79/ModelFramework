@@ -2232,10 +2232,9 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
             FixImmutableBuilderProperties(models);
             var settings = new ImmutableBuilderClassSettings(addProperties: true,
                                                              addCopyConstructor: true,
-                                                             newNamespace: "ModelFramework.Objects.Builders",
                                                              formatInstanceTypeNameDelegate: FormatInstanceTypeName);
             // Act
-            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClass(settings) }).ToArray();
+            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClass(settings).WithNamespace("ModelFramework.Objects.Builders") }).ToArray();
             var sut = new CSharpClassGenerator();
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
 
@@ -2254,11 +2253,10 @@ if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(
             var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection",
                                                              addProperties: true,
                                                              addCopyConstructor: true,
-                                                             newNamespace: "ModelFramework.Common.Builders",
                                                              formatInstanceTypeNameDelegate: FormatInstanceTypeName);
 
             // Act
-            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClass(settings) }).ToArray();
+            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClass(settings).WithNamespace("ModelFramework.Common.Builders") }).ToArray();
             var sut = new CSharpClassGenerator();
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
 
