@@ -565,13 +565,13 @@ namespace ModelFramework.Objects.Extensions
                     // single
                     yield return new ClassMethodBuilder
                     {
-                        Name = $"With{property.Name}",
+                        Name = string.Format(settings.SetMethodNameFormatString, property.Name),
                         TypeName = $"{instance.Name}Builder",
                         Parameters = new[]
                         {
                             new ParameterBuilder
                             {
-                                Name =property.Name.ToPascalCase(),
+                                Name = property.Name.ToPascalCase(),
                                 TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments()))
                             }
                         }.ToList(),
@@ -585,7 +585,7 @@ namespace ModelFramework.Objects.Extensions
                     {
                         yield return new ClassMethodBuilder
                         {
-                            Name = $"With{property.Name}",
+                            Name = string.Format(settings.SetMethodNameFormatString, property.Name),
                             TypeName = $"{instance.Name}Builder",
                             Parameters = new[]
                             {
