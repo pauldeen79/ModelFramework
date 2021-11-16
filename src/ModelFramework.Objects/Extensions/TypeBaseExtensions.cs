@@ -438,11 +438,10 @@ namespace ModelFramework.Objects.Extensions
                         }
                     }.ToList(),
                     CodeStatements = instance.Properties
+                        .Where(p => p.TypeName.IsCollectionTypeName())
                         .Select
                         (
-                            p => p.TypeName.IsCollectionTypeName()
-                                ? $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
-                                : $"_{p.Name.ToPascalCase()} = default;"
+                            p => $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
                         )
                         .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks)))
                         .Concat(new[]

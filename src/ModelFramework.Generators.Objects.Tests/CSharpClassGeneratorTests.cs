@@ -288,9 +288,7 @@ namespace MyNamespace
 
         public MyRecordBuilder Update(MyNamespace.MyRecord source)
         {
-            _property1 = default;
             _property2 = new System.Collections.Generic.List<string>();
-            _property3 = default;
             _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             _property1 = source.Property1;
             if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
@@ -1830,7 +1828,6 @@ namespace MyNamespace
 
         public MyRecordBuilder Update(MyNamespace.MyRecord source)
         {
-            _static = default;
             _static = source.Static;
             return this;
         }
@@ -2330,8 +2327,6 @@ namespace ModelFramework.Generators.Objects.Tests
 
         public PersonBuilder Update(ModelFramework.Generators.Objects.Tests.Person source)
         {
-            _firstName = default;
-            _lastName = default;
             _firstName = source.FirstName;
             _lastName = source.LastName;
             return this;
