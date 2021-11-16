@@ -18,7 +18,13 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IForeignKeyConstraint Build()
         {
-            return new ForeignKeyConstraint(Name, ForeignTableName, LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), CascadeUpdate, CascadeDelete, Metadata.Select(x => x.Build()));
+            return new ForeignKeyConstraint(Name,
+                                            ForeignTableName,
+                                            LocalFields.Select(x => x.Build()),
+                                            ForeignFields.Select(x => x.Build()),
+                                            CascadeUpdate,
+                                            CascadeDelete,
+                                            Metadata.Select(x => x.Build()));
         }
         public ForeignKeyConstraintBuilder Clear()
         {
@@ -35,21 +41,16 @@ namespace ModelFramework.Database.Builders
         {
             LocalFields = new List<ForeignKeyConstraintFieldBuilder>();
             ForeignFields = new List<ForeignKeyConstraintFieldBuilder>();
-            ForeignTableName = default;
-            CascadeUpdate = default;
-            CascadeDelete = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.LocalFields != null) LocalFields.AddRange(source.LocalFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
-                if (source.ForeignFields != null) ForeignFields.AddRange(source.ForeignFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
-                ForeignTableName = source.ForeignTableName;
-                CascadeUpdate = source.CascadeUpdate;
-                CascadeDelete = source.CascadeDelete;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            if (source.LocalFields != null) LocalFields.AddRange(source.LocalFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
+            if (source.ForeignFields != null) ForeignFields.AddRange(source.ForeignFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
+            ForeignTableName = source.ForeignTableName;
+            CascadeUpdate = source.CascadeUpdate;
+            CascadeDelete = source.CascadeDelete;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public ForeignKeyConstraintBuilder ClearLocalFields()
@@ -174,42 +175,25 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-        public ForeignKeyConstraintBuilder(IForeignKeyConstraint source = null)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
+        public ForeignKeyConstraintBuilder()
         {
             LocalFields = new List<ForeignKeyConstraintFieldBuilder>();
             ForeignFields = new List<ForeignKeyConstraintFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.LocalFields != null) foreach (var x in source.LocalFields) LocalFields.Add(new ForeignKeyConstraintFieldBuilder(x));
-                if (source.ForeignFields != null) foreach (var x in source.ForeignFields) ForeignFields.Add(new ForeignKeyConstraintFieldBuilder(x));
-                ForeignTableName = source.ForeignTableName;
-                CascadeUpdate = source.CascadeUpdate;
-                CascadeDelete = source.CascadeDelete;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public ForeignKeyConstraintBuilder(string name,
-                                           string foreignTableName,
-                                           IEnumerable<IForeignKeyConstraintField> localFields,
-                                           IEnumerable<IForeignKeyConstraintField> foreignFields,
-                                           CascadeAction cascadeUpdate = CascadeAction.NoAction,
-                                           CascadeAction cascadeDelete = CascadeAction.NoAction,
-                                           IEnumerable<IMetadata> metadata = null)
+        public ForeignKeyConstraintBuilder(IForeignKeyConstraint source)
         {
             LocalFields = new List<ForeignKeyConstraintFieldBuilder>();
             ForeignFields = new List<ForeignKeyConstraintFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            ForeignTableName = foreignTableName;
-            if (localFields != null) LocalFields.AddRange(localFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
-            if (foreignFields != null) ForeignFields.AddRange(foreignFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
-            CascadeUpdate = cascadeUpdate;
-            CascadeDelete = cascadeDelete;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            foreach (var x in source.LocalFields ?? Enumerable.Empty<IForeignKeyConstraintField>()) LocalFields.Add(new ForeignKeyConstraintFieldBuilder(x));
+            foreach (var x in source.ForeignFields ?? Enumerable.Empty<IForeignKeyConstraintField>()) ForeignFields.Add(new ForeignKeyConstraintFieldBuilder(x));
+            ForeignTableName = source.ForeignTableName;
+            CascadeUpdate = source.CascadeUpdate;
+            CascadeDelete = source.CascadeDelete;
+            Name = source.Name;
+            foreach (var x in source.Metadata ?? Enumerable.Empty<IMetadata>()) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

@@ -9,14 +9,14 @@ namespace ModelFramework.Objects.Extensions
         public static ClassBuilder AddGeneratedCodeAttribute(this ClassBuilder instance, string generatorName, string generatorVersion)
             => instance.AddAttributes
             (
-                new AttributeBuilder(typeof(GeneratedCodeAttribute).FullName).AddParameters
+                new AttributeBuilder { Name = typeof(GeneratedCodeAttribute).FullName }.AddParameters
                 (
-                    new AttributeParameterBuilder(generatorName),
-                    new AttributeParameterBuilder(generatorVersion)
+                    new AttributeParameterBuilder { Value = generatorName },
+                    new AttributeParameterBuilder { Value = generatorVersion }
                 )
             );
 
         public static ClassBuilder AddExcludeFromCodeCoverageAttribute(this ClassBuilder instance)
-            => instance.AddAttributes(new AttributeBuilder(typeof(ExcludeFromCodeCoverageAttribute).FullName));
+            => instance.AddAttributes(new AttributeBuilder { Name = typeof(ExcludeFromCodeCoverageAttribute).FullName });
     }
 }

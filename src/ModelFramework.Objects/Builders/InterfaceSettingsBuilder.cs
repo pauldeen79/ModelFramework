@@ -16,7 +16,12 @@ namespace ModelFramework.Objects.Builders
         public bool ChangePropertiesToReadOnly { get; set; }
 
         public InterfaceSettings Build()
-            => new InterfaceSettings(PropertyFilter, MethodFilter, MetadataFilter, AttributeFilter, ApplyGenericTypes, ChangePropertiesToReadOnly);
+            => new InterfaceSettings(PropertyFilter,
+                                     MethodFilter,
+                                     MetadataFilter,
+                                     AttributeFilter,
+                                     ApplyGenericTypes,
+                                     ChangePropertiesToReadOnly);
 
         public InterfaceSettingsBuilder Clear()
         {
@@ -70,38 +75,30 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public InterfaceSettingsBuilder WithChangePropertiesToReadOnly(bool changePropertiesToReadOnly)
+        public InterfaceSettingsBuilder WithChangePropertiesToReadOnly(bool changePropertiesToReadOnly = true)
         {
             ChangePropertiesToReadOnly = changePropertiesToReadOnly;
             return this;
         }
 
-        public InterfaceSettingsBuilder(InterfaceSettings source)
+        public InterfaceSettingsBuilder AddApplyGenericTypes(string key, string value)
         {
-            if (source != null)
-            {
-                PropertyFilter = source.PropertyFilter;
-                MethodFilter = source.MethodFilter;
-                MetadataFilter = source.MetadataFilter;
-                AttributeFilter = source.AttributeFilter;
-                ApplyGenericTypes = source.ApplyGenericTypes;
-                ChangePropertiesToReadOnly = source.ChangePropertiesToReadOnly;
-            }
+            ApplyGenericTypes.Add(key, value);
+            return this;
         }
 
-        public InterfaceSettingsBuilder(Func<IClassProperty, bool> propertyFilter = null,
-                                        Func<IClassMethod, bool> methodFilter = null,
-                                        Func<IMetadata, bool> metadataFilter = null,
-                                        Func<IAttribute, bool> attributeFilter = null,
-                                        IDictionary<string, string> applyGenericTypes = null,
-                                        bool changePropertiesToReadOnly = false)
+        public InterfaceSettingsBuilder()
         {
-            PropertyFilter = propertyFilter;
-            MethodFilter = methodFilter;
-            MetadataFilter = metadataFilter;
-            AttributeFilter = attributeFilter;
-            ApplyGenericTypes = applyGenericTypes;
-            ChangePropertiesToReadOnly = changePropertiesToReadOnly;
+        }
+
+        public InterfaceSettingsBuilder(InterfaceSettings source)
+        {
+            PropertyFilter = source.PropertyFilter;
+            MethodFilter = source.MethodFilter;
+            MetadataFilter = source.MetadataFilter;
+            AttributeFilter = source.AttributeFilter;
+            ApplyGenericTypes = source.ApplyGenericTypes;
+            ChangePropertiesToReadOnly = source.ChangePropertiesToReadOnly;
         }
     }
 }

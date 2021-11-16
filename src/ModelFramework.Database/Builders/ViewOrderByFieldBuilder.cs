@@ -18,7 +18,13 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IViewOrderByField Build()
         {
-            return new ViewOrderByField(Name, SourceSchemaName, SourceObjectName, Expression, Alias, Descending, Metadata.Select(x => x.Build()));
+            return new ViewOrderByField(Name,
+                                        SourceSchemaName,
+                                        SourceObjectName,
+                                        Expression,
+                                        Alias,
+                                        Descending,
+                                        Metadata.Select(x => x.Build()));
         }
         public ViewOrderByFieldBuilder Clear()
         {
@@ -33,23 +39,16 @@ namespace ModelFramework.Database.Builders
         }
         public ViewOrderByFieldBuilder Update(IViewOrderByField source)
         {
-            Descending = default;
-            SourceSchemaName = default;
-            SourceObjectName = default;
-            Expression = default;
-            Alias = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Descending = source.Descending;
-                SourceSchemaName = source.SourceSchemaName;
-                SourceObjectName = source.SourceObjectName;
-                Expression = source.Expression;
-                Alias = source.Alias;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Descending = source.Descending;
+            SourceSchemaName = source.SourceSchemaName;
+            SourceObjectName = source.SourceObjectName;
+            Expression = source.Expression;
+            Alias = source.Alias;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public ViewOrderByFieldBuilder WithDescending(bool descending)
@@ -114,36 +113,21 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public ViewOrderByFieldBuilder(IViewOrderByField source = null)
+        public ViewOrderByFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Descending = source.Descending;
-                SourceSchemaName = source.SourceSchemaName;
-                SourceObjectName = source.SourceObjectName;
-                Expression = source.Expression;
-                Alias = source.Alias;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public ViewOrderByFieldBuilder(string name,
-                                       string sourceSchemaName = null,
-                                       string sourceObjectName = null,
-                                       string expression = null,
-                                       string alias = null,
-                                       bool descending = false,
-                                       IEnumerable<IMetadata> metadata = null)
+        public ViewOrderByFieldBuilder(IViewOrderByField source)
         {
             Metadata = new List<MetadataBuilder>();
-            Descending = descending;
-            SourceSchemaName = sourceSchemaName;
-            SourceObjectName = sourceObjectName;
-            Expression = expression;
-            Alias = alias;
-            Name = name;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Descending = source.Descending;
+            SourceSchemaName = source.SourceSchemaName;
+            SourceObjectName = source.SourceObjectName;
+            Expression = source.Expression;
+            Alias = source.Alias;
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

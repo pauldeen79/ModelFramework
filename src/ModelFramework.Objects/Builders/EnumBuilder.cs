@@ -16,7 +16,11 @@ namespace ModelFramework.Objects.Builders
         public Visibility Visibility { get; set; }
         public IEnum Build()
         {
-            return new Enum(Name, Members.Select(x => x.Build()), Visibility, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new Enum(Name,
+                            Members.Select(x => x.Build()),
+                            Visibility,
+                            Attributes.Select(x => x.Build()),
+                            Metadata.Select(x => x.Build()));
         }
         public EnumBuilder Clear()
         {
@@ -31,17 +35,14 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new List<AttributeBuilder>();
             Members = new List<EnumMemberBuilder>();
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            Visibility = default;
-            if (source != null)
-            {
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                if (source.Members != null) Members.AddRange(source.Members.Select(x => new EnumMemberBuilder(x)));
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Visibility = source.Visibility;
-            }
+
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Members.AddRange(source.Members?.Select(x => new EnumMemberBuilder(x)) ?? Enumerable.Empty<EnumMemberBuilder>());
+            Name = source.Name;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
+
             return this;
         }
         public EnumBuilder ClearAttributes()
@@ -141,37 +142,19 @@ namespace ModelFramework.Objects.Builders
             Visibility = visibility;
             return this;
         }
-        public EnumBuilder(IEnum source = null)
-        {
-            if (source != null)
-            {
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                Members = new List<EnumMemberBuilder>(source.Members?.Select(x => new EnumMemberBuilder(x)) ?? Enumerable.Empty<EnumMemberBuilder>());
-                Name = source.Name;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Visibility = source.Visibility;
-            }
-            else
-            {
-                Attributes = new List<AttributeBuilder>();
-                Members = new List<EnumMemberBuilder>();
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public EnumBuilder(string name,
-                           IEnumerable<IEnumMember> members,
-                           Visibility visibility = Visibility.Public,
-                           IEnumerable<IAttribute> attributes = null,
-                           IEnumerable<IMetadata> metadata = null)
+        public EnumBuilder()
         {
             Attributes = new List<AttributeBuilder>();
             Members = new List<EnumMemberBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Visibility = visibility;
-            if (members != null) Members.AddRange(members.Select(x => new EnumMemberBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
+        }
+        public EnumBuilder(IEnum source)
+        {
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Members = new List<EnumMemberBuilder>(source.Members?.Select(x => new EnumMemberBuilder(x)) ?? Enumerable.Empty<EnumMemberBuilder>());
+            Name = source.Name;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
         }
     }
 }

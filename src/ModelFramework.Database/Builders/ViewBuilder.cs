@@ -22,7 +22,17 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IView Build()
         {
-            return new View(Name, Top, TopPercent, Distinct, Definition, SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new View(Name,
+                            Top,
+                            TopPercent,
+                            Distinct,
+                            Definition,
+                            SelectFields.Select(x => x.Build()),
+                            OrderByFields.Select(x => x.Build()),
+                            GroupByFields.Select(x => x.Build()),
+                            Sources.Select(x => x.Build()),
+                            Conditions.Select(x => x.Build()),
+                            Metadata.Select(x => x.Build()));
         }
         public ViewBuilder Clear()
         {
@@ -46,26 +56,20 @@ namespace ModelFramework.Database.Builders
             GroupByFields = new List<ViewFieldBuilder>();
             Sources = new List<ViewSourceBuilder>();
             Conditions = new List<ViewConditionBuilder>();
-            Top = default;
-            TopPercent = default;
-            Distinct = default;
-            Definition = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.SelectFields != null) SelectFields.AddRange(source.SelectFields.Select(x => new ViewFieldBuilder(x)));
-                if (source.OrderByFields != null) OrderByFields.AddRange(source.OrderByFields.Select(x => new ViewOrderByFieldBuilder(x)));
-                if (source.GroupByFields != null) GroupByFields.AddRange(source.GroupByFields.Select(x => new ViewFieldBuilder(x)));
-                if (source.Sources != null) Sources.AddRange(source.Sources.Select(x => new ViewSourceBuilder(x)));
-                if (source.Conditions != null) Conditions.AddRange(source.Conditions.Select(x => new ViewConditionBuilder(x)));
-                Top = source.Top;
-                TopPercent = source.TopPercent;
-                Distinct = source.Distinct;
-                Definition = source.Definition;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            if (source.SelectFields != null) SelectFields.AddRange(source.SelectFields.Select(x => new ViewFieldBuilder(x)));
+            if (source.OrderByFields != null) OrderByFields.AddRange(source.OrderByFields.Select(x => new ViewOrderByFieldBuilder(x)));
+            if (source.GroupByFields != null) GroupByFields.AddRange(source.GroupByFields.Select(x => new ViewFieldBuilder(x)));
+            if (source.Sources != null) Sources.AddRange(source.Sources.Select(x => new ViewSourceBuilder(x)));
+            if (source.Conditions != null) Conditions.AddRange(source.Conditions.Select(x => new ViewConditionBuilder(x)));
+            Top = source.Top;
+            TopPercent = source.TopPercent;
+            Distinct = source.Distinct;
+            Definition = source.Definition;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public ViewBuilder ClearSelectFields()
@@ -300,9 +304,7 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-        public ViewBuilder(IView source = null)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
+        public ViewBuilder()
         {
             SelectFields = new List<ViewFieldBuilder>();
             OrderByFields = new List<ViewOrderByFieldBuilder>();
@@ -310,34 +312,8 @@ namespace ModelFramework.Database.Builders
             Sources = new List<ViewSourceBuilder>();
             Conditions = new List<ViewConditionBuilder>();
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.SelectFields != null) foreach (var x in source.SelectFields) SelectFields.Add(new ViewFieldBuilder(x));
-                if (source.OrderByFields != null) foreach (var x in source.OrderByFields) OrderByFields.Add(new ViewOrderByFieldBuilder(x));
-                if (source.GroupByFields != null) foreach (var x in source.GroupByFields) GroupByFields.Add(new ViewFieldBuilder(x));
-                if (source.Sources != null) foreach (var x in source.Sources) Sources.Add(new ViewSourceBuilder(x));
-                if (source.Conditions != null) foreach (var x in source.Conditions) Conditions.Add(new ViewConditionBuilder(x));
-                Top = source.Top;
-                TopPercent = source.TopPercent;
-                Distinct = source.Distinct;
-                Definition = source.Definition;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public ViewBuilder(string name,
-                           int? top = null,
-                           bool topPercent = false,
-                           bool distinct = false,
-                           string definition = null,
-                           IEnumerable<IViewField> selectFields = null,
-                           IEnumerable<IViewOrderByField> orderByFields = null,
-                           IEnumerable<IViewField> groupByFields = null,
-                           IEnumerable<IViewSource> sources = null,
-                           IEnumerable<IViewCondition> conditions = null,
-                           IEnumerable<IMetadata> metadata = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public ViewBuilder(IView source)
         {
             SelectFields = new List<ViewFieldBuilder>();
             OrderByFields = new List<ViewOrderByFieldBuilder>();
@@ -345,17 +321,18 @@ namespace ModelFramework.Database.Builders
             Sources = new List<ViewSourceBuilder>();
             Conditions = new List<ViewConditionBuilder>();
             Metadata = new List<MetadataBuilder>();
-            if (selectFields != null) SelectFields.AddRange(selectFields.Select(x => new ViewFieldBuilder(x)));
-            if (orderByFields != null) OrderByFields.AddRange(orderByFields.Select(x => new ViewOrderByFieldBuilder(x)));
-            if (groupByFields != null) GroupByFields.AddRange(groupByFields.Select(x => new ViewFieldBuilder(x)));
-            if (sources != null) Sources.AddRange(sources.Select(x => new ViewSourceBuilder(x)));
-            if (conditions != null) Conditions.AddRange(conditions.Select(x => new ViewConditionBuilder(x)));
-            Top = top;
-            TopPercent = topPercent;
-            Distinct = distinct;
-            Definition = definition;
-            Name = name;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            foreach (var x in source.SelectFields ?? Enumerable.Empty<IViewField>()) SelectFields.Add(new ViewFieldBuilder(x));
+            foreach (var x in source.OrderByFields ?? Enumerable.Empty<IViewOrderByField>()) OrderByFields.Add(new ViewOrderByFieldBuilder(x));
+            foreach (var x in source.GroupByFields ?? Enumerable.Empty<IViewField>()) GroupByFields.Add(new ViewFieldBuilder(x));
+            foreach (var x in source.Sources ?? Enumerable.Empty<IViewSource>()) Sources.Add(new ViewSourceBuilder(x));
+            foreach (var x in source.Conditions ?? Enumerable.Empty<IViewCondition>()) Conditions.Add(new ViewConditionBuilder(x));
+            Top = source.Top;
+            TopPercent = source.TopPercent;
+            Distinct = source.Distinct;
+            Definition = source.Definition;
+            Name = source.Name;
+            foreach (var x in source.Metadata ?? Enumerable.Empty<IMetadata>()) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

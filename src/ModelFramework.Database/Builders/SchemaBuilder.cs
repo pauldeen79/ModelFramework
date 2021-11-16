@@ -1,9 +1,9 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ModelFramework.Database.Builders
 {
@@ -16,7 +16,11 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public ISchema Build()
         {
-            return new Schema(Name, Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new Schema(Name,
+                              Tables.Select(x => x.Build()),
+                              StoredProcedures.Select(x => x.Build()),
+                              Views.Select(x => x.Build()),
+                              Metadata.Select(x => x.Build()));
         }
         public SchemaBuilder Clear()
         {
@@ -32,16 +36,14 @@ namespace ModelFramework.Database.Builders
             Tables = new List<TableBuilder>();
             StoredProcedures = new List<StoredProcedureBuilder>();
             Views = new List<ViewBuilder>();
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.Tables != null) Tables.AddRange(source.Tables.Select(x => new TableBuilder(x)));
-                if (source.StoredProcedures!= null) StoredProcedures.AddRange(source.StoredProcedures.Select(x => new StoredProcedureBuilder(x)));
-                if (source.Views != null) Views.AddRange(source.Views.Select(x => new ViewBuilder(x)));
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            if (source.Tables != null) Tables.AddRange(source.Tables.Select(x => new TableBuilder(x)));
+            if (source.StoredProcedures!= null) StoredProcedures.AddRange(source.StoredProcedures.Select(x => new StoredProcedureBuilder(x)));
+            if (source.Views != null) Views.AddRange(source.Views.Select(x => new ViewBuilder(x)));
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public SchemaBuilder ClearTables()
@@ -186,38 +188,25 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-        public SchemaBuilder(ISchema source = null)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
+        public SchemaBuilder()
         {
             Tables = new List<TableBuilder>();
             StoredProcedures = new List<StoredProcedureBuilder>();
             Views = new List<ViewBuilder>();
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.Tables != null) foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
-                if (source.StoredProcedures != null) foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
-                if (source.Views != null) foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public SchemaBuilder(string name,
-                             IEnumerable<ITable> tables = null,
-                             IEnumerable<IStoredProcedure> storedProcedures = null,
-                             IEnumerable<IView> views = null,
-                             IEnumerable<IMetadata> metadata = null)
+        public SchemaBuilder(ISchema source)
         {
             Tables = new List<TableBuilder>();
             StoredProcedures = new List<StoredProcedureBuilder>();
             Views = new List<ViewBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            if (tables != null) Tables.AddRange(tables.Select(x => new TableBuilder(x)));
-            if (storedProcedures != null) StoredProcedures.AddRange(storedProcedures.Select(x => new StoredProcedureBuilder(x)));
-            if (views != null) Views.AddRange(views.Select(x => new ViewBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            if (source.Tables != null) foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
+            if (source.StoredProcedures != null) foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
+            if (source.Views != null) foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

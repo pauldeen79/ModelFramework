@@ -8,10 +8,10 @@ namespace ModelFramework.Objects.Extensions
         public static InterfaceBuilder AddGeneratedCodeAttribute(this InterfaceBuilder instance, string generatorName, string generatorVersion)
             => instance.AddAttributes
             (
-                new AttributeBuilder(typeof(GeneratedCodeAttribute).FullName).AddParameters
+                new AttributeBuilder { Name = typeof(GeneratedCodeAttribute).FullName }.AddParameters
                 (
-                    new AttributeParameterBuilder(generatorName),
-                    new AttributeParameterBuilder(generatorVersion)
+                    new AttributeParameterBuilder { Value = generatorName },
+                    new AttributeParameterBuilder { Value = generatorVersion }
                 )
             );
     }

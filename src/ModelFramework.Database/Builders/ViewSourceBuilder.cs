@@ -16,7 +16,11 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IViewSource Build()
         {
-            return new ViewSource(Name, Alias, SourceSchemaName, SourceObjectName, Metadata.Select(x => x.Build()));
+            return new ViewSource(Name,
+                                  Alias,
+                                  SourceSchemaName,
+                                  SourceObjectName,
+                                  Metadata.Select(x => x.Build()));
         }
         public ViewSourceBuilder Clear()
         {
@@ -29,19 +33,15 @@ namespace ModelFramework.Database.Builders
         }
         public ViewSourceBuilder Update(IViewSource source)
         {
-            Alias = default;
-            Name = default;
-            SourceSchemaName = default;
-            SourceObjectName = default;
+
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Alias = source.Alias;
-                Name = source.Name;
-                SourceSchemaName = source.SourceSchemaName;
-                SourceObjectName = source.SourceObjectName;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Alias = source.Alias;
+            Name = source.Name;
+            SourceSchemaName = source.SourceSchemaName;
+            SourceObjectName = source.SourceObjectName;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public ViewSourceBuilder WithAlias(string alias)
@@ -96,30 +96,19 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public ViewSourceBuilder(IViewSource source = null)
+        public ViewSourceBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Alias = source.Alias;
-                Name = source.Name;
-                SourceSchemaName = source.SourceSchemaName;
-                SourceObjectName = source.SourceObjectName;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public ViewSourceBuilder(string name,
-                                 string alias = null,
-                                 string sourceSchemaName = null,
-                                 string sourceObjectName = null,
-                                 IEnumerable<IMetadata> metadata = null)
+        public ViewSourceBuilder(IViewSource source)
         {
             Metadata = new List<MetadataBuilder>();
-            Alias = alias;
-            Name = name;
-            SourceSchemaName = sourceSchemaName;
-            SourceObjectName = sourceObjectName;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Alias = source.Alias;
+            Name = source.Name;
+            SourceSchemaName = source.SourceSchemaName;
+            SourceObjectName = source.SourceObjectName;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

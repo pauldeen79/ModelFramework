@@ -23,13 +23,11 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintFieldBuilder Update(IUniqueConstraintField source)
         {
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public UniqueConstraintFieldBuilder WithName(string name)
@@ -69,20 +67,16 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public UniqueConstraintFieldBuilder(IUniqueConstraintField source = null)
+        public UniqueConstraintFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public UniqueConstraintFieldBuilder(string name, IEnumerable<IMetadata> metadata = null)
+        public UniqueConstraintFieldBuilder(IUniqueConstraintField source)
         {
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

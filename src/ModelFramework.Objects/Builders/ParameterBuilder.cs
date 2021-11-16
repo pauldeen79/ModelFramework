@@ -35,19 +35,15 @@ namespace ModelFramework.Objects.Builders
         }
         public ParameterBuilder Update(IParameter source)
         {
-            TypeName = default;
             Attributes = new List<AttributeBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = default;
-            DefaultValue = default;
-            if (source != null)
-            {
-                TypeName = source.TypeName;
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Name = source.Name;
-                DefaultValue = source.DefaultValue;
-            }
+
+            TypeName = source.TypeName;
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Name = source.Name;
+            DefaultValue = source.DefaultValue;
+
             return this;
         }
         public ParameterBuilder WithTypeName(string typeName)
@@ -123,43 +119,24 @@ namespace ModelFramework.Objects.Builders
             DefaultValue = defaultValue;
             return this;
         }
-        public ParameterBuilder WithIsNullable(bool isNullable)
+        public ParameterBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
             return this;
         }
-        public ParameterBuilder(IParameter source = null)
-        {
-            if (source != null)
-            {
-                TypeName = source.TypeName;
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Name = source.Name;
-                DefaultValue = source.DefaultValue;
-                IsNullable = source.IsNullable;
-            }
-            else
-            {
-                Attributes = new List<AttributeBuilder>();
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public ParameterBuilder(string name,
-                                string typeName,
-                                object defaultValue = null,
-                                bool isNullable = false,
-                                IEnumerable<IAttribute> attributes = null,
-                                IEnumerable<IMetadata> metadata = null)
+        public ParameterBuilder()
         {
             Attributes = new List<AttributeBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            TypeName = typeName;
-            DefaultValue = defaultValue;
-            IsNullable = isNullable;
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public ParameterBuilder(IParameter source)
+        {
+            TypeName = source.TypeName;
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Name = source.Name;
+            DefaultValue = source.DefaultValue;
+            IsNullable = source.IsNullable;
         }
     }
 }

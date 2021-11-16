@@ -10,6 +10,6 @@ namespace ModelFramework.Objects.Contracts
         ValueCollection<string> Interfaces { get; }
         ValueCollection<IClassProperty> Properties { get; }
         ValueCollection<IClassMethod> Methods { get; }
-        string[] GenericTypeArguments { get; }
+        ValueCollection<string> GenericTypeArguments { get; }
     }
 }

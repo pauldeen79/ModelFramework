@@ -46,10 +46,5 @@ namespace ModelFramework.Common.Builders
                 Name = source.Name;
             }
         }
-        public MetadataBuilder(string name, object value)
-        {
-            Name = name;
-            Value = value;
-        }
     }
 }

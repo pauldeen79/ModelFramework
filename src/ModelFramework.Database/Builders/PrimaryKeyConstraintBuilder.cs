@@ -15,7 +15,10 @@ namespace ModelFramework.Database.Builders
         public List<PrimaryKeyConstraintFieldBuilder> Fields { get; set; }
         public IPrimaryKeyConstraint Build()
         {
-            return new PrimaryKeyConstraint(Name, FileGroupName, Fields.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new PrimaryKeyConstraint(Name,
+                                            FileGroupName,
+                                            Fields.Select(x => x.Build()),
+                                            Metadata.Select(x => x.Build()));
         }
         public PrimaryKeyConstraintBuilder Clear()
         {
@@ -27,17 +30,14 @@ namespace ModelFramework.Database.Builders
         }
         public PrimaryKeyConstraintBuilder Update(IPrimaryKeyConstraint source)
         {
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            FileGroupName = default;
             Fields = new List<PrimaryKeyConstraintFieldBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                FileGroupName = source.FileGroupName;
-                Fields.AddRange(source.Fields.Select(x => new PrimaryKeyConstraintFieldBuilder(x)));
-            }
+
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            FileGroupName = source.FileGroupName;
+            Fields.AddRange(source.Fields.Select(x => new PrimaryKeyConstraintFieldBuilder(x)));
+
             return this;
         }
         public PrimaryKeyConstraintBuilder WithName(string name)
@@ -117,29 +117,20 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public PrimaryKeyConstraintBuilder(IPrimaryKeyConstraint source = null)
+        public PrimaryKeyConstraintBuilder()
         {
             Metadata = new List<MetadataBuilder>();
             Fields = new List<PrimaryKeyConstraintFieldBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-                FileGroupName = source.FileGroupName;
-                if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new PrimaryKeyConstraintFieldBuilder(x));
-            }
         }
-        public PrimaryKeyConstraintBuilder(string name,
-                                           string fileGroupName = null,
-                                           IEnumerable<IPrimaryKeyConstraintField> fields = null,
-                                           IEnumerable<IMetadata> metadata = null)
+        public PrimaryKeyConstraintBuilder(IPrimaryKeyConstraint source)
         {
             Metadata = new List<MetadataBuilder>();
             Fields = new List<PrimaryKeyConstraintFieldBuilder>();
-            Name = name;
-            FileGroupName = fileGroupName;
-            if (fields != null) Fields.AddRange(fields.Select(x => new PrimaryKeyConstraintFieldBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            FileGroupName = source.FileGroupName;
+            if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new PrimaryKeyConstraintFieldBuilder(x));
         }
     }
 }

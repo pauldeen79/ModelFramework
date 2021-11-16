@@ -33,7 +33,26 @@ namespace ModelFramework.Objects.Builders
         public List<string> GenericTypeArguments { get; set; }
         public IClass Build()
         {
-            return new Class(Name, Namespace, Visibility, BaseClass, Static, Sealed, Partial, AutoGenerateInterface, AutoGenerateInterfaceSettings.Build(), Record, Interfaces, Fields.Select(x => x.Build()), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), Constructors.Select(x => x.Build()), Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()), SubClasses.Select(x => x.Build()), Enums.Select(x => x.Build()), GenericTypeArguments);
+            return new Class(Name,
+                             Namespace,
+                             Visibility,
+                             BaseClass,
+                             Static,
+                             Sealed,
+                             Partial,
+                             AutoGenerateInterface,
+                             AutoGenerateInterfaceSettings?.Build(),
+                             Record,
+                             Interfaces,
+                             Fields.Select(x => x.Build()),
+                             Properties.Select(x => x.Build()),
+                             Methods.Select(x => x.Build()),
+                             Constructors.Select(x => x.Build()),
+                             Metadata.Select(x => x.Build()),
+                             Attributes.Select(x => x.Build()),
+                             SubClasses.Select(x => x.Build()),
+                             Enums.Select(x => x.Build()),
+                             GenericTypeArguments);
         }
         public ClassBuilder Clear()
         {
@@ -59,53 +78,41 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArguments = default;
             return this;
         }
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
         public ClassBuilder Update(IClass source)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
         {
             Interfaces = new List<string>();
             Fields = new List<ClassFieldBuilder>();
             Properties = new List<ClassPropertyBuilder>();
-            Static = default;
-            Sealed = default;
-            Partial = default;
-            AutoGenerateInterface = default;
             AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
-            Record = default;
             Metadata = new List<MetadataBuilder>();
-            Visibility = default;
-            Name = default;
             Attributes = new List<AttributeBuilder>();
             SubClasses = new List<ClassBuilder>();
             Enums = new List<EnumBuilder>();
-            Namespace = default;
             Constructors = new List<ClassConstructorBuilder>();
             Methods = new List<ClassMethodBuilder>();
-            BaseClass = default;
             GenericTypeArguments = new List<string>();
-            if (source != null)
-            {
-                if (source.Interfaces != null) foreach (var x in source.Interfaces) Interfaces.Add(x);
-                if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new ClassFieldBuilder(x)));
-                Properties.AddRange(source.Properties.Select(x => new ClassPropertyBuilder(x)));
-                Static = source.Static;
-                Sealed = source.Sealed;
-                Partial = source.Partial;
-                AutoGenerateInterface = source.AutoGenerateInterface;
-                AutoGenerateInterfaceSettings.Update(source.AutoGenerateInterfaceSettings);
-                Record = source.Record;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Visibility = source.Visibility;
-                Name = source.Name;
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                if (source.SubClasses != null) SubClasses.AddRange(source.SubClasses.Select(x => new ClassBuilder(x)));
-                if (source.Enums != null) Enums.AddRange(source.Enums.Select(x => new EnumBuilder(x)));
-                Namespace = source.Namespace;
-                if (source.Constructors != null) Constructors.AddRange(source.Constructors.Select(x => new ClassConstructorBuilder(x)));
-                if (source.Metadata != null) Methods.AddRange(source.Methods.Select(x => new ClassMethodBuilder(x)));
-                BaseClass = source.BaseClass;
-                if (source.GenericTypeArguments != null) GenericTypeArguments.AddRange(source.GenericTypeArguments);
-            }
+
+            Interfaces.AddRange(source.Interfaces ?? Enumerable.Empty<string>());
+            Fields.AddRange(source.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>());
+            Properties.AddRange(source.Properties?.Select(x => new ClassPropertyBuilder(x)));
+            Static = source.Static;
+            Sealed = source.Sealed;
+            Partial = source.Partial;
+            AutoGenerateInterface = source.AutoGenerateInterface;
+            AutoGenerateInterfaceSettings.Update(source.AutoGenerateInterfaceSettings);
+            Record = source.Record;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            SubClasses.AddRange(source.SubClasses?.Select(x => new ClassBuilder(x)) ?? Enumerable.Empty<ClassBuilder>());
+            Enums.AddRange(source.Enums?.Select(x => new EnumBuilder(x)) ?? Enumerable.Empty<EnumBuilder>());
+            Namespace = source.Namespace;
+            Constructors.AddRange(source.Constructors?.Select(x => new ClassConstructorBuilder(x)) ?? Enumerable.Empty<ClassConstructorBuilder>());
+            Methods.AddRange(source.Methods?.Select(x => new ClassMethodBuilder(x)) ?? Enumerable.Empty<ClassMethodBuilder>());
+            BaseClass = source.BaseClass;
+            GenericTypeArguments.AddRange(source.GenericTypeArguments ?? Enumerable.Empty<string>());
+
             return this;
         }
         public ClassBuilder ClearInterfaces()
@@ -183,22 +190,22 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassBuilder WithStatic(bool @static)
+        public ClassBuilder WithStatic(bool @static = true)
         {
             Static = @static;
             return this;
         }
-        public ClassBuilder WithSealed(bool @sealed)
+        public ClassBuilder WithSealed(bool @sealed = true)
         {
             Sealed = @sealed;
             return this;
         }
-        public ClassBuilder WithPartial(bool partial)
+        public ClassBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
             return this;
         }
-        public ClassBuilder WithAutoGenerateInterface(bool autoGenerateInterface)
+        public ClassBuilder WithAutoGenerateInterface(bool autoGenerateInterface = true)
         {
             AutoGenerateInterface = autoGenerateInterface;
             return this;
@@ -213,7 +220,7 @@ namespace ModelFramework.Objects.Builders
             AutoGenerateInterfaceSettings = autoGenerateInterfaceSettingsBuilder;
             return this;
         }
-        public ClassBuilder WithRecord(bool record)
+        public ClassBuilder WithRecord(bool record = true)
         {
             Record = record;
             return this;
@@ -424,71 +431,12 @@ namespace ModelFramework.Objects.Builders
             BaseClass = baseClass;
             return this;
         }
-        public ClassBuilder(IClass source = null)
-        {
-            if (source != null)
-            {
-                Interfaces = new List<string>(source.Interfaces ?? Enumerable.Empty<string>());
-                Fields = new List<ClassFieldBuilder>(source.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>());
-                Properties = new List<ClassPropertyBuilder>(source.Properties?.Select(x => new ClassPropertyBuilder(x)) ?? Enumerable.Empty<ClassPropertyBuilder>());
-                Static = source.Static;
-                Sealed = source.Sealed;
-                Partial = source.Partial;
-                AutoGenerateInterface = source.AutoGenerateInterface;
-                AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder(source.AutoGenerateInterfaceSettings);
-                Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Visibility = source.Visibility;
-                Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
-                SubClasses = new List<ClassBuilder>(source.SubClasses.Select(x => new ClassBuilder(x)));
-                Enums = new List<EnumBuilder>(source.Enums.Select(x => new EnumBuilder(x)));
-                Namespace = source.Namespace;
-                Constructors = new List<ClassConstructorBuilder>(source.Constructors.Select(x=> new ClassConstructorBuilder(x)));
-                Methods = new List<ClassMethodBuilder>(source.Methods.Select(x => new ClassMethodBuilder(x)));
-                BaseClass = source.BaseClass;
-                GenericTypeArguments = new List<string>(source.GenericTypeArguments ?? Array.Empty<string>());
-            }
-            else
-            {
-                Interfaces = new List<string>();
-                Fields = new List<ClassFieldBuilder>();
-                Properties = new List<ClassPropertyBuilder>();
-                AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
-                Metadata = new List<MetadataBuilder>();
-                Attributes = new List<AttributeBuilder>();
-                SubClasses = new List<ClassBuilder>();
-                Enums = new List<EnumBuilder>();
-                Constructors = new List<ClassConstructorBuilder>();
-                Methods = new List<ClassMethodBuilder>();
-                GenericTypeArguments = new List<string>();
-            }
-        }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public ClassBuilder(string name,
-                            string @namespace,
-                            Visibility visibility = Visibility.Public,
-                            string baseClass = null,
-                            bool @static = false,
-                            bool @sealed = false,
-                            bool partial = false,
-                            bool autoGenerateInterface = false,
-                            InterfaceSettings autoGenerateInterfaceSettings = null,
-                            bool record = false,
-                            IEnumerable<string> interfaces = null,
-                            IEnumerable<IClassField> fields = null,
-                            IEnumerable<IClassProperty> properties = null,
-                            IEnumerable<IClassMethod> methods = null,
-                            IEnumerable<IClassConstructor> constructors = null,
-                            IEnumerable<IMetadata> metadata = null,
-                            IEnumerable<IAttribute> attributes = null,
-                            IEnumerable<IClass> subClasses = null,
-                            IEnumerable<IEnum> enums = null,
-                            IEnumerable<string> genericTypeArguments = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public ClassBuilder()
         {
             Interfaces = new List<string>();
             Fields = new List<ClassFieldBuilder>();
             Properties = new List<ClassPropertyBuilder>();
+            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
             SubClasses = new List<ClassBuilder>();
@@ -496,26 +444,30 @@ namespace ModelFramework.Objects.Builders
             Constructors = new List<ClassConstructorBuilder>();
             Methods = new List<ClassMethodBuilder>();
             GenericTypeArguments = new List<string>();
-            Name = name;
-            Namespace = @namespace;
-            Visibility = visibility;
-            BaseClass = baseClass;
-            Static = @static;
-            Sealed = @sealed;
-            Partial = partial;
-            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder(autoGenerateInterfaceSettings);
-            AutoGenerateInterface = autoGenerateInterface;
-            Record = record;
-            if (interfaces != null) Interfaces.AddRange(interfaces);
-            if (fields != null) Fields.AddRange(fields.Select(x => new ClassFieldBuilder(x)));
-            if (properties != null) Properties.AddRange(properties.Select(x => new ClassPropertyBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            if (subClasses != null) SubClasses.AddRange(subClasses.Select(x => new ClassBuilder(x)));
-            if (enums != null) Enums.AddRange(enums.Select(x => new EnumBuilder(x)));
-            if (constructors != null) Constructors.AddRange(constructors.Select(x => new ClassConstructorBuilder(x)));
-            if (methods != null) Methods.AddRange(methods.Select(x => new ClassMethodBuilder(x)));
-            if (genericTypeArguments != null) GenericTypeArguments.AddRange(genericTypeArguments);
+        }
+        public ClassBuilder(IClass source)
+        {
+            Interfaces = new List<string>(source.Interfaces ?? Enumerable.Empty<string>());
+            Fields = new List<ClassFieldBuilder>(source.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>());
+            Properties = new List<ClassPropertyBuilder>(source.Properties?.Select(x => new ClassPropertyBuilder(x)) ?? Enumerable.Empty<ClassPropertyBuilder>());
+            Static = source.Static;
+            Sealed = source.Sealed;
+            Partial = source.Partial;
+            AutoGenerateInterface = source.AutoGenerateInterface;
+            AutoGenerateInterfaceSettings = source.AutoGenerateInterfaceSettings == null
+                ? null
+                : new InterfaceSettingsBuilder(source.AutoGenerateInterfaceSettings);
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+            SubClasses = new List<ClassBuilder>(source.SubClasses.Select(x => new ClassBuilder(x)));
+            Enums = new List<EnumBuilder>(source.Enums.Select(x => new EnumBuilder(x)));
+            Namespace = source.Namespace;
+            Constructors = new List<ClassConstructorBuilder>(source.Constructors.Select(x => new ClassConstructorBuilder(x)));
+            Methods = new List<ClassMethodBuilder>(source.Methods.Select(x => new ClassMethodBuilder(x)));
+            BaseClass = source.BaseClass;
+            GenericTypeArguments = new List<string>(source.GenericTypeArguments ?? Enumerable.Empty<string>());
         }
     }
 }

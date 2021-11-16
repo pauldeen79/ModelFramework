@@ -54,7 +54,7 @@ namespace ModelFramework.Objects.Default
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
             SubClasses = new ValueCollection<IClass>(subClasses ?? Enumerable.Empty<IClass>());
             Enums = new ValueCollection<IEnum>(enums ?? Enumerable.Empty<IEnum>());
-            GenericTypeArguments = genericTypeArguments?.ToArray() ?? Array.Empty<string>();
+            GenericTypeArguments = new ValueCollection<string>(genericTypeArguments ?? Enumerable.Empty<string>());
         }
 
         public ValueCollection<string> Interfaces { get; }
@@ -76,7 +76,7 @@ namespace ModelFramework.Objects.Default
         public ValueCollection<IClassConstructor> Constructors { get; }
         public ValueCollection<IClassMethod> Methods { get; }
         public string BaseClass { get; }
-        public string[] GenericTypeArguments { get; }
+        public ValueCollection<string> GenericTypeArguments { get; }
 
         public override string ToString() => !string.IsNullOrEmpty(Namespace) ? $"{Namespace}.{Name}" : Name;
     }

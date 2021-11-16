@@ -15,7 +15,10 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public DefaultValueConstraint Build()
         {
-            return new DefaultValueConstraint(FieldName, DefaultValue, Name, Metadata.Select(x => x.Build()));
+            return new DefaultValueConstraint(FieldName,
+                                              DefaultValue,
+                                              Name,
+                                              Metadata.Select(x => x.Build()));
         }
         public DefaultValueConstraintBuilder Clear()
         {
@@ -27,17 +30,13 @@ namespace ModelFramework.Database.Builders
         }
         public DefaultValueConstraintBuilder Update(IDefaultValueConstraint source)
         {
-            FieldName = default;
-            DefaultValue = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                FieldName = source.FieldName;
-                DefaultValue = source.DefaultValue;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            FieldName = source.FieldName;
+            DefaultValue = source.DefaultValue;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public DefaultValueConstraintBuilder WithFieldName(string fieldName)
@@ -87,27 +86,17 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public DefaultValueConstraintBuilder(IDefaultValueConstraint source = null)
+        public DefaultValueConstraintBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                FieldName = source.FieldName;
-                DefaultValue = source.DefaultValue;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public DefaultValueConstraintBuilder(string fieldName,
-                                             string defaultValue,
-                                             string name,
-                                             IEnumerable<IMetadata> metadata = null)
+        public DefaultValueConstraintBuilder(IDefaultValueConstraint source)
         {
             Metadata = new List<MetadataBuilder>();
-            FieldName = fieldName;
-            DefaultValue = defaultValue;
-            Name = name;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+            FieldName = source.FieldName;
+            DefaultValue = source.DefaultValue;
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

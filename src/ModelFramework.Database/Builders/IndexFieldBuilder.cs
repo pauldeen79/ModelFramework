@@ -14,7 +14,9 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IIndexField Build()
         {
-            return new IndexField(Name, IsDescending, Metadata.Select(x => x.Build()));
+            return new IndexField(Name,
+                                  IsDescending,
+                                  Metadata.Select(x => x.Build()));
         }
         public IndexFieldBuilder Clear()
         {
@@ -25,15 +27,12 @@ namespace ModelFramework.Database.Builders
         }
         public IndexFieldBuilder Update(IIndexField source)
         {
-            IsDescending = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                IsDescending = source.IsDescending;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            IsDescending = source.IsDescending;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public IndexFieldBuilder WithIsDescending(bool isDescending)
@@ -78,22 +77,17 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public IndexFieldBuilder(IIndexField source = null)
+        public IndexFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                IsDescending = source.IsDescending;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public IndexFieldBuilder(string name, bool isDescending = false, IEnumerable<IMetadata> metadata = null)
+        public IndexFieldBuilder(IIndexField source)
         {
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            IsDescending = isDescending;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            IsDescending = source.IsDescending;
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

@@ -549,7 +549,11 @@ using System.Text;
             // Arrange
             var model = new[]
             {
-                new ClassBuilder("MyClass", "MyNamespace").AddGeneratedCodeAttribute("MyGenerator", "1.2.3.4").Build()
+                new ClassBuilder()
+                    .WithName("MyClass")
+                    .WithNamespace("MyNamespace")
+                    .AddGeneratedCodeAttribute("MyGenerator", "1.2.3.4")
+                    .Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -578,7 +582,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new ClassBuilder("MyClass", "MyNamespace").AddExcludeFromCodeCoverageAttribute().Build()
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").AddExcludeFromCodeCoverageAttribute().Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -607,7 +611,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace")
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -635,7 +639,11 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", methods: new[] { new ClassMethod("DoSomething", "System.Boolean") }, autoGenerateInterface: true)
+                new ClassBuilder()
+                    .WithName("MyClass")
+                    .WithNamespace("MyNamespace")
+                    .AddMethods(new ClassMethod("DoSomething", "System.Boolean"))
+                    .WithAutoGenerateInterface(true).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -671,7 +679,13 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", methods: new[] { new ClassMethod("DoSomething", "System.Boolean") }, interfaces: new[] { "IInterface1", "IInterface2" }, autoGenerateInterface: true)
+                new ClassBuilder()
+                    .WithName("MyClass")
+                    .WithNamespace("MyNamespace")
+                    .AddMethods(new ClassMethod("DoSomething", "System.Boolean"))
+                    .AddInterfaces("IInterface1", "IInterface2")
+                    .WithAutoGenerateInterface(true)
+                    .Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -707,7 +721,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Interface("IMyInterface", "MyNamespace")
+                new InterfaceBuilder { Name = "IMyInterface", Namespace = "MyNamespace" }.Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -735,7 +749,11 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new InterfaceBuilder("MyClass", "MyNamespace").AddGeneratedCodeAttribute("MyGenerator", "1.2.3.4").Build()
+                new InterfaceBuilder()
+                    .WithName("MyClass")
+                    .WithNamespace("MyNamespace")
+                    .AddGeneratedCodeAttribute("MyGenerator", "1.2.3.4")
+                    .Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1727,12 +1745,14 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder("Property1", typeof(string).FullName),
-                new ClassPropertyBuilder("Property2", typeof(ICollection<string>).FullName).ConvertCollectionToEnumerable(),
-                new ClassPropertyBuilder("Property3", "MyCustomType").ConvertSinglePropertyToBuilder(),
-                new ClassPropertyBuilder("Property4", typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder()
+                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
+                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable().Build(),
+                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder().Build(),
+                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder().Build()
             };
-            var cls = new ClassBuilder("MyRecord", "MyNamespace")
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
                 .AddProperties(properties)
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"))
@@ -1756,8 +1776,10 @@ namespace MyNamespace
         public void GeneratesImmutableBuilderClassWithReservedKeyword()
         {
             // Arrange
-            var cls = new ClassBuilder("MyRecord", "MyNamespace")
-                .AddProperties(new ClassPropertyBuilder("Static", typeof(bool).FullName))
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
+                .AddProperties(new ClassPropertyBuilder { Name = "Static", TypeName = typeof(bool).FullName } )
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings())
                 .Build();
@@ -2036,7 +2058,7 @@ namespace MyNamespace
         public void Generating_ImmutableClass_From_Class_Without_Properties_Throws_Exception()
         {
             // Arrange
-            var input = new Class("MyClass", "MyNamespace");
+            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
             // Act & Assert
             input.Invoking(x => x.ToImmutableClass(new ImmutableClassSettings()))
@@ -2355,7 +2377,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void Generating_ImmutableBuilderClass_From_Class_Without_Properties_Throws_Exception()
         {
             // Arrange
-            var input = new Class("MyClass", "MyNamespace");
+            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
             // Act & Assert
             input.Invoking(x => x.ToImmutableBuilderClass(new ImmutableBuilderClassSettings()))

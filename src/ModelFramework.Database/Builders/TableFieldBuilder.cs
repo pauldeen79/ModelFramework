@@ -22,7 +22,17 @@ namespace ModelFramework.Database.Builders
         public ITableFieldCheckConstraint CheckConstraint { get; set; }
         public ITableField Build()
         {
-            return new TableField(Name, Type, IsRequired, IsIdentity, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, CheckConstraint, Metadata.Select(x => x.Build()));
+            return new TableField(Name,
+                                  Type,
+                                  IsRequired,
+                                  IsIdentity,
+                                  NumericPrecision,
+                                  NumericScale,
+                                  StringLength,
+                                  StringCollation,
+                                  IsStringMaxLength,
+                                  CheckConstraint,
+                                  Metadata.Select(x => x.Build()));
         }
         public TableFieldBuilder Clear()
         {
@@ -41,31 +51,20 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder Update(ITableField source)
         {
-            Type = default;
-            IsIdentity = default;
-            IsRequired = default;
-            NumericPrecision = default;
-            NumericScale = default;
-            StringLength = default;
-            StringCollation = default;
-            IsStringMaxLength = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            CheckConstraint = default;
-            if (source != null)
-            {
-                Type = source.Type;
-                IsIdentity = source.IsIdentity;
-                IsRequired = source.IsRequired;
-                NumericPrecision = source.NumericPrecision;
-                NumericScale = source.NumericScale;
-                StringLength = source.StringLength;
-                StringCollation = source.StringCollation;
-                IsStringMaxLength = source.IsStringMaxLength;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                CheckConstraint = source.CheckConstraint;
-            }
+
+            Type = source.Type;
+            IsIdentity = source.IsIdentity;
+            IsRequired = source.IsRequired;
+            NumericPrecision = source.NumericPrecision;
+            NumericScale = source.NumericScale;
+            StringLength = source.StringLength;
+            StringCollation = source.StringCollation;
+            IsStringMaxLength = source.IsStringMaxLength;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            CheckConstraint = source.CheckConstraint;
+
             return this;
         }
         public TableFieldBuilder WithType(string type)
@@ -150,50 +149,25 @@ namespace ModelFramework.Database.Builders
             CheckConstraint = checkConstraint;
             return this;
         }
-        public TableFieldBuilder(ITableField source = null)
+        public TableFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Type = source.Type;
-                IsIdentity = source.IsIdentity;
-                IsRequired = source.IsRequired;
-                NumericPrecision = source.NumericPrecision;
-                NumericScale = source.NumericScale;
-                StringLength = source.StringLength;
-                StringCollation = source.StringCollation;
-                IsStringMaxLength = source.IsStringMaxLength;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-                CheckConstraint = source.CheckConstraint;
-            }
         }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public TableFieldBuilder(string name,
-                                 string type,
-                                 bool isRequired = false,
-                                 bool isIdentity = false,
-                                 byte? numericPrecision = null,
-                                 byte? numericScale = null,
-                                 int? stringLength = null,
-                                 string stringCollation = null,
-                                 bool? isStringMaxLength = null,
-                                 ITableFieldCheckConstraint checkConstraint = null,
-                                 IEnumerable<IMetadata> metadata = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public TableFieldBuilder(ITableField source)
         {
             Metadata = new List<MetadataBuilder>();
-            Type = type;
-            IsIdentity = isIdentity;
-            IsRequired = isRequired;
-            NumericPrecision = numericPrecision;
-            NumericScale = numericScale;
-            StringLength = stringLength;
-            StringCollation = stringCollation;
-            IsStringMaxLength = isStringMaxLength;
-            Name = name;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            CheckConstraint = checkConstraint;
+
+            Type = source.Type;
+            IsIdentity = source.IsIdentity;
+            IsRequired = source.IsRequired;
+            NumericPrecision = source.NumericPrecision;
+            NumericScale = source.NumericScale;
+            StringLength = source.StringLength;
+            StringCollation = source.StringCollation;
+            IsStringMaxLength = source.IsStringMaxLength;
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            CheckConstraint = source.CheckConstraint;
         }
     }
 }

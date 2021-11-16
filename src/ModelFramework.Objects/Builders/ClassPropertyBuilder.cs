@@ -35,33 +35,30 @@ namespace ModelFramework.Objects.Builders
         public List<ICodeStatementBuilder> InitCodeStatements { get; set; }
         public IClassProperty Build()
         {
-            return new ClassProperty
-            (
-                Name,
-                TypeName,
-                Static,
-                Virtual,
-                Abstract,
-                Protected,
-                Override,
-                HasGetter,
-                HasSetter, 
-                HasInit,
-                IsNullable,
-                Visibility,
-                GetterVisibility,
-                SetterVisibility,
-                InitVisibility,
-                GetterBody,
-                SetterBody,
-                InitBody,
-                ExplicitInterfaceName,
-                Metadata.Select(x => x.Build()),
-                Attributes.Select(x => x.Build()),
-                GetterCodeStatements.Select(x => x.Build()),
-                SetterCodeStatements.Select(x => x.Build()),
-                InitCodeStatements.Select(x => x.Build())
-            );
+            return new ClassProperty(Name,
+                                     TypeName,
+                                     Static,
+                                     Virtual,
+                                     Abstract,
+                                     Protected,
+                                     Override,
+                                     HasGetter,
+                                     HasSetter, 
+                                     HasInit,
+                                     IsNullable,
+                                     Visibility,
+                                     GetterVisibility,
+                                     SetterVisibility,
+                                     InitVisibility,
+                                     GetterBody,
+                                     SetterBody,
+                                     InitBody,
+                                     ExplicitInterfaceName,
+                                     Metadata.Select(x => x.Build()),
+                                     Attributes.Select(x => x.Build()),
+                                     GetterCodeStatements.Select(x => x.Build()),
+                                     SetterCodeStatements.Select(x => x.Build()),
+                                     InitCodeStatements.Select(x => x.Build()));
         }
         public ClassPropertyBuilder Clear()
         {
@@ -93,70 +90,50 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder Update(ClassProperty source)
         {
-            Static = default;
-            HasGetter = true;
-            HasSetter = true;
-            HasInit = default;
             Metadata = new List<MetadataBuilder>();
-            Visibility = default;
-            GetterVisibility = default;
-            SetterVisibility = default;
-            InitVisibility = default;
-            GetterBody = default;
-            SetterBody = default;
-            InitBody = default;
-            Name = default;
             Attributes = new List<AttributeBuilder>();
-            TypeName = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            IsNullable = default;
-            ExplicitInterfaceName = default;
             GetterCodeStatements = new List<ICodeStatementBuilder>();
             SetterCodeStatements = new List<ICodeStatementBuilder>();
             InitCodeStatements = new List<ICodeStatementBuilder>();
-            if (source != null)
-            {
-                Static = source.Static;
-                HasGetter = source.HasGetter;
-                HasSetter = source.HasSetter;
-                HasInit = source.HasInit;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Visibility = source.Visibility;
-                GetterVisibility = source.GetterVisibility;
-                SetterVisibility = source.SetterVisibility;
-                InitVisibility = source.InitVisibility;
-                GetterBody = source.GetterBody;
-                SetterBody = source.SetterBody;
-                InitBody = source.InitBody;
-                Name = source.Name;
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                TypeName = source.TypeName;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                IsNullable = source.IsNullable;
-                ExplicitInterfaceName = source.ExplicitInterfaceName;
-                if (source.GetterCodeStatements != null) GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
-                if (source.SetterCodeStatements != null) SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
-                if (source.InitCodeStatements != null) InitCodeStatements.AddRange(source.InitCodeStatements.Select(x => x.CreateBuilder()));
-            }
+
+            Static = source.Static;
+            HasGetter = source.HasGetter;
+            HasSetter = source.HasSetter;
+            HasInit = source.HasInit;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
+            GetterVisibility = source.GetterVisibility;
+            SetterVisibility = source.SetterVisibility;
+            InitVisibility = source.InitVisibility;
+            GetterBody = source.GetterBody;
+            SetterBody = source.SetterBody;
+            InitBody = source.InitBody;
+            Name = source.Name;
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            TypeName = source.TypeName;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            IsNullable = source.IsNullable;
+            ExplicitInterfaceName = source.ExplicitInterfaceName;
+            GetterCodeStatements.AddRange(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            SetterCodeStatements.AddRange(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            InitCodeStatements.AddRange(source.InitCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+
             return this;
         }
-        public ClassPropertyBuilder WithStatic(bool @static)
+        public ClassPropertyBuilder WithStatic(bool @static = true)
         {
             Static = @static;
             return this;
         }
-        public ClassPropertyBuilder WithHasGetter(bool hasGetter)
+        public ClassPropertyBuilder WithHasGetter(bool hasGetter = true)
         {
             HasGetter = hasGetter;
             return this;
         }
-        public ClassPropertyBuilder WithHasSetter(bool hasSetter)
+        public ClassPropertyBuilder WithHasSetter(bool hasSetter = true)
         {
             HasSetter = hasSetter;
             if (hasSetter)
@@ -165,7 +142,7 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassPropertyBuilder WithHasInit(bool hasInit)
+        public ClassPropertyBuilder WithHasInit(bool hasInit = true)
         {
             HasInit = hasInit;
             if (hasInit)
@@ -277,27 +254,27 @@ namespace ModelFramework.Objects.Builders
             TypeName = typeName;
             return this;
         }
-        public ClassPropertyBuilder WithVirtual(bool @virtual)
+        public ClassPropertyBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
             return this;
         }
-        public ClassPropertyBuilder WithAbstract(bool @abstract)
+        public ClassPropertyBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
             return this;
         }
-        public ClassPropertyBuilder WithProtected(bool @protected)
+        public ClassPropertyBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
             return this;
         }
-        public ClassPropertyBuilder WithOverride(bool @override)
+        public ClassPropertyBuilder WithOverride(bool @override = true)
         {
             Override = @override;
             return this;
         }
-        public ClassPropertyBuilder WithIsNullable(bool isNullable)
+        public ClassPropertyBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
             return this;
@@ -394,102 +371,42 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassPropertyBuilder(IClassProperty source = null)
+        public ClassPropertyBuilder()
         {
-            if (source != null)
-            {
-                Static = source.Static;
-                HasGetter = source.HasGetter;
-                HasSetter = source.HasSetter;
-                HasInit = source.HasInit;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Visibility = source.Visibility;
-                GetterVisibility = source.GetterVisibility;
-                SetterVisibility = source.SetterVisibility;
-                InitVisibility = source.InitVisibility;
-                GetterBody = source.GetterBody;
-                SetterBody = source.SetterBody;
-                InitBody = source.InitBody;
-                Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                TypeName = source.TypeName;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                IsNullable = source.IsNullable;
-                ExplicitInterfaceName = source.ExplicitInterfaceName;
-                GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-                SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-                InitCodeStatements = new List<ICodeStatementBuilder>(source.InitCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            }
-            else
-            {
-                HasGetter = true;
-                HasSetter = true;
-                Metadata = new List<MetadataBuilder>();
-                Attributes = new List<AttributeBuilder>();
-                GetterCodeStatements = new List<ICodeStatementBuilder>();
-                SetterCodeStatements = new List<ICodeStatementBuilder>();
-                InitCodeStatements = new List<ICodeStatementBuilder>();
-            }
-        }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public ClassPropertyBuilder(string name,
-                                    string typeName,
-                                    bool @static = false,
-                                    bool @virtual = false,
-                                    bool @abstract = false,
-                                    bool @protected = false,
-                                    bool @override = false,
-                                    bool hasGetter = true,
-                                    bool hasSetter = true,
-                                    bool hasInit = false,
-                                    bool isNullable = false,
-                                    Visibility visibility = Visibility.Public,
-                                    Visibility getterVisibility = Visibility.Public,
-                                    Visibility setterVisibility = Visibility.Public,
-                                    Visibility initVisibility = Visibility.Public,
-                                    string getterBody = null,
-                                    string setterBody = null,
-                                    string initBody = null,
-                                    string explicitInterfaceName = null,
-                                    IEnumerable<IMetadata> metadata = null,
-                                    IEnumerable<IAttribute> attributes = null,
-                                    IEnumerable<ICodeStatement> getterCodeStatements = null,
-                                    IEnumerable<ICodeStatement> setterCodeStatements = null,
-                                    IEnumerable<ICodeStatement> initCodeStatements = null)
-#pragma warning restore S107 // Methods should not have too many parameters
-        {
+            HasGetter = true;
+            HasSetter = true;
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
             GetterCodeStatements = new List<ICodeStatementBuilder>();
             SetterCodeStatements = new List<ICodeStatementBuilder>();
             InitCodeStatements = new List<ICodeStatementBuilder>();
-            Name = name;
-            TypeName = typeName;
-            Static = @static;
-            Virtual = @virtual;
-            Abstract = @abstract;
-            Protected = @protected;
-            Override = @override;
-            HasGetter = hasGetter;
-            HasSetter = hasSetter;
-            HasInit = hasInit;
-            IsNullable = isNullable;
-            Visibility = visibility;
-            GetterVisibility = getterVisibility;
-            SetterVisibility = setterVisibility;
-            InitVisibility = initVisibility;
-            GetterBody = getterBody;
-            SetterBody = setterBody;
-            InitBody = initBody;
-            ExplicitInterfaceName = explicitInterfaceName;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            if (getterCodeStatements != null) GetterCodeStatements.AddRange(getterCodeStatements.Select(x => x.CreateBuilder()));
-            if (setterCodeStatements != null) SetterCodeStatements.AddRange(setterCodeStatements.Select(x => x.CreateBuilder()));
-            if (initCodeStatements != null) InitCodeStatements.AddRange(initCodeStatements.Select(x => x.CreateBuilder()));
+        }
+        public ClassPropertyBuilder(IClassProperty source)
+        {
+            Static = source.Static;
+            HasGetter = source.HasGetter;
+            HasSetter = source.HasSetter;
+            HasInit = source.HasInit;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
+            GetterVisibility = source.GetterVisibility;
+            SetterVisibility = source.SetterVisibility;
+            InitVisibility = source.InitVisibility;
+            GetterBody = source.GetterBody;
+            SetterBody = source.SetterBody;
+            InitBody = source.InitBody;
+            Name = source.Name;
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            TypeName = source.TypeName;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            IsNullable = source.IsNullable;
+            ExplicitInterfaceName = source.ExplicitInterfaceName;
+            GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            InitCodeStatements = new List<ICodeStatementBuilder>(source.InitCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
         }
     }
 }

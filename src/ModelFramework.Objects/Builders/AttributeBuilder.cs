@@ -20,13 +20,11 @@ namespace ModelFramework.Objects.Builders
         {
             Parameters = new List<AttributeParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = default;
-            if (source != null)
-            {
-                if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new AttributeParameterBuilder(x)));
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Name = source.Name;
-            }
+
+            Parameters.AddRange(source.Parameters?.Select(x => new AttributeParameterBuilder(x)) ?? Enumerable.Empty<AttributeParameterBuilder>());
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Name = source.Name;
+
             return this;
         }
         public AttributeBuilder Clear()
@@ -93,27 +91,16 @@ namespace ModelFramework.Objects.Builders
             Name = name;
             return this;
         }
-        public AttributeBuilder(IAttribute source = null)
-        {
-            if (source != null)
-            {
-                if (source.Parameters != null) Parameters = new List<AttributeParameterBuilder>(source.Parameters?.Select(x => new AttributeParameterBuilder(x)) ?? Enumerable.Empty<AttributeParameterBuilder>());
-                if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Name = source.Name;
-            }
-            else
-            {
-                Parameters = new List<AttributeParameterBuilder>();
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public AttributeBuilder(string name, IEnumerable<IAttributeParameter> parameters = null, IEnumerable<IMetadata> metadata = null)
+        public AttributeBuilder()
         {
             Parameters = new List<AttributeParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            if (parameters != null) Parameters.AddRange(parameters.Select(x => new AttributeParameterBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public AttributeBuilder(IAttribute source)
+        {
+            if (source.Parameters != null) Parameters = new List<AttributeParameterBuilder>(source.Parameters?.Select(x => new AttributeParameterBuilder(x)) ?? Enumerable.Empty<AttributeParameterBuilder>());
+            if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Name = source.Name;
         }
     }
 }

@@ -58,31 +58,20 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         public LiteralCodeStatementBuilder Update(LiteralCodeStatement source)
         {
             Metadata = new List<MetadataBuilder>();
-            Statement = default;
-            if (source != null)
-            {
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Statement = source.Statement;
-            }
+
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Statement = source.Statement;
+
             return this;
         }
-        public LiteralCodeStatementBuilder(LiteralCodeStatement source = null)
-        {
-            if (source != null)
-            {
-                Statement = source.Statement;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            }
-            else
-            {
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public LiteralCodeStatementBuilder(string statement, IEnumerable<IMetadata> metadata = null)
+        public LiteralCodeStatementBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            Statement = statement;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public LiteralCodeStatementBuilder(LiteralCodeStatement source)
+        {
+            Statement = source.Statement;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
         }
     }
 }

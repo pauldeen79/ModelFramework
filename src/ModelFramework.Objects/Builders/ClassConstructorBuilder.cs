@@ -23,7 +23,18 @@ namespace ModelFramework.Objects.Builders
         public List<ICodeStatementBuilder> CodeStatements { get; set; }
         public IClassConstructor Build()
         {
-            return new ClassConstructor(Visibility, Static, Virtual, Abstract, Protected, Override, Body, ChainCall, Parameters.Select(x => x.Build()), Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ClassConstructor(Visibility,
+                                        Static,
+                                        Virtual,
+                                        Abstract,
+                                        Protected,
+                                        Override,
+                                        Body,
+                                        ChainCall,
+                                        Parameters.Select(x => x.Build()),
+                                        Attributes.Select(x => x.Build()),
+                                        CodeStatements.Select(x => x.Build()),
+                                        Metadata.Select(x => x.Build()));
         }
         public ClassConstructorBuilder Clear()
         {
@@ -44,32 +55,21 @@ namespace ModelFramework.Objects.Builders
         public ClassConstructorBuilder Update(IClassConstructor source)
         {
             Metadata = new List<MetadataBuilder>();
-            Static = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            Visibility = default;
             Attributes = new List<AttributeBuilder>();
-            Body = default;
-            ChainCall = default;
             Parameters = new List<ParameterBuilder>();
             CodeStatements = new List<ICodeStatementBuilder>();
-            if (source != null)
-            {
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Static = source.Static;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                Visibility = source.Visibility;
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                Body = source.Body;
-                ChainCall = source.ChainCall;
-                if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new ParameterBuilder(x)));
-                if (source.CodeStatements != null) CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
-            }
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Visibility = source.Visibility;
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Body = source.Body;
+            ChainCall = source.ChainCall;
+            Parameters.AddRange(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
+            CodeStatements.AddRange(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
             return this;
         }
         public ClassConstructorBuilder ClearMetadata()
@@ -101,27 +101,27 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassConstructorBuilder WithStatic(bool @static)
+        public ClassConstructorBuilder WithStatic(bool @static = true)
         {
             Static = @static;
             return this;
         }
-        public ClassConstructorBuilder WithVirtual(bool @virtual)
+        public ClassConstructorBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
             return this;
         }
-        public ClassConstructorBuilder WithAbstract(bool @abstract)
+        public ClassConstructorBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
             return this;
         }
-        public ClassConstructorBuilder WithProtected(bool @protected)
+        public ClassConstructorBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
             return this;
         }
-        public ClassConstructorBuilder WithOverride(bool @override)
+        public ClassConstructorBuilder WithOverride(bool @override = true)
         {
             Override = @override;
             return this;
@@ -228,65 +228,27 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassConstructorBuilder() : this(null)
-        {
-        }
-        public ClassConstructorBuilder(IClassConstructor source)
-        {
-            if (source != null)
-            {
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Static = source.Static;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                Visibility = source.Visibility;
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                Body = source.Body;
-                ChainCall = source.ChainCall;
-                Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
-                CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            }
-            else
-            {
-                Metadata = new List<MetadataBuilder>();
-                Attributes = new List<AttributeBuilder>();
-                Parameters = new List<ParameterBuilder>();
-                CodeStatements = new List<ICodeStatementBuilder>();
-            }
-        }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public ClassConstructorBuilder(Visibility visibility,
-                                       bool @static = false,
-                                       bool @virtual = false,
-                                       bool @abstract = false,
-                                       bool @protected = false,
-                                       bool @override = false,
-                                       string body = null,
-                                       string chainCall = null,
-                                       IEnumerable<IParameter> parameters = null,
-                                       IEnumerable<IAttribute> attributes = null,
-                                       IEnumerable<ICodeStatement> codeStatements = null,
-                                       IEnumerable<IMetadata> metadata = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public ClassConstructorBuilder()
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
             Parameters = new List<ParameterBuilder>();
             CodeStatements = new List<ICodeStatementBuilder>();
-            Visibility = visibility;
-            Static = @static;
-            Virtual = @virtual;
-            Abstract = @abstract;
-            Protected = @protected;
-            Override = @override;
-            Body = body;
-            ChainCall = chainCall;
-            if (parameters != null) Parameters.AddRange(parameters.Select(x => new ParameterBuilder(x)));
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            if (codeStatements != null) CodeStatements.AddRange(codeStatements.Select(x => x.CreateBuilder()));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public ClassConstructorBuilder(IClassConstructor source)
+        {
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Visibility = source.Visibility;
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Body = source.Body;
+            ChainCall = source.ChainCall;
+            Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
+            CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
         }
     }
 }

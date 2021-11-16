@@ -20,7 +20,15 @@ namespace ModelFramework.Database.Builders
         public List<ForeignKeyConstraintBuilder> ForeignKeyConstraints { get; set; }
         public ITable Build()
         {
-            return new Table(Name, FileGroupName, Fields.Select(x => x.Build()), PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new Table(Name,
+                             FileGroupName,
+                             Fields.Select(x => x.Build()),
+                             PrimaryKeyConstraints.Select(x => x.Build()),
+                             UniqueConstraints.Select(x => x.Build()),
+                             DefaultValueConstraints.Select(x => x.Build()),
+                             ForeignKeyConstraints.Select(x => x.Build()),
+                             Indexes.Select(x => x.Build()),
+                             Metadata.Select(x => x.Build()));
         }
         public TableBuilder Clear()
         {
@@ -37,27 +45,24 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder Update(ITable source)
         {
-            FileGroupName = default;
             PrimaryKeyConstraints = new List<PrimaryKeyConstraintBuilder>();
             UniqueConstraints = new List<UniqueConstraintBuilder>();
             Indexes = new List<IndexBuilder>();
             Fields = new List<TableFieldBuilder>();
-            Name = default;
             Metadata = new List<MetadataBuilder>();
             DefaultValueConstraints = new List<DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new List<ForeignKeyConstraintBuilder>();
-            if (source != null)
-            {
-                FileGroupName = source.FileGroupName;
-                if (source.PrimaryKeyConstraints != null) PrimaryKeyConstraints.AddRange(source.PrimaryKeyConstraints.Select(x => new PrimaryKeyConstraintBuilder(x)));
-                if (source.UniqueConstraints != null) UniqueConstraints.AddRange(source.UniqueConstraints.Select(x => new UniqueConstraintBuilder(x)));
-                if (source.Indexes != null) Indexes.AddRange(source.Indexes.Select(x => new IndexBuilder(x)));
-                if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new TableFieldBuilder(x)));
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                if (source.DefaultValueConstraints != null) DefaultValueConstraints.AddRange(source.DefaultValueConstraints.Select(x => new DefaultValueConstraintBuilder(x)));
-                if (source.ForeignKeyConstraints != null) ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ForeignKeyConstraintBuilder(x)));
-            }
+
+            FileGroupName = source.FileGroupName;
+            if (source.PrimaryKeyConstraints != null) PrimaryKeyConstraints.AddRange(source.PrimaryKeyConstraints.Select(x => new PrimaryKeyConstraintBuilder(x)));
+            if (source.UniqueConstraints != null) UniqueConstraints.AddRange(source.UniqueConstraints.Select(x => new UniqueConstraintBuilder(x)));
+            if (source.Indexes != null) Indexes.AddRange(source.Indexes.Select(x => new IndexBuilder(x)));
+            if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new TableFieldBuilder(x)));
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            if (source.DefaultValueConstraints != null) DefaultValueConstraints.AddRange(source.DefaultValueConstraints.Select(x => new DefaultValueConstraintBuilder(x)));
+            if (source.ForeignKeyConstraints != null) ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ForeignKeyConstraintBuilder(x)));
+
             return this;
         }
         public TableBuilder WithFileGroupName(string fileGroupName)
@@ -312,9 +317,7 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-        public TableBuilder(ITable source = null)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
+        public TableBuilder()
         {
             PrimaryKeyConstraints = new List<PrimaryKeyConstraintBuilder>();
             UniqueConstraints = new List<UniqueConstraintBuilder>();
@@ -323,30 +326,8 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             DefaultValueConstraints = new List<DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new List<ForeignKeyConstraintBuilder>();
-            if (source != null)
-            {
-                FileGroupName = source.FileGroupName;
-                if (source.PrimaryKeyConstraints != null) foreach (var x in source.PrimaryKeyConstraints) PrimaryKeyConstraints.Add(new PrimaryKeyConstraintBuilder(x));
-                if (source.UniqueConstraints != null) foreach (var x in source.UniqueConstraints) UniqueConstraints.Add(new UniqueConstraintBuilder(x));
-                if (source.Indexes != null) foreach (var x in source.Indexes) Indexes.Add(new IndexBuilder(x));
-                if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new TableFieldBuilder(x));
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-                if (source.DefaultValueConstraints != null) foreach (var x in source.DefaultValueConstraints) DefaultValueConstraints.Add(new DefaultValueConstraintBuilder(x));
-                if (source.ForeignKeyConstraints != null) foreach (var x in source.ForeignKeyConstraints) ForeignKeyConstraints.Add(new ForeignKeyConstraintBuilder(x));
-            }
         }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public TableBuilder(string name,
-                            string fileGroupName = null,
-                            IEnumerable<ITableField> fields = null,
-                            IEnumerable<IPrimaryKeyConstraint> primaryKeyConstraints = null,
-                            IEnumerable<IUniqueConstraint> uniqueConstraints = null,
-                            IEnumerable<IDefaultValueConstraint> defaultValueConstraints = null,
-                            IEnumerable<IForeignKeyConstraint> foreignKeyConstraints = null,
-                            IEnumerable<IIndex> indexes = null,
-                            IEnumerable<IMetadata> metadata = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public TableBuilder(ITable source)
         {
             PrimaryKeyConstraints = new List<PrimaryKeyConstraintBuilder>();
             UniqueConstraints = new List<UniqueConstraintBuilder>();
@@ -355,15 +336,16 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             DefaultValueConstraints = new List<DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new List<ForeignKeyConstraintBuilder>();
-            Name = name;
-            FileGroupName = fileGroupName;
-            if (fields != null) Fields.AddRange(fields.Select(x => new TableFieldBuilder(x)));
-            if (primaryKeyConstraints != null) PrimaryKeyConstraints.AddRange(primaryKeyConstraints.Select(x => new PrimaryKeyConstraintBuilder(x)));
-            if (uniqueConstraints != null) UniqueConstraints.AddRange(uniqueConstraints.Select(x => new UniqueConstraintBuilder(x)));
-            if (defaultValueConstraints != null) DefaultValueConstraints.AddRange(defaultValueConstraints.Select(x => new DefaultValueConstraintBuilder(x)));
-            if (foreignKeyConstraints != null) ForeignKeyConstraints.AddRange(foreignKeyConstraints.Select(x => new ForeignKeyConstraintBuilder(x)));
-            if (indexes != null) Indexes.AddRange(indexes.Select(x => new IndexBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            FileGroupName = source.FileGroupName;
+            foreach (var x in source.PrimaryKeyConstraints ?? Enumerable.Empty<IPrimaryKeyConstraint>()) PrimaryKeyConstraints.Add(new PrimaryKeyConstraintBuilder(x));
+            foreach (var x in source.UniqueConstraints ?? Enumerable.Empty<IUniqueConstraint>()) UniqueConstraints.Add(new UniqueConstraintBuilder(x));
+            foreach (var x in source.Indexes ?? Enumerable.Empty<IIndex>()) Indexes.Add(new IndexBuilder(x));
+            foreach (var x in source.Fields ?? Enumerable.Empty<ITableField>()) Fields.Add(new TableFieldBuilder(x));
+            Name = source.Name;
+            foreach (var x in source.Metadata ?? Enumerable.Empty<IMetadata>()) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.DefaultValueConstraints ?? Enumerable.Empty<IDefaultValueConstraint>()) DefaultValueConstraints.Add(new DefaultValueConstraintBuilder(x));
+            foreach (var x in source.ForeignKeyConstraints ?? Enumerable.Empty<IForeignKeyConstraint>()) ForeignKeyConstraints.Add(new ForeignKeyConstraintBuilder(x));
         }
     }
 }

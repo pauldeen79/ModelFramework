@@ -15,7 +15,10 @@ namespace ModelFramework.Objects.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IEnumMember Build()
         {
-            return new EnumMember(Name, Value, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new EnumMember(Name,
+                                  Value,
+                                  Attributes.Select(x => x.Build()),
+                                  Metadata.Select(x => x.Build()));
         }
         public EnumMemberBuilder Clear()
         {
@@ -28,16 +31,13 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder Update(IEnumMember source)
         {
             Attributes = new List<AttributeBuilder>();
-            Name = default;
-            Value = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                Name = source.Name;
-                Value = source.Value;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Name = source.Name;
+            Value = source.Value;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+
             return this;
         }
         public EnumMemberBuilder ClearAttributes()
@@ -108,32 +108,17 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public EnumMemberBuilder(IEnumMember source = null)
-        {
-            if (source != null)
-            {
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                Name = source.Name;
-                Value = source.Value;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            }
-            else
-            {
-                Attributes = new List<AttributeBuilder>();
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public EnumMemberBuilder(string name,
-                                 object value = null,
-                                 IEnumerable<IAttribute> attributes = null,
-                                 IEnumerable<IMetadata> metadata = null)
+        public EnumMemberBuilder()
         {
             Attributes = new List<AttributeBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Value = value;
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public EnumMemberBuilder(IEnumMember source)
+        {
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Name = source.Name;
+            Value = source.Value;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
         }
     }
 }

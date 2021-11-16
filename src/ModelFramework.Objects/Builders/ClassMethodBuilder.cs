@@ -72,48 +72,33 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder Update(IClassMethod source)
         {
-            Partial = default;
-            ExtensionMethod = default;
             Metadata = new List<MetadataBuilder>();
-            Static = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            IsNullable = default;
-            Operator = default;
-            Visibility = default;
-            Name = default;
             Attributes = new List<AttributeBuilder>();
-            Body = default;
             Parameters = new List<ParameterBuilder>();
-            TypeName = default;
-            ExplicitInterfaceName = default;
             CodeStatements = new List<ICodeStatementBuilder>();
-            if (source != null)
-            {
-                Partial = source.Partial;
-                ExtensionMethod = source.ExtensionMethod;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Static = source.Static;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                Operator = source.Operator;
-                IsNullable = source.IsNullable;
-                Visibility = source.Visibility;
-                Name = source.Name;
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                Body = source.Body;
-                if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new ParameterBuilder(x)));
-                TypeName = source.TypeName;
-                ExplicitInterfaceName = source.ExplicitInterfaceName;
-                if (source.CodeStatements != null) CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
-            }
+
+            Partial = source.Partial;
+            ExtensionMethod = source.ExtensionMethod;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Operator = source.Operator;
+            IsNullable = source.IsNullable;
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Body = source.Body;
+            Parameters.AddRange(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
+            TypeName = source.TypeName;
+            ExplicitInterfaceName = source.ExplicitInterfaceName;
+            CodeStatements.AddRange(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+
             return this;
         }
-        public ClassMethodBuilder WithPartial(bool partial)
+        public ClassMethodBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
             return this;
@@ -123,7 +108,7 @@ namespace ModelFramework.Objects.Builders
             ExtensionMethod = extensionMethod;
             return this;
         }
-        public ClassMethodBuilder WithOperator(bool @operator)
+        public ClassMethodBuilder WithOperator(bool @operator = true)
         {
             Operator = @operator;
             return this;
@@ -157,32 +142,32 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassMethodBuilder WithStatic(bool @static)
+        public ClassMethodBuilder WithStatic(bool @static = true)
         {
             Static = @static;
             return this;
         }
-        public ClassMethodBuilder WithVirtual(bool @virtual)
+        public ClassMethodBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
             return this;
         }
-        public ClassMethodBuilder WithAbstract(bool @abstract)
+        public ClassMethodBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
             return this;
         }
-        public ClassMethodBuilder WithProtected(bool @protected)
+        public ClassMethodBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
             return this;
         }
-        public ClassMethodBuilder WithOverride(bool @override)
+        public ClassMethodBuilder WithOverride(bool @override = true)
         {
             Override = @override;
             return this;
         }
-        public ClassMethodBuilder WithIsNullable(bool isNullable)
+        public ClassMethodBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
             return this;
@@ -299,80 +284,33 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassMethodBuilder(IClassMethod source = null)
-        {
-            if (source != null)
-            {
-                Partial = source.Partial;
-                ExtensionMethod = source.ExtensionMethod;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Static = source.Static;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                Operator = source.Operator;
-                IsNullable = source.IsNullable;
-                Visibility = source.Visibility;
-                Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                Body = source.Body;
-                Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
-                TypeName = source.TypeName;
-                ExplicitInterfaceName = source.ExplicitInterfaceName;
-                CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            }
-            else
-            {
-                Metadata = new List<MetadataBuilder>();
-                Attributes = new List<AttributeBuilder>();
-                Parameters = new List<ParameterBuilder>();
-                CodeStatements = new List<ICodeStatementBuilder>();
-            }
-        }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public ClassMethodBuilder(string name,
-                                  string typeName,
-                                  Visibility visibility = Visibility.Public,
-                                  bool @static = false,
-                                  bool @virtual = false,
-                                  bool @abstract = false,
-                                  bool @protected = false,
-                                  bool partial = false,
-                                  bool @override = false,
-                                  bool extensionMethod = false,
-                                  bool @operator = false,
-                                  bool isNullable = false,
-                                  string body = null,
-                                  string explicitInterfaceName = null,
-                                  IEnumerable<IParameter> parameters = null,
-                                  IEnumerable<IAttribute> attributes = null,
-                                  IEnumerable<ICodeStatement> codeStatements = null,
-                                  IEnumerable<IMetadata> metadata = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public ClassMethodBuilder()
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
             Parameters = new List<ParameterBuilder>();
             CodeStatements = new List<ICodeStatementBuilder>();
-            Name = name;
-            TypeName = typeName;
-            Visibility = visibility;
-            Static = @static;
-            Virtual = @virtual;
-            Abstract = @abstract;
-            Protected = @protected;
-            Partial = partial;
-            Override = @override;
-            ExtensionMethod = extensionMethod;
-            Operator = @operator;
-            IsNullable = isNullable;
-            Body = body;
-            ExplicitInterfaceName = explicitInterfaceName;
-            if (parameters != null) Parameters.AddRange(parameters.Select(x => new ParameterBuilder(x)));
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            if (codeStatements != null) CodeStatements.AddRange(codeStatements.Select(x => x.CreateBuilder()));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public ClassMethodBuilder(IClassMethod source)
+        {
+            Partial = source.Partial;
+            ExtensionMethod = source.ExtensionMethod;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Operator = source.Operator;
+            IsNullable = source.IsNullable;
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Body = source.Body;
+            Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
+            TypeName = source.TypeName;
+            ExplicitInterfaceName = source.ExplicitInterfaceName;
+            CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
         }
     }
 }

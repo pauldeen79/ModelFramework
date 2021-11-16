@@ -15,7 +15,10 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IStoredProcedureParameter Build()
         {
-            return new StoredProcedureParameter(Name, Type, DefaultValue, Metadata.Select(x => x.Build()));
+            return new StoredProcedureParameter(Name,
+                                                Type,
+                                                DefaultValue,
+                                                Metadata.Select(x => x.Build()));
         }
         public StoredProcedureParameterBuilder Clear()
         {
@@ -27,17 +30,13 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureParameterBuilder Update(IStoredProcedureParameter source)
         {
-            Type = default;
-            DefaultValue = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Type = source.Type;
-                DefaultValue = source.DefaultValue;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Type = source.Type;
+            DefaultValue = source.DefaultValue;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public StoredProcedureParameterBuilder WithType(string type)
@@ -82,27 +81,18 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public StoredProcedureParameterBuilder(IStoredProcedureParameter source = null)
+        public StoredProcedureParameterBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Type = source.Type;
-                DefaultValue = source.DefaultValue;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public StoredProcedureParameterBuilder(string name,
-                                               string type,
-                                               string defaultValue,
-                                               IEnumerable<IMetadata> metadata = null)
+        public StoredProcedureParameterBuilder(IStoredProcedureParameter source)
         {
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Type = type;
-            DefaultValue = defaultValue;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Type = source.Type;
+            DefaultValue = source.DefaultValue;
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

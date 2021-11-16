@@ -52,12 +52,10 @@ namespace ModelFramework.Database.SqlStatements.Builders
         public LiteralSqlStatementBuilder Update(LiteralSqlStatement source)
         {
             Metadata = new List<MetadataBuilder>();
-            Statement = default;
-            if (source != null)
-            {
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Statement = source.Statement;
-            }
+
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            Statement = source.Statement;
+
             return this;
         }
         public LiteralSqlStatementBuilder Clear()
@@ -66,23 +64,14 @@ namespace ModelFramework.Database.SqlStatements.Builders
             Metadata.Clear();
             return this;
         }
-        public LiteralSqlStatementBuilder(LiteralSqlStatement source = null)
-        {
-            if (source != null)
-            {
-                Statement = source.Statement;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            }
-            else
-            {
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public LiteralSqlStatementBuilder(string statement, IEnumerable<IMetadata> metadata = null)
+        public LiteralSqlStatementBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            Statement = statement;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public LiteralSqlStatementBuilder(LiteralSqlStatement source)
+        {
+            Statement = source.Statement;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
         }
     }
 }

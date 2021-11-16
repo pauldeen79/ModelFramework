@@ -30,15 +30,12 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldCheckConstraintBuilder Update(ITableFieldCheckConstraint source)
         {
-            Expression = default;
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Expression = source.Expression;
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Expression = source.Expression;
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
 
@@ -79,22 +76,17 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public TableFieldCheckConstraintBuilder(ITableFieldCheckConstraint source = null)
+        public TableFieldCheckConstraintBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Expression = source.Expression;
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add( new MetadataBuilder(x));
-            }
         }
-        public TableFieldCheckConstraintBuilder(string name, string expression, IEnumerable<IMetadata> metadata = null)
+        public TableFieldCheckConstraintBuilder(ITableFieldCheckConstraint source)
         {
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Expression = expression;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Expression = source.Expression;
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add( new MetadataBuilder(x));
         }
     }
 }

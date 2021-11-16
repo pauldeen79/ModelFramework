@@ -25,15 +25,12 @@ namespace ModelFramework.Objects.Builders
         }
         public AttributeParameterBuilder Update(IAttributeParameter source)
         {
-            Value = default;
             Metadata = new List<MetadataBuilder>();
-            Name = default;
-            if (source != null)
-            {
-                Value = source.Value;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Name = source.Name;
-            }
+
+            Value = source.Value;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Name = source.Name;
+
             return this;
         }
         public AttributeParameterBuilder WithValue(object value)
@@ -75,25 +72,15 @@ namespace ModelFramework.Objects.Builders
             Name = name;
             return this;
         }
-        public AttributeParameterBuilder(IAttributeParameter source = null)
-        {
-            if (source != null)
-            {
-                Value = source.Value;
-                if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Name = source.Name;
-            }
-            else
-            {
-                Metadata = new List<MetadataBuilder>();
-            }
-        }
-        public AttributeParameterBuilder(object value, string name = null, IEnumerable<IMetadata> metadata = null)
+        public AttributeParameterBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Value = value;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+        }
+        public AttributeParameterBuilder(IAttributeParameter source)
+        {
+            Value = source.Value;
+            if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Name = source.Name;
         }
     }
 }

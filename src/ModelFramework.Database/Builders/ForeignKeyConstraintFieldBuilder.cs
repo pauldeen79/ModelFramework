@@ -23,13 +23,11 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintFieldBuilder Update(ForeignKeyConstraintField source)
         {
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public ForeignKeyConstraintFieldBuilder WithName(string name)
@@ -64,14 +62,16 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public ForeignKeyConstraintFieldBuilder(IForeignKeyConstraintField source = null)
+        public ForeignKeyConstraintFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
+        }
+        public ForeignKeyConstraintFieldBuilder(IForeignKeyConstraintField source)
+        {
+            Metadata = new List<MetadataBuilder>();
+
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
         public ForeignKeyConstraintFieldBuilder(string name, IEnumerable<IMetadata> metadata = null)
         {

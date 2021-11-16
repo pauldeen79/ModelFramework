@@ -16,7 +16,11 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IIndex Build()
         {
-            return new Index(Name, Unique, Fields.Select(x => x.Build()), FileGroupName, Metadata.Select(x => x.Build()));
+            return new Index(Name,
+                             Unique,
+                             Fields.Select(x => x.Build()),
+                             FileGroupName,
+                             Metadata.Select(x => x.Build()));
         }
         public IndexBuilder Clear()
         {
@@ -30,18 +34,14 @@ namespace ModelFramework.Database.Builders
         public IndexBuilder Update(Index source)
         {
             Fields = new List<IndexFieldBuilder>();
-            Unique = default;
-            Name = default;
-            FileGroupName = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new IndexFieldBuilder(x)));
-                Unique = source.Unique;
-                Name = source.Name;
-                FileGroupName = source.FileGroupName;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new IndexFieldBuilder(x)));
+            Unique = source.Unique;
+            Name = source.Name;
+            FileGroupName = source.FileGroupName;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public IndexBuilder ClearFields()
@@ -123,32 +123,21 @@ namespace ModelFramework.Database.Builders
             Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
-        public IndexBuilder(IIndex source = null)
+        public IndexBuilder()
         {
             Fields = new List<IndexFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
-                Unique = source.Unique;
-                Name = source.Name;
-                FileGroupName = source.FileGroupName;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public IndexBuilder(string name,
-                            bool unique,
-                            IEnumerable<IIndexField> fields,
-                            string fileGroupName = null,
-                            IEnumerable<IMetadata> metadata = null)
+        public IndexBuilder(IIndex source)
         {
             Fields = new List<IndexFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Unique = unique;
-            if (fields != null) Fields.AddRange(fields.Select(x => new IndexFieldBuilder(x)));
-            FileGroupName = fileGroupName;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
+            Unique = source.Unique;
+            Name = source.Name;
+            FileGroupName = source.FileGroupName;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

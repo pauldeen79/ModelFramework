@@ -16,7 +16,11 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public IStoredProcedure Build()
         {
-            return new StoredProcedure(Name, Body, Parameters.Select(x => x.Build()), Statements.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new StoredProcedure(Name,
+                                       Body,
+                                       Parameters.Select(x => x.Build()),
+                                       Statements.Select(x => x.Build()),
+                                       Metadata.Select(x => x.Build()));
         }
         public StoredProcedureBuilder Clear()
         {
@@ -29,19 +33,16 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder Update(IStoredProcedure source)
         {
-            Body = default;
             Parameters = new List<StoredProcedureParameterBuilder>();
             Statements = new List<ISqlStatementBuilder>();
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Body = source.Body;
-                if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new StoredProcedureParameterBuilder(x)));
-                if (source.Statements != null) Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            }
+
+            Body = source.Body;
+            if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new StoredProcedureParameterBuilder(x)));
+            if (source.Statements != null) Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+
             return this;
         }
         public StoredProcedureBuilder WithBody(string body)
@@ -156,35 +157,21 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-#pragma warning disable S3776 // Cognitive Complexity of methods should not be too high
-        public StoredProcedureBuilder(IStoredProcedure source = null)
-#pragma warning restore S3776 // Cognitive Complexity of methods should not be too high
+        public StoredProcedureBuilder()
         {
             Parameters = new List<StoredProcedureParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
-            if (source != null)
-            {
-                Body = source.Body;
-                if (source.Parameters != null) foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
-                if (source.Statements != null) foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            }
         }
-        public StoredProcedureBuilder(string name,
-                                      string body,
-                                      IEnumerable<IStoredProcedureParameter> parameters = null,
-                                      IEnumerable<ISqlStatement> statements = null,
-                                      IEnumerable<IMetadata> metadata = null)
+        public StoredProcedureBuilder(IStoredProcedure source)
         {
             Parameters = new List<StoredProcedureParameterBuilder>();
-            Statements = new List<ISqlStatementBuilder>();
             Metadata = new List<MetadataBuilder>();
-            Name = name;
-            Body = body;
-            if (parameters != null) Parameters.AddRange(parameters.Select(x => new StoredProcedureParameterBuilder(x)));
-            if (statements != null) Statements.AddRange(statements.Select(x => x.CreateBuilder()));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Body = source.Body;
+            if (source.Parameters != null) foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
+            if (source.Statements != null) foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

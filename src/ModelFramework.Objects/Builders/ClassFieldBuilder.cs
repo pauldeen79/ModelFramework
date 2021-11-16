@@ -63,52 +63,38 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassFieldBuilder Update(IClassField source)
         {
-            Static = default;
-            ReadOnly = default;
-            Constant = default;
-            DefaultValue = default;
             Metadata = new List<MetadataBuilder>();
-            Visibility = default;
-            Name = default;
             Attributes = new List<AttributeBuilder>();
-            TypeName = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            Event = default;
-            IsNullable = default;
-            if (source != null)
-            {
-                Static = source.Static;
-                ReadOnly = source.ReadOnly;
-                Constant = source.Constant;
-                DefaultValue = source.DefaultValue;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                Visibility = source.Visibility;
-                Name = source.Name;
-                if (source.Attributes != null) Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)));
-                TypeName = source.TypeName;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                Event = source.Event;
-                IsNullable = source.IsNullable;
-            }
+
+            Static = source.Static;
+            ReadOnly = source.ReadOnly;
+            Constant = source.Constant;
+            DefaultValue = source.DefaultValue;
+            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            TypeName = source.TypeName;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Event = source.Event;
+            IsNullable = source.IsNullable;
+
             return this;
         }
-        public ClassFieldBuilder WithStatic(bool @static)
+        public ClassFieldBuilder WithStatic(bool @static = true)
         {
             Static = @static;
             return this;
         }
-        public ClassFieldBuilder WithReadOnly(bool readOnly)
+        public ClassFieldBuilder WithReadOnly(bool readOnly = true)
         {
             ReadOnly = readOnly;
             return this;
         }
-        public ClassFieldBuilder WithConstant(bool constant)
+        public ClassFieldBuilder WithConstant(bool constant = true)
         {
             Constant = constant;
             return this;
@@ -191,97 +177,58 @@ namespace ModelFramework.Objects.Builders
             TypeName = typeName;
             return this;
         }
-        public ClassFieldBuilder WithVirtual(bool @virtual)
+        public ClassFieldBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
             return this;
         }
-        public ClassFieldBuilder WithAbstract(bool @abstract)
+        public ClassFieldBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
             return this;
         }
-        public ClassFieldBuilder WithProtected(bool @protected)
+        public ClassFieldBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
             return this;
         }
-        public ClassFieldBuilder WithOverride(bool @override)
+        public ClassFieldBuilder WithOverride(bool @override = true)
         {
             Override = @override;
             return this;
         }
-        public ClassFieldBuilder WithEvent(bool @event)
+        public ClassFieldBuilder WithEvent(bool @event = true)
         {
             Event = @event;
             return this;
         }
-        public ClassFieldBuilder WithIsNullable(bool isNullable)
+        public ClassFieldBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
             return this;
         }
-        public ClassFieldBuilder(IClassField source = null)
-        {
-            if (source != null)
-            {
-                Static = source.Static;
-                ReadOnly = source.ReadOnly;
-                Constant = source.Constant;
-                DefaultValue = source.DefaultValue;
-                Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-                Visibility = source.Visibility;
-                Name = source.Name;
-                Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-                TypeName = source.TypeName;
-                Virtual = source.Virtual;
-                Abstract = source.Abstract;
-                Protected = source.Protected;
-                Override = source.Override;
-                Event = source.Event;
-                IsNullable = source.IsNullable;
-            }
-            else
-            {
-                Metadata = new List<MetadataBuilder>();
-                Attributes = new List<AttributeBuilder>();
-            }
-        }
-#pragma warning disable S107 // Methods should not have too many parameters
-        public ClassFieldBuilder(string name,
-                                 string typeName,
-                                 bool @static = false,
-                                 bool constant = false,
-                                 bool readOnly = false,
-                                 bool @virtual = false,
-                                 bool @abstract = false,
-                                 bool @protected = false,
-                                 bool @override = false,
-                                 bool @event = false,
-                                 bool isNullable = false,
-                                 object defaultValue = null,
-                                 Visibility visibility = Visibility.Private,
-                                 IEnumerable<IMetadata> metadata = null,
-                                 IEnumerable<IAttribute> attributes = null)
-#pragma warning restore S107 // Methods should not have too many parameters
+        public ClassFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
-            Name = name;
-            TypeName = typeName;
-            Static = @static;
-            Constant = constant;
-            ReadOnly = readOnly;
-            Virtual = @virtual;
-            Abstract = @abstract;
-            Protected = @protected;
-            Override = @override;
-            Event = @event;
-            IsNullable = isNullable;
-            DefaultValue = defaultValue;
-            Visibility = visibility;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            if (attributes != null) Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
+        }
+        public ClassFieldBuilder(IClassField source)
+        {
+            Static = source.Static;
+            ReadOnly = source.ReadOnly;
+            Constant = source.Constant;
+            DefaultValue = source.DefaultValue;
+            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            TypeName = source.TypeName;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Event = source.Event;
+            IsNullable = source.IsNullable;
         }
     }
 }

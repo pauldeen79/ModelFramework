@@ -1,9 +1,9 @@
-﻿using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CrossCutting.Common;
+using ModelFramework.Common.Contracts;
+using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Default
 {
@@ -33,7 +33,7 @@ namespace ModelFramework.Objects.Default
             Methods = new ValueCollection<IClassMethod>(methods ?? Enumerable.Empty<IClassMethod>());
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            GenericTypeArguments = genericTypeArguments?.ToArray() ?? Array.Empty<string>();
+            GenericTypeArguments = new ValueCollection<string>(genericTypeArguments ?? Enumerable.Empty<string>());
         }
 
         public string Namespace { get; }
@@ -45,8 +45,7 @@ namespace ModelFramework.Objects.Default
         public Visibility Visibility { get; }
         public string Name { get; }
         public ValueCollection<IAttribute> Attributes { get; }
-
-        public string[] GenericTypeArguments { get; }
+        public ValueCollection<string> GenericTypeArguments { get; }
 
         public override string ToString() => !string.IsNullOrEmpty(Namespace) ? $"{Namespace}.{Name}" : Name;
     }

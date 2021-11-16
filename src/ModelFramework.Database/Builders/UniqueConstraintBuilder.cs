@@ -27,17 +27,14 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintBuilder Update(IUniqueConstraint source)
         {
-            Name = default;
             Metadata = new List<MetadataBuilder>();
-            FileGroupName = default;
             Fields = new List<UniqueConstraintFieldBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-                FileGroupName = source.FileGroupName;
-                if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new UniqueConstraintFieldBuilder(x)));
-            }
+
+            Name = source.Name;
+            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            FileGroupName = source.FileGroupName;
+            if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new UniqueConstraintFieldBuilder(x)));
+
             return this;
         }
         public UniqueConstraintBuilder WithName(string name)
@@ -117,29 +114,20 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public UniqueConstraintBuilder(IUniqueConstraint source = null)
+        public UniqueConstraintBuilder()
         {
             Metadata = new List<MetadataBuilder>();
             Fields = new List<UniqueConstraintFieldBuilder>();
-            if (source != null)
-            {
-                Name = source.Name;
-                if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-                FileGroupName = source.FileGroupName;
-                if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new UniqueConstraintFieldBuilder(x));
-            }
         }
-        public UniqueConstraintBuilder(string name,
-                                       string fileGroupName = null,
-                                       IEnumerable<IUniqueConstraintField> fields = null,
-                                       IReadOnlyCollection<IMetadata> metadata = null)
+        public UniqueConstraintBuilder(IUniqueConstraint source)
         {
             Metadata = new List<MetadataBuilder>();
             Fields = new List<UniqueConstraintFieldBuilder>();
-            Name = name;
-            FileGroupName = fileGroupName;
-            if (fields != null) Fields.AddRange(fields.Select(x => new UniqueConstraintFieldBuilder(x)));
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+
+            Name = source.Name;
+            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            FileGroupName = source.FileGroupName;
+            if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new UniqueConstraintFieldBuilder(x));
         }
     }
 }
