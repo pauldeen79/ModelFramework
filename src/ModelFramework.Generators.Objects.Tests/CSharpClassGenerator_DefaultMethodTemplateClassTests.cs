@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using ModelFramework.Objects.CodeStatements;
+using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
@@ -183,6 +184,23 @@ namespace ModelFramework.Generators.Objects.Tests
 ");
         }
 
-        //Modifiers
+        [Fact]
+        public void GeneratesPrivateMethod()
+        {
+            // Arrange
+            var rootModel = new Class("MyClass", "MyNamespace");
+            var model = new ClassMethod("Name", "string", body: "throw new NotImplementedException();", visibility: Visibility.Private);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        private string Name()
+        {
+            throw new NotImplementedException();
+        }
+");
+        }
     }
 }

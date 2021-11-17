@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
+using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
@@ -52,6 +53,24 @@ namespace ModelFramework.Generators.Objects.Tests
 ");
         }
 
-        //Modifiers
+        [Fact]
+        public void GeneratesInternalEnum()
+        {
+            // Arrange
+            var model = new Enum("MyEnum", new[] { new EnumMember("Member1"), new EnumMember("Member2"), new EnumMember("Member3") }, Visibility.Internal);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultEnumTemplate>(model);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        internal enum MyEnum
+        {
+            Member1,
+            Member2,
+            Member3
+        }
+");
+        }
     }
 }

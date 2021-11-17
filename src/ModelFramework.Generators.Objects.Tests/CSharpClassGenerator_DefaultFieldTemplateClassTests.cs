@@ -86,7 +86,5 @@ namespace ModelFramework.Generators.Objects.Tests
             actual.Should().Be(@"        private string? Test;
 ");
         }
-
-        //Modifiers
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
@@ -11,12 +12,6 @@ namespace ModelFramework.Generators.Objects.Tests
     [ExcludeFromCodeCoverage]
     public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
     {
-        //Attributes
-        //Modifiers
-        //TypeName
-        //Name
-        //GetterVisibility
-        //SetterVisibility
         [Fact]
         public void GeneratesCodeBodyFromCodeStatementsCorrectly()
         {
@@ -40,6 +35,74 @@ namespace ModelFramework.Generators.Objects.Tests
             {
                 // ignore value
             }
+        }
+");
+        }
+
+        [Fact]
+        public void Generates_Property_Correctly()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("MyProperty")
+                .WithTypeName(typeof(string).FullName)
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        public string MyProperty
+        {
+            get;
+            set;
+        }
+");
+        }
+
+        [Fact]
+        public void Generates_Internal_Property_Correctly()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("MyProperty")
+                .WithTypeName(typeof(string).FullName)
+                .WithVisibility(Visibility.Internal)
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        internal string MyProperty
+        {
+            get;
+            set;
+        }
+");
+        }
+
+        [Fact]
+        public void Generates_Init_Property_Correctly()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("MyProperty")
+                .WithTypeName(typeof(string).FullName)
+                .WithHasInit()
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        public string MyProperty
+        {
+            get;
+            init;
         }
 ");
         }
