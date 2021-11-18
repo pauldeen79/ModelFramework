@@ -6,7 +6,6 @@ using ModelFramework.Common;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;

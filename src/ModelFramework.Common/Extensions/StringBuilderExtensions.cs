@@ -4,21 +4,21 @@ namespace ModelFramework.Common.Extensions
 {
     public static class StringBuilderExtensions
     {
-        public static void AddWithCondition(this StringBuilder builder, object value, bool condition = true)
+        public static StringBuilder AddWithCondition(this StringBuilder builder, object value, bool condition)
         {
             if (!condition)
             {
-                return;
+                return builder;
             }
             if (value == null || string.IsNullOrEmpty(value.ToString()))
             {
-                return;
+                return builder;
             }
             if (builder.Length > 0)
             {
                 builder.Append(" ");
             }
-            builder.Append(value);
+            return builder.Append(value);
         }
     }
 }

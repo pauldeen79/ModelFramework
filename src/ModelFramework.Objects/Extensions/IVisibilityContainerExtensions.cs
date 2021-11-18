@@ -22,7 +22,7 @@ namespace ModelFramework.Objects.Extensions
                 builder.AddWithCondition("protected", extendedVisibilityContainer.Protected);
                 if (!(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal))
                 {
-                    builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
+                    builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), true);
                 }
                 builder.AddWithCondition("static", extendedVisibilityContainer.Static);
                 builder.AddWithCondition("abstract", extendedVisibilityContainer.Abstract);
@@ -31,7 +31,7 @@ namespace ModelFramework.Objects.Extensions
             }
             else
             {
-                builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
+                builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), true);
                 if (instance is IClass cls)
                 {
                     builder.AddWithCondition("sealed", cls.Sealed);

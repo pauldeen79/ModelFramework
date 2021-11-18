@@ -18,16 +18,16 @@ namespace ModelFramework.Objects.Extensions
             var builder = new StringBuilder();
             if (!(instance.Protected && instance.Visibility != Visibility.Internal))
             {
-                builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
+                builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), true);
             }
 
-            builder.AddWithCondition("protected", instance.Protected);
-            builder.AddWithCondition("abstract", instance.Abstract);
-            builder.AddWithCondition("virtual", instance.Virtual);
-            builder.AddWithCondition("static", instance.Static);
-            builder.AddWithCondition("readonly", instance.ReadOnly);
-            builder.AddWithCondition("const", instance.Constant);
-            return builder.ToString();
+            return builder.AddWithCondition("protected", instance.Protected)
+                .AddWithCondition("abstract", instance.Abstract)
+                .AddWithCondition("virtual", instance.Virtual)
+                .AddWithCondition("static", instance.Static)
+                .AddWithCondition("readonly", instance.ReadOnly)
+                .AddWithCondition("const", instance.Constant)
+                .ToString();
         }
     }
 }

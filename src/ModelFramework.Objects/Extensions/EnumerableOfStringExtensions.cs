@@ -12,6 +12,6 @@ namespace ModelFramework.Objects.Extensions
             => instance.Select(s => new LiteralCodeStatement(s));
 
         public static IEnumerable<ICodeStatementBuilder> ToLiteralCodeStatementBuilders(this IEnumerable<string> instance)
-            => instance.Select(s => new LiteralCodeStatementBuilder { Statement = s });
+            => instance.Select(s => new LiteralCodeStatementBuilder().WithStatement(s));
     }
 }
