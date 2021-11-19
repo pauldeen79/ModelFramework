@@ -8,35 +8,35 @@ using Xunit;
 namespace ModelFramework.Generators.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
-    public class CSharpClassGenerator_DefaultPropertySetterBodyTemplateClassTests
+    public class CSharpClassGenerator_DefaultPropertyInitializerBodyTemplateClassTests
     {
         [Fact]
-        public void GeneratesNoCodeBodyWhenSetterBodyIsEmpty()
+        public void GeneratesNoCodeBodyWhenInitializerBodyIsEmpty()
         {
             // Arrange
             var model = new ClassProperty("Name", "string");
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertySetterBodyTemplate>(model);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"set;
+            actual.Should().Be(@"init;
 ");
         }
 
         [Fact]
-        public void GeneratesCodeBodyWhenSetterBodyIsFilled()
+        public void GeneratesCodeBodyWhenInitializerBodyIsFilled()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string", setterCodeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertySetterBodyTemplate>(model);
+            var model = new ClassProperty("Name", "string", initializerCodeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"set
+            actual.Should().Be(@"init
             {
                 throw new NotImplementedException();
             }

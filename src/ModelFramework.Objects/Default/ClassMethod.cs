@@ -22,7 +22,6 @@ namespace ModelFramework.Objects.Default
                            bool extensionMethod = false,
                            bool @operator = false,
                            bool isNullable = false,
-                           string body = null,
                            string explicitInterfaceName = null,
                            IEnumerable<IParameter> parameters = null,
                            IEnumerable<IAttribute> attributes = null,
@@ -44,7 +43,6 @@ namespace ModelFramework.Objects.Default
             ExtensionMethod = extensionMethod;
             Operator = @operator;
             IsNullable = isNullable;
-            Body = body;
             ExplicitInterfaceName = explicitInterfaceName;
             Parameters = new ValueCollection<IParameter>(parameters ?? Enumerable.Empty<IParameter>());
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
@@ -65,7 +63,6 @@ namespace ModelFramework.Objects.Default
         public Visibility Visibility { get; }
         public string Name { get; }
         public ValueCollection<IAttribute> Attributes { get; }
-        public string Body{ get; }
         public ValueCollection<IParameter> Parameters { get; }
         public string TypeName { get; }
         public string ExplicitInterfaceName { get; }

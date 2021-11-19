@@ -25,15 +25,12 @@ namespace ModelFramework.Objects.Default
                              Visibility? getterVisibility = null,
                              Visibility? setterVisibility = null,
                              Visibility? initVisibility = null,
-                             string getterBody = null,
-                             string setterBody = null,
-                             string initBody = null,
                              string explicitInterfaceName = null,
                              IEnumerable<IMetadata> metadata = null,
                              IEnumerable<IAttribute> attributes = null,
                              IEnumerable<ICodeStatement> getterCodeStatements = null,
                              IEnumerable<ICodeStatement> setterCodeStatements = null,
-                             IEnumerable<ICodeStatement> initCodeStatements = null)
+                             IEnumerable<ICodeStatement> initializerCodeStatements = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
@@ -48,35 +45,29 @@ namespace ModelFramework.Objects.Default
             Override = @override;
             HasGetter = hasGetter;
             HasSetter = hasSetter && !hasInit;
-            HasInit = hasInit;
+            HasInitializer = hasInit;
             IsNullable = isNullable;
             Visibility = visibility;
             GetterVisibility = getterVisibility;
             SetterVisibility = setterVisibility;
             InitializerVisibility = initVisibility;
-            GetterBody = getterBody;
-            SetterBody = setterBody;
-            InitializerBody = initBody;
             ExplicitInterfaceName = explicitInterfaceName;
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
             GetterCodeStatements = new ValueCollection<ICodeStatement>(getterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
             SetterCodeStatements = new ValueCollection<ICodeStatement>(setterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
-            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initCodeStatements ?? Enumerable.Empty<ICodeStatement>());
+            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initializerCodeStatements ?? Enumerable.Empty<ICodeStatement>());
         }
 
         public bool Static { get; }
         public bool HasGetter { get; }
         public bool HasSetter { get; }
-        public bool HasInit { get; }
+        public bool HasInitializer { get; }
         public ValueCollection<IMetadata> Metadata { get; }
         public Visibility Visibility { get; }
         public Visibility? GetterVisibility { get; }
         public Visibility? SetterVisibility { get; }
         public Visibility? InitializerVisibility { get; }
-        public string GetterBody { get; }
-        public string SetterBody { get; }
-        public string InitializerBody { get; }
         public string Name { get; }
         public ValueCollection<IAttribute> Attributes { get; }
         public string TypeName { get; }

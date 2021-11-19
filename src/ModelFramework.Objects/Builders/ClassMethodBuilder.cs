@@ -22,7 +22,6 @@ namespace ModelFramework.Objects.Builders
         public Visibility Visibility { get; set; }
         public string Name { get; set; }
         public List<AttributeBuilder> Attributes { get; set; }
-        public string Body { get; set; }
         public List<ParameterBuilder> Parameters { get; set; }
         public string TypeName { get; set; }
         public string ExplicitInterfaceName { get; set; }
@@ -41,7 +40,6 @@ namespace ModelFramework.Objects.Builders
                                    ExtensionMethod,
                                    Operator,
                                    IsNullable,
-                                   Body,
                                    ExplicitInterfaceName,
                                    Parameters.Select(x => x.Build()),
                                    Attributes.Select(x => x.Build()),
@@ -63,7 +61,6 @@ namespace ModelFramework.Objects.Builders
             Visibility = default;
             Name = default;
             Attributes.Clear();
-            Body = default;
             Parameters.Clear();
             TypeName = default;
             ExplicitInterfaceName = default;
@@ -90,7 +87,6 @@ namespace ModelFramework.Objects.Builders
             Visibility = source.Visibility;
             Name = source.Name;
             Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Body = source.Body;
             Parameters.AddRange(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
             TypeName = source.TypeName;
             ExplicitInterfaceName = source.ExplicitInterfaceName;
@@ -211,11 +207,6 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassMethodBuilder WithBody(string body)
-        {
-            Body = body;
-            return this;
-        }
         public ClassMethodBuilder ClearParameters()
         {
             Parameters.Clear();
@@ -306,7 +297,6 @@ namespace ModelFramework.Objects.Builders
             Visibility = source.Visibility;
             Name = source.Name;
             Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Body = source.Body;
             Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
             TypeName = source.TypeName;
             ExplicitInterfaceName = source.ExplicitInterfaceName;

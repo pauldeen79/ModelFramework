@@ -8,6 +8,7 @@ using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Generators.Objects.Tests.Mocks;
 using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 using ModelFramework.Objects.Extensions;
@@ -1286,63 +1287,6 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void GeneratesClassWithCustomCtorBodyTemplate()
-        {
-            // Arrange
-            var sut = new CSharpClassGenerator
-            {
-                Session = new Dictionary<string, object>
-                {
-                    {
-                        nameof(CSharpClassGenerator.Model), new[]
-                        {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                constructors: new[]
-                                {
-                                    new ClassConstructor
-                                    (
-                                        metadata: new[]
-                                        {
-                                            new Metadata(ModelFramework.Objects.MetadataNames.CodeTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
-                        }
-                    }
-                }
-            };
-            sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("throw new NotImplementedException();")) });
-            var builder = new StringBuilder();
-
-            // Act
-            sut.Render(builder);
-            var actual = builder.ToString();
-
-            // Assert
-            actual.Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MyNamespace
-{
-    public class MyClass
-    {
-        public MyClass()
-        {
-throw new NotImplementedException();
-        }
-    }
-}
-");
-        }
-
-        [Fact]
         public void GeneratesClassWithCustomFieldTemplate()
         {
             // Arrange
@@ -2265,7 +2209,7 @@ namespace MyNamespace
             set
             {
                 _property3 = value;
-if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""Property3""));
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""Property3""));
             }
         }
 
@@ -2527,12 +2471,12 @@ namespace ModelFramework.Generators.Objects.Tests
 
         private static IEnumerable<IClassConstructor> GetConstructors()
         {
-            yield return new ClassConstructor(parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, body: "throw new NotImplementedException();");
+            yield return new ClassConstructor(parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
         }
 
         private static IEnumerable<IClassMethod> GetMethods()
         {
-            yield return new ClassMethod("Method1", null, parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, body: "throw new NotImplementedException();");
+            yield return new ClassMethod("Method1", null, parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
         }
 
         private static IEnumerable<IClassProperty> GetProperties()

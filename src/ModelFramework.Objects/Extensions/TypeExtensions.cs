@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Settings;
 
@@ -86,7 +87,7 @@ namespace ModelFramework.Objects.Extensions
                     SetterVisibility = p.GetSetMethod()?.IsPublic ?? false
                         ? Visibility.Public
                         : Visibility.Private,
-                    InitVisibility = p.GetSetMethod()?.IsPublic ?? false
+                    InitializerVisibility = p.GetSetMethod()?.IsPublic ?? false
                         ? Visibility.Public
                         : Visibility.Private,
                     Attributes = GetAttributes(p.GetCustomAttributes(false)).ToList()
@@ -170,8 +171,7 @@ namespace ModelFramework.Objects.Extensions
                         TypeName = type.FullName.FixTypeName()
                     }
                 }.ToList(),
-                Body = "_wrappedInstance = wrappedInstance;"
-            };
+            }.AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("_wrappedInstance = wrappedInstance;"));
         }
 
         private static IEnumerable<ClassFieldBuilder> GeneratedFields(Type type)

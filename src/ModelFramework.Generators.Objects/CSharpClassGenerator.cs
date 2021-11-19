@@ -188,7 +188,6 @@ namespace ModelFramework.Generators.Objects
             this.ViewModels.Clear();
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", () => new CSharpClassGenerator_DefaultAttributeTemplate(), typeof(IAttribute));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultParameterAttributeTemplate", () => new CSharpClassGenerator_DefaultParameterAttributeTemplate(), typeof(IAttribute));
-            RegisterChildTemplate(@"CSharpClassGenerator.DefaultBodyTemplate", () => new CSharpClassGenerator_DefaultBodyTemplate(), typeof(IBodyContainer));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultClassTemplate", () => new CSharpClassGenerator_DefaultClassTemplate(), typeof(ITypeBase));
             RegisterChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", () => new CSharpClassGenerator_CodeGenerationHeaderTemplate(), typeof(System.Boolean));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultCtorTemplate", () => new CSharpClassGenerator_DefaultCtorTemplate(), typeof(IClassConstructor));
@@ -558,73 +557,6 @@ namespace ModelFramework.Generators.Objects
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultBodyTemplate : CSharpClassGeneratorBase
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            if (!string.IsNullOrEmpty(Model.Body))
-   {
-
-            Write(this.ToStringHelper.ToStringWithCulture(@"            "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Body));
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
-            }
-
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public IBodyContainer Model { get; set; }
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class CSharpClassGenerator_DefaultClassTemplate : CSharpClassGeneratorBase
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
@@ -859,9 +791,6 @@ namespace ModelFramework.Generators.Objects
 "));
             Write(this.ToStringHelper.ToStringWithCulture(@"        {
 "));
-            
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultBodyTemplate", Model, customResolverDelegate: ResolveObjectCodeTemplateFromMetadata);
-
             if (ViewModel.ShouldRenderCodeStatements) {
 
             RootTemplate.PushIndent("            ");
@@ -1213,9 +1142,6 @@ namespace ModelFramework.Generators.Objects
 "));
             Write(this.ToStringHelper.ToStringWithCulture(@"        {
 "));
-            
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultBodyTemplate", Model, customResolverDelegate: ResolveObjectCodeTemplateFromMetadata);
-
             if (ViewModel.ShouldRenderCodeStatements) {
 
             RootTemplate.PushIndent("            ");
@@ -1440,7 +1366,7 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            if ((string.IsNullOrEmpty(Model.GetterBody) && !Model.GetterCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
+            if (!Model.GetterCodeStatements.Any() || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"get;
@@ -1452,12 +1378,6 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"get
             {
 "));
-            if (!string.IsNullOrEmpty(Model.GetterBody)) {
-
-            Write(this.ToStringHelper.ToStringWithCulture(@"                "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.GetterBody));
-            }
-
             if (Model.GetterCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
@@ -1533,7 +1453,7 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            if ((string.IsNullOrEmpty(Model.InitializerBody) && !Model.InitializerCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
+            if (!Model.InitializerCodeStatements.Any() || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"init;
@@ -1542,15 +1462,9 @@ namespace ModelFramework.Generators.Objects
    else
    {
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"set
+            Write(this.ToStringHelper.ToStringWithCulture(@"init
             {
 "));
-            if (!string.IsNullOrEmpty(Model.InitializerBody)) {
-
-            Write(this.ToStringHelper.ToStringWithCulture(@"                "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.InitializerBody));
-            }
-
             if (Model.InitializerCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
@@ -1626,7 +1540,7 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            if ((string.IsNullOrEmpty(Model.SetterBody) && !Model.SetterCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
+            if (!Model.SetterCodeStatements.Any() || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"set;
@@ -1638,12 +1552,6 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"set
             {
 "));
-            if (!string.IsNullOrEmpty(Model.SetterBody)) {
-
-            Write(this.ToStringHelper.ToStringWithCulture(@"                "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.SetterBody));
-            }
-
             if (Model.SetterCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
@@ -1758,7 +1666,7 @@ namespace ModelFramework.Generators.Objects
 
             }
 
-            if (Model.HasInit) {
+            if (Model.HasInitializer) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetInitModifiers()));

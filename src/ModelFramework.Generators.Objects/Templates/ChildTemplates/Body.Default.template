@@ -1,7 +1,0 @@
-﻿<#@ template language="c#" #>
-<#@ templateName value="CSharpClassGenerator.DefaultBodyTemplate" #>
-<#@ model type="IBodyContainer" #>
-<# if (!string.IsNullOrEmpty(Model.Body))
-   { #>
-            <#= Model.Body #>
-<# } #>

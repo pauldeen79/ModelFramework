@@ -15,7 +15,6 @@ namespace ModelFramework.Objects.Default
                                 bool @abstract = false,
                                 bool @protected = false,
                                 bool @override = false,
-                                string body = null,
                                 string chainCall = null,
                                 IEnumerable<IParameter> parameters = null,
                                 IEnumerable<IAttribute> attributes = null,
@@ -29,7 +28,6 @@ namespace ModelFramework.Objects.Default
             Abstract = @abstract;
             Protected = @protected;
             Override = @override;
-            Body = body;
             ChainCall = chainCall;
             Parameters = new ValueCollection<IParameter>(parameters ?? Enumerable.Empty<IParameter>());
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
@@ -44,7 +42,6 @@ namespace ModelFramework.Objects.Default
         public bool Override { get; }
         public Visibility Visibility { get; }
         public ValueCollection<IAttribute> Attributes { get; }
-        public string Body { get; }
         public string ChainCall { get; }
         public ValueCollection<IParameter> Parameters { get; }
         public ValueCollection<ICodeStatement> CodeStatements { get; }

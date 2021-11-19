@@ -125,16 +125,13 @@ namespace ModelFramework.Objects.Extensions
                                 Protected = p.Protected,
                                 Override = p.Override,
                                 HasGetter = p.HasGetter,
-                                HasInit = p.HasInit,
+                                HasInit = p.HasInitializer,
                                 HasSetter = false,
                                 IsNullable = p.IsNullable,
                                 Visibility = p.Visibility,
                                 GetterVisibility = p.GetterVisibility,
                                 SetterVisibility = p.SetterVisibility,
-                                InitVisibility = p.InitializerVisibility,
-                                GetterBody = p.GetterBody,
-                                SetterBody = p.SetterBody,
-                                InitBody = p.InitializerBody,
+                                InitializerVisibility = p.InitializerVisibility,
                                 ExplicitInterfaceName = p.ExplicitInterfaceName,
                                 Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
                                             .Select(x => new MetadataBuilder(x))
@@ -142,7 +139,7 @@ namespace ModelFramework.Objects.Extensions
                                 Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
                                 GetterCodeStatements = p.GetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
                                 SetterCodeStatements = p.SetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
-                                InitCodeStatements = p.InitializerCodeStatements.Select(x => x.CreateBuilder()).ToList()
+                                InitializerCodeStatements = p.InitializerCodeStatements.Select(x => x.CreateBuilder()).ToList()
                             }
                         ).ToList(),
                 Constructors = 
@@ -221,10 +218,7 @@ namespace ModelFramework.Objects.Extensions
                                 Visibility = p.Visibility,
                                 GetterVisibility = p.GetterVisibility,
                                 SetterVisibility = p.SetterVisibility,
-                                InitVisibility = p.InitializerVisibility,
-                                GetterBody = p.GetterBody,
-                                SetterBody = p.SetterBody,
-                                InitBody = null,
+                                InitializerVisibility = p.InitializerVisibility,
                                 ExplicitInterfaceName = p.ExplicitInterfaceName,
                                 Metadata = p.Metadata.Concat(p.GetBuilderCollectionMetadata(newCollectionTypeName))
                                                      .Select(x => new MetadataBuilder(x))
@@ -263,17 +257,14 @@ namespace ModelFramework.Objects.Extensions
                                 Visibility = p.Visibility,
                                 GetterVisibility = p.GetterVisibility,
                                 SetterVisibility = p.SetterVisibility,
-                                InitVisibility = p.InitializerVisibility,
-                                GetterBody = p.FixObservablePropertyGetterBody(newCollectionTypeName),
-                                SetterBody = p.FixObservablePropertySetterBody(newCollectionTypeName),
-                                InitBody = null,
+                                InitializerVisibility = p.InitializerVisibility,
+                                GetterCodeStatements = p.FixObservablePropertyGetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()).ToList(),
+                                SetterCodeStatements = p.FixObservablePropertySetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()).ToList(),
                                 ExplicitInterfaceName = p.ExplicitInterfaceName,
                                 Metadata = p.Metadata.Concat(p.GetObservableCollectionMetadata(newCollectionTypeName))
                                                      .Select(x => new MetadataBuilder(x))
                                                      .ToList(),
-                                Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
-                                GetterCodeStatements = p.GetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
-                                SetterCodeStatements = p.SetterCodeStatements.Select(x => x.CreateBuilder()).ToList()
+                                Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList()
                             }
                         ).ToList(),
                 Fields = instance.Properties
@@ -646,9 +637,9 @@ namespace ModelFramework.Objects.Extensions
                 {
                     Name = property.Name,
                     TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName),
-                    GetterBody = $"return _{property.Name.ToPascalCase()};",
-                    SetterBody = $"_{property.Name.ToPascalCase()} = value;"
-                };
+                }
+                .AddGetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase()};"))
+                .AddSetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase()} = value;"));
             }
         }
 
@@ -690,9 +681,6 @@ namespace ModelFramework.Objects.Extensions
                                     property.GetterVisibility,
                                     property.SetterVisibility,
                                     property.InitializerVisibility,
-                                    property.GetterBody,
-                                    property.SetterBody,
-                                    null,
                                     property.ExplicitInterfaceName,
                                     property.Metadata,
                                     property.Attributes,
@@ -721,7 +709,6 @@ namespace ModelFramework.Objects.Extensions
                 m.ExtensionMethod,
                 m.Operator,
                 m.IsNullable,
-                m.Body,
                 m.ExplicitInterfaceName,
                 m.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
                 m.Attributes,

@@ -54,15 +54,15 @@ namespace ModelFramework.Objects.Extensions
                   }
                 : Array.Empty<IMetadata>();
 
-        public static string FixObservablePropertyGetterBody(this IClassProperty property, string newCollectionTypeName)
+        public static IEnumerable<ICodeStatement> FixObservablePropertyGetterBody(this IClassProperty property, string newCollectionTypeName)
             => property.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<")
-                ? string.Format("return _{0};", property.Name.ToPascalCase())
-                : property.GetterBody;
+                ? new[] { string.Format("return _{0};", property.Name.ToPascalCase()) }.ToLiteralCodeStatements()
+                : property.GetterCodeStatements;
 
-        public static string FixObservablePropertySetterBody(this IClassProperty property, string newCollectionTypeName)
+        public static IEnumerable<ICodeStatement> FixObservablePropertySetterBody(this IClassProperty property, string newCollectionTypeName)
             => property.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<")
-                ? string.Format("_{0} = value;", property.Name.ToPascalCase()) + Environment.NewLine + string.Format(@"if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""{0}""));", property.Name)
-                : property.SetterBody;
+                ? new[] { string.Format("_{0} = value;", property.Name.ToPascalCase()) + Environment.NewLine + string.Format(@"if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""{0}""));", property.Name) }.ToLiteralCodeStatements()
+                : property.SetterCodeStatements;
 
         public static string GetGetterModifiers(this IClassProperty property)
             => property.GetSubModifiers(property.GetterVisibility, MetadataNames.PropertyGetterVisibility);

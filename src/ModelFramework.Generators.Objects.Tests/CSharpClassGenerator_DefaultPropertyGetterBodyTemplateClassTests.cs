@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
+using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
@@ -28,7 +29,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWhenGetterBodyIsFilled()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string", getterBody: "throw new NotImplementedException();");
+            var model = new ClassProperty("Name", "string", getterCodeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyGetterBodyTemplate>(model);
 
             // Act

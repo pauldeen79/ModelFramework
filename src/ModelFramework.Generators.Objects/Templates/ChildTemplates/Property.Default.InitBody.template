@@ -1,15 +1,14 @@
 ﻿<#@ template language="c#" #>
 <#@ templateName value="CSharpClassGenerator.DefaultPropertyInitBodyTemplate" #>
 <#@ model type="IClassProperty" #>
-<# if ((string.IsNullOrEmpty(Model.InitializerBody) && !Model.InitializerCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
+<# if (!Model.InitializerCodeStatements.Any() || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    { #>
 init;
 <# }
    else
    { #>
-set
+init
             {
-<# if (!string.IsNullOrEmpty(Model.InitializerBody)) { #>                <#= Model.InitializerBody #><# } #>
 <# if (Model.InitializerCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.InitializerCodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #><# } #>
 
             }

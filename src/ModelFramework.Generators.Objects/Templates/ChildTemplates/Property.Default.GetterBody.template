@@ -1,7 +1,7 @@
 ﻿<#@ template language="c#" #>
 <#@ templateName value="CSharpClassGenerator.DefaultPropertyGetterBodyTemplate" #>
 <#@ model type="IClassProperty" #>
-<# if ((string.IsNullOrEmpty(Model.GetterBody) && !Model.GetterCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
+<# if (!Model.GetterCodeStatements.Any() || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    { #>
 get;
 <# }
@@ -9,7 +9,6 @@ get;
    { #>
 get
             {
-<# if (!string.IsNullOrEmpty(Model.GetterBody)) { #>                <#= Model.GetterBody #><# } #>
 <# if (Model.GetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.GetterCodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #><# } #>
 
             }

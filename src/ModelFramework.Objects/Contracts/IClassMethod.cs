@@ -2,7 +2,7 @@
 
 namespace ModelFramework.Objects.Contracts
 {
-    public interface IClassMethod : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, IBodyContainer, ICodeStatementsContainer, IParametersContainer, ITypeContainer, IExplicitInterfaceNameContainer
+    public interface IClassMethod : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer, ITypeContainer, IExplicitInterfaceNameContainer
     {
         bool Partial { get; }
         bool ExtensionMethod { get; }

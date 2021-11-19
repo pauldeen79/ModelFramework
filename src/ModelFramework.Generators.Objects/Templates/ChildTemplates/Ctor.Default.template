@@ -6,7 +6,6 @@
         <#= Model.GetModifiers() #><#= ViewModel.Name #>(<#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<# if (ViewModel.ShouldRenderChainCall) { #>: <#= Model.ChainCall #><# } #><# if (ViewModel.OmitCode) { #>;<# } else { #>
 
         {
-<#@ renderChildTemplate name="CSharpClassGenerator.DefaultBodyTemplate" model="Model" customResolverDelegate="ResolveObjectCodeTemplateFromMetadata" #>
 <# if (ViewModel.ShouldRenderCodeStatements) { #><# RootTemplate.PushIndent("            "); #><#@ renderChildTemplate model="Model.CodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #>
 
 <# } #>        }<# } #>

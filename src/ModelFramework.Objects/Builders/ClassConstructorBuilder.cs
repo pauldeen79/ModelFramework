@@ -17,7 +17,6 @@ namespace ModelFramework.Objects.Builders
         public bool Override { get; set; }
         public Visibility Visibility { get; set; }
         public List<AttributeBuilder> Attributes { get; set; }
-        public string Body { get; set; }
         public string ChainCall { get; set; }
         public List<ParameterBuilder> Parameters { get; set; }
         public List<ICodeStatementBuilder> CodeStatements { get; set; }
@@ -29,7 +28,6 @@ namespace ModelFramework.Objects.Builders
                                         Abstract,
                                         Protected,
                                         Override,
-                                        Body,
                                         ChainCall,
                                         Parameters.Select(x => x.Build()),
                                         Attributes.Select(x => x.Build()),
@@ -46,7 +44,6 @@ namespace ModelFramework.Objects.Builders
             Override = default;
             Visibility = default;
             Attributes.Clear();
-            Body = default;
             ChainCall = default;
             Parameters.Clear();
             CodeStatements.Clear();
@@ -66,7 +63,6 @@ namespace ModelFramework.Objects.Builders
             Override = source.Override;
             Visibility = source.Visibility;
             Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Body = source.Body;
             ChainCall = source.ChainCall;
             Parameters.AddRange(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
             CodeStatements.AddRange(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
@@ -160,11 +156,6 @@ namespace ModelFramework.Objects.Builders
             }
             return this;
         }
-        public ClassConstructorBuilder WithBody(string body)
-        {
-            Body = body;
-            return this;
-        }
         public ClassConstructorBuilder WithChainCall(string chainCall)
         {
             ChainCall = chainCall;
@@ -245,7 +236,6 @@ namespace ModelFramework.Objects.Builders
             Override = source.Override;
             Visibility = source.Visibility;
             Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Body = source.Body;
             ChainCall = source.ChainCall;
             Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
             CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
