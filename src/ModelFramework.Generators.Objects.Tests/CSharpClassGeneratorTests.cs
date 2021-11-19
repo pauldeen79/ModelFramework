@@ -287,17 +287,6 @@ namespace MyNamespace
             return this;
         }
 
-        public MyRecordBuilder Update(MyNamespace.MyRecord source)
-        {
-            _property2 = new System.Collections.Generic.List<string>();
-            _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            _property1 = source.Property1;
-            if (source.Property2 != null) foreach (var x in source.Property2) _property2.Add(x);
-            _property3 = new MyCustomTypeBuilder(source.Property3);
-            if (source.Property4 != null) _property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-            return this;
-        }
-
         public MyRecordBuilder WithProperty1(string property1)
         {
             _property1 = property1;
@@ -1770,12 +1759,6 @@ namespace MyNamespace
             return this;
         }
 
-        public MyRecordBuilder Update(MyNamespace.MyRecord source)
-        {
-            _static = source.Static;
-            return this;
-        }
-
         public MyRecordBuilder WithStatic(bool @static)
         {
             _static = @static;
@@ -2345,13 +2328,6 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             _firstName = default;
             _lastName = default;
-            return this;
-        }
-
-        public PersonBuilder Update(ModelFramework.Generators.Objects.Tests.Person source)
-        {
-            _firstName = source.FirstName;
-            _lastName = source.LastName;
             return this;
         }
 
