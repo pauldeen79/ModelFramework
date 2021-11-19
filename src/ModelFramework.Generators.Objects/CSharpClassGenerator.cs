@@ -198,7 +198,7 @@ namespace ModelFramework.Generators.Objects
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultParameterTemplate", () => new CSharpClassGenerator_DefaultParameterTemplate(), typeof(IParameter));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultParameterValueTemplate", () => new CSharpClassGenerator_DefaultParameterValueTemplate(), typeof(IParameter));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertyGetterBodyTemplate", () => new CSharpClassGenerator_DefaultPropertyGetterBodyTemplate(), typeof(IClassProperty));
-            RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitBodyTemplate", () => new CSharpClassGenerator_DefaultPropertyInitBodyTemplate(), typeof(IClassProperty));
+            RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate", () => new CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate(), typeof(IClassProperty));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertySetterBodyTemplate", () => new CSharpClassGenerator_DefaultPropertySetterBodyTemplate(), typeof(IClassProperty));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertyTemplate", () => new CSharpClassGenerator_DefaultPropertyTemplate(), typeof(IClassProperty));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultUsingsTemplate", () => new CSharpClassGenerator_DefaultUsingsTemplate(), typeof(IEnumerable<ITypeBase>));
@@ -348,9 +348,9 @@ namespace ModelFramework.Generators.Objects
             return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Objects.MetadataNames.PropertySetterTemplateName);
         }
 
-        public bool ResolvePropertyInitTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        public bool ResolvePropertyInitializerTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
         {
-            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Objects.MetadataNames.PropertyInitTemplateName);
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Objects.MetadataNames.PropertyInitializerTemplateName);
         }
 
         public string GetTemplateName(object model)
@@ -1447,7 +1447,7 @@ namespace ModelFramework.Generators.Objects
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultPropertyInitBodyTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate : CSharpClassGeneratorBase
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1671,7 +1671,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetInitModifiers()));
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitBodyTemplate", Model, customResolverDelegate: ResolvePropertyInitTemplateFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate", Model, customResolverDelegate: ResolvePropertyInitializerTemplateFromMetadata);
 
             }
 

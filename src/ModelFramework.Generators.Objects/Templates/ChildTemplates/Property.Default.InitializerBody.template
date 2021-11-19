@@ -1,5 +1,5 @@
 ﻿<#@ template language="c#" #>
-<#@ templateName value="CSharpClassGenerator.DefaultPropertyInitBodyTemplate" #>
+<#@ templateName value="CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate" #>
 <#@ model type="IClassProperty" #>
 <# if (!Model.InitializerCodeStatements.Any() || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    { #>

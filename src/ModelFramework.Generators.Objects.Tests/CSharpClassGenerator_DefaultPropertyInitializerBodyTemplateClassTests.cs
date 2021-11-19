@@ -15,7 +15,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var model = new ClassProperty("Name", "string");
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitBodyTemplate>(model);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -30,7 +30,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var model = new ClassProperty("Name", "string", initializerCodeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitBodyTemplate>(model);
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);

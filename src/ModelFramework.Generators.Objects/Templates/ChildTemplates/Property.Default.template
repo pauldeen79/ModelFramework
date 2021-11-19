@@ -7,5 +7,5 @@
         {
 <# if (Model.HasGetter) { #>            <#= Model.GetGetterModifiers() #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultPropertyGetterBodyTemplate" model="Model" customResolverDelegate="ResolvePropertyGetterTemplateFromMetadata" #><# } #>
 <# if (Model.HasSetter) { #>            <#= Model.GetSetterModifiers() #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultPropertySetterBodyTemplate" model="Model" customResolverDelegate="ResolvePropertySetterTemplateFromMetadata" #><# } #>
-<# if (Model.HasInitializer) { #>            <#= Model.GetInitModifiers() #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultPropertyInitBodyTemplate" model="Model" customResolverDelegate="ResolvePropertyInitTemplateFromMetadata" #><# } #>
+<# if (Model.HasInitializer) { #>            <#= Model.GetInitModifiers() #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate" model="Model" customResolverDelegate="ResolvePropertyInitializerTemplateFromMetadata" #><# } #>
         }

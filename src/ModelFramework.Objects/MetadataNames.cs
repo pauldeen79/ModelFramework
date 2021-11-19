@@ -40,7 +40,7 @@
         /// <summary>
         /// Metadata name for defining a property initializer template name.
         /// </summary>
-        public const string PropertyInitTemplateName = "ModelFramework.Objects.PropertyInitTemplateName";
+        public const string PropertyInitializerTemplateName = "ModelFramework.Objects.PropertyInitializerTemplateName";
 
         /// <summary>
         /// Metadata name for defining a property getter body.

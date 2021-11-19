@@ -14,8 +14,8 @@
             return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Objects.MetadataNames.PropertySetterTemplateName);
         }
 
-        public bool ResolvePropertyInitTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        public bool ResolvePropertyInitializerTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
         {
-            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Objects.MetadataNames.PropertyInitTemplateName);
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Objects.MetadataNames.PropertyInitializerTemplateName);
         }
 #>
