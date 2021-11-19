@@ -10,12 +10,12 @@ namespace ModelFramework.Objects.Contracts
         bool HasInit { get; }
         Visibility? GetterVisibility { get; }
         Visibility? SetterVisibility { get; }
-        Visibility? InitVisibility { get; }
+        Visibility? InitializerVisibility { get; }
         string GetterBody { get; }
         string SetterBody { get; }
-        string InitBody { get; }
+        string InitializerBody { get; }
         ValueCollection<ICodeStatement> GetterCodeStatements { get; }
         ValueCollection<ICodeStatement> SetterCodeStatements { get; }
-        ValueCollection<ICodeStatement> InitCodeStatements { get; }
+        ValueCollection<ICodeStatement> InitializerCodeStatements { get; }
     }
 }

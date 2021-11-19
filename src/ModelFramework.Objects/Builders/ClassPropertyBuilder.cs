@@ -104,10 +104,10 @@ namespace ModelFramework.Objects.Builders
             Visibility = source.Visibility;
             GetterVisibility = source.GetterVisibility;
             SetterVisibility = source.SetterVisibility;
-            InitVisibility = source.InitVisibility;
+            InitVisibility = source.InitializerVisibility;
             GetterBody = source.GetterBody;
             SetterBody = source.SetterBody;
-            InitBody = source.InitBody;
+            InitBody = source.InitializerBody;
             Name = source.Name;
             Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
             TypeName = source.TypeName;
@@ -119,7 +119,7 @@ namespace ModelFramework.Objects.Builders
             ExplicitInterfaceName = source.ExplicitInterfaceName;
             GetterCodeStatements.AddRange(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
             SetterCodeStatements.AddRange(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            InitCodeStatements.AddRange(source.InitCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            InitCodeStatements.AddRange(source.InitializerCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
 
             return this;
         }
@@ -391,10 +391,10 @@ namespace ModelFramework.Objects.Builders
             Visibility = source.Visibility;
             GetterVisibility = source.GetterVisibility;
             SetterVisibility = source.SetterVisibility;
-            InitVisibility = source.InitVisibility;
+            InitVisibility = source.InitializerVisibility;
             GetterBody = source.GetterBody;
             SetterBody = source.SetterBody;
-            InitBody = source.InitBody;
+            InitBody = source.InitializerBody;
             Name = source.Name;
             Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
             TypeName = source.TypeName;
@@ -406,7 +406,7 @@ namespace ModelFramework.Objects.Builders
             ExplicitInterfaceName = source.ExplicitInterfaceName;
             GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
             SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            InitCodeStatements = new List<ICodeStatementBuilder>(source.InitCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            InitCodeStatements = new List<ICodeStatementBuilder>(source.InitializerCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
         }
     }
 }

@@ -131,10 +131,10 @@ namespace ModelFramework.Objects.Extensions
                                 Visibility = p.Visibility,
                                 GetterVisibility = p.GetterVisibility,
                                 SetterVisibility = p.SetterVisibility,
-                                InitVisibility = p.InitVisibility,
+                                InitVisibility = p.InitializerVisibility,
                                 GetterBody = p.GetterBody,
                                 SetterBody = p.SetterBody,
-                                InitBody = p.InitBody,
+                                InitBody = p.InitializerBody,
                                 ExplicitInterfaceName = p.ExplicitInterfaceName,
                                 Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
                                             .Select(x => new MetadataBuilder(x))
@@ -142,7 +142,7 @@ namespace ModelFramework.Objects.Extensions
                                 Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
                                 GetterCodeStatements = p.GetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
                                 SetterCodeStatements = p.SetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
-                                InitCodeStatements = p.InitCodeStatements.Select(x => x.CreateBuilder()).ToList()
+                                InitCodeStatements = p.InitializerCodeStatements.Select(x => x.CreateBuilder()).ToList()
                             }
                         ).ToList(),
                 Constructors = 
@@ -221,7 +221,7 @@ namespace ModelFramework.Objects.Extensions
                                 Visibility = p.Visibility,
                                 GetterVisibility = p.GetterVisibility,
                                 SetterVisibility = p.SetterVisibility,
-                                InitVisibility = p.InitVisibility,
+                                InitVisibility = p.InitializerVisibility,
                                 GetterBody = p.GetterBody,
                                 SetterBody = p.SetterBody,
                                 InitBody = null,
@@ -263,7 +263,7 @@ namespace ModelFramework.Objects.Extensions
                                 Visibility = p.Visibility,
                                 GetterVisibility = p.GetterVisibility,
                                 SetterVisibility = p.SetterVisibility,
-                                InitVisibility = p.InitVisibility,
+                                InitVisibility = p.InitializerVisibility,
                                 GetterBody = p.FixObservablePropertyGetterBody(newCollectionTypeName),
                                 SetterBody = p.FixObservablePropertySetterBody(newCollectionTypeName),
                                 InitBody = null,
@@ -689,7 +689,7 @@ namespace ModelFramework.Objects.Extensions
                                     property.Visibility,
                                     property.GetterVisibility,
                                     property.SetterVisibility,
-                                    property.InitVisibility,
+                                    property.InitializerVisibility,
                                     property.GetterBody,
                                     property.SetterBody,
                                     null,

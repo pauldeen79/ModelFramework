@@ -71,7 +71,7 @@ namespace ModelFramework.Objects.Extensions
             => property.GetSubModifiers(property.SetterVisibility, MetadataNames.PropertySetterVisibility);
 
         public static string GetInitModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.InitVisibility, MetadataNames.PropertyInitVisibility);
+            => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitVisibility);
 
         private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
         {

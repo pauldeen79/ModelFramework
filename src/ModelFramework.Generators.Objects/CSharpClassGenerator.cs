@@ -1533,7 +1533,7 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            if ((string.IsNullOrEmpty(Model.InitBody) && !Model.InitCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
+            if ((string.IsNullOrEmpty(Model.InitializerBody) && !Model.InitializerCodeStatements.Any()) || TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface)
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"init;
@@ -1545,18 +1545,18 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"set
             {
 "));
-            if (!string.IsNullOrEmpty(Model.InitBody)) {
+            if (!string.IsNullOrEmpty(Model.InitializerBody)) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"                "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.InitBody));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.InitializerBody));
             }
 
-            if (Model.InitCodeStatements.Any()) {
+            if (Model.InitializerCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.InitCodeStatements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.InitializerCodeStatements, separatorTemplateName: @"NewLine");
 
             RootTemplate.PopIndent();
 

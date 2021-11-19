@@ -53,16 +53,16 @@ namespace ModelFramework.Objects.Default
             Visibility = visibility;
             GetterVisibility = getterVisibility;
             SetterVisibility = setterVisibility;
-            InitVisibility = initVisibility;
+            InitializerVisibility = initVisibility;
             GetterBody = getterBody;
             SetterBody = setterBody;
-            InitBody = initBody;
+            InitializerBody = initBody;
             ExplicitInterfaceName = explicitInterfaceName;
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
             GetterCodeStatements = new ValueCollection<ICodeStatement>(getterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
             SetterCodeStatements = new ValueCollection<ICodeStatement>(setterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
-            InitCodeStatements = new ValueCollection<ICodeStatement>(initCodeStatements ?? Enumerable.Empty<ICodeStatement>());
+            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initCodeStatements ?? Enumerable.Empty<ICodeStatement>());
         }
 
         public bool Static { get; }
@@ -73,10 +73,10 @@ namespace ModelFramework.Objects.Default
         public Visibility Visibility { get; }
         public Visibility? GetterVisibility { get; }
         public Visibility? SetterVisibility { get; }
-        public Visibility? InitVisibility { get; }
+        public Visibility? InitializerVisibility { get; }
         public string GetterBody { get; }
         public string SetterBody { get; }
-        public string InitBody { get; }
+        public string InitializerBody { get; }
         public string Name { get; }
         public ValueCollection<IAttribute> Attributes { get; }
         public string TypeName { get; }
@@ -88,7 +88,7 @@ namespace ModelFramework.Objects.Default
         public string ExplicitInterfaceName { get; }
         public ValueCollection<ICodeStatement> GetterCodeStatements { get; }
         public ValueCollection<ICodeStatement> SetterCodeStatements { get; }
-        public ValueCollection<ICodeStatement> InitCodeStatements { get; }
+        public ValueCollection<ICodeStatement> InitializerCodeStatements { get; }
 
         public override string ToString() => Name;
     }
