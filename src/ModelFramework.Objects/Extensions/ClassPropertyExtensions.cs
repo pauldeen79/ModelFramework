@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
@@ -61,5 +63,34 @@ namespace ModelFramework.Objects.Extensions
             => property.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<")
                 ? string.Format("_{0} = value;", property.Name.ToPascalCase()) + Environment.NewLine + string.Format(@"if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""{0}""));", property.Name)
                 : property.SetterBody;
+
+        public static string GetGetterModifiers(this IClassProperty property)
+            => property.GetSubModifiers(property.GetterVisibility, MetadataNames.PropertyGetterVisibility);
+
+        public static string GetSetterModifiers(this IClassProperty property)
+            => property.GetSubModifiers(property.SetterVisibility, MetadataNames.PropertySetterVisibility);
+
+        public static string GetInitModifiers(this IClassProperty property)
+            => property.GetSubModifiers(property.InitVisibility, MetadataNames.PropertyInitVisibility);
+
+        private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
+        {
+            var customModifiers = property.Metadata.GetMetadataStringValue(customModifiersMetadatName);
+            if (!string.IsNullOrEmpty(customModifiers)
+                && customModifiers != property.Visibility.ToString().ToLower(CultureInfo.InvariantCulture))
+            {
+                return customModifiers + " ";
+            }
+            var builder = new StringBuilder();
+
+            builder.AddWithCondition(subVisibility?.ToString()?.ToLower(CultureInfo.InvariantCulture), subVisibility != null && subVisibility != property.Visibility);
+
+            if (builder.Length > 0)
+            {
+                builder.Append(" ");
+            }
+
+            return builder.ToString();
+        }
     }
 }

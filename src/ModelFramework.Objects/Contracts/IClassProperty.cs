@@ -8,9 +8,9 @@ namespace ModelFramework.Objects.Contracts
         bool HasGetter { get; }
         bool HasSetter { get; }
         bool HasInit { get; }
-        Visibility GetterVisibility { get; }
-        Visibility SetterVisibility { get; }
-        Visibility InitVisibility { get; }
+        Visibility? GetterVisibility { get; }
+        Visibility? SetterVisibility { get; }
+        Visibility? InitVisibility { get; }
         string GetterBody { get; }
         string SetterBody { get; }
         string InitBody { get; }

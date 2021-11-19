@@ -12,7 +12,7 @@ namespace <#= Model.Namespace #>
 {
 <# } #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
-    <#= Model.GetModifiers() #> <#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #>
+    <#= Model.GetModifiers() #><#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #>
     {
 <#@ renderChildTemplate model="ViewModel.SubItems" customResolverDelegate="ResolveFromMetadata" separatorTemplateName="NewLine" footerTemplateName="NewLine" footerCondition="ViewModel.HasSubclasses" customTemplateNameDelegate="GetTemplateName" #>
 <#      if (ViewModel.HasSubclasses)

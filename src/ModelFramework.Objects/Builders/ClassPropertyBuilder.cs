@@ -15,9 +15,9 @@ namespace ModelFramework.Objects.Builders
         public bool HasInit { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
         public Visibility Visibility { get; set; }
-        public Visibility GetterVisibility { get; set; }
-        public Visibility SetterVisibility { get; set; }
-        public Visibility InitVisibility { get; set; }
+        public Visibility? GetterVisibility { get; set; }
+        public Visibility? SetterVisibility { get; set; }
+        public Visibility? InitVisibility { get; set; }
         public string GetterBody { get; set; }
         public string SetterBody { get; set; }
         public string InitBody { get; set; }
@@ -185,17 +185,17 @@ namespace ModelFramework.Objects.Builders
             Visibility = visibility;
             return this;
         }
-        public ClassPropertyBuilder WithGetterVisibility(Visibility getterVisibility)
+        public ClassPropertyBuilder WithGetterVisibility(Visibility? getterVisibility)
         {
             GetterVisibility = getterVisibility;
             return this;
         }
-        public ClassPropertyBuilder WithSetterVisibility(Visibility setterVisibility)
+        public ClassPropertyBuilder WithSetterVisibility(Visibility? setterVisibility)
         {
             SetterVisibility = setterVisibility;
             return this;
         }
-        public ClassPropertyBuilder WithInitVisibility(Visibility initVisibility)
+        public ClassPropertyBuilder WithInitVisibility(Visibility? initVisibility)
         {
             InitVisibility = initVisibility;
             return this;

@@ -3,7 +3,7 @@
 <#@ model type="IClassMethod" #>
 <#@ viewModel name="CSharpClassGenerator.DefaultMethodViewModel" model="Model" #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
-        <# if (ViewModel.ShouldRenderModifiers) { #><#= Model.GetModifiers() #> <# } #><#= ViewModel.ReturnTypeName #> <# if (ViewModel.ShouldRenderExplicitInterfaceName) { #><#= Model.ExplicitInterfaceName #>.<# } #><#= ViewModel.Name #>(<# if (Model.ExtensionMethod) { #>this <# } #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<# if (ViewModel.OmitCode) { #>;<# } else { #>
+        <# if (ViewModel.ShouldRenderModifiers) { #><#= Model.GetModifiers() #><# } #><#= ViewModel.ReturnTypeName #> <# if (ViewModel.ShouldRenderExplicitInterfaceName) { #><#= Model.ExplicitInterfaceName #>.<# } #><#= ViewModel.Name #>(<# if (Model.ExtensionMethod) { #>this <# } #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<# if (ViewModel.OmitCode) { #>;<# } else { #>
 
         {
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultBodyTemplate" model="Model" customResolverDelegate="ResolveObjectCodeTemplateFromMetadata" #>

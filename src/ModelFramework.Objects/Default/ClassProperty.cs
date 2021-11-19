@@ -22,9 +22,9 @@ namespace ModelFramework.Objects.Default
                              bool hasInit = false,
                              bool isNullable = false,
                              Visibility visibility = Visibility.Public,
-                             Visibility getterVisibility = Visibility.Public,
-                             Visibility setterVisibility = Visibility.Public,
-                             Visibility initVisibility = Visibility.Public,
+                             Visibility? getterVisibility = null,
+                             Visibility? setterVisibility = null,
+                             Visibility? initVisibility = null,
                              string getterBody = null,
                              string setterBody = null,
                              string initBody = null,
@@ -71,9 +71,9 @@ namespace ModelFramework.Objects.Default
         public bool HasInit { get; }
         public ValueCollection<IMetadata> Metadata { get; }
         public Visibility Visibility { get; }
-        public Visibility GetterVisibility { get; }
-        public Visibility SetterVisibility { get; }
-        public Visibility InitVisibility { get; }
+        public Visibility? GetterVisibility { get; }
+        public Visibility? SetterVisibility { get; }
+        public Visibility? InitVisibility { get; }
         public string GetterBody { get; }
         public string SetterBody { get; }
         public string InitBody { get; }

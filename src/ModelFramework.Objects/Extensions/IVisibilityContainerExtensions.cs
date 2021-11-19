@@ -14,7 +14,7 @@ namespace ModelFramework.Objects.Extensions
             var customModifiers = instance.Metadata.GetMetadataStringValue(MetadataNames.CustomModifiers);
             if (!string.IsNullOrEmpty(customModifiers))
             {
-                return customModifiers;
+                return customModifiers + " ";
             }
             var builder = new StringBuilder();
             if (instance is IExtendedVisibilityContainer extendedVisibilityContainer)
@@ -41,6 +41,10 @@ namespace ModelFramework.Objects.Extensions
                 {
                     builder.AddWithCondition("partial", typeBase.Partial);
                 }
+            }
+            if (builder.Length > 0)
+            {
+                builder.Append(" ");
             }
             return builder.ToString();
         }

@@ -655,7 +655,6 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"    "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
-            Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetContainerType()));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
@@ -839,7 +838,6 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
-            Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
             Write(this.ToStringHelper.ToStringWithCulture(@"("));
             
@@ -1031,7 +1029,7 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
-            Write(this.ToStringHelper.ToStringWithCulture(@" enum "));
+            Write(this.ToStringHelper.ToStringWithCulture(@"enum "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             Write(this.ToStringHelper.ToStringWithCulture(@"
         {
@@ -1185,7 +1183,6 @@ namespace ModelFramework.Generators.Objects
             if (ViewModel.ShouldRenderModifiers) {
 
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
-            Write(this.ToStringHelper.ToStringWithCulture(@" "));
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(ViewModel.ReturnTypeName));
@@ -1729,7 +1726,6 @@ namespace ModelFramework.Generators.Objects
             if (ViewModel.ShouldRenderModifiers) {
 
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
-            Write(this.ToStringHelper.ToStringWithCulture(@" "));
             }
 
             if (ViewModel.ShouldRenderExplicitInterfaceName) {
@@ -1747,7 +1743,7 @@ namespace ModelFramework.Generators.Objects
             if (Model.HasGetter) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Metadata.GetMetadataStringValue(ModelFramework.Objects.MetadataNames.PropertyGetterVisibility)));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetGetterModifiers()));
             
             RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyGetterBodyTemplate", Model, customResolverDelegate: ResolvePropertyGetterTemplateFromMetadata);
 
@@ -1756,7 +1752,7 @@ namespace ModelFramework.Generators.Objects
             if (Model.HasSetter) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Metadata.GetMetadataStringValue(ModelFramework.Objects.MetadataNames.PropertySetterVisibility)));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetSetterModifiers()));
             
             RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertySetterBodyTemplate", Model, customResolverDelegate: ResolvePropertySetterTemplateFromMetadata);
 
@@ -1765,7 +1761,7 @@ namespace ModelFramework.Generators.Objects
             if (Model.HasInit) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Metadata.GetMetadataStringValue(ModelFramework.Objects.MetadataNames.PropertyInitVisibility)));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetInitModifiers()));
             
             RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitBodyTemplate", Model, customResolverDelegate: ResolvePropertyInitTemplateFromMetadata);
 
