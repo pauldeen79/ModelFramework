@@ -25,16 +25,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public PrimaryKeyConstraintFieldBuilder Update(IPrimaryKeyConstraintField source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            IsDescending = source.IsDescending;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public PrimaryKeyConstraintFieldBuilder WithIsDescending(bool isDescending)
         {
             IsDescending = isDescending;

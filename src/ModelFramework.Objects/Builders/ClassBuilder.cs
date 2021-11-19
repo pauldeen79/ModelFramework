@@ -78,43 +78,6 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArguments = default;
             return this;
         }
-        public ClassBuilder Update(IClass source)
-        {
-            Interfaces = new List<string>();
-            Fields = new List<ClassFieldBuilder>();
-            Properties = new List<ClassPropertyBuilder>();
-            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder();
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-            SubClasses = new List<ClassBuilder>();
-            Enums = new List<EnumBuilder>();
-            Constructors = new List<ClassConstructorBuilder>();
-            Methods = new List<ClassMethodBuilder>();
-            GenericTypeArguments = new List<string>();
-
-            Interfaces.AddRange(source.Interfaces ?? Enumerable.Empty<string>());
-            Fields.AddRange(source.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>());
-            Properties.AddRange(source.Properties?.Select(x => new ClassPropertyBuilder(x)));
-            Static = source.Static;
-            Sealed = source.Sealed;
-            Partial = source.Partial;
-            AutoGenerateInterface = source.AutoGenerateInterface;
-            AutoGenerateInterfaceSettings.Update(source.AutoGenerateInterfaceSettings);
-            Record = source.Record;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Visibility = source.Visibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            SubClasses.AddRange(source.SubClasses?.Select(x => new ClassBuilder(x)) ?? Enumerable.Empty<ClassBuilder>());
-            Enums.AddRange(source.Enums?.Select(x => new EnumBuilder(x)) ?? Enumerable.Empty<EnumBuilder>());
-            Namespace = source.Namespace;
-            Constructors.AddRange(source.Constructors?.Select(x => new ClassConstructorBuilder(x)) ?? Enumerable.Empty<ClassConstructorBuilder>());
-            Methods.AddRange(source.Methods?.Select(x => new ClassMethodBuilder(x)) ?? Enumerable.Empty<ClassMethodBuilder>());
-            BaseClass = source.BaseClass;
-            GenericTypeArguments.AddRange(source.GenericTypeArguments ?? Enumerable.Empty<string>());
-
-            return this;
-        }
         public ClassBuilder ClearInterfaces()
         {
             Interfaces.Clear();
@@ -212,7 +175,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder WithAutoGenerateInterfaceSettings(InterfaceSettings autoGenerateInterfaceSettings)
         {
-            AutoGenerateInterfaceSettings.Update(autoGenerateInterfaceSettings);
+            AutoGenerateInterfaceSettings = new InterfaceSettingsBuilder(autoGenerateInterfaceSettings);
             return this;
         }
         public ClassBuilder WithAutoGenerateInterfaceSettings(InterfaceSettingsBuilder autoGenerateInterfaceSettingsBuilder)

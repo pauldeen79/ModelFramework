@@ -34,19 +34,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public ViewFieldBuilder Update(ViewField source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            SourceSchemaName = source.SourceSchemaName;
-            SourceObjectName = source.SourceObjectName;
-            Expression = source.Expression;
-            Alias = source.Alias;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
         {
             SourceSchemaName = sourceSchemaName;

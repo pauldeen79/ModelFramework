@@ -31,19 +31,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public ViewSourceBuilder Update(IViewSource source)
-        {
-
-            Metadata = new List<MetadataBuilder>();
-
-            Alias = source.Alias;
-            Name = source.Name;
-            SourceSchemaName = source.SourceSchemaName;
-            SourceObjectName = source.SourceObjectName;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public ViewSourceBuilder WithAlias(string alias)
         {
             Alias = alias;

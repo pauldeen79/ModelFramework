@@ -28,18 +28,6 @@ namespace ModelFramework.Objects.Builders
             Metadata.Clear();
             return this;
         }
-        public EnumMemberBuilder Update(IEnumMember source)
-        {
-            Attributes = new List<AttributeBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Name = source.Name;
-            Value = source.Value;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-
-            return this;
-        }
         public EnumMemberBuilder ClearAttributes()
         {
             Attributes.Clear();

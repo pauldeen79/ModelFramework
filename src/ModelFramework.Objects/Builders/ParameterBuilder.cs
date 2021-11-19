@@ -33,19 +33,6 @@ namespace ModelFramework.Objects.Builders
             IsNullable = default;
             return this;
         }
-        public ParameterBuilder Update(IParameter source)
-        {
-            Attributes = new List<AttributeBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            TypeName = source.TypeName;
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Name = source.Name;
-            DefaultValue = source.DefaultValue;
-
-            return this;
-        }
         public ParameterBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;

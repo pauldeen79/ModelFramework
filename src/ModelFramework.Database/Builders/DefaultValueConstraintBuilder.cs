@@ -28,17 +28,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public DefaultValueConstraintBuilder Update(IDefaultValueConstraint source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            FieldName = source.FieldName;
-            DefaultValue = source.DefaultValue;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public DefaultValueConstraintBuilder WithFieldName(string fieldName)
         {
             FieldName = fieldName;

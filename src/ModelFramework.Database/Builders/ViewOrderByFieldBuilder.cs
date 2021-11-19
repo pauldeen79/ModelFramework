@@ -37,21 +37,12 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public ViewOrderByFieldBuilder Update(IViewOrderByField source)
+        public ViewOrderByFieldBuilder WithAscending(bool ascending = true)
         {
-            Metadata = new List<MetadataBuilder>();
-
-            Descending = source.Descending;
-            SourceSchemaName = source.SourceSchemaName;
-            SourceObjectName = source.SourceObjectName;
-            Expression = source.Expression;
-            Alias = source.Alias;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
+            Descending = !ascending;
             return this;
         }
-        public ViewOrderByFieldBuilder WithDescending(bool descending)
+        public ViewOrderByFieldBuilder WithDescending(bool descending = true)
         {
             Descending = descending;
             return this;

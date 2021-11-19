@@ -76,7 +76,7 @@ namespace ModelFramework.Objects.Extensions
                     TypeName = p.PropertyType.FullName,
                     HasGetter = p.GetGetMethod() != null,
                     HasSetter = p.GetSetMethod() != null,
-                    HasInit = p.IsInitOnly(),
+                    HasInitializer = p.IsInitOnly(),
                     IsNullable = p.IsNullable(),
                     Visibility = p.GetAccessors().Any(m => m.IsPublic)
                         ? Visibility.Public

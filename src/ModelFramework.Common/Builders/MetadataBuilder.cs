@@ -17,17 +17,6 @@ namespace ModelFramework.Common.Builders
             Name = default;
             return this;
         }
-        public MetadataBuilder Update(IMetadata source)
-        {
-            Value = default;
-            Name = default;
-            if (source != null)
-            {
-                Value = source.Value;
-                Name = source.Name;
-            }
-            return this;
-        }
         public MetadataBuilder WithValue(object value)
         {
             Value = value;

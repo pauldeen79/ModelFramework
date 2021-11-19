@@ -67,39 +67,12 @@ namespace ModelFramework.Objects.Builders
             CodeStatements.Clear();
             return this;
         }
-        public ClassMethodBuilder Update(IClassMethod source)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-            Parameters = new List<ParameterBuilder>();
-            CodeStatements = new List<ICodeStatementBuilder>();
-
-            Partial = source.Partial;
-            ExtensionMethod = source.ExtensionMethod;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Static = source.Static;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            Operator = source.Operator;
-            IsNullable = source.IsNullable;
-            Visibility = source.Visibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Parameters.AddRange(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
-            TypeName = source.TypeName;
-            ExplicitInterfaceName = source.ExplicitInterfaceName;
-            CodeStatements.AddRange(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-
-            return this;
-        }
         public ClassMethodBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
             return this;
         }
-        public ClassMethodBuilder WithExtensionMethod(bool extensionMethod)
+        public ClassMethodBuilder WithExtensionMethod(bool extensionMethod = true)
         {
             ExtensionMethod = extensionMethod;
             return this;

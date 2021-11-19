@@ -23,16 +23,6 @@ namespace ModelFramework.Objects.Builders
             Name = default;
             return this;
         }
-        public AttributeParameterBuilder Update(IAttributeParameter source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Value = source.Value;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Name = source.Name;
-
-            return this;
-        }
         public AttributeParameterBuilder WithValue(object value)
         {
             Value = value;

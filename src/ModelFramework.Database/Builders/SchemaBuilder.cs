@@ -31,21 +31,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public SchemaBuilder Update(ISchema source)
-        {
-            Tables = new List<TableBuilder>();
-            StoredProcedures = new List<StoredProcedureBuilder>();
-            Views = new List<ViewBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            if (source.Tables != null) Tables.AddRange(source.Tables.Select(x => new TableBuilder(x)));
-            if (source.StoredProcedures!= null) StoredProcedures.AddRange(source.StoredProcedures.Select(x => new StoredProcedureBuilder(x)));
-            if (source.Views != null) Views.AddRange(source.Views.Select(x => new ViewBuilder(x)));
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public SchemaBuilder ClearTables()
         {
             Tables.Clear();

@@ -46,27 +46,6 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArguments = default;
             return this;
         }
-        public InterfaceBuilder Update(IInterface source)
-        {
-            Interfaces = new List<string>();
-            Properties = new List<ClassPropertyBuilder>();
-            Methods = new List<ClassMethodBuilder>();
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-            GenericTypeArguments = new List<string>();
-
-            Namespace = source.Namespace;
-            Interfaces.AddRange(source.Interfaces ?? Enumerable.Empty<string>());
-            Properties.AddRange(source.Properties?.Select(x => new ClassPropertyBuilder(x)) ?? Enumerable.Empty<ClassPropertyBuilder>());
-            Methods.AddRange(source.Methods?.Select(x => new ClassMethodBuilder(x)) ?? Enumerable.Empty<ClassMethodBuilder>());
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Visibility = source.Visibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            GenericTypeArguments = new List<string>(source?.GenericTypeArguments ?? Enumerable.Empty<string>());
-
-            return this;
-        }
         public InterfaceBuilder WithNamespace(string @namespace)
         {
             Namespace = @namespace;

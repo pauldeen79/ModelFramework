@@ -28,17 +28,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public StoredProcedureParameterBuilder Update(IStoredProcedureParameter source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Type = source.Type;
-            DefaultValue = source.DefaultValue;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public StoredProcedureParameterBuilder WithType(string type)
         {
             Type = type;

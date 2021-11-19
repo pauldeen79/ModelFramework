@@ -31,20 +31,6 @@ namespace ModelFramework.Objects.Builders
             Visibility = default;
             return this;
         }
-        public EnumBuilder Update(IEnum source)
-        {
-            Attributes = new List<AttributeBuilder>();
-            Members = new List<EnumMemberBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Members.AddRange(source.Members?.Select(x => new EnumMemberBuilder(x)) ?? Enumerable.Empty<EnumMemberBuilder>());
-            Name = source.Name;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Visibility = source.Visibility;
-
-            return this;
-        }
         public EnumBuilder ClearAttributes()
         {
             Attributes.Clear();

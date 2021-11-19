@@ -49,24 +49,6 @@ namespace ModelFramework.Database.Builders
             CheckConstraint = default;
             return this;
         }
-        public TableFieldBuilder Update(ITableField source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Type = source.Type;
-            IsIdentity = source.IsIdentity;
-            IsRequired = source.IsRequired;
-            NumericPrecision = source.NumericPrecision;
-            NumericScale = source.NumericScale;
-            StringLength = source.StringLength;
-            StringCollation = source.StringCollation;
-            IsStringMaxLength = source.IsStringMaxLength;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            CheckConstraint = source.CheckConstraint;
-
-            return this;
-        }
         public TableFieldBuilder WithType(string type)
         {
             Type = type;

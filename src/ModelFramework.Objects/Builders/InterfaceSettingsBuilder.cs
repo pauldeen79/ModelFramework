@@ -34,17 +34,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public InterfaceSettingsBuilder Update(InterfaceSettings source)
-        {
-            PropertyFilter = source.PropertyFilter;
-            MethodFilter = source.MethodFilter;
-            MetadataFilter = source.MetadataFilter;
-            AttributeFilter = source.AttributeFilter;
-            ApplyGenericTypes = source.ApplyGenericTypes;
-            ChangePropertiesToReadOnly = source.ChangePropertiesToReadOnly;
-            return this;
-        }
-
         public InterfaceSettingsBuilder WithPropertyFilter(Func<IClassProperty, bool> propertyFilter)
         {
             PropertyFilter = propertyFilter;

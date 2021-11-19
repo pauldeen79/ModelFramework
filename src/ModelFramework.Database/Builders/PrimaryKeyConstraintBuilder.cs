@@ -28,18 +28,6 @@ namespace ModelFramework.Database.Builders
             Fields.Clear();
             return this;
         }
-        public PrimaryKeyConstraintBuilder Update(IPrimaryKeyConstraint source)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Fields = new List<PrimaryKeyConstraintFieldBuilder>();
-
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            FileGroupName = source.FileGroupName;
-            Fields.AddRange(source.Fields.Select(x => new PrimaryKeyConstraintFieldBuilder(x)));
-
-            return this;
-        }
         public PrimaryKeyConstraintBuilder WithName(string name)
         {
             Name = name;

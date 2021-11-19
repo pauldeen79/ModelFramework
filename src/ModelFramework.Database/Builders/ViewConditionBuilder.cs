@@ -28,16 +28,6 @@ namespace ModelFramework.Database.Builders
             FileGroupName = default;
             return this;
         }
-        public ViewConditionBuilder Update(ViewCondition source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Expression = source.Expression;
-            Combination = source.Combination;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            FileGroupName = source.FileGroupName;
-            return this;
-        }
         public ViewConditionBuilder WithExpression(string expression)
         {
             Expression = expression;

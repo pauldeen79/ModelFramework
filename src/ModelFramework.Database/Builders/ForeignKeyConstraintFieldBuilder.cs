@@ -21,15 +21,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public ForeignKeyConstraintFieldBuilder Update(ForeignKeyConstraintField source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public ForeignKeyConstraintFieldBuilder WithName(string name)
         {
             Name = name;

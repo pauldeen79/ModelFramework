@@ -25,18 +25,6 @@ namespace ModelFramework.Database.Builders
             Fields.Clear();
             return this;
         }
-        public UniqueConstraintBuilder Update(IUniqueConstraint source)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Fields = new List<UniqueConstraintFieldBuilder>();
-
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            FileGroupName = source.FileGroupName;
-            if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new UniqueConstraintFieldBuilder(x)));
-
-            return this;
-        }
         public UniqueConstraintBuilder WithName(string name)
         {
             Name = name;

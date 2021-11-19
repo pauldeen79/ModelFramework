@@ -31,19 +31,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public IndexBuilder Update(Index source)
-        {
-            Fields = new List<IndexFieldBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            if (source.Fields != null) Fields.AddRange(source.Fields.Select(x => new IndexFieldBuilder(x)));
-            Unique = source.Unique;
-            Name = source.Name;
-            FileGroupName = source.FileGroupName;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public IndexBuilder ClearFields()
         {
             Fields.Clear();

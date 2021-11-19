@@ -16,17 +16,6 @@ namespace ModelFramework.Objects.Builders
         {
             return new Attribute(Name, Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()));
         }
-        public AttributeBuilder Update(IAttribute source)
-        {
-            Parameters = new List<AttributeParameterBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            Parameters.AddRange(source.Parameters?.Select(x => new AttributeParameterBuilder(x)) ?? Enumerable.Empty<AttributeParameterBuilder>());
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Name = source.Name;
-
-            return this;
-        }
         public AttributeBuilder Clear()
         {
             Parameters.Clear();

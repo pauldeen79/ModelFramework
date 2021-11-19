@@ -28,17 +28,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public TableFieldCheckConstraintBuilder Update(ITableFieldCheckConstraint source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Expression = source.Expression;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
-
         public TableFieldCheckConstraintBuilder WithName(string name)
         {
             Name = name;

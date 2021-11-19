@@ -49,29 +49,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public ViewBuilder Update(IView source)
-        {
-            SelectFields = new List<ViewFieldBuilder>();
-            OrderByFields = new List<ViewOrderByFieldBuilder>();
-            GroupByFields = new List<ViewFieldBuilder>();
-            Sources = new List<ViewSourceBuilder>();
-            Conditions = new List<ViewConditionBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            if (source.SelectFields != null) SelectFields.AddRange(source.SelectFields.Select(x => new ViewFieldBuilder(x)));
-            if (source.OrderByFields != null) OrderByFields.AddRange(source.OrderByFields.Select(x => new ViewOrderByFieldBuilder(x)));
-            if (source.GroupByFields != null) GroupByFields.AddRange(source.GroupByFields.Select(x => new ViewFieldBuilder(x)));
-            if (source.Sources != null) Sources.AddRange(source.Sources.Select(x => new ViewSourceBuilder(x)));
-            if (source.Conditions != null) Conditions.AddRange(source.Conditions.Select(x => new ViewConditionBuilder(x)));
-            Top = source.Top;
-            TopPercent = source.TopPercent;
-            Distinct = source.Distinct;
-            Definition = source.Definition;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public ViewBuilder ClearSelectFields()
         {
             SelectFields.Clear();
@@ -252,12 +229,12 @@ namespace ModelFramework.Database.Builders
             Top = top;
             return this;
         }
-        public ViewBuilder WithTopPercent(bool topPercent)
+        public ViewBuilder WithTopPercent(bool topPercent = true)
         {
             TopPercent = topPercent;
             return this;
         }
-        public ViewBuilder WithDistinct(bool distinct)
+        public ViewBuilder WithDistinct(bool distinct = true)
         {
             Distinct = distinct;
             return this;

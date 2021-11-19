@@ -61,29 +61,6 @@ namespace ModelFramework.Objects.Builders
             IsNullable = default;
             return this;
         }
-        public ClassFieldBuilder Update(IClassField source)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-
-            Static = source.Static;
-            ReadOnly = source.ReadOnly;
-            Constant = source.Constant;
-            DefaultValue = source.DefaultValue;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Visibility = source.Visibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            TypeName = source.TypeName;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            Event = source.Event;
-            IsNullable = source.IsNullable;
-
-            return this;
-        }
         public ClassFieldBuilder WithStatic(bool @static = true)
         {
             Static = @static;

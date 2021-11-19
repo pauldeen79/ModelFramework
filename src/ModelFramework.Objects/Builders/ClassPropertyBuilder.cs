@@ -12,7 +12,7 @@ namespace ModelFramework.Objects.Builders
         public bool Static { get; set; }
         public bool HasGetter { get; set; }
         public bool HasSetter { get; set; }
-        public bool HasInit { get; set; }
+        public bool HasInitializer { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
         public Visibility Visibility { get; set; }
         public Visibility? GetterVisibility { get; set; }
@@ -41,7 +41,7 @@ namespace ModelFramework.Objects.Builders
                                      Override,
                                      HasGetter,
                                      HasSetter, 
-                                     HasInit,
+                                     HasInitializer,
                                      IsNullable,
                                      Visibility,
                                      GetterVisibility,
@@ -59,7 +59,7 @@ namespace ModelFramework.Objects.Builders
             Static = default;
             HasGetter = true;
             HasSetter = true;
-            HasInit = default;
+            HasInitializer = default;
             Metadata.Clear();
             Visibility = default;
             GetterVisibility = default;
@@ -79,38 +79,6 @@ namespace ModelFramework.Objects.Builders
             InitializerCodeStatements.Clear();
             return this;
         }
-        public ClassPropertyBuilder Update(ClassProperty source)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-            GetterCodeStatements = new List<ICodeStatementBuilder>();
-            SetterCodeStatements = new List<ICodeStatementBuilder>();
-            InitializerCodeStatements = new List<ICodeStatementBuilder>();
-
-            Static = source.Static;
-            HasGetter = source.HasGetter;
-            HasSetter = source.HasSetter;
-            HasInit = source.HasInitializer;
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Visibility = source.Visibility;
-            GetterVisibility = source.GetterVisibility;
-            SetterVisibility = source.SetterVisibility;
-            InitializerVisibility = source.InitializerVisibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            TypeName = source.TypeName;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            IsNullable = source.IsNullable;
-            ExplicitInterfaceName = source.ExplicitInterfaceName;
-            GetterCodeStatements.AddRange(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            SetterCodeStatements.AddRange(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            InitializerCodeStatements.AddRange(source.InitializerCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-
-            return this;
-        }
         public ClassPropertyBuilder WithStatic(bool @static = true)
         {
             Static = @static;
@@ -126,14 +94,14 @@ namespace ModelFramework.Objects.Builders
             HasSetter = hasSetter;
             if (hasSetter)
             {
-                HasInit = false;
+                HasInitializer = false;
             }
             return this;
         }
-        public ClassPropertyBuilder WithHasInit(bool hasInit = true)
+        public ClassPropertyBuilder WithHasInitializer(bool hasInitializer = true)
         {
-            HasInit = hasInit;
-            if (hasInit)
+            HasInitializer = hasInitializer;
+            if (hasInitializer)
             {
                 HasSetter = false;
             }
@@ -359,7 +327,7 @@ namespace ModelFramework.Objects.Builders
             Static = source.Static;
             HasGetter = source.HasGetter;
             HasSetter = source.HasSetter;
-            HasInit = source.HasInitializer;
+            HasInitializer = source.HasInitializer;
             Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
             Visibility = source.Visibility;
             GetterVisibility = source.GetterVisibility;

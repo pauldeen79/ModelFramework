@@ -91,7 +91,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var model = new ClassPropertyBuilder()
                 .WithName("MyProperty")
                 .WithTypeName(typeof(string).FullName)
-                .WithHasInit()
+                .WithHasInitializer()
                 .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
 

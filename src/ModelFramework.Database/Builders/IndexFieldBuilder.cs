@@ -25,16 +25,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public IndexFieldBuilder Update(IIndexField source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            IsDescending = source.IsDescending;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public IndexFieldBuilder WithIsDescending(bool isDescending)
         {
             IsDescending = isDescending;

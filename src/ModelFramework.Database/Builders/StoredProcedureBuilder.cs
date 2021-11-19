@@ -31,20 +31,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public StoredProcedureBuilder Update(IStoredProcedure source)
-        {
-            Parameters = new List<StoredProcedureParameterBuilder>();
-            Statements = new List<ISqlStatementBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            Body = source.Body;
-            if (source.Parameters != null) Parameters.AddRange(source.Parameters.Select(x => new StoredProcedureParameterBuilder(x)));
-            if (source.Statements != null) Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public StoredProcedureBuilder WithBody(string body)
         {
             Body = body;

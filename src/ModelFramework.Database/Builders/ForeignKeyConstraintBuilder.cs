@@ -37,22 +37,6 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public ForeignKeyConstraintBuilder Update(IForeignKeyConstraint source)
-        {
-            LocalFields = new List<ForeignKeyConstraintFieldBuilder>();
-            ForeignFields = new List<ForeignKeyConstraintFieldBuilder>();
-            Metadata = new List<MetadataBuilder>();
-
-            if (source.LocalFields != null) LocalFields.AddRange(source.LocalFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
-            if (source.ForeignFields != null) ForeignFields.AddRange(source.ForeignFields.Select(x => new ForeignKeyConstraintFieldBuilder(x)));
-            ForeignTableName = source.ForeignTableName;
-            CascadeUpdate = source.CascadeUpdate;
-            CascadeDelete = source.CascadeDelete;
-            Name = source.Name;
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-
-            return this;
-        }
         public ForeignKeyConstraintBuilder ClearLocalFields()
         {
             LocalFields.Clear();

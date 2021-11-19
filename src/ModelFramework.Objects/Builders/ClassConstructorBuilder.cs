@@ -49,25 +49,6 @@ namespace ModelFramework.Objects.Builders
             CodeStatements.Clear();
             return this;
         }
-        public ClassConstructorBuilder Update(IClassConstructor source)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-            Parameters = new List<ParameterBuilder>();
-            CodeStatements = new List<ICodeStatementBuilder>();
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Static = source.Static;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            Visibility = source.Visibility;
-            Attributes.AddRange(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            ChainCall = source.ChainCall;
-            Parameters.AddRange(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
-            CodeStatements.AddRange(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            return this;
-        }
         public ClassConstructorBuilder ClearMetadata()
         {
             Metadata.Clear();
