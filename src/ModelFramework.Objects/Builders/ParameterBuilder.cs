@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
@@ -36,6 +37,11 @@ namespace ModelFramework.Objects.Builders
         public ParameterBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;
+            return this;
+        }
+        public ParameterBuilder WithType(Type type)
+        {
+            TypeName = type.FullName;
             return this;
         }
         public ParameterBuilder ClearAttributes()

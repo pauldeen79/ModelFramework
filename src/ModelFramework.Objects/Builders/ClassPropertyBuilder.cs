@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
@@ -193,6 +194,11 @@ namespace ModelFramework.Objects.Builders
         public ClassPropertyBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;
+            return this;
+        }
+        public ClassPropertyBuilder WithType(Type type)
+        {
+            TypeName = type.FullName;
             return this;
         }
         public ClassPropertyBuilder WithVirtual(bool @virtual = true)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
@@ -212,6 +213,11 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;
+            return this;
+        }
+        public ClassMethodBuilder WithType(Type type)
+        {
+            TypeName = type.FullName;
             return this;
         }
         public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
