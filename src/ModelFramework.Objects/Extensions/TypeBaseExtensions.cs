@@ -417,6 +417,35 @@ namespace ModelFramework.Objects.Extensions
                         .ToList()
             };
 
+            if (settings.AddCopyConstructor)
+            {
+                yield return new ClassMethodBuilder
+                {
+                    Name = "Update",
+                    TypeName = $"{instance.Name}Builder",
+                    Parameters = new[]
+                    {
+                        new ParameterBuilder
+                        {
+                            Name = "source",
+                            TypeName = FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate)
+                        }
+                    }.ToList(),
+                    CodeStatements = instance.Properties
+                        .Where(p => p.TypeName.IsCollectionTypeName())
+                        .Select
+                        (
+                            p => $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
+                        )
+                        .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks)))
+                        .Concat(new[]
+                        {
+                            "return this;"
+                        })
+                        .ToLiteralCodeStatementBuilders()
+                        .ToList()
+                };
+            }
             foreach (var property in instance.Properties)
             {
                 var overloads = property.Metadata.GetMetadataStringValues(MetadataNames.CustomImmutableBuilderWithOverloadArgumentType)
