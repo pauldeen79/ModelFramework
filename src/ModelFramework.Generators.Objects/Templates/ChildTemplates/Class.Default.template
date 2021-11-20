@@ -11,6 +11,10 @@
 namespace <#= Model.Namespace #>
 {
 <# } #>
+<# if (ViewModel.EnableNullableContext)
+   { #>
+#pragma nullable enable
+<# } #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
     <#= Model.GetModifiers() #><#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #>
     {
@@ -23,6 +27,10 @@ namespace <#= Model.Namespace #>
             Write(RootTemplate.CurrentIndent);
         } #>
     }
+<# if (ViewModel.EnableNullableContext)
+   { #>
+#pragma nullable restore
+<# } #>
 <# if (ViewModel.GenerateMultipleFiles)
    { #>
 }

@@ -7,6 +7,7 @@
     public CSharpClassGenerator Root => TemplateContext.GetContextByType<CSharpClassGenerator>();
     public bool GenerateMultipleFiles => Root.GenerateMultipleFiles;
     public IClass Class => Model as IClass;
+    public bool EnableNullableContext => Root.EnableNullableContext;
     public bool HasSubclasses
     {
         get

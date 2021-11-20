@@ -8,7 +8,7 @@ using Xunit;
 namespace ModelFramework.Generators.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
-    public class Enum_DefaultClassTests
+    public class CSharpClassGenerator_DefaultEnumTemplateTests
     {
         [Fact]
         public void GeneratesCodeBody()

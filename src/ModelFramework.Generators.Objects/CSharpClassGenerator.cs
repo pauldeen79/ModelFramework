@@ -582,6 +582,13 @@ namespace ModelFramework.Generators.Objects
 "));
             }
 
+            if (ViewModel.EnableNullableContext)
+   {
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"#pragma nullable enable
+"));
+            }
+
             
             RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
 
@@ -608,6 +615,13 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"    }
 "));
+            if (ViewModel.EnableNullableContext)
+   {
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"#pragma nullable restore
+"));
+            }
+
             if (ViewModel.GenerateMultipleFiles)
    {
 
@@ -2239,6 +2253,7 @@ namespace ModelFramework.Generators.Objects
         public CSharpClassGenerator Root => TemplateContext.GetContextByType<CSharpClassGenerator>();
     public bool GenerateMultipleFiles => Root.GenerateMultipleFiles;
     public IClass Class => Model as IClass;
+    public bool EnableNullableContext => Root.EnableNullableContext;
     public bool HasSubclasses
     {
         get

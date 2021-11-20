@@ -7,7 +7,7 @@ using Xunit;
 namespace ModelFramework.Generators.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
-    public class Field_DefaultClassTests
+    public class CSharpClassGenerator_DefaultFieldTemplateTests
     {
         [Fact]
         public void GeneratesCodeBodyWithoutDefaultValueWhenNotSupplied()

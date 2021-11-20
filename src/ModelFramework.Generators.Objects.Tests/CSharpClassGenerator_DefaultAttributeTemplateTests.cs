@@ -7,7 +7,7 @@ using Xunit;
 namespace ModelFramework.Generators.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
-    public class CSharpClassGenerator_DefaultAttributeTemplateClassTests
+    public class CSharpClassGenerator_DefaultAttributeTemplateTests
     {
         [Fact]
         public void GeneratesAttributeCode()

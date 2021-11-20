@@ -2379,6 +2379,45 @@ namespace ModelFramework.Generators.Objects.Tests
                  .WithMessage("To create an immutable builder class, there must be at least one property");
         }
 
+        [Fact]
+        public void Can_Generate_Class_With_Nullable_Reference_Types()
+        {
+            // Arrange
+            var model = new[]
+            {
+                new ClassBuilder()
+                .WithName("MyClass")
+                .WithNamespace("MyNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("Property").WithType(typeof(string)).WithIsNullable())
+                .Build()
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+            // Assert
+            actual.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+#pragma nullable enable
+    public class MyClass
+    {
+        public string? Property
+        {
+            get;
+            set;
+        }
+    }
+#pragma nullable restore
+}
+");
+        }
+
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)
         {
             foreach (var classBuilder in models)
