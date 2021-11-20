@@ -106,5 +106,95 @@ namespace ModelFramework.Generators.Objects.Tests
         }
 ");
         }
+
+        [Fact]
+        public void Can_Generate_Int_Property()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("Property")
+                .WithTypeName(typeof(int).FullName)
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        public int Property
+        {
+            get;
+            set;
+        }
+");
+        }
+
+        [Fact]
+        public void Can_Generate_Nullable_Int_Property()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("Property")
+                .WithTypeName(typeof(int).FullName)
+                .WithIsNullable()
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        public int? Property
+        {
+            get;
+            set;
+        }
+");
+        }
+
+        [Fact]
+        public void Can_Generate_Required_String_Property()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("Property")
+                .WithTypeName(typeof(string).FullName)
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        public string Property
+        {
+            get;
+            set;
+        }
+");
+        }
+
+        [Fact]
+        public void Can_Generate_Nullable_String_Property()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("Property")
+                .WithTypeName(typeof(string).FullName)
+                .WithIsNullable()
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"        public string? Property
+        {
+            get;
+            set;
+        }
+");
+        }
     }
 }
