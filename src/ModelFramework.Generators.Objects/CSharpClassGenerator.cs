@@ -2000,7 +2000,7 @@ namespace ModelFramework.Generators.Objects
 
         public IEnumerable<ITypeBase> GetClassesByNamespace(string ns)
             => Model.Where(typeBase => typeBase.Namespace.WhenNullOrEmpty("GeneratedNamespace") == ns)
-                    .SelectMany(typeBase => typeBase is IClass cls && cls.AutoGenerateInterface ? new ITypeBase[] { cls, cls.ToInterface(cls.AutoGenerateInterfaceSettings ?? new InterfaceSettings()).Build() } : new ITypeBase[] { typeBase })
+                    .SelectMany(typeBase => typeBase is IClass cls && cls.AutoGenerateInterface ? new ITypeBase[] { cls, cls.ToInterface(cls.AutoGenerateInterfaceSettings ?? new InterfaceSettings()) } : new ITypeBase[] { typeBase })
                     .OrderBy(typeBase => typeBase.Name);
 
         public TemplateFileManager TemplateFileManager { get; internal set; }

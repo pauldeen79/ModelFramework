@@ -51,7 +51,10 @@ namespace ModelFramework.Objects.Extensions
             return $"[unknown container type: {typeBase.GetType().FullName}]";
         }
 
-        public static InterfaceBuilder ToInterface(this ITypeBase instance, InterfaceSettings settings)
+        public static IInterface ToInterface(this ITypeBase instance, InterfaceSettings settings)
+            => instance.ToInterfaceBuilder(settings).Build();
+
+        public static InterfaceBuilder ToInterfaceBuilder(this ITypeBase instance, InterfaceSettings settings)
             => new InterfaceBuilder
             {
                 Name = "I" + instance.Name,
@@ -99,7 +102,10 @@ namespace ModelFramework.Objects.Extensions
                 GenericTypeArguments = GenerateGenericTypeArguments(settings.ApplyGenericTypes)
             };
 
-        public static ClassBuilder ToImmutableClass(this ITypeBase instance, ImmutableClassSettings settings)
+        public static IClass ToImmutableClass(this ITypeBase instance, ImmutableClassSettings settings)
+            => instance.ToImmutableClassBuilder(settings).Build();
+        
+        public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
         {
             if (!instance.Properties.Any())
             {
@@ -181,8 +187,12 @@ namespace ModelFramework.Objects.Extensions
             };
         }
 
-        public static ClassBuilder ToImmutableExtensionClass(this ITypeBase instance,
-                                                             string newCollectionTypeName = "System.Collections.Immutable.IImmutableList")
+        public static IClass ToImmutableExtensionClass(this ITypeBase instance,
+                                                       string newCollectionTypeName = "System.Collections.Immutable.IImmutableList")
+            => instance.ToImmutableExtensionClassBuilder(newCollectionTypeName).Build();
+
+        public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance,
+                                                                    string newCollectionTypeName = "System.Collections.Immutable.IImmutableList")
             => new ClassBuilder
             {
                 Name = instance.Name + "Extensions",
@@ -191,8 +201,12 @@ namespace ModelFramework.Objects.Extensions
                 Static = true
             };
 
-        public static ClassBuilder ToPocoClass(this ITypeBase instance,
-                                               string newCollectionTypeName = "System.Collections.Generic.ICollection")
+        public static IClass ToPocoClass(this ITypeBase instance,
+                                         string newCollectionTypeName = "System.Collections.Generic.ICollection")
+            => instance.ToPocoClassBuilder(newCollectionTypeName).Build();
+
+        public static ClassBuilder ToPocoClassBuilder(this ITypeBase instance,
+                                                      string newCollectionTypeName = "System.Collections.Generic.ICollection")
             => new ClassBuilder
             {
                 Name = instance.Name,
@@ -230,7 +244,11 @@ namespace ModelFramework.Objects.Extensions
                         ).ToList()
             };
 
-        public static ClassBuilder ToObservableClass(this ITypeBase instance,
+        public static IClass ToObservableClass(this ITypeBase instance,
+                                               string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
+            => instance.ToObservableClassBuilder(newCollectionTypeName).Build();
+
+        public static ClassBuilder ToObservableClassBuilder(this ITypeBase instance,
                                                      string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
             => new ClassBuilder
             {
@@ -291,7 +309,10 @@ namespace ModelFramework.Objects.Extensions
                 }.ToList()
             };
 
-        public static ClassBuilder ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
+        public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
+            => instance.ToImmutableBuilderClassBuilder(settings).Build();
+
+        public static ClassBuilder ToImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
         {
             if (!instance.Properties.Any())
             {

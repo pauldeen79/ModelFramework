@@ -12,7 +12,11 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class TypeExtensions
     {
-        public static ClassBuilder ToClass(this Type instance, ClassSettings settings)
+
+        public static IClass ToClass(this Type instance, ClassSettings settings)
+            => instance.ToClassBuilder(settings).Build();
+
+        public static ClassBuilder ToClassBuilder(this Type instance, ClassSettings settings)
             => new ClassBuilder
             {
                 Name = instance.Name,
@@ -40,12 +44,15 @@ namespace ModelFramework.Objects.Extensions
                 SubClasses = GetSubClasses(instance, settings.Partial).ToList()
             };
 
-        public static ClassBuilder ToWrapperClass(this Type type, WrapperClassSettings settings)
+        public static IClass ToWrapperClass(this Type instance, WrapperClassSettings settings)
+            => instance.ToWrapperClassBuilder(settings).Build();
+
+        public static ClassBuilder ToWrapperClassBuilder(this Type instance, WrapperClassSettings settings)
             => new ClassBuilder()
-                .AddFields(GeneratedFields(type))
-                .AddProperties(GeneratedProperties(type, settings.PropertyCodeStatementsDelegate))
-                .AddMethods(GeneratedMethods(type, settings.MethodCodeStatementsDelegate))
-                .AddConstructors(GeneratedCtors(type));
+                .AddFields(GeneratedFields(instance))
+                .AddProperties(GeneratedProperties(instance, settings.PropertyCodeStatementsDelegate))
+                .AddMethods(GeneratedMethods(instance, settings.MethodCodeStatementsDelegate))
+                .AddConstructors(GeneratedCtors(instance));
 
         private static IEnumerable<string> GetInterfaces(Type instance)
             => instance.GetInterfaces().Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName))).Select(t => t.FullName);
@@ -147,7 +154,7 @@ namespace ModelFramework.Objects.Extensions
             });
 
         private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
-            => instance.GetNestedTypes().Select(t => t.ToClass(new ClassSettings(partial: partial)));
+            => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));
 
         private static IEnumerable<ClassPropertyBuilder> GeneratedProperties(Type type, Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null)
             => type.GetPropertiesRecursively()

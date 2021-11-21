@@ -28,8 +28,8 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
             // Act
             var model = new[]
             {
-                typeof(TestClass).ToWrapperClass(new WrapperClassSettings(methodCodeStatementsDelegate: methodCodeStatementsDelegate,
-                                                                          propertyCodeStatementsDelegate: propertyCodeStatementsDelegate))
+                typeof(TestClass).ToWrapperClassBuilder(new WrapperClassSettings(methodCodeStatementsDelegate: methodCodeStatementsDelegate,
+                                                                                 propertyCodeStatementsDelegate: propertyCodeStatementsDelegate))
                 .WithNamespace("MyNamespace")
                 .WithName("GeneratedTestClass")
                 .Build()
@@ -96,7 +96,7 @@ namespace MyNamespace
         public void Can_Use_ToClass_And_Then_Add_Data()
         {
             // Act
-            var cls = new ClassBuilder(typeof(TestClass).ToClass(new ClassSettings())
+            var cls = new ClassBuilder(typeof(TestClass).ToClassBuilder(new ClassSettings())
                 .WithName("GeneratedTestClass")
                 .WithNamespace("MyNamespace")
                 .Build());
