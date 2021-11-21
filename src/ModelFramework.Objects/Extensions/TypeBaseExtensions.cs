@@ -157,7 +157,7 @@ namespace ModelFramework.Objects.Extensions
                             {
                                 Name = p.Name.ToPascalCase(),
                                 TypeName = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                         .GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))
+                                                     .GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))
                                                      
                             }).ToList(),
                             CodeStatements = instance.Properties.Select(p => new LiteralCodeStatementBuilder
@@ -249,7 +249,7 @@ namespace ModelFramework.Objects.Extensions
             => instance.ToObservableClassBuilder(newCollectionTypeName).Build();
 
         public static ClassBuilder ToObservableClassBuilder(this ITypeBase instance,
-                                                     string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
+                                                            string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
             => new ClassBuilder
             {
                 Name = instance.Name,
@@ -709,50 +709,50 @@ namespace ModelFramework.Objects.Extensions
                                     property.SetterCodeStatements,
                                     null);
 
-        private static IClassMethod ChangeArgumentsAndReturnType(IClassMethod m, IDictionary<string, string> applyGenericTypes)
+        private static IClassMethod ChangeArgumentsAndReturnType(IClassMethod method, IDictionary<string, string> applyGenericTypes)
         {
             if (applyGenericTypes == null || applyGenericTypes.Count == 0)
             {
-                return m;
+                return method;
             }
 
             return new ClassMethod
             (
-                m.Name,
-                ReplaceGenericType(m.TypeName, applyGenericTypes),
-                m.Visibility,
-                m.Static,
-                m.Virtual,
-                m.Abstract,
-                m.Protected,
-                m.Partial,
-                m.Override,
-                m.ExtensionMethod,
-                m.Operator,
-                m.IsNullable,
-                m.ExplicitInterfaceName,
-                m.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
-                m.Attributes,
-                m.CodeStatements,
-                m.Metadata
+                method.Name,
+                ReplaceGenericType(method.TypeName, applyGenericTypes),
+                method.Visibility,
+                method.Static,
+                method.Virtual,
+                method.Abstract,
+                method.Protected,
+                method.Partial,
+                method.Override,
+                method.ExtensionMethod,
+                method.Operator,
+                method.IsNullable,
+                method.ExplicitInterfaceName,
+                method.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
+                method.Attributes,
+                method.CodeStatements,
+                method.Metadata
             );
         }
 
-        private static IParameter ChangeParameter(IParameter p, IDictionary<string, string> applyGenericTypes)
+        private static IParameter ChangeParameter(IParameter property, IDictionary<string, string> applyGenericTypes)
         {
             if (applyGenericTypes == null || applyGenericTypes.Count == 0)
             {
-                return p;
+                return property;
             }
 
             return new Parameter
             (
-                p.Name,
-                ReplaceGenericType(p.TypeName, applyGenericTypes),
-                p.DefaultValue,
-                p.IsNullable,
-                p.Attributes,
-                p.Metadata
+                property.Name,
+                ReplaceGenericType(property.TypeName, applyGenericTypes),
+                property.DefaultValue,
+                property.IsNullable,
+                property.Attributes,
+                property.Metadata
             );
         }
 
