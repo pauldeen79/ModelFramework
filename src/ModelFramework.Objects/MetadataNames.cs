@@ -43,21 +43,6 @@
         public const string PropertyInitializerTemplateName = "ModelFramework.Objects.PropertyInitializerTemplateName";
 
         /// <summary>
-        /// Metadata name for defining a property getter body.
-        /// </summary>
-        public const string PropertyGetterBody = "ModelFramework.Objects.PropertyGetterBody";
-
-        /// <summary>
-        /// Metadata name for defining a property setter body.
-        /// </summary>
-        public const string PropertySetterBody = "ModelFramework.Objects.PropertySetterBody";
-
-        /// <summary>
-        /// Metadata name for defining a property initializer body.
-        /// </summary>
-        public const string PropertyInitBody = "ModelFramework.Objects.PropertyInitBody";
-
-        /// <summary>
         /// Metadata name for defining code template name. (method or c'tor)
         /// </summary>
         public const string CodeTemplateName = "ModelFramework.Objects.CodeTemplateName";
