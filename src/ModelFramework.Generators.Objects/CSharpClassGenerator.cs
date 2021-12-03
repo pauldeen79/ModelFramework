@@ -585,7 +585,7 @@ namespace ModelFramework.Generators.Objects
             if (ViewModel.EnableNullableContext)
    {
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"#pragma nullable enable
+            Write(this.ToStringHelper.ToStringWithCulture(@"#nullable enable
 "));
             }
 
@@ -618,7 +618,7 @@ namespace ModelFramework.Generators.Objects
             if (ViewModel.EnableNullableContext)
    {
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"#pragma nullable restore
+            Write(this.ToStringHelper.ToStringWithCulture(@"#nullable restore
 "));
             }
 

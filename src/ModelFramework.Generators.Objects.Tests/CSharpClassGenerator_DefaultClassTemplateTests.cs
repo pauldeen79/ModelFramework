@@ -28,11 +28,11 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut);
 
             // Assert
-            actual.Should().Be(@"#pragma nullable enable
+            actual.Should().Be(@"#nullable enable
     public class 
     {
     }
-#pragma nullable restore
+#nullable restore
 ");
         }
 

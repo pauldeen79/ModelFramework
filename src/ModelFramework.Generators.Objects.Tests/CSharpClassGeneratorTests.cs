@@ -2429,7 +2429,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-#pragma nullable enable
+#nullable enable
     public class MyClass
     {
         public string? Property
@@ -2438,7 +2438,7 @@ namespace MyNamespace
             set;
         }
     }
-#pragma nullable restore
+#nullable restore
 }
 ");
         }
