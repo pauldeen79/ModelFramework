@@ -1352,12 +1352,10 @@ BEGIN
             RootTemplate.PushIndent("    ");
 
             
-            RenderChildTemplate(null, Model.Statements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.Statements);
 
             RootTemplate.PopIndent();
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(@"END
@@ -2606,7 +2604,8 @@ AS
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Statement));
+            WriteLine(Model.Statement);
+
 
             if (builder != null) this.GenerationEnvironment = backup;
         }

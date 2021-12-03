@@ -1,4 +1,4 @@
 ﻿<#@ template language="c#" #>
 <#@ templateName value="CSharpClassGenerator.DefaultLiteralSqlStatementTemplate" #>
 <#@ model type="LiteralSqlStatement" #>
-<#= Model.Statement #>
+<# WriteLine(Model.Statement); #>
