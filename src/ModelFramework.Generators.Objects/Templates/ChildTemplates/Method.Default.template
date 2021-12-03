@@ -6,7 +6,6 @@
         <# if (ViewModel.ShouldRenderModifiers) { #><#= Model.GetModifiers() #><# } #><#= ViewModel.ReturnTypeName #> <# if (ViewModel.ShouldRenderExplicitInterfaceName) { #><#= Model.ExplicitInterfaceName #>.<# } #><#= ViewModel.Name #>(<# if (Model.ExtensionMethod) { #>this <# } #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<# if (ViewModel.OmitCode) { #>;<# } else { #>
 
         {
-<# if (ViewModel.ShouldRenderCodeStatements) { #><# RootTemplate.PushIndent("            "); #><#@ renderChildTemplate model="Model.CodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #>
-
+<# if (ViewModel.ShouldRenderCodeStatements) { #><# RootTemplate.PushIndent("            "); #><#@ renderChildTemplate model="Model.CodeStatements" #><# RootTemplate.PopIndent(); #>
 <# } #>        }<# } #>
 

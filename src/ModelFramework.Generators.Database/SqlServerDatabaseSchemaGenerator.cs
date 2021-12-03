@@ -238,6 +238,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IDefaultValueConstraint Model { get; set; }
 
     }
@@ -306,6 +318,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -397,6 +421,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public ITableField Model { get; set; }
 
     }
@@ -483,6 +519,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public ITableField Model { get; set; }
 
     }
@@ -543,6 +591,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -646,6 +706,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IForeignKeyConstraint Model { get; set; }
 
     }
@@ -709,6 +781,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -796,6 +880,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IIndex Model { get; set; }
 
     }
@@ -872,6 +968,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IIndexField Model { get; set; }
 
     }
@@ -939,6 +1047,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1018,6 +1138,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IPrimaryKeyConstraintField Model { get; set; }
 
     }
@@ -1088,6 +1220,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public ISchema Model { get; set; }
 
     }
@@ -1152,6 +1296,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1255,6 +1411,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IStoredProcedure Model { get; set; }
 
     }
@@ -1327,6 +1495,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1424,6 +1604,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public ITable Model { get; set; }
         protected virtual IEnumerable<IMetadataContainer> GetFieldsAndPrimaryKeyConstraints(ITable table)
         {
@@ -1501,6 +1693,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IUniqueConstraint Model { get; set; }
 
     }
@@ -1566,6 +1770,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1635,6 +1851,18 @@ GO
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IViewCondition Model { get; set; }
 
     }
@@ -1701,6 +1929,18 @@ GO
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1828,6 +2068,18 @@ AS
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IView Model { get; set; }
 
     }
@@ -1928,6 +2180,18 @@ AS
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IViewField Model { get; set; }
 
     }
@@ -1994,6 +2258,18 @@ AS
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -2066,6 +2342,18 @@ AS
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IView Model { get; set; }
 
     }
@@ -2128,6 +2416,18 @@ AS
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -2209,6 +2509,18 @@ AS
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IViewSource Model { get; set; }
 
     }
@@ -2272,6 +2584,18 @@ AS
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IView Model { get; set; }
 
     }
@@ -2328,6 +2652,18 @@ AS
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -2391,6 +2727,18 @@ AS
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
@@ -2446,6 +2794,18 @@ AS
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -2505,6 +2865,18 @@ AS
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 

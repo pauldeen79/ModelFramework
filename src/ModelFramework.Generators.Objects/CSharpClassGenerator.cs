@@ -467,6 +467,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IAttribute Model { get; set; }
 
     }
@@ -550,6 +562,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -695,6 +719,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public ITypeBase Model { get; set; }
 
     }
@@ -769,6 +805,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public System.Boolean Model { get; set; }
 
     }
@@ -810,12 +858,10 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("            ");
 
             
-            RenderChildTemplate(null, Model.CodeStatements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.CodeStatements);
 
             RootTemplate.PopIndent();
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        }"));
@@ -888,6 +934,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IClassConstructor Model { get; set; }
 
     }
@@ -954,6 +1012,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1029,6 +1099,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1109,6 +1191,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IClassField Model { get; set; }
 
     }
@@ -1161,12 +1255,10 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("            ");
 
             
-            RenderChildTemplate(null, Model.CodeStatements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.CodeStatements);
 
             RootTemplate.PopIndent();
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        }"));
@@ -1239,6 +1331,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IClassMethod Model { get; set; }
 
     }
@@ -1300,6 +1404,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1370,6 +1486,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IParameter Model { get; set; }
 
     }
@@ -1397,14 +1525,12 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.GetterCodeStatements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.GetterCodeStatements);
 
             RootTemplate.PopIndent();
 
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             Write(this.ToStringHelper.ToStringWithCulture(@"            }
 "));
             }
@@ -1454,6 +1580,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1484,14 +1622,12 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.InitializerCodeStatements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.InitializerCodeStatements);
 
             RootTemplate.PopIndent();
 
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             Write(this.ToStringHelper.ToStringWithCulture(@"            }
 "));
             }
@@ -1541,6 +1677,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1571,14 +1719,12 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.SetterCodeStatements, separatorTemplateName: @"NewLine");
+            RenderChildTemplate(null, Model.SetterCodeStatements);
 
             RootTemplate.PopIndent();
 
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             Write(this.ToStringHelper.ToStringWithCulture(@"            }
 "));
             }
@@ -1628,6 +1774,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -1756,6 +1914,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IClassProperty Model { get; set; }
 
     }
@@ -1840,6 +2010,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
         public IEnumerable<ITypeBase> Model { get; set; }
 
     }
@@ -1850,7 +2032,8 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Statement));
+            WriteLine(Model.Statement);
+
 
             if (builder != null) this.GenerationEnvironment = backup;
         }
@@ -1896,6 +2079,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -2832,6 +3027,18 @@ namespace ModelFramework.Generators.Objects
             }
         }
 
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
@@ -2887,6 +3094,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 
@@ -2946,6 +3165,18 @@ namespace ModelFramework.Generators.Objects
             else
             {
                 base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
             }
         }
 

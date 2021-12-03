@@ -9,7 +9,6 @@ init;
    { #>
 init
             {
-<# if (Model.InitializerCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.InitializerCodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #><# } #>
-
+<# if (Model.InitializerCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.InitializerCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
             }
 <# } #>

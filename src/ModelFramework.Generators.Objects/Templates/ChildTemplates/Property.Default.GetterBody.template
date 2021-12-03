@@ -9,7 +9,6 @@ get;
    { #>
 get
             {
-<# if (Model.GetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.GetterCodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #><# } #>
-
+<# if (Model.GetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.GetterCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
             }
 <# } #>

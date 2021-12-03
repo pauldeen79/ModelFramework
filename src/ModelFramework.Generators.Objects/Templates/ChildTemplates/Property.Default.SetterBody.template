@@ -9,7 +9,6 @@ set;
    { #>
 set
             {
-<# if (Model.SetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.SetterCodeStatements" separatorTemplateName="NewLine" #><# RootTemplate.PopIndent(); #><# } #>
-
+<# if (Model.SetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.SetterCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
             }
 <# } #>

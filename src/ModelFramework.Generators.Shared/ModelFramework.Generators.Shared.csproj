@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.1.7" />
+    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.1.8" />
   </ItemGroup>
 
   <ItemGroup>
