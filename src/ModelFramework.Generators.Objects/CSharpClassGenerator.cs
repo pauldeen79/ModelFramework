@@ -851,9 +851,8 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
-            Write(this.ToStringHelper.ToStringWithCulture(@"        {
-"));
-            if (ViewModel.ShouldRenderCodeStatements) {
+            Write(this.ToStringHelper.ToStringWithCulture(@"        {"));
+            WriteLine(""); if (ViewModel.ShouldRenderCodeStatements) {
 
             RootTemplate.PushIndent("            ");
 
@@ -1248,9 +1247,8 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
-            Write(this.ToStringHelper.ToStringWithCulture(@"        {
-"));
-            if (ViewModel.ShouldRenderCodeStatements) {
+            Write(this.ToStringHelper.ToStringWithCulture(@"        {"));
+            WriteLine("");if (ViewModel.ShouldRenderCodeStatements) {
 
             RootTemplate.PushIndent("            ");
 
@@ -1518,9 +1516,8 @@ namespace ModelFramework.Generators.Objects
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"get
-            {
-"));
-            if (Model.GetterCodeStatements.Any()) {
+            {"));
+            WriteLine(""); if (Model.GetterCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
 
@@ -1615,9 +1612,8 @@ namespace ModelFramework.Generators.Objects
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"init
-            {
-"));
-            if (Model.InitializerCodeStatements.Any()) {
+            {"));
+            WriteLine(""); if (Model.InitializerCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
 
@@ -1712,9 +1708,8 @@ namespace ModelFramework.Generators.Objects
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"set
-            {
-"));
-            if (Model.SetterCodeStatements.Any()) {
+            {"));
+            WriteLine(""); if (Model.SetterCodeStatements.Any()) {
 
             RootTemplate.PushIndent("                ");
 

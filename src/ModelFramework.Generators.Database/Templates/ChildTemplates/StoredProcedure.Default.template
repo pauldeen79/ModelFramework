@@ -12,7 +12,6 @@ CREATE PROCEDURE [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Mo
 <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate" model="Model.Parameters" customResolverDelegate="ResolveFromMetadata" #>
 AS
 BEGIN
-<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate" model="Model" customResolverDelegate="ResolveDatabaseCodeTemplateFromMetadata" #>
-<# if (Model.Statements.Any()) { #><# RootTemplate.PushIndent("    "); #><#@ renderChildTemplate model="Model.Statements" #><# RootTemplate.PopIndent(); #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate" model="Model" customResolverDelegate="ResolveDatabaseCodeTemplateFromMetadata" #><# WriteLine(""); if (Model.Statements.Any()) { #><# RootTemplate.PushIndent("    "); #><#@ renderChildTemplate model="Model.Statements" #><# RootTemplate.PopIndent(); #>
 <# } #>END
 GO

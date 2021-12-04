@@ -1347,7 +1347,7 @@ BEGIN
             
             RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate", Model, customResolverDelegate: ResolveDatabaseCodeTemplateFromMetadata);
 
-            if (Model.Statements.Any()) {
+            WriteLine(""); if (Model.Statements.Any()) {
 
             RootTemplate.PushIndent("    ");
 

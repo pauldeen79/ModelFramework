@@ -8,7 +8,6 @@ set;
    else
    { #>
 set
-            {
-<# if (Model.SetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.SetterCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
+            {<# WriteLine(""); if (Model.SetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.SetterCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
             }
 <# } #>
