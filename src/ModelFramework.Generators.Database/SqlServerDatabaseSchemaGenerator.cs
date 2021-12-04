@@ -73,7 +73,6 @@ namespace ModelFramework.Generators.Database
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultPrimaryKeyConstraintTemplate(), typeof(IPrimaryKeyConstraint));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintFieldTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultPrimaryKeyConstraintFieldTemplate(), typeof(IPrimaryKeyConstraintField));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultSchemaTemplate(), typeof(ISchema));
-            RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureBodyTemplate(), typeof(IStoredProcedure));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureTemplate(), typeof(IStoredProcedure));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureParameterTemplate(), typeof(IStoredProcedureParameter));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultTableTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultTableTemplate(), typeof(ITable));
@@ -1236,85 +1235,6 @@ GO
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureBodyTemplate : SqlServerDatabaseSchemaGeneratorBase
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            if (!string.IsNullOrEmpty(Model.Body))
-   {
-
-            Write(this.ToStringHelper.ToStringWithCulture(@"    "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Body));
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
-            }
-
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
-        public IStoredProcedure Model { get; set; }
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureTemplate : SqlServerDatabaseSchemaGeneratorBase
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
@@ -1342,11 +1262,7 @@ CREATE PROCEDURE ["));
             RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate", Model.Parameters, customResolverDelegate: ResolveFromMetadata);
 
             Write(this.ToStringHelper.ToStringWithCulture(@"AS
-BEGIN
-"));
-            
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureBodyTemplate", Model, customResolverDelegate: ResolveDatabaseCodeTemplateFromMetadata);
-
+BEGIN"));
             WriteLine(""); if (Model.Statements.Any()) {
 
             RootTemplate.PushIndent("    ");

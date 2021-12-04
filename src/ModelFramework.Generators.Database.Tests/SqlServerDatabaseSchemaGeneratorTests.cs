@@ -280,43 +280,13 @@ GO
         }
 
         [Fact]
-        public void CanGenerateSchemaForTableWithStoredProcedureContainingBody()
-        {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new Schema("dbo", null, new[] { new StoredProcedure("usp_Test", "SELECT * FROM MYTABLE", new[] { new StoredProcedureParameter("Param1", "int", null), new StoredProcedureParameter("Param2", "int", "5") }) })
-            };
-
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
-
-            // Assert
-            actual.Should().Be(@"/****** Object:  StoredProcedure [dbo].[usp_Test] ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE PROCEDURE [dbo].[usp_Test]
-	@Param1 int,
-	@Param2 int = 5
-AS
-BEGIN
-    SELECT * FROM MYTABLE
-END
-GO
-");
-        }
-
-        [Fact]
         public void CanGenerateSchemaForTableWithStoredProcedureContainingStatements()
         {
             // Arrange
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", null, new[] { new StoredProcedure("usp_Test", null, new[] { new StoredProcedureParameter("Param1", "int", null), new StoredProcedureParameter("Param2", "int", "5") }, new[] { new LiteralSqlStatement("--statement 1 goes here"), new LiteralSqlStatement("--statement 2 goes here") }) })
+                new Schema("dbo", null, new[] { new StoredProcedure("usp_Test", new[] { new StoredProcedureParameter("Param1", "int", null), new StoredProcedureParameter("Param2", "int", "5") }, new[] { new LiteralSqlStatement("--statement 1 goes here"), new LiteralSqlStatement("--statement 2 goes here") }) })
             };
 
             // Act

@@ -9,7 +9,6 @@ namespace ModelFramework.Database.Builders
 {
     public class StoredProcedureBuilder
     {
-        public string Body { get; set; }
         public List<StoredProcedureParameterBuilder> Parameters { get; set; }
         public List<ISqlStatementBuilder> Statements { get; set; }
         public string Name { get; set; }
@@ -17,23 +16,16 @@ namespace ModelFramework.Database.Builders
         public IStoredProcedure Build()
         {
             return new StoredProcedure(Name,
-                                       Body,
                                        Parameters.Select(x => x.Build()),
                                        Statements.Select(x => x.Build()),
                                        Metadata.Select(x => x.Build()));
         }
         public StoredProcedureBuilder Clear()
         {
-            Body = default;
             Parameters.Clear();
             Statements.Clear();
             Name = default;
             Metadata.Clear();
-            return this;
-        }
-        public StoredProcedureBuilder WithBody(string body)
-        {
-            Body = body;
             return this;
         }
         public StoredProcedureBuilder ClearParameters()
@@ -153,7 +145,6 @@ namespace ModelFramework.Database.Builders
             Parameters = new List<StoredProcedureParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
 
-            Body = source.Body;
             if (source.Parameters != null) foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
             if (source.Statements != null) foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
             Name = source.Name;
