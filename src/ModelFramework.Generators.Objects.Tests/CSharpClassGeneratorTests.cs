@@ -2654,7 +2654,9 @@ namespace MyNamespace
                     .WithName("MyRecord")
                     .WithNamespace("MyNamespace")
                     .Build()
-                    .ToImmutableClass(new ImmutableClassSettings())
+                    .ToImmutableClassBuilder(new ImmutableClassSettings())
+                    .ClearAttributes() // needed to exclude compiler generated attributes, which are not included in the expectation (shared with another test)
+                    .Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2727,6 +2729,7 @@ using System.Text;
 
 namespace ModelFramework.Generators.Objects.Tests
 {
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public class PersonBuilder
     {
         public string FirstName

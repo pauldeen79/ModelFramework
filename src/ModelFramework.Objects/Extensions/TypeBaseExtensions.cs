@@ -183,7 +183,8 @@ namespace ModelFramework.Objects.Extensions
                 Methods = GetImmutableClassMethods(instance, settings.NewCollectionTypeName, settings.CreateWithMethod, settings.ImplementIEquatable, false).ToList(),
                 Interfaces = settings.ImplementIEquatable
                     ? new[] { $"IEquatable<{instance.Name}>" }.ToList()
-                    : new List<string>()
+                    : new List<string>(),
+                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
             };
         }
 
@@ -241,7 +242,8 @@ namespace ModelFramework.Objects.Extensions
                                 GetterCodeStatements = p.GetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
                                 SetterCodeStatements = p.SetterCodeStatements.Select(x => x.CreateBuilder()).ToList()
                             }
-                        ).ToList()
+                        ).ToList(),
+                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
             };
 
         public static IClass ToObservableClass(this ITypeBase instance,
@@ -293,6 +295,7 @@ namespace ModelFramework.Objects.Extensions
                             {
                                 Name = "_" + p.Name.ToPascalCase(),
                                 TypeName = p.TypeName,
+                                IsNullable = p.IsNullable,
                                 Visibility = Visibility.Private
                             }
                         ).ToList(),
@@ -306,7 +309,8 @@ namespace ModelFramework.Objects.Extensions
                             .Cast<ICodeStatementBuilder>()
                             .ToList()
                     }
-                }.ToList()
+                }.ToList(),
+                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
             };
 
         public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -326,7 +330,8 @@ namespace ModelFramework.Objects.Extensions
                 Partial = instance.Partial,
                 Constructors = GetImmutableBuilderClassConstructors(instance, settings).ToList(),
                 Methods = GetImmutableBuilderClassMethods(instance, settings).ToList(),
-                Properties = GetImmutableBuilderClassProperties(instance, settings).ToList()
+                Properties = GetImmutableBuilderClassProperties(instance, settings).ToList(),
+                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
             };
         }
 
