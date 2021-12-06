@@ -1905,6 +1905,92 @@ namespace MyNamespace
         }
 
         [Fact]
+        public void GeneratesImmutableBuilderClassWithAttributes()
+        {
+            // Arrange
+            var properties = new[]
+            {
+                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build(),
+            };
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
+                .AddProperties(properties)
+                .Build()
+                .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
+            var settings = new ImmutableBuilderClassSettings();
+            var model = new[]
+            {
+                cls,
+                cls.ToImmutableBuilderClass(settings)
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecord
+    {
+        [MyAttribute]
+        public string Property1
+        {
+            get;
+        }
+
+        public MyRecord(string property1)
+        {
+            this.Property1 = property1;
+        }
+    }
+
+    public class MyRecordBuilder
+    {
+        [MyAttribute]
+        public string Property1
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord(Property1);
+        }
+
+        public MyRecordBuilder Clear()
+        {
+            Property1 = default;
+            return this;
+        }
+
+        public MyRecordBuilder WithProperty1(string property1)
+        {
+            Property1 = property1;
+            return this;
+        }
+
+        public MyRecordBuilder()
+        {
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            Property1 = source.Property1;
+        }
+    }
+}
+");
+        }
+
+        [Fact]
         public void GeneratesPocoClass_Model()
         {
             // Arrange

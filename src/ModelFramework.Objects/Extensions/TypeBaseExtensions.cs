@@ -635,11 +635,12 @@ namespace ModelFramework.Objects.Extensions
 
         private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance,
                                                                                             ImmutableBuilderClassSettings settings)
-            => instance.Properties.Select(property => new ClassPropertyBuilder
-            {
-                Name = property.Name,
-                TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName),
-            });
+            => instance.Properties.Select(property => new ClassPropertyBuilder()
+                .WithName(property.Name)
+                .WithTypeName(property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName))
+                .AddAttributes(property.Attributes)
+                .AddMetadata(property.Metadata)
+            );
 
         private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
         {
