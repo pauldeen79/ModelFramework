@@ -323,18 +323,7 @@ namespace ModelFramework.Objects.Extensions
             {
                 Name = instance.Name + "Builder",
                 Namespace = instance.Namespace,
-                Fields =
-                    instance
-                        .Properties
-                        .Select
-                        (
-                            p => new ClassFieldBuilder
-                            {
-                                Name = "_" + p.Name.ToPascalCase(),
-                                TypeName = p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName),
-                                Visibility = Visibility.Private
-                            }
-                        ).ToList(),
+                Partial = instance.Partial,
                 Constructors = GetImmutableBuilderClassConstructors(instance, settings).ToList(),
                 Methods = GetImmutableBuilderClassMethods(instance, settings).ToList(),
                 Properties = GetImmutableBuilderClassProperties(instance, settings).ToList()
@@ -353,7 +342,7 @@ namespace ModelFramework.Objects.Extensions
             {
                 CodeStatements = instance.Properties
                     .Where(p => p.TypeName.IsCollectionTypeName())
-                    .Select(p => new LiteralCodeStatementBuilder { Statement = $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
+                    .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
                     .Cast<ICodeStatementBuilder>()
                     .ToList()
             };
@@ -370,7 +359,7 @@ namespace ModelFramework.Objects.Extensions
                 }.ToList(),
                 CodeStatements = instance.Properties
                     .Where(p => p.TypeName.IsCollectionTypeName())
-                    .Select(p => new LiteralCodeStatementBuilder { Statement = $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" } )
+                    .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" } )
                     .Concat(instance.Properties.Select(p => new LiteralCodeStatementBuilder { Statement = p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks) }))
                     .Cast<ICodeStatementBuilder>()
                     .ToList()
@@ -394,14 +383,14 @@ namespace ModelFramework.Objects.Extensions
                         TypeName = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))
                     }).ToList(),
                     CodeStatements = properties.Where(p => p.TypeName.IsCollectionTypeName())
-                        .Select(p => new LiteralCodeStatementBuilder { Statement = $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
+                        .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
                         .Concat
                         (
                             instance.Properties.Select
                             (
                                 p => p.TypeName.IsCollectionTypeName()
                                     ? new LiteralCodeStatementBuilder { Statement = CreateCtorStatementForCollection(p, settings) }
-                                    : new LiteralCodeStatementBuilder { Statement = $"_{p.Name.ToPascalCase()} = {p.Name.ToPascalCase()};" }
+                                    : new LiteralCodeStatementBuilder { Statement = $"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};" }
                             )
                         ).Cast<ICodeStatementBuilder>().ToList()
                 };
@@ -410,8 +399,8 @@ namespace ModelFramework.Objects.Extensions
 
         private static string CreateCtorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
             => settings.AddNullChecks
-                ? $"if ({p.Name.ToPascalCase()} != null) foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);"
-                : $"foreach (var x in {p.Name.ToPascalCase()}) _{p.Name.ToPascalCase()}.Add(x);";
+                ? $"if ({p.Name.ToPascalCase()} != null) foreach (var x in {p.Name.ToPascalCase()}) {p.Name}.Add(x);"
+                : $"foreach (var x in {p.Name.ToPascalCase()}) {p.Name}.Add(x);";
 
         private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                        ImmutableBuilderClassSettings settings)
@@ -456,7 +445,7 @@ namespace ModelFramework.Objects.Extensions
                         .Where(p => p.TypeName.IsCollectionTypeName())
                         .Select
                         (
-                            p => $"_{p.Name.ToPascalCase()} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
+                            p => $"{p.Name} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
                         )
                         .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks)))
                         .Concat(new[]
@@ -481,7 +470,7 @@ namespace ModelFramework.Objects.Extensions
                         TypeName = $"{instance.Name}Builder",
                         CodeStatements = new[]
                         {
-                            $"_{property.Name.ToPascalCase()}.Clear();",
+                            $"{property.Name}.Clear();",
                             "return this;"
                         }.ToLiteralCodeStatementBuilders().ToList()
                     };
@@ -520,7 +509,7 @@ namespace ModelFramework.Objects.Extensions
                              "{",
                             $"    foreach(var itemToAdd in {property.Name.ToPascalCase()})",
                              "    {",
-                             property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"        _{property.Name.ToPascalCase()}.Add(itemToAdd);", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.TypeName, property.TypeName.GetGenericArguments())),
+                             property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"        {property.Name}.Add(itemToAdd);", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.TypeName, property.TypeName.GetGenericArguments())),
                              "    }",
                              "}",
                              "return this;"
@@ -588,7 +577,7 @@ namespace ModelFramework.Objects.Extensions
                         }.ToList(),
                         CodeStatements = new[]
                         {
-                            property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderWithExpression, $"_{property.Name.ToPascalCase()} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.Name.ToPascalCase().GetCsharpFriendlyName(), property.TypeName, property.TypeName.GetGenericArguments())),
+                            property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderWithExpression, $"{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.Name.ToPascalCase().GetCsharpFriendlyName(), property.TypeName, property.TypeName.GetGenericArguments())),
                             "return this;"
                         }.ToLiteralCodeStatementBuilders().ToList()
                     };
@@ -646,23 +635,11 @@ namespace ModelFramework.Objects.Extensions
 
         private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance,
                                                                                             ImmutableBuilderClassSettings settings)
-        {
-            if (!settings.AddProperties)
+            => instance.Properties.Select(property => new ClassPropertyBuilder
             {
-                yield break;
-            }
-
-            foreach (var property in instance.Properties)
-            {
-                yield return new ClassPropertyBuilder
-                {
-                    Name = property.Name,
-                    TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName),
-                }
-                .AddGetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase()};"))
-                .AddSetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase()} = value;"));
-            }
-        }
+                Name = property.Name,
+                TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName),
+            });
 
         private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
         {
@@ -676,8 +653,8 @@ namespace ModelFramework.Objects.Extensions
                     .Where(x => x != null);
 
             var defaultValueDelegate = poco
-                ? new Func<IClassProperty, string>(p => $"{p.Name} = _{p.Name.ToPascalCase()}")
-                : new Func<IClassProperty, string>(p => $"_{p.Name.ToPascalCase()}");
+                ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
+                : new Func<IClassProperty, string>(p => $"{p.Name}");
 
             return string.Join(", ", properties.Select(p => p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderMethodParameterExpression, defaultValueDelegate(p), o => string.Format(o?.ToString() ?? string.Empty, p.Name, p.Name.ToPascalCase()))));
         }
@@ -802,15 +779,15 @@ namespace ModelFramework.Objects.Extensions
                                     .Properties
                                     .Select
                                     (p => new
-                                    {
-                                        p.Name,
-                                        TypeName = p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName),
-                                        OriginalMetadata = p.Metadata,
-                                        Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
-                                        Suffix = p.Name != instance.Properties.Last().Name
-                                                    ? ","
-                                                    : string.Empty
-                                    }
+                                        {
+                                            p.Name,
+                                            TypeName = p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName),
+                                            OriginalMetadata = p.Metadata,
+                                            Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
+                                            Suffix = p.Name != instance.Properties.Last().Name
+                                                ? ","
+                                                : string.Empty
+                                        }
                                     )
                                     .Select(p => $"    {p.Name.ToPascalCase()} == default({p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName)).GetCsharpFriendlyTypeName()}) ? {GetInstanceName(extensionMethod)}.{p.Name} : {p.OriginalMetadata.GetMetadataStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase(), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase()))}{p.Suffix}")
                             )

@@ -15,20 +15,20 @@ namespace ModelFramework.Objects.Extensions
         {
             var defaultValue = property.TypeName.IsCollectionTypeName()
                 ? CreateCollectionInitialization(property, addNullChecks)
-                : $"_{property.Name.ToPascalCase()} = source.{property.Name};";
+                : $"{property.Name} = source.{property.Name};";
 
             return property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, defaultValue, o => string.Format(o?.ToString() ?? string.Empty, property.Name, property.Name.ToPascalCase(), property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(), property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()));
         }
 
         private static string CreateCollectionInitialization(IClassProperty property, bool addNullChecks)
             => addNullChecks
-                ? $"if (source.{property.Name} != null) foreach (var x in source.{property.Name}) _{property.Name.ToPascalCase()}.Add(x);"
-                : $"foreach (var x in source.{property.Name}) _{property.Name.ToPascalCase()}.Add(x);";
+                ? $"if (source.{property.Name} != null) foreach (var x in source.{property.Name}) {property.Name}.Add(x);"
+                : $"foreach (var x in source.{property.Name}) {property.Name}.Add(x);";
 
         public static string CreateImmutableBuilderClearCode(this IClassProperty property)
             => property.TypeName.IsCollectionTypeName()
-                ? $"_{property.Name.ToPascalCase()}.Clear();"
-                : $"_{property.Name.ToPascalCase()} = default;";
+                ? $"{property.Name}.Clear();"
+                : $"{property.Name} = default;";
 
         public static IEnumerable<IMetadata> GetImmutableCollectionMetadata(this IClassProperty property, string newCollectionTypeName)
             => property.TypeName.IsCollectionTypeName()
