@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
@@ -55,12 +56,12 @@ namespace ModelFramework.Objects.Extensions
                 : Array.Empty<IMetadata>();
 
         public static IEnumerable<ICodeStatement> FixObservablePropertyGetterBody(this IClassProperty property, string newCollectionTypeName)
-            => property.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<")
+            => !property.GetterCodeStatements.Any() && !property.SetterCodeStatements.Any()
                 ? new[] { string.Format("return _{0};", property.Name.ToPascalCase()) }.ToLiteralCodeStatements()
                 : property.GetterCodeStatements;
 
         public static IEnumerable<ICodeStatement> FixObservablePropertySetterBody(this IClassProperty property, string newCollectionTypeName)
-            => property.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<")
+            => !property.GetterCodeStatements.Any() && !property.SetterCodeStatements.Any()
                 ? new[] { string.Format("_{0} = value;", property.Name.ToPascalCase()) + Environment.NewLine + string.Format(@"if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""{0}""));", property.Name) }.ToLiteralCodeStatements()
                 : property.SetterCodeStatements;
 

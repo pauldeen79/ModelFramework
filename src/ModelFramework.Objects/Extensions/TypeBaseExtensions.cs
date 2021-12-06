@@ -288,7 +288,7 @@ namespace ModelFramework.Objects.Extensions
                             }
                         ).ToList(),
                 Fields = instance.Properties
-                        .Where(p => p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<"))
+                        .Where(p => !p.GetterCodeStatements.Any() && !p.SetterCodeStatements.Any() )
                         .Select
                         (
                             p => new ClassFieldBuilder

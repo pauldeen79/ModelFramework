@@ -2606,14 +2606,28 @@ namespace MyNamespace
     {
         public string Property1
         {
-            get;
-            set;
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""Property1""));
+            }
         }
 
         public bool Property2
         {
-            get;
-            set;
+            get
+            {
+                return _property2;
+            }
+            set
+            {
+                _property2 = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""Property2""));
+            }
         }
 
         public System.Collections.ObjectModel.ObservableCollection<string> Property3
@@ -2633,6 +2647,10 @@ namespace MyNamespace
         {
             this.Property3 = Utilities.Extensions.InitializeObservableCollection(default(System.Collections.ObjectModel.ObservableCollection<string>));
         }
+
+        private string _property1;
+
+        private bool _property2;
 
         private System.Collections.Generic.IEnumerable<string> _property3;
     }
