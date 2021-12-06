@@ -23,7 +23,7 @@ namespace ModelFramework.Generators.Tests.Database
             };
 
             // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true });
 
             // Assert
             actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
@@ -79,8 +79,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -111,8 +110,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -145,8 +143,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -187,8 +184,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -220,7 +216,7 @@ GO
             };
 
             // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true});
 
             // Assert
             actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
@@ -259,8 +255,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -293,8 +288,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  StoredProcedure [dbo].[usp_Test] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -324,8 +318,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -339,7 +332,6 @@ CREATE TABLE [dbo].[Table1](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  ForeignKey [FK] ******/
 ALTER TABLE [dbo].[Table1]  WITH CHECK ADD  CONSTRAINT [FK] FOREIGN KEY([LocalField1],[LocalField2])
 REFERENCES [dbo].[ForeignTable] ([RemoteField1],[RemoteField2])
 ON UPDATE NO ACTION
@@ -364,8 +356,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -379,7 +370,6 @@ CREATE TABLE [dbo].[Table1](
 GO
 SET ANSI_PADDING OFF
 GO
-/****** Object:  ForeignKey [FK] ******/
 ALTER TABLE [dbo].[Table1]  WITH CHECK ADD  CONSTRAINT [FK] FOREIGN KEY([LocalField1],[LocalField2])
 REFERENCES [dbo].[ForeignTable] ([RemoteField1],[RemoteField2])
 ON UPDATE CASCADE
@@ -404,8 +394,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -440,8 +429,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"/****** Object:  View [dbo].[View1] ******/
-SET ANSI_NULLS ON
+            actual.Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -453,7 +441,6 @@ SELECT
 FROM
     [Table1]
 GO
-/****** Object:  View [dbo].[View2] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

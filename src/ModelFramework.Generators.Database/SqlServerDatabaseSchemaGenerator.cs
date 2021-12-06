@@ -49,6 +49,18 @@ namespace ModelFramework.Generators.Database
                 return this._modelField;
             }
         }
+        protected System.Boolean _createCodeGenerationHeaderField;
+
+        /// <summary>
+        /// Access the CreateCodeGenerationHeader parameter of the template.
+        /// </summary>
+        public System.Boolean CreateCodeGenerationHeader
+        {
+            get
+            {
+                return this._createCodeGenerationHeaderField;
+            }
+        }
 
         public virtual void Initialize(global::System.Action additionalActionDelegate = null)
         {
@@ -106,6 +118,24 @@ namespace ModelFramework.Generators.Database
                 {
                     this._modelField = ((System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>)(this.Session["Model"]));
                 }
+            }
+            bool createCodeGenerationHeaderValueAcquired = false;
+            if (this.Session != null && this.Session.ContainsKey("CreateCodeGenerationHeader") && this.Session["CreateCodeGenerationHeader"] != null)
+            {
+                if ((typeof(System.Boolean).IsAssignableFrom(this.Session["CreateCodeGenerationHeader"].GetType()) == false))
+                {
+                    this.Error("The type \'System.Boolean\' of the parameter \'CreateCodeGenerationHeader\' did not match the type of the data passed to the template.");
+                }
+                else
+                {
+                    this._createCodeGenerationHeaderField = ((System.Boolean)(this.Session["CreateCodeGenerationHeader"]));
+                    createCodeGenerationHeaderValueAcquired = true;
+                }
+            }
+            if ((createCodeGenerationHeaderValueAcquired == false))
+            {
+                this._createCodeGenerationHeaderField = default(System.Boolean);
+                createCodeGenerationHeaderValueAcquired = true;
             }
 
         }
@@ -618,10 +648,16 @@ GO
             var tableEntity = TemplateContext.GetModelFromContextByType<ITable>();
 var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>();
 
+            if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   {
+
             Write(this.ToStringHelper.ToStringWithCulture(@"/****** Object:  ForeignKey ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] ******/
-ALTER TABLE ["));
+"));
+            }
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"ALTER TABLE ["));
             Write(this.ToStringHelper.ToStringWithCulture(schemaEntity.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"].["));
             Write(this.ToStringHelper.ToStringWithCulture(tableEntity.Name.FormatAsDatabaseIdentifier()));
@@ -1243,12 +1279,18 @@ GO
             if (builder != null) this.GenerationEnvironment = builder;
             var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>();
 
+            if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   {
+
             Write(this.ToStringHelper.ToStringWithCulture(@"/****** Object:  StoredProcedure ["));
             Write(this.ToStringHelper.ToStringWithCulture(schemaEntity.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"].["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] ******/
-SET ANSI_NULLS ON
+"));
+            }
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -1437,12 +1479,18 @@ GO
             var tableEntity = Model;
 var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>();
 
+            if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   {
+
             Write(this.ToStringHelper.ToStringWithCulture(@"/****** Object:  Table ["));
             Write(this.ToStringHelper.ToStringWithCulture(schemaEntity.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"].["));
             Write(this.ToStringHelper.ToStringWithCulture(tableEntity.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] ******/
-SET ANSI_NULLS ON
+"));
+            }
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -1870,12 +1918,18 @@ GO
             if (builder != null) this.GenerationEnvironment = builder;
             var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>();
 
+            if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   {
+
             Write(this.ToStringHelper.ToStringWithCulture(@"/****** Object:  View ["));
             Write(this.ToStringHelper.ToStringWithCulture(schemaEntity.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"].["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] ******/
-SET ANSI_NULLS ON
+"));
+            }
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -2802,6 +2856,23 @@ AS
     {
         [global::System.ComponentModel.Browsable(false)]
         public IDefaultValueConstraint Model { get; set; }
+        protected System.Boolean _createCodeGenerationHeaderField;
+
+        /// <summary>
+        /// Access the CreateCodeGenerationHeader parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean CreateCodeGenerationHeader
+        {
+            get
+            {
+                return this._createCodeGenerationHeaderField;
+            }
+            set
+            {
+                 this._createCodeGenerationHeaderField = value;
+            }
+        }
         public string TableEntityName => TemplateContext.GetModelFromContextByType<ITable>().Name.FormatAsDatabaseIdentifier();
         public string Name => Model.Name.FormatAsDatabaseIdentifier();
         public string DefaultValue => Model.DefaultValue;

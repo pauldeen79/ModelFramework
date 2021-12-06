@@ -21,4 +21,5 @@
 <#@ import namespace="ModelFramework.Database.SqlStatements" #>
 <#@ import namespace="TextTemplateTransformationFramework.Runtime" #>
 <#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Database.Contracts.ISchema" #>
+<#@ property name="CreateCodeGenerationHeader" type="System.Boolean" #>
 <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>

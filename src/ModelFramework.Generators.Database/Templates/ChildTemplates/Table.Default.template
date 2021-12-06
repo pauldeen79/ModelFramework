@@ -4,7 +4,10 @@
 <#
 var tableEntity = Model;
 var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+<# if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   { #>
 /****** Object:  Table [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>] ******/
+<# } #>
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

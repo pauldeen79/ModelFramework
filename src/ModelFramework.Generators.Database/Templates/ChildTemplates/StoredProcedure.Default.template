@@ -3,7 +3,10 @@
 <#@ model type="IStoredProcedure" #>
 <#
 var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+<# if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   { #>
 /****** Object:  StoredProcedure [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.Name.FormatAsDatabaseIdentifier() #>] ******/
+<# } #>
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON

@@ -4,7 +4,10 @@
 <#
 var tableEntity = TemplateContext.GetModelFromContextByType<ITable>();
 var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>(); #>
+<# if (TemplateContext.GetContextByType<SqlServerDatabaseSchemaGenerator>().CreateCodeGenerationHeader)
+   { #>
 /****** Object:  ForeignKey [<#= Model.Name.FormatAsDatabaseIdentifier() #>] ******/
+<# } #>
 ALTER TABLE [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= tableEntity.Name.FormatAsDatabaseIdentifier() #>]  WITH CHECK ADD  CONSTRAINT [<#= Model.Name.FormatAsDatabaseIdentifier() #>] FOREIGN KEY(<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate" model="Model.LocalFields" customResolverDelegate="ResolveFromMetadata" #>)
 REFERENCES [<#= schemaEntity.Name.FormatAsDatabaseIdentifier() #>].[<#= Model.ForeignTableName.FormatAsDatabaseIdentifier() #>] (<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate" model="Model.ForeignFields" customResolverDelegate="ResolveFromMetadata" #>)
 ON UPDATE <#= Model.CascadeUpdate.ToSql() #>
