@@ -233,7 +233,7 @@ namespace MyNamespace
     }
 }
 ";
-        private const string ImmutableBuilderClassCode = @"using System;
+        private const string ImmutableBuilderClassCodeWithNullChecks = @"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -427,6 +427,195 @@ namespace MyNamespace
             if (property2 != null) foreach (var x in property2) Property2.Add(x);
             Property3 = property3;
             if (property4 != null) foreach (var x in property4) Property4.Add(x);
+        }
+    }
+}
+";
+        private const string ImmutableBuilderClassCodeWithoutNullChecks = @"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecord
+    {
+        public string Property1
+        {
+            get;
+        }
+
+        public System.Collections.Generic.IReadOnlyCollection<string> Property2
+        {
+            get;
+        }
+
+        public MyCustomType Property3
+        {
+            get;
+        }
+
+        public System.Collections.Generic.IReadOnlyCollection<MyCustomType> Property4
+        {
+            get;
+        }
+
+        public MyRecord(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
+        {
+            this.Property1 = property1;
+            this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? new Enumerable.Empty<System.String>());
+            this.Property3 = property3;
+            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? new Enumerable.Empty<MyCustomType>());
+        }
+    }
+
+    public class MyRecordBuilder
+    {
+        public string Property1
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<string> Property2
+        {
+            get;
+            set;
+        }
+
+        public MyCustomTypeBuilder Property3
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<MyCustomTypeBuilder> Property4
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord(Property1, Property2, Property3.Build(), Property4.Select(x => x.Build()));
+        }
+
+        public MyRecordBuilder Clear()
+        {
+            Property1 = default;
+            Property2.Clear();
+            Property3 = default;
+            Property4.Clear();
+            return this;
+        }
+
+        public MyRecordBuilder Update(MyNamespace.MyRecord source)
+        {
+            Property2 = new System.Collections.Generic.List<string>();
+            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            Property1 = source.Property1;
+            foreach (var x in source.Property2) Property2.Add(x);
+            Property3 = new MyCustomTypeBuilder(source.Property3);
+            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
+            return this;
+        }
+
+        public MyRecordBuilder WithProperty1(string property1)
+        {
+            Property1 = property1;
+            return this;
+        }
+
+        public MyRecordBuilder ClearProperty2()
+        {
+            Property2.Clear();
+            return this;
+        }
+
+        public MyRecordBuilder AddProperty2(System.Collections.Generic.IEnumerable<string> property2)
+        {
+            return AddProperty2(property2.ToArray());
+        }
+
+        public MyRecordBuilder AddProperty2(params System.Collections.Generic.IReadOnlyCollection<string>[] property2)
+        {
+            foreach(var itemToAdd in property2)
+            {
+                Property2.Add(itemToAdd);
+            }
+            return this;
+        }
+
+        public MyRecordBuilder WithProperty3(MyCustomTypeBuilder property3)
+        {
+            Property3 = property3;
+            return this;
+        }
+
+        public MyRecordBuilder WithProperty3(MyCustomType property3)
+        {
+            property3 = new MyCustomTypeBuilder(property3);
+            return this;
+        }
+
+        public MyRecordBuilder ClearProperty4()
+        {
+            Property4.Clear();
+            return this;
+        }
+
+        public MyRecordBuilder AddProperty4(System.Collections.Generic.IEnumerable<MyCustomTypeBuilder> property4)
+        {
+            return AddProperty4(property4.ToArray());
+        }
+
+        public MyRecordBuilder AddProperty4(params MyCustomTypeBuilder[] property4)
+        {
+            foreach(var itemToAdd in property4)
+            {
+                Property4.Add(itemToAdd);
+            }
+            return this;
+        }
+
+        public MyRecordBuilder AddProperty4(System.Collections.Generic.IEnumerable<MyCustomType> property4)
+        {
+            return AddProperty4(property4.ToArray());
+        }
+
+        public MyRecordBuilder AddProperty4(params System.Collections.Generic.IReadOnlyCollection<MyCustomType>[] property4)
+        {
+            foreach(var itemToAdd in property4)
+            {
+                    property4.Add(new MyCustomTypeBuilder(itemToAdd));
+            }
+            return this;
+        }
+
+        public MyRecordBuilder()
+        {
+            Property2 = new System.Collections.Generic.List<string>();
+            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            Property2 = new System.Collections.Generic.List<string>();
+            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            Property1 = source.Property1;
+            foreach (var x in source.Property2) Property2.Add(x);
+            Property3 = new MyCustomTypeBuilder(source.Property3);
+            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
+        }
+
+        public MyRecordBuilder(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
+        {
+            Property2 = new System.Collections.Generic.List<string>();
+            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            Property1 = property1;
+            foreach (var x in property2) Property2.Add(x);
+            Property3 = property3;
+            foreach (var x in property4) Property4.Add(x);
         }
     }
 }
@@ -1698,7 +1887,7 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void GeneratesImmutableBuilderClass()
+        public void GeneratesImmutableBuilderClassWithNullChecks()
         {
             // Arrange
             var properties = new[]
@@ -1726,7 +1915,39 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableBuilderClassCode);
+            actual.Should().Be(ImmutableBuilderClassCodeWithNullChecks);
+        }
+
+        [Fact]
+        public void GeneratesImmutableBuilderClassWithoutNullChecks()
+        {
+            // Arrange
+            var properties = new[]
+            {
+                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
+                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable().Build(),
+                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder().Build(),
+                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder().Build()
+            };
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
+                .AddProperties(properties)
+                .Build()
+                .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
+            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true, addNullChecks: false);
+            var model = new[]
+            {
+                cls,
+                cls.ToImmutableBuilderClass(settings)
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(ImmutableBuilderClassCodeWithoutNullChecks);
         }
 
         [Fact]

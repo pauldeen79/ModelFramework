@@ -503,17 +503,26 @@ namespace ModelFramework.Objects.Extensions
                                 TypeName = "params " + property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixTypeName().ConvertTypeNameToArray()
                             }
                         }.ToList(),
-                        CodeStatements = new[]
-                        {
-                            $"if ({property.Name.ToPascalCase()} != null)",
-                             "{",
-                            $"    foreach(var itemToAdd in {property.Name.ToPascalCase()})",
-                             "    {",
-                             property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"        {property.Name}.Add(itemToAdd);", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.TypeName, property.TypeName.GetGenericArguments())),
-                             "    }",
-                             "}",
-                             "return this;"
-                        }.ToLiteralCodeStatementBuilders().ToList()
+                        CodeStatements = settings.AddNullChecks
+                        ? new[]
+                            {
+                                $"if ({property.Name.ToPascalCase()} != null)",
+                                 "{",
+                                $"    foreach(var itemToAdd in {property.Name.ToPascalCase()})",
+                                 "    {",
+                                 property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"        {property.Name}.Add(itemToAdd);", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.TypeName, property.TypeName.GetGenericArguments())),
+                                 "    }",
+                                 "}",
+                                 "return this;"
+                            }.ToLiteralCodeStatementBuilders().ToList()
+                        : new[]
+                            {
+                                $"foreach(var itemToAdd in {property.Name.ToPascalCase()})",
+                                 "{",
+                                 property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"    {property.Name}.Add(itemToAdd);", o => string.Format(o?.ToString() ?? string.Empty, property.Name.ToPascalCase(), property.TypeName, property.TypeName.GetGenericArguments())),
+                                 "}",
+                                 "return this;"
+                            }.ToLiteralCodeStatementBuilders().ToList()
                     };
                     foreach (var overload in overloads)
                     {
@@ -546,7 +555,8 @@ namespace ModelFramework.Objects.Extensions
                                     TypeName = "params " + string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).ConvertTypeNameToArray()
                                 }
                             }.ToList(),
-                            CodeStatements = new[]
+                            CodeStatements = settings.AddNullChecks
+                            ? new[]
                             {
                                 $"if ({property.Name.ToPascalCase()} != null)",
                                  "{",
@@ -554,6 +564,14 @@ namespace ModelFramework.Objects.Extensions
                                  "    {",
                                  string.Format(overload.Expression, property.Name.ToPascalCase(), property.TypeName.FixTypeName(), property.TypeName.GetGenericArguments()),
                                  "    }",
+                                 "}",
+                                 "return this;"
+                            }.ToLiteralCodeStatementBuilders().ToList()
+                            : new[]
+                            {
+                                $"foreach(var itemToAdd in {property.Name.ToPascalCase()})",
+                                 "{",
+                                 string.Format(overload.Expression, property.Name.ToPascalCase(), property.TypeName.FixTypeName(), property.TypeName.GetGenericArguments()),
                                  "}",
                                  "return this;"
                             }.ToLiteralCodeStatementBuilders().ToList()
