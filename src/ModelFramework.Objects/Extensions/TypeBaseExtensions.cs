@@ -380,7 +380,8 @@ namespace ModelFramework.Objects.Extensions
                     Parameters = properties.Select(p => new ParameterBuilder
                     {
                         Name = p.Name.ToPascalCase(),
-                        TypeName = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments()))
+                        TypeName = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetMetadataStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName), o => string.Format(o?.ToString() ?? string.Empty, p.Name.ToPascalCase().GetCsharpFriendlyName(), p.TypeName.GetGenericArguments())),
+                        IsNullable = p.IsNullable
                     }).ToList(),
                     CodeStatements = properties.Where(p => p.TypeName.IsCollectionTypeName())
                         .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {p.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName, o => string.Format(o?.ToString() ?? string.Empty, p.TypeName, p.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
@@ -483,7 +484,8 @@ namespace ModelFramework.Objects.Extensions
                             new ParameterBuilder
                             {
                                 Name = property.Name.ToPascalCase(),
-                                TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable")
+                                TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"),
+                                IsNullable = property.IsNullable
                             }
                         }.ToList(),
                         CodeStatements = new[]
@@ -500,7 +502,8 @@ namespace ModelFramework.Objects.Extensions
                             new ParameterBuilder
                             {
                                 Name = property.Name.ToPascalCase(),
-                                TypeName = "params " + property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixTypeName().ConvertTypeNameToArray()
+                                TypeName = "params " + property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixTypeName().ConvertTypeNameToArray(),
+                                IsNullable = property.IsNullable
                             }
                         }).ToList(),
                         CodeStatements = GetImmutableBuilderAddMethodStatements(settings, property)
@@ -516,7 +519,8 @@ namespace ModelFramework.Objects.Extensions
                                 new ParameterBuilder
                                 {
                                     Name = property.Name.ToPascalCase(),
-                                    TypeName = string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable")
+                                    TypeName = string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"),
+                                    IsNullable = property.IsNullable
                                 }
                             }.ToList(),
                             CodeStatements = new[]
@@ -533,7 +537,8 @@ namespace ModelFramework.Objects.Extensions
                                 new ParameterBuilder
                                 {
                                     Name = property.Name.ToPascalCase(),
-                                    TypeName = "params " + string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).ConvertTypeNameToArray()
+                                    TypeName = "params " + string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).ConvertTypeNameToArray(),
+                                    IsNullable = property.IsNullable
                                 }
                             }.ToList(),
                             CodeStatements = GetImmutableBuilderAddOverloadMethodStatements(settings, property, overload.Expression)
@@ -552,7 +557,8 @@ namespace ModelFramework.Objects.Extensions
                             new ParameterBuilder
                             {
                                 Name = property.Name.ToPascalCase(),
-                                TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments()))
+                                TypeName = property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())),
+                                IsNullable = property.IsNullable
                             }
                         }.ToList(),
                         CodeStatements = new[]
@@ -572,7 +578,8 @@ namespace ModelFramework.Objects.Extensions
                                 new ParameterBuilder
                                 {
                                     Name = property.Name.ToPascalCase(),
-                                    TypeName = string.Format(overload.TypeName, property.TypeName)
+                                    TypeName = string.Format(overload.TypeName, property.TypeName),
+                                    IsNullable = property.IsNullable
                                 }
                             }.ToList(),
                             CodeStatements = new[]
@@ -662,6 +669,7 @@ namespace ModelFramework.Objects.Extensions
             => instance.Properties.Select(property => new ClassPropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName, o => string.Format(o?.ToString() ?? string.Empty, property.TypeName, property.TypeName.GetGenericArguments())).FixBuilderCollectionTypeName(settings.NewCollectionTypeName))
+                .WithIsNullable(property.IsNullable)
                 .AddAttributes(property.Attributes)
                 .AddMetadata(property.Metadata)
             );
