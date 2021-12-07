@@ -287,7 +287,7 @@ namespace ModelFramework.Objects.Extensions
                                 Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList()
                             }
                         ).ToList(),
-                Fields = instance.Properties
+                Fields = ((instance as IClass).Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>()).Concat(instance.Properties
                         .Where(p => !p.GetterCodeStatements.Any() && !p.SetterCodeStatements.Any() )
                         .Select
                         (
@@ -298,7 +298,7 @@ namespace ModelFramework.Objects.Extensions
                                 IsNullable = p.IsNullable,
                                 Visibility = Visibility.Private
                             }
-                        ).ToList(),
+                        )).ToList(),
                 Constructors = new[]
                 {
                     new ClassConstructorBuilder
@@ -331,7 +331,8 @@ namespace ModelFramework.Objects.Extensions
                 Constructors = GetImmutableBuilderClassConstructors(instance, settings).ToList(),
                 Methods = GetImmutableBuilderClassMethods(instance, settings).ToList(),
                 Properties = GetImmutableBuilderClassProperties(instance, settings).ToList(),
-                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
+                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
+                Fields = ((instance as IClass).Fields)?.Select(x => new ClassFieldBuilder(x))?.ToList() ?? new List<ClassFieldBuilder>()
             };
         }
 
@@ -677,6 +678,8 @@ namespace ModelFramework.Objects.Extensions
                 .WithIsNullable(property.IsNullable)
                 .AddAttributes(property.Attributes)
                 .AddMetadata(property.Metadata)
+                .AddGetterCodeStatements(property.GetterCodeStatements)
+                .AddSetterCodeStatements(property.SetterCodeStatements)
             );
 
         private static string GetBuildMethodParameters(ITypeBase instance, bool poco)

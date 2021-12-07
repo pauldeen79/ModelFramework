@@ -2300,6 +2300,108 @@ namespace MyNamespace
         }
 
         [Fact]
+        public void GeneatesImmutableBuilderClassWithObservableProperty()
+        {
+            // Arrange
+            var properties = new[]
+            {
+                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
+            };
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
+                .AddProperties(properties)
+                .Build()
+                .ToObservableClass();
+            var settings = new ImmutableBuilderClassSettings();
+            var model = new[]
+            {
+                cls,
+                cls.ToImmutableBuilderClass(settings)
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecord
+    {
+        public string Property1
+        {
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""Property1""));
+            }
+        }
+
+        public MyRecord()
+        {
+        }
+
+        private string _property1;
+    }
+
+    public class MyRecordBuilder
+    {
+        public string Property1
+        {
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value;
+                if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""Property1""));
+            }
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord { Property1 = Property1 };
+        }
+
+        public MyRecordBuilder Clear()
+        {
+            Property1 = default;
+            return this;
+        }
+
+        public MyRecordBuilder WithProperty1(string property1)
+        {
+            Property1 = property1;
+            return this;
+        }
+
+        public MyRecordBuilder()
+        {
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            Property1 = source.Property1;
+        }
+
+        private string _property1;
+    }
+}
+");
+        }
+
+        [Fact]
         public void GeneratesPocoClass_Model()
         {
             // Arrange
