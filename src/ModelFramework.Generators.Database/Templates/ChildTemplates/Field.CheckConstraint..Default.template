@@ -1,8 +1,0 @@
-﻿<#@ template language="c#" #>
-<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultFieldCheckConstraintTemplate" #>
-<#@ model type="ITableField" #>
-<# if (Model.CheckConstraint != null)
-   { #>
-
-    CONSTRAINT <#= Model.CheckConstraint.Name #>
-    CHECK (<#= Model.CheckConstraint.Expression #>)<# } #>

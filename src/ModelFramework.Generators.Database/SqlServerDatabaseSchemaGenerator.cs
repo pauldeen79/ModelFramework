@@ -73,8 +73,8 @@ namespace ModelFramework.Generators.Database
             PlaceholderChildrenDictionary.Clear();
             this.ChildTemplates.Clear();
             this.ViewModels.Clear();
+            RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultCheckConstraintTemplate(), typeof(ICheckConstraint));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintTemplate(), typeof(IDefaultValueConstraint));
-            RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldCheckConstraintTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultFieldCheckConstraintTemplate(), typeof(ITableField));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultFieldTemplate(), typeof(ITableField));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldTypeTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultFieldTypeTemplate(), typeof(ITableField));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultForeignKeyTemplate(), typeof(ITable));
@@ -160,9 +160,9 @@ namespace ModelFramework.Generators.Database
             return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.FieldTypeTemplateName);
         }
 
-        public bool ResolveFieldCheckConstraintTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        public bool ResolveCheckConstraintTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
         {
-            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.FieldCheckConstraintTemplateName);
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.CheckConstraintTemplateName);
         }
 
         public bool ResolveFieldAndPrimaryKeyFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
@@ -184,6 +184,89 @@ namespace ModelFramework.Generators.Database
 
     }
     #endregion
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class SqlServerDatabaseSchemaGenerator_DefaultCheckConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
+    {
+        public virtual void Render(global::System.Text.StringBuilder builder)
+        {
+            var backup = this.GenerationEnvironment;
+            if (builder != null) this.GenerationEnvironment = builder;
+            Write(this.ToStringHelper.ToStringWithCulture(@"
+"));
+            Write(this.ToStringHelper.ToStringWithCulture(@"    CONSTRAINT "));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.Name));
+            Write(this.ToStringHelper.ToStringWithCulture(@"
+    CHECK ("));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.Expression));
+            Write(this.ToStringHelper.ToStringWithCulture(@")"));
+            if (!TemplateContext.IsLastIteration) {
+
+            Write(this.ToStringHelper.ToStringWithCulture(@","));
+            }
+
+
+            if (builder != null) this.GenerationEnvironment = backup;
+        }
+
+
+        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
+        {
+            this.Errors.Clear();
+            this.GenerationEnvironment.Clear();
+            if (Session == null)
+            {
+                Session = new global::System.Collections.Generic.Dictionary<string, object>();
+            }
+            if (RootTemplate != null)
+            {
+                ChildTemplates = RootTemplate.ChildTemplates;
+                ViewModels = RootTemplate.ViewModels;
+            }
+            else
+            {
+                ChildTemplates.Clear();
+                ViewModels.Clear();
+            }
+            if (RootTemplate != null)
+            {
+                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
+            }
+            else
+            {
+                PlaceholderChildrenDictionary.Clear();
+            }
+
+        }
+
+        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
+
+        public override void Write(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.Write(textToAppend);
+            }
+            else
+            {
+                base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+
+        public ICheckConstraint Model { get; set; }
+
+    }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
     {
@@ -283,89 +366,6 @@ GO
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultFieldCheckConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            if (Model.CheckConstraint != null)
-   {
-
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
-            Write(this.ToStringHelper.ToStringWithCulture(@"    CONSTRAINT "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.CheckConstraint.Name));
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-    CHECK ("));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.CheckConstraint.Expression));
-            Write(this.ToStringHelper.ToStringWithCulture(@")"));
-            }
-
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
-        public ITableField Model { get; set; }
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class SqlServerDatabaseSchemaGenerator_DefaultFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
@@ -393,7 +393,7 @@ GO
             }
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldCheckConstraintTemplate", Model, customResolverDelegate: ResolveFieldCheckConstraintTemplateFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", Model.CheckConstraints, customResolverDelegate: ResolveCheckConstraintTemplateFromMetadata);
 
             if (!TemplateContext.IsLastIteration) {
 
@@ -1517,6 +1517,9 @@ GO
 
             
             RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate", tableEntity.DefaultValueConstraints, customResolverDelegate: ResolveFromMetadata);
+
+            
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", Model.CheckConstraints, customResolverDelegate: ResolveCheckConstraintTemplateFromMetadata);
 
 
             if (builder != null) this.GenerationEnvironment = backup;

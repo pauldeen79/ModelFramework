@@ -2,7 +2,7 @@
 
 namespace ModelFramework.Database.Contracts
 {
-    public interface ITableFieldCheckConstraint : INameContainer, IMetadataContainer
+    public interface ICheckConstraint : INameContainer, IMetadataContainer
     {
         string Expression { get; }
     }

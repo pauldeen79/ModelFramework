@@ -19,7 +19,7 @@ namespace ModelFramework.Database.Default
                           int? stringLength = null,
                           string stringCollation = null,
                           bool? isStringMaxLength = null,
-                          ITableFieldCheckConstraint checkConstraint = null,
+                          IEnumerable<ICheckConstraint> checkConstraints = null,
                           IEnumerable<IMetadata> metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
@@ -34,7 +34,7 @@ namespace ModelFramework.Database.Default
             StringLength = stringLength;
             StringCollation = stringCollation;
             IsStringMaxLength = isStringMaxLength;
-            CheckConstraint = checkConstraint;
+            CheckConstraints = new ValueCollection<ICheckConstraint>(checkConstraints ?? Enumerable.Empty<ICheckConstraint>());
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
         }
 
@@ -47,7 +47,7 @@ namespace ModelFramework.Database.Default
         public string StringCollation { get; }
         public bool? IsStringMaxLength { get; }
         public string Name { get; }
+        public ValueCollection<ICheckConstraint> CheckConstraints { get; }
         public ValueCollection<IMetadata> Metadata { get; }
-        public ITableFieldCheckConstraint CheckConstraint { get; }
     }
 }

@@ -22,6 +22,7 @@ SET ANSI_PADDING OFF
 GO
 <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultIndexTemplate" model="tableEntity.Indexes" customResolverDelegate="ResolveFromMetadata" #>
 <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate" model="tableEntity.DefaultValueConstraints" customResolverDelegate="ResolveFromMetadata" #>
+<#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate" model="Model.CheckConstraints" customResolverDelegate="ResolveCheckConstraintTemplateFromMetadata" #>
 <#+
         protected virtual IEnumerable<IMetadataContainer> GetFieldsAndPrimaryKeyConstraints(ITable table)
         {

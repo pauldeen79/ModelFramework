@@ -8,9 +8,9 @@
         public const string FieldTypeTemplateName = "ModelFramework.Database.FieldTypeTemplateName";
 
         /// <summary>
-        /// Metadata name for defining field check contraint template name.
+        /// Metadata name for defining table or field check contraint template name.
         /// </summary>
-        public const string FieldCheckConstraintTemplateName = "ModelFramework.Database.FieldCheckConstraintTemplateName";
+        public const string CheckConstraintTemplateName = "ModelFramework.Database.CheckConstraintTemplateName";
 
         /// <summary>
         /// Metadata name for defining code template name. (stored procedure)

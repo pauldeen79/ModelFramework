@@ -103,7 +103,7 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int, checkConstraint: new TableFieldCheckConstraint("CHK1", "[Field1] BETWEEN 1 AND 10")), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }) })
+                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int, checkConstraints: new[] { new CheckConstraint("CHK1", "[Field1] BETWEEN 1 AND 10") }), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }) })
             };
 
             // Act

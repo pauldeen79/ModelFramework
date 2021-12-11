@@ -2,7 +2,7 @@
 
 namespace ModelFramework.Database.Contracts
 {
-    public interface ITableField : INameContainer, IMetadataContainer
+    public interface ITableField : INameContainer, IMetadataContainer, ICheckConstraintContainer
     {
         string Type { get; }
         bool IsIdentity { get; }
@@ -12,6 +12,5 @@ namespace ModelFramework.Database.Contracts
         int? StringLength { get; }
         string StringCollation { get; }
         bool? IsStringMaxLength { get; }
-        ITableFieldCheckConstraint CheckConstraint { get; }
     }
 }

@@ -7,9 +7,9 @@ using ModelFramework.Database.Contracts;
 
 namespace ModelFramework.Database.Default
 {
-    public record TableFieldCheckConstraint : ITableFieldCheckConstraint
+    public record CheckConstraint : ICheckConstraint
     {
-        public TableFieldCheckConstraint(string name,
+        public CheckConstraint(string name,
                                          string expression,
                                          IEnumerable<IMetadata> metadata = null)
         {

@@ -3,7 +3,7 @@ using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Database.Contracts
 {
-    public interface ITable : INameContainer, IMetadataContainer, IFileGroupNameContainer
+    public interface ITable : INameContainer, IMetadataContainer, IFileGroupNameContainer, ICheckConstraintContainer
     {
         ValueCollection<IPrimaryKeyConstraint> PrimaryKeyConstraints { get; }
         ValueCollection<IUniqueConstraint> UniqueConstraints { get; }

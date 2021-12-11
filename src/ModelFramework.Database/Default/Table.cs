@@ -18,6 +18,7 @@ namespace ModelFramework.Database.Default
                      IEnumerable<IDefaultValueConstraint> defaultValueConstraints = null,
                      IEnumerable<IForeignKeyConstraint> foreignKeyConstraints = null,
                      IEnumerable<IIndex> indexes = null,
+                     IEnumerable<ICheckConstraint> checkConstraints = null,
                      IEnumerable<IMetadata> metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
@@ -31,6 +32,7 @@ namespace ModelFramework.Database.Default
             DefaultValueConstraints = new ValueCollection<IDefaultValueConstraint>(defaultValueConstraints ?? Enumerable.Empty<IDefaultValueConstraint>());
             ForeignKeyConstraints = new ValueCollection<IForeignKeyConstraint>(foreignKeyConstraints ?? Enumerable.Empty<IForeignKeyConstraint>());
             Indexes = new ValueCollection<IIndex>(indexes ?? Enumerable.Empty<IIndex>());
+            CheckConstraints = new ValueCollection<ICheckConstraint>(checkConstraints ?? Enumerable.Empty<ICheckConstraint>());
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
         }
 
@@ -40,8 +42,9 @@ namespace ModelFramework.Database.Default
         public ValueCollection<IIndex> Indexes { get; }
         public ValueCollection<ITableField> Fields { get; }
         public string Name { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
         public ValueCollection<IDefaultValueConstraint> DefaultValueConstraints { get; }
         public ValueCollection<IForeignKeyConstraint> ForeignKeyConstraints { get; }
+        public ValueCollection<ICheckConstraint> CheckConstraints { get; }
+        public ValueCollection<IMetadata> Metadata { get; }
     }
 }

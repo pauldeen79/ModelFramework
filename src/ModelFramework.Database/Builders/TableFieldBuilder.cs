@@ -19,7 +19,7 @@ namespace ModelFramework.Database.Builders
         public bool? IsStringMaxLength { get; set; }
         public string Name { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
-        public ITableFieldCheckConstraint CheckConstraint { get; set; }
+        public List<TableFieldCheckConstraintBuilder> CheckConstraints { get; set; }
         public ITableField Build()
         {
             return new TableField(Name,
@@ -31,7 +31,7 @@ namespace ModelFramework.Database.Builders
                                   StringLength,
                                   StringCollation,
                                   IsStringMaxLength,
-                                  CheckConstraint,
+                                  CheckConstraints.Select(x => x.Build()),
                                   Metadata.Select(x => x.Build()));
         }
         public TableFieldBuilder Clear()
@@ -46,7 +46,7 @@ namespace ModelFramework.Database.Builders
             IsStringMaxLength = default;
             Name = default;
             Metadata.Clear();
-            CheckConstraint = default;
+            CheckConstraints.Clear();
             return this;
         }
         public TableFieldBuilder WithType(string type)
@@ -126,14 +126,45 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public TableFieldBuilder WithCheckConstraint(ITableFieldCheckConstraint checkConstraint)
+        public TableFieldBuilder ClearCheckConstraints()
         {
-            CheckConstraint = checkConstraint;
+            CheckConstraints.Clear();
+            return this;
+        }
+        public TableFieldBuilder AddCheckConstraints(IEnumerable<TableFieldCheckConstraintBuilder> checkConstraints)
+        {
+            return AddCheckConstraints(checkConstraints.ToArray());
+        }
+        public TableFieldBuilder AddCheckConstraints(params TableFieldCheckConstraintBuilder[] checkConstraints)
+        {
+            if (checkConstraints != null)
+            {
+                foreach (var itemToAdd in checkConstraints)
+                {
+                    CheckConstraints.Add(itemToAdd);
+                }
+            }
+            return this;
+        }
+        public TableFieldBuilder AddCheckConstraints(IEnumerable<ICheckConstraint> checkConstraints)
+        {
+            return AddCheckConstraints(checkConstraints.ToArray());
+        }
+        public TableFieldBuilder AddCheckConstraints(params ICheckConstraint[] checkConstraints)
+        {
+            if (checkConstraints != null)
+            {
+                foreach (var itemToAdd in checkConstraints)
+                {
+                    CheckConstraints.Add(new TableFieldCheckConstraintBuilder(itemToAdd));
+                }
+            }
             return this;
         }
         public TableFieldBuilder()
         {
             Metadata = new List<MetadataBuilder>();
+            CheckConstraints = new List<TableFieldCheckConstraintBuilder>();
         }
         public TableFieldBuilder(ITableField source)
         {
@@ -149,7 +180,7 @@ namespace ModelFramework.Database.Builders
             IsStringMaxLength = source.IsStringMaxLength;
             Name = source.Name;
             if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            CheckConstraint = source.CheckConstraint;
+            if (source.CheckConstraints != null) foreach (var x in source.CheckConstraints) CheckConstraints.Add(new TableFieldCheckConstraintBuilder(x));
         }
     }
 }

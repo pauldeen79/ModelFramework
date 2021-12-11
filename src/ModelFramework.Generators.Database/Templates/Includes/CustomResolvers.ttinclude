@@ -9,9 +9,9 @@
             return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.FieldTypeTemplateName);
         }
 
-        public bool ResolveFieldCheckConstraintTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
+        public bool ResolveCheckConstraintTemplateFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
         {
-            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.FieldCheckConstraintTemplateName);
+            return ResolveFromMetadata(templateName, childTemplateName, childTemplateModelType, model, ModelFramework.Database.MetadataNames.CheckConstraintTemplateName);
         }
 
         public bool ResolveFieldAndPrimaryKeyFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)

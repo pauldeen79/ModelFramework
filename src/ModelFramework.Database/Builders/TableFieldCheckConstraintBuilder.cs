@@ -12,9 +12,9 @@ namespace ModelFramework.Database.Builders
         public string Expression { get; set; }
         public string Name { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
-        public ITableFieldCheckConstraint Build()
+        public ICheckConstraint Build()
         {
-            return new TableFieldCheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
+            return new CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
         }
         public TableFieldCheckConstraintBuilder WithExpression(string expression)
         {
@@ -69,7 +69,7 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new List<MetadataBuilder>();
         }
-        public TableFieldCheckConstraintBuilder(ITableFieldCheckConstraint source)
+        public TableFieldCheckConstraintBuilder(ICheckConstraint source)
         {
             Metadata = new List<MetadataBuilder>();
 
