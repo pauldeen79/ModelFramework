@@ -490,7 +490,7 @@ GO
 
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
             }
-   else if(Model.Type.IsDatabaseFloatingPointNumericType())
+   else if (Model.NumericPrecision != null && Model.NumericScale != null)
    {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"("));

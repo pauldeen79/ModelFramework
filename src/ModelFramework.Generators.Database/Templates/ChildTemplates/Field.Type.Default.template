@@ -14,7 +14,7 @@
 	   }
 #>)<#
    }
-   else if(Model.Type.IsDatabaseFloatingPointNumericType())
+   else if (Model.NumericPrecision != null && Model.NumericScale != null)
    {
 #>(<#= Model.NumericPrecision.GetValueOrDefault(8) #>,<#= Model.NumericScale.GetValueOrDefault(0) #>)<#
    } #>

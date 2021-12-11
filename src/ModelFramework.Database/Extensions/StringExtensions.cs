@@ -6,15 +6,16 @@ namespace ModelFramework.Database.Extensions
 {
     public static class StringExtensions
     {
-        public static bool IsDatabaseStringType(this string instance)
-            => instance != null && new[] { SqlTableFieldTypes.Char,
-                                           SqlTableFieldTypes.NChar,
-                                           SqlTableFieldTypes.NVarChar,
-                                           SqlTableFieldTypes.VarChar }.Any(x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
+        private static readonly string[] _databaseStringTypes = new[]
+        {
+            SqlTableFieldTypes.Char,
+            SqlTableFieldTypes.NChar,
+            SqlTableFieldTypes.NVarChar,
+            SqlTableFieldTypes.VarChar
+        };
 
-        public static bool IsDatabaseFloatingPointNumericType(this string instance)
-            //TODO: Review which TSQL field types allow numeric precision and scale
-            => instance?.Equals(SqlTableFieldTypes.Numeric, StringComparison.OrdinalIgnoreCase) == true;
+        public static bool IsDatabaseStringType(this string instance)
+            => instance != null && _databaseStringTypes.Any(x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
         public static string FormatAsDatabaseIdentifier(this string instance)
             => instance?
