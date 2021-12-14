@@ -42,37 +42,6 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void Can_Generate_Interface_From_Class_With_Possibility_To_Skip_Method()
-        {
-            // Arrange
-            var input = new Class("Test", "MyNamespace", methods: new[]
-            {
-                new ClassMethod("MyMethod", "MyType", parameters: new[] { new Parameter("param1", "MyType") }),
-                new ClassMethod("MySkippedMethod", "MyType", parameters: new[] { new Parameter("param1", "MyType") }, metadata: new[] { new Metadata(MetadataNames.SkipMethodOnAutoGenerateInterface, "") }),
-            });
-
-            // Act
-            var actual = input.ToInterface(new InterfaceSettings());
-
-            // Assert
-            var generator = new CSharpClassGenerator();
-            var src = TemplateRenderHelper.GetTemplateOutput(generator, new[] { actual });
-            src.Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MyNamespace
-{
-    public interface ITest
-    {
-        MyType MyMethod(MyType param1);
-    }
-}
-");
-        }
-
-        [Fact]
         public void Can_Generate_Interface_From_Class_With_GenericTypeContraints()
         {
             // Arrange

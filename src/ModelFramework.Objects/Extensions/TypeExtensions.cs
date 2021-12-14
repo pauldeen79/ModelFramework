@@ -30,10 +30,6 @@ namespace ModelFramework.Objects.Extensions
                 Static = instance.IsAbstract && instance.IsSealed,
                 Sealed = instance.IsSealed,
                 Partial = settings.Partial,
-                AutoGenerateInterface = settings.AutoGenerateInterface,
-                AutoGenerateInterfaceSettings = settings.AutoGenerateInterfaceSettings == null
-                    ? null
-                    : new InterfaceSettingsBuilder(settings.AutoGenerateInterfaceSettings),
                 Record = instance.IsRecord(),
                 Interfaces = GetInterfaces(instance).ToList(),
                 Fields = GetFields(instance).ToList(),

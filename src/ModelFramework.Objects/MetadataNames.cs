@@ -101,10 +101,5 @@
         /// Metadata name for defining a custom type for argument in observable c'tor.
         /// </summary>
         public const string CustomObservableArgumentType = "ModelFramework.Objects.Observable.Ctor.CustomArgumentType";
-
-        /// <summary>
-        /// Metadata name for skipping methods on auto-generated interfaces.
-        /// </summary>
-        public const string SkipMethodOnAutoGenerateInterface = "ModelFramework.Objects.SkipMethodOnAutoGenerateInterface";
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CrossCutting.Common;
-using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.Objects.Contracts
 {
@@ -11,8 +10,6 @@ namespace ModelFramework.Objects.Contracts
         ValueCollection<IClass> SubClasses { get; }
         ValueCollection<IClassConstructor> Constructors { get; }
         string BaseClass { get; }
-        bool AutoGenerateInterface { get; }
-        InterfaceSettings AutoGenerateInterfaceSettings { get; }
         bool Record { get; }
     }
 }

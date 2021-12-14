@@ -21,8 +21,7 @@ namespace ModelFramework.Objects.Extensions
             {
                 var lst = new List<string>();
                 if (!string.IsNullOrEmpty(cls.BaseClass)) lst.Add(cls.BaseClass);
-                if (cls.AutoGenerateInterface && !cls.Interfaces?.Any(i => i == $"I{cls.Name}") == true) lst.Add($"I{cls.Name}");
-                if (!cls.AutoGenerateInterface && cls.Interfaces != null) lst.AddRange(cls.Interfaces);
+                if (cls.Interfaces != null) lst.AddRange(cls.Interfaces);
                 return lst.Count == 0
                     ? string.Empty
                     : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
@@ -77,7 +76,6 @@ namespace ModelFramework.Objects.Extensions
                             && !m.Override
                             && !m.Operator
                             && !m.IsInterfaceMethod()
-                            && !m.SkipOnAutoGenerateInterface()
                             && string.IsNullOrEmpty(m.ExplicitInterfaceName)
                             && m.Visibility == Visibility.Public)
                         .Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes))

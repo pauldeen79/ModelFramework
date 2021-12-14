@@ -4,7 +4,6 @@ using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.Objects.Default
 {
@@ -18,8 +17,6 @@ namespace ModelFramework.Objects.Default
                      bool @static = false,
                      bool @sealed = false,
                      bool partial = false,
-                     bool autoGenerateInterface = false,
-                     InterfaceSettings autoGenerateInterfaceSettings = null,
                      bool record = false,
                      IEnumerable<string> interfaces = null,
                      IEnumerable<IClassField> fields = null,
@@ -42,8 +39,6 @@ namespace ModelFramework.Objects.Default
             Static = @static;
             Sealed = @sealed;
             Partial = partial;
-            AutoGenerateInterface = autoGenerateInterface;
-            AutoGenerateInterfaceSettings = autoGenerateInterfaceSettings;
             Record = record;
             Interfaces = new ValueCollection<string>(interfaces ?? Enumerable.Empty<string>());
             Fields = new ValueCollection<IClassField>(fields ?? Enumerable.Empty<IClassField>());
@@ -63,8 +58,6 @@ namespace ModelFramework.Objects.Default
         public bool Static  { get; }
         public bool Sealed  { get; }
         public bool Partial { get; }
-        public bool AutoGenerateInterface { get; }
-        public InterfaceSettings AutoGenerateInterfaceSettings { get; }
         public bool Record { get; }
         public ValueCollection<IMetadata> Metadata  { get; }
         public Visibility Visibility  { get; }
