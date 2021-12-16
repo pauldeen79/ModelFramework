@@ -5,7 +5,7 @@
 <# if (ViewModel.GenerateMultipleFiles)
    {
        this.GenerationEnvironment = ViewModel.StartNewFile(); #>
-<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="ViewModel.Root.CreateCodeGenerationHeader" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="ViewModel.Root" #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultUsingsTemplate" model="ViewModel.Root.Model" enumerable="false" customResolverDelegate="ResolveFromMetadata" #>
 
 namespace <#= Model.Namespace #>

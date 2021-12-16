@@ -24,6 +24,7 @@
 <#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Objects.Contracts.ITypeBase" #>
 <#@ property name="GenerateMultipleFiles" type="System.Boolean" #>
 <#@ property name="CreateCodeGenerationHeader" type="System.Boolean" #>
+<#@ property name="EnvironmentVersion" type="System.String" browsable="false" #>
 <#@ property name="BasePath" type="System.String" #>
 <#@ property name="FileNameSuffix" type="System.String" #>
 <#@ property name="EnableNullableContext" type="System.Boolean" #>
@@ -33,13 +34,13 @@
                 ViewModel.TemplateFileManager = new TemplateFileManager(b => this.GenerationEnvironment = b, () => this.GenerationEnvironment, BasePath);
                 if (!GenerateMultipleFiles)
                 { #>
-<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="CreateCodeGenerationHeader" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="this" #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultUsingsTemplate" model="Model" enumerable="false" customResolverDelegate="ResolveFromMetadata" #><#
                 }
             }
             else if (!GenerateMultipleFiles)
             { #>
-<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="CreateCodeGenerationHeader" #>
+<#@ renderChildTemplate name="CSharpClassGenerator.CodeGenerationHeaderTemplate" model="this" #>
 <#          }
             foreach (var ns in ViewModel.Namespaces)
             {
