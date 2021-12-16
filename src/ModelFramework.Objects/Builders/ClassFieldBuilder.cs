@@ -50,7 +50,7 @@ namespace ModelFramework.Objects.Builders
             Constant = default;
             DefaultValue = default;
             Metadata.Clear();
-            Visibility = default;
+            Visibility = Visibility.Private;
             Name = default;
             Attributes.Clear();
             TypeName = default;
@@ -194,6 +194,7 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
+            Visibility = Visibility.Private;
         }
         public ClassFieldBuilder(IClassField source)
         {
