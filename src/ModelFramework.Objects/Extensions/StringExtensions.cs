@@ -1,4 +1,5 @@
 ﻿using System;
+using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Contracts;
 

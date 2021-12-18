@@ -9,6 +9,7 @@
 // ------------------------------------------------------------------------------
 namespace ModelFramework.Generators.Objects
 {
+    using CrossCutting.Common.Extensions;
     using ModelFramework.Common;
     using ModelFramework.Common.Contracts;
     using ModelFramework.Common.Extensions;

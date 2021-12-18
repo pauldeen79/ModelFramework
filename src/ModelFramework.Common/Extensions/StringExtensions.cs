@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
+using CrossCutting.Common.Extensions;
 
 namespace ModelFramework.Common.Extensions
 {
@@ -283,19 +284,6 @@ namespace ModelFramework.Common.Extensions
             return fixedTypeName.Substring(open + 1, comma - open - 1);
         }
 
-        private static readonly string[] _trueKeywords = new[] { "true", "t", "1", "y", "yes", "ja", "j"};
-        private static readonly string[] _falseKeywords = new[] { "false", "f", "0", "n", "no", "nee" };
-
-        public static bool IsTrue(this string instance)
-        {
-            return instance != null && _trueKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public static bool IsFalse(this string instance)
-        {
-            return instance != null && _falseKeywords.Any(s => s.Equals(instance, StringComparison.OrdinalIgnoreCase));
-        }
-
         public static bool? ToNullableBoolean(this string instance)
         {
             return string.IsNullOrEmpty(instance)
@@ -314,56 +302,6 @@ namespace ModelFramework.Common.Extensions
             }
 
             return sb.ToString();
-        }
-
-        public static string WhenNullOrEmpty(this string instance, string whenNullOrEmpty)
-        {
-            if (string.IsNullOrEmpty(instance))
-            {
-                return whenNullOrEmpty;
-            }
-
-            return instance;
-        }
-
-        public static string WhenNullOrEmpty(this string instance, Func<string> whenNullOrEmptyDelegate)
-        {
-            if (string.IsNullOrEmpty(instance))
-            {
-                if (whenNullOrEmptyDelegate == null)
-                {
-                    throw new ArgumentNullException(nameof(whenNullOrEmptyDelegate));
-                }
-
-                return whenNullOrEmptyDelegate();
-            }
-
-            return instance;
-        }
-
-        public static string WhenNullOrWhitespace(this string instance, string whenNullOrWhiteSpace)
-        {
-            if (string.IsNullOrWhiteSpace(instance))
-            {
-                return whenNullOrWhiteSpace;
-            }
-
-            return instance;
-        }
-
-        public static string WhenNullOrWhitespace(this string instance, Func<string> whenNullOrWhiteSpaceDelegate)
-        {
-            if (string.IsNullOrWhiteSpace(instance))
-            {
-                if (whenNullOrWhiteSpaceDelegate == null)
-                {
-                    throw new ArgumentNullException(nameof(whenNullOrWhiteSpaceDelegate));
-                }
-
-                return whenNullOrWhiteSpaceDelegate();
-            }
-
-            return instance;
         }
 
         public static bool In(this string value, IEnumerable<string> values, StringComparison stringComparison)
@@ -440,30 +378,6 @@ namespace ModelFramework.Common.Extensions
 
             return token;
         }
-
-        public static bool StartsWithAny(this string instance, params string[] values)
-            => instance.StartsWithAny((IEnumerable<string>)values);
-
-        public static bool StartsWithAny(this string instance, IEnumerable<string> values)
-            => values.Any(v => instance.StartsWith(v));
-
-        public static bool StartsWithAny(this string instance, StringComparison comparisonType, params string[] values)
-            => instance.StartsWithAny(comparisonType, (IEnumerable<string>)values);
-
-        public static bool StartsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
-            => values.Any(v => instance.StartsWith(v, comparisonType));
-
-        public static bool EndsWithAny(this string instance, params string[] values)
-            => instance.EndsWithAny((IEnumerable<string>)values);
-
-        public static bool EndsWithAny(this string instance, IEnumerable<string> values)
-            => values.Any(v => instance.EndsWith(v));
-
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, params string[] values)
-            => instance.EndsWithAny(comparisonType, (IEnumerable<string>)values);
-
-        public static bool EndsWithAny(this string instance, StringComparison comparisonType, IEnumerable<string> values)
-            => values.Any(v => instance.EndsWith(v, comparisonType));
 
         public static T ParseEnum<T>(this string value, T defaultValue = default)
             where T : struct

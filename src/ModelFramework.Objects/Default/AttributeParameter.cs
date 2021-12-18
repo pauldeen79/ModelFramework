@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
+using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Contracts;
-using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Default
