@@ -7,7 +7,7 @@ using ModelFramework.Database.Default;
 
 namespace ModelFramework.Database.Builders
 {
-    public class TableFieldCheckConstraintBuilder
+    public class CheckConstraintBuilder
     {
         public string Expression { get; set; }
         public string Name { get; set; }
@@ -16,33 +16,33 @@ namespace ModelFramework.Database.Builders
         {
             return new CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
         }
-        public TableFieldCheckConstraintBuilder WithExpression(string expression)
+        public CheckConstraintBuilder WithExpression(string expression)
         {
             Expression = expression;
             return this;
         }
-        public TableFieldCheckConstraintBuilder Clear()
+        public CheckConstraintBuilder Clear()
         {
             Expression = default;
             Name = default;
             Metadata.Clear();
             return this;
         }
-        public TableFieldCheckConstraintBuilder WithName(string name)
+        public CheckConstraintBuilder WithName(string name)
         {
             Name = name;
             return this;
         }
-        public TableFieldCheckConstraintBuilder ClearMetadata()
+        public CheckConstraintBuilder ClearMetadata()
         {
             Metadata.Clear();
             return this;
         }
-        public TableFieldCheckConstraintBuilder AddMetadata(IEnumerable<MetadataBuilder> metadata)
+        public CheckConstraintBuilder AddMetadata(IEnumerable<MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
         }
-        public TableFieldCheckConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
+        public CheckConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
             if (metadata != null)
             {
@@ -53,11 +53,11 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public TableFieldCheckConstraintBuilder AddMetadata(IEnumerable<IMetadata> metadata)
+        public CheckConstraintBuilder AddMetadata(IEnumerable<IMetadata> metadata)
         {
             return AddMetadata(metadata.ToArray());
         }
-        public TableFieldCheckConstraintBuilder AddMetadata(params IMetadata[] metadata)
+        public CheckConstraintBuilder AddMetadata(params IMetadata[] metadata)
         {
             if (metadata != null)
             {
@@ -65,11 +65,11 @@ namespace ModelFramework.Database.Builders
             }
             return this;
         }
-        public TableFieldCheckConstraintBuilder()
+        public CheckConstraintBuilder()
         {
             Metadata = new List<MetadataBuilder>();
         }
-        public TableFieldCheckConstraintBuilder(ICheckConstraint source)
+        public CheckConstraintBuilder(ICheckConstraint source)
         {
             Metadata = new List<MetadataBuilder>();
 

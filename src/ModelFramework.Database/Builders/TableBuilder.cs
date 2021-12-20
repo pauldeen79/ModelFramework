@@ -18,7 +18,7 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public List<DefaultValueConstraintBuilder> DefaultValueConstraints { get; set; }
         public List<ForeignKeyConstraintBuilder> ForeignKeyConstraints { get; set; }
-        public List<TableFieldCheckConstraintBuilder> CheckConstraints { get; set; }
+        public List<CheckConstraintBuilder> CheckConstraints { get; set; }
         public ITable Build()
         {
             return new Table(Name,
@@ -303,11 +303,11 @@ namespace ModelFramework.Database.Builders
             CheckConstraints.Clear();
             return this;
         }
-        public TableBuilder AddCheckConstraints(IEnumerable<TableFieldCheckConstraintBuilder> checkConstraints)
+        public TableBuilder AddCheckConstraints(IEnumerable<CheckConstraintBuilder> checkConstraints)
         {
             return AddCheckConstraints(checkConstraints.ToArray());
         }
-        public TableBuilder AddCheckConstraints(params TableFieldCheckConstraintBuilder[] checkConstraints)
+        public TableBuilder AddCheckConstraints(params CheckConstraintBuilder[] checkConstraints)
         {
             if (checkConstraints != null)
             {
@@ -328,7 +328,7 @@ namespace ModelFramework.Database.Builders
             {
                 foreach (var itemToAdd in checkConstraints)
                 {
-                    CheckConstraints.Add(new TableFieldCheckConstraintBuilder(itemToAdd));
+                    CheckConstraints.Add(new CheckConstraintBuilder(itemToAdd));
                 }
             }
             return this;
@@ -342,7 +342,7 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             DefaultValueConstraints = new List<DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new List<ForeignKeyConstraintBuilder>();
-            CheckConstraints = new List<TableFieldCheckConstraintBuilder>();
+            CheckConstraints = new List<CheckConstraintBuilder>();
         }
         public TableBuilder(ITable source)
         {
@@ -353,7 +353,7 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             DefaultValueConstraints = new List<DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new List<ForeignKeyConstraintBuilder>();
-            CheckConstraints = new List<TableFieldCheckConstraintBuilder>();
+            CheckConstraints = new List<CheckConstraintBuilder>();
 
             FileGroupName = source.FileGroupName;
             foreach (var x in source.PrimaryKeyConstraints ?? Enumerable.Empty<IPrimaryKeyConstraint>()) PrimaryKeyConstraints.Add(new PrimaryKeyConstraintBuilder(x));
@@ -364,7 +364,7 @@ namespace ModelFramework.Database.Builders
             foreach (var x in source.Metadata ?? Enumerable.Empty<IMetadata>()) Metadata.Add(new MetadataBuilder(x));
             foreach (var x in source.DefaultValueConstraints ?? Enumerable.Empty<IDefaultValueConstraint>()) DefaultValueConstraints.Add(new DefaultValueConstraintBuilder(x));
             foreach (var x in source.ForeignKeyConstraints ?? Enumerable.Empty<IForeignKeyConstraint>()) ForeignKeyConstraints.Add(new ForeignKeyConstraintBuilder(x));
-            foreach (var x in source.CheckConstraints ?? Enumerable.Empty<ICheckConstraint>()) CheckConstraints.Add(new TableFieldCheckConstraintBuilder(x));
+            foreach (var x in source.CheckConstraints ?? Enumerable.Empty<ICheckConstraint>()) CheckConstraints.Add(new CheckConstraintBuilder(x));
         }
     }
 }
