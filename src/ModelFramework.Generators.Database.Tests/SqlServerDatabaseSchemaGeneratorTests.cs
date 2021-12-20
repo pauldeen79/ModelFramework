@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
@@ -26,7 +27,7 @@ namespace ModelFramework.Generators.Tests.Database
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true });
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+            actual.NormalizeLineEndings().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -79,7 +80,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -110,7 +111,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -118,7 +119,7 @@ SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[Table1](
 	[Field1] INT NULL
-    CONSTRAINT CHK1
+    CONSTRAINT [CHK1]
     CHECK ([Field1] BETWEEN 1 AND 10),
 	[Field2] VARCHAR(32) NULL,
 	[Field3] NUMERIC(8,2) NOT NULL
@@ -143,7 +144,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -184,7 +185,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -219,7 +220,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true});
 
             // Assert
-            actual.Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+            actual.NormalizeLineEndings().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -255,7 +256,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -288,7 +289,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -318,7 +319,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -356,7 +357,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -394,7 +395,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -429,7 +430,7 @@ GO
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"SET ANSI_NULLS ON
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO

@@ -194,9 +194,9 @@ namespace ModelFramework.Generators.Database
             if (builder != null) this.GenerationEnvironment = builder;
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
-            Write(this.ToStringHelper.ToStringWithCulture(@"    CONSTRAINT "));
+            Write(this.ToStringHelper.ToStringWithCulture(@"    CONSTRAINT ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name));
-            Write(this.ToStringHelper.ToStringWithCulture(@"
+            Write(this.ToStringHelper.ToStringWithCulture(@"]
     CHECK ("));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Expression));
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
