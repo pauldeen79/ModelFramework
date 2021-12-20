@@ -24,8 +24,8 @@ namespace ModelFramework.Database.Builders
         {
             Parameters.Clear();
             Statements.Clear();
-            Name = default;
             Metadata.Clear();
+            Name = default;
             return this;
         }
         public StoredProcedureBuilder ClearParameters()
@@ -139,11 +139,13 @@ namespace ModelFramework.Database.Builders
         {
             Parameters = new List<StoredProcedureParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
+            Statements = new List<ISqlStatementBuilder>();
         }
         public StoredProcedureBuilder(IStoredProcedure source)
         {
             Parameters = new List<StoredProcedureParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
+            Statements = new List<ISqlStatementBuilder>();
 
             if (source.Parameters != null) foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
             if (source.Statements != null) foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
