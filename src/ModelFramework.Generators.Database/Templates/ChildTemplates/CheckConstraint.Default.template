@@ -1,6 +1,6 @@
 ﻿<#@ template language="c#" #>
 <#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate" #>
 <#@ model type="ICheckConstraint" #>
-
     CONSTRAINT [<#= Model.Name #>]
     CHECK (<#= Model.Expression #>)<# if (!TemplateContext.IsLastIteration) { #>,<# } #>
+<# if (TemplateContext.GetModelFromContextByType<ITableField>() == null) { WriteLine(""); } #>

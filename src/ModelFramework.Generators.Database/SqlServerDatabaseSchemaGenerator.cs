@@ -192,8 +192,6 @@ namespace ModelFramework.Generators.Database
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
             Write(this.ToStringHelper.ToStringWithCulture(@"    CONSTRAINT ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name));
             Write(this.ToStringHelper.ToStringWithCulture(@"]
@@ -204,6 +202,8 @@ namespace ModelFramework.Generators.Database
 
             Write(this.ToStringHelper.ToStringWithCulture(@","));
             }
+
+            if (TemplateContext.GetModelFromContextByType<ITableField>() == null) { WriteLine(""); }
 
 
             if (builder != null) this.GenerationEnvironment = backup;
@@ -392,6 +392,8 @@ GO
 
             Write(this.ToStringHelper.ToStringWithCulture(@"NULL"));
             }
+
+            if (Model.CheckConstraints.Any()) { WriteLine(""); }
 
             
             RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", Model.CheckConstraints, customResolverDelegate: ResolveCheckConstraintTemplateFromMetadata);
@@ -1519,9 +1521,6 @@ GO
             
             RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate", tableEntity.DefaultValueConstraints, customResolverDelegate: ResolveFromMetadata);
 
-            
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", Model.CheckConstraints, customResolverDelegate: ResolveCheckConstraintTemplateFromMetadata);
-
 
             if (builder != null) this.GenerationEnvironment = backup;
         }
@@ -1587,7 +1586,8 @@ GO
         {
             return table.Fields.Cast<IMetadataContainer>()
                 .Concat(table.PrimaryKeyConstraints.Cast<IMetadataContainer>())
-                .Concat(table.UniqueConstraints.Cast<IMetadataContainer>());
+                .Concat(table.UniqueConstraints.Cast<IMetadataContainer>())
+                .Concat(table.CheckConstraints.Cast<IMetadataContainer>());
         }
 
 

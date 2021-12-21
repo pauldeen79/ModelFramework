@@ -98,7 +98,7 @@ GO
         }
 
         [Fact]
-        public void CanGenerateSchemaForTableWithCheckConstraint()
+        public void CanGenerateSchemaForTableWithCheckConstraintOnFieldLevel()
         {
             // Arrange
             var sut = new SqlServerDatabaseSchemaGenerator();
@@ -123,6 +123,47 @@ CREATE TABLE [dbo].[Table1](
     CHECK ([Field1] BETWEEN 1 AND 10),
 	[Field2] VARCHAR(32) NULL,
 	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+        }
+
+        [Fact]
+        public void CanGenerateSchemaForTableWithCheckContraintOnTableLevel()
+        {
+            // Arrange
+            var sut = new SqlServerDatabaseSchemaGenerator();
+            var model = new[]
+            {
+                new Schema("dbo", new[]
+                {
+                    new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.Int) }, checkConstraints: new[]
+                    {
+                        new CheckConstraint("MyCheckContraint1", "Field1 > 10"),
+                        new CheckConstraint("MyCheckContraint2", "Field2 > 20")
+                    })
+                })
+            };
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] INT NULL,
+    CONSTRAINT [MyCheckContraint1]
+    CHECK (Field1 > 10),
+    CONSTRAINT [MyCheckContraint2]
+    CHECK (Field2 > 20)
 ) ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
