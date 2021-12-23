@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using ModelFramework.Objects.CodeStatements;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.CodeStatements.Builders;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -14,14 +15,14 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesNoCodeBodyWhenGetterBodyIsEmpty()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string");
+            var model = new ClassPropertyBuilder().WithName("Name").WithTypeName("string").Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyGetterBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"get;
+            actual.NormalizeLineEndings().Should().Be(@"get;
 ");
         }
 
@@ -29,14 +30,18 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWhenGetterBodyIsFilled()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string", getterCodeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var model = new ClassPropertyBuilder()
+                .WithName("Name")
+                .WithTypeName("string")
+                .AddGetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyGetterBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"get
+            actual.NormalizeLineEndings().Should().Be(@"get
             {
                 throw new NotImplementedException();
             }

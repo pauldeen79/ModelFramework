@@ -10,9 +10,9 @@ namespace ModelFramework.Database.Default
     public record UniqueConstraint : IUniqueConstraint
     {
         public UniqueConstraint(string name,
+                                string fileGroupName,
                                 IEnumerable<IUniqueConstraintField> fields,
-                                string fileGroupName = "",
-                                IEnumerable<IMetadata>? metadata = null)
+                                IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -23,10 +23,11 @@ namespace ModelFramework.Database.Default
             {
                 throw new ArgumentException("Fields should contain at least 1 value", nameof(fields));
             }
+            
             Name = name;
             FileGroupName = fileGroupName;
             Fields = new ValueCollection<IUniqueConstraintField>(fields);
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string Name { get; }

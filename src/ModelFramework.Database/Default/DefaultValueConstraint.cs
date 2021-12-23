@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -12,7 +11,7 @@ namespace ModelFramework.Database.Default
         public DefaultValueConstraint(string fieldName,
                                       string defaultValue,
                                       string name,
-                                      IEnumerable<IMetadata>? metadata = null)
+                                      IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -32,7 +31,7 @@ namespace ModelFramework.Database.Default
             FieldName = fieldName;
             DefaultValue = defaultValue;
             Name = name;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string FieldName { get; }

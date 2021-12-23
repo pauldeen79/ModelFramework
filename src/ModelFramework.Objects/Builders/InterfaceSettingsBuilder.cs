@@ -12,7 +12,7 @@ namespace ModelFramework.Objects.Builders
         public Func<IClassMethod, bool>? MethodFilter { get; set; }
         public Func<IMetadata, bool>? MetadataFilter { get; set; }
         public Func<IAttribute, bool>? AttributeFilter { get; set; }
-        public IDictionary<string, string> ApplyGenericTypes { get; set; }
+        public IDictionary<string, string>? ApplyGenericTypes { get; set; }
         public bool ChangePropertiesToReadOnly { get; set; }
 
         public InterfaceSettings Build()
@@ -29,7 +29,7 @@ namespace ModelFramework.Objects.Builders
             MethodFilter = null;
             MetadataFilter = null;
             AttributeFilter = null;
-            ApplyGenericTypes.Clear();
+            ApplyGenericTypes = null;
             ChangePropertiesToReadOnly = false;
             return this;
         }
@@ -72,13 +72,16 @@ namespace ModelFramework.Objects.Builders
 
         public InterfaceSettingsBuilder AddApplyGenericTypes(string key, string value)
         {
+            if (ApplyGenericTypes == null)
+            {
+                ApplyGenericTypes = new Dictionary<string, string>();
+            }
             ApplyGenericTypes.Add(key, value);
             return this;
         }
 
         public InterfaceSettingsBuilder()
         {
-            ApplyGenericTypes = new Dictionary<string, string>();
         }
 
         public InterfaceSettingsBuilder(InterfaceSettings source)
@@ -87,7 +90,7 @@ namespace ModelFramework.Objects.Builders
             MethodFilter = source.MethodFilter;
             MetadataFilter = source.MetadataFilter;
             AttributeFilter = source.AttributeFilter;
-            ApplyGenericTypes = source.ApplyGenericTypes ?? new Dictionary<string, string>();
+            ApplyGenericTypes = source.ApplyGenericTypes;
             ChangePropertiesToReadOnly = source.ChangePropertiesToReadOnly;
         }
     }

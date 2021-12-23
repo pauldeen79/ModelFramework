@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -12,21 +11,21 @@ namespace ModelFramework.Objects.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public ClassMethod(string name,
                            string typeName,
-                           Visibility visibility = Visibility.Public,
-                           bool @static = false,
-                           bool @virtual = false,
-                           bool @abstract = false,
-                           bool @protected = false,
-                           bool partial = false,
-                           bool @override = false,
-                           bool extensionMethod = false,
-                           bool @operator = false,
-                           bool isNullable = false,
-                           string explicitInterfaceName = "",
-                           IEnumerable<IParameter>? parameters = null,
-                           IEnumerable<IAttribute>? attributes = null,
-                           IEnumerable<ICodeStatement>? codeStatements = null,
-                           IEnumerable<IMetadata>? metadata = null)
+                           Visibility visibility,
+                           bool @static,
+                           bool @virtual,
+                           bool @abstract,
+                           bool @protected,
+                           bool partial,
+                           bool @override,
+                           bool extensionMethod,
+                           bool @operator,
+                           bool isNullable,
+                           string explicitInterfaceName,
+                           IEnumerable<IParameter> parameters,
+                           IEnumerable<IAttribute> attributes,
+                           IEnumerable<ICodeStatement> codeStatements,
+                           IEnumerable<IMetadata> metadata)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -47,10 +46,10 @@ namespace ModelFramework.Objects.Default
             Operator = @operator;
             IsNullable = isNullable;
             ExplicitInterfaceName = explicitInterfaceName;
-            Parameters = new ValueCollection<IParameter>(parameters ?? Enumerable.Empty<IParameter>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            CodeStatements = new ValueCollection<ICodeStatement>(codeStatements ?? Enumerable.Empty<ICodeStatement>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Parameters = new ValueCollection<IParameter>(parameters);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            CodeStatements = new ValueCollection<ICodeStatement>(codeStatements);
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public bool Partial { get; }

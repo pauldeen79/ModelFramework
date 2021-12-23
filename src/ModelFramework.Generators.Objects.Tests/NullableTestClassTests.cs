@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using FluentAssertions;
 using ModelFramework.Objects.Extensions;
 using Xunit;
 
 namespace ModelFramework.Generators.Objects.Tests
 {
+    [ExcludeFromCodeCoverage]
     public class NullableTestClassTests
     {
         [Fact]

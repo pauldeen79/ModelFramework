@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Generators.Objects.Tests.Mocks;
 using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.CodeStatements;
+using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 using ModelFramework.Objects.Extensions;
@@ -628,27 +631,25 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class
-                (
-                    "MyClass",
-                    "MyNamespace",
-                    fields: GetFields(),
-                    properties: GetProperties(),
-                    methods: GetMethods(),
-                    constructors: GetConstructors(),
-                    enums: GetEnums(),
-                    subClasses: GetSubClasses(),
-                    attributes: new[]
-                    {
-                        new Attribute
-                        (
-                            "MyAttribute", new[]
-                            {
-                                new AttributeParameter(1, "Name1"), new AttributeParameter(2, "Name2")
-                            }
-                        )
-                    }
-                )
+                new ClassBuilder()
+                    .WithName("MyClass")
+                    .WithNamespace("MyNamespace")
+                    .AddFields(GetFields())
+                    .AddProperties(GetProperties())
+                    .AddMethods(GetMethods())
+                    .AddConstructors(GetConstructors())
+                    .AddEnums(GetEnums())
+                    .AddSubClasses(GetSubClasses())
+                    .AddAttributes
+                    (
+                        new AttributeBuilder()
+                            .WithName("MyAttribute")
+                            .AddParameters
+                            (
+                                new AttributeParameterBuilder().WithValue(1).WithName("Name1"),
+                                new AttributeParameterBuilder().WithValue(2).WithName("Name2")
+                            )
+                    ).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -656,7 +657,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -740,7 +741,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, null);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -765,7 +766,7 @@ using System.Text;
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -794,7 +795,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -823,7 +824,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -843,7 +844,10 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new InterfaceBuilder { Name = "IMyInterface", Namespace = "MyNamespace" }.Build()
+                new InterfaceBuilder()
+                    .WithName("IMyInterface")
+                    .WithNamespace("MyNamespace")
+                    .Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -851,7 +855,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -883,7 +887,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -904,7 +908,12 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyRecord", "MyNamespace", record: true, properties: new[] { new ClassProperty("Property1", typeof(string).FullName, hasInit: true) })
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .WithRecord()
+                    .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasInitializer())
+                    .Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -912,7 +921,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -976,7 +985,7 @@ namespace ModelFramework.Generators.Objects.Tests
             // Arrange
             var model = new[]
             {
-                new Interface("IMyInterface", "MyNamespace", partial: true)
+                new InterfaceBuilder().WithName("IMyInterface").WithNamespace("MyNamespace").WithPartial().Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -984,7 +993,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1004,11 +1013,11 @@ namespace MyNamespace
             // Arrange
             var rootTemplate = new CSharpClassGenerator();
             rootTemplate.Initialize();
-            rootTemplate.TemplateContext.Model = new Class("ParentClass", "MyNamespace");
+            rootTemplate.TemplateContext.Model = new ClassBuilder().WithName("ParentClass").WithNamespace("MyNamespace").Build();
             var sut = new CSharpClassGenerator();
             var model = new[]
             {
-                new Class("MySubClass", "MyNamespace")
+                new ClassBuilder().WithName("MySubClass").WithNamespace("MyNamespace").Build()
             };
             sut.TemplateContext = TemplateInstanceContext.CreateRootContext(rootTemplate).CreateChildContext(sut, sut.Model);
 
@@ -1016,7 +1025,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"    public class MySubClass
+            actual.NormalizeLineEndings().Should().Be(@"    public class MySubClass
     {
     }
 ");
@@ -1028,7 +1037,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", Visibility.Private)
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithVisibility(Visibility.Private).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1036,7 +1045,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1056,7 +1065,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", Visibility.Internal)
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithVisibility(Visibility.Internal).Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1064,7 +1073,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1084,7 +1093,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", @static: true)
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithStatic().Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1092,7 +1101,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1112,7 +1121,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", partial: true)
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithPartial().Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1120,7 +1129,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1140,7 +1149,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", @static: true, partial: true)
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithStatic().WithPartial().Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1148,7 +1157,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1168,7 +1177,7 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass", "MyNamespace", @sealed: true)
+                new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithSealed().Build()
             };
             var sut = new CSharpClassGenerator();
 
@@ -1176,7 +1185,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1201,34 +1210,29 @@ namespace MyNamespace
                     {
                         nameof(CSharpClassGenerator.Model), new[]
                         {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                attributes: new[]
-                                {
-                                    new Attribute
-                                    ("MyAttribute", metadata: new[]
-                                        {
-                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
+                            new ClassBuilder()
+                                .WithName("MyClass")
+                                .WithNamespace("MyNamespace")
+                                .AddAttributes
+                                (
+                                    new AttributeBuilder()
+                                        .WithName("MyAttribute")
+                                        .AddMetadata(new MetadataBuilder().WithName(Common.MetadataNames.CustomTemplateName).WithValue("MyTemplate"))
+                                ).Build()
                         }
                     }
                 }
             };
             var builder = new StringBuilder();
             sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("    [MyCustomTemplate]")) });
+            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new Action<StringBuilder>(b => b.AppendLine("    [MyCustomTemplate]")) });
 
             // Act
             sut.Render(builder);
             var actual = builder.ToString();
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1254,29 +1258,25 @@ namespace MyNamespace
                     {
                         nameof(CSharpClassGenerator.Model), new[]
                         {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                properties: new[]
-                                {
-                                    new ClassProperty
-                                    (
-                                        "MyAttribute",
-                                        "string",
-                                        metadata: new[]
-                                        {
-                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
+                            new ClassBuilder()
+                                .WithName("MyClass")
+                                .WithNamespace("MyNamespace")
+                                .AddProperties
+                                (
+                                    new ClassPropertyBuilder()
+                                        .WithName("MyAttribute")
+                                        .WithTypeName("string")
+                                        .AddMetadata
+                                        (
+                                            new MetadataBuilder().WithName(Common.MetadataNames.CustomTemplateName).WithValue("MyTemplate")
+                                        )
+                                ).Build()
                         }
                     }
                 }
             };
             sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("        public string MyCustomTemplateGeneratedProperty { get; set; }")) });
+            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new Action<StringBuilder>(b => b.AppendLine("        public string MyCustomTemplateGeneratedProperty { get; set; }")) });
             var builder = new StringBuilder();
 
             // Act
@@ -1284,7 +1284,7 @@ namespace MyNamespace
             var actual = builder.ToString();
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1310,29 +1310,25 @@ namespace MyNamespace
                     {
                         nameof(CSharpClassGenerator.Model), new[]
                         {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                methods: new[]
-                                {
-                                    new ClassMethod
-                                    (
-                                        "MyMethod",
-                                        "string",
-                                        metadata: new[]
-                                        {
-                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
+                            new ClassBuilder()
+                                .WithName("MyClass")
+                                .WithNamespace("MyNamespace")
+                                .AddMethods
+                                (
+                                    new ClassMethodBuilder()
+                                        .WithName("MyMethod")
+                                        .WithTypeName("string")
+                                        .AddMetadata
+                                        (
+                                            new MetadataBuilder().WithName(Common.MetadataNames.CustomTemplateName).WithValue("MyTemplate")
+                                        )
+                                ).Build()
                         }
                     }
                 }
             };
             sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("        public string MyCustomTemplateGeneratedMethod() { throw new NotImplementedException; }")) });
+            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new Action<StringBuilder>(b => b.AppendLine("        public string MyCustomTemplateGeneratedMethod() { throw new NotImplementedException; }")) });
             var builder = new StringBuilder();
 
             // Act
@@ -1340,7 +1336,7 @@ namespace MyNamespace
             var actual = builder.ToString();
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1366,27 +1362,23 @@ namespace MyNamespace
                     {
                         nameof(CSharpClassGenerator.Model), new[]
                         {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                constructors: new[]
-                                {
-                                    new ClassConstructor
-                                    (
-                                        metadata: new[]
-                                        {
-                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
+                            new ClassBuilder()
+                                .WithName("MyClass")
+                                .WithNamespace("MyNamespace")
+                                .AddConstructors
+                                (
+                                    new ClassConstructorBuilder()
+                                        .AddMetadata
+                                        (
+                                            new MetadataBuilder().WithName(Common.MetadataNames.CustomTemplateName).WithValue("MyTemplate")
+                                        )
+                                ).Build()
                         }
                     }
                 }
             };
             sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("        public MyClass() { throw new NotImplementedException; }")) });
+            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new Action<StringBuilder>(b => b.AppendLine("        public MyClass() { throw new NotImplementedException; }")) });
             var builder = new StringBuilder();
 
             // Act
@@ -1394,7 +1386,7 @@ namespace MyNamespace
             var actual = builder.ToString();
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1420,29 +1412,25 @@ namespace MyNamespace
                     {
                         nameof(CSharpClassGenerator.Model), new[]
                         {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                fields: new[]
-                                {
-                                    new ClassField
-                                    (
-                                        "MyField",
-                                        "string",
-                                        metadata: new[]
-                                        {
-                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
+                            new ClassBuilder()
+                                .WithName("MyClass")
+                                .WithNamespace("MyNamespace")
+                                .AddFields
+                                (
+                                    new ClassFieldBuilder()
+                                        .WithName("MyField")
+                                        .WithTypeName("string")
+                                        .AddMetadata
+                                        (
+                                            new MetadataBuilder().WithName(Common.MetadataNames.CustomTemplateName).WithValue("MyTemplate")
+                                        )
+                                ).Build()
                         }
                     }
                 }
             };
             sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("        public string myCustomFieldInjectedFromTemplate;")) });
+            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new Action<StringBuilder>(b => b.AppendLine("        public string myCustomFieldInjectedFromTemplate;")) });
             var builder = new StringBuilder();
 
             // Act
@@ -1450,7 +1438,7 @@ namespace MyNamespace
             var actual = builder.ToString();
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1476,29 +1464,30 @@ namespace MyNamespace
                     {
                         nameof(CSharpClassGenerator.Model), new[]
                         {
-                            new Class
-                            (
-                                "MyClass",
-                                "MyNamespace",
-                                enums: new[]
-                                {
-                                    new Enum
-                                    (
-                                        "MyEnum",
-                                        new[] { new EnumMember("Member1"), new EnumMember("Member2"), new EnumMember("Member3") },
-                                        metadata: new[]
-                                        {
+                            new ClassBuilder()
+                                .WithName("MyClass")
+                                .WithNamespace("MyNamespace")
+                                .AddEnums
+                                (
+                                    new EnumBuilder()
+                                        .WithName("MyEnum")
+                                        .AddMembers
+                                        (
+                                            new EnumMemberBuilder().WithName("Member1"),
+                                            new EnumMemberBuilder().WithName("Member2"),
+                                            new EnumMemberBuilder().WithName("Member3")
+                                        )
+                                        .AddMetadata
+                                        (
                                             new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
-                                        }
-                                    )
-                                }
-                            )
+                                        )
+                                ).Build()
                         }
                     }
                 }
             };
             sut.Initialize();
-            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new System.Action<StringBuilder>(b => b.AppendLine("        public enum MyEnum { One, Two, Three };")) });
+            sut.RegisterChildTemplate("MyTemplate", () => new DelegateTemplate { RenderDelegate = new Action<StringBuilder>(b => b.AppendLine("        public enum MyEnum { One, Two, Three };")) });
             var builder = new StringBuilder();
 
             // Act
@@ -1506,7 +1495,7 @@ namespace MyNamespace
             var actual = builder.ToString();
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1527,10 +1516,10 @@ namespace MyNamespace
             // Arrange
             var model = new[]
             {
-                new Class("MyClass2", "Namespace1"),
-                new Class("MyClass1", "Namespace2"),
-                new Class("MyClass2", "Namespace2"),
-                new Class("MyClass1", "Namespace1"),
+                new ClassBuilder().WithName("MyClass2").WithNamespace("Namespace1").Build(),
+                new ClassBuilder().WithName("MyClass1").WithNamespace("Namespace2").Build(),
+                new ClassBuilder().WithName("MyClass2").WithNamespace("Namespace2").Build(),
+                new ClassBuilder().WithName("MyClass1").WithNamespace("Namespace1").Build(),
             };
             var sut = new CSharpClassGenerator();
 
@@ -1538,7 +1527,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1573,8 +1562,8 @@ namespace Namespace2
             // Arrange
             var model = new[]
             {
-                new Class("MyClass1", "MyNamespace"),
-                new Class("MyClass2", "MyNamespace")
+                new ClassBuilder().WithName("MyClass1").WithNamespace("MyNamespace").Build(),
+                new ClassBuilder().WithName("MyClass2").WithNamespace("MyNamespace").Build()
             };
             var additionalParameters = new Dictionary<string, object>
             {
@@ -1589,7 +1578,7 @@ namespace Namespace2
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: additionalParameters);
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
+            actual.NormalizeLineEndings().Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
   <BasePath i:nil=""true"" />
   <Contents>
@@ -1639,18 +1628,18 @@ namespace Namespace2
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName)
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -1658,7 +1647,7 @@ namespace Namespace2
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCode);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCode);
         }
 
         [Fact]
@@ -1667,18 +1656,18 @@ namespace Namespace2
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName)
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -1686,7 +1675,7 @@ namespace Namespace2
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1751,18 +1740,18 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName)
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
             };
             var sut = new CSharpClassGenerator();
 
@@ -1770,7 +1759,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeNoWithMethod);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeNoWithMethod);
         }
 
         [Fact]
@@ -1779,16 +1768,15 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName)
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
             };
 
-            var cls = new Class
-            (
-                "MyRecord",
-                "MyNamespace",
-                properties: properties
-            );
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
+                .AddProperties(properties)
+                .Build();
 
             var model = new[]
             {
@@ -1801,7 +1789,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeWithMethodExtensionMethod);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithMethodExtensionMethod);
         }
 
         [Fact]
@@ -1810,10 +1798,10 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
-                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable().Build(),
-                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder().Build(),
-                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder().Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionToEnumerable().Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilder().Build(),
+                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder().Build()
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1833,7 +1821,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableBuilderClassCodeWithNullChecks);
+            actual.NormalizeLineEndings().Should().Be(ImmutableBuilderClassCodeWithNullChecks);
         }
 
         [Fact]
@@ -1842,7 +1830,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
                 new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable().Build(),
                 new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder().Build(),
                 new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder().Build()
@@ -1865,7 +1853,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableBuilderClassCodeWithoutNullChecks);
+            actual.NormalizeLineEndings().Should().Be(ImmutableBuilderClassCodeWithoutNullChecks);
         }
 
         [Fact]
@@ -1890,7 +1878,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1965,7 +1953,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1985,7 +1973,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2049,7 +2037,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build(),
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -2069,7 +2057,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2135,7 +2123,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.WithIsNullable().Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable().Build(),
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -2155,7 +2143,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2223,7 +2211,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder { Name = "Property1", TypeName = typeof(string).FullName }.Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -2243,7 +2231,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2326,25 +2314,25 @@ namespace MyNamespace
             var sut = new CSharpClassGenerator();
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName)
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyPoco",
-                    "MyNamespace",
-                    properties: properties
-                ).ToPocoClass()
+                new ClassBuilder()
+                    .WithName("MyPoco")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToPocoClass()
             };
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(PocoClassCode);
+            actual.NormalizeLineEndings().Should().Be(PocoClassCode);
         }
 
         [Fact]
@@ -2353,23 +2341,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(IEnumerable<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IEnumerable<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -2377,7 +2361,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeWithIEnumerable);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithIEnumerable);
         }
 
         [Fact]
@@ -2386,23 +2370,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(ICollection<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(ICollection<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -2410,7 +2390,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeWithCollection);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithCollection);
         }
 
         [Fact]
@@ -2419,23 +2399,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(Collection<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(Collection<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -2443,7 +2419,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeWithCollection);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithCollection);
         }
 
         [Fact]
@@ -2452,23 +2428,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(IList<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IList<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -2476,7 +2448,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeWithCollection);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithCollection);
         }
 
         [Fact]
@@ -2485,23 +2457,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(List<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecord",
-                    "MyNamespace",
-                    properties: properties
-                ).ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
+                new ClassBuilder()
+                    .WithName("MyRecord")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToImmutableClass(new ImmutableClassSettings(createWithMethod: true))
             };
             var sut = new CSharpClassGenerator();
 
@@ -2509,7 +2477,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeWithCollection);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithCollection);
         }
 
         [Fact]
@@ -2530,23 +2498,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(ICollection<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(ICollection<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyPoco",
-                    "MyNamespace",
-                    properties: properties
-                ).ToPocoClass()
+                new ClassBuilder()
+                    .WithName("MyPoco")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToPocoClass()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2554,7 +2518,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2591,23 +2555,19 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassProperty("Property1", typeof(string).FullName),
-                new ClassProperty("Property2", typeof(bool).FullName),
-                new ClassProperty
-                (
-                    "Property3",
-                    typeof(IEnumerable<string>).FullName
-                )
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IEnumerable<string>)).Build()
             };
 
             var model = new[]
             {
-                new Class
-                (
-                    "MyRecordBuilder",
-                    "MyNamespace",
-                    properties: properties
-                ).ToObservableClass()
+                new ClassBuilder()
+                    .WithName("MyRecordBuilder")
+                    .WithNamespace("MyNamespace")
+                    .AddProperties(properties)
+                    .Build()
+                    .ToObservableClass()
             };
             var sut = new CSharpClassGenerator();
 
@@ -2615,7 +2575,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2702,7 +2662,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(ImmutableClassCodeNoWithMethod);
+            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeNoWithMethod);
         }
 
         [Fact]
@@ -2722,7 +2682,7 @@ namespace MyNamespace
             var sut = new CSharpClassGenerator();
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
 
-            actual.Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
         [Fact]
@@ -2744,7 +2704,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
 
             // Assert
-            actual.Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
         [Fact]
@@ -2760,7 +2720,7 @@ namespace MyNamespace
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, new[] { builder });
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2863,7 +2823,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
 
             // Assert
-            actual.Should().Be(@"using System;
+            actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -2942,34 +2902,66 @@ namespace MyNamespace
 
         private static IEnumerable<IClass> GetSubClasses()
         {
-            yield return new Class("MySubClass", "MyNamespace", fields: GetFields(), properties: GetProperties(), subClasses: new[] { new Class("MySubSubClass", "MyNamespace", subClasses: new[] { new Class("MySubSubSubClass", "MyNamespace") }) });
+            yield return new ClassBuilder()
+                .WithName("MySubClass")
+                .WithNamespace("MyNamespace")
+                .AddFields(GetFields())
+                .AddProperties(GetProperties())
+                .AddSubClasses
+                (
+                    new ClassBuilder()
+                        .WithName("MySubSubClass")
+                        .WithNamespace("MyNamespace")
+                        .AddSubClasses(new ClassBuilder().WithName("MySubSubSubClass").WithNamespace("MyNamespace"))
+                ).Build();
         }
 
         private static IEnumerable<IEnum> GetEnums()
         {
-            yield return new Enum("MyEnum", new[] { new EnumMember("Member1", 1), new EnumMember("Member2", 2) });
+            yield return new EnumBuilder()
+                .WithName("MyEnum")
+                .AddMembers
+                (
+                    new EnumMemberBuilder().WithName("Member1").WithValue(1),
+                    new EnumMemberBuilder().WithName("Member2").WithValue(2)
+                ).Build();
         }
 
         private static IEnumerable<IClassConstructor> GetConstructors()
         {
-            yield return new ClassConstructor(parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            yield return new ClassConstructorBuilder()
+                .AddParameters
+                (
+                    new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)).Build(),
+                    new ParameterBuilder().WithName("Parameter2").WithType(typeof(int)).Build()
+                ).AddCodeStatements
+                (
+                    new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+                ).Build();
         }
 
         private static IEnumerable<IClassMethod> GetMethods()
         {
-            yield return new ClassMethod("Method1", string.Empty, parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            yield return new ClassMethodBuilder()
+                .WithName("Method1")
+                .AddParameters
+                (
+                    new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)).Build(),
+                    new ParameterBuilder().WithName("Parameter2").WithType(typeof(int)).Build()
+                ).AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
         }
 
         private static IEnumerable<IClassProperty> GetProperties()
         {
-            yield return new ClassProperty("MyProperty1", typeof(string).FullName);
-            yield return new ClassProperty("MyProperty2", typeof(int).FullName, attributes: new[] { new Attribute("MyAttribute") });
+            yield return new ClassPropertyBuilder().WithName("MyProperty1").WithType(typeof(string)).Build();
+            yield return new ClassPropertyBuilder().WithName("MyProperty2").WithType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
         }
 
         private static IEnumerable<IClassField> GetFields()
         {
-            yield return new ClassField("_myField1", typeof(string).FullName);
-            yield return new ClassField("_myField2", typeof(string).FullName);
+            yield return new ClassFieldBuilder().WithName("_myField1").WithType(typeof(string)).Build();
+            yield return new ClassFieldBuilder().WithName("_myField2").WithType(typeof(string)).Build();
         }
     }
 

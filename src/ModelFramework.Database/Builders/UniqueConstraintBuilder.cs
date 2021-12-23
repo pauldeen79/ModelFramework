@@ -15,7 +15,7 @@ namespace ModelFramework.Database.Builders
         public List<UniqueConstraintFieldBuilder> Fields { get; set; }
         public IUniqueConstraint Build()
         {
-            return new UniqueConstraint(Name, Fields.Select(x => x.Build()), FileGroupName, Metadata.Select(x => x.Build()));
+            return new UniqueConstraint(Name, FileGroupName, Fields.Select(x => x.Build()), Metadata.Select(x => x.Build()));
         }
         public UniqueConstraintBuilder Clear()
         {

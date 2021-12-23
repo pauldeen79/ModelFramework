@@ -53,7 +53,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         {
             Metadata = new List<MetadataBuilder>();
 
-            Metadata.AddRange(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             Statement = source.Statement;
 
             return this;

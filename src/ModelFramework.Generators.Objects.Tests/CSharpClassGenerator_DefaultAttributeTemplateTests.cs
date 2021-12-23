@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -14,7 +14,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesAttributeCode()
         {
             // Arrange
-            var model = new Attribute("Attribute1");
+            var model = new AttributeBuilder().WithName("Attribute1").Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
 
             // Act
@@ -29,7 +29,10 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeForAttributeWithParameterWithNameAndValue()
         {
             // Arrange
-            var model = new Attribute("Attribute1", new[] { new AttributeParameter("Value", "Name") });
+            var model = new AttributeBuilder()
+                .WithName("Attribute1")
+                .AddParameters(new AttributeParameterBuilder().WithValue("Value").WithName("Name"))
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
 
             // Act
@@ -44,7 +47,9 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeForAttributeWithParameterWithValueOnly()
         {
             // Arrange
-            var model = new Attribute("Attribute1", new[] { new AttributeParameter("Value") });
+            var model = new AttributeBuilder().WithName("Attribute1")
+                .AddParameters(new AttributeParameterBuilder().WithValue("Value"))
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
 
             // Act

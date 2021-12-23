@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -11,10 +10,10 @@ namespace ModelFramework.Objects.Default
     {
         public Parameter(string name,
                          string typeName,
-                         object? defaultValue = null,
-                         bool isNullable = false,
-                         IEnumerable<IAttribute>? attributes = null,
-                         IEnumerable<IMetadata>? metadata = null)
+                         object? defaultValue,
+                         bool isNullable,
+                         IEnumerable<IAttribute> attributes,
+                         IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -30,8 +29,8 @@ namespace ModelFramework.Objects.Default
             TypeName = typeName;
             DefaultValue = defaultValue;
             IsNullable = isNullable;
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string TypeName { get; }

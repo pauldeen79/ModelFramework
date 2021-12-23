@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -10,8 +9,8 @@ namespace ModelFramework.Database.Default
     public record IndexField : IIndexField
     {
         public IndexField(string name,
-                          bool isDescending = false,
-                          IEnumerable<IMetadata>? metadata = null)
+                          bool isDescending,
+                          IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -20,7 +19,7 @@ namespace ModelFramework.Database.Default
 
             Name = name;
             IsDescending = isDescending;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public bool IsDescending { get; }

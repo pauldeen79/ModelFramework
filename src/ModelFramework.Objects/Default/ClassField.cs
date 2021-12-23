@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -12,19 +11,19 @@ namespace ModelFramework.Objects.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public ClassField(string name,
                           string typeName,
-                          bool @static = false,
-                          bool constant = false,
-                          bool readOnly = false,
-                          bool @virtual = false,
-                          bool @abstract = false,
-                          bool @protected = false,
-                          bool @override = false,
-                          bool @event = false,
-                          bool isNullable = false,
-                          object? defaultValue = null,
-                          Visibility visibility = Visibility.Private,
-                          IEnumerable<IMetadata>? metadata = null,
-                          IEnumerable<IAttribute>? attributes = null)
+                          bool @static,
+                          bool constant,
+                          bool readOnly,
+                          bool @virtual,
+                          bool @abstract,
+                          bool @protected,
+                          bool @override,
+                          bool @event,
+                          bool isNullable,
+                          object? defaultValue,
+                          Visibility visibility,
+                          IEnumerable<IMetadata> metadata,
+                          IEnumerable<IAttribute> attributes)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -50,8 +49,8 @@ namespace ModelFramework.Objects.Default
             IsNullable = isNullable;
             DefaultValue = defaultValue;
             Visibility = visibility;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
+            Attributes = new ValueCollection<IAttribute>(attributes);
         }
 
         public bool Static { get; }

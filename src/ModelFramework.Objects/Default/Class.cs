@@ -12,22 +12,22 @@ namespace ModelFramework.Objects.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public Class(string name,
                      string @namespace,
-                     Visibility visibility = Visibility.Public,
-                     string baseClass = "",
-                     bool @static = false,
-                     bool @sealed = false,
-                     bool partial = false,
-                     bool record = false,
-                     IEnumerable<string>? interfaces = null,
-                     IEnumerable<IClassField>? fields = null,
-                     IEnumerable<IClassProperty>? properties = null,
-                     IEnumerable<IClassMethod>? methods = null,
-                     IEnumerable<IClassConstructor>? constructors = null,
-                     IEnumerable<IMetadata>? metadata = null,
-                     IEnumerable<IAttribute>? attributes = null,
-                     IEnumerable<IClass>? subClasses = null,
-                     IEnumerable<IEnum>? enums = null,
-                     IEnumerable<string>? genericTypeArguments = null)
+                     Visibility visibility,
+                     string baseClass,
+                     bool @static,
+                     bool @sealed,
+                     bool partial,
+                     bool record,
+                     IEnumerable<string> interfaces,
+                     IEnumerable<IClassField> fields,
+                     IEnumerable<IClassProperty> properties,
+                     IEnumerable<IClassMethod> methods,
+                     IEnumerable<IClassConstructor> constructors,
+                     IEnumerable<IMetadata> metadata,
+                     IEnumerable<IAttribute> attributes,
+                     IEnumerable<IClass> subClasses,
+                     IEnumerable<IEnum> enums,
+                     IEnumerable<string> genericTypeArguments)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -43,16 +43,16 @@ namespace ModelFramework.Objects.Default
             Sealed = @sealed;
             Partial = partial;
             Record = record;
-            Interfaces = new ValueCollection<string>(interfaces ?? Enumerable.Empty<string>());
-            Fields = new ValueCollection<IClassField>(fields ?? Enumerable.Empty<IClassField>());
-            Properties = new ValueCollection<IClassProperty>(properties ?? Enumerable.Empty<IClassProperty>());
-            Methods = new ValueCollection<IClassMethod>(methods ?? Enumerable.Empty<IClassMethod>());
-            Constructors = new ValueCollection<IClassConstructor>(constructors ?? Enumerable.Empty<IClassConstructor>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
-            SubClasses = new ValueCollection<IClass>(subClasses ?? Enumerable.Empty<IClass>());
-            Enums = new ValueCollection<IEnum>(enums ?? Enumerable.Empty<IEnum>());
-            GenericTypeArguments = new ValueCollection<string>(genericTypeArguments ?? Enumerable.Empty<string>());
+            Interfaces = new ValueCollection<string>(interfaces);
+            Fields = new ValueCollection<IClassField>(fields);
+            Properties = new ValueCollection<IClassProperty>(properties);
+            Methods = new ValueCollection<IClassMethod>(methods);
+            Constructors = new ValueCollection<IClassConstructor>(constructors);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            Metadata = new ValueCollection<IMetadata>(metadata);
+            SubClasses = new ValueCollection<IClass>(subClasses);
+            Enums = new ValueCollection<IEnum>(enums);
+            GenericTypeArguments = new ValueCollection<string>(genericTypeArguments);
         }
 
         public ValueCollection<string> Interfaces { get; }
@@ -74,6 +74,9 @@ namespace ModelFramework.Objects.Default
         public string BaseClass { get; }
         public ValueCollection<string> GenericTypeArguments { get; }
 
-        public override string ToString() => !string.IsNullOrEmpty(Namespace) ? $"{Namespace}.{Name}" : Name;
+        public override string ToString()
+            => !string.IsNullOrEmpty(Namespace)
+                ? $"{Namespace}.{Name}"
+                : Name;
     }
 }

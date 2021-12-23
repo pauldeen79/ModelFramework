@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Contracts;
@@ -11,12 +10,12 @@ namespace ModelFramework.Objects.Default
     public record AttributeParameter : IAttributeParameter
     {
         public AttributeParameter(object value,
-                                 string name = "",
-                                 IEnumerable<IMetadata>? metadata = null)
+                                  string name,
+                                  IEnumerable<IMetadata> metadata)
         {
             Name = name;
             Value = value ?? throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be null");
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public object Value { get; }

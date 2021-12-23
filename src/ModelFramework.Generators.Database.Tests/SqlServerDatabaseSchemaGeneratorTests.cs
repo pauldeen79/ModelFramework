@@ -631,8 +631,8 @@ GO
                         new ViewOrderByFieldBuilder().WithName("table1.Field2")
                     ).AddGroupByFields
                     (
-                        new ViewField("Field1"),
-                        new ViewField("Field2")
+                        new ViewFieldBuilder().WithName("Field1"),
+                        new ViewFieldBuilder().WithName("Field2")
                     )
                 ).Build()
             };

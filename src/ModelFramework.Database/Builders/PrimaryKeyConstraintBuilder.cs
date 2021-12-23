@@ -16,8 +16,8 @@ namespace ModelFramework.Database.Builders
         public IPrimaryKeyConstraint Build()
         {
             return new PrimaryKeyConstraint(Name,
-                                            Fields.Select(x => x.Build()),
                                             FileGroupName,
+                                            Fields.Select(x => x.Build()),
                                             Metadata.Select(x => x.Build()));
         }
         public PrimaryKeyConstraintBuilder Clear()

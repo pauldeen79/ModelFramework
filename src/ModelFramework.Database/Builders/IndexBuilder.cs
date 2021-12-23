@@ -18,8 +18,8 @@ namespace ModelFramework.Database.Builders
         {
             return new Index(Name,
                              Unique,
-                             Fields.Select(x => x.Build()),
                              FileGroupName,
+                             Fields.Select(x => x.Build()),
                              Metadata.Select(x => x.Build()));
         }
         public IndexBuilder Clear()

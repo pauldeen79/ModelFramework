@@ -5,6 +5,7 @@ using FluentAssertions;
 using ModelFramework.Generators.Objects;
 using ModelFramework.Generators.Shared;
 using ModelFramework.Generators.Tests.POC;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
@@ -25,7 +26,7 @@ namespace ModelFramework.Generators.Tests
         {
             // Arrange
             var Session = new Dictionary<string, object> { { "GenerateMultipleFiles", GenerateMultipleFiles } };
-            var model = new[] { new Class("MyClass", "MyNamespace") };
+            var model = new[] { new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build() };
             var template = new ModelFrameworkGeneratorBase();
             var templateFileManager = new TemplateFileManager(b => template.GenerationEnvironment = b, () => template.GenerationEnvironment, BasePath);
 
@@ -47,7 +48,7 @@ namespace ModelFramework.Generators.Tests
         {
             // Arrange
             var Session = new Dictionary<string, object> { { "GenerateMultipleFiles", GenerateMultipleFiles } };
-            var model = new[] { new Class("MyClass", "MyNamespace") };
+            var model = new[] { new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build() };
             var multipleContentBuilder = new MultipleContentBuilder(BasePath);
 
             // Act

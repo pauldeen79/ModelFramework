@@ -773,7 +773,7 @@ namespace ModelFramework.Objects.Extensions
                                     property.Attributes,
                                     property.GetterCodeStatements,
                                     property.SetterCodeStatements,
-                                    null);
+                                    Enumerable.Empty<ICodeStatement>());
 
         private static IClassMethod ChangeArgumentsAndReturnType(IClassMethod method, IDictionary<string, string>? applyGenericTypes)
         {

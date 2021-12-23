@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using ModelFramework.Objects.CodeStatements;
+using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -16,8 +16,8 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBody()
         {
             // Arrange
-            var model = new ClassConstructor(codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
-            var rootModel = new Class("MyClass", "MyNamespace");
+            var model = new ClassConstructorBuilder().AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")).Build();
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -35,8 +35,14 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeStatements()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();"), new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .AddCodeStatements
+                (
+                    new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"),
+                    new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+                )
+                .Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -55,8 +61,8 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesNoCodeBodyOnInterface()
         {
             // Arrange
-            var rootModel = new Interface("MyClass", "MyNamespace");
-            var model = new ClassConstructor(codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder().AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")).Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -71,8 +77,16 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesParameters()
         {
             // Arrange
-            var rootModel = new Interface("MyClass", "MyNamespace");
-            var model = new ClassConstructor(codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") }, parameters: new[] { new Parameter("parameter1", "string"), new Parameter("parameter2", "int"), new Parameter("parameter3", "bool") });
+            var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder().AddCodeStatements
+            (
+                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+            ).AddParameters
+            (
+                new ParameterBuilder().WithName("parameter1").WithTypeName("string"),
+                new ParameterBuilder().WithName("parameter2").WithTypeName("int"),
+                new ParameterBuilder().WithName("parameter3").WithTypeName("bool")
+            ).Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -87,8 +101,15 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesAttributes()
         {
             // Arrange
-            var rootModel = new Interface("MyClass", "MyNamespace");
-            var model = new ClassConstructor(codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") }, attributes: new[] { new Attribute("Attribute1"), new Attribute("Attribute2"), new Attribute("Attribute3") });
+            var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .AddAttributes
+                (
+                new AttributeBuilder().WithName("Attribute1"),
+                new AttributeBuilder().WithName("Attribute2"),
+                new AttributeBuilder().WithName("Attribute3")
+                ).Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -106,8 +127,11 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesInternalCtor()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(Visibility.Internal, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .WithVisibility(Visibility.Internal)
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -125,8 +149,11 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesPrivateCtor()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(Visibility.Private, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .WithVisibility(Visibility.Private)
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -144,8 +171,11 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesStaticCtor()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(@static: true, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .WithStatic()
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -163,8 +193,11 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesVirtualCtor()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(@virtual: true, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .WithVirtual()
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -182,8 +215,8 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesAbstractCtor()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(@abstract: true);
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder().WithAbstract().Build();
             var sut = CreateSut(model, rootModel);
 
             // Act
@@ -198,8 +231,12 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesProtectedCtor()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassConstructor(Visibility.Private, @protected: true, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder()
+                .WithVisibility(Visibility.Private)
+                .WithProtected()
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = CreateSut(model, rootModel);
 
             // Act

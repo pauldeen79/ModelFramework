@@ -1,6 +1,9 @@
-﻿namespace ModelFramework.Generators.Objects.Tests
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ModelFramework.Generators.Objects.Tests
 {
 #nullable enable
+    [ExcludeFromCodeCoverage]
     public class NullableTestClass
     {
         public string? GetValue(string? input)

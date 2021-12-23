@@ -22,8 +22,8 @@ namespace ModelFramework.Database.Builders
         public ITable Build()
         {
             return new Table(Name,
-                             Fields.Select(x => x.Build()),
                              FileGroupName,
+                             Fields.Select(x => x.Build()),
                              PrimaryKeyConstraints.Select(x => x.Build()),
                              UniqueConstraints.Select(x => x.Build()),
                              DefaultValueConstraints.Select(x => x.Build()),

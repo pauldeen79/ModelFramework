@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.CodeStatements.Builders;
@@ -13,7 +12,7 @@ namespace ModelFramework.Objects.CodeStatements
         public ValueCollection<IMetadata> Metadata { get; }
         public string Statement { get; }
 
-        public LiteralCodeStatement(string statement, IEnumerable<IMetadata>? metadata = null)
+        public LiteralCodeStatement(string statement, IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(statement))
             {
@@ -21,7 +20,7 @@ namespace ModelFramework.Objects.CodeStatements
             }
 
             Statement = statement;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public ICodeStatementBuilder CreateBuilder()

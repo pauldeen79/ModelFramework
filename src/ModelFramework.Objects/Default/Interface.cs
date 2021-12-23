@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -12,14 +11,14 @@ namespace ModelFramework.Objects.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public Interface(string name,
                          string @namespace,
-                         Visibility visibility = Visibility.Public,
-                         bool partial = false,
-                         IEnumerable<string>? interfaces = null,
-                         IEnumerable<IClassProperty>? properties = null,
-                         IEnumerable<IClassMethod>? methods = null,
-                         IEnumerable<IMetadata>? metadata = null,
-                         IEnumerable<IAttribute>? attributes = null,
-                         IEnumerable<string>? genericTypeArguments = null)
+                         Visibility visibility,
+                         bool partial,
+                         IEnumerable<string> interfaces,
+                         IEnumerable<IClassProperty> properties,
+                         IEnumerable<IClassMethod> methods,
+                         IEnumerable<IMetadata> metadata,
+                         IEnumerable<IAttribute> attributes,
+                         IEnumerable<string> genericTypeArguments)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -31,12 +30,12 @@ namespace ModelFramework.Objects.Default
             Namespace = @namespace;
             Visibility = visibility;
             Partial = partial;
-            Interfaces = new ValueCollection<string>(interfaces ?? Enumerable.Empty<string>());
-            Properties = new ValueCollection<IClassProperty>(properties ?? Enumerable.Empty<IClassProperty>());
-            Methods = new ValueCollection<IClassMethod>(methods ?? Enumerable.Empty<IClassMethod>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            GenericTypeArguments = new ValueCollection<string>(genericTypeArguments ?? Enumerable.Empty<string>());
+            Interfaces = new ValueCollection<string>(interfaces);
+            Properties = new ValueCollection<IClassProperty>(properties);
+            Methods = new ValueCollection<IClassMethod>(methods);
+            Metadata = new ValueCollection<IMetadata>(metadata);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            GenericTypeArguments = new ValueCollection<string>(genericTypeArguments);
         }
 
         public string Namespace { get; }
@@ -50,6 +49,9 @@ namespace ModelFramework.Objects.Default
         public ValueCollection<IAttribute> Attributes { get; }
         public ValueCollection<string> GenericTypeArguments { get; }
 
-        public override string ToString() => !string.IsNullOrEmpty(Namespace) ? $"{Namespace}.{Name}" : Name;
+        public override string ToString()
+            => !string.IsNullOrEmpty(Namespace)
+                ? $"{Namespace}.{Name}"
+                : Name;
     }
 }

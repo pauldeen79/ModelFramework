@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.Contracts;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -13,7 +14,12 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWithoutDefaultValueWhenNotSupplied()
         {
             // Arrange
-            var model = new ClassField("PropertyChanged", "PropertyChangedEventHandler", @event: true, visibility: ModelFramework.Objects.Contracts.Visibility.Public);
+            var model = new ClassFieldBuilder()
+                .WithName("PropertyChanged")
+                .WithTypeName("PropertyChangedEventHandler")
+                .WithEvent()
+                .WithVisibility(Visibility.Public)
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
 
             // Act
@@ -28,7 +34,10 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyForEvent()
         {
             // Arrange
-            var model = new ClassField("Name", "string");
+            var model = new ClassFieldBuilder()
+                .WithName("Name")
+                .WithType(typeof(string))
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
 
             // Act
@@ -43,7 +52,11 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWithDefaultValueWhenSupplied()
         {
             // Arrange
-            var model = new ClassField("Name", "string", defaultValue: "Hello world");
+            var model = new ClassFieldBuilder()
+                .WithName("Name")
+                .WithType(typeof(string))
+                .WithDefaultValue("Hello world")
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
 
             // Act
@@ -58,7 +71,15 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesAttributes()
         {
             // Arrange
-            var model = new ClassField("Name", "string", attributes: new[] { new Attribute("Attribute1"), new Attribute("Attribute2"), new Attribute("Attribute3") });
+            var model = new ClassFieldBuilder()
+                .WithName("Name")
+                .WithType(typeof(string))
+                .AddAttributes
+                (
+                    new AttributeBuilder().WithName("Attribute1"),
+                    new AttributeBuilder().WithName("Attribute2"),
+                    new AttributeBuilder().WithName("Attribute3")
+                ).Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
 
             // Act
@@ -76,7 +97,11 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesNullableField()
         {
             // Arrange
-            var model = new ClassField("Test", typeof(string).FullName, isNullable: true);
+            var model = new ClassFieldBuilder()
+                .WithName("Test")
+                .WithType(typeof(string))
+                .WithIsNullable()
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
 
             // Act

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -12,15 +11,15 @@ namespace ModelFramework.Database.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public TableField(string name,
                           string type,
-                          bool isRequired = false,
-                          bool isIdentity = false,
-                          byte? numericPrecision = null,
-                          byte? numericScale = null,
-                          int? stringLength = null,
-                          string stringCollation = "",
-                          bool? isStringMaxLength = null,
-                          IEnumerable<ICheckConstraint>? checkConstraints = null,
-                          IEnumerable<IMetadata>? metadata = null)
+                          bool isRequired,
+                          bool isIdentity,
+                          byte? numericPrecision,
+                          byte? numericScale,
+                          int? stringLength,
+                          string stringCollation,
+                          bool isStringMaxLength,
+                          IEnumerable<ICheckConstraint> checkConstraints,
+                          IEnumerable<IMetadata> metadata)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -42,8 +41,8 @@ namespace ModelFramework.Database.Default
             StringLength = stringLength;
             StringCollation = stringCollation;
             IsStringMaxLength = isStringMaxLength;
-            CheckConstraints = new ValueCollection<ICheckConstraint>(checkConstraints ?? Enumerable.Empty<ICheckConstraint>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            CheckConstraints = new ValueCollection<ICheckConstraint>(checkConstraints);
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string Type { get; }
@@ -53,7 +52,7 @@ namespace ModelFramework.Database.Default
         public byte? NumericScale { get; }
         public int? StringLength { get; }
         public string StringCollation { get; }
-        public bool? IsStringMaxLength { get; }
+        public bool IsStringMaxLength { get; }
         public string Name { get; }
         public ValueCollection<ICheckConstraint> CheckConstraints { get; }
         public ValueCollection<IMetadata> Metadata { get; }

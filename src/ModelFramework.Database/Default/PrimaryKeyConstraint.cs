@@ -10,11 +10,15 @@ namespace ModelFramework.Database.Default
     public record PrimaryKeyConstraint : IPrimaryKeyConstraint
     {
         public PrimaryKeyConstraint(string name,
+                                    string fileGroupName,
                                     IEnumerable<IPrimaryKeyConstraintField> fields,
-                                    string fileGroupName = "",
-                                    IEnumerable<IMetadata>? metadata = null)
+                                    IEnumerable<IMetadata> metadata)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
             if (!fields.Any())
             {
                 throw new ArgumentException("Fields should contain at least 1 value", nameof(fields));
@@ -23,7 +27,7 @@ namespace ModelFramework.Database.Default
             Name = name;
             FileGroupName = fileGroupName;
             Fields = new ValueCollection<IPrimaryKeyConstraintField>(fields);
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string Name { get; }

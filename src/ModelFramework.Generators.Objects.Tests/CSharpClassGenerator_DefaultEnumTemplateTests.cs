@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -14,7 +14,14 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBody()
         {
             // Arrange
-            var model = new Enum("MyEnum", new[] { new EnumMember("Member1"), new EnumMember("Member2"), new EnumMember("Member3") });
+            var model = new EnumBuilder()
+                .WithName("MyEnum")
+                .AddMembers
+                (
+                    new EnumMemberBuilder().WithName("Member1"),
+                    new EnumMemberBuilder().WithName("Member2"),
+                    new EnumMemberBuilder().WithName("Member3")
+                ).Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultEnumTemplate>(model);
 
             // Act
@@ -34,7 +41,17 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesAttributes()
         {
             // Arrange
-            var model = new Enum("MyEnum", new[] { new EnumMember("Member1"), new EnumMember("Member2"), new EnumMember("Member3") }, attributes: new[] { new Attribute("Attribute1"), new Attribute("Attribute2"), new Attribute("Attribute3") });
+            var model = new EnumBuilder().WithName("MyEnum").AddMembers
+            (
+                new EnumMemberBuilder().WithName("Member1"),
+                new EnumMemberBuilder().WithName("Member2"),
+                new EnumMemberBuilder().WithName("Member3")
+            ).AddAttributes
+            (
+                new AttributeBuilder().WithName("Attribute1"),
+                new AttributeBuilder().WithName("Attribute2"),
+                new AttributeBuilder().WithName("Attribute3"))
+            .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultEnumTemplate>(model);
 
             // Act
@@ -57,7 +74,14 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesInternalEnum()
         {
             // Arrange
-            var model = new Enum("MyEnum", new[] { new EnumMember("Member1"), new EnumMember("Member2"), new EnumMember("Member3") }, Visibility.Internal);
+            var model = new EnumBuilder()
+                .WithName("MyEnum")
+                .AddMembers
+                (
+                    new EnumMemberBuilder().WithName("Member1"), 
+                    new EnumMemberBuilder().WithName("Member2"),
+                    new EnumMemberBuilder().WithName("Member3")
+                ).WithVisibility(Visibility.Internal).Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultEnumTemplate>(model);
 
             // Act

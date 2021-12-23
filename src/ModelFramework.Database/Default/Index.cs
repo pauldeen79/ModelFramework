@@ -11,9 +11,9 @@ namespace ModelFramework.Database.Default
     {
         public Index(string name,
                      bool unique,
+                     string fileGroupName,
                      IEnumerable<IIndexField> fields,
-                     string fileGroupName = "",
-                     IEnumerable<IMetadata>? metadata = null)
+                     IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -29,7 +29,7 @@ namespace ModelFramework.Database.Default
             Unique = unique;
             FileGroupName = fileGroupName;
             Fields = new ValueCollection<IIndexField>(fields);
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public ValueCollection<IIndexField> Fields { get; }

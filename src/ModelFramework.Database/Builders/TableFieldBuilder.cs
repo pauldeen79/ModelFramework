@@ -16,7 +16,7 @@ namespace ModelFramework.Database.Builders
         public byte? NumericScale { get; set; }
         public int? StringLength { get; set; }
         public string StringCollation { get; set; }
-        public bool? IsStringMaxLength { get; set; }
+        public bool IsStringMaxLength { get; set; }
         public string Name { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
         public List<CheckConstraintBuilder> CheckConstraints { get; set; }
@@ -84,7 +84,7 @@ namespace ModelFramework.Database.Builders
             StringCollation = stringCollation;
             return this;
         }
-        public TableFieldBuilder WithIsStringMaxLength(bool? isStringMaxLength = true)
+        public TableFieldBuilder WithIsStringMaxLength(bool isStringMaxLength = true)
         {
             IsStringMaxLength = isStringMaxLength;
             return this;

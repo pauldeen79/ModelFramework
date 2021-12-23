@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -9,17 +8,17 @@ namespace ModelFramework.Objects.Default
     public record ClassConstructor : IClassConstructor
     {
 #pragma warning disable S107 // Methods should not have too many parameters
-        public ClassConstructor(Visibility visibility = Visibility.Public,
-                                bool @static = false,
-                                bool @virtual = false,
-                                bool @abstract = false,
-                                bool @protected = false,
-                                bool @override = false,
-                                string chainCall = "",
-                                IEnumerable<IParameter>? parameters = null,
-                                IEnumerable<IAttribute>? attributes = null,
-                                IEnumerable<ICodeStatement>? codeStatements = null,
-                                IEnumerable<IMetadata>? metadata = null)
+        public ClassConstructor(Visibility visibility,
+                                bool @static,
+                                bool @virtual,
+                                bool @abstract,
+                                bool @protected,
+                                bool @override,
+                                string chainCall,
+                                IEnumerable<IParameter> parameters,
+                                IEnumerable<IAttribute> attributes,
+                                IEnumerable<ICodeStatement> codeStatements,
+                                IEnumerable<IMetadata> metadata)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Visibility = visibility;
@@ -29,10 +28,10 @@ namespace ModelFramework.Objects.Default
             Protected = @protected;
             Override = @override;
             ChainCall = chainCall;
-            Parameters = new ValueCollection<IParameter>(parameters ?? Enumerable.Empty<IParameter>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            CodeStatements = new ValueCollection<ICodeStatement>(codeStatements ?? Enumerable.Empty<ICodeStatement>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Parameters = new ValueCollection<IParameter>(parameters);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            CodeStatements = new ValueCollection<ICodeStatement>(codeStatements);
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
         public ValueCollection<IMetadata> Metadata { get; }
         public bool Static { get; }

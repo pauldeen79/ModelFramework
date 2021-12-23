@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -12,25 +11,25 @@ namespace ModelFramework.Objects.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public ClassProperty(string name,
                              string typeName,
-                             bool @static = false,
-                             bool @virtual = false,
-                             bool @abstract = false,
-                             bool @protected = false,
-                             bool @override = false,
-                             bool hasGetter = true,
-                             bool hasSetter = true,
-                             bool hasInit = false,
-                             bool isNullable = false,
-                             Visibility visibility = Visibility.Public,
-                             Visibility? getterVisibility = null,
-                             Visibility? setterVisibility = null,
-                             Visibility? initVisibility = null,
-                             string explicitInterfaceName = "",
-                             IEnumerable<IMetadata>? metadata = null,
-                             IEnumerable<IAttribute>? attributes = null,
-                             IEnumerable<ICodeStatement>? getterCodeStatements = null,
-                             IEnumerable<ICodeStatement>? setterCodeStatements = null,
-                             IEnumerable<ICodeStatement>? initializerCodeStatements = null)
+                             bool @static,
+                             bool @virtual,
+                             bool @abstract,
+                             bool @protected,
+                             bool @override,
+                             bool hasGetter,
+                             bool hasSetter,
+                             bool hasInit,
+                             bool isNullable,
+                             Visibility visibility,
+                             Visibility? getterVisibility,
+                             Visibility? setterVisibility,
+                             Visibility? initVisibility,
+                             string explicitInterfaceName,
+                             IEnumerable<IMetadata> metadata,
+                             IEnumerable<IAttribute> attributes,
+                             IEnumerable<ICodeStatement> getterCodeStatements,
+                             IEnumerable<ICodeStatement> setterCodeStatements,
+                             IEnumerable<ICodeStatement> initializerCodeStatements)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -59,11 +58,11 @@ namespace ModelFramework.Objects.Default
             SetterVisibility = setterVisibility;
             InitializerVisibility = initVisibility;
             ExplicitInterfaceName = explicitInterfaceName;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            GetterCodeStatements = new ValueCollection<ICodeStatement>(getterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
-            SetterCodeStatements = new ValueCollection<ICodeStatement>(setterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
-            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initializerCodeStatements ?? Enumerable.Empty<ICodeStatement>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            GetterCodeStatements = new ValueCollection<ICodeStatement>(getterCodeStatements);
+            SetterCodeStatements = new ValueCollection<ICodeStatement>(setterCodeStatements);
+            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initializerCodeStatements);
         }
 
         public bool Static { get; }

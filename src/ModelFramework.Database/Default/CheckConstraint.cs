@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -11,7 +10,7 @@ namespace ModelFramework.Database.Default
     {
         public CheckConstraint(string name,
                                string expression,
-                               IEnumerable<IMetadata>? metadata = null)
+                               IEnumerable<IMetadata> metadata)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -25,7 +24,7 @@ namespace ModelFramework.Database.Default
 
             Name = name;
             Expression = expression;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string Expression { get; }
