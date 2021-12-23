@@ -10,12 +10,15 @@ namespace ModelFramework.Database.Default
     public record Schema : ISchema
     {
         public Schema(string name,
-                      IEnumerable<ITable> tables = null,
-                      IEnumerable<IStoredProcedure> storedProcedures = null,
-                      IEnumerable<IView> views = null,
-                      IEnumerable<IMetadata> metadata = null)
+                      IEnumerable<ITable>? tables = null,
+                      IEnumerable<IStoredProcedure>? storedProcedures = null,
+                      IEnumerable<IView>? views = null,
+                      IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Tables = new ValueCollection<ITable>(tables ?? Enumerable.Empty<ITable>());

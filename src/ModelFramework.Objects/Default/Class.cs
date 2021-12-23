@@ -13,24 +13,27 @@ namespace ModelFramework.Objects.Default
         public Class(string name,
                      string @namespace,
                      Visibility visibility = Visibility.Public,
-                     string baseClass = null,
+                     string baseClass = "",
                      bool @static = false,
                      bool @sealed = false,
                      bool partial = false,
                      bool record = false,
-                     IEnumerable<string> interfaces = null,
-                     IEnumerable<IClassField> fields = null,
-                     IEnumerable<IClassProperty> properties = null,
-                     IEnumerable<IClassMethod> methods = null,
-                     IEnumerable<IClassConstructor> constructors = null,
-                     IEnumerable<IMetadata> metadata = null,
-                     IEnumerable<IAttribute> attributes = null,
-                     IEnumerable<IClass> subClasses = null,
-                     IEnumerable<IEnum> enums = null,
-                     IEnumerable<string> genericTypeArguments = null)
+                     IEnumerable<string>? interfaces = null,
+                     IEnumerable<IClassField>? fields = null,
+                     IEnumerable<IClassProperty>? properties = null,
+                     IEnumerable<IClassMethod>? methods = null,
+                     IEnumerable<IClassConstructor>? constructors = null,
+                     IEnumerable<IMetadata>? metadata = null,
+                     IEnumerable<IAttribute>? attributes = null,
+                     IEnumerable<IClass>? subClasses = null,
+                     IEnumerable<IEnum>? enums = null,
+                     IEnumerable<string>? genericTypeArguments = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Namespace = @namespace;

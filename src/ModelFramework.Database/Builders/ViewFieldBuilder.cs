@@ -26,11 +26,11 @@ namespace ModelFramework.Database.Builders
         }
         public ViewFieldBuilder Clear()
         {
-            SourceSchemaName = default;
-            SourceObjectName = default;
-            Expression = default;
-            Alias = default;
-            Name = default;
+            SourceSchemaName = string.Empty;
+            SourceObjectName = string.Empty;
+            Expression = string.Empty;
+            Alias = string.Empty;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -70,12 +70,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -85,14 +82,16 @@ namespace ModelFramework.Database.Builders
         }
         public ViewFieldBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ViewFieldBuilder()
         {
+            SourceSchemaName = string.Empty;
+            SourceObjectName = string.Empty;
+            Expression = string.Empty;
+            Alias = string.Empty;
+            Name = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public ViewFieldBuilder(IViewField source)
@@ -104,7 +103,7 @@ namespace ModelFramework.Database.Builders
             Expression = source.Expression;
             Alias = source.Alias;
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

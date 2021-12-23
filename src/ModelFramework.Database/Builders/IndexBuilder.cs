@@ -26,8 +26,8 @@ namespace ModelFramework.Database.Builders
         {
             Fields.Clear();
             Unique = default;
-            Name = default;
-            FileGroupName = default;
+            Name = string.Empty;
+            FileGroupName = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -42,12 +42,9 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder AddFields(params IndexFieldBuilder[] fields)
         {
-            if (fields != null)
+            foreach (var itemToAdd in fields)
             {
-                foreach (var itemToAdd in fields)
-                {
-                    Fields.Add(itemToAdd);
-                }
+                Fields.Add(itemToAdd);
             }
             return this;
         }
@@ -57,16 +54,13 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder AddFields(params IndexField[] fields)
         {
-            if (fields != null)
+            foreach (var itemToAdd in fields)
             {
-                foreach (var itemToAdd in fields)
-                {
-                    Fields.Add(new IndexFieldBuilder(itemToAdd));
-                }
+                Fields.Add(new IndexFieldBuilder(itemToAdd));
             }
             return this;
         }
-        public IndexBuilder WithUnique(bool unique)
+        public IndexBuilder WithUnique(bool unique = true)
         {
             Unique = unique;
             return this;
@@ -92,12 +86,9 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -112,6 +103,8 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder()
         {
+            FileGroupName = string.Empty;
+            Name = string.Empty;
             Fields = new List<IndexFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
         }
@@ -120,11 +113,11 @@ namespace ModelFramework.Database.Builders
             Fields = new List<IndexFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
 
-            if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
+            foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
             Unique = source.Unique;
             Name = source.Name;
             FileGroupName = source.FileGroupName;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

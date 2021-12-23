@@ -247,12 +247,12 @@ namespace MyNamespace
             return _wrappedInstance.MyFunction(parameter);
         }
 
-        public override System.String ToString()
+        public override System.String? ToString()
         {
             return _wrappedInstance.ToString();
         }
 
-        public override System.Boolean Equals(System.Object obj)
+        public override System.Boolean Equals(System.Object? obj)
         {
             return _wrappedInstance.Equals(obj);
         }

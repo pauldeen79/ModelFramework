@@ -8,10 +8,10 @@ namespace ModelFramework.Database.Default
 {
     public record ViewCondition : IViewCondition
     {
-        public ViewCondition(string combination,
-                             string expression,
-                             string fileGroupName = null,
-                             IEnumerable<IMetadata> metadata = null)
+        public ViewCondition(string expression,
+                             string combination,
+                             string fileGroupName = "",
+                             IEnumerable<IMetadata>? metadata = null)
         {
             Combination = combination;
             Expression = expression;

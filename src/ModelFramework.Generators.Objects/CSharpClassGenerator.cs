@@ -3108,7 +3108,7 @@ namespace ModelFramework.Generators.Objects
                 (
                     Model
                     .DefaultWhenNull()
-                    .SelectMany(classItem => classItem.Metadata.GetMetadataStringValues(ModelFramework.Objects.MetadataNames.CustomUsing))
+                    .SelectMany(classItem => classItem.Metadata.GetStringValues(ModelFramework.Objects.MetadataNames.CustomUsing))
                 )
                 .OrderBy(ns => ns)
                 .Distinct();

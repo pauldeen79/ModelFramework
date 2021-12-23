@@ -15,7 +15,7 @@ namespace ModelFramework.Generators.Tests.POC
             get;
         }
 
-        public ImmutableClass With(System.String property1 = default, System.Boolean property2 = default)
+        public ImmutableClass With(System.String? property1 = default, System.Boolean property2 = default)
         {
             return new ImmutableClass
             (

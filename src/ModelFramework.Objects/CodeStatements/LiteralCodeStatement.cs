@@ -13,9 +13,12 @@ namespace ModelFramework.Objects.CodeStatements
         public ValueCollection<IMetadata> Metadata { get; }
         public string Statement { get; }
 
-        public LiteralCodeStatement(string statement, IEnumerable<IMetadata> metadata = null)
+        public LiteralCodeStatement(string statement, IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(statement)) throw new ArgumentOutOfRangeException(nameof(statement), "Statement cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(statement))
+            {
+                throw new ArgumentOutOfRangeException(nameof(statement), "Statement cannot be null or whitespace");
+            }
 
             Statement = statement;
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());

@@ -17,17 +17,17 @@ namespace ModelFramework.Database.Builders
         public IViewSource Build()
         {
             return new ViewSource(Name,
+                                  SourceObjectName,
                                   Alias,
                                   SourceSchemaName,
-                                  SourceObjectName,
                                   Metadata.Select(x => x.Build()));
         }
         public ViewSourceBuilder Clear()
         {
-            Alias = default;
-            Name = default;
-            SourceSchemaName = default;
-            SourceObjectName = default;
+            Alias = string.Empty;
+            Name = string.Empty;
+            SourceSchemaName = string.Empty;
+            SourceObjectName = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -62,12 +62,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewSourceBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -77,14 +74,15 @@ namespace ModelFramework.Database.Builders
         }
         public ViewSourceBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ViewSourceBuilder()
         {
+            Alias = string.Empty;
+            Name = string.Empty;
+            SourceSchemaName = string.Empty;
+            SourceObjectName = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public ViewSourceBuilder(IViewSource source)
@@ -95,7 +93,7 @@ namespace ModelFramework.Database.Builders
             Name = source.Name;
             SourceSchemaName = source.SourceSchemaName;
             SourceObjectName = source.SourceObjectName;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

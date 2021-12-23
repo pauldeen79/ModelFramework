@@ -14,7 +14,7 @@ namespace ModelFramework.Database.Builders
         public List<MetadataBuilder> Metadata { get; set; }
         public ICheckConstraint Build()
         {
-            return new CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
+            return new CheckConstraint(Name, Expression, Metadata.Select(x => x.Build()));
         }
         public CheckConstraintBuilder WithExpression(string expression)
         {
@@ -23,8 +23,8 @@ namespace ModelFramework.Database.Builders
         }
         public CheckConstraintBuilder Clear()
         {
-            Expression = default;
-            Name = default;
+            Expression = string.Empty;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -44,12 +44,9 @@ namespace ModelFramework.Database.Builders
         }
         public CheckConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -59,14 +56,13 @@ namespace ModelFramework.Database.Builders
         }
         public CheckConstraintBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public CheckConstraintBuilder()
         {
+            Expression = string.Empty;
+            Name = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public CheckConstraintBuilder(ICheckConstraint source)
@@ -75,7 +71,7 @@ namespace ModelFramework.Database.Builders
 
             Expression = source.Expression;
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add( new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

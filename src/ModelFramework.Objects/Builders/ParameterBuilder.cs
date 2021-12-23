@@ -14,7 +14,7 @@ namespace ModelFramework.Objects.Builders
         public List<AttributeBuilder> Attributes { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
         public string Name { get; set; }
-        public object DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
         public bool IsNullable { get; set; }
         public IParameter Build()
         {
@@ -26,10 +26,10 @@ namespace ModelFramework.Objects.Builders
         }
         public ParameterBuilder Clear()
         {
-            TypeName = default;
+            TypeName = string.Empty;
             Attributes.Clear();
             Metadata.Clear();
-            Name = default;
+            Name = string.Empty;
             DefaultValue = default;
             IsNullable = default;
             return this;
@@ -55,10 +55,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ParameterBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public ParameterBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -67,10 +64,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ParameterBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public ParameterBuilder ClearMetadata()
@@ -84,10 +78,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ParameterBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ParameterBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -96,10 +87,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ParameterBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ParameterBuilder WithName(string name)
@@ -107,7 +95,7 @@ namespace ModelFramework.Objects.Builders
             Name = name;
             return this;
         }
-        public ParameterBuilder WithDefaultValue(object defaultValue)
+        public ParameterBuilder WithDefaultValue(object? defaultValue)
         {
             DefaultValue = defaultValue;
             return this;
@@ -121,12 +109,14 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new List<AttributeBuilder>();
             Metadata = new List<MetadataBuilder>();
+            Name = string.Empty;
+            TypeName = string.Empty;
         }
         public ParameterBuilder(IParameter source)
         {
             TypeName = source.TypeName;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Name = source.Name;
             DefaultValue = source.DefaultValue;
             IsNullable = source.IsNullable;

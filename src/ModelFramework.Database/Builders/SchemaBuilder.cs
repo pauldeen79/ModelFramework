@@ -27,7 +27,7 @@ namespace ModelFramework.Database.Builders
             Tables.Clear();
             StoredProcedures.Clear();
             Views.Clear();
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -42,12 +42,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddTables(params TableBuilder[] tables)
         {
-            if (tables != null)
+            foreach (var itemToAdd in tables)
             {
-                foreach (var itemToAdd in tables)
-                {
-                    Tables.Add(itemToAdd);
-                }
+                Tables.Add(itemToAdd);
             }
             return this;
         }
@@ -57,12 +54,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddTables(params ITable[] tables)
         {
-            if (tables != null)
+            foreach (var itemToAdd in tables)
             {
-                foreach (var itemToAdd in tables)
-                {
-                    Tables.Add(new TableBuilder(itemToAdd));
-                }
+                Tables.Add(new TableBuilder(itemToAdd));
             }
             return this;
         }
@@ -77,12 +71,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddStoredProcedures(params StoredProcedureBuilder[] storedProcedures)
         {
-            if (storedProcedures != null)
+            foreach (var itemToAdd in storedProcedures)
             {
-                foreach (var itemToAdd in storedProcedures)
-                {
-                    StoredProcedures.Add(itemToAdd);
-                }
+                StoredProcedures.Add(itemToAdd);
             }
             return this;
         }
@@ -92,12 +83,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddStoredProcedures(params IStoredProcedure[] storedProcedures)
         {
-            if (storedProcedures != null)
+            foreach (var itemToAdd in storedProcedures)
             {
-                foreach (var itemToAdd in storedProcedures)
-                {
-                    StoredProcedures.Add(new StoredProcedureBuilder(itemToAdd));
-                }
+                StoredProcedures.Add(new StoredProcedureBuilder(itemToAdd));
             }
             return this;
         }
@@ -112,12 +100,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddViews(params ViewBuilder[] views)
         {
-            if (views != null)
+            foreach (var itemToAdd in views)
             {
-                foreach (var itemToAdd in views)
-                {
-                    Views.Add(itemToAdd);
-                }
+                Views.Add(itemToAdd);
             }
             return this;
         }
@@ -127,12 +112,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddViews(params IView[] views)
         {
-            if (views != null)
+            foreach (var itemToAdd in views)
             {
-                foreach (var itemToAdd in views)
-                {
-                    Views.Add(new ViewBuilder(itemToAdd));
-                }
+                Views.Add(new ViewBuilder(itemToAdd));
             }
             return this;
         }
@@ -152,12 +134,9 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -167,14 +146,12 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public SchemaBuilder()
         {
+            Name = string.Empty;
             Tables = new List<TableBuilder>();
             StoredProcedures = new List<StoredProcedureBuilder>();
             Views = new List<ViewBuilder>();
@@ -187,11 +164,11 @@ namespace ModelFramework.Database.Builders
             Views = new List<ViewBuilder>();
             Metadata = new List<MetadataBuilder>();
 
-            if (source.Tables != null) foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
-            if (source.StoredProcedures != null) foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
-            if (source.Views != null) foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
+            foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
+            foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
+            foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

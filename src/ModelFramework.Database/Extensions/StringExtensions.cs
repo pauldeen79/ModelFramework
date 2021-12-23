@@ -18,7 +18,7 @@ namespace ModelFramework.Database.Extensions
             => instance != null && _databaseStringTypes.Any(x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
         public static string FormatAsDatabaseIdentifier(this string instance)
-            => instance?
+            => instance
                 .Replace("[", string.Empty)
                 .Replace("]", string.Empty);
     }

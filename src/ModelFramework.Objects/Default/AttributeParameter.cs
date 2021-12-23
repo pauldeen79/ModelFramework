@@ -10,7 +10,9 @@ namespace ModelFramework.Objects.Default
 {
     public record AttributeParameter : IAttributeParameter
     {
-        public AttributeParameter(object value, string name = null, IEnumerable<IMetadata> metadata = null)
+        public AttributeParameter(object value,
+                                 string name = "",
+                                 IEnumerable<IMetadata>? metadata = null)
         {
             Name = name;
             Value = value ?? throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be null");

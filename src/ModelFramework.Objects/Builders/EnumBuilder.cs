@@ -26,7 +26,7 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes.Clear();
             Members.Clear();
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             Visibility = default;
             return this;
@@ -42,10 +42,7 @@ namespace ModelFramework.Objects.Builders
         }
         public EnumBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public EnumBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -54,10 +51,7 @@ namespace ModelFramework.Objects.Builders
         }
         public EnumBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public EnumBuilder ClearMembers()
@@ -71,10 +65,7 @@ namespace ModelFramework.Objects.Builders
         }
         public EnumBuilder AddMembers(params EnumMemberBuilder[] members)
         {
-            if (members != null)
-            {
-                Members.AddRange(members);
-            }
+            Members.AddRange(members);
             return this;
         }
         public EnumBuilder AddMembers(IEnumerable<IEnumMember> members)
@@ -83,10 +74,7 @@ namespace ModelFramework.Objects.Builders
         }
         public EnumBuilder AddMembers(params IEnumMember[] members)
         {
-            if (members != null)
-            {
-                Members.AddRange(members.Select(x => new EnumMemberBuilder(x)));
-            }
+            Members.AddRange(members.Select(x => new EnumMemberBuilder(x)));
             return this;
         }
         public EnumBuilder WithName(string name)
@@ -105,10 +93,7 @@ namespace ModelFramework.Objects.Builders
         }
         public EnumBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public EnumBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -117,10 +102,7 @@ namespace ModelFramework.Objects.Builders
         }
         public EnumBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public EnumBuilder WithVisibility(Visibility visibility)
@@ -133,13 +115,14 @@ namespace ModelFramework.Objects.Builders
             Attributes = new List<AttributeBuilder>();
             Members = new List<EnumMemberBuilder>();
             Metadata = new List<MetadataBuilder>();
+            Name = string.Empty;
         }
         public EnumBuilder(IEnum source)
         {
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Members = new List<EnumMemberBuilder>(source.Members?.Select(x => new EnumMemberBuilder(x)) ?? Enumerable.Empty<EnumMemberBuilder>());
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+            Members = new List<EnumMemberBuilder>(source.Members.Select(x => new EnumMemberBuilder(x)));
             Name = source.Name;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Visibility = source.Visibility;
         }
     }

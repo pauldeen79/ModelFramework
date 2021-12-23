@@ -17,13 +17,21 @@ namespace ModelFramework.Database.Default
                           byte? numericPrecision = null,
                           byte? numericScale = null,
                           int? stringLength = null,
-                          string stringCollation = null,
+                          string stringCollation = "",
                           bool? isStringMaxLength = null,
-                          IEnumerable<ICheckConstraint> checkConstraints = null,
-                          IEnumerable<IMetadata> metadata = null)
+                          IEnumerable<ICheckConstraint>? checkConstraints = null,
+                          IEnumerable<IMetadata>? metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                throw new ArgumentOutOfRangeException(nameof(type), "Type cannot be null or whitespace");
+            }
 
             Name = name;
             Type = type;
@@ -38,7 +46,7 @@ namespace ModelFramework.Database.Default
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
         }
 
-        public string /*TableFieldType*/ Type { get; }
+        public string Type { get; }
         public bool IsIdentity { get; }
         public bool IsRequired { get; }
         public byte? NumericPrecision { get; }

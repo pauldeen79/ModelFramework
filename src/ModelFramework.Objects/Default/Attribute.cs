@@ -9,9 +9,14 @@ namespace ModelFramework.Objects.Default
 {
     public record Attribute : IAttribute
     {
-        public Attribute(string name, IEnumerable<IAttributeParameter> parameters = null, IEnumerable<IMetadata> metadata = null)
+        public Attribute(string name,
+                         IEnumerable<IAttributeParameter>? parameters = null,
+                         IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Parameters = new ValueCollection<IAttributeParameter>(parameters ?? Enumerable.Empty<IAttributeParameter>());

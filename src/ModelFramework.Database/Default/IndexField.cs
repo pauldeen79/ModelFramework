@@ -9,9 +9,14 @@ namespace ModelFramework.Database.Default
 {
     public record IndexField : IIndexField
     {
-        public IndexField(string name, bool isDescending = false, IEnumerable<IMetadata> metadata = null)
+        public IndexField(string name,
+                          bool isDescending = false,
+                          IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             IsDescending = isDescending;

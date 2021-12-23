@@ -25,7 +25,7 @@ namespace ModelFramework.Database.Builders
             Parameters.Clear();
             Statements.Clear();
             Metadata.Clear();
-            Name = default;
+            Name = string.Empty;
             return this;
         }
         public StoredProcedureBuilder ClearParameters()
@@ -44,12 +44,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddParameters(params StoredProcedureParameterBuilder[] parameters)
         {
-            if (parameters != null)
+            foreach (var itemToAdd in parameters)
             {
-                foreach (var itemToAdd in parameters)
-                {
-                    Parameters.Add(itemToAdd);
-                }
+                Parameters.Add(itemToAdd);
             }
             return this;
         }
@@ -59,12 +56,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddParameters(params IStoredProcedureParameter[] parameters)
         {
-            if (parameters != null)
+            foreach (var itemToAdd in parameters)
             {
-                foreach (var itemToAdd in parameters)
-                {
-                    Parameters.Add(new StoredProcedureParameterBuilder(itemToAdd));
-                }
+                Parameters.Add(new StoredProcedureParameterBuilder(itemToAdd));
             }
             return this;
         }
@@ -74,12 +68,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddStatements(params ISqlStatementBuilder[] statements)
         {
-            if (statements != null)
+            foreach (var itemToAdd in statements)
             {
-                foreach (var itemToAdd in statements)
-                {
-                    Statements.Add(itemToAdd);
-                }
+                Statements.Add(itemToAdd);
             }
             return this;
         }
@@ -89,12 +80,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddStatements(params ISqlStatement[] statements)
         {
-            if (statements != null)
+            foreach (var itemToAdd in statements)
             {
-                foreach (var itemToAdd in statements)
-                {
-                    Statements.Add(itemToAdd.CreateBuilder());
-                }
+                Statements.Add(itemToAdd.CreateBuilder());
             }
             return this;
         }
@@ -114,12 +102,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -129,14 +114,12 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public StoredProcedureBuilder()
         {
+            Name = string.Empty;
             Parameters = new List<StoredProcedureParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
             Statements = new List<ISqlStatementBuilder>();
@@ -147,10 +130,10 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
             Statements = new List<ISqlStatementBuilder>();
 
-            if (source.Parameters != null) foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
-            if (source.Statements != null) foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
+            foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
+            foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

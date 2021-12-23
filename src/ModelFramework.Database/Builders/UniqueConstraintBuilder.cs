@@ -15,13 +15,13 @@ namespace ModelFramework.Database.Builders
         public List<UniqueConstraintFieldBuilder> Fields { get; set; }
         public IUniqueConstraint Build()
         {
-            return new UniqueConstraint(Name, FileGroupName, Fields.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new UniqueConstraint(Name, Fields.Select(x => x.Build()), FileGroupName, Metadata.Select(x => x.Build()));
         }
         public UniqueConstraintBuilder Clear()
         {
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
-            FileGroupName = default;
+            FileGroupName = string.Empty;
             Fields.Clear();
             return this;
         }
@@ -41,12 +41,9 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -56,10 +53,7 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public UniqueConstraintBuilder WithFileGroupName(string fileGroupName)
@@ -78,12 +72,9 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintBuilder AddFields(params UniqueConstraintFieldBuilder[] fields)
         {
-            if (fields != null)
+            foreach (var itemToAdd in fields)
             {
-                foreach (var itemToAdd in fields)
-                {
-                    Fields.Add(itemToAdd);
-                }
+                Fields.Add(itemToAdd);
             }
             return this;
         }
@@ -93,17 +84,16 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintBuilder AddFields(params IUniqueConstraintField[] fields)
         {
-            if (fields != null)
+            foreach (var itemToAdd in fields)
             {
-                foreach (var itemToAdd in fields)
-                {
-                    Fields.Add(new UniqueConstraintFieldBuilder(itemToAdd));
-                }
+                Fields.Add(new UniqueConstraintFieldBuilder(itemToAdd));
             }
             return this;
         }
         public UniqueConstraintBuilder()
         {
+            Name = string.Empty;
+            FileGroupName = string.Empty;
             Metadata = new List<MetadataBuilder>();
             Fields = new List<UniqueConstraintFieldBuilder>();
         }
@@ -113,9 +103,9 @@ namespace ModelFramework.Database.Builders
             Fields = new List<UniqueConstraintFieldBuilder>();
 
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             FileGroupName = source.FileGroupName;
-            if (source.Fields != null) foreach (var x in source.Fields) Fields.Add(new UniqueConstraintFieldBuilder(x));
+            foreach (var x in source.Fields) Fields.Add(new UniqueConstraintFieldBuilder(x));
         }
     }
 }

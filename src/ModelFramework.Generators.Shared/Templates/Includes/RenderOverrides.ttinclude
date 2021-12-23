@@ -3,7 +3,7 @@
         {
             if (model is IMetadataContainer && base.GetChildTemplate(templateName, model, true, customResolverDelegate) == null)
             {
-                return ((IMetadataContainer)model).Metadata.GetMetadataValues<object>(templateName) ?? base.GetChildTemplate(templateName, model, silentlyContinueOnError, customResolverDelegate);
+                return ((IMetadataContainer)model).Metadata.GetValues<object>(templateName) ?? base.GetChildTemplate(templateName, model, silentlyContinueOnError, customResolverDelegate);
             }
             return base.GetChildTemplate(templateName, model, silentlyContinueOnError, customResolverDelegate);
         }
@@ -16,41 +16,23 @@
                 var first = true;
                 foreach (var item in metadata)
                 {
-                    var contextualLiteral = item as ContextualLiteral;
-                    if (contextualLiteral != null)
+                    if (first)
                     {
-                        var str = contextualLiteral.ToString(template, model);
-                        if (str == null) continue;
-                        if (first)
-                        {
-                            first = false;
-                        }
-                        else
-                        {
-                            GenerationEnvironment.AppendLine();
-                        }
-                        GenerationEnvironment.Append(str);
+                        first = false;
                     }
                     else
                     {
-                        if (first)
-                        {
-                            first = false;
-                        }
-                        else
-                        {
-                            GenerationEnvironment.AppendLine();
-                        }
+                        GenerationEnvironment.AppendLine();
+                    }
 
-                        var literal = item as Literal;
-                        if (literal != null)
-                        {
-                            GenerationEnvironment.Append(literal.Value);
-                        }
-                        else
-                        {
-                            GenerationEnvironment.Append(item.ToString());
-                        }
+                    var literal = item as Literal;
+                    if (literal != null)
+                    {
+                        GenerationEnvironment.Append(literal.Value);
+                    }
+                    else
+                    {
+                        GenerationEnvironment.Append(item.ToString());
                     }
                 }
                 return;

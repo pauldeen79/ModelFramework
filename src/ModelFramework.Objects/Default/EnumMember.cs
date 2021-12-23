@@ -8,9 +8,9 @@ namespace ModelFramework.Objects.Default
 {
     public record EnumMember : IEnumMember
     {
-        public EnumMember(string name, object value = null,
-                          IEnumerable<IAttribute> attributes = null,
-                          IEnumerable<IMetadata> metadata = null)
+        public EnumMember(string name, object? value = null,
+                          IEnumerable<IAttribute>? attributes = null,
+                          IEnumerable<IMetadata>? metadata = null)
         {
             Name = name;
             Value = value;
@@ -20,7 +20,7 @@ namespace ModelFramework.Objects.Default
 
         public ValueCollection<IAttribute> Attributes { get; }
         public string Name { get; }
-        public object Value { get; }
+        public object? Value { get; }
         public ValueCollection<IMetadata> Metadata { get; }
 
         public override string ToString() => Value != null ? $"[{Name}] = [{Value}]" : Name;

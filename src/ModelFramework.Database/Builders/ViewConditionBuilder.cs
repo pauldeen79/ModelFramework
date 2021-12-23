@@ -15,17 +15,17 @@ namespace ModelFramework.Database.Builders
         public string FileGroupName { get; set; }
         public IViewCondition Build()
         {
-            return new ViewCondition(Combination,
-                                     Expression,
+            return new ViewCondition(Expression,
+                                     Combination,
                                      FileGroupName,
                                      Metadata.Select(x => x.Build()));
         }
         public ViewConditionBuilder Clear()
         {
-            Expression = default;
-            Combination = default;
+            Expression = string.Empty;
+            Combination = string.Empty;
             Metadata.Clear();
-            FileGroupName = default;
+            FileGroupName = string.Empty;
             return this;
         }
         public ViewConditionBuilder WithExpression(string expression)
@@ -49,12 +49,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewConditionBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -64,10 +61,7 @@ namespace ModelFramework.Database.Builders
         }
         public ViewConditionBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ViewConditionBuilder WithFileGroupName(string fileGroupName)
@@ -77,6 +71,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewConditionBuilder()
         {
+            Expression = string.Empty;
+            FileGroupName = string.Empty;
+            Combination = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public ViewConditionBuilder(IViewCondition source)
@@ -85,7 +82,7 @@ namespace ModelFramework.Database.Builders
 
             Expression = source.Expression;
             Combination = source.Combination;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
             FileGroupName = source.FileGroupName;
         }
     }

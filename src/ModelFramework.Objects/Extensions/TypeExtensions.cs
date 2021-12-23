@@ -20,12 +20,12 @@ namespace ModelFramework.Objects.Extensions
             => new ClassBuilder
             {
                 Name = instance.Name,
-                Namespace = instance.FullName.GetNamespaceWithDefault(null),
+                Namespace = instance.FullName.GetNamespaceWithDefault(string.Empty),
                 Visibility = instance.IsPublic
                     ? Visibility.Public
                     : Visibility.Private,
-                BaseClass = instance.BaseType == null || instance.BaseType == typeof(object)
-                    ? null
+                BaseClass = instance.BaseType == typeof(object)
+                    ? string.Empty
                     : instance.BaseType.FullName,
                 Static = instance.IsAbstract && instance.IsSealed,
                 Sealed = instance.IsSealed,
@@ -144,20 +144,19 @@ namespace ModelFramework.Objects.Extensions
             });
 
         private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes)
-            => attributes.OfType<System.Attribute>().Select(x => new AttributeBuilder
-            {
-                Name = x.GetType().FullName
-            });
+            => attributes.OfType<Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
+                                                            && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
+                         .Select(x => new AttributeBuilder { Name = x.GetType().FullName });
 
         private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
             => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));
 
-        private static IEnumerable<ClassPropertyBuilder> GeneratedProperties(Type type, Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null)
+        private static IEnumerable<ClassPropertyBuilder> GeneratedProperties(Type type, Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
             => type.GetPropertiesRecursively()
                    .Where(p => p.GetGetMethod() != null && p.GetSetMethod() == null)
                    .Select(p => CreateMockProperty(p, propertyCodeStatementsDelegate));
 
-        private static IEnumerable<ClassMethodBuilder> GeneratedMethods(Type type, Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null)
+        private static IEnumerable<ClassMethodBuilder> GeneratedMethods(Type type, Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
             => type.GetMethodsRecursively()
                    .Where(m => !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
                    .Select(m => CreateMockMethod(m, methodCodeStatementsDelegate));
@@ -188,7 +187,7 @@ namespace ModelFramework.Objects.Extensions
             };
         }
 
-        private static ClassPropertyBuilder CreateMockProperty(PropertyInfo propertyInfo, Func<PropertyInfo, IEnumerable<ICodeStatement>> propertyCodeStatementsDelegate = null)
+        private static ClassPropertyBuilder CreateMockProperty(PropertyInfo propertyInfo, Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
             => new ClassPropertyBuilder
             {
                 Name = propertyInfo.Name,
@@ -198,7 +197,7 @@ namespace ModelFramework.Objects.Extensions
                     .Select(x => x.CreateBuilder()).ToList()
             };
 
-        private static ClassMethodBuilder CreateMockMethod(MethodInfo methodInfo, Func<MethodInfo, IEnumerable<ICodeStatement>> methodCodeStatementsDelegate = null)
+        private static ClassMethodBuilder CreateMockMethod(MethodInfo methodInfo, Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
             => new ClassMethodBuilder
             {
                 Name = methodInfo.Name,

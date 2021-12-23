@@ -44,7 +44,7 @@ namespace ModelFramework.Objects.Builders
             Override = default;
             Visibility = default;
             Attributes.Clear();
-            ChainCall = default;
+            ChainCall = string.Empty;
             Parameters.Clear();
             CodeStatements.Clear();
             return this;
@@ -60,10 +60,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ClassConstructorBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -72,10 +69,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ClassConstructorBuilder WithStatic(bool @static = true)
@@ -119,10 +113,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public ClassConstructorBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -131,10 +122,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public ClassConstructorBuilder WithChainCall(string chainCall)
@@ -153,10 +141,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddParameters(params ParameterBuilder[] parameters)
         {
-            if (parameters != null)
-            {
-                Parameters.AddRange(parameters);
-            }
+            Parameters.AddRange(parameters);
             return this;
         }
         public ClassConstructorBuilder AddParameters(IEnumerable<IParameter> parameters)
@@ -165,10 +150,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddParameters(params IParameter[] parameters)
         {
-            if (parameters != null)
-            {
-                Parameters.AddRange(parameters.Select(x => new ParameterBuilder(x)));
-            }
+            Parameters.AddRange(parameters.Select(x => new ParameterBuilder(x)));
             return this;
         }
         public ClassConstructorBuilder ClearCodeStatements()
@@ -182,10 +164,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddCodeStatements(params ICodeStatementBuilder[] codeStatements)
         {
-            if (codeStatements != null)
-            {
-                CodeStatements.AddRange(codeStatements);
-            }
+            CodeStatements.AddRange(codeStatements);
             return this;
         }
         public ClassConstructorBuilder AddCodeStatements(IEnumerable<ICodeStatement> codeStatements)
@@ -194,10 +173,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassConstructorBuilder AddCodeStatements(params ICodeStatement[] codeStatements)
         {
-            if (codeStatements != null)
-            {
-                CodeStatements.AddRange(codeStatements.Select(x => x.CreateBuilder()));
-            }
+            CodeStatements.AddRange(codeStatements.Select(x => x.CreateBuilder()));
             return this;
         }
         public ClassConstructorBuilder()
@@ -206,20 +182,21 @@ namespace ModelFramework.Objects.Builders
             Attributes = new List<AttributeBuilder>();
             Parameters = new List<ParameterBuilder>();
             CodeStatements = new List<ICodeStatementBuilder>();
+            ChainCall = string.Empty;
         }
         public ClassConstructorBuilder(IClassConstructor source)
         {
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Static = source.Static;
             Virtual = source.Virtual;
             Abstract = source.Abstract;
             Protected = source.Protected;
             Override = source.Override;
             Visibility = source.Visibility;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
             ChainCall = source.ChainCall;
-            Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
-            CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            Parameters = new List<ParameterBuilder>(source.Parameters.Select(x => new ParameterBuilder(x)));
+            CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements.Select(x => x.CreateBuilder()));
         }
     }
 }

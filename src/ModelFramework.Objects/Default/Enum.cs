@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
@@ -19,14 +20,19 @@ namespace ModelFramework.Objects.Default
         public Enum(string name,
                     IEnumerable<IEnumMember> members,
                     Visibility visibility = Visibility.Public,
-                    IEnumerable<IAttribute> attributes = null,
-                    IEnumerable<IMetadata> metadata = null)
+                    IEnumerable<IAttribute>? attributes = null,
+                    IEnumerable<IMetadata>? metadata = null)
         {
             Name = name;
             Visibility = visibility;
-            Members = new ValueCollection<IEnumMember>(members ?? Enumerable.Empty<IEnumMember>());
+            Members = new ValueCollection<IEnumMember>(members);
             Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+
+            if (!members.Any())
+            {
+                throw new ArgumentException("Enum must have at least one member", nameof(members));
+            }
         }
 
         public ValueCollection<IAttribute> Attributes { get; }

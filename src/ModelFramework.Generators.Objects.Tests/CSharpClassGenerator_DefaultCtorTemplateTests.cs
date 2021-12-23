@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
@@ -23,7 +24,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        public MyClass()
         {
             throw new NotImplementedException();
         }
@@ -42,7 +43,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        public MyClass()
         {
             throw new NotImplementedException();
             throw new NotImplementedException();
@@ -62,7 +63,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public MyClass();
+            actual.NormalizeLineEndings().Should().Be(@"        public MyClass();
 ");
         }
 
@@ -78,7 +79,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public MyClass(string parameter1, int parameter2, bool parameter3);
+            actual.NormalizeLineEndings().Should().Be(@"        public MyClass(string parameter1, int parameter2, bool parameter3);
 ");
         }
 
@@ -94,7 +95,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        [Attribute1]
+            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1]
         [Attribute2]
         [Attribute3]
         public MyClass();
@@ -113,7 +114,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        internal MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        internal MyClass()
         {
             throw new NotImplementedException();
         }
@@ -132,7 +133,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        private MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        private MyClass()
         {
             throw new NotImplementedException();
         }
@@ -151,7 +152,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public static MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        public static MyClass()
         {
             throw new NotImplementedException();
         }
@@ -170,7 +171,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public virtual MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        public virtual MyClass()
         {
             throw new NotImplementedException();
         }
@@ -189,7 +190,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public abstract MyClass();
+            actual.NormalizeLineEndings().Should().Be(@"        public abstract MyClass();
 ");
         }
 
@@ -205,7 +206,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        protected MyClass()
+            actual.NormalizeLineEndings().Should().Be(@"        protected MyClass()
         {
             throw new NotImplementedException();
         }

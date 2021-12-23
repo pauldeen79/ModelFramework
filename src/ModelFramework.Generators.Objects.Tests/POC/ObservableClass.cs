@@ -9,9 +9,9 @@ namespace ModelFramework.Generators.Tests.POC
     public class ObservableClass : INotifyPropertyChanged
     {
         #region Template for non-enumerable property
-        private string _property1;
+        private string? _property1;
 
-        public string Property1
+        public string? Property1
         {
             get
             {
@@ -30,7 +30,7 @@ namespace ModelFramework.Generators.Tests.POC
         #endregion
 
         #region Fixed
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         #endregion
 
         public ObservableClass()

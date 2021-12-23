@@ -13,7 +13,7 @@ namespace ModelFramework.Objects.Builders
         public bool Static { get; set; }
         public bool ReadOnly { get; set; }
         public bool Constant { get; set; }
-        public object DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
         public List<MetadataBuilder> Metadata { get; set; }
         public Visibility Visibility { get; set; }
         public string Name { get; set; }
@@ -48,12 +48,12 @@ namespace ModelFramework.Objects.Builders
             Static = default;
             ReadOnly = default;
             Constant = default;
-            DefaultValue = default;
+            DefaultValue = null;
             Metadata.Clear();
             Visibility = Visibility.Private;
-            Name = default;
+            Name = string.Empty;
             Attributes.Clear();
-            TypeName = default;
+            TypeName = string.Empty;
             Virtual = default;
             Abstract = default;
             Protected = default;
@@ -77,7 +77,7 @@ namespace ModelFramework.Objects.Builders
             Constant = constant;
             return this;
         }
-        public ClassFieldBuilder WithDefaultValue(object defaultValue)
+        public ClassFieldBuilder WithDefaultValue(object? defaultValue)
         {
             DefaultValue = defaultValue;
             return this;
@@ -93,10 +93,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ClassFieldBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -105,10 +102,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassFieldBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ClassFieldBuilder WithVisibility(Visibility visibility)
@@ -132,10 +126,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassFieldBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public ClassFieldBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -144,10 +135,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassFieldBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public ClassFieldBuilder WithTypeName(string typeName)
@@ -195,6 +183,8 @@ namespace ModelFramework.Objects.Builders
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
             Visibility = Visibility.Private;
+            Name = string.Empty;
+            TypeName = string.Empty;
         }
         public ClassFieldBuilder(IClassField source)
         {
@@ -202,10 +192,10 @@ namespace ModelFramework.Objects.Builders
             ReadOnly = source.ReadOnly;
             Constant = source.Constant;
             DefaultValue = source.DefaultValue;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Visibility = source.Visibility;
             Name = source.Name;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
             TypeName = source.TypeName;
             Virtual = source.Virtual;
             Abstract = source.Abstract;

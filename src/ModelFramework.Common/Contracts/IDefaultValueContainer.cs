@@ -2,6 +2,6 @@
 {
     public interface IDefaultValueContainer
     {
-        object DefaultValue { get; }
+        object? DefaultValue { get; }
     }
 }

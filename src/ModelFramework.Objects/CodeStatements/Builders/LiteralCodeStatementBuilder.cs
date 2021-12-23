@@ -27,10 +27,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         }
         public LiteralCodeStatementBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public LiteralCodeStatementBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -39,10 +36,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         }
         public LiteralCodeStatementBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ICodeStatement Build()
@@ -51,7 +45,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         }
         public LiteralCodeStatementBuilder Clear()
         {
-            Statement = default;
+            Statement = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -66,12 +60,13 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         }
         public LiteralCodeStatementBuilder()
         {
+            Statement = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public LiteralCodeStatementBuilder(LiteralCodeStatement source)
         {
             Statement = source.Statement;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

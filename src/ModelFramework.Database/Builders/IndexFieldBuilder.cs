@@ -21,11 +21,11 @@ namespace ModelFramework.Database.Builders
         public IndexFieldBuilder Clear()
         {
             IsDescending = default;
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
-        public IndexFieldBuilder WithIsDescending(bool isDescending)
+        public IndexFieldBuilder WithIsDescending(bool isDescending = true)
         {
             IsDescending = isDescending;
             return this;
@@ -46,12 +46,9 @@ namespace ModelFramework.Database.Builders
         }
         public IndexFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -61,14 +58,12 @@ namespace ModelFramework.Database.Builders
         }
         public IndexFieldBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public IndexFieldBuilder()
         {
+            Name = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public IndexFieldBuilder(IIndexField source)
@@ -77,7 +72,7 @@ namespace ModelFramework.Database.Builders
 
             IsDescending = source.IsDescending;
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

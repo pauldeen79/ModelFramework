@@ -9,9 +9,12 @@ namespace ModelFramework.Database.Default
 {
     public record ForeignKeyConstraintField : IForeignKeyConstraintField
     {
-        public ForeignKeyConstraintField(string name, IEnumerable<IMetadata> metadata = null)
+        public ForeignKeyConstraintField(string name, IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());

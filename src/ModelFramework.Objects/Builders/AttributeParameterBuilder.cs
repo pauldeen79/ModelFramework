@@ -18,9 +18,9 @@ namespace ModelFramework.Objects.Builders
         }
         public AttributeParameterBuilder Clear()
         {
-            Value = default;
+            Value = new object();
             Metadata.Clear();
-            Name = default;
+            Name = string.Empty;
             return this;
         }
         public AttributeParameterBuilder WithValue(object value)
@@ -39,10 +39,7 @@ namespace ModelFramework.Objects.Builders
         }
         public AttributeParameterBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public AttributeParameterBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -51,10 +48,7 @@ namespace ModelFramework.Objects.Builders
         }
         public AttributeParameterBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public AttributeParameterBuilder WithName(string name)
@@ -64,12 +58,14 @@ namespace ModelFramework.Objects.Builders
         }
         public AttributeParameterBuilder()
         {
+            Name = string.Empty;
+            Value = new object();
             Metadata = new List<MetadataBuilder>();
         }
         public AttributeParameterBuilder(IAttributeParameter source)
         {
             Value = source.Value;
-            if (source.Metadata != null) Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Name = source.Name;
         }
     }

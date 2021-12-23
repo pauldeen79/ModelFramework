@@ -13,9 +13,12 @@ namespace ModelFramework.Database.SqlStatements
         public string Statement { get; }
         public ValueCollection<IMetadata> Metadata { get; }
 
-        public LiteralSqlStatement(string statement, IEnumerable<IMetadata> metadata = null)
+        public LiteralSqlStatement(string statement, IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(statement)) throw new ArgumentOutOfRangeException(nameof(statement), "Statement cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(statement))
+            {
+                throw new ArgumentOutOfRangeException(nameof(statement), "Statement cannot be null or whitespace");
+            }
 
             Statement = statement;
             Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());

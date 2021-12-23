@@ -66,15 +66,15 @@ namespace ModelFramework.Objects.Builders
             GetterVisibility = default;
             SetterVisibility = default;
             InitializerVisibility = default;
-            Name = default;
+            Name = string.Empty;
             Attributes.Clear();
-            TypeName = default;
+            TypeName = string.Empty;
             Virtual = default;
             Abstract = default;
             Protected = default;
             Override = default;
             IsNullable = default;
-            ExplicitInterfaceName = default;
+            ExplicitInterfaceName = string.Empty;
             GetterCodeStatements.Clear();
             SetterCodeStatements.Clear();
             InitializerCodeStatements.Clear();
@@ -119,10 +119,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ClassPropertyBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -131,10 +128,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ClassPropertyBuilder WithVisibility(Visibility visibility)
@@ -182,12 +176,9 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
+            foreach (var itemToAdd in attributes)
             {
-                foreach (var itemToAdd in attributes)
-                {
-                    Attributes.Add(new AttributeBuilder(itemToAdd));
-                }
+                Attributes.Add(new AttributeBuilder(itemToAdd));
             }
             return this;
         }
@@ -242,10 +233,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddGetterCodeStatements(params ICodeStatementBuilder[] getterCodeStatements)
         {
-            if (getterCodeStatements != null)
-            {
-                GetterCodeStatements.AddRange(getterCodeStatements);
-            }
+            GetterCodeStatements.AddRange(getterCodeStatements);
             return this;
         }
         public ClassPropertyBuilder AddGetterCodeStatements(IEnumerable<ICodeStatement> getterCodeStatements)
@@ -254,10 +242,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddGetterCodeStatements(params ICodeStatement[] getterCodeStatements)
         {
-            if (getterCodeStatements != null)
-            {
-                GetterCodeStatements.AddRange(getterCodeStatements.Select(x => x.CreateBuilder()));
-            }
+            GetterCodeStatements.AddRange(getterCodeStatements.Select(x => x.CreateBuilder()));
             return this;
         }
         public ClassPropertyBuilder ClearSetterCodeStatements()
@@ -271,10 +256,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddSetterCodeStatements(params ICodeStatementBuilder[] setterCodeStatements)
         {
-            if (setterCodeStatements != null)
-            {
-                SetterCodeStatements.AddRange(setterCodeStatements);
-            }
+            SetterCodeStatements.AddRange(setterCodeStatements);
             return this;
         }
         public ClassPropertyBuilder AddSetterCodeStatements(IEnumerable<ICodeStatement> setterCodeStatements)
@@ -283,10 +265,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddSetterCodeStatements(params ICodeStatement[] setterCodeStatements)
         {
-            if (setterCodeStatements != null)
-            {
-                SetterCodeStatements.AddRange(setterCodeStatements.Select(x => x.CreateBuilder()));
-            }
+            SetterCodeStatements.AddRange(setterCodeStatements.Select(x => x.CreateBuilder()));
             return this;
         }
         public ClassPropertyBuilder ClearInitCodeStatements()
@@ -300,10 +279,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddInitCodeStatements(params ICodeStatementBuilder[] initCodeStatements)
         {
-            if (initCodeStatements != null)
-            {
-                InitializerCodeStatements.AddRange(initCodeStatements);
-            }
+            InitializerCodeStatements.AddRange(initCodeStatements);
             return this;
         }
         public ClassPropertyBuilder AddInitCodeStatements(IEnumerable<ICodeStatement> initCodeStatements)
@@ -312,10 +288,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassPropertyBuilder AddInitCodeStatements(params ICodeStatement[] initCodeStatements)
         {
-            if (initCodeStatements != null)
-            {
-                InitializerCodeStatements.AddRange(initCodeStatements.Select(x => x.CreateBuilder()));
-            }
+            InitializerCodeStatements.AddRange(initCodeStatements.Select(x => x.CreateBuilder()));
             return this;
         }
         public ClassPropertyBuilder()
@@ -327,6 +300,9 @@ namespace ModelFramework.Objects.Builders
             GetterCodeStatements = new List<ICodeStatementBuilder>();
             SetterCodeStatements = new List<ICodeStatementBuilder>();
             InitializerCodeStatements = new List<ICodeStatementBuilder>();
+            Name = string.Empty;
+            TypeName = string.Empty;
+            ExplicitInterfaceName = string.Empty;
         }
         public ClassPropertyBuilder(IClassProperty source)
         {
@@ -334,13 +310,13 @@ namespace ModelFramework.Objects.Builders
             HasGetter = source.HasGetter;
             HasSetter = source.HasSetter;
             HasInitializer = source.HasInitializer;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Visibility = source.Visibility;
             GetterVisibility = source.GetterVisibility;
             SetterVisibility = source.SetterVisibility;
             InitializerVisibility = source.InitializerVisibility;
             Name = source.Name;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
+            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)));
             TypeName = source.TypeName;
             Virtual = source.Virtual;
             Abstract = source.Abstract;
@@ -348,9 +324,9 @@ namespace ModelFramework.Objects.Builders
             Override = source.Override;
             IsNullable = source.IsNullable;
             ExplicitInterfaceName = source.ExplicitInterfaceName;
-            GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            InitializerCodeStatements = new List<ICodeStatementBuilder>(source.InitializerCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
+            SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
+            InitializerCodeStatements = new List<ICodeStatementBuilder>(source.InitializerCodeStatements.Select(x => x.CreateBuilder()));
         }
     }
 }

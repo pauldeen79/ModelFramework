@@ -15,11 +15,11 @@ namespace ModelFramework.Objects.Default
                                 bool @abstract = false,
                                 bool @protected = false,
                                 bool @override = false,
-                                string chainCall = null,
-                                IEnumerable<IParameter> parameters = null,
-                                IEnumerable<IAttribute> attributes = null,
-                                IEnumerable<ICodeStatement> codeStatements = null,
-                                IEnumerable<IMetadata> metadata = null)
+                                string chainCall = "",
+                                IEnumerable<IParameter>? parameters = null,
+                                IEnumerable<IAttribute>? attributes = null,
+                                IEnumerable<ICodeStatement>? codeStatements = null,
+                                IEnumerable<IMetadata>? metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Visibility = visibility;

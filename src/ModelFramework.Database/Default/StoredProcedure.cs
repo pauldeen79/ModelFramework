@@ -10,11 +10,14 @@ namespace ModelFramework.Database.Default
     public record StoredProcedure : IStoredProcedure
     {
         public StoredProcedure(string name,
-                               IEnumerable<IStoredProcedureParameter> parameters = null,
-                               IEnumerable<ISqlStatement> statements = null,
-                               IEnumerable<IMetadata> metadata = null)
+                               IEnumerable<IStoredProcedureParameter>? parameters = null,
+                               IEnumerable<ISqlStatement>? statements = null,
+                               IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Parameters = new ValueCollection<IStoredProcedureParameter>(parameters ?? Enumerable.Empty<IStoredProcedureParameter>());

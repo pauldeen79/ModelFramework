@@ -59,15 +59,15 @@ namespace ModelFramework.Objects.Builders
             Record = default;
             Metadata.Clear();
             Visibility = default;
-            Name = default;
+            Name = string.Empty;
             Attributes.Clear();
             SubClasses.Clear();
             Enums.Clear();
-            Namespace = default;
+            Namespace = string.Empty;
             Constructors.Clear();
             Methods.Clear();
-            BaseClass = default;
-            GenericTypeArguments = default;
+            BaseClass = string.Empty;
+            GenericTypeArguments.Clear();
             return this;
         }
         public ClassBuilder ClearInterfaces()
@@ -81,10 +81,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddInterfaces(params string[] interfaces)
         {
-            if (interfaces != null)
-            {
-                Interfaces.AddRange(interfaces);
-            }
+            Interfaces.AddRange(interfaces);
             return this;
         }
         public ClassBuilder ClearFields()
@@ -98,10 +95,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddFields(params ClassFieldBuilder[] fields)
         {
-            if (fields != null)
-            {
-                Fields.AddRange(fields);
-            }
+            Fields.AddRange(fields);
             return this;
         }
         public ClassBuilder AddFields(IEnumerable<IClassField> fields)
@@ -110,10 +104,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddFields(params IClassField[] fields)
         {
-            if (fields != null)
-            {
-                Fields.AddRange(fields.Select(x => new ClassFieldBuilder(x)));
-            }
+            Fields.AddRange(fields.Select(x => new ClassFieldBuilder(x)));
             return this;
         }
         public ClassBuilder ClearProperties()
@@ -127,10 +118,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddProperties(params ClassPropertyBuilder[] properties)
         {
-            if (properties != null)
-            {
-                Properties.AddRange(properties);
-            }
+            Properties.AddRange(properties);
             return this;
         }
         public ClassBuilder AddProperties(IEnumerable<IClassProperty> properties)
@@ -139,10 +127,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddProperties(IClassProperty[] properties)
         {
-            if (properties != null)
-            {
-                Properties.AddRange(properties.Select(x => new ClassPropertyBuilder(x)));
-            }
+            Properties.AddRange(properties.Select(x => new ClassPropertyBuilder(x)));
             return this;
         }
         public ClassBuilder WithStatic(bool @static = true)
@@ -176,10 +161,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ClassBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -188,10 +170,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ClassBuilder WithVisibility(Visibility visibility)
@@ -215,10 +194,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public ClassBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -227,10 +203,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public ClassBuilder ClearSubClasses()
@@ -244,10 +217,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddSubClasses(params ClassBuilder[] subClasses)
         {
-            if (subClasses != null)
-            {
-                SubClasses.AddRange(subClasses);
-            }
+            SubClasses.AddRange(subClasses);
             return this;
         }
         public ClassBuilder AddSubClasses(IEnumerable<IClass> subClasses)
@@ -256,10 +226,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddSubClasses(params IClass[] subClasses)
         {
-            if (subClasses != null)
-            {
-                SubClasses.AddRange(subClasses.Select(x => new ClassBuilder(x)));
-            }
+            SubClasses.AddRange(subClasses.Select(x => new ClassBuilder(x)));
             return this;
         }
         public ClassBuilder ClearEnums()
@@ -282,12 +249,9 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddEnums(params IEnum[] enums)
         {
-            if (enums != null)
+            foreach (var itemToAdd in enums)
             {
-                foreach (var itemToAdd in enums)
-                {
-                    Enums.Add(new EnumBuilder(itemToAdd));
-                }
+                Enums.Add(new EnumBuilder(itemToAdd));
             }
             return this;
         }
@@ -307,10 +271,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddConstructors(params ClassConstructorBuilder[] constructors)
         {
-            if (constructors != null)
-            {
-                Constructors.AddRange(constructors);
-            }
+            Constructors.AddRange(constructors);
             return this;
         }
         public ClassBuilder AddConstructors(IEnumerable<IClassConstructor> constructors)
@@ -319,10 +280,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddConstructors(params IClassConstructor[] constructors)
         {
-            if (constructors != null)
-            {
-                Constructors.AddRange(constructors.Select(x => new ClassConstructorBuilder(x)));
-            }
+            Constructors.AddRange(constructors.Select(x => new ClassConstructorBuilder(x)));
             return this;
         }
         public ClassBuilder ClearMethods()
@@ -336,10 +294,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddMethods(params ClassMethodBuilder[] methods)
         {
-            if (methods != null)
-            {
-                Methods.AddRange(methods);
-            }
+            Methods.AddRange(methods);
             return this;
         }
         public ClassBuilder AddMethods(IEnumerable<IClassMethod> methods)
@@ -348,10 +303,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddMethods(params IClassMethod[] methods)
         {
-            if (methods != null)
-            {
-                Methods.AddRange(methods.Select(x => new ClassMethodBuilder(x)));
-            }
+            Methods.AddRange(methods.Select(x => new ClassMethodBuilder(x)));
             return this;
         }
         public ClassBuilder AddGenericTypeArguments(IEnumerable<string> methods)
@@ -360,10 +312,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassBuilder AddGenericTypeArguments(params string[] methods)
         {
-            if (methods != null)
-            {
-                GenericTypeArguments.AddRange(methods);
-            }
+            GenericTypeArguments.AddRange(methods);
             return this;
         }
         public ClassBuilder WithBaseClass(string baseClass)
@@ -383,12 +332,15 @@ namespace ModelFramework.Objects.Builders
             Constructors = new List<ClassConstructorBuilder>();
             Methods = new List<ClassMethodBuilder>();
             GenericTypeArguments = new List<string>();
+            Name = string.Empty;
+            Namespace = string.Empty;
+            BaseClass = string.Empty;
         }
         public ClassBuilder(IClass source)
         {
-            Interfaces = new List<string>(source.Interfaces ?? Enumerable.Empty<string>());
-            Fields = new List<ClassFieldBuilder>(source.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>());
-            Properties = new List<ClassPropertyBuilder>(source.Properties?.Select(x => new ClassPropertyBuilder(x)) ?? Enumerable.Empty<ClassPropertyBuilder>());
+            Interfaces = new List<string>(source.Interfaces);
+            Fields = new List<ClassFieldBuilder>(source.Fields.Select(x => new ClassFieldBuilder(x)));
+            Properties = new List<ClassPropertyBuilder>(source.Properties.Select(x => new ClassPropertyBuilder(x)));
             Static = source.Static;
             Sealed = source.Sealed;
             Partial = source.Partial;
@@ -402,7 +354,7 @@ namespace ModelFramework.Objects.Builders
             Constructors = new List<ClassConstructorBuilder>(source.Constructors.Select(x => new ClassConstructorBuilder(x)));
             Methods = new List<ClassMethodBuilder>(source.Methods.Select(x => new ClassMethodBuilder(x)));
             BaseClass = source.BaseClass;
-            GenericTypeArguments = new List<string>(source.GenericTypeArguments ?? Enumerable.Empty<string>());
+            GenericTypeArguments = new List<string>(source.GenericTypeArguments);
         }
     }
 }

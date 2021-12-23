@@ -25,16 +25,23 @@ namespace ModelFramework.Objects.Default
                              Visibility? getterVisibility = null,
                              Visibility? setterVisibility = null,
                              Visibility? initVisibility = null,
-                             string explicitInterfaceName = null,
-                             IEnumerable<IMetadata> metadata = null,
-                             IEnumerable<IAttribute> attributes = null,
-                             IEnumerable<ICodeStatement> getterCodeStatements = null,
-                             IEnumerable<ICodeStatement> setterCodeStatements = null,
-                             IEnumerable<ICodeStatement> initializerCodeStatements = null)
+                             string explicitInterfaceName = "",
+                             IEnumerable<IMetadata>? metadata = null,
+                             IEnumerable<IAttribute>? attributes = null,
+                             IEnumerable<ICodeStatement>? getterCodeStatements = null,
+                             IEnumerable<ICodeStatement>? setterCodeStatements = null,
+                             IEnumerable<ICodeStatement>? initializerCodeStatements = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
-            if (string.IsNullOrWhiteSpace(typeName)) throw new ArgumentOutOfRangeException(nameof(typeName), "TypeName cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(typeName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(typeName), "TypeName cannot be null or whitespace");
+            }
 
             Name = name;
             TypeName = typeName;

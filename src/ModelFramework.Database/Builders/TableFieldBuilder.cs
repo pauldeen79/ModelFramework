@@ -36,15 +36,15 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder Clear()
         {
-            Type = default;
+            Type = string.Empty;
             IsIdentity = default;
             IsRequired = default;
             NumericPrecision = default;
             NumericScale = default;
             StringLength = default;
-            StringCollation = default;
+            StringCollation = string.Empty;
             IsStringMaxLength = default;
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             CheckConstraints.Clear();
             return this;
@@ -54,12 +54,12 @@ namespace ModelFramework.Database.Builders
             Type = type;
             return this;
         }
-        public TableFieldBuilder WithIsIdentity(bool isIdentity)
+        public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
         {
             IsIdentity = isIdentity;
             return this;
         }
-        public TableFieldBuilder WithIsRequired(bool isRequired)
+        public TableFieldBuilder WithIsRequired(bool isRequired = true)
         {
             IsRequired = isRequired;
             return this;
@@ -84,7 +84,7 @@ namespace ModelFramework.Database.Builders
             StringCollation = stringCollation;
             return this;
         }
-        public TableFieldBuilder WithIsStringMaxLength(bool? isStringMaxLength)
+        public TableFieldBuilder WithIsStringMaxLength(bool? isStringMaxLength = true)
         {
             IsStringMaxLength = isStringMaxLength;
             return this;
@@ -105,12 +105,9 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -120,10 +117,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public TableFieldBuilder ClearCheckConstraints()
@@ -137,12 +131,9 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddCheckConstraints(params CheckConstraintBuilder[] checkConstraints)
         {
-            if (checkConstraints != null)
+            foreach (var itemToAdd in checkConstraints)
             {
-                foreach (var itemToAdd in checkConstraints)
-                {
-                    CheckConstraints.Add(itemToAdd);
-                }
+                CheckConstraints.Add(itemToAdd);
             }
             return this;
         }
@@ -152,23 +143,24 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddCheckConstraints(params ICheckConstraint[] checkConstraints)
         {
-            if (checkConstraints != null)
+            foreach (var itemToAdd in checkConstraints)
             {
-                foreach (var itemToAdd in checkConstraints)
-                {
-                    CheckConstraints.Add(new CheckConstraintBuilder(itemToAdd));
-                }
+                CheckConstraints.Add(new CheckConstraintBuilder(itemToAdd));
             }
             return this;
         }
         public TableFieldBuilder()
         {
+            Type = string.Empty;
+            Name = string.Empty;
+            StringCollation = string.Empty;
             Metadata = new List<MetadataBuilder>();
             CheckConstraints = new List<CheckConstraintBuilder>();
         }
         public TableFieldBuilder(ITableField source)
         {
             Metadata = new List<MetadataBuilder>();
+            CheckConstraints = new List<CheckConstraintBuilder>();
 
             Type = source.Type;
             IsIdentity = source.IsIdentity;
@@ -179,8 +171,8 @@ namespace ModelFramework.Database.Builders
             StringCollation = source.StringCollation;
             IsStringMaxLength = source.IsStringMaxLength;
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            if (source.CheckConstraints != null) foreach (var x in source.CheckConstraints) CheckConstraints.Add(new CheckConstraintBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.CheckConstraints) CheckConstraints.Add(new CheckConstraintBuilder(x));
         }
     }
 }

@@ -21,14 +21,21 @@ namespace ModelFramework.Objects.Default
                           bool @override = false,
                           bool @event = false,
                           bool isNullable = false,
-                          object defaultValue = null,
+                          object? defaultValue = null,
                           Visibility visibility = Visibility.Private,
-                          IEnumerable<IMetadata> metadata = null,
-                          IEnumerable<IAttribute> attributes = null)
+                          IEnumerable<IMetadata>? metadata = null,
+                          IEnumerable<IAttribute>? attributes = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
-            if (string.IsNullOrWhiteSpace(typeName)) throw new ArgumentOutOfRangeException(nameof(typeName), "TypeName cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(typeName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(typeName), "TypeName cannot be null or whitespace");
+            }
 
             Name = name;
             TypeName = typeName;
@@ -50,7 +57,7 @@ namespace ModelFramework.Objects.Default
         public bool Static { get; }
         public bool ReadOnly { get; }
         public bool Constant { get; }
-        public object DefaultValue { get; }
+        public object? DefaultValue { get; }
         public ValueCollection<IMetadata> Metadata { get; }
         public Visibility Visibility { get; }
         public string Name { get; }

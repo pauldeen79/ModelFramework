@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
@@ -20,7 +21,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        [Attribute1]
+            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1]
 ");
         }
 
@@ -35,7 +36,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        [Attribute1(Name = @""Value"")]
+            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1(Name = @""Value"")]
 ");
         }
 
@@ -50,7 +51,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        [Attribute1(@""Value"")]
+            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1(@""Value"")]
 ");
         }
 

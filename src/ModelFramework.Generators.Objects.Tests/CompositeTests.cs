@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Generators.Objects;
 using ModelFramework.Generators.Shared;
@@ -77,7 +78,7 @@ namespace ModelFramework.Generators.Tests
             var actual = templateFileManager.MultipleContentBuilder.ToString();
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
+            actual.NormalizeLineEndings().Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
   <BasePath>C:\Temp</BasePath>
   <Contents>
@@ -116,7 +117,7 @@ namespace ModelFramework.Generators.Tests
             var actual = multipleContentBuilder.ToString();
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
+            actual.NormalizeLineEndings().Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
   <BasePath>C:\Temp</BasePath>
   <Contents>

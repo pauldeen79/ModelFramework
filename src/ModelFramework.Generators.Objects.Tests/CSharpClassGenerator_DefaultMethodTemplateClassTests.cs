@@ -36,7 +36,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassMethod("Name", null, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var model = new ClassMethod("Name", string.Empty, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
             // Act
@@ -55,7 +55,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassMethod("Name", null, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();"), new LiteralCodeStatement("throw new NotImplementedException();") });
+            var model = new ClassMethod("Name", string.Empty, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();"), new LiteralCodeStatement("throw new NotImplementedException();") });
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
             // Act
@@ -75,7 +75,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassMethod("Name", null);
+            var model = new ClassMethod("Name", string.Empty);
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
             // Act
@@ -92,7 +92,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesNoCodeBodyOnInterface()
         {
             // Arrange
-            var rootModel = new[] { new Interface("IMyInterface", "MyNamespace") }.Cast<ModelFramework.Objects.Contracts.ITypeBase>();
+            var rootModel = new[] { new Interface("IMyInterface", "MyNamespace") }.Cast<ITypeBase>();
             var model = new ClassMethod("Name", "string", codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel, iterationContextModel: rootModel.First());
 
@@ -147,7 +147,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassMethod("Name", null, explicitInterfaceName: "IMyInterface", codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();"), new LiteralCodeStatement("throw new NotImplementedException();") });
+            var model = new ClassMethod("Name", string.Empty, explicitInterfaceName: "IMyInterface", codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();"), new LiteralCodeStatement("throw new NotImplementedException();") });
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
             // Act
@@ -167,7 +167,7 @@ namespace ModelFramework.Generators.Objects.Tests
         {
             // Arrange
             var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new ClassMethod("Name", null, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") }, attributes: new[] { new Attribute("Attribute1"), new Attribute("Attribute2"), new Attribute("Attribute3") });
+            var model = new ClassMethod("Name", string.Empty, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") }, attributes: new[] { new Attribute("Attribute1"), new Attribute("Attribute2"), new Attribute("Attribute3") });
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
             // Act

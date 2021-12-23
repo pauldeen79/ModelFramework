@@ -11,18 +11,21 @@ namespace ModelFramework.Database.Default
     {
 #pragma warning disable S107 // Methods should not have too many parameters
         public Table(string name,
-                     string fileGroupName = null,
-                     IEnumerable<ITableField> fields = null,
-                     IEnumerable<IPrimaryKeyConstraint> primaryKeyConstraints = null,
-                     IEnumerable<IUniqueConstraint> uniqueConstraints = null,
-                     IEnumerable<IDefaultValueConstraint> defaultValueConstraints = null,
-                     IEnumerable<IForeignKeyConstraint> foreignKeyConstraints = null,
-                     IEnumerable<IIndex> indexes = null,
-                     IEnumerable<ICheckConstraint> checkConstraints = null,
-                     IEnumerable<IMetadata> metadata = null)
+                     IEnumerable<ITableField> fields,
+                     string fileGroupName = "",
+                     IEnumerable<IPrimaryKeyConstraint>? primaryKeyConstraints = null,
+                     IEnumerable<IUniqueConstraint>? uniqueConstraints = null,
+                     IEnumerable<IDefaultValueConstraint>? defaultValueConstraints = null,
+                     IEnumerable<IForeignKeyConstraint>? foreignKeyConstraints = null,
+                     IEnumerable<IIndex>? indexes = null,
+                     IEnumerable<ICheckConstraint>? checkConstraints = null,
+                     IEnumerable<IMetadata>? metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             FileGroupName = fileGroupName;

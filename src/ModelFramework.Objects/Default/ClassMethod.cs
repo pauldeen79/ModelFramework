@@ -22,14 +22,17 @@ namespace ModelFramework.Objects.Default
                            bool extensionMethod = false,
                            bool @operator = false,
                            bool isNullable = false,
-                           string explicitInterfaceName = null,
-                           IEnumerable<IParameter> parameters = null,
-                           IEnumerable<IAttribute> attributes = null,
-                           IEnumerable<ICodeStatement> codeStatements = null,
-                           IEnumerable<IMetadata> metadata = null)
+                           string explicitInterfaceName = "",
+                           IEnumerable<IParameter>? parameters = null,
+                           IEnumerable<IAttribute>? attributes = null,
+                           IEnumerable<ICodeStatement>? codeStatements = null,
+                           IEnumerable<IMetadata>? metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             TypeName = typeName;

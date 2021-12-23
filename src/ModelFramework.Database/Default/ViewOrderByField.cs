@@ -10,14 +10,17 @@ namespace ModelFramework.Database.Default
     public record ViewOrderByField : IViewOrderByField
     {
         public ViewOrderByField(string name,
-                                string sourceSchemaName = null,
-                                string sourceObjectName = null,
-                                string expression = null,
-                                string alias = null,
+                                string sourceSchemaName = "",
+                                string sourceObjectName = "",
+                                string expression = "",
+                                string alias = "",
                                 bool descending = false,
-                                IEnumerable<IMetadata> metadata = null)
+                                IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             SourceSchemaName = sourceSchemaName;

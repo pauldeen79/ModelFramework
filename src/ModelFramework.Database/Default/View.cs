@@ -14,16 +14,19 @@ namespace ModelFramework.Database.Default
                     int? top = null,
                     bool topPercent = false,
                     bool distinct = false,
-                    string definition = null,
-                    IEnumerable<IViewField> selectFields = null,
-                    IEnumerable<IViewOrderByField> orderByFields = null,
-                    IEnumerable<IViewField> groupByFields = null,
-                    IEnumerable<IViewSource> sources = null,
-                    IEnumerable<IViewCondition> conditions = null,
-                    IEnumerable<IMetadata> metadata = null)
+                    string definition = "",
+                    IEnumerable<IViewField>? selectFields = null,
+                    IEnumerable<IViewOrderByField>? orderByFields = null,
+                    IEnumerable<IViewField>? groupByFields = null,
+                    IEnumerable<IViewSource>? sources = null,
+                    IEnumerable<IViewCondition>? conditions = null,
+                    IEnumerable<IMetadata>? metadata = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Top = top;

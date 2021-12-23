@@ -44,8 +44,8 @@ namespace ModelFramework.Database.Builders
             Top = default;
             TopPercent = default;
             Distinct = default;
-            Definition = default;
-            Name = default;
+            Definition = string.Empty;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -60,12 +60,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddSelectFields(params ViewFieldBuilder[] selectFields)
         {
-            if (selectFields != null)
+            foreach (var itemToAdd in selectFields)
             {
-                foreach (var itemToAdd in selectFields)
-                {
-                    SelectFields.Add(itemToAdd);
-                }
+                SelectFields.Add(itemToAdd);
             }
             return this;
         }
@@ -75,12 +72,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddSelectFields(params IViewField[] selectFields)
         {
-            if (selectFields != null)
+            foreach (var itemToAdd in selectFields)
             {
-                foreach (var itemToAdd in selectFields)
-                {
-                    SelectFields.Add(new ViewFieldBuilder(itemToAdd));
-                }
+                SelectFields.Add(new ViewFieldBuilder(itemToAdd));
             }
             return this;
         }
@@ -95,12 +89,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddOrderByFields(params ViewOrderByFieldBuilder[] orderByFields)
         {
-            if (orderByFields != null)
+            foreach (var itemToAdd in orderByFields)
             {
-                foreach (var itemToAdd in orderByFields)
-                {
-                    OrderByFields.Add(itemToAdd);
-                }
+                OrderByFields.Add(itemToAdd);
             }
             return this;
         }
@@ -110,12 +101,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddOrderByFields(params IViewOrderByField[] orderByFields)
         {
-            if (orderByFields != null)
+            foreach (var itemToAdd in orderByFields)
             {
-                foreach (var itemToAdd in orderByFields)
-                {
-                    OrderByFields.Add(new ViewOrderByFieldBuilder(itemToAdd));
-                }
+                OrderByFields.Add(new ViewOrderByFieldBuilder(itemToAdd));
             }
             return this;
         }
@@ -130,12 +118,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddGroupByFields(params ViewFieldBuilder[] groupByFields)
         {
-            if (groupByFields != null)
+            foreach (var itemToAdd in groupByFields)
             {
-                foreach (var itemToAdd in groupByFields)
-                {
-                    GroupByFields.Add(itemToAdd);
-                }
+                GroupByFields.Add(itemToAdd);
             }
             return this;
         }
@@ -145,12 +130,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddGroupByFields(params IViewField[] groupByFields)
         {
-            if (groupByFields != null)
+            foreach (var itemToAdd in groupByFields)
             {
-                foreach (var itemToAdd in groupByFields)
-                {
-                    GroupByFields.Add(new ViewFieldBuilder(itemToAdd));
-                }
+                GroupByFields.Add(new ViewFieldBuilder(itemToAdd));
             }
             return this;
         }
@@ -165,12 +147,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddSources(params ViewSourceBuilder[] sources)
         {
-            if (sources != null)
+            foreach (var itemToAdd in sources)
             {
-                foreach (var itemToAdd in sources)
-                {
-                    Sources.Add(itemToAdd);
-                }
+                Sources.Add(itemToAdd);
             }
             return this;
         }
@@ -180,12 +159,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddSources(params IViewSource[] sources)
         {
-            if (sources != null)
+            foreach (var itemToAdd in sources)
             {
-                foreach (var itemToAdd in sources)
-                {
-                    Sources.Add(new ViewSourceBuilder(itemToAdd));
-                }
+                Sources.Add(new ViewSourceBuilder(itemToAdd));
             }
             return this;
         }
@@ -200,12 +176,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddConditions(params ViewConditionBuilder[] conditions)
         {
-            if (conditions != null)
+            foreach (var itemToAdd in conditions)
             {
-                foreach (var itemToAdd in conditions)
-                {
-                    Conditions.Add(itemToAdd);
-                }
+                Conditions.Add(itemToAdd);
             }
             return this;
         }
@@ -215,12 +188,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddConditions(params IViewCondition[] conditions)
         {
-            if (conditions != null)
+            foreach (var itemToAdd in conditions)
             {
-                foreach (var itemToAdd in conditions)
-                {
-                    Conditions.Add(new ViewConditionBuilder(itemToAdd));
-                }
+                Conditions.Add(new ViewConditionBuilder(itemToAdd));
             }
             return this;
         }
@@ -260,12 +230,9 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -275,14 +242,13 @@ namespace ModelFramework.Database.Builders
         }
         public ViewBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ViewBuilder()
         {
+            Name = string.Empty;
+            Definition = string.Empty;
             SelectFields = new List<ViewFieldBuilder>();
             OrderByFields = new List<ViewOrderByFieldBuilder>();
             GroupByFields = new List<ViewFieldBuilder>();
@@ -299,17 +265,17 @@ namespace ModelFramework.Database.Builders
             Conditions = new List<ViewConditionBuilder>();
             Metadata = new List<MetadataBuilder>();
 
-            foreach (var x in source.SelectFields ?? Enumerable.Empty<IViewField>()) SelectFields.Add(new ViewFieldBuilder(x));
-            foreach (var x in source.OrderByFields ?? Enumerable.Empty<IViewOrderByField>()) OrderByFields.Add(new ViewOrderByFieldBuilder(x));
-            foreach (var x in source.GroupByFields ?? Enumerable.Empty<IViewField>()) GroupByFields.Add(new ViewFieldBuilder(x));
-            foreach (var x in source.Sources ?? Enumerable.Empty<IViewSource>()) Sources.Add(new ViewSourceBuilder(x));
-            foreach (var x in source.Conditions ?? Enumerable.Empty<IViewCondition>()) Conditions.Add(new ViewConditionBuilder(x));
+            foreach (var x in source.SelectFields) SelectFields.Add(new ViewFieldBuilder(x));
+            foreach (var x in source.OrderByFields) OrderByFields.Add(new ViewOrderByFieldBuilder(x));
+            foreach (var x in source.GroupByFields) GroupByFields.Add(new ViewFieldBuilder(x));
+            foreach (var x in source.Sources) Sources.Add(new ViewSourceBuilder(x));
+            foreach (var x in source.Conditions) Conditions.Add(new ViewConditionBuilder(x));
             Top = source.Top;
             TopPercent = source.TopPercent;
             Distinct = source.Distinct;
             Definition = source.Definition;
             Name = source.Name;
-            foreach (var x in source.Metadata ?? Enumerable.Empty<IMetadata>()) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

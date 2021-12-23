@@ -11,8 +11,8 @@ namespace ModelFramework.Database.Default
     {
         public StoredProcedureParameter(string name,
                                         string type,
-                                        string defaultValue,
-                                        IEnumerable<IMetadata> metadata = null)
+                                        string defaultValue = "",
+                                        IEnumerable<IMetadata>? metadata = null)
         {
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
 

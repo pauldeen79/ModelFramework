@@ -17,7 +17,7 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintFieldBuilder Clear()
         {
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -32,12 +32,9 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -47,14 +44,12 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintFieldBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ForeignKeyConstraintFieldBuilder()
         {
+            Name = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public ForeignKeyConstraintFieldBuilder(IForeignKeyConstraintField source)
@@ -62,13 +57,7 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
 
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-        }
-        public ForeignKeyConstraintFieldBuilder(string name, IEnumerable<IMetadata> metadata = null)
-        {
-            Metadata = new List<MetadataBuilder>();
-            Name = name;
-            if (metadata != null) Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

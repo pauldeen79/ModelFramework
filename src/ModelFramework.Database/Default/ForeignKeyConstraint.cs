@@ -15,9 +15,17 @@ namespace ModelFramework.Database.Default
                                     IEnumerable<IForeignKeyConstraintField> foreignFields,
                                     CascadeAction cascadeUpdate = CascadeAction.NoAction,
                                     CascadeAction cascadeDelete = CascadeAction.NoAction,
-                                    IEnumerable<IMetadata> metadata = null)
+                                    IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(foreignTableName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(foreignTableName), "ForeignTableName cannot be null or whitespace");
+            }
 
             Name = name;
             ForeignTableName = foreignTableName;

@@ -9,7 +9,7 @@ using Xunit;
 namespace ModelFramework.Common.Tests.Extensions
 {
     [ExcludeFromCodeCoverage]
-    public class EnumerableOfIMetadataExtensionsTests
+    public class EnumerableOfMetadataExtensionsTests
     {
         [Fact]
         public void CanGetValueWhenPresent()
@@ -18,7 +18,7 @@ namespace ModelFramework.Common.Tests.Extensions
             var lst = new[] { new Metadata("name", "value") }.OfType<IMetadata>();
 
             // Act
-            var actual = lst.GetMetadataStringValue("name", "default");
+            var actual = lst.GetStringValue("name", "default");
 
             // Assert
             actual.Should().Be("value");
@@ -31,7 +31,7 @@ namespace ModelFramework.Common.Tests.Extensions
             var lst = new[] { new Metadata("other name", "value") }.OfType<IMetadata>();
 
             // Act
-            var actual = lst.GetMetadataStringValue("name", "default");
+            var actual = lst.GetStringValue("name", "default");
 
             // Assert
             actual.Should().Be("default");
@@ -44,7 +44,7 @@ namespace ModelFramework.Common.Tests.Extensions
             var lst = new[] { new Metadata("name", "value"), new Metadata("name", "second value") }.OfType<IMetadata>();
 
             // Act
-            var actual = lst.GetMetadataStringValue("name", "default");
+            var actual = lst.GetStringValue("name", "default");
 
             // Assert
             actual.Should().Be("value");
@@ -57,10 +57,49 @@ namespace ModelFramework.Common.Tests.Extensions
             var lst = new[] { new Metadata("name", "value"), new Metadata("name", "second value") }.OfType<IMetadata>();
 
             // Act
-            var actual = lst.GetMetadataStringValues("name");
+            var actual = lst.GetStringValues("name");
 
             // Assert
             actual.Should().BeEquivalentTo(new[] { "value", "second value" });
+        }
+
+        [Fact]
+        public void CanGetBooleanValue()
+        {
+            // Arrange
+            var lst = new[] { new Metadata("name", true), new Metadata("name", false) }.OfType<IMetadata>();
+
+            // Act
+            var actual = lst.GetBooleanValue("name");
+
+            // Assert
+            actual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void GetBooleanValueWithDefaultValueReturnsDefaultWhenNotFound()
+        {
+            // Arrange
+            var lst = new[] { new Metadata("name", true), new Metadata("name", false) }.OfType<IMetadata>();
+
+            // Act
+            var actual = lst.GetBooleanValue("wrongname", true);
+
+            // Assert
+            actual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void GetBooleanValueWithDefaultValueDelegateReturnsDefaultWhenNotFound()
+        {
+            // Arrange
+            var lst = new[] { new Metadata("name", true), new Metadata("name", false) }.OfType<IMetadata>();
+
+            // Act
+            var actual = lst.GetBooleanValue("name", () => true);
+
+            // Assert
+            actual.Should().BeTrue();
         }
     }
 }

@@ -10,14 +10,14 @@ namespace ModelFramework.Objects.Settings
         public bool Poco { get; }
         public bool AddNullChecks { get; }
         public string SetMethodNameFormatString { get; }
-        public Func<ITypeBase, bool, string> FormatInstanceTypeNameDelegate { get; }
+        public Func<ITypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
 
         public ImmutableBuilderClassSettings(string newCollectionTypeName = "System.Collections.Generic.List",
                                              bool addCopyConstructor = false,
                                              bool poco = false,
                                              bool addNullChecks = false,
                                              string setMethodNameFormatString = "With{0}",
-                                             Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate = null)
+                                             Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
         {
             NewCollectionTypeName = newCollectionTypeName;
             AddCopyConstructor = addCopyConstructor;

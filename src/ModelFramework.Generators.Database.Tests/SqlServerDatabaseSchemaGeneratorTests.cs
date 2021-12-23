@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
+using ModelFramework.Database.Builders;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
 using ModelFramework.Database.SqlStatements;
@@ -20,7 +21,12 @@ namespace ModelFramework.Generators.Tests.Database
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1"), new Table("Table2"), new Table("Table3") })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int)),
+                    new TableBuilder().WithName("Table2").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int)),
+                    new TableBuilder().WithName("Table3").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int))
+                ).Build()
             };
 
             // Act
@@ -35,6 +41,7 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[Table1](
+	[Field] INT NULL
 ) ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
@@ -47,6 +54,7 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[Table2](
+	[Field] INT NULL
 ) ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
@@ -59,6 +67,7 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[Table3](
+	[Field] INT NULL
 ) ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
@@ -73,7 +82,15 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    )
+                ).Build()
             };
 
             // Act
@@ -104,7 +121,16 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int, checkConstraints: new[] { new CheckConstraint("CHK1", "[Field1] BETWEEN 1 AND 10") }), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }) })
+                new SchemaBuilder().WithName("dbo")
+                .AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int).AddCheckConstraints(new CheckConstraintBuilder().WithName("CHK1").WithExpression("[Field1] BETWEEN 1 AND 10")),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    )
+                ).Build()
             };
 
             // Act
@@ -137,14 +163,18 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[]
-                {
-                    new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.Int) }, checkConstraints: new[]
-                    {
-                        new CheckConstraint("MyCheckContraint1", "Field1 > 10"),
-                        new CheckConstraint("MyCheckContraint2", "Field2 > 20")
-                    })
-                })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.Int)
+                    ).AddCheckConstraints
+                    (
+                        new CheckConstraintBuilder().WithName("MyCheckContraint1").WithExpression("Field1 > 10"),
+                        new CheckConstraintBuilder().WithName("MyCheckContraint2").WithExpression("Field2 > 20")
+                    )
+                ).Build()
             };
 
             // Act
@@ -178,7 +208,25 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int) }, indexes: new[] { new Index("IX_Index1", true, new[] { new IndexField("Field1"), new IndexField("Field2", true) }), new Index("IX_Index2", false, new[] { new IndexField("Field1"), new IndexField("Field2", true) }) }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int)
+                    ).AddIndexes
+                    (
+                        new IndexBuilder().WithName("IX_Index1").WithUnique().AddFields
+                        (
+                            new IndexFieldBuilder().WithName("Field1"),
+                            new IndexFieldBuilder().WithName("Field2").WithIsDescending()
+                        ),
+                        new IndexBuilder().WithName("IX_Index2").AddFields
+                        (
+                            new IndexFieldBuilder().WithName("Field1"),
+                            new IndexFieldBuilder().WithName("Field2").WithIsDescending()
+                        )
+                    )
+                ).Build()
             };
 
             // Act
@@ -219,7 +267,21 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }, primaryKeyConstraints: new[] { new PrimaryKeyConstraint("PK", fields: new[] { new PrimaryKeyConstraintField("Field1") }) }) }) 
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    ).AddPrimaryKeyConstraints
+                    (
+                        new PrimaryKeyConstraintBuilder().WithName("PK").AddFields
+                        (
+                            new PrimaryKeyConstraintFieldBuilder().WithName("Field1")
+                        )
+                    )
+                ).Build()
             };
 
             // Act
@@ -254,7 +316,21 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }, uniqueConstraints: new[] { new UniqueConstraint("UC", fields: new[] { new UniqueConstraintField("Field1") }) }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    ).AddUniqueConstraints
+                    (
+                        new UniqueConstraintBuilder().WithName("UC").AddFields
+                        (
+                            new UniqueConstraintFieldBuilder().WithName("Field1")
+                        )
+                    )
+                ).Build()
             };
 
             // Act
@@ -290,7 +366,18 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }, defaultValueConstraints: new[] { new DefaultValueConstraint("Field1", "2", "DVC") }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    ).AddDefaultValueConstraints
+                    (
+                        new DefaultValueConstraintBuilder().WithFieldName("Field1").WithDefaultValue("2").WithName("DVC")
+                    )
+                ).Build()
             };
 
             // Act
@@ -323,7 +410,18 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", null, new[] { new StoredProcedure("usp_Test", new[] { new StoredProcedureParameter("Param1", "int", null), new StoredProcedureParameter("Param2", "int", "5") }, new[] { new LiteralSqlStatement("--statement 1 goes here"), new LiteralSqlStatement("--statement 2 goes here") }) })
+                new SchemaBuilder().WithName("dbo").AddStoredProcedures
+                (
+                    new StoredProcedureBuilder().WithName("usp_Test").AddParameters
+                    (
+                        new StoredProcedureParameterBuilder().WithName("Param1").WithType("int"),
+                        new StoredProcedureParameterBuilder().WithName("Param2").WithType("int").WithDefaultValue("5")
+                    ).AddStatements
+                    (
+                        new LiteralSqlStatement("--statement 1 goes here"),
+                        new LiteralSqlStatement("--statement 2 goes here")
+                    )
+                ).Build()
             };
 
             // Act
@@ -353,7 +451,26 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }, foreignKeyConstraints: new[] { new ForeignKeyConstraint("FK", "ForeignTable", new[] { new ForeignKeyConstraintField("LocalField1"), new ForeignKeyConstraintField("LocalField2") }, new[] { new ForeignKeyConstraintField("RemoteField1"), new ForeignKeyConstraintField("RemoteField2") }) }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    ).AddForeignKeyConstraints
+                    (
+                        new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
+                        (
+                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
+                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
+                        ).AddForeignFields
+                        (
+                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
+                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
+                        )
+                    )
+                ).Build()
             };
 
             // Act
@@ -391,7 +508,26 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }, foreignKeyConstraints: new[] { new ForeignKeyConstraint("FK", "ForeignTable", new[] { new ForeignKeyConstraintField("LocalField1"), new ForeignKeyConstraintField("LocalField2") }, new[] { new ForeignKeyConstraintField("RemoteField1"), new ForeignKeyConstraintField("RemoteField2") }, CascadeAction.Cascade, CascadeAction.Cascade) }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    ).AddForeignKeyConstraints
+                    (
+                        new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
+                        (
+                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
+                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
+                        ).AddForeignFields
+                        (
+                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
+                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
+                        ).WithCascadeUpdate(CascadeAction.Cascade).WithCascadeDelete(CascadeAction.Cascade)
+                    )
+                ).Build()
             };
 
             // Act
@@ -429,7 +565,15 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", new[] { new Table("Table1", fields: new[] { new TableField("Field1", SqlTableFieldTypes.Int, isIdentity: true), new TableField("Field2", SqlTableFieldTypes.VarChar, stringLength: 32), new TableField("Field3", SqlTableFieldTypes.Numeric, true, numericPrecision: 8, numericScale: 2) }) })
+                new SchemaBuilder().WithName("dbo").AddTables
+                (
+                    new TableBuilder().WithName("Table1").AddFields
+                    (
+                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int).WithIsIdentity(),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                    )
+                ).Build()
             };
 
             // Act
@@ -460,11 +604,37 @@ GO
             var sut = new SqlServerDatabaseSchemaGenerator();
             var model = new[]
             {
-                new Schema("dbo", views: new[]
-                {
-                    new View("View1", sources: new[] { new ViewSource("Table1") }, selectFields: new[] { new ViewField("Field1"), new ViewField("Field2") }),
-                    new View("View2", sources: new[] { new ViewSource("Table1"), new ViewSource("Table2") }, selectFields: new[] { /*new ViewField("Field1", sourceSchemaName: "table1"), */new ViewField("Field2", alias: "Alias2") }, conditions: new[] { new ViewCondition("AND", "table1.Field1 = 'Value 1'"), new ViewCondition("AND", "table1.Field1 = 'Value 2'") }, orderByFields: new[] { new ViewOrderByField("table1.Field1", descending: true), new ViewOrderByField("table1.Field2") }, groupByFields: new[] { new ViewField("Field1"), new ViewField("Field2") } )
-                })
+                new SchemaBuilder().WithName("dbo").AddViews
+                (
+                    new ViewBuilder().WithName("View1").AddSources
+                    (
+                        new ViewSourceBuilder().WithName("Table1")
+                    ).AddSelectFields
+                    (
+                        new ViewFieldBuilder().WithName("Field1"),
+                        new ViewFieldBuilder().WithName("Field2")
+                    ),
+                    new ViewBuilder().WithName("View2").AddSources
+                    (
+                        new ViewSourceBuilder().WithName("Table1"),
+                        new ViewSourceBuilder().WithName("Table2")
+                    ).AddSelectFields
+                    (
+                        new ViewFieldBuilder().WithName("Field2").WithAlias("Alias2")
+                    ).AddConditions
+                    (
+                        new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
+                        new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
+                    ).AddOrderByFields
+                    (
+                        new ViewOrderByFieldBuilder().WithName("table1.Field1").WithDescending(),
+                        new ViewOrderByFieldBuilder().WithName("table1.Field2")
+                    ).AddGroupByFields
+                    (
+                        new ViewField("Field1"),
+                        new ViewField("Field2")
+                    )
+                ).Build()
             };
 
             // Act

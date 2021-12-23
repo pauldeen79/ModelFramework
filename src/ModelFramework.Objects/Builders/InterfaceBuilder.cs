@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
@@ -35,15 +34,15 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder Clear()
         {
-            Namespace = default;
+            Namespace = string.Empty;
             Interfaces.Clear();
             Properties.Clear();
             Methods.Clear();
             Metadata.Clear();
             Visibility = default;
-            Name = default;
+            Name = string.Empty;
             Attributes.Clear();
-            GenericTypeArguments = default;
+            GenericTypeArguments = new List<string>();
             return this;
         }
         public InterfaceBuilder WithNamespace(string @namespace)
@@ -67,10 +66,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddInterfaces(params string[] interfaces)
         {
-            if (interfaces != null)
-            {
-                Interfaces.AddRange(interfaces);
-            }
+            Interfaces.AddRange(interfaces);
             return this;
         }
         public InterfaceBuilder ClearProperties()
@@ -84,10 +80,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddProperties(params ClassPropertyBuilder[] properties)
         {
-            if (properties != null)
-            {
-                Properties.AddRange(properties);
-            }
+            Properties.AddRange(properties);
             return this;
         }
         public InterfaceBuilder AddProperties(IEnumerable<IClassProperty> properties)
@@ -96,10 +89,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddProperties(params IClassProperty[] properties)
         {
-            if (properties != null)
-            {
-                Properties.AddRange(properties.Select(x => new ClassPropertyBuilder(x)));
-            }
+            Properties.AddRange(properties.Select(x => new ClassPropertyBuilder(x)));
             return this;
         }
         public InterfaceBuilder ClearMethods()
@@ -113,10 +103,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddMethods(params ClassMethodBuilder[] methods)
         {
-            if (methods != null)
-            {
-                Methods.AddRange(methods);
-            }
+            Methods.AddRange(methods);
             return this;
         }
         public InterfaceBuilder AddMethods(IEnumerable<IClassMethod> methods)
@@ -125,10 +112,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddMethods(params IClassMethod[] methods)
         {
-            if (methods != null)
-            {
-                Methods.AddRange(methods.Select(x => new ClassMethodBuilder(x)));
-            }
+            Methods.AddRange(methods.Select(x => new ClassMethodBuilder(x)));
             return this;
         }
         public InterfaceBuilder ClearMetadata()
@@ -142,10 +126,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public InterfaceBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -154,10 +135,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public InterfaceBuilder WithVisibility(Visibility visibility)
@@ -181,10 +159,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public InterfaceBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -193,10 +168,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public InterfaceBuilder ClearGenericTypeArguments()
@@ -210,10 +182,7 @@ namespace ModelFramework.Objects.Builders
         }
         public InterfaceBuilder AddGenericTypeArguments(params string[] methods)
         {
-            if (methods != null)
-            {
-                GenericTypeArguments.AddRange(methods);
-            }
+            GenericTypeArguments.AddRange(methods);
             return this;
         }
         public InterfaceBuilder()
@@ -224,18 +193,20 @@ namespace ModelFramework.Objects.Builders
             Metadata = new List<MetadataBuilder>();
             Attributes = new List<AttributeBuilder>();
             GenericTypeArguments = new List<string>();
+            Name = string.Empty;
+            Namespace = string.Empty;
         }
         public InterfaceBuilder(IInterface source)
         {
             Namespace = source.Namespace;
-            Interfaces = new List<string>(source?.Interfaces ?? Enumerable.Empty<string>());
-            Properties = new List<ClassPropertyBuilder>(source.Properties?.Select(x => new ClassPropertyBuilder(x)) ?? Enumerable.Empty<ClassPropertyBuilder>());
-            Methods = new List<ClassMethodBuilder>(source.Methods?.Select(x => new ClassMethodBuilder(x)) ?? Enumerable.Empty<ClassMethodBuilder>());
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Interfaces = new List<string>(source.Interfaces);
+            Properties = new List<ClassPropertyBuilder>(source.Properties.Select(x => new ClassPropertyBuilder(x)));
+            Methods = new List<ClassMethodBuilder>(source.Methods.Select(x => new ClassMethodBuilder(x)));
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Visibility = source.Visibility;
             Name = source.Name;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            GenericTypeArguments = new List<string>(source.GenericTypeArguments ?? Enumerable.Empty<string>());
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+            GenericTypeArguments = new List<string>(source.GenericTypeArguments);
         }
     }
 }

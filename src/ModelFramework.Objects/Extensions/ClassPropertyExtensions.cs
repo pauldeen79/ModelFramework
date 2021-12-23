@@ -18,7 +18,14 @@ namespace ModelFramework.Objects.Extensions
                 ? CreateCollectionInitialization(property, addNullChecks)
                 : $"{property.Name} = source.{property.Name};";
 
-            return property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, defaultValue, o => string.Format(o?.ToString() ?? string.Empty, property.Name, property.Name.ToPascalCase(), property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(), property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()));
+            return string.Format
+            (
+                property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, defaultValue),
+                property.Name,
+                property.Name.ToPascalCase(),
+                property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()
+            );
         }
 
         private static string CreateCollectionInitialization(IClassProperty property, bool addNullChecks)
@@ -76,7 +83,7 @@ namespace ModelFramework.Objects.Extensions
 
         private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
         {
-            var customModifiers = property.Metadata.GetMetadataStringValue(customModifiersMetadatName);
+            var customModifiers = property.Metadata.GetStringValue(customModifiersMetadatName);
             if (!string.IsNullOrEmpty(customModifiers)
                 && customModifiers != property.Visibility.ToString().ToLower(CultureInfo.InvariantCulture))
             {

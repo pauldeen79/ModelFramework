@@ -5,7 +5,7 @@ namespace ModelFramework.Common.Builders
 {
     public class MetadataBuilder
     {
-        public object Value { get; set; }
+        public object? Value { get; set; }
         public string Name { get; set; }
         public IMetadata Build()
         {
@@ -14,10 +14,10 @@ namespace ModelFramework.Common.Builders
         public MetadataBuilder Clear()
         {
             Value = default;
-            Name = default;
+            Name = string.Empty;
             return this;
         }
-        public MetadataBuilder WithValue(object value)
+        public MetadataBuilder WithValue(object? value)
         {
             Value = value;
             return this;
@@ -27,13 +27,14 @@ namespace ModelFramework.Common.Builders
             Name = name;
             return this;
         }
-        public MetadataBuilder(IMetadata source = null)
+        public MetadataBuilder()
         {
-            if (source != null)
-            {
-                Value = source.Value;
-                Name = source.Name;
-            }
+            Name = string.Empty;
+        }
+        public MetadataBuilder(IMetadata source)
+        {
+            Value = source.Value;
+            Name = source.Name;
         }
     }
 }

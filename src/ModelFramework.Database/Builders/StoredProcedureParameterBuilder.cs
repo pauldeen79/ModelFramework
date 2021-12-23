@@ -22,9 +22,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureParameterBuilder Clear()
         {
-            Type = default;
-            DefaultValue = default;
-            Name = default;
+            Type = string.Empty;
+            DefaultValue = string.Empty;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -49,12 +49,9 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureParameterBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -64,14 +61,14 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureParameterBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public StoredProcedureParameterBuilder()
         {
+            Name = string.Empty;
+            Type = string.Empty;
+            DefaultValue = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public StoredProcedureParameterBuilder(IStoredProcedureParameter source)
@@ -81,7 +78,7 @@ namespace ModelFramework.Database.Builders
             Type = source.Type;
             DefaultValue = source.DefaultValue;
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

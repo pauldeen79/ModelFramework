@@ -12,11 +12,15 @@ namespace ModelFramework.Database.Default
         public Index(string name,
                      bool unique,
                      IEnumerable<IIndexField> fields,
-                     string fileGroupName = null,
-                     IEnumerable<IMetadata> metadata = null)
+                     string fileGroupName = "",
+                     IEnumerable<IMetadata>? metadata = null)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
-            if (fields?.Any() != true)
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (!fields.Any())
             {
                 throw new ArgumentException("Fields should contain at least 1 value", nameof(fields));
             }

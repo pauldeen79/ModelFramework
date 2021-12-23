@@ -1210,7 +1210,7 @@ namespace MyNamespace
                                     new Attribute
                                     ("MyAttribute", metadata: new[]
                                         {
-                                            new Metadata(ModelFramework.Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
                                         }
                                     )
                                 }
@@ -1266,7 +1266,7 @@ namespace MyNamespace
                                         "string",
                                         metadata: new[]
                                         {
-                                            new Metadata(ModelFramework.Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
                                         }
                                     )
                                 }
@@ -1322,7 +1322,7 @@ namespace MyNamespace
                                         "string",
                                         metadata: new[]
                                         {
-                                            new Metadata(ModelFramework.Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
                                         }
                                     )
                                 }
@@ -1376,7 +1376,7 @@ namespace MyNamespace
                                     (
                                         metadata: new[]
                                         {
-                                            new Metadata(ModelFramework.Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
                                         }
                                     )
                                 }
@@ -1432,7 +1432,7 @@ namespace MyNamespace
                                         "string",
                                         metadata: new[]
                                         {
-                                            new Metadata(ModelFramework.Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
                                         }
                                     )
                                 }
@@ -1485,10 +1485,10 @@ namespace MyNamespace
                                     new Enum
                                     (
                                         "MyEnum",
-                                        System.Array.Empty<IEnumMember>(),
+                                        new[] { new EnumMember("Member1"), new EnumMember("Member2"), new EnumMember("Member3") },
                                         metadata: new[]
                                         {
-                                            new Metadata(ModelFramework.Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
                                         }
                                     )
                                 }
@@ -2937,7 +2937,7 @@ namespace MyNamespace
                     : "ModelFramework.Database.Contracts.I" + instance.Name;
             }
 
-            return null;
+            return string.Empty;
         }
 
         private static IEnumerable<IClass> GetSubClasses()
@@ -2957,7 +2957,7 @@ namespace MyNamespace
 
         private static IEnumerable<IClassMethod> GetMethods()
         {
-            yield return new ClassMethod("Method1", null, parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            yield return new ClassMethod("Method1", string.Empty, parameters: new[] { new Parameter("Parameter1", typeof(string).FullName), new Parameter("Parameter2", typeof(int).FullName) }, codeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
         }
 
         private static IEnumerable<IClassProperty> GetProperties()
@@ -2976,7 +2976,7 @@ namespace MyNamespace
     [ExcludeFromCodeCoverage]
     public record Person
     {
-        public string FirstName { get; init; }
-        public string LastName { get; init; }
+        public string? FirstName { get; init; }
+        public string? LastName { get; init; }
     }
 }

@@ -30,10 +30,10 @@ namespace ModelFramework.Database.Builders
         {
             LocalFields.Clear();
             ForeignFields.Clear();
-            ForeignTableName = default;
+            ForeignTableName = string.Empty;
             CascadeUpdate = default;
             CascadeDelete = default;
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -48,12 +48,9 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintBuilder AddLocalFields(params ForeignKeyConstraintFieldBuilder[] localFields)
         {
-            if (localFields != null)
+            foreach (var itemToAdd in localFields)
             {
-                foreach (var itemToAdd in localFields)
-                {
-                    LocalFields.Add(itemToAdd);
-                }
+                LocalFields.Add(itemToAdd);
             }
             return this;
         }
@@ -63,12 +60,9 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintBuilder AddLocalFields(params ForeignKeyConstraintField[] localFields)
         {
-            if (localFields != null)
+            foreach (var itemToAdd in localFields)
             {
-                foreach (var itemToAdd in localFields)
-                {
-                    LocalFields.Add(new ForeignKeyConstraintFieldBuilder(itemToAdd));
-                }
+                LocalFields.Add(new ForeignKeyConstraintFieldBuilder(itemToAdd));
             }
             return this;
         }
@@ -83,12 +77,9 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintBuilder AddForeignFields(params ForeignKeyConstraintFieldBuilder[] foreignFields)
         {
-            if (foreignFields != null)
+            foreach (var itemToAdd in foreignFields)
             {
-                foreach (var itemToAdd in foreignFields)
-                {
-                    ForeignFields.Add(itemToAdd);
-                }
+                ForeignFields.Add(itemToAdd);
             }
             return this;
         }
@@ -98,12 +89,9 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintBuilder AddForeignFields(params ForeignKeyConstraintField[] foreignFields)
         {
-            if (foreignFields != null)
+            foreach (var itemToAdd in foreignFields)
             {
-                foreach (var itemToAdd in foreignFields)
-                {
-                    ForeignFields.Add(new ForeignKeyConstraintFieldBuilder(itemToAdd));
-                }
+                ForeignFields.Add(new ForeignKeyConstraintFieldBuilder(itemToAdd));
             }
             return this;
         }
@@ -138,12 +126,9 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -153,14 +138,13 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ForeignKeyConstraintBuilder()
         {
+            ForeignTableName = string.Empty;
+            Name = string.Empty;
             LocalFields = new List<ForeignKeyConstraintFieldBuilder>();
             ForeignFields = new List<ForeignKeyConstraintFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
@@ -171,13 +155,13 @@ namespace ModelFramework.Database.Builders
             ForeignFields = new List<ForeignKeyConstraintFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
 
-            foreach (var x in source.LocalFields ?? Enumerable.Empty<IForeignKeyConstraintField>()) LocalFields.Add(new ForeignKeyConstraintFieldBuilder(x));
-            foreach (var x in source.ForeignFields ?? Enumerable.Empty<IForeignKeyConstraintField>()) ForeignFields.Add(new ForeignKeyConstraintFieldBuilder(x));
+            foreach (var x in source.LocalFields) LocalFields.Add(new ForeignKeyConstraintFieldBuilder(x));
+            foreach (var x in source.ForeignFields) ForeignFields.Add(new ForeignKeyConstraintFieldBuilder(x));
             ForeignTableName = source.ForeignTableName;
             CascadeUpdate = source.CascadeUpdate;
             CascadeDelete = source.CascadeDelete;
             Name = source.Name;
-            foreach (var x in source.Metadata ?? Enumerable.Empty<IMetadata>()) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

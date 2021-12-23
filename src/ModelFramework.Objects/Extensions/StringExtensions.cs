@@ -9,11 +9,6 @@ namespace ModelFramework.Objects.Extensions
     {
         public static string ReplaceGeneric(this string typeName, string prefix)
         {
-            if (prefix == null)
-            {
-                throw new ArgumentNullException(nameof(prefix));
-            }
-
             if (typeName.StartsWith(prefix + "<") && typeName.EndsWith(">"))
             {
                 return typeName.Substring(prefix.Length + 1, typeName.Length - prefix.Length - 2);
@@ -89,7 +84,7 @@ namespace ModelFramework.Objects.Extensions
         {
             if (name == null)
             {
-                return null;
+                return string.Empty;
             }
             var index = name.IndexOf(".");
             if (index == -1)

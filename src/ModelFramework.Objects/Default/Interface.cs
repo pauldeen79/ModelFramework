@@ -14,15 +14,18 @@ namespace ModelFramework.Objects.Default
                          string @namespace,
                          Visibility visibility = Visibility.Public,
                          bool partial = false,
-                         IEnumerable<string> interfaces = null,
-                         IEnumerable<IClassProperty> properties = null,
-                         IEnumerable<IClassMethod> methods = null,
-                         IEnumerable<IMetadata> metadata = null,
-                         IEnumerable<IAttribute> attributes = null,
-                         IEnumerable<string> genericTypeArguments = null)
+                         IEnumerable<string>? interfaces = null,
+                         IEnumerable<IClassProperty>? properties = null,
+                         IEnumerable<IClassMethod>? methods = null,
+                         IEnumerable<IMetadata>? metadata = null,
+                         IEnumerable<IAttribute>? attributes = null,
+                         IEnumerable<string>? genericTypeArguments = null)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             Namespace = @namespace;

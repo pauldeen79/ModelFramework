@@ -60,11 +60,11 @@ namespace ModelFramework.Objects.Builders
             Operator = default;
             IsNullable = default;
             Visibility = default;
-            Name = default;
+            Name = string.Empty;
             Attributes.Clear();
             Parameters.Clear();
-            TypeName = default;
-            ExplicitInterfaceName = default;
+            TypeName = string.Empty;
+            ExplicitInterfaceName = string.Empty;
             CodeStatements.Clear();
             return this;
         }
@@ -94,10 +94,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ClassMethodBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -106,10 +103,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ClassMethodBuilder WithStatic(bool @static = true)
@@ -163,10 +157,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddAttributes(params AttributeBuilder[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes);
-            }
+            Attributes.AddRange(attributes);
             return this;
         }
         public ClassMethodBuilder AddAttributes(IEnumerable<IAttribute> attributes)
@@ -175,10 +166,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddAttributes(params IAttribute[] attributes)
         {
-            if (attributes != null)
-            {
-                Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
-            }
+            Attributes.AddRange(attributes.Select(x => new AttributeBuilder(x)));
             return this;
         }
         public ClassMethodBuilder ClearParameters()
@@ -201,12 +189,9 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddParameters(params IParameter[] parameters)
         {
-            if (parameters != null)
+            foreach (var itemToAdd in parameters)
             {
-                foreach (var itemToAdd in parameters)
-                {
-                    Parameters.Add(new ParameterBuilder(itemToAdd));
-                }
+                Parameters.Add(new ParameterBuilder(itemToAdd));
             }
             return this;
         }
@@ -236,10 +221,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddCodeStatements(params ICodeStatementBuilder[] codeStatements)
         {
-            if (codeStatements != null)
-            {
-                CodeStatements.AddRange(codeStatements);
-            }
+            CodeStatements.AddRange(codeStatements);
             return this;
         }
         public ClassMethodBuilder AddCodeStatements(IEnumerable<ICodeStatement> codeStatements)
@@ -248,10 +230,7 @@ namespace ModelFramework.Objects.Builders
         }
         public ClassMethodBuilder AddCodeStatements(params ICodeStatement[] codeStatements)
         {
-            if (codeStatements != null)
-            {
-                CodeStatements.AddRange(codeStatements.Select(x => x.CreateBuilder()));
-            }
+            CodeStatements.AddRange(codeStatements.Select(x => x.CreateBuilder()));
             return this;
         }
         public ClassMethodBuilder()
@@ -260,12 +239,15 @@ namespace ModelFramework.Objects.Builders
             Attributes = new List<AttributeBuilder>();
             Parameters = new List<ParameterBuilder>();
             CodeStatements = new List<ICodeStatementBuilder>();
+            Name = string.Empty;
+            TypeName = string.Empty;
+            ExplicitInterfaceName = string.Empty;
         }
         public ClassMethodBuilder(IClassMethod source)
         {
             Partial = source.Partial;
             ExtensionMethod = source.ExtensionMethod;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
             Static = source.Static;
             Virtual = source.Virtual;
             Abstract = source.Abstract;
@@ -275,11 +257,11 @@ namespace ModelFramework.Objects.Builders
             IsNullable = source.IsNullable;
             Visibility = source.Visibility;
             Name = source.Name;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            Parameters = new List<ParameterBuilder>(source.Parameters?.Select(x => new ParameterBuilder(x)) ?? Enumerable.Empty<ParameterBuilder>());
+            Attributes = new List<AttributeBuilder>(source.Attributes.Select(x => new AttributeBuilder(x)));
+            Parameters = new List<ParameterBuilder>(source.Parameters.Select(x => new ParameterBuilder(x)));
             TypeName = source.TypeName;
             ExplicitInterfaceName = source.ExplicitInterfaceName;
-            CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
+            CodeStatements = new List<ICodeStatementBuilder>(source.CodeStatements.Select(x => x.CreateBuilder()));
         }
     }
 }

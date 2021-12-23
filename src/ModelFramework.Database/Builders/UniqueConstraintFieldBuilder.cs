@@ -17,7 +17,7 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintFieldBuilder Clear()
         {
-            Name = default;
+            Name = string.Empty;
             Metadata.Clear();
             return this;
         }
@@ -37,12 +37,9 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
+            foreach (var itemToAdd in metadata)
             {
-                foreach (var itemToAdd in metadata)
-                {
-                    Metadata.Add(itemToAdd);
-                }
+                Metadata.Add(itemToAdd);
             }
             return this;
         }
@@ -52,14 +49,12 @@ namespace ModelFramework.Database.Builders
         }
         public UniqueConstraintFieldBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public UniqueConstraintFieldBuilder()
         {
+            Name = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public UniqueConstraintFieldBuilder(IUniqueConstraintField source)
@@ -67,7 +62,7 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
 
             Name = source.Name;
-            if (source.Metadata != null) foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
         }
     }
 }

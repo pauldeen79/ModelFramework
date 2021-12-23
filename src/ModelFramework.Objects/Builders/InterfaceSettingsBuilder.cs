@@ -8,10 +8,10 @@ namespace ModelFramework.Objects.Builders
 {
     public class InterfaceSettingsBuilder
     {
-        public Func<IClassProperty, bool> PropertyFilter { get; set; }
-        public Func<IClassMethod, bool> MethodFilter { get; set; }
-        public Func<IMetadata, bool> MetadataFilter { get; set; }
-        public Func<IAttribute, bool> AttributeFilter { get; set; }
+        public Func<IClassProperty, bool>? PropertyFilter { get; set; }
+        public Func<IClassMethod, bool>? MethodFilter { get; set; }
+        public Func<IMetadata, bool>? MetadataFilter { get; set; }
+        public Func<IAttribute, bool>? AttributeFilter { get; set; }
         public IDictionary<string, string> ApplyGenericTypes { get; set; }
         public bool ChangePropertiesToReadOnly { get; set; }
 
@@ -29,30 +29,30 @@ namespace ModelFramework.Objects.Builders
             MethodFilter = null;
             MetadataFilter = null;
             AttributeFilter = null;
-            ApplyGenericTypes = null;
+            ApplyGenericTypes.Clear();
             ChangePropertiesToReadOnly = false;
             return this;
         }
 
-        public InterfaceSettingsBuilder WithPropertyFilter(Func<IClassProperty, bool> propertyFilter)
+        public InterfaceSettingsBuilder WithPropertyFilter(Func<IClassProperty, bool>? propertyFilter)
         {
             PropertyFilter = propertyFilter;
             return this;
         }
 
-        public InterfaceSettingsBuilder WithMethodFilter(Func<IClassMethod, bool> methodFilter)
+        public InterfaceSettingsBuilder WithMethodFilter(Func<IClassMethod, bool>? methodFilter)
         {
             MethodFilter = methodFilter;
             return this;
         }
 
-        public InterfaceSettingsBuilder WithMetadataFilter(Func<IMetadata, bool> metadataFilter)
+        public InterfaceSettingsBuilder WithMetadataFilter(Func<IMetadata, bool>? metadataFilter)
         {
             MetadataFilter = metadataFilter;
             return this;
         }
 
-        public InterfaceSettingsBuilder WithAttributeFilter(Func<IAttribute, bool> attributeFilter)
+        public InterfaceSettingsBuilder WithAttributeFilter(Func<IAttribute, bool>? attributeFilter)
         {
             AttributeFilter = attributeFilter;
             return this;
@@ -78,6 +78,7 @@ namespace ModelFramework.Objects.Builders
 
         public InterfaceSettingsBuilder()
         {
+            ApplyGenericTypes = new Dictionary<string, string>();
         }
 
         public InterfaceSettingsBuilder(InterfaceSettings source)
@@ -86,7 +87,7 @@ namespace ModelFramework.Objects.Builders
             MethodFilter = source.MethodFilter;
             MetadataFilter = source.MetadataFilter;
             AttributeFilter = source.AttributeFilter;
-            ApplyGenericTypes = source.ApplyGenericTypes;
+            ApplyGenericTypes = source.ApplyGenericTypes ?? new Dictionary<string, string>();
             ChangePropertiesToReadOnly = source.ChangePropertiesToReadOnly;
         }
     }

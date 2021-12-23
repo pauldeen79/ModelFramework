@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using CrossCutting.Common;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
+using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using Moq;
 using TextTemplateTransformationFramework.Runtime;
@@ -12,24 +14,26 @@ namespace ModelFramework.Generators.Objects.Tests
     public class CSharpClassGenerator_DefaultClassTemplateTests
     {
         [Fact]
-        public void Can_Generate_Nullable_Context_Class()
+        public void CanGenerateNullableContextClass()
         {
             // Arrange
             var typeBaseMock = new Mock<IClass>();
+            typeBaseMock.SetupGet(x => x.Name).Returns("Test");
             typeBaseMock.SetupGet(x => x.Methods).Returns(new ValueCollection<IClassMethod>());
             typeBaseMock.SetupGet(x => x.Properties).Returns(new ValueCollection<IClassProperty>());
             typeBaseMock.SetupGet(x => x.Constructors).Returns(new ValueCollection<IClassConstructor>());
             typeBaseMock.SetupGet(x => x.Fields).Returns(new ValueCollection<IClassField>());
             typeBaseMock.SetupGet(x => x.Enums).Returns(new ValueCollection<IEnum>());
             typeBaseMock.SetupGet(x => x.Attributes).Returns(new ValueCollection<IAttribute>());
+            typeBaseMock.SetupGet(x => x.Metadata).Returns(new ValueCollection<IMetadata>());
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true });
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut);
 
             // Assert
-            actual.Should().Be(@"#nullable enable
-    public class 
+            actual.NormalizeLineEndings().Should().Be(@"#nullable enable
+    public class Test
     {
     }
 #nullable restore
@@ -37,7 +41,7 @@ namespace ModelFramework.Generators.Objects.Tests
         }
 
         [Fact]
-        public void Can_Test_ViewModel()
+        public void CanTestViewModel()
         {
             // Arrange
             var typeBaseMock = new Mock<IClass>();
@@ -47,6 +51,7 @@ namespace ModelFramework.Generators.Objects.Tests
             typeBaseMock.SetupGet(x => x.Fields).Returns(new ValueCollection<IClassField>());
             typeBaseMock.SetupGet(x => x.Enums).Returns(new ValueCollection<IEnum>());
             typeBaseMock.SetupGet(x => x.Attributes).Returns(new ValueCollection<IAttribute>());
+            typeBaseMock.SetupGet(x => x.Metadata).Returns(new ValueCollection<IMetadata>());
             var sut = new CSharpClassGenerator_DefaultClassViewModel
             {
                 Model = typeBaseMock.Object,

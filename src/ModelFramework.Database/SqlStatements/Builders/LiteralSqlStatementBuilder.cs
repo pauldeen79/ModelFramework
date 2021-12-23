@@ -27,10 +27,7 @@ namespace ModelFramework.Database.SqlStatements.Builders
         }
         public LiteralSqlStatementBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public LiteralSqlStatementBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -39,10 +36,7 @@ namespace ModelFramework.Database.SqlStatements.Builders
         }
         public LiteralSqlStatementBuilder AddMetadata(params IMetadata[] metadata)
         {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
+            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ISqlStatement Build()
@@ -53,25 +47,26 @@ namespace ModelFramework.Database.SqlStatements.Builders
         {
             Metadata = new List<MetadataBuilder>();
 
-            if (source.Metadata != null) Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             Statement = source.Statement;
 
             return this;
         }
         public LiteralSqlStatementBuilder Clear()
         {
-            Statement = default;
+            Statement = string.Empty;
             Metadata.Clear();
             return this;
         }
         public LiteralSqlStatementBuilder()
         {
+            Statement = string.Empty;
             Metadata = new List<MetadataBuilder>();
         }
         public LiteralSqlStatementBuilder(LiteralSqlStatement source)
         {
             Statement = source.Statement;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
+            Metadata = new List<MetadataBuilder>(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }
