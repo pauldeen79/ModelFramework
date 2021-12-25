@@ -87,7 +87,7 @@ GO
                     new TableBuilder().WithName("Table1").AddFields
                     (
                         new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32).WithStringCollation("Latin1_General_CI_AS"),
                         new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
                     )
                 ).Build()
@@ -105,7 +105,7 @@ SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[Table1](
 	[Field1] INT NULL,
-	[Field2] VARCHAR(32) NULL,
+	[Field2] VARCHAR(32) COLLATE Latin1_General_CI_AS NULL,
 	[Field3] NUMERIC(8,2) NOT NULL
 ) ON [PRIMARY]
 GO

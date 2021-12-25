@@ -105,10 +105,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public TableFieldBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -131,10 +128,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddCheckConstraints(params CheckConstraintBuilder[] checkConstraints)
         {
-            foreach (var itemToAdd in checkConstraints)
-            {
-                CheckConstraints.Add(itemToAdd);
-            }
+            CheckConstraints.AddRange(checkConstraints);
             return this;
         }
         public TableFieldBuilder AddCheckConstraints(IEnumerable<ICheckConstraint> checkConstraints)
@@ -143,10 +137,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableFieldBuilder AddCheckConstraints(params ICheckConstraint[] checkConstraints)
         {
-            foreach (var itemToAdd in checkConstraints)
-            {
-                CheckConstraints.Add(new CheckConstraintBuilder(itemToAdd));
-            }
+            CheckConstraints.AddRange(checkConstraints.Select(itemToAdd => new CheckConstraintBuilder(itemToAdd)));
             return this;
         }
         public TableFieldBuilder()
@@ -171,8 +162,8 @@ namespace ModelFramework.Database.Builders
             StringCollation = source.StringCollation;
             IsStringMaxLength = source.IsStringMaxLength;
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            foreach (var x in source.CheckConstraints) CheckConstraints.Add(new CheckConstraintBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            CheckConstraints.AddRange(source.CheckConstraints.Select(x => new CheckConstraintBuilder(x)));
         }
     }
 }

@@ -492,7 +492,13 @@ GO
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
+            if (!string.IsNullOrEmpty(Model.StringCollation))
+       {
+
+            Write(this.ToStringHelper.ToStringWithCulture(@" COLLATE "));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.StringCollation));
             }
+   }
    else if (Model.NumericPrecision != null && Model.NumericScale != null)
    {
 

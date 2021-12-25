@@ -42,10 +42,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddTables(params TableBuilder[] tables)
         {
-            foreach (var itemToAdd in tables)
-            {
-                Tables.Add(itemToAdd);
-            }
+            Tables.AddRange(tables);
             return this;
         }
         public SchemaBuilder AddTables(IEnumerable<ITable> tables)
@@ -54,10 +51,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddTables(params ITable[] tables)
         {
-            foreach (var itemToAdd in tables)
-            {
-                Tables.Add(new TableBuilder(itemToAdd));
-            }
+            Tables.AddRange(tables.Select(itemToAdd => new TableBuilder(itemToAdd)));
             return this;
         }
         public SchemaBuilder ClearStoredProcedures()
@@ -71,10 +65,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddStoredProcedures(params StoredProcedureBuilder[] storedProcedures)
         {
-            foreach (var itemToAdd in storedProcedures)
-            {
-                StoredProcedures.Add(itemToAdd);
-            }
+            StoredProcedures.AddRange(storedProcedures);
             return this;
         }
         public SchemaBuilder AddStoredProcedures(IEnumerable<IStoredProcedure> storedProcedures)
@@ -83,10 +74,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddStoredProcedures(params IStoredProcedure[] storedProcedures)
         {
-            foreach (var itemToAdd in storedProcedures)
-            {
-                StoredProcedures.Add(new StoredProcedureBuilder(itemToAdd));
-            }
+            StoredProcedures.AddRange(storedProcedures.Select(itemToAdd => new StoredProcedureBuilder(itemToAdd)));
             return this;
         }
         public SchemaBuilder ClearViews()
@@ -100,10 +88,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddViews(params ViewBuilder[] views)
         {
-            foreach (var itemToAdd in views)
-            {
-                Views.Add(itemToAdd);
-            }
+            Views.AddRange(views);
             return this;
         }
         public SchemaBuilder AddViews(IEnumerable<IView> views)
@@ -112,10 +97,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddViews(params IView[] views)
         {
-            foreach (var itemToAdd in views)
-            {
-                Views.Add(new ViewBuilder(itemToAdd));
-            }
+            Views.AddRange(views.Select(itemToAdd => new ViewBuilder(itemToAdd)));
             return this;
         }
         public SchemaBuilder WithName(string name)
@@ -134,10 +116,7 @@ namespace ModelFramework.Database.Builders
         }
         public SchemaBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public SchemaBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -163,12 +142,11 @@ namespace ModelFramework.Database.Builders
             StoredProcedures = new List<StoredProcedureBuilder>();
             Views = new List<ViewBuilder>();
             Metadata = new List<MetadataBuilder>();
-
-            foreach (var x in source.Tables) Tables.Add(new TableBuilder(x));
-            foreach (var x in source.StoredProcedures) StoredProcedures.Add(new StoredProcedureBuilder(x));
-            foreach (var x in source.Views) Views.Add(new ViewBuilder(x));
+            Tables.AddRange(source.Tables.Select(x => new TableBuilder(x)));
+            StoredProcedures.AddRange(source.StoredProcedures.Select(x => new StoredProcedureBuilder(x)));
+            Views.AddRange(source.Views.Select(x => new ViewBuilder(x)));
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

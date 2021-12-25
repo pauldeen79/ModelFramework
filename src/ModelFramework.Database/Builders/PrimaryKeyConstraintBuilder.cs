@@ -44,10 +44,7 @@ namespace ModelFramework.Database.Builders
         }
         public PrimaryKeyConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public PrimaryKeyConstraintBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -75,10 +72,7 @@ namespace ModelFramework.Database.Builders
         }
         public PrimaryKeyConstraintBuilder AddFields(params PrimaryKeyConstraintFieldBuilder[] fields)
         {
-            foreach (var itemToAdd in fields)
-            {
-                Fields.Add(itemToAdd);
-            }
+            Fields.AddRange(fields);
             return this;
         }
         public PrimaryKeyConstraintBuilder AddFields(IEnumerable<PrimaryKeyConstraintField> fields)
@@ -87,10 +81,7 @@ namespace ModelFramework.Database.Builders
         }
         public PrimaryKeyConstraintBuilder AddFields(params PrimaryKeyConstraintField[] fields)
         {
-            foreach (var itemToAdd in fields)
-            {
-                Fields.Add(new PrimaryKeyConstraintFieldBuilder(itemToAdd));
-            }
+            Fields.AddRange(fields.Select(itemToAdd => new PrimaryKeyConstraintFieldBuilder(itemToAdd)));
             return this;
         }
         public PrimaryKeyConstraintBuilder()
@@ -106,9 +97,9 @@ namespace ModelFramework.Database.Builders
             Fields = new List<PrimaryKeyConstraintFieldBuilder>();
 
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             FileGroupName = source.FileGroupName;
-            foreach (var x in source.Fields) Fields.Add(new PrimaryKeyConstraintFieldBuilder(x));
+            Fields.AddRange(source.Fields.Select(x => new PrimaryKeyConstraintFieldBuilder(x)));
         }
     }
 }

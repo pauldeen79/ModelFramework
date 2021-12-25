@@ -32,10 +32,7 @@ namespace ModelFramework.Database.Builders
         }
         public ForeignKeyConstraintFieldBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ForeignKeyConstraintFieldBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -57,7 +54,7 @@ namespace ModelFramework.Database.Builders
             Metadata = new List<MetadataBuilder>();
 
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

@@ -44,10 +44,7 @@ namespace ModelFramework.Database.Builders
         }
         public CheckConstraintBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public CheckConstraintBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -71,7 +68,7 @@ namespace ModelFramework.Database.Builders
 
             Expression = source.Expression;
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

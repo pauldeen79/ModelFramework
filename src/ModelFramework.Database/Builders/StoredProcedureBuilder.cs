@@ -44,10 +44,7 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddParameters(params StoredProcedureParameterBuilder[] parameters)
         {
-            foreach (var itemToAdd in parameters)
-            {
-                Parameters.Add(itemToAdd);
-            }
+            Parameters.AddRange(parameters);
             return this;
         }
         public StoredProcedureBuilder AddParameters(IEnumerable<IStoredProcedureParameter> parameters)
@@ -56,10 +53,7 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddParameters(params IStoredProcedureParameter[] parameters)
         {
-            foreach (var itemToAdd in parameters)
-            {
-                Parameters.Add(new StoredProcedureParameterBuilder(itemToAdd));
-            }
+            Parameters.AddRange(parameters.Select(itemToAdd => new StoredProcedureParameterBuilder(itemToAdd)));
             return this;
         }
         public StoredProcedureBuilder AddStatements(IEnumerable<ISqlStatementBuilder> statements)
@@ -68,10 +62,7 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddStatements(params ISqlStatementBuilder[] statements)
         {
-            foreach (var itemToAdd in statements)
-            {
-                Statements.Add(itemToAdd);
-            }
+            Statements.AddRange(statements);
             return this;
         }
         public StoredProcedureBuilder AddStatements(IEnumerable<ISqlStatement> statements)
@@ -80,10 +71,7 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddStatements(params ISqlStatement[] statements)
         {
-            foreach (var itemToAdd in statements)
-            {
-                Statements.Add(itemToAdd.CreateBuilder());
-            }
+            Statements.AddRange(statements.Select(itemToAdd => itemToAdd.CreateBuilder()));
             return this;
         }
         public StoredProcedureBuilder WithName(string name)
@@ -102,10 +90,7 @@ namespace ModelFramework.Database.Builders
         }
         public StoredProcedureBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public StoredProcedureBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -129,11 +114,10 @@ namespace ModelFramework.Database.Builders
             Parameters = new List<StoredProcedureParameterBuilder>();
             Metadata = new List<MetadataBuilder>();
             Statements = new List<ISqlStatementBuilder>();
-
-            foreach (var x in source.Parameters) Parameters.Add(new StoredProcedureParameterBuilder(x));
-            foreach (var x in source.Statements) Statements.Add(x.CreateBuilder());
+            Parameters.AddRange(source.Parameters.Select(x => new StoredProcedureParameterBuilder(x)));
+            Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

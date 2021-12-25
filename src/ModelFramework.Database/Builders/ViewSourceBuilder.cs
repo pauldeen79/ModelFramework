@@ -62,10 +62,7 @@ namespace ModelFramework.Database.Builders
         }
         public ViewSourceBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ViewSourceBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -93,7 +90,7 @@ namespace ModelFramework.Database.Builders
             Name = source.Name;
             SourceSchemaName = source.SourceSchemaName;
             SourceObjectName = source.SourceObjectName;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

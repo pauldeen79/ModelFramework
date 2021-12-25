@@ -13,6 +13,10 @@
 #><#= Model.StringLength.GetValueOrDefault(32) #><#
 	   }
 #>)<#
+       if (!string.IsNullOrEmpty(Model.StringCollation))
+       { #>
+ COLLATE <#= Model.StringCollation #><#
+       }
    }
    else if (Model.NumericPrecision != null && Model.NumericScale != null)
    {

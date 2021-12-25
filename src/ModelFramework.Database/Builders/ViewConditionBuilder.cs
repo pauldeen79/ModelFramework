@@ -49,10 +49,7 @@ namespace ModelFramework.Database.Builders
         }
         public ViewConditionBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public ViewConditionBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -82,7 +79,7 @@ namespace ModelFramework.Database.Builders
 
             Expression = source.Expression;
             Combination = source.Combination;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
             FileGroupName = source.FileGroupName;
         }
     }

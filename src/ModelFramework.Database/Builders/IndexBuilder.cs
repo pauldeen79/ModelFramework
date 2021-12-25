@@ -42,10 +42,7 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder AddFields(params IndexFieldBuilder[] fields)
         {
-            foreach (var itemToAdd in fields)
-            {
-                Fields.Add(itemToAdd);
-            }
+            Fields.AddRange(fields);
             return this;
         }
         public IndexBuilder AddFields(IEnumerable<IndexField> fields)
@@ -54,10 +51,7 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder AddFields(params IndexField[] fields)
         {
-            foreach (var itemToAdd in fields)
-            {
-                Fields.Add(new IndexFieldBuilder(itemToAdd));
-            }
+            Fields.AddRange(fields.Select(itemToAdd => new IndexFieldBuilder(itemToAdd)));
             return this;
         }
         public IndexBuilder WithUnique(bool unique = true)
@@ -86,10 +80,7 @@ namespace ModelFramework.Database.Builders
         }
         public IndexBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public IndexBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -112,12 +103,11 @@ namespace ModelFramework.Database.Builders
         {
             Fields = new List<IndexFieldBuilder>();
             Metadata = new List<MetadataBuilder>();
-
-            foreach (var x in source.Fields) Fields.Add(new IndexFieldBuilder(x));
+            Fields.AddRange(source.Fields.Select(x => new IndexFieldBuilder(x)));
             Unique = source.Unique;
             Name = source.Name;
             FileGroupName = source.FileGroupName;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
         }
     }
 }

@@ -62,10 +62,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddPrimaryKeyConstraints(params PrimaryKeyConstraintBuilder[] primaryKeyConstraints)
         {
-            foreach (var itemToAdd in primaryKeyConstraints)
-            {
-                PrimaryKeyConstraints.Add(itemToAdd);
-            }
+            PrimaryKeyConstraints.AddRange(primaryKeyConstraints);
             return this;
         }
         public TableBuilder AddPrimaryKeyConstraints(IEnumerable<IPrimaryKeyConstraint> primaryKeyConstraints)
@@ -74,10 +71,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddPrimaryKeyConstraints(params IPrimaryKeyConstraint[] primaryKeyConstraints)
         {
-            foreach (var itemToAdd in primaryKeyConstraints)
-            {
-                PrimaryKeyConstraints.Add(new PrimaryKeyConstraintBuilder(itemToAdd));
-            }
+            PrimaryKeyConstraints.AddRange(primaryKeyConstraints.Select(itemToAdd => new PrimaryKeyConstraintBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder ClearUniqueConstraints()
@@ -91,10 +85,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddUniqueConstraints(params UniqueConstraintBuilder[] uniqueConstraints)
         {
-            foreach (var itemToAdd in uniqueConstraints)
-            {
-                UniqueConstraints.Add(itemToAdd);
-            }
+            UniqueConstraints.AddRange(uniqueConstraints);
             return this;
         }
         public TableBuilder AddUniqueConstraints(IEnumerable<IUniqueConstraint> uniqueConstraints)
@@ -103,10 +94,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddUniqueConstraints(params IUniqueConstraint[] uniqueConstraints)
         {
-            foreach (var itemToAdd in uniqueConstraints)
-            {
-                UniqueConstraints.Add(new UniqueConstraintBuilder(itemToAdd));
-            }
+            UniqueConstraints.AddRange(uniqueConstraints.Select(itemToAdd => new UniqueConstraintBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder ClearIndexes()
@@ -120,10 +108,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddIndexes(params IndexBuilder[] indexes)
         {
-            foreach (var itemToAdd in indexes)
-            {
-                Indexes.Add(itemToAdd);
-            }
+            Indexes.AddRange(indexes);
             return this;
         }
         public TableBuilder AddIndexes(IEnumerable<IIndex> indexes)
@@ -132,10 +117,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddIndexes(params IIndex[] indexes)
         {
-            foreach (var itemToAdd in indexes)
-            {
-                Indexes.Add(new IndexBuilder(itemToAdd));
-            }
+            Indexes.AddRange(indexes.Select(itemToAdd => new IndexBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder ClearFields()
@@ -149,10 +131,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddFields(params TableFieldBuilder[] fields)
         {
-            foreach (var itemToAdd in fields)
-            {
-                Fields.Add(itemToAdd);
-            }
+            Fields.AddRange(fields);
             return this;
         }
         public TableBuilder AddFields(IEnumerable<ITableField> fields)
@@ -161,10 +140,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddFields(params ITableField[] fields)
         {
-            foreach (var itemToAdd in fields)
-            {
-                Fields.Add(new TableFieldBuilder(itemToAdd));
-            }
+            Fields.AddRange(fields.Select(itemToAdd => new TableFieldBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder WithName(string name)
@@ -183,10 +159,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
-            foreach (var itemToAdd in metadata)
-            {
-                Metadata.Add(itemToAdd);
-            }
+            Metadata.AddRange(metadata);
             return this;
         }
         public TableBuilder AddMetadata(IEnumerable<IMetadata> metadata)
@@ -209,10 +182,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddDefaultValueConstraints(params DefaultValueConstraintBuilder[] defaultValueConstraints)
         {
-            foreach (var itemToAdd in defaultValueConstraints)
-            {
-                DefaultValueConstraints.Add(itemToAdd);
-            }
+            DefaultValueConstraints.AddRange(defaultValueConstraints);
             return this;
         }
         public TableBuilder AddDefaultValueConstraints(IEnumerable<IDefaultValueConstraint> defaultValueConstraints)
@@ -221,10 +191,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddDefaultValueConstraints(params IDefaultValueConstraint[] defaultValueConstraints)
         {
-            foreach (var itemToAdd in defaultValueConstraints)
-            {
-                DefaultValueConstraints.Add(new DefaultValueConstraintBuilder(itemToAdd));
-            }
+            DefaultValueConstraints.AddRange(defaultValueConstraints.Select(itemToAdd => new DefaultValueConstraintBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder ClearForeignKeyConstraints()
@@ -238,10 +205,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddForeignKeyConstraints(params ForeignKeyConstraintBuilder[] foreignKeyConstraints)
         {
-            foreach (var itemToAdd in foreignKeyConstraints)
-            {
-                ForeignKeyConstraints.Add(itemToAdd);
-            }
+            ForeignKeyConstraints.AddRange(foreignKeyConstraints);
             return this;
         }
         public TableBuilder AddForeignKeyConstraints(IEnumerable<IForeignKeyConstraint> foreignKeyConstraints)
@@ -250,10 +214,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddForeignKeyConstraints(params IForeignKeyConstraint[] foreignKeyConstraints)
         {
-            foreach (var itemToAdd in foreignKeyConstraints)
-            {
-                ForeignKeyConstraints.Add(new ForeignKeyConstraintBuilder(itemToAdd));
-            }
+            ForeignKeyConstraints.AddRange(foreignKeyConstraints.Select(itemToAdd => new ForeignKeyConstraintBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder ClearCheckConstraints()
@@ -267,10 +228,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddCheckConstraints(params CheckConstraintBuilder[] checkConstraints)
         {
-            foreach (var itemToAdd in checkConstraints)
-            {
-                CheckConstraints.Add(itemToAdd);
-            }
+            CheckConstraints.AddRange(checkConstraints);
             return this;
         }
         public TableBuilder AddCheckConstraints(IEnumerable<ICheckConstraint> checkConstraints)
@@ -279,10 +237,7 @@ namespace ModelFramework.Database.Builders
         }
         public TableBuilder AddCheckConstraints(params ICheckConstraint[] checkConstraints)
         {
-            foreach (var itemToAdd in checkConstraints)
-            {
-                CheckConstraints.Add(new CheckConstraintBuilder(itemToAdd));
-            }
+            CheckConstraints.AddRange(checkConstraints.Select(itemToAdd => new CheckConstraintBuilder(itemToAdd)));
             return this;
         }
         public TableBuilder()
@@ -310,15 +265,15 @@ namespace ModelFramework.Database.Builders
             CheckConstraints = new List<CheckConstraintBuilder>();
 
             FileGroupName = source.FileGroupName;
-            foreach (var x in source.PrimaryKeyConstraints) PrimaryKeyConstraints.Add(new PrimaryKeyConstraintBuilder(x));
-            foreach (var x in source.UniqueConstraints) UniqueConstraints.Add(new UniqueConstraintBuilder(x));
-            foreach (var x in source.Indexes) Indexes.Add(new IndexBuilder(x));
-            foreach (var x in source.Fields) Fields.Add(new TableFieldBuilder(x));
+            PrimaryKeyConstraints.AddRange(source.PrimaryKeyConstraints.Select(x => new PrimaryKeyConstraintBuilder(x)));
+            UniqueConstraints.AddRange(source.UniqueConstraints.Select(x => new UniqueConstraintBuilder(x)));
+            Indexes.AddRange(source.Indexes.Select(x => new IndexBuilder(x)));
+            Fields.AddRange(source.Fields.Select(x => new TableFieldBuilder(x)));
             Name = source.Name;
-            foreach (var x in source.Metadata) Metadata.Add(new MetadataBuilder(x));
-            foreach (var x in source.DefaultValueConstraints) DefaultValueConstraints.Add(new DefaultValueConstraintBuilder(x));
-            foreach (var x in source.ForeignKeyConstraints) ForeignKeyConstraints.Add(new ForeignKeyConstraintBuilder(x));
-            foreach (var x in source.CheckConstraints) CheckConstraints.Add(new CheckConstraintBuilder(x));
+            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
+            DefaultValueConstraints.AddRange(source.DefaultValueConstraints.Select(x => new DefaultValueConstraintBuilder(x)));
+            ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ForeignKeyConstraintBuilder(x)));
+            CheckConstraints.AddRange(source.CheckConstraints.Select(x => new CheckConstraintBuilder(x)));
         }
     }
 }
