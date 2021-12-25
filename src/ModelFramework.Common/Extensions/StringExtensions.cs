@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using CrossCutting.Common.Extensions;
 
 namespace ModelFramework.Common.Extensions
 {

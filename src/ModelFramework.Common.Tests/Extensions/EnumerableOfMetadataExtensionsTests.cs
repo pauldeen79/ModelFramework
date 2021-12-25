@@ -2,6 +2,7 @@
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
+using ModelFramework.Common.Tests.TestFixtures;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Xunit;
@@ -100,6 +101,71 @@ namespace ModelFramework.Common.Tests.Extensions
 
             // Assert
             actual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void CanGetEnumValueWhenPresent()
+        {
+            // Arrange
+            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+
+            // Act
+            var actual = sut.GetValue("Test", () => MyEnumThing.B);
+
+            // Assert
+            actual.Should().Be(MyEnumThing.A);
+        }
+
+        [Fact]
+        public void CanGetDefaultValueFromEnumWhenNotPresent()
+        {
+            // Arrange
+            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+
+            // Act
+            var actual = sut.GetValue("WrongName", () => MyEnumThing.B);
+
+            // Assert
+            actual.Should().Be(MyEnumThing.B);
+        }
+
+        [Fact]
+        public void CanGetNullableEnumValueWhenPresent()
+        {
+            // Arrange
+            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+
+            // Act
+            var actual = sut.GetValue<MyEnumThing?>("Test", () => MyEnumThing.B);
+
+            // Assert
+            actual.Should().Be(MyEnumThing.A);
+        }
+
+        [Fact]
+        public void CanGetDefaultValueFromNullableEnumWhenNotPresent()
+        {
+            // Arrange
+            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+
+            // Act
+            var actual = sut.GetValue<MyEnumThing?>("WrongName", () => MyEnumThing.B);
+
+            // Assert
+            actual.Should().Be(MyEnumThing.B);
+        }
+
+        [Fact]
+        public void CanGetValueFromDifferentType()
+        {
+            // Arrange
+            var sut = new[] { new Metadata("Test", "1") };
+
+            // Act
+            var actual = sut.GetValue<int>("Test", () => 0);
+
+            // Assert
+            actual.Should().Be(1);
         }
     }
 }
