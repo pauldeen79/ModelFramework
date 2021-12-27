@@ -25,7 +25,7 @@ namespace ModelFramework.Database.Builders
             Metadata.Clear();
             return this;
         }
-        public PrimaryKeyConstraintFieldBuilder WithIsDescending(bool isDescending)
+        public PrimaryKeyConstraintFieldBuilder WithIsDescending(bool isDescending = true)
         {
             IsDescending = isDescending;
             return this;

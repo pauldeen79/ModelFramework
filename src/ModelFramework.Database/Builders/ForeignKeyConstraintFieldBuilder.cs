@@ -26,6 +26,11 @@ namespace ModelFramework.Database.Builders
             Name = name;
             return this;
         }
+        public ForeignKeyConstraintFieldBuilder ClearMetadata()
+        {
+            Metadata.Clear();
+            return this;
+        }
         public ForeignKeyConstraintFieldBuilder AddMetadata(IEnumerable<MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
