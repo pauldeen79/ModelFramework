@@ -2,8 +2,10 @@
 using System.Linq;
 using FluentAssertions;
 using ModelFramework.Common.Builders;
+using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Database.Builders;
+using ModelFramework.Database.Default;
 using Xunit;
 
 namespace ModelFramework.Database.Tests.Builders
@@ -69,6 +71,44 @@ namespace ModelFramework.Database.Tests.Builders
 
             // Assert
             sut.Metadata.Should().HaveCount(4);
+        }
+
+        [Fact]
+        public void Can_Clear_Fields()
+        {
+            // Arrange
+            var sut = new IndexBuilder()
+                .WithName("Name")
+                .WithFileGroupName("PRIMARY")
+                .WithUnique()
+                .AddFields(new IndexFieldBuilder().WithName("MyField"))
+                .AddMetadata(new MetadataBuilder().WithName("MName").WithValue("MValue"));
+
+            // Act
+            var actual = sut.ClearFields();
+
+            // Assert
+            actual.Name.Should().Be("Name");
+            actual.FileGroupName.Should().Be("PRIMARY");
+            actual.Unique.Should().BeTrue();
+            actual.Fields.Should().BeEmpty();
+            actual.Metadata.Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Can_Add_Fields()
+        {
+            // Arrange
+            var sut = new IndexBuilder().WithName("Name");
+
+            // Act
+            sut.AddFields(new[] { new IndexFieldBuilder() });
+            sut.AddFields(new[] { new IndexFieldBuilder() }.AsEnumerable());
+            sut.AddFields(new[] { new IndexField("Name", false, Enumerable.Empty<IMetadata>()) });
+            sut.AddFields(new[] { new IndexField("Name", false, Enumerable.Empty<IMetadata>()) }.AsEnumerable());
+
+            // Assert
+            sut.Fields.Should().HaveCount(4);
         }
 
         [Fact]

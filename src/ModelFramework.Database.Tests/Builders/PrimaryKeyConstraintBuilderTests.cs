@@ -2,8 +2,10 @@
 using System.Linq;
 using FluentAssertions;
 using ModelFramework.Common.Builders;
+using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Database.Builders;
+using ModelFramework.Database.Default;
 using Xunit;
 
 namespace ModelFramework.Database.Tests.Builders
@@ -67,6 +69,41 @@ namespace ModelFramework.Database.Tests.Builders
             sut.Metadata.Should().HaveCount(4);
         }
 
+        [Fact]
+        public void Can_Clear_Fields()
+        {
+            // Arrange
+            var sut = new PrimaryKeyConstraintBuilder()
+                .WithName("Name")
+                .WithFileGroupName("PRIMARY")
+                .AddFields(new PrimaryKeyConstraintFieldBuilder().WithName("MyField"))
+                .AddMetadata(new MetadataBuilder().WithName("MName").WithValue("MValue"));
+
+            // Act
+            var actual = sut.ClearFields();
+
+            // Assert
+            actual.Name.Should().Be("Name");
+            actual.FileGroupName.Should().Be("PRIMARY");
+            actual.Fields.Should().BeEmpty();
+            actual.Metadata.Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Can_Add_Fields()
+        {
+            // Arrange
+            var sut = new PrimaryKeyConstraintBuilder().WithName("Name");
+
+            // Act
+            sut.AddFields(new[] { new PrimaryKeyConstraintFieldBuilder() });
+            sut.AddFields(new[] { new PrimaryKeyConstraintFieldBuilder() }.AsEnumerable());
+            sut.AddFields(new[] { new PrimaryKeyConstraintField("Name", false, Enumerable.Empty<IMetadata>()) });
+            sut.AddFields(new[] { new PrimaryKeyConstraintField("Name", false, Enumerable.Empty<IMetadata>()) }.AsEnumerable());
+
+            // Assert
+            sut.Fields.Should().HaveCount(4);
+        }
         [Fact]
         public void Can_Construct_Builder_From_Entity_Instance()
         {
