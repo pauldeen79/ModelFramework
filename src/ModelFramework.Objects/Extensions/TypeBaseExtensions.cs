@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
+using CrossCutting.Common.Extensions;
 using ModelFramework.Common;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Extensions;
@@ -16,23 +17,32 @@ namespace ModelFramework.Objects.Extensions
     public static class TypeBaseExtensions
     {
         public static string GetInheritedClasses(this ITypeBase instance)
+            => instance is IClass cls
+                ? GetInheritedClassesForClass(cls)
+                : GetInheritedClassesForInterface(instance);
+
+        private static string GetInheritedClassesForClass(IClass cls)
         {
-            if (instance is IClass cls)
+            var lst = new List<string>();
+            if (!string.IsNullOrEmpty(cls.BaseClass))
             {
-                var lst = new List<string>();
-                if (!string.IsNullOrEmpty(cls.BaseClass)) lst.Add(cls.BaseClass);
-                if (cls.Interfaces != null) lst.AddRange(cls.Interfaces);
-                return lst.Count == 0
-                    ? string.Empty
-                    : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
+                lst.Add(cls.BaseClass);
             }
-            else
+
+            if (cls.Interfaces != null)
             {
-                return instance.Interfaces?.Any() != true
-                    ? string.Empty
-                    : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
+                lst.AddRange(cls.Interfaces);
             }
+
+            return lst.Count == 0
+                ? string.Empty
+                : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
         }
+
+        private static string GetInheritedClassesForInterface(ITypeBase instance)
+            => instance.Interfaces?.Any() != true
+                ? string.Empty
+                : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
 
         public static string GetContainerType(this ITypeBase typeBase)
         {
@@ -54,55 +64,56 @@ namespace ModelFramework.Objects.Extensions
             => instance.ToInterfaceBuilder(settings).Build();
 
         public static InterfaceBuilder ToInterfaceBuilder(this ITypeBase instance, InterfaceSettings settings)
-            => new InterfaceBuilder
-            {
-                Name = "I" + instance.Name,
-                Namespace = instance.Namespace,
-                Visibility = instance.Visibility,
-                Partial = instance.Partial,
-                Interfaces = instance.Interfaces.Where(i => i != "I" + instance.Name && i != instance.Namespace + ".I" + instance.Name)
-                                                .ToList(),
-                Properties = settings.PropertyFilter == null
-                    ? instance.Properties.Select(p => ChangeProperty(p, settings.ApplyGenericTypes, settings.ChangePropertiesToReadOnly))
-                                         .Select(x => new ClassPropertyBuilder(x))
-                                         .ToList()
-                    : instance.Properties.Where(settings.PropertyFilter)
-                                         .Select(p => ChangeProperty(p, settings.ApplyGenericTypes, settings.ChangePropertiesToReadOnly))
-                                         .Select(x => new ClassPropertyBuilder(x))
-                                         .ToList(),
-                Methods = settings.MethodFilter == null
-                    ? instance.Methods
-                        .Where(m => !m.Static
-                            && !m.Override
-                            && !m.Operator
-                            && !m.IsInterfaceMethod()
-                            && string.IsNullOrEmpty(m.ExplicitInterfaceName)
-                            && m.Visibility == Visibility.Public)
-                        .Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes))
-                        .Select(x => new ClassMethodBuilder(x))
-                        .ToList()
-                    : instance.Methods.Where(settings.MethodFilter)
-                                      .Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes))
-                                      .Select(x => new ClassMethodBuilder(x))
-                                      .ToList(),
-                Metadata = settings.MetadataFilter == null
-                    ? instance.Metadata.Select(x => new MetadataBuilder(x))
-                                       .ToList()
-                    : instance.Metadata.Where(settings.MetadataFilter)
-                                       .Select(x => new MetadataBuilder(x))
-                                       .ToList(),
-                Attributes = settings.AttributeFilter == null
-                    ? instance.Attributes.Select(x => new AttributeBuilder(x))
-                                         .ToList()
-                    : instance.Attributes.Where(settings.AttributeFilter)
-                                         .Select(x => new AttributeBuilder(x))
-                                         .ToList(),
-                GenericTypeArguments = GenerateGenericTypeArguments(settings.ApplyGenericTypes)
-            };
+            => new InterfaceBuilder()
+                .WithName("I" + instance.Name)
+                .WithNamespace(instance.Namespace)
+                .WithVisibility(instance.Visibility)
+                .WithPartial(instance.Partial)
+                .AddInterfaces(instance.Interfaces.Where(i => i != "I" + instance.Name && i != instance.Namespace + ".I" + instance.Name))
+                .AddProperties
+                (
+                    settings.PropertyFilter == null
+                        ? instance.Properties.Select(p => ChangeProperty(p, settings.ApplyGenericTypes, settings.ChangePropertiesToReadOnly))
+                                             .Select(x => new ClassPropertyBuilder(x))
+                        : instance.Properties.Where(settings.PropertyFilter)
+                                             .Select(p => ChangeProperty(p, settings.ApplyGenericTypes, settings.ChangePropertiesToReadOnly))
+                                             .Select(x => new ClassPropertyBuilder(x))
+                )
+                .AddMethods
+                (
+                    settings.MethodFilter == null
+                        ? instance.Methods
+                            .Where(m => !m.Static
+                                && !m.Override
+                                && !m.Operator
+                                && !m.IsInterfaceMethod()
+                                && string.IsNullOrEmpty(m.ExplicitInterfaceName)
+                                && m.Visibility == Visibility.Public)
+                            .Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes))
+                            .Select(x => new ClassMethodBuilder(x))
+                        : instance.Methods.Where(settings.MethodFilter)
+                                          .Select(m => ChangeArgumentsAndReturnType(m, settings.ApplyGenericTypes))
+                                          .Select(x => new ClassMethodBuilder(x))
+                )
+                .AddMetadata
+                (
+                    settings.MetadataFilter == null
+                        ? instance.Metadata.Select(x => new MetadataBuilder(x))
+                        : instance.Metadata.Where(settings.MetadataFilter)
+                                           .Select(x => new MetadataBuilder(x))
+                )
+                .AddAttributes
+                (
+                    settings.AttributeFilter == null
+                        ? instance.Attributes.Select(x => new AttributeBuilder(x))
+                        : instance.Attributes.Where(settings.AttributeFilter)
+                                             .Select(x => new AttributeBuilder(x))
+                )
+                .AddGenericTypeArguments(GenerateGenericTypeArguments(settings.ApplyGenericTypes));
 
         public static IClass ToImmutableClass(this ITypeBase instance, ImmutableClassSettings settings)
             => instance.ToImmutableClassBuilder(settings).Build();
-        
+
         public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
         {
             if (!instance.Properties.Any())
@@ -110,89 +121,101 @@ namespace ModelFramework.Objects.Extensions
                 throw new InvalidOperationException("To create an immutable class, there must be at least one property");
             }
 
-            return new ClassBuilder
-            {
-                Name = instance.Name,
-                Namespace = instance.Namespace,
-                Properties =
+            return new ClassBuilder()
+                .WithName(instance.Name)
+                .WithNamespace(instance.Namespace)
+                .AddProperties
+                (
                     instance
                         .Properties
                         .Select
                         (
-                            p => new ClassPropertyBuilder
-                            {
-                                Name = p.Name,
-                                TypeName = p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName),
-                                Static = p.Static,
-                                Virtual = p.Virtual,
-                                Abstract = p.Abstract,
-                                Protected = p.Protected,
-                                Override = p.Override,
-                                HasGetter = p.HasGetter,
-                                HasInitializer = p.HasInitializer,
-                                HasSetter = false,
-                                IsNullable = p.IsNullable,
-                                Visibility = p.Visibility,
-                                GetterVisibility = p.GetterVisibility,
-                                SetterVisibility = p.SetterVisibility,
-                                InitializerVisibility = p.InitializerVisibility,
-                                ExplicitInterfaceName = p.ExplicitInterfaceName,
-                                Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                            .Select(x => new MetadataBuilder(x))
-                                            .ToList(),
-                                Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
-                                GetterCodeStatements = p.GetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
-                                SetterCodeStatements = p.SetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
-                                InitializerCodeStatements = p.InitializerCodeStatements.Select(x => x.CreateBuilder()).ToList()
-                            }
-                        ).ToList(),
-                Constructors = 
-                    new[]
-                    {
-                        new ClassConstructorBuilder
-                        {
-                            Parameters = instance.Properties.Select(p => new ParameterBuilder
-                            {
-                                Name = p.Name.ToPascalCase(),
-                                TypeName = string.Format
+                            p => new ClassPropertyBuilder()
+                                .WithName(p.Name)
+                                .WithTypeName(p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName))
+                                .WithStatic(p.Static)
+                                .WithVirtual(p.Virtual)
+                                .WithAbstract(p.Abstract)
+                                .WithProtected(p.Protected)
+                                .WithOverride(p.Override)
+                                .WithHasGetter(p.HasGetter)
+                                .WithHasInitializer(p.HasInitializer)
+                                .WithHasSetter(false)
+                                .WithIsNullable(p.IsNullable)
+                                .WithVisibility(p.Visibility)
+                                .WithGetterVisibility(p.GetterVisibility)
+                                .WithSetterVisibility(p.SetterVisibility)
+                                .WithInitializerVisibility(p.InitializerVisibility)
+                                .WithExplicitInterfaceName(p.ExplicitInterfaceName)
+                                .AddMetadata
+                                (
+                                    p.Metadata
+                                        .Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
+                                        .Select(x => new MetadataBuilder(x))
+                                )
+                                .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
+                                .AddGetterCodeStatements(p.GetterCodeStatements.Select(x => x.CreateBuilder()))
+                                .AddSetterCodeStatements(p.SetterCodeStatements.Select(x => x.CreateBuilder()))
+                                .AddInitializerCodeStatements(p.InitializerCodeStatements.Select(x => x.CreateBuilder()))
+                        )
+                )
+                .AddConstructors
+                (
+                    new ClassConstructorBuilder()
+                        .AddParameters
+                        (
+                            instance.Properties.Select(p => new ParameterBuilder()
+                                .WithName(p.Name.ToPascalCase())
+                                .WithTypeName(string.Format
                                 (
                                     p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                     .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
+                                                       .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
                                     p.Name.ToPascalCase().GetCsharpFriendlyName(),
                                     p.TypeName.GetGenericArguments()
                                 )
-                            }).ToList(),
-                            CodeStatements = instance.Properties.Select(p => new LiteralCodeStatementBuilder
-                            {
-                                Statement = string.Format
-                                (
-                                    $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName())};",
-                                    p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                    p.TypeName.GetGenericArguments()
-                                )
-                            })
-                            .Cast<ICodeStatementBuilder>()
-                            .Concat
+                        )))
+                        .AddCodeStatements
+                        (
+                            instance.Properties.Select
                             (
-                                settings.ValidateArgumentsInConstructor
-                                    ? new[]
-                                        {
-                                            new LiteralCodeStatementBuilder
-                                            {
-                                                Statement = "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new ValidationContext(this, null, null), true);"
-                                            }
-                                        }
-                                    : Enumerable.Empty<LiteralCodeStatementBuilder>()
+                                p => new LiteralCodeStatementBuilder()
+                                    .WithStatement
+                                    (
+                                        string.Format
+                                        (
+                                            $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName())};",
+                                            p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                                            p.TypeName.GetGenericArguments()
+                                        )
+                                     )
                             )
-                            .ToList()
-                        }
-                    }.ToList(),
-                Methods = GetImmutableClassMethods(instance, settings.NewCollectionTypeName, settings.CreateWithMethod, settings.ImplementIEquatable, false).ToList(),
-                Interfaces = settings.ImplementIEquatable
-                    ? new[] { $"IEquatable<{instance.Name}>" }.ToList()
-                    : new List<string>(),
-                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
-            };
+                        )
+                        .AddCodeStatements
+                        (
+                            settings.ValidateArgumentsInConstructor
+                                ? new[]
+                                    {
+                                        new LiteralCodeStatementBuilder()
+                                            .WithStatement("System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new ValidationContext(this, null, null), true);")
+                                    }
+                                : Enumerable.Empty<LiteralCodeStatementBuilder>()
+                        )
+                )
+                .AddMethods
+                (
+                    GetImmutableClassMethods(instance,
+                                             settings.NewCollectionTypeName,
+                                             settings.CreateWithMethod,
+                                             settings.ImplementIEquatable,
+                                             false)
+                )
+                .AddInterfaces
+                (
+                    settings.ImplementIEquatable
+                        ? new[] { $"IEquatable<{instance.Name}>" }
+                        : Enumerable.Empty<string>()
+                )
+                .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
         }
 
         public static IClass ToImmutableExtensionClass(this ITypeBase instance,
@@ -201,13 +224,11 @@ namespace ModelFramework.Objects.Extensions
 
         public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance,
                                                                     string newCollectionTypeName = "System.Collections.Immutable.IImmutableList")
-            => new ClassBuilder
-            {
-                Name = instance.Name + "Extensions",
-                Namespace = instance.Namespace,
-                Methods = GetImmutableClassMethods(instance, newCollectionTypeName, true, false, true).ToList(),
-                Static = true
-            };
+            => new ClassBuilder()
+                .WithName(instance.Name + "Extensions")
+                .WithNamespace(instance.Namespace)
+                .AddMethods(GetImmutableClassMethods(instance, newCollectionTypeName, true, false, true))
+                .WithStatic();
 
         public static IClass ToPocoClass(this ITypeBase instance,
                                          string newCollectionTypeName = "System.Collections.Generic.ICollection")
@@ -215,43 +236,44 @@ namespace ModelFramework.Objects.Extensions
 
         public static ClassBuilder ToPocoClassBuilder(this ITypeBase instance,
                                                       string newCollectionTypeName = "System.Collections.Generic.ICollection")
-            => new ClassBuilder
-            {
-                Name = instance.Name,
-                Namespace = instance.Namespace,
-                Properties =
+            => new ClassBuilder()
+                .WithName(instance.Name)
+                .WithNamespace(instance.Namespace)
+                .AddProperties
+                (
                     instance
                         .Properties
                         .Select
                         (
-                            p => new ClassPropertyBuilder
-                            {
-                                Name = p.Name,
-                                TypeName = p.TypeName.FixBuilderCollectionTypeName(newCollectionTypeName),
-                                Static = p.Static,
-                                Virtual = p.Virtual,
-                                Abstract = p.Abstract,
-                                Protected = p.Protected,
-                                Override = p.Override,
-                                HasGetter = p.HasGetter,
-                                HasSetter = true,
-                                HasInitializer = false,
-                                IsNullable =  p.IsNullable,
-                                Visibility = p.Visibility,
-                                GetterVisibility = p.GetterVisibility,
-                                SetterVisibility = p.SetterVisibility,
-                                InitializerVisibility = p.InitializerVisibility,
-                                ExplicitInterfaceName = p.ExplicitInterfaceName,
-                                Metadata = p.Metadata.Concat(p.GetBuilderCollectionMetadata(newCollectionTypeName))
-                                                     .Select(x => new MetadataBuilder(x))
-                                                     .ToList(),
-                                Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
-                                GetterCodeStatements = p.GetterCodeStatements.Select(x => x.CreateBuilder()).ToList(),
-                                SetterCodeStatements = p.SetterCodeStatements.Select(x => x.CreateBuilder()).ToList()
-                            }
-                        ).ToList(),
-                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
-            };
+                            p => new ClassPropertyBuilder()
+                                .WithName(p.Name)
+                                .WithTypeName(p.TypeName.FixBuilderCollectionTypeName(newCollectionTypeName))
+                                .WithStatic(p.Static)
+                                .WithVirtual(p.Virtual)
+                                .WithAbstract(p.Abstract)
+                                .WithProtected(p.Protected)
+                                .WithOverride(p.Override)
+                                .WithHasGetter(p.HasGetter)
+                                .WithHasSetter()
+                                .WithHasInitializer(false)
+                                .WithIsNullable(p.IsNullable)
+                                .WithVisibility(p.Visibility)
+                                .WithGetterVisibility(p.GetterVisibility)
+                                .WithSetterVisibility(p.SetterVisibility)
+                                .WithInitializerVisibility(p.InitializerVisibility)
+                                .WithExplicitInterfaceName(p.ExplicitInterfaceName)
+                                .AddMetadata
+                                (
+                                    p.Metadata
+                                        .Concat(p.GetBuilderCollectionMetadata(newCollectionTypeName))
+                                        .Select(x => new MetadataBuilder(x))
+                                )
+                                .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
+                                .AddGetterCodeStatements(p.GetterCodeStatements.Select(x => x.CreateBuilder()))
+                                .AddSetterCodeStatements(p.SetterCodeStatements.Select(x => x.CreateBuilder()))
+                        )
+                )
+                .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
 
         public static IClass ToObservableClass(this ITypeBase instance,
                                                string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
@@ -259,70 +281,66 @@ namespace ModelFramework.Objects.Extensions
 
         public static ClassBuilder ToObservableClassBuilder(this ITypeBase instance,
                                                             string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
-            => new ClassBuilder
-            {
-                Name = instance.Name,
-                Namespace = instance.Namespace,
-                Properties =
+            => new ClassBuilder()
+                .WithName(instance.Name)
+                .WithNamespace(instance.Namespace)
+                .AddProperties
+                (
                     instance
                         .Properties
                         .Select
                         (
-                            p => new ClassPropertyBuilder
-                            {
-                                Name = p.Name,
-                                TypeName = p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName),
-                                Static = p.Static,
-                                Virtual = p.Virtual,
-                                Abstract = p.Abstract,
-                                Protected = p.Protected,
-                                Override = p.Override,
-                                HasGetter = p.HasGetter,
-                                HasSetter = true,
-                                HasInitializer = false,
-                                IsNullable = p.IsNullable,
-                                Visibility = p.Visibility,
-                                GetterVisibility = p.GetterVisibility,
-                                SetterVisibility = p.SetterVisibility,
-                                InitializerVisibility = p.InitializerVisibility,
-                                GetterCodeStatements = p.FixObservablePropertyGetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()).ToList(),
-                                SetterCodeStatements = p.FixObservablePropertySetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()).ToList(),
-                                ExplicitInterfaceName = p.ExplicitInterfaceName,
-                                Metadata = p.Metadata.Concat(p.GetObservableCollectionMetadata(newCollectionTypeName))
-                                                     .Select(x => new MetadataBuilder(x))
-                                                     .ToList(),
-                                Attributes = p.Attributes.Select(x => new AttributeBuilder(x)).ToList()
-                            }
-                        ).ToList(),
-                Fields = ((instance as IClass)?.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>())
+                            p => new ClassPropertyBuilder()
+                                .WithName(p.Name)
+                                .WithTypeName(p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName))
+                                .WithStatic(p.Static)
+                                .WithVirtual(p.Virtual)
+                                .WithAbstract(p.Abstract)
+                                .WithProtected(p.Protected)
+                                .WithOverride(p.Override)
+                                .WithHasGetter(p.HasGetter)
+                                .WithHasSetter()
+                                .WithHasInitializer(false)
+                                .WithIsNullable(p.IsNullable)
+                                .WithVisibility(p.Visibility)
+                                .WithGetterVisibility(p.GetterVisibility)
+                                .WithSetterVisibility(p.SetterVisibility)
+                                .WithInitializerVisibility(p.InitializerVisibility)
+                                .AddGetterCodeStatements(p.FixObservablePropertyGetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()))
+                                .AddSetterCodeStatements(p.FixObservablePropertySetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()))
+                                .WithExplicitInterfaceName(p.ExplicitInterfaceName)
+                                .AddMetadata(p.Metadata.Concat(p.GetObservableCollectionMetadata(newCollectionTypeName))
+                                                       .Select(x => new MetadataBuilder(x)))
+                                .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
+                        )
+                )
+                .AddFields
+                (
+                    ((instance as IClass)?.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>())
                     .Concat
                     (
                         instance.Properties
-                            .Where(p => !p.GetterCodeStatements.Any() && !p.SetterCodeStatements.Any() )
+                            .Where(p => !p.GetterCodeStatements.Any() && !p.SetterCodeStatements.Any())
                             .Select
                             (
-                                p => new ClassFieldBuilder
-                                {
-                                    Name = "_" + p.Name.ToPascalCase(),
-                                    TypeName = p.TypeName,
-                                    IsNullable = p.IsNullable,
-                                    Visibility = Visibility.Private
-                                }
+                                p => new ClassFieldBuilder()
+                                    .WithName("_" + p.Name.ToPascalCase())
+                                    .WithTypeName(p.TypeName)
+                                    .WithIsNullable(p.IsNullable)
                             )
-                    ).ToList(),
-                Constructors = new[]
-                {
-                    new ClassConstructorBuilder
-                    {
-                        CodeStatements = instance.Properties
-                            .Where(p => p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<"))
-                            .Select(p => new LiteralCodeStatementBuilder { Statement = $"this.{p.Name} = Utilities.Extensions.InitializeObservableCollection(default({p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}));" })
-                            .Cast<ICodeStatementBuilder>()
-                            .ToList()
-                    }
-                }.ToList(),
-                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList()
-            };
+                    )
+                )
+                .AddConstructors
+                (
+                    new ClassConstructorBuilder()
+                        .AddCodeStatements
+                        (
+                            instance.Properties
+                                .Where(p => p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<"))
+                                .Select(p => new LiteralCodeStatementBuilder().WithStatement($"this.{p.Name} = Utilities.Extensions.InitializeObservableCollection(default({p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}));"))
+                        )
+                )
+                .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
 
         public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
             => instance.ToImmutableBuilderClassBuilder(settings).Build();
@@ -334,17 +352,15 @@ namespace ModelFramework.Objects.Extensions
                 throw new InvalidOperationException("To create an immutable builder class, there must be at least one property");
             }
 
-            return new ClassBuilder
-            {
-                Name = instance.Name + "Builder",
-                Namespace = instance.Namespace,
-                Partial = instance.Partial,
-                Constructors = GetImmutableBuilderClassConstructors(instance, settings).ToList(),
-                Methods = GetImmutableBuilderClassMethods(instance, settings).ToList(),
-                Properties = GetImmutableBuilderClassProperties(instance, settings).ToList(),
-                Attributes = instance.Attributes.Select(x => new AttributeBuilder(x)).ToList(),
-                Fields = ((instance as IClass)?.Fields)?.Select(x => new ClassFieldBuilder(x))?.ToList() ?? new List<ClassFieldBuilder>()
-            };
+            return new ClassBuilder()
+                .WithName(instance.Name + "Builder")
+                .WithNamespace(instance.Namespace)
+                .WithPartial(instance.Partial)
+                .AddConstructors(GetImmutableBuilderClassConstructors(instance, settings))
+                .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
+                .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
+                .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
+                .AddFields(((instance as IClass)?.Fields)?.Select(x => new ClassFieldBuilder(x))?.ToList() ?? new List<ClassFieldBuilder>());
         }
 
         public static string GetGenericTypeArgumentsString(this ITypeBase instance)
@@ -355,34 +371,40 @@ namespace ModelFramework.Objects.Extensions
         private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
                                                                                                  ImmutableBuilderClassSettings settings)
         {
-            yield return new ClassConstructorBuilder
-            {
-                CodeStatements = instance.Properties
-                    .Where(p => p.TypeName.IsCollectionTypeName())
-                    .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName), p.TypeName, p.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
-                    .Cast<ICodeStatementBuilder>()
-                    .ToList()
-            };
+            yield return new ClassConstructorBuilder()
+                .AddCodeStatements
+                (
+                    instance.Properties
+                        .Where(p => p.TypeName.IsCollectionTypeName())
+                        .Select(p => new LiteralCodeStatementBuilder()
+                            .WithStatement($"{p.Name} = new {GetImmutableBuilderClassConstructorInitializer(settings, p)}();"))
+                )
+                .AddCodeStatements
+                (
+                    instance.Properties
+                        .Where(p => !settings.AddNullChecks && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
+                        .Select(p => new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = {p.GetDefaultValue()};"))
+                );
 
-            yield return new ClassConstructorBuilder
+            if (settings.ConstructorSettings.AddCopyConstructor)
             {
-                Parameters = new[]
-                {
-                    new ParameterBuilder
-                    {
-                        Name = "source",
-                        TypeName = FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate)
-                    }
-                }.ToList(),
-                CodeStatements = instance.Properties
-                    .Where(p => p.TypeName.IsCollectionTypeName())
-                    .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName), p.TypeName, p.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" } )
-                    .Concat(instance.Properties.Select(p => new LiteralCodeStatementBuilder { Statement = p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks) }))
-                    .Cast<ICodeStatementBuilder>()
-                    .ToList()
-            };
+                yield return new ClassConstructorBuilder()
+                    .AddParameters
+                    (
+                        new ParameterBuilder()
+                            .WithName("source")
+                            .WithTypeName(FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate))
+                    )
+                    .AddCodeStatements
+                    (
+                        instance.Properties
+                            .Where(p => p.TypeName.IsCollectionTypeName())
+                            .Select(p => new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = new {GetCopyConstructorInitializeExpression(settings, p)}();"))
+                            .Concat(instance.Properties.Select(p => new LiteralCodeStatementBuilder().WithStatement(p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks))))
+                    );
+            }
 
-            if (settings.AddCopyConstructor)
+            if (settings.ConstructorSettings.AddConstructorWithAllProperties)
             {
                 var cls = instance as IClass;
                 var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
@@ -392,244 +414,249 @@ namespace ModelFramework.Objects.Extensions
                         .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
                         .Where(x => x != null);
 
-                yield return new ClassConstructorBuilder
-                {
-                    Parameters = properties.Select(p => new ParameterBuilder
-                    {
-                        Name = p.Name.ToPascalCase(),
-                        TypeName = string.Format
+                yield return new ClassConstructorBuilder()
+                    .AddParameters(properties.Select(p => new ParameterBuilder()
+                        .WithName(p.Name.ToPascalCase())
+                        .WithTypeName(string.Format
                         (
                             p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
                             p.Name.ToPascalCase().GetCsharpFriendlyName(),
                             p.TypeName.GetGenericArguments()
-                        ),
-                        IsNullable = p.IsNullable
-                    }).ToList(),
-                    CodeStatements = properties.Where(p => p.TypeName.IsCollectionTypeName())
-                        .Select(p => new LiteralCodeStatementBuilder { Statement = $"{p.Name} = new {string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName), p.TypeName, p.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();" })
-                        .Concat
-                        (
-                            instance.Properties.Select
+                        ))
+                        .WithIsNullable(p.IsNullable)
+                    ))
+                    .AddCodeStatements
+                    (
+                        properties
+                            .Where(p => p.TypeName.IsCollectionTypeName())
+                            .Select(p => new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = new {GetConstructorInitializeExpressionForCollection(settings, p)}();"))
+                            .Concat
                             (
-                                p => p.TypeName.IsCollectionTypeName()
-                                    ? new LiteralCodeStatementBuilder { Statement = CreateCtorStatementForCollection(p, settings) }
-                                    : new LiteralCodeStatementBuilder { Statement = $"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};" }
+                                instance.Properties.Select
+                                (
+                                    p => p.TypeName.IsCollectionTypeName()
+                                        ? new LiteralCodeStatementBuilder().WithStatement(CreateConstructorStatementForCollection(p, settings))
+                                        : new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};")
+                                )
                             )
-                        ).Cast<ICodeStatementBuilder>().ToList()
-                };
+                    );
             }
         }
 
-        private static string CreateCtorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
+        private static string GetConstructorInitializeExpressionForCollection(ImmutableBuilderClassSettings settings, IClassProperty p)
+            => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
+                             p.TypeName,
+                             p.TypeName.GetGenericArguments()
+                            ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+                             .GetCsharpFriendlyTypeName();
+
+        private static string GetCopyConstructorInitializeExpression(ImmutableBuilderClassSettings settings, IClassProperty p)
+            => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
+                             p.TypeName,
+                             p.TypeName.GetGenericArguments()
+                            ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+                             .GetCsharpFriendlyTypeName();
+
+        private static string GetImmutableBuilderClassConstructorInitializer(ImmutableBuilderClassSettings settings, IClassProperty p)
+            => string.Format
+            (
+                p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
+                p.TypeName,
+                p.TypeName.GetGenericArguments()
+            ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+             .GetCsharpFriendlyTypeName();
+
+        private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
             => settings.AddNullChecks
-                ? $"if ({p.Name.ToPascalCase()} != null) foreach (var x in {p.Name.ToPascalCase()}) {p.Name}.Add(x);"
-                : $"foreach (var x in {p.Name.ToPascalCase()}) {p.Name}.Add(x);";
+                ? $"if ({p.Name.ToPascalCase()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
+                : $"{p.Name}.AddRange({p.Name.ToPascalCase()});";
 
         private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                        ImmutableBuilderClassSettings settings)
         {
             var openSign = GetImmutableBuilderPocoOpenSign(settings.Poco);
             var closeSign = GetImmutableBuilderPocoCloseSign(settings.Poco);
-            yield return new ClassMethodBuilder
-            {
-                Name = "Build",
-                TypeName = FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate),
-                CodeStatements = new[]
-                {
-                    new LiteralCodeStatementBuilder { Statement = $"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};" }
-                }.Cast<ICodeStatementBuilder>().ToList()
-            };
-            yield return new ClassMethodBuilder
-            {
-                Name = "Clear",
-                TypeName = $"{instance.Name}Builder",
-                CodeStatements =
-                    instance.Properties
-                        .Select(p => new LiteralCodeStatementBuilder { Statement = p.CreateImmutableBuilderClearCode() })
-                        .Concat(new[] { "return this;" }.ToLiteralCodeStatementBuilders())
-                        .ToList()
-            };
+            yield return new ClassMethodBuilder()
+                .WithName("Build")
+                .WithTypeName(FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate))
+                .AddCodeStatements
+                (
+                    new LiteralCodeStatementBuilder()
+                        .WithStatement($"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};")
+                );
 
-            if (settings.AddCopyConstructor)
-            {
-                yield return new ClassMethodBuilder
-                {
-                    Name = "Update",
-                    TypeName = $"{instance.Name}Builder",
-                    Parameters = new[]
-                    {
-                        new ParameterBuilder
-                        {
-                            Name = "source",
-                            TypeName = FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate)
-                        }
-                    }.ToList(),
-                    CodeStatements = instance.Properties
-                        .Where(p => p.TypeName.IsCollectionTypeName())
-                        .Select
-                        (
-                            p => $"{p.Name} = new {string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, p.TypeName), p.TypeName, p.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName(settings.NewCollectionTypeName).GetCsharpFriendlyTypeName()}();"
-                        )
-                        .Concat(instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks)))
-                        .Concat(new[]
-                        {
-                            "return this;"
-                        })
-                        .ToLiteralCodeStatementBuilders()
-                        .ToList()
-                };
-            }
             foreach (var property in instance.Properties)
             {
-                var overloads = property.Metadata.GetStringValues(MetadataNames.CustomImmutableBuilderWithOverloadArgumentType)
-                    .Zip(property.Metadata.GetStringValues(MetadataNames.CustomImmutableBuilderWithOverloadInitializeExpression),
-                        (typeName, expression) => new { TypeName = typeName, Expression = expression });
+                var overloads = GetOverloads(property);
                 if (property.TypeName.IsCollectionTypeName())
                 {
                     // collection
-                    yield return new ClassMethodBuilder
-                    {
-                        Name = $"Clear{property.Name}",
-                        TypeName = $"{instance.Name}Builder",
-                        CodeStatements = new[]
-                        {
-                            $"{property.Name}.Clear();",
-                            "return this;"
-                        }.ToLiteralCodeStatementBuilders().ToList()
-                    };
-                    yield return new ClassMethodBuilder
-                    {
-                        Name = $"Add{property.Name}",
-                        TypeName = $"{instance.Name}Builder",
-                        Parameters = new[]
-                        {
-                            new ParameterBuilder
-                            {
-                                Name = property.Name.ToPascalCase(),
-                                TypeName = string.Format
+                    yield return new ClassMethodBuilder()
+                        .WithName($"Add{property.Name}")
+                        .WithTypeName($"{instance.Name}Builder")
+                        .AddParameters
+                        (
+                            new ParameterBuilder()
+                                .WithName(property.Name.ToPascalCase())
+                                .WithTypeName
                                 (
-                                    property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName),
-                                    property.TypeName,
-                                    property.TypeName.GetGenericArguments()
-                                ).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"),
-                                IsNullable = property.IsNullable
-                            }
-                        }.ToList(),
-                        CodeStatements = new[]
-                        {
-                            $"return Add{property.Name}({property.Name.ToPascalCase()}.ToArray());"
-                        }.ToLiteralCodeStatementBuilders().ToList()
-                    };
-                    yield return new ClassMethodBuilder
-                    {
-                        Name = $"Add{property.Name}",
-                        TypeName = $"{instance.Name}Builder",
-                        Parameters = (new[]
-                        {
-                            new ParameterBuilder
-                            {
-                                Name = property.Name.ToPascalCase(),
-                                TypeName = "params " + string.Format(property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName), property.TypeName, property.TypeName.GetGenericArguments()).FixTypeName().ConvertTypeNameToArray(),
-                                IsNullable = property.IsNullable
-                            }
-                        }).ToList(),
-                        CodeStatements = GetImmutableBuilderAddMethodStatements(settings, property)
-                    };
+                                    string.Format
+                                    (
+                                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                                        property.TypeName,
+                                        property.TypeName.GetGenericArguments()
+                                    ).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable")
+                                )
+                                .WithIsNullable(property.IsNullable)
+                        )
+                        .AddCodeStatements
+                        (
+                            new LiteralCodeStatementBuilder()
+                                .WithStatement($"return Add{property.Name}({property.Name.ToPascalCase()}.ToArray());")
+                        );
+                    yield return new ClassMethodBuilder()
+                        .WithName($"Add{property.Name}")
+                        .WithTypeName($"{instance.Name}Builder")
+                        .AddParameters
+                        (
+                            new ParameterBuilder()
+                                .WithName(property.Name.ToPascalCase())
+                                .WithTypeName
+                                (
+                                    "params " + string.Format
+                                    (
+                                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                                        property.TypeName,
+                                        property.TypeName.GetGenericArguments()
+                                    ).FixTypeName()
+                                     .ConvertTypeNameToArray()
+                                )
+                                .WithIsNullable(property.IsNullable)
+                        )
+                        .AddCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property));
+
                     foreach (var overload in overloads)
                     {
-                        yield return new ClassMethodBuilder
-                        {
-                            Name = $"Add{property.Name}",
-                            TypeName = $"{instance.Name}Builder",
-                            Parameters = new[]
-                            {
-                                new ParameterBuilder
-                                {
-                                    Name = property.Name.ToPascalCase(),
-                                    TypeName = string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"),
-                                    IsNullable = property.IsNullable
-                                }
-                            }.ToList(),
-                            CodeStatements = new[]
-                            {
-                                $"return Add{property.Name}({property.Name.ToPascalCase()}.ToArray());"
-                            }.ToLiteralCodeStatementBuilders().ToList()
-                        };
-                        yield return new ClassMethodBuilder
-                        {
-                            Name = $"Add{property.Name}",
-                            TypeName = $"{instance.Name}Builder",
-                            Parameters = new[]
-                            {
-                                new ParameterBuilder
-                                {
-                                    Name = property.Name.ToPascalCase(),
-                                    TypeName = "params " + string.Format(overload.TypeName, property.TypeName, property.TypeName.GetGenericArguments()).ConvertTypeNameToArray(),
-                                    IsNullable = property.IsNullable
-                                }
-                            }.ToList(),
-                            CodeStatements = GetImmutableBuilderAddOverloadMethodStatements(settings, property, overload.Expression)
-                        };
+                        yield return new ClassMethodBuilder()
+                            .WithName($"Add{property.Name}")
+                            .WithTypeName($"{instance.Name}Builder")
+                            .AddParameters
+                            (
+                                new ParameterBuilder()
+                                    .WithName(property.Name.ToPascalCase())
+                                    .WithTypeName(string.Format(overload.ArgumentType, property.TypeName, property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"))
+                                    .WithIsNullable(property.IsNullable)
+                            )
+                            .AddCodeStatements
+                            (
+                                new LiteralCodeStatementBuilder()
+                                    .WithStatement($"return Add{property.Name}({property.Name.ToPascalCase()}.ToArray());")
+                            );
+                        yield return new ClassMethodBuilder()
+                            .WithName($"Add{property.Name}")
+                            .WithTypeName($"{instance.Name}Builder")
+                            .AddParameters
+                            (
+                                new ParameterBuilder()
+                                    .WithName(property.Name.ToPascalCase())
+                                    .WithTypeName("params " + string.Format(overload.ArgumentType, property.TypeName, property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
+                                    .WithIsNullable(property.IsNullable)
+                            )
+                            .AddCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings, property, overload.InitializeExpression));
                     }
                 }
                 else
                 {
                     // single
-                    yield return new ClassMethodBuilder
-                    {
-                        Name = string.Format(settings.SetMethodNameFormatString, property.Name),
-                        TypeName = $"{instance.Name}Builder",
-                        Parameters = new[]
-                        {
-                            new ParameterBuilder
-                            {
-                                Name = property.Name.ToPascalCase(),
-                                TypeName = string.Format
+                    yield return new ClassMethodBuilder()
+                    .WithName(string.Format(settings.SetMethodNameFormatString, property.Name))
+                    .WithTypeName($"{instance.Name}Builder")
+                    .AddParameters
+                    (
+                        new ParameterBuilder()
+                            .WithName(property.Name.ToPascalCase())
+                            .WithTypeName
+                            (
+                                string.Format
                                 (
-                                    property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName),
+                                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                                     property.TypeName,
                                     property.TypeName.GetGenericArguments()
-                                ),
-                                IsNullable = property.IsNullable
-                            }
-                        }.ToList(),
-                        CodeStatements = new[]
-                        {
-                            string.Format
-                            (
-                                property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderWithExpression, $"{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};"),
-                                property.Name.ToPascalCase(),
-                                property.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                property.TypeName,
-                                property.TypeName.GetGenericArguments()
-                            ),
-                            "return this;"
-                        }.ToLiteralCodeStatementBuilders().ToList()
-                    };
+                                )
+                            )
+                            .WithIsNullable(property.IsNullable)
+                            .WithDefaultValue(property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
+                    )
+                    .AddCodeStatements
+                    (
+                        new LiteralCodeStatementBuilder().WithStatement(string.Format
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};"),
+                            property.Name,
+                            property.Name.ToPascalCase(),
+                            property.Name.ToPascalCase().GetCsharpFriendlyName(),
+                            property.TypeName,
+                            property.TypeName.GetGenericArguments(),
+                            "{",
+                            "}"
+                        )),
+                        new LiteralCodeStatementBuilder().WithStatement("return this;")
+                    );
                     foreach (var overload in overloads)
                     {
-                        yield return new ClassMethodBuilder
-                        {
-                            Name = string.Format(settings.SetMethodNameFormatString, property.Name),
-                            TypeName = $"{instance.Name}Builder",
-                            Parameters = new[]
-                            {
-                                new ParameterBuilder
-                                {
-                                    Name = property.Name.ToPascalCase(),
-                                    TypeName = string.Format(overload.TypeName, property.TypeName),
-                                    IsNullable = property.IsNullable
-                                }
-                            }.ToList(),
-                            CodeStatements = new[]
-                            {
-                                string.Format(overload.Expression, property.Name.ToPascalCase(), property.TypeName.FixTypeName().GetCsharpFriendlyTypeName()),
-                                "return this;"
-                            }.ToLiteralCodeStatementBuilders().ToList()
-                        };
+                        yield return new ClassMethodBuilder()
+                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
+                            .WithTypeName($"{instance.Name}Builder")
+                            .AddParameters
+                            (
+                                new ParameterBuilder()
+                                    .WithName(overload.ArgumentName.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
+                                    .WithTypeName(string.Format(overload.ArgumentType, property.TypeName))
+                                    .WithIsNullable(property.IsNullable)
+                            )
+                            .AddCodeStatements
+                            (
+                                new LiteralCodeStatementBuilder().WithStatement(string.Format(overload.InitializeExpression,
+                                                                                              property.Name.ToPascalCase(),
+                                                                                              property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                                                                                              property.Name)),
+                                new LiteralCodeStatementBuilder().WithStatement("return this;")
+                            );
                     }
                 }
             }
+        }
+
+        private static IEnumerable<Overload> GetOverloads(IClassProperty property)
+        {
+            var argumentTypes = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadArgumentType).ToArray();
+            var initializeExpressions = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadInitializeExpression).ToArray();
+            var methodNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadMethodName).ToArray();
+            var argumentNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadArgumentName).ToArray();
+
+            if (argumentTypes.Length > 0 && methodNames.Length == 0)
+            {
+                methodNames = argumentTypes.Select(_ => "{0}").ToArray();
+            }
+
+            if (argumentTypes.Length > 0 && argumentNames.Length == 0)
+            {
+                argumentNames = argumentTypes.Select(_ => "{0}").ToArray();
+            }
+
+            if (argumentTypes.Length != initializeExpressions.Length
+                || argumentTypes.Length != methodNames.Length
+                || argumentTypes.Length != argumentNames.Length)
+            {
+                throw new InvalidOperationException("Metadata for immutable builder overload method is incorrect. Metadata needs to be available in the same amount for all metadata types");
+            }
+
+            return
+                from argumentType in argumentTypes
+                from initializeExpression in initializeExpressions
+                from methodName in methodNames
+                from argumentName in argumentNames
+                select new Overload(argumentType, initializeExpression, methodName, argumentName);
         }
 
         private static List<ICodeStatementBuilder> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings, IClassProperty property)
@@ -638,55 +665,59 @@ namespace ModelFramework.Objects.Extensions
                     {
                         $"if ({property.Name.ToPascalCase()} != null)",
                         "{",
-                        $"    foreach(var itemToAdd in {property.Name.ToPascalCase()})",
-                        "    {",
                         string.Format
                         (
-                            property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"        {property.Name}.Add(itemToAdd);"),
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"    {property.Name}.AddRange({property.Name.ToPascalCase()});"),
                             property.Name.ToPascalCase(),
                             property.TypeName,
                             property.TypeName.GetGenericArguments()
                         ),
-                        "    }",
                         "}",
                         "return this;"
                     }.ToLiteralCodeStatementBuilders().ToList()
                 : new[]
                     {
-                        $"foreach(var itemToAdd in {property.Name.ToPascalCase()})",
-                        "{",
                         string.Format
                         (
-                            property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderAddExpression, $"    {property.Name}.Add(itemToAdd);"),
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"{property.Name}.AddRange({property.Name.ToPascalCase()});"),
                             property.Name.ToPascalCase(),
                             property.TypeName,
                             property.TypeName.GetGenericArguments()
                         ),
-                        "}",
                         "return this;"
                     }.ToLiteralCodeStatementBuilders().ToList();
 
         private static List<ICodeStatementBuilder> GetImmutableBuilderAddOverloadMethodStatements(ImmutableBuilderClassSettings settings, IClassProperty property, string overloadExpression)
             => settings.AddNullChecks
-                ? new[]
+                ? (new[]
                 {
                     $"if ({property.Name.ToPascalCase()} != null)",
                         "{",
-                    $"    foreach(var itemToAdd in {property.Name.ToPascalCase()})",
-                        "    {",
-                        string.Format(overloadExpression, property.Name.ToPascalCase(), property.TypeName.FixTypeName(), property.TypeName.GetGenericArguments()),
+                        string.Format(overloadExpression,
+                                      property.Name.ToPascalCase(),
+                                      property.TypeName.FixTypeName(),
+                                      property.TypeName.GetGenericArguments(),
+                                      CreateIndentForImmuableBuilderAddOverloadMethodStatement(settings),
+                                      property.Name),
                         "    }",
                         "}",
                         "return this;"
-                }.ToLiteralCodeStatementBuilders().ToList()
-                : new[]
+                }).ToLiteralCodeStatementBuilders().ToList()
+                : (new[]
                 {
-                    $"foreach(var itemToAdd in {property.Name.ToPascalCase()})",
-                        "{",
-                        string.Format(overloadExpression, property.Name.ToPascalCase(), property.TypeName.FixTypeName(), property.TypeName.GetGenericArguments()),
-                        "}",
+                        string.Format(overloadExpression,
+                                      property.Name.ToPascalCase(),
+                                      property.TypeName.FixTypeName(),
+                                      property.TypeName.GetGenericArguments(),
+                                      CreateIndentForImmuableBuilderAddOverloadMethodStatement(settings),
+                                      property.Name),
                         "return this;"
-                }.ToLiteralCodeStatementBuilders().ToList();
+                }).ToLiteralCodeStatementBuilders().ToList();
+
+        private static string CreateIndentForImmuableBuilderAddOverloadMethodStatement(ImmutableBuilderClassSettings settings)
+            => settings.AddNullChecks
+                ? "        "
+                : "    ";
 
         private static string GetImmutableBuilderPocoCloseSign(bool poco)
             => poco
@@ -722,12 +753,20 @@ namespace ModelFramework.Objects.Extensions
                                                                                             ImmutableBuilderClassSettings settings)
             => instance.Properties.Select(property => new ClassPropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(string.Format(property.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderArgumentType, property.TypeName), property.TypeName, property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName(settings.NewCollectionTypeName))
+                .WithTypeName
+                (
+                    string.Format
+                    (
+                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                        property.TypeName,
+                        property.TypeName.GetGenericArguments()
+                    ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+                )
                 .WithIsNullable(property.IsNullable)
-                .AddAttributes(property.Attributes)
-                .AddMetadata(property.Metadata)
-                .AddGetterCodeStatements(property.GetterCodeStatements)
-                .AddSetterCodeStatements(property.SetterCodeStatements)
+                .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))
+                .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
+                .AddGetterCodeStatements(property.GetterCodeStatements.Select(x => x.CreateBuilder()))
+                .AddSetterCodeStatements(property.SetterCodeStatements.Select(x => x.CreateBuilder()))
             );
 
         private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
@@ -745,7 +784,7 @@ namespace ModelFramework.Objects.Extensions
                 ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
                 : new Func<IClassProperty, string>(p => $"{p.Name}");
 
-            return string.Join(", ", properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableBuilderMethodParameterExpression, defaultValueDelegate(p)), p.Name, p.Name.ToPascalCase())));
+            return string.Join(", ", properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)), p.Name, p.Name.ToPascalCase())));
         }
 
         private static IClassProperty ChangeProperty(IClassProperty property,
@@ -851,12 +890,12 @@ namespace ModelFramework.Objects.Extensions
             if (createWithMethod)
             {
                 yield return
-                    new ClassMethodBuilder
-                    {
-                        Name = "With",
-                        TypeName = instance.Name,
-                        Static = extensionMethod,
-                        CodeStatements =
+                    new ClassMethodBuilder()
+                        .WithName("With")
+                        .WithTypeName(instance.Name)
+                        .WithStatic(extensionMethod)
+                        .AddCodeStatements
+                        (
                             new[]
                             {
                                 $"return new {instance.Name}",
@@ -868,30 +907,28 @@ namespace ModelFramework.Objects.Extensions
                                     .Properties
                                     .Select
                                     (p => new
-                                        {
-                                            p.Name,
-                                            TypeName = p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName),
-                                            OriginalMetadata = p.Metadata,
-                                            Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
-                                            Suffix = p.Name != instance.Properties.Last().Name
+                                    {
+                                        p.Name,
+                                        TypeName = p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName),
+                                        OriginalMetadata = p.Metadata,
+                                        Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
+                                        Suffix = p.Name != instance.Properties.Last().Name
                                                 ? ","
                                                 : string.Empty
-                                        }
+                                    }
                                     )
                                     .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? {GetInstanceName(extensionMethod)}.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")
                             )
                             .Concat
                             (
-                                new[]
-                                {
-                                ");"
-                                }
+                                new[] { ");" }
                             )
                             .ToLiteralCodeStatementBuilders()
-                            .ToList(),
-                        Parameters =
+                        )
+                        .AddParameters
+                        (
                             (extensionMethod
-                                ? new[] { new ParameterBuilder { Name = "instance", TypeName = instance.Name } }
+                                ? new[] { new ParameterBuilder().WithName("instance").WithTypeName(instance.Name) }
                                 : Enumerable.Empty<ParameterBuilder>())
                             .Concat
                             (
@@ -899,111 +936,91 @@ namespace ModelFramework.Objects.Extensions
                                     .Properties
                                     .Select
                                     (
-                                        p => new ParameterBuilder
-                                        {
-                                            Name = p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                            TypeName = string.Format
+                                        p => new ParameterBuilder()
+                                            .WithName(p.Name.ToPascalCase().GetCsharpFriendlyName())
+                                            .WithTypeName(string.Format
                                             (
                                                 p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetStringValue
                                                 (
                                                     MetadataNames.CustomImmutableArgumentType,
                                                     p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)
                                                 ), p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)
-                                            ).GetCsharpFriendlyTypeName(),
-                                            DefaultValue = new Literal($"default({p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)).GetCsharpFriendlyTypeName()})")
-                                        }
+                                            ).GetCsharpFriendlyTypeName())
+                                            .WithDefaultValue(new Literal($"default({p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)).GetCsharpFriendlyTypeName()})"))
                                     )
-                            ).ToList(),
-                        ExtensionMethod = extensionMethod
-                    };
+                            )
+                        )
+                        .WithExtensionMethod(extensionMethod);
             }
 
             if (implementIEquatable)
             {
-                yield return new ClassMethodBuilder
-                {
-                    Name = "Equals",
-                    TypeName = typeof(bool).FullName,
-                    Override = true,
-                    Parameters = new[]
-                    {
-                        new ParameterBuilder
-                        {
-                            Name = "obj",
-                            TypeName = typeof(object).FullName
-                        }
-                    }.ToList(),
-                    CodeStatements = new[]
-                    {
-                        new LiteralCodeStatementBuilder { Statement = $"return Equals(obj as {instance.Name});" }
-                    }.Cast<ICodeStatementBuilder>().ToList()
-                };
-                yield return new ClassMethodBuilder
-                {
-                    Name = $"IEquatable<{instance.Name}>.Equals",
-                    TypeName = typeof(bool).FullName,
-                    Parameters = new[]
-                    {
-                        new ParameterBuilder
-                        {
-                            Name = "other",
-                            TypeName = instance.Name
-                        }
-                    }.ToList(),
-                    CodeStatements = new[]
-                    {
-                        new LiteralCodeStatementBuilder
-                        {
-                            Statement = $"return other != null &&{Environment.NewLine}       {GetEqualsProperties(instance)};" 
-                        }
-                    }.Cast<ICodeStatementBuilder>().ToList()
-                };
-                yield return new ClassMethodBuilder
-                {
-                    Name = "GetHashCode",
-                    TypeName = typeof(int).FullName,
-                    Override = true,
-                    CodeStatements = new[] { "int hashCode = 235838129;" }
-                       .Concat(instance.Properties.Select(p => Type.GetType(p.TypeName.FixTypeName())?.IsValueType == true
+                yield return new ClassMethodBuilder()
+                    .WithName("Equals")
+                    .WithTypeName(typeof(bool).FullName)
+                    .WithOverride()
+                    .AddParameters
+                    (
+                        new ParameterBuilder().WithName("obj").WithTypeName(typeof(object).FullName)
+                    )
+                    .AddCodeStatements
+                    (
+                        new LiteralCodeStatementBuilder().WithStatement($"return Equals(obj as {instance.Name});")
+                    );
+                yield return new ClassMethodBuilder()
+                    .WithName($"IEquatable<{instance.Name}>.Equals")
+                    .WithTypeName(typeof(bool).FullName)
+                    .AddParameters
+                    (
+                        new ParameterBuilder().WithName("other").WithTypeName(instance.Name)
+                    )
+                    .AddCodeStatements
+                    (
+                        new LiteralCodeStatementBuilder()
+                            .WithStatement($"return other != null &&{Environment.NewLine}       {GetEqualsProperties(instance)};")
+                    );
+                yield return new ClassMethodBuilder()
+                    .WithName("GetHashCode")
+                    .WithTypeName(typeof(int).FullName)
+                    .WithOverride()
+                    .AddCodeStatements
+                    (
+                        new[] { "int hashCode = 235838129;" }
+                        .Concat(instance.Properties.Select(p => Type.GetType(p.TypeName.FixTypeName())?.IsValueType == true
                             ? $"hashCode = hashCode * -1521134295 + {p.Name}.GetHashCode();"
                             : $"hashCode = hashCode * -1521134295 + EqualityComparer<{p.TypeName.FixTypeName()}>.Default.GetHashCode({p.Name});"))
                         .Concat(new[] { "return hashCode;" })
                         .Select(x => new LiteralCodeStatementBuilder { Statement = x })
                         .Cast<ICodeStatementBuilder>()
-                        .ToList()
-                };
-                yield return new ClassMethodBuilder
-                {
-                    Name = "==",
-                    TypeName = typeof(bool).FullName,
-                    Static = true,
-                    Operator = true,
-                    Parameters = new[]
-                    {
+                    );
+                yield return new ClassMethodBuilder()
+                    .WithName("==")
+                    .WithTypeName(typeof(bool).FullName)
+                    .WithStatic()
+                    .WithOperator()
+                    .AddParameters
+                    (
                         new ParameterBuilder { Name = "left", TypeName = instance.Name },
                         new ParameterBuilder { Name = "right", TypeName = instance.Name }
-                    }.ToList(),
-                    CodeStatements = new[]
-                    {
-                        new LiteralCodeStatementBuilder { Statement = $"return EqualityComparer<{instance.Name}>.Default.Equals(left, right);" }
-                    }.Cast<ICodeStatementBuilder>().ToList()
-                };
-                yield return new ClassMethodBuilder
-                {
-                    Name = "!=",
-                    TypeName = typeof(bool).FullName,
-                    Static = true,
-                    Operator = true,
-                    Parameters = new[]
-                    {
-                        new ParameterBuilder { Name = "left", TypeName = instance.Name },
-                        new ParameterBuilder { Name = "right", TypeName = instance.Name }
-                    }.ToList(),
-                    CodeStatements = new[]
-                    {
-                        new LiteralCodeStatementBuilder { Statement = "return !(left == right);" }
-                    }.Cast<ICodeStatementBuilder>().ToList()
-                };
+                    )
+                    .AddCodeStatements
+                    (
+                        new LiteralCodeStatementBuilder().WithStatement($"return EqualityComparer<{instance.Name}>.Default.Equals(left, right);")
+                    );
+                yield return new ClassMethodBuilder()
+                    .WithName("!=")
+                    .WithTypeName(typeof(bool).FullName)
+                    .WithStatic()
+                    .WithOperator()
+                    .AddParameters
+                    (
+                        new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
+                        new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
+                    )
+                    .AddCodeStatements
+                    (
+                        new LiteralCodeStatementBuilder().WithStatement("return !(left == right);")
+                    );
             }
         }
 
@@ -1014,5 +1031,20 @@ namespace ModelFramework.Objects.Extensions
             => extensionMethod
                 ? "instance"
                 : "this";
+
+        private sealed class Overload
+        {
+            public string ArgumentType { get; set; }
+            public string InitializeExpression { get; set; }
+            public string MethodName { get; set; }
+            public string ArgumentName { get; set; }
+            public Overload(string argumentType, string initializeExpression, string methodName, string argumentName)
+            {
+                ArgumentType = argumentType;
+                InitializeExpression = initializeExpression;
+                MethodName = methodName;
+                ArgumentName = argumentName;
+            }
+        }
     }
 }

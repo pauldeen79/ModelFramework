@@ -18,12 +18,12 @@ namespace ModelFramework.Objects.Default
                              bool @override,
                              bool hasGetter,
                              bool hasSetter,
-                             bool hasInit,
+                             bool hasInitializer,
                              bool isNullable,
                              Visibility visibility,
                              Visibility? getterVisibility,
                              Visibility? setterVisibility,
-                             Visibility? initVisibility,
+                             Visibility? initializerVisibility,
                              string explicitInterfaceName,
                              IEnumerable<IMetadata> metadata,
                              IEnumerable<IAttribute> attributes,
@@ -50,13 +50,13 @@ namespace ModelFramework.Objects.Default
             Protected = @protected;
             Override = @override;
             HasGetter = hasGetter;
-            HasSetter = hasSetter && !hasInit;
-            HasInitializer = hasInit;
+            HasSetter = hasSetter && !hasInitializer;
+            HasInitializer = hasInitializer;
             IsNullable = isNullable;
             Visibility = visibility;
             GetterVisibility = getterVisibility;
             SetterVisibility = setterVisibility;
-            InitializerVisibility = initVisibility;
+            InitializerVisibility = initializerVisibility;
             ExplicitInterfaceName = explicitInterfaceName;
             Metadata = new ValueCollection<IMetadata>(metadata);
             Attributes = new ValueCollection<IAttribute>(attributes);

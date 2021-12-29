@@ -60,42 +60,52 @@
         /// <summary>
         /// Metadata name for defining a custom type for argument in immutable builder.
         /// </summary>
-        public const string CustomImmutableBuilderArgumentType = "ModelFramework.Objects.Immutable.Builder.ArgumentType";
+        public const string CustomBuilderArgumentType = "ModelFramework.Objects.Builder.ArgumentType";
 
         /// <summary>
         /// Metadata name for defining a custom initialization on a Add method, where {0} is the property name
         /// </summary>
-        public const string CustomImmutableBuilderAddExpression = "ModelFramework.Objects.Immutable.Builder.AddExpression";
+        public const string CustomBuilderAddExpression = "ModelFramework.Objects.Builder.AddExpression";
 
         /// <summary>
         /// Metadata name for defining a custom initialization on a With method, where {0} is the property name in pascal case, and {1} is the C# corrected property name in pascal case
         /// </summary>
-        public const string CustomImmutableBuilderWithExpression = "ModelFramework.Objects.Immutable.Builder.WithExpression";
+        public const string CustomBuilderWithExpression = "ModelFramework.Objects.Builder.WithExpression";
 
         /// <summary>
         /// Metadata name for defining a custom parameter expression in the builder.
         /// </summary>
-        public const string CustomImmutableBuilderMethodParameterExpression = "ModelFramework.Objects.Immutable.Ctor.Builder.MethodParameterExpression";
+        public const string CustomBuilderMethodParameterExpression = "ModelFramework.Objects.Immutable.Ctor.MethodParameterExpression";
 
         /// <summary>
         /// Metadata name for defining a custom initialization in the constructor of the builder.
         /// </summary>
-        public const string CustomImmutableBuilderConstructorInitializeExpression = "ModelFramework.Objects.Immutable.Builder.ConstructorInitializeExpression";
+        public const string CustomBuilderConstructorInitializeExpression = "ModelFramework.Objects.Builder.ConstructorInitializeExpression";
 
         /// <summary>
         /// Metadata name for defining a custom typename for a With/Add overload in a builder.
         /// </summary>
-        public const string CustomImmutableBuilderWithOverloadArgumentType = "ModelFramework.Objects.Immutable.Builder.WithOverload.ArgumentType";
+        public const string CustomBuilderWithOverloadArgumentType = "ModelFramework.Objects.Builder.WithOverload.ArgumentType";
+
+        /// <summary>
+        /// Metadata name for defining a custom argument name for a With/Add overload in a builder.
+        /// </summary>
+        public const string CustomBuilderWithOverloadArgumentName = "ModelFramework.Objects.Builder.WithOverload.ArgumentName";
+
+        /// <summary>
+        /// Metadata name for defining a custom method name for a With/Add overload in a builder.
+        /// </summary>
+        public const string CustomBuilderWithOverloadMethodName = "ModelFramework.Objects.Builder.WithOverload.MethodName";
 
         /// <summary>
         /// Metadata name for defining a custom expression for a With/Add overload in a builder.
         /// </summary>
-        public const string CustomImmutableBuilderWithOverloadInitializeExpression = "ModelFramework.Objects.Immutable.Builder.WithOverload.InitializeExpression";
+        public const string CustomBuilderWithOverloadInitializeExpression = "ModelFramework.Objects.Builder.WithOverload.InitializeExpression";
 
         /// <summary>
-        /// Metadata name for defining a custom type for argument in builder c'tor.
+        /// Metadata name for defining default value on a With method in a builder.
         /// </summary>
-        public const string CustomBuilderArgumentType = "ModelFramework.Objects.Builder.Ctor.CustomArgumentType";
+        public const string CustomBuilderWithDefaultPropertyValue = "ModelFramework.Objects.Builder.Property.DefaultValue";
 
         /// <summary>
         /// Metadata name for defining a custom type for argument in observable c'tor.

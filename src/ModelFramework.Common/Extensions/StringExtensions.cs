@@ -175,6 +175,17 @@ namespace ModelFramework.Common.Extensions
                 ? instance
                 : $"{instance}<{genericTypeParameter}>";
 
+        public static string ReplaceSuffix(this string instance, string find, string replace, StringComparison stringComparison)
+        {
+            var index = instance.IndexOf(find, stringComparison);
+            if (index == -1 || index < instance.Length - find.Length)
+            {
+                return instance;
+            }
+
+            return instance.Substring(0, instance.Length - find.Length) + replace;
+        }
+
         private static string FixAnonymousTypeName(string instance)
         {
             var isAnonymousType = instance.Contains("AnonymousType")

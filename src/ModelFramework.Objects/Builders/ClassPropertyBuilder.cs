@@ -146,7 +146,7 @@ namespace ModelFramework.Objects.Builders
             SetterVisibility = setterVisibility;
             return this;
         }
-        public ClassPropertyBuilder WithInitVisibility(Visibility? initVisibility)
+        public ClassPropertyBuilder WithInitializerVisibility(Visibility? initVisibility)
         {
             InitializerVisibility = initVisibility;
             return this;
@@ -268,25 +268,25 @@ namespace ModelFramework.Objects.Builders
             SetterCodeStatements.AddRange(setterCodeStatements.Select(x => x.CreateBuilder()));
             return this;
         }
-        public ClassPropertyBuilder ClearInitCodeStatements()
+        public ClassPropertyBuilder ClearInitializerCodeStatements()
         {
             InitializerCodeStatements.Clear();
             return this;
         }
-        public ClassPropertyBuilder AddInitCodeStatements(IEnumerable<ICodeStatementBuilder> initCodeStatements)
+        public ClassPropertyBuilder AddInitializerCodeStatements(IEnumerable<ICodeStatementBuilder> initCodeStatements)
         {
-            return AddInitCodeStatements(initCodeStatements.ToArray());
+            return AddInitializerCodeStatements(initCodeStatements.ToArray());
         }
-        public ClassPropertyBuilder AddInitCodeStatements(params ICodeStatementBuilder[] initCodeStatements)
+        public ClassPropertyBuilder AddInitializerCodeStatements(params ICodeStatementBuilder[] initCodeStatements)
         {
             InitializerCodeStatements.AddRange(initCodeStatements);
             return this;
         }
-        public ClassPropertyBuilder AddInitCodeStatements(IEnumerable<ICodeStatement> initCodeStatements)
+        public ClassPropertyBuilder AddInitializerCodeStatements(IEnumerable<ICodeStatement> initCodeStatements)
         {
-            return AddInitCodeStatements(initCodeStatements.ToArray());
+            return AddInitializerCodeStatements(initCodeStatements.ToArray());
         }
-        public ClassPropertyBuilder AddInitCodeStatements(params ICodeStatement[] initCodeStatements)
+        public ClassPropertyBuilder AddInitializerCodeStatements(params ICodeStatement[] initCodeStatements)
         {
             InitializerCodeStatements.AddRange(initCodeStatements.Select(x => x.CreateBuilder()));
             return this;

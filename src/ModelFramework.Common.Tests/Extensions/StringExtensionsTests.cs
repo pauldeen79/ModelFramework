@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 using ModelFramework.Common.Extensions;
 using Xunit;
@@ -121,6 +122,20 @@ namespace ModelFramework.Common.Tests.Extensions
         {
             // Act
             var actual = "MyClass".MakeGenericTypeName(input);
+
+            // Assert
+            actual.Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("", "A", "B", "")]
+        [InlineData("ASomething", "A", "B", "ASomething")]
+        [InlineData("ASomeAthing", "A", "B", "ASomeAthing")]
+        [InlineData("SomethingA", "A", "B", "SomethingB")]
+        public void ReplaceSuffix_Returns_Correct_Result(string input, string find, string replace, string expectedResult)
+        {
+            // Act
+            var actual = input.ReplaceSuffix(find, replace, StringComparison.InvariantCulture);
 
             // Assert
             actual.Should().Be(expectedResult);

@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Default;
-using ModelFramework.Common.Extensions;
 using ModelFramework.Generators.Objects.Tests.Mocks;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
 using ModelFramework.Objects.Extensions;
 using ModelFramework.Objects.Settings;
 using TextTemplateTransformationFramework.Runtime;
@@ -305,35 +302,9 @@ namespace MyNamespace
             return new MyNamespace.MyRecord(Property1, Property2, Property3.Build(), Property4.Select(x => x.Build()));
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Property1 = default;
-            Property2.Clear();
-            Property3 = default;
-            Property4.Clear();
-            return this;
-        }
-
-        public MyRecordBuilder Update(MyNamespace.MyRecord source)
-        {
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = source.Property1;
-            if (source.Property2 != null) foreach (var x in source.Property2) Property2.Add(x);
-            Property3 = new MyCustomTypeBuilder(source.Property3);
-            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-            return this;
-        }
-
         public MyRecordBuilder WithProperty1(string property1)
         {
             Property1 = property1;
-            return this;
-        }
-
-        public MyRecordBuilder ClearProperty2()
-        {
-            Property2.Clear();
             return this;
         }
 
@@ -346,10 +317,7 @@ namespace MyNamespace
         {
             if (property2 != null)
             {
-                foreach(var itemToAdd in property2)
-                {
-                    Property2.Add(itemToAdd);
-                }
+                Property2.AddRange(property2);
             }
             return this;
         }
@@ -357,18 +325,6 @@ namespace MyNamespace
         public MyRecordBuilder WithProperty3(MyCustomTypeBuilder property3)
         {
             Property3 = property3;
-            return this;
-        }
-
-        public MyRecordBuilder WithProperty3(MyCustomType property3)
-        {
-            property3 = new MyCustomTypeBuilder(property3);
-            return this;
-        }
-
-        public MyRecordBuilder ClearProperty4()
-        {
-            Property4.Clear();
             return this;
         }
 
@@ -381,27 +337,7 @@ namespace MyNamespace
         {
             if (property4 != null)
             {
-                foreach(var itemToAdd in property4)
-                {
-                    Property4.Add(itemToAdd);
-                }
-            }
-            return this;
-        }
-
-        public MyRecordBuilder AddProperty4(System.Collections.Generic.IEnumerable<MyCustomType> property4)
-        {
-            return AddProperty4(property4.ToArray());
-        }
-
-        public MyRecordBuilder AddProperty4(params System.Collections.Generic.IReadOnlyCollection<MyCustomType>[] property4)
-        {
-            if (property4 != null)
-            {
-                foreach(var itemToAdd in property4)
-                {
-                    property4.Add(new MyCustomTypeBuilder(itemToAdd));
-                }
+                Property4.AddRange(property4);
             }
             return this;
         }
@@ -417,19 +353,9 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = source.Property1;
-            if (source.Property2 != null) foreach (var x in source.Property2) Property2.Add(x);
+            if (source.Property2 != null) Property2.AddRange(source.Property2);
             Property3 = new MyCustomTypeBuilder(source.Property3);
             if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-        }
-
-        public MyRecordBuilder(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
-        {
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = property1;
-            if (property2 != null) foreach (var x in property2) Property2.Add(x);
-            Property3 = property3;
-            if (property4 != null) foreach (var x in property4) Property4.Add(x);
         }
     }
 }
@@ -503,35 +429,9 @@ namespace MyNamespace
             return new MyNamespace.MyRecord(Property1, Property2, Property3.Build(), Property4.Select(x => x.Build()));
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Property1 = default;
-            Property2.Clear();
-            Property3 = default;
-            Property4.Clear();
-            return this;
-        }
-
-        public MyRecordBuilder Update(MyNamespace.MyRecord source)
-        {
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = source.Property1;
-            foreach (var x in source.Property2) Property2.Add(x);
-            Property3 = new MyCustomTypeBuilder(source.Property3);
-            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-            return this;
-        }
-
         public MyRecordBuilder WithProperty1(string property1)
         {
             Property1 = property1;
-            return this;
-        }
-
-        public MyRecordBuilder ClearProperty2()
-        {
-            Property2.Clear();
             return this;
         }
 
@@ -542,28 +442,13 @@ namespace MyNamespace
 
         public MyRecordBuilder AddProperty2(params System.Collections.Generic.IReadOnlyCollection<string>[] property2)
         {
-            foreach(var itemToAdd in property2)
-            {
-                Property2.Add(itemToAdd);
-            }
+            Property2.AddRange(property2);
             return this;
         }
 
         public MyRecordBuilder WithProperty3(MyCustomTypeBuilder property3)
         {
             Property3 = property3;
-            return this;
-        }
-
-        public MyRecordBuilder WithProperty3(MyCustomType property3)
-        {
-            property3 = new MyCustomTypeBuilder(property3);
-            return this;
-        }
-
-        public MyRecordBuilder ClearProperty4()
-        {
-            Property4.Clear();
             return this;
         }
 
@@ -574,24 +459,7 @@ namespace MyNamespace
 
         public MyRecordBuilder AddProperty4(params MyCustomTypeBuilder[] property4)
         {
-            foreach(var itemToAdd in property4)
-            {
-                Property4.Add(itemToAdd);
-            }
-            return this;
-        }
-
-        public MyRecordBuilder AddProperty4(System.Collections.Generic.IEnumerable<MyCustomType> property4)
-        {
-            return AddProperty4(property4.ToArray());
-        }
-
-        public MyRecordBuilder AddProperty4(params System.Collections.Generic.IReadOnlyCollection<MyCustomType>[] property4)
-        {
-            foreach(var itemToAdd in property4)
-            {
-                    property4.Add(new MyCustomTypeBuilder(itemToAdd));
-            }
+            Property4.AddRange(property4);
             return this;
         }
 
@@ -599,6 +467,8 @@ namespace MyNamespace
         {
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            Property1 = string.Empty;
+            Property3 = default;
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -606,19 +476,9 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = source.Property1;
-            foreach (var x in source.Property2) Property2.Add(x);
+            Property2.AddRange(source.Property2);
             Property3 = new MyCustomTypeBuilder(source.Property3);
-            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
-        }
-
-        public MyRecordBuilder(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
-        {
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = property1;
-            foreach (var x in property2) Property2.Add(x);
-            Property3 = property3;
-            foreach (var x in property4) Property4.Add(x);
+            Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
         }
     }
 }
@@ -1809,7 +1669,7 @@ namespace MyNamespace
                 .AddProperties(properties)
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true, addNullChecks: true);
+            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true), addNullChecks: true);
             var model = new[]
             {
                 cls,
@@ -1841,7 +1701,7 @@ namespace MyNamespace
                 .AddProperties(properties)
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true, addNullChecks: false);
+            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true), addNullChecks: false);
             var model = new[]
             {
                 cls,
@@ -1866,7 +1726,7 @@ namespace MyNamespace
                 .AddProperties(new ClassPropertyBuilder { Name = "Static", TypeName = typeof(bool).FullName } )
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings());
-            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true);
+            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true));
             var model = new[]
             {
                 cls,
@@ -1911,18 +1771,6 @@ namespace MyNamespace
             return new MyNamespace.MyRecord(Static);
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Static = default;
-            return this;
-        }
-
-        public MyRecordBuilder Update(MyNamespace.MyRecord source)
-        {
-            Static = source.Static;
-            return this;
-        }
-
         public MyRecordBuilder WithStatic(bool @static)
         {
             Static = @static;
@@ -1931,16 +1779,12 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
+            Static = default;
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
         {
             Static = source.Static;
-        }
-
-        public MyRecordBuilder(bool @static)
-        {
-            Static = @static;
         }
     }
 }
@@ -2006,12 +1850,6 @@ namespace MyNamespace
             return new MyNamespace.MyRecord(Property1);
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Property1 = default;
-            return this;
-        }
-
         public MyRecordBuilder SetProperty1(string property1)
         {
             Property1 = property1;
@@ -2020,11 +1858,7 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-        }
-
-        public MyRecordBuilder(MyNamespace.MyRecord source)
-        {
-            Property1 = source.Property1;
+            Property1 = string.Empty;
         }
     }
 }
@@ -2092,12 +1926,6 @@ namespace MyNamespace
             return new MyNamespace.MyRecord(Property1);
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Property1 = default;
-            return this;
-        }
-
         public MyRecordBuilder WithProperty1(string property1)
         {
             Property1 = property1;
@@ -2106,11 +1934,7 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-        }
-
-        public MyRecordBuilder(MyNamespace.MyRecord source)
-        {
-            Property1 = source.Property1;
+            Property1 = string.Empty;
         }
     }
 }
@@ -2179,12 +2003,6 @@ namespace MyNamespace
             return new MyNamespace.MyRecord(Property1);
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Property1 = default;
-            return this;
-        }
-
         public MyRecordBuilder WithProperty1(string? property1)
         {
             Property1 = property1;
@@ -2194,11 +2012,6 @@ namespace MyNamespace
         public MyRecordBuilder()
         {
         }
-
-        public MyRecordBuilder(MyNamespace.MyRecord source)
-        {
-            Property1 = source.Property1;
-        }
     }
 #nullable restore
 }
@@ -2206,7 +2019,7 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void GeneatesImmutableBuilderClassWithObservableProperty()
+        public void GeneratesImmutableBuilderClassWithObservableProperty()
         {
             // Arrange
             var properties = new[]
@@ -2280,12 +2093,6 @@ namespace MyNamespace
             return new MyNamespace.MyRecord { Property1 = Property1 };
         }
 
-        public MyRecordBuilder Clear()
-        {
-            Property1 = default;
-            return this;
-        }
-
         public MyRecordBuilder WithProperty1(string property1)
         {
             Property1 = property1;
@@ -2294,11 +2101,7 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-        }
-
-        public MyRecordBuilder(MyNamespace.MyRecord source)
-        {
-            Property1 = source.Property1;
+            Property1 = string.Empty;
         }
 
         private string _property1;
@@ -2488,7 +2291,7 @@ namespace MyNamespace
 
             // Act & Assert
             input.Invoking(x => x.ToImmutableClass(new ImmutableClassSettings()))
-                 .Should().Throw<System.InvalidOperationException>()
+                 .Should().Throw<InvalidOperationException>()
                  .WithMessage("To create an immutable class, there must be at least one property");
         }
 
@@ -2666,53 +2469,11 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void GeneratesImmutableBuilderClassesForAllCsharpModelEntities()
-        {
-            // Arrange
-            var models = typeof(Class).Assembly.GetExportedTypes()
-                .Where(t => t.FullName.StartsWith("ModelFramework.Objects.Default."))
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
-                .ToArray();
-
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true,
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
-            // Act
-            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClassBuilder(settings).WithNamespace("ModelFramework.Objects.Builders").Build() }).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
-
-            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
-        }
-
-        [Fact]
-        public void GeneratesImmutableBuilderClassesForAllCommonModelEntities()
-        {
-            // Arrange
-            var models = typeof(Metadata).Assembly.GetExportedTypes()
-                .Where(t => t.FullName.StartsWith("ModelFramework.Common.Default."))
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
-                .ToArray();
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection",
-                                                             addCopyConstructor: true,
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
-
-            // Act
-            var builderModels = models.SelectMany(c => new[] { c.Build().ToImmutableBuilderClassBuilder(settings).WithNamespace("ModelFramework.Common.Builders").Build() }).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
-
-            // Assert
-            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
-        }
-
-        [Fact]
         public void GeneratesImmutableBuilderClassForRecord()
         {
             // Arrange
             var input = typeof(Person).ToClass(new ClassSettings(createConstructors: true));
-            var settings = new ImmutableBuilderClassSettings(addCopyConstructor: true);
+            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true));
 
             // Act
             var builder = input.ToImmutableBuilderClass(settings);
@@ -2747,20 +2508,6 @@ namespace ModelFramework.Generators.Objects.Tests
             return new ModelFramework.Generators.Objects.Tests.Person { FirstName = FirstName, LastName = LastName };
         }
 
-        public PersonBuilder Clear()
-        {
-            FirstName = default;
-            LastName = default;
-            return this;
-        }
-
-        public PersonBuilder Update(ModelFramework.Generators.Objects.Tests.Person source)
-        {
-            FirstName = source.FirstName;
-            LastName = source.LastName;
-            return this;
-        }
-
         public PersonBuilder WithFirstName(string firstName)
         {
             FirstName = firstName;
@@ -2782,12 +2529,6 @@ namespace ModelFramework.Generators.Objects.Tests
             FirstName = source.FirstName;
             LastName = source.LastName;
         }
-
-        public PersonBuilder(string firstName, string lastName)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-        }
     }
 }
 ");
@@ -2801,7 +2542,7 @@ namespace ModelFramework.Generators.Objects.Tests
 
             // Act & Assert
             input.Invoking(x => x.ToImmutableBuilderClass(new ImmutableBuilderClassSettings()))
-                 .Should().Throw<System.InvalidOperationException>()
+                 .Should().Throw<InvalidOperationException>()
                  .WithMessage("To create an immutable builder class, there must be at least one property");
         }
 
@@ -2842,62 +2583,6 @@ namespace MyNamespace
 #nullable restore
 }
 ");
-        }
-
-        private static void FixImmutableBuilderProperties(ClassBuilder[] models)
-        {
-            foreach (var classBuilder in models)
-            {
-                foreach (var property in classBuilder.Properties)
-                {
-                    var typeName = property.TypeName.FixTypeName();
-                    if (typeName.StartsWith("ModelFramework.Objects.Default.")
-                        || typeName.StartsWith("ModelFramework.Database.Default.")
-                        || typeName.StartsWith("ModelFramework.Common.Default."))
-                    {
-                        property.ConvertSinglePropertyToBuilder();
-                    }
-                    else if (typeName.Contains("IReadOnlyCollection<ModelFramework."))
-                    {
-                        property.ConvertCollectionPropertyToBuilder();
-                    }
-                }
-            }
-        }
-
-        private static string FixNamespace(System.Type t)
-        {
-            if (t.FullName.StartsWith("ModelFramework.Common.Default"))
-            {
-                return t.FullName.Replace("ModelFramework.Common.Default", "ModelFramework.Common.Contracts").GetNamespaceWithDefault(string.Empty);
-            }
-            return t.FullName.GetNamespaceWithDefault(string.Empty);
-        }
-
-        private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
-        {
-            if (instance.Namespace == "ModelFramework.Common.Contracts")
-            {
-                return forCreate
-                    ? "ModelFramework.Common.Default." + instance.Name
-                    : "ModelFramework.Common.Contracts.I" + instance.Name;
-            }
-
-            if (instance.Namespace == "ModelFramework.Objects.Contracts")
-            {
-                return forCreate
-                    ? "ModelFramework.Objects.Default." + instance.Name
-                    : "ModelFramework.Objects.Contracts.I" + instance.Name;
-            }
-
-            if (instance.Namespace == "ModelFramework.Database.Contracts")
-            {
-                return forCreate
-                    ? "ModelFramework.Database.Default." + instance.Name
-                    : "ModelFramework.Database.Contracts.I" + instance.Name;
-            }
-
-            return string.Empty;
         }
 
         private static IEnumerable<IClass> GetSubClasses()

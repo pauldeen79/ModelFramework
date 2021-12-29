@@ -17,28 +17,26 @@ namespace ModelFramework.Objects.Extensions
             => instance.ToClassBuilder(settings).Build();
 
         public static ClassBuilder ToClassBuilder(this Type instance, ClassSettings settings)
-            => new ClassBuilder
-            {
-                Name = instance.Name,
-                Namespace = instance.FullName.GetNamespaceWithDefault(string.Empty),
-                Visibility = instance.IsPublic
+            => new ClassBuilder()
+                .WithName(instance.Name)
+                .WithNamespace(instance.FullName.GetNamespaceWithDefault(string.Empty))
+                .WithVisibility(instance.IsPublic
                     ? Visibility.Public
-                    : Visibility.Private,
-                BaseClass = instance.BaseType == typeof(object)
+                    : Visibility.Private)
+                .WithBaseClass(instance.BaseType == typeof(object)
                     ? string.Empty
-                    : instance.BaseType.FullName,
-                Static = instance.IsAbstract && instance.IsSealed,
-                Sealed = instance.IsSealed,
-                Partial = settings.Partial,
-                Record = instance.IsRecord(),
-                Interfaces = GetInterfaces(instance).ToList(),
-                Fields = GetFields(instance).ToList(),
-                Properties = GetProperties(instance).ToList(),
-                Methods = GetMethods(instance).ToList(),
-                Constructors = GetConstructors(instance, settings.CreateConstructors).ToList(),
-                Attributes = GetAttributes(instance.GetCustomAttributes(false)).ToList(),
-                SubClasses = GetSubClasses(instance, settings.Partial).ToList()
-            };
+                    : instance.BaseType.FullName)
+                .WithStatic(instance.IsAbstract && instance.IsSealed)
+                .WithSealed(instance.IsSealed)
+                .WithPartial(settings.Partial)
+                .WithRecord(instance.IsRecord())
+                .AddInterfaces(GetInterfaces(instance))
+                .AddFields(GetFields(instance).ToList())
+                .AddProperties(GetProperties(instance))
+                .AddMethods(GetMethods(instance))
+                .AddConstructors(GetConstructors(instance, settings.CreateConstructors))
+                .AddAttributes(GetAttributes(instance.GetCustomAttributes(false)))
+                .AddSubClasses(GetSubClasses(instance, settings.Partial));
 
         public static IClass ToWrapperClass(this Type instance, WrapperClassSettings settings)
             => instance.ToWrapperClassBuilder(settings).Build();
@@ -56,45 +54,41 @@ namespace ModelFramework.Objects.Extensions
         private static IEnumerable<ClassFieldBuilder> GetFields(Type instance)
             => instance.GetFieldsRecursively().Select
                 (
-                    f => new ClassFieldBuilder
-                    {
-                        Name = f.Name,
-                        TypeName = f.FieldType.FullName,
-                        Static = f.IsStatic,
-                        Constant = f.IsLiteral,
-                        IsNullable = f.IsNullable(),
-                        Visibility = f.IsPublic
+                    f => new ClassFieldBuilder()
+                        .WithName(f.Name)
+                        .WithTypeName(f.FieldType.FullName)
+                        .WithStatic(f.IsStatic)
+                        .WithConstant(f.IsLiteral)
+                        .WithIsNullable(f.IsNullable())
+                        .WithVisibility(f.IsPublic
                             ? Visibility.Public
-                            : Visibility.Private,
-                        Attributes = GetAttributes(f.GetCustomAttributes(false)).ToList()
-                    }
+                            : Visibility.Private)
+                        .AddAttributes(GetAttributes(f.GetCustomAttributes(false)))
                 );
 
         private static IEnumerable<ClassPropertyBuilder> GetProperties(Type instance) =>
             instance.GetPropertiesRecursively().Select
             (
-                p => new ClassPropertyBuilder
-                {
-                    Name = p.Name,
-                    TypeName = p.PropertyType.FullName,
-                    HasGetter = p.GetGetMethod() != null,
-                    HasSetter = p.GetSetMethod() != null,
-                    HasInitializer = p.IsInitOnly(),
-                    IsNullable = p.IsNullable(),
-                    Visibility = p.GetAccessors().Any(m => m.IsPublic)
+                p => new ClassPropertyBuilder()
+                    .WithName(p.Name)
+                    .WithTypeName(p.PropertyType.FullName)
+                    .WithHasGetter(p.GetGetMethod() != null)
+                    .WithHasSetter(p.GetSetMethod() != null)
+                    .WithHasInitializer(p.IsInitOnly())
+                    .WithIsNullable(p.IsNullable())
+                    .WithVisibility(p.GetAccessors().Any(m => m.IsPublic)
                         ? Visibility.Public
-                        : Visibility.Private,
-                    GetterVisibility = p.GetGetMethod()?.IsPublic ?? false
+                        : Visibility.Private)
+                    .WithGetterVisibility(p.GetGetMethod()?.IsPublic ?? false
                         ? Visibility.Public
-                        : Visibility.Private,
-                    SetterVisibility = p.GetSetMethod()?.IsPublic ?? false
+                        : Visibility.Private)
+                    .WithSetterVisibility(p.GetSetMethod()?.IsPublic ?? false
                         ? Visibility.Public
-                        : Visibility.Private,
-                    InitializerVisibility = p.GetSetMethod()?.IsPublic ?? false
+                        : Visibility.Private)
+                    .WithInitializerVisibility(p.GetSetMethod()?.IsPublic ?? false
                         ? Visibility.Public
-                        : Visibility.Private,
-                    Attributes = GetAttributes(p.GetCustomAttributes(false)).ToList()
-                }
+                        : Visibility.Private)
+                    .AddAttributes(GetAttributes(p.GetCustomAttributes(false)))
             );
 
         private static IEnumerable<ClassMethodBuilder> GetMethods(Type instance)
@@ -102,51 +96,49 @@ namespace ModelFramework.Objects.Extensions
                     .Where(m => !instance.IsRecord() && !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
                     .Select
                     (
-                        m => new ClassMethodBuilder
-                        {
-                            Name = m.Name,
-                            TypeName = m.ReturnType.FullName.FixTypeName(),
-                            Visibility = m.IsPublic
+                        m => new ClassMethodBuilder()
+                            .WithName(m.Name)
+                            .WithTypeName(m.ReturnType.FullName.FixTypeName())
+                            .WithVisibility(m.IsPublic
                                 ? Visibility.Public
-                                : Visibility.Private,
-                            Static = m.IsStatic,
-                            Virtual = m.IsVirtual,
-                            Abstract = m.IsAbstract,
-                            IsNullable = m.ReturnTypeIsNullable(),
-                            Parameters = m.GetParameters().Select
+                                : Visibility.Private)
+                            .WithStatic(m.IsStatic)
+                            .WithVirtual(m.IsVirtual)
+                            .WithAbstract(m.IsAbstract)
+                            .WithIsNullable(m.ReturnTypeIsNullable())
+                            .AddParameters(m.GetParameters().Select
                             (
-                                p => new ParameterBuilder
-                                {
-                                    Name = p.Name,
-                                    TypeName = p.ParameterType.FullName.FixTypeName(),
-                                    IsNullable = p.IsNullable(),
-                                    Attributes = GetAttributes(p.GetCustomAttributes(true)).ToList()
-                                }
-                            ).ToList(),
-                            Attributes = GetAttributes(m.GetCustomAttributes(false)).ToList()
-                        }
+                                p => new ParameterBuilder()
+                                    .WithName(p.Name)
+                                    .WithTypeName(p.ParameterType.FullName.FixTypeName())
+                                    .WithIsNullable(p.IsNullable())
+                                    .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
+                            ))
+                            .AddAttributes(GetAttributes(m.GetCustomAttributes(false)))
                     );
 
         private static IEnumerable<ClassConstructorBuilder> GetConstructors(Type instance, bool createConstructors)
-            => instance.GetConstructors().Where(_ => createConstructors).Select(x => new ClassConstructorBuilder
-            {
-                Parameters = x.GetParameters().Select
-                (
-                    p =>
-                    new ParameterBuilder
-                    {
-                        Name = p.Name,
-                        TypeName = p.ParameterType.FullName.FixTypeName(),
-                        IsNullable = p.IsNullable(),
-                        Attributes = GetAttributes(p.GetCustomAttributes(true)).ToList()
-                    }
-                ).ToList()
-            });
+            => instance.GetConstructors()
+                .Where(_ => createConstructors)
+                .Select(x => new ClassConstructorBuilder()
+                    .AddParameters
+                    (
+                        x.GetParameters().Select
+                        (
+                            p =>
+                            new ParameterBuilder()
+                                .WithName(p.Name)
+                                .WithTypeName(p.ParameterType.FullName.FixTypeName())
+                                .WithIsNullable(p.IsNullable())
+                                .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
+                        )
+                    )
+            );
 
         private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes)
             => attributes.OfType<Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                                            && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                         .Select(x => new AttributeBuilder { Name = x.GetType().FullName });
+                                                    && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
+                         .Select(x => new AttributeBuilder().WithName(x.GetType().FullName));
 
         private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
             => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));
@@ -163,53 +155,45 @@ namespace ModelFramework.Objects.Extensions
 
         private static IEnumerable<ClassConstructorBuilder> GeneratedCtors(Type type)
         {
-            yield return new ClassConstructorBuilder
-            {
-                Parameters = new[]
-                {
-                    new ParameterBuilder
-                    {
-                        Name = "wrappedInstance",
-                        TypeName = type.FullName.FixTypeName()
-                    }
-                }.ToList(),
-            }.AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("_wrappedInstance = wrappedInstance;"));
+            yield return new ClassConstructorBuilder()
+                .AddParameters
+                (
+                    new ParameterBuilder()
+                        .WithName("wrappedInstance")
+                        .WithTypeName(type.FullName.FixTypeName())
+                )
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("_wrappedInstance = wrappedInstance;"));
         }
 
         private static IEnumerable<ClassFieldBuilder> GeneratedFields(Type type)
         {
-            yield return new ClassFieldBuilder
-            {
-                Name = "_wrappedInstance",
-                TypeName = type.FullName.FixTypeName(),
-                Visibility = Visibility.Private,
-                ReadOnly = true
-            };
+            yield return new ClassFieldBuilder()
+                .WithName("_wrappedInstance")
+                .WithTypeName(type.FullName.FixTypeName())
+                .WithVisibility(Visibility.Private)
+                .WithReadOnly(true);
         }
 
         private static ClassPropertyBuilder CreateMockProperty(PropertyInfo propertyInfo, Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
-            => new ClassPropertyBuilder
-            {
-                Name = propertyInfo.Name,
-                TypeName = propertyInfo.PropertyType.FullName.FixTypeName(),
-                HasSetter = false,
-                GetterCodeStatements = (propertyCodeStatementsDelegate?.Invoke(propertyInfo) ?? Enumerable.Empty<ICodeStatement>())
-                    .Select(x => x.CreateBuilder()).ToList()
-            };
+            => new ClassPropertyBuilder()
+                .WithName(propertyInfo.Name)
+                .WithTypeName(propertyInfo.PropertyType.FullName.FixTypeName())
+                .WithHasSetter(false)
+                .AddGetterCodeStatements((propertyCodeStatementsDelegate?.Invoke(propertyInfo) ?? Enumerable.Empty<ICodeStatement>()).Select(x => x.CreateBuilder()));
 
         private static ClassMethodBuilder CreateMockMethod(MethodInfo methodInfo, Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
-            => new ClassMethodBuilder
-            {
-                Name = methodInfo.Name,
-                TypeName = methodInfo.ReturnType.FullName.FixTypeName(),
-                Parameters = CreateParameters(methodInfo).ToList(),
-                Override = methodInfo.DeclaringType == typeof(object),
-                CodeStatements = (methodCodeStatementsDelegate?.Invoke(methodInfo) ?? Enumerable.Empty<ICodeStatement>())
-                    .Select(x => x.CreateBuilder()).ToList()
-            };
+            => new ClassMethodBuilder()
+                .WithName(methodInfo.Name)
+                .WithTypeName(methodInfo.ReturnType.FullName.FixTypeName())
+                .AddParameters(CreateParameters(methodInfo))
+                .WithOverride(methodInfo.DeclaringType == typeof(object))
+                .AddCodeStatements((methodCodeStatementsDelegate?.Invoke(methodInfo) ?? Enumerable.Empty<ICodeStatement>()).Select(x => x.CreateBuilder()));
 
         private static IEnumerable<ParameterBuilder> CreateParameters(MethodInfo methodInfo)
-            => methodInfo.GetParameters().Select(p => new ParameterBuilder { Name = p.Name, TypeName = p.ParameterType.FullName.FixTypeName() });
+            => methodInfo.GetParameters()
+                .Select(p => new ParameterBuilder()
+                    .WithName(p.Name)
+                    .WithTypeName(p.ParameterType.FullName.FixTypeName()));
 
         private static IEnumerable<MethodInfo> GetMethodsRecursively(this Type instance)
         {

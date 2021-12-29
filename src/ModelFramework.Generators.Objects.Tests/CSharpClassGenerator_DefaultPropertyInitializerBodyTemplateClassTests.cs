@@ -33,7 +33,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var model = new ClassPropertyBuilder()
                 .WithName("Name")
                 .WithTypeName("string")
-                .AddInitCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .AddInitializerCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
                 .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate>(model);
 
