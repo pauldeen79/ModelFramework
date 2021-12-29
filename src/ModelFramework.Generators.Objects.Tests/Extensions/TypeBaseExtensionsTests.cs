@@ -89,8 +89,8 @@ namespace MyNamespace
                     new ClassPropertyBuilder()
                         .WithName("Test")
                         .WithType(typeof(string))
-                        .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatements())
-                        .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatements())
+                        .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatementBuilders())
+                        .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatementBuilders())
                 ).Build();
 
             // Act
@@ -130,8 +130,8 @@ namespace MyNamespace
                     new ClassPropertyBuilder()
                         .WithName("Test")
                         .WithType(typeof(string))
-                        .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatements())
-                        .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatements())
+                        .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatementBuilders())
+                        .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatementBuilders())
                 ).Build()
                 .ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true));
 

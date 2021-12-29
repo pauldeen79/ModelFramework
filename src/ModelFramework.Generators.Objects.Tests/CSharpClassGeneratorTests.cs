@@ -6,7 +6,6 @@ using System.Text;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Common.Builders;
-using ModelFramework.Common.Default;
 using ModelFramework.Generators.Objects.Tests.Mocks;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements.Builders;
@@ -1339,7 +1338,7 @@ namespace MyNamespace
                                         )
                                         .AddMetadata
                                         (
-                                            new Metadata(Common.MetadataNames.CustomTemplateName, "MyTemplate")
+                                            new MetadataBuilder().WithName(Common.MetadataNames.CustomTemplateName).WithValue("MyTemplate")
                                         )
                                 ).Build()
                         }
@@ -1488,8 +1487,8 @@ namespace Namespace2
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
             };
 
             var model = new[]
@@ -1516,8 +1515,8 @@ namespace Namespace2
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
             };
 
             var model = new[]
@@ -1600,8 +1599,8 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
             };
 
             var model = new[]
@@ -1628,8 +1627,8 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
             };
 
             var cls = new ClassBuilder()
@@ -1658,10 +1657,10 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionToEnumerable().Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilder().Build(),
-                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder().Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionToEnumerable(),
+                new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilder(),
+                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder()
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1690,10 +1689,10 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable().Build(),
-                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder().Build(),
-                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder().Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable(),
+                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder(),
+                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder()
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1723,7 +1722,7 @@ namespace MyNamespace
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
                 .WithNamespace("MyNamespace")
-                .AddProperties(new ClassPropertyBuilder { Name = "Static", TypeName = typeof(bool).FullName } )
+                .AddProperties(new ClassPropertyBuilder().WithName("Static").WithTypeName(typeof(bool).FullName))
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings());
             var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true));
@@ -1797,7 +1796,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string))
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1871,7 +1870,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build(),
+                new ClassPropertyBuilder().WithName("Property1")
+                                          .WithType(typeof(string))
+                                          .AddAttributes(new AttributeBuilder().WithName("MyAttribute")),
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1947,7 +1948,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable().Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -2024,7 +2025,7 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string))
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -2117,8 +2118,8 @@ namespace MyNamespace
             var sut = new CSharpClassGenerator();
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
             };
 
             var model = new[]
@@ -2144,9 +2145,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IEnumerable<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IEnumerable<string>))
             };
 
             var model = new[]
@@ -2173,9 +2174,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(ICollection<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(ICollection<string>))
             };
 
             var model = new[]
@@ -2202,9 +2203,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(Collection<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(Collection<string>))
             };
 
             var model = new[]
@@ -2231,9 +2232,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IList<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IList<string>))
             };
 
             var model = new[]
@@ -2260,9 +2261,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<string>))
             };
 
             var model = new[]
@@ -2301,9 +2302,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(ICollection<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(ICollection<string>))
             };
 
             var model = new[]
@@ -2358,9 +2359,9 @@ namespace MyNamespace
             // Arrange
             var properties = new[]
             {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).Build(),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).Build(),
-                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IEnumerable<string>)).Build()
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)),
+                new ClassPropertyBuilder().WithName("Property3").WithType(typeof(IEnumerable<string>))
             };
 
             var model = new[]
@@ -2456,7 +2457,7 @@ namespace MyNamespace
                     .WithNamespace("MyNamespace")
                     .Build()
                     .ToImmutableClassBuilder(new ImmutableClassSettings())
-                    .ClearAttributes() // needed to exclude compiler generated attributes, which are not included in the expectation (shared with another test)
+                    .Chain(x => x.Attributes.Clear()) // needed to exclude compiler generated attributes, which are not included in the expectation (shared with another test)
                     .Build()
             };
             var sut = new CSharpClassGenerator();
@@ -2585,7 +2586,7 @@ namespace MyNamespace
 ");
         }
 
-        private static IEnumerable<IClass> GetSubClasses()
+        private static IEnumerable<ClassBuilder> GetSubClasses()
         {
             yield return new ClassBuilder()
                 .WithName("MySubClass")
@@ -2598,10 +2599,10 @@ namespace MyNamespace
                         .WithName("MySubSubClass")
                         .WithNamespace("MyNamespace")
                         .AddSubClasses(new ClassBuilder().WithName("MySubSubSubClass").WithNamespace("MyNamespace"))
-                ).Build();
+                );
         }
 
-        private static IEnumerable<IEnum> GetEnums()
+        private static IEnumerable<EnumBuilder> GetEnums()
         {
             yield return new EnumBuilder()
                 .WithName("MyEnum")
@@ -2609,44 +2610,43 @@ namespace MyNamespace
                 (
                     new EnumMemberBuilder().WithName("Member1").WithValue(1),
                     new EnumMemberBuilder().WithName("Member2").WithValue(2)
-                ).Build();
+                );
         }
 
-        private static IEnumerable<IClassConstructor> GetConstructors()
+        private static IEnumerable<ClassConstructorBuilder> GetConstructors()
         {
             yield return new ClassConstructorBuilder()
                 .AddParameters
                 (
-                    new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)).Build(),
-                    new ParameterBuilder().WithName("Parameter2").WithType(typeof(int)).Build()
+                    new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)),
+                    new ParameterBuilder().WithName("Parameter2").WithType(typeof(int))
                 ).AddCodeStatements
                 (
                     new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
-                ).Build();
+                );
         }
 
-        private static IEnumerable<IClassMethod> GetMethods()
+        private static IEnumerable<ClassMethodBuilder> GetMethods()
         {
             yield return new ClassMethodBuilder()
                 .WithName("Method1")
                 .AddParameters
                 (
-                    new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)).Build(),
-                    new ParameterBuilder().WithName("Parameter2").WithType(typeof(int)).Build()
-                ).AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
-                .Build();
+                    new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)),
+                    new ParameterBuilder().WithName("Parameter2").WithType(typeof(int))
+                ).AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"));
         }
 
-        private static IEnumerable<IClassProperty> GetProperties()
+        private static IEnumerable<ClassPropertyBuilder> GetProperties()
         {
-            yield return new ClassPropertyBuilder().WithName("MyProperty1").WithType(typeof(string)).Build();
-            yield return new ClassPropertyBuilder().WithName("MyProperty2").WithType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
+            yield return new ClassPropertyBuilder().WithName("MyProperty1").WithType(typeof(string));
+            yield return new ClassPropertyBuilder().WithName("MyProperty2").WithType(typeof(int)).AddAttributes(new AttributeBuilder().WithName("MyAttribute"));
         }
 
-        private static IEnumerable<IClassField> GetFields()
+        private static IEnumerable<ClassFieldBuilder> GetFields()
         {
-            yield return new ClassFieldBuilder().WithName("_myField1").WithType(typeof(string)).Build();
-            yield return new ClassFieldBuilder().WithName("_myField2").WithType(typeof(string)).Build();
+            yield return new ClassFieldBuilder().WithName("_myField1").WithType(typeof(string));
+            yield return new ClassFieldBuilder().WithName("_myField2").WithType(typeof(string));
         }
     }
 
