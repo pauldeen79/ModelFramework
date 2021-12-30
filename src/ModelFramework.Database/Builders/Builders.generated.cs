@@ -64,6 +64,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public CheckConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public CheckConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
@@ -140,6 +146,12 @@ namespace ModelFramework.Database.Builders
         public DefaultValueConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -270,6 +282,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ForeignKeyConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ForeignKeyConstraintBuilder()
         {
             LocalFields = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder>();
@@ -332,6 +350,12 @@ namespace ModelFramework.Database.Builders
         public ForeignKeyConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ForeignKeyConstraintFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -429,6 +453,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public IndexBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public IndexBuilder()
         {
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexFieldBuilder>();
@@ -498,6 +528,12 @@ namespace ModelFramework.Database.Builders
         public IndexFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public IndexFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -585,6 +621,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public PrimaryKeyConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public PrimaryKeyConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
@@ -652,6 +694,12 @@ namespace ModelFramework.Database.Builders
         public PrimaryKeyConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public PrimaryKeyConstraintFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -761,6 +809,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public SchemaBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public SchemaBuilder()
         {
             Tables = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableBuilder>();
@@ -857,6 +911,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public StoredProcedureBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public StoredProcedureBuilder()
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
@@ -937,6 +997,12 @@ namespace ModelFramework.Database.Builders
         public StoredProcedureParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1125,6 +1191,12 @@ namespace ModelFramework.Database.Builders
         public TableBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public TableBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1317,6 +1389,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public TableFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public TableFieldBuilder()
         {
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
@@ -1415,6 +1493,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public UniqueConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public UniqueConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
@@ -1470,6 +1554,12 @@ namespace ModelFramework.Database.Builders
         public UniqueConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public UniqueConstraintFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1659,6 +1749,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ViewBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ViewBuilder()
         {
             SelectFields = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewFieldBuilder>();
@@ -1755,6 +1851,12 @@ namespace ModelFramework.Database.Builders
         public ViewConditionBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
+            return this;
+        }
+
+        public ViewConditionBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1860,6 +1962,12 @@ namespace ModelFramework.Database.Builders
         public ViewFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ViewFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1984,6 +2092,12 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ViewOrderByFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ViewOrderByFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
@@ -2080,6 +2194,12 @@ namespace ModelFramework.Database.Builders
         public ViewSourceBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ViewSourceBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

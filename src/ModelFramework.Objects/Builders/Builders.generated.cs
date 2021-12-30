@@ -69,6 +69,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public AttributeBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public AttributeBuilder()
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeParameterBuilder>();
@@ -134,6 +140,12 @@ namespace ModelFramework.Objects.Builders
         public AttributeParameterBuilder WithName(string name)
         {
             Name = name;
+            return this;
+        }
+
+        public AttributeParameterBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -429,6 +441,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ClassBuilder()
         {
             Interfaces = new System.Collections.Generic.List<string>();
@@ -643,6 +661,12 @@ namespace ModelFramework.Objects.Builders
         public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
         {
             CodeStatements.AddRange(codeStatements);
+            return this;
+        }
+
+        public ClassConstructorBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -884,6 +908,12 @@ namespace ModelFramework.Objects.Builders
         public ClassFieldBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
+            return this;
+        }
+
+        public ClassFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1164,6 +1194,12 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
         {
             CodeStatements.AddRange(codeStatements);
+            return this;
+        }
+
+        public ClassMethodBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1515,6 +1551,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassPropertyBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ClassPropertyBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
@@ -1653,6 +1695,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public EnumBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public EnumBuilder()
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
@@ -1740,6 +1788,12 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public EnumMemberBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -1921,6 +1975,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public InterfaceBuilder()
         {
             Interfaces = new System.Collections.Generic.List<string>();
@@ -2051,6 +2111,12 @@ namespace ModelFramework.Objects.Builders
         public ParameterBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
+            return this;
+        }
+
+        public ParameterBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

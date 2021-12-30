@@ -30,4 +30,8 @@
     <ProjectReference Include="..\ModelFramework.Objects\ModelFramework.Objects.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CodeStatements\" />
+  </ItemGroup>
+
 </Project>
