@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ModelFramework.Common.Builders;
-using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.CodeStatements.Builders
@@ -16,11 +15,6 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             Statement = statement;
             return this;
         }
-        public LiteralCodeStatementBuilder ClearMetadata()
-        {
-            Metadata.Clear();
-            return this;
-        }
         public LiteralCodeStatementBuilder AddMetadata(IEnumerable<MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -28,15 +22,6 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         public LiteralCodeStatementBuilder AddMetadata(params MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
-            return this;
-        }
-        public LiteralCodeStatementBuilder AddMetadata(IEnumerable<IMetadata> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-        public LiteralCodeStatementBuilder AddMetadata(params IMetadata[] metadata)
-        {
-            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
             return this;
         }
         public ICodeStatement Build()
@@ -47,15 +32,6 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         {
             Statement = string.Empty;
             Metadata.Clear();
-            return this;
-        }
-        public LiteralCodeStatementBuilder Update(LiteralCodeStatement source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            Statement = source.Statement;
-
             return this;
         }
         public LiteralCodeStatementBuilder()

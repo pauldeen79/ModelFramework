@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ModelFramework.Common.Builders;
-using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 
 namespace ModelFramework.Database.SqlStatements.Builders
@@ -16,11 +15,6 @@ namespace ModelFramework.Database.SqlStatements.Builders
             Statement = statement;
             return this;
         }
-        public LiteralSqlStatementBuilder ClearMetadata()
-        {
-            Metadata.Clear();
-            return this;
-        }
         public LiteralSqlStatementBuilder AddMetadata(IEnumerable<MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -30,33 +24,9 @@ namespace ModelFramework.Database.SqlStatements.Builders
             Metadata.AddRange(metadata);
             return this;
         }
-        public LiteralSqlStatementBuilder AddMetadata(IEnumerable<IMetadata> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-        public LiteralSqlStatementBuilder AddMetadata(params IMetadata[] metadata)
-        {
-            Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            return this;
-        }
         public ISqlStatement Build()
         {
             return new LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
-        }
-        public LiteralSqlStatementBuilder Update(LiteralSqlStatement source)
-        {
-            Metadata = new List<MetadataBuilder>();
-
-            Metadata.AddRange(source.Metadata.Select(x => new MetadataBuilder(x)));
-            Statement = source.Statement;
-
-            return this;
-        }
-        public LiteralSqlStatementBuilder Clear()
-        {
-            Statement = string.Empty;
-            Metadata.Clear();
-            return this;
         }
         public LiteralSqlStatementBuilder()
         {
