@@ -26,7 +26,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             // Arrange
             var models = typeof(Metadata).Assembly.GetExportedTypes()
-                .Where(t => t.FullName.StartsWith("ModelFramework.Common.Default."))
+                .Where(t => t.FullName?.StartsWith("ModelFramework.Common.Default.") == true)
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
                 .ToArray();
             FixImmutableBuilderProperties(models);
@@ -48,7 +48,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             // Arrange
             var models = typeof(Class).Assembly.GetExportedTypes()
-                .Where(t => t.FullName.StartsWith("ModelFramework.Objects.Default."))
+                .Where(t => t.FullName?.StartsWith("ModelFramework.Objects.Default.") == true)
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
                 .ToArray();
 
@@ -68,7 +68,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             // Arrange
             var models = typeof(Table).Assembly.GetExportedTypes()
-                .Where(t => t.FullName.StartsWith("ModelFramework.Database.Default."))
+                .Where(t => t.FullName?.StartsWith("ModelFramework.Database.Default.") == true)
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(FixNamespace(t)))
                 .ToArray();
 
@@ -99,12 +99,13 @@ namespace ModelFramework.CodeGeneration.Tests
                     }
                     else if (typeName.Contains("Collection<ModelFramework."))
                     {
+                        var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement") || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
                         property.ConvertCollectionPropertyToBuilder
                         (
-                            typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement")
+                            isCodeStatement
                                 ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
                                 : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
-                            typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement")
+                            isCodeStatement
                                 ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()));"
                                 : null
                         );
@@ -119,7 +120,7 @@ namespace ModelFramework.CodeGeneration.Tests
                     }
                     else if (property.Name == "TypeName" && property.TypeName == typeof(string).FullName)
                     {
-                        property.AddBuilderOverload("WithType", typeof(Type).FullName, "type", "{2} = type.FullName;");
+                        property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.FullName;");
                     }
 
                     if (property.Name == "Visibility")
@@ -158,11 +159,11 @@ if ({2})
 
         private static string FixNamespace(Type t)
         {
-            if (t.FullName.StartsWith("ModelFramework.Common.Default"))
+            if (t.FullName?.StartsWith("ModelFramework.Common.Default") == true)
             {
                 return t.FullName.Replace("ModelFramework.Common.Default", "ModelFramework.Common.Contracts").GetNamespaceWithDefault(string.Empty);
             }
-            return t.FullName.GetNamespaceWithDefault(string.Empty);
+            return t.FullName?.GetNamespaceWithDefault(string.Empty) ?? string.Empty;
         }
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)

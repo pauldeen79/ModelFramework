@@ -3,8 +3,7 @@ using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Database.Builders;
 using ModelFramework.Database.Contracts;
-using ModelFramework.Database.Default;
-using ModelFramework.Database.SqlStatements;
+using ModelFramework.Database.SqlStatements.Builders;
 using ModelFramework.Generators.Database;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
@@ -418,8 +417,8 @@ GO
                         new StoredProcedureParameterBuilder().WithName("Param2").WithType("int").WithDefaultValue("5")
                     ).AddStatements
                     (
-                        new LiteralSqlStatement("--statement 1 goes here"),
-                        new LiteralSqlStatement("--statement 2 goes here")
+                        new LiteralSqlStatementBuilder().WithStatement("--statement 1 goes here"),
+                        new LiteralSqlStatementBuilder().WithStatement("--statement 2 goes here")
                     )
                 ).Build()
             };

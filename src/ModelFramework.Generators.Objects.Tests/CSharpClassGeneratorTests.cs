@@ -1660,7 +1660,9 @@ namespace MyNamespace
                 new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
                 new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionToEnumerable(),
                 new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilder(),
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder()
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1690,9 +1692,13 @@ namespace MyNamespace
             var properties = new[]
             {
                 new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+#pragma warning disable CS8601 // Possible null reference assignment.
                 new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable(),
+#pragma warning restore CS8601 // Possible null reference assignment.
                 new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder(),
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder()
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             };
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
@@ -1722,7 +1728,7 @@ namespace MyNamespace
             var cls = new ClassBuilder()
                 .WithName("MyRecord")
                 .WithNamespace("MyNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("Static").WithTypeName(typeof(bool).FullName))
+                .AddProperties(new ClassPropertyBuilder().WithName("Static").WithType(typeof(bool)))
                 .Build()
                 .ToImmutableClass(new ImmutableClassSettings());
             var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true));

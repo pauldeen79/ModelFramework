@@ -1,4 +1,5 @@
-﻿using ModelFramework.Common.Builders;
+﻿using System;
+using ModelFramework.Common.Builders;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Builders;
 
@@ -35,13 +36,23 @@ namespace ModelFramework.Objects.Extensions
 
         public static ClassPropertyBuilder AddBuilderOverload(this ClassPropertyBuilder instance,
                                                               string methodNameTemplate,
-                                                              string parameterType,
+                                                              Type parameterType,
+                                                              string parameterNameTemplate,
+                                                              string initializeExpression)
+            => instance.AddBuilderOverload(methodNameTemplate,
+                                           parameterType?.FullName ?? throw new ArgumentException("Type does not have a full name"),
+                                           parameterNameTemplate,
+                                           initializeExpression);
+
+        public static ClassPropertyBuilder AddBuilderOverload(this ClassPropertyBuilder instance,
+                                                              string methodNameTemplate,
+                                                              string parameterTypeName,
                                                               string parameterNameTemplate,
                                                               string initializeExpression)
             => instance.AddMetadata
             (
                 new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadMethodName).WithValue(methodNameTemplate),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentType).WithValue(parameterType),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentType).WithValue(parameterTypeName),
                 new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentName).WithValue(parameterNameTemplate),
                 new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadInitializeExpression).WithValue(initializeExpression)
             );
