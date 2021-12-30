@@ -633,6 +633,8 @@ GO
                         new ViewFieldBuilder().WithName("Field1"),
                         new ViewFieldBuilder().WithName("Field2")
                     )
+                    .WithTop(50)
+                    .WithTopPercent()
                 ).Build()
             };
 
@@ -658,7 +660,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE VIEW [dbo].[View2]
 AS
-SELECT
+SELECT TOP 50 PERCENT
     [Field2] AS [Alias2]
 FROM
     [Table1],

@@ -53,6 +53,36 @@ namespace ModelFramework.Common.Tests.Extensions
             actual.Should().Be(expectedResult);
         }
 
+        [Fact]
+        public void FixTypeName_Returns_AnonymousType_When_Type_Is_Anonymous()
+        {
+            // Arrange
+            var typeName = new { Name = "Test" }.GetType().FullName;
+
+            // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+            var actual = typeName.FixTypeName();
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            // Assert
+            actual.Should().Be("AnonymousType");
+        }
+
+        [Fact]
+        public void FixTypeName_Returns_AnonymousType_When_Type_Is_Anonymous_Array()
+        {
+            // Arrange
+            var typeName = new[] { new { Name = "Test" } }.GetType().FullName;
+
+            // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+            var actual = typeName.FixTypeName();
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            // Assert
+            actual.Should().Be("AnonymousType[]");
+        }
+
         [Theory]
         [InlineData("ModelFramework.Common.Tests.TestFixtures.MyEnumThing, ModelFramework.Common.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", true)]
         [InlineData("System.Nullable`1[[ModelFramework.Common.Tests.TestFixtures.MyEnumThing, ModelFramework.Common.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", false)]

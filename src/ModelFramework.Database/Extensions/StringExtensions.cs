@@ -15,7 +15,7 @@ namespace ModelFramework.Database.Extensions
         };
 
         public static bool IsDatabaseStringType(this string instance)
-            => instance != null && _databaseStringTypes.Any(x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
+            => _databaseStringTypes.Any(x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
         public static string FormatAsDatabaseIdentifier(this string instance)
             => instance

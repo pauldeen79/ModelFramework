@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -13,7 +12,7 @@ namespace ModelFramework.Database.SqlStatements
         public string Statement { get; }
         public ValueCollection<IMetadata> Metadata { get; }
 
-        public LiteralSqlStatement(string statement, IEnumerable<IMetadata>? metadata = null)
+        public LiteralSqlStatement(string statement, IEnumerable<IMetadata>metadata)
         {
             if (string.IsNullOrWhiteSpace(statement))
             {
@@ -21,7 +20,7 @@ namespace ModelFramework.Database.SqlStatements
             }
 
             Statement = statement;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public ISqlStatementBuilder CreateBuilder()

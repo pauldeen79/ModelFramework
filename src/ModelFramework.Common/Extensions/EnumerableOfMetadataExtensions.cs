@@ -51,32 +51,18 @@ namespace ModelFramework.Common.Extensions
 
             if (typeof(T).IsEnum)
             {
-                try
-                {
-                    var val = metadataItem.Value.ToStringWithNullCheck();
-                    return string.IsNullOrEmpty(val)
-                        ? defaultValueDelegate()
-                        : (T)Enum.Parse(typeof(T), val, true);
-                }
-                catch
-                {
-                    return defaultValueDelegate();
-                }
+                var val = metadataItem.Value.ToStringWithNullCheck();
+                return string.IsNullOrEmpty(val)
+                    ? defaultValueDelegate()
+                    : (T)Enum.Parse(typeof(T), val, true);
             }
 
             if (typeof(T).FullName.StartsWith("System.Nullable`1[[") && typeof(T).GetGenericArguments()[0].IsEnum)
             {
-                try
-                {
-                    var val = metadataItem.Value.ToStringWithNullCheck();
-                    return string.IsNullOrEmpty(val)
-                        ? defaultValueDelegate()
-                        : (T)Enum.Parse(typeof(T).GetGenericArguments()[0], val, true);
-                }
-                catch
-                {
-                    return defaultValueDelegate();
-                }
+                var val = metadataItem.Value.ToStringWithNullCheck();
+                return string.IsNullOrEmpty(val)
+                    ? defaultValueDelegate()
+                    : (T)Enum.Parse(typeof(T).GetGenericArguments()[0], val, true);
             }
 
             return (T)Convert.ChangeType(metadataItem.Value, typeof(T));
