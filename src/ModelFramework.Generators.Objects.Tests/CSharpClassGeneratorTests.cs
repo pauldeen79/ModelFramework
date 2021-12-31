@@ -84,45 +84,6 @@ namespace MyNamespace
     }
 }
 ";
-        private const string ImmutableClassCodeWithMethodExtensionMethod = @"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MyNamespace
-{
-    public class MyRecord
-    {
-        public string Property1
-        {
-            get;
-        }
-
-        public bool Property2
-        {
-            get;
-        }
-
-        public MyRecord(string property1, bool property2)
-        {
-            this.Property1 = property1;
-            this.Property2 = property2;
-        }
-    }
-
-    public static class MyRecordExtensions
-    {
-        public static MyRecord With(this MyRecord instance, string property1 = default(string), bool property2 = default(bool))
-        {
-            return new MyRecord
-            (
-                property1 == default(string) ? instance.Property1 : property1,
-                property2 == default(bool) ? instance.Property2 : property2
-            );
-        }
-    }
-}
-";
         private const string PocoClassCode = @"using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1619,36 +1580,6 @@ namespace MyNamespace
 
             // Assert
             actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeNoWithMethod);
-        }
-
-        [Fact]
-        public void GeneratesImmutableClassWithInjectedTemplates_Model_With_Method_Using_ExtensionMethod()
-        {
-            // Arrange
-            var properties = new[]
-            {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
-            };
-
-            var cls = new ClassBuilder()
-                .WithName("MyRecord")
-                .WithNamespace("MyNamespace")
-                .AddProperties(properties)
-                .Build();
-
-            var model = new[]
-            {
-                cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false)),
-                cls.ToImmutableExtensionClass()
-            };
-            var sut = new CSharpClassGenerator();
-
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
-
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(ImmutableClassCodeWithMethodExtensionMethod);
         }
 
         [Fact]
