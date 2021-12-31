@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using ModelFramework.Objects.CodeStatements;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.CodeStatements.Builders;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -14,14 +15,14 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesNoCodeBodyWhenInitializerBodyIsEmpty()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string");
+            var model = new ClassPropertyBuilder().WithName("Name").WithTypeName("string").Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"init;
+            actual.NormalizeLineEndings().Should().Be(@"init;
 ");
         }
 
@@ -29,14 +30,18 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWhenInitializerBodyIsFilled()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string", initializerCodeStatements: new[] { new LiteralCodeStatement("throw new NotImplementedException();") });
+            var model = new ClassPropertyBuilder()
+                .WithName("Name")
+                .WithTypeName("string")
+                .AddInitializerCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"init
+            actual.NormalizeLineEndings().Should().Be(@"init
             {
                 throw new NotImplementedException();
             }

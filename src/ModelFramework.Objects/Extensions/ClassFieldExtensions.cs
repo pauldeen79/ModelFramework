@@ -9,7 +9,7 @@ namespace ModelFramework.Objects.Extensions
     {
         public static string GetModifiers(this IClassField instance)
         {
-            var customModifiers = instance.Metadata.GetMetadataValue<object>(MetadataNames.CustomModifiers)?.ToString() ?? string.Empty;
+            var customModifiers = instance.Metadata.GetValue<object?>(MetadataNames.CustomModifiers, () => null)?.ToString() ?? string.Empty;
             if (!string.IsNullOrEmpty(customModifiers))
             {
                 return customModifiers;

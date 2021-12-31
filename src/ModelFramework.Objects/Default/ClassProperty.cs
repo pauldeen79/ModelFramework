@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
@@ -12,29 +11,36 @@ namespace ModelFramework.Objects.Default
 #pragma warning disable S107 // Methods should not have too many parameters
         public ClassProperty(string name,
                              string typeName,
-                             bool @static = false,
-                             bool @virtual = false,
-                             bool @abstract = false,
-                             bool @protected = false,
-                             bool @override = false,
-                             bool hasGetter = true,
-                             bool hasSetter = true,
-                             bool hasInit = false,
-                             bool isNullable = false,
-                             Visibility visibility = Visibility.Public,
-                             Visibility? getterVisibility = null,
-                             Visibility? setterVisibility = null,
-                             Visibility? initVisibility = null,
-                             string explicitInterfaceName = null,
-                             IEnumerable<IMetadata> metadata = null,
-                             IEnumerable<IAttribute> attributes = null,
-                             IEnumerable<ICodeStatement> getterCodeStatements = null,
-                             IEnumerable<ICodeStatement> setterCodeStatements = null,
-                             IEnumerable<ICodeStatement> initializerCodeStatements = null)
+                             bool @static,
+                             bool @virtual,
+                             bool @abstract,
+                             bool @protected,
+                             bool @override,
+                             bool hasGetter,
+                             bool hasSetter,
+                             bool hasInitializer,
+                             bool isNullable,
+                             Visibility visibility,
+                             Visibility? getterVisibility,
+                             Visibility? setterVisibility,
+                             Visibility? initializerVisibility,
+                             string explicitInterfaceName,
+                             IEnumerable<IMetadata> metadata,
+                             IEnumerable<IAttribute> attributes,
+                             IEnumerable<ICodeStatement> getterCodeStatements,
+                             IEnumerable<ICodeStatement> setterCodeStatements,
+                             IEnumerable<ICodeStatement> initializerCodeStatements)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
-            if (string.IsNullOrWhiteSpace(typeName)) throw new ArgumentOutOfRangeException(nameof(typeName), "TypeName cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (string.IsNullOrWhiteSpace(typeName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(typeName), "TypeName cannot be null or whitespace");
+            }
 
             Name = name;
             TypeName = typeName;
@@ -44,19 +50,19 @@ namespace ModelFramework.Objects.Default
             Protected = @protected;
             Override = @override;
             HasGetter = hasGetter;
-            HasSetter = hasSetter && !hasInit;
-            HasInitializer = hasInit;
+            HasSetter = hasSetter && !hasInitializer;
+            HasInitializer = hasInitializer;
             IsNullable = isNullable;
             Visibility = visibility;
             GetterVisibility = getterVisibility;
             SetterVisibility = setterVisibility;
-            InitializerVisibility = initVisibility;
+            InitializerVisibility = initializerVisibility;
             ExplicitInterfaceName = explicitInterfaceName;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            GetterCodeStatements = new ValueCollection<ICodeStatement>(getterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
-            SetterCodeStatements = new ValueCollection<ICodeStatement>(setterCodeStatements ?? Enumerable.Empty<ICodeStatement>());
-            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initializerCodeStatements ?? Enumerable.Empty<ICodeStatement>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            GetterCodeStatements = new ValueCollection<ICodeStatement>(getterCodeStatements);
+            SetterCodeStatements = new ValueCollection<ICodeStatement>(setterCodeStatements);
+            InitializerCodeStatements = new ValueCollection<ICodeStatement>(initializerCodeStatements);
         }
 
         public bool Static { get; }

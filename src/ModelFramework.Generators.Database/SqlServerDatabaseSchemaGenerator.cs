@@ -168,7 +168,7 @@ namespace ModelFramework.Generators.Database
 
         public bool ResolveFieldAndPrimaryKeyFromMetadata(string templateName, string childTemplateName, Type childTemplateModelType, object model)
         {
-            return ResolveFromMetadata(templateName.WhenNullOrEmpty(() => model is IMetadataContainer ? ((IMetadataContainer)model).Metadata.GetMetadataStringValue(ModelFramework.Common.MetadataNames.CustomTemplateName) : null).WhenNullOrEmpty(() => GetTemplateNameByModelType(model)), childTemplateName, childTemplateModelType, model, ModelFramework.Common.MetadataNames.CustomTemplateName);
+            return ResolveFromMetadata(templateName.WhenNullOrEmpty(() => model is IMetadataContainer ? ((IMetadataContainer)model).Metadata.GetStringValue(ModelFramework.Common.MetadataNames.CustomTemplateName) : null).WhenNullOrEmpty(() => GetTemplateNameByModelType(model)), childTemplateName, childTemplateModelType, model, ModelFramework.Common.MetadataNames.CustomTemplateName);
         }
 
         protected override string GetTemplateNameByModelType(object model)
@@ -492,7 +492,13 @@ GO
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
+            if (!string.IsNullOrEmpty(Model.StringCollation))
+       {
+
+            Write(this.ToStringHelper.ToStringWithCulture(@" COLLATE "));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.StringCollation));
             }
+   }
    else if (Model.NumericPrecision != null && Model.NumericScale != null)
    {
 

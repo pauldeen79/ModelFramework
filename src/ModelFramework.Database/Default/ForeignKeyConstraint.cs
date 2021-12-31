@@ -13,28 +13,36 @@ namespace ModelFramework.Database.Default
                                     string foreignTableName,
                                     IEnumerable<IForeignKeyConstraintField> localFields,
                                     IEnumerable<IForeignKeyConstraintField> foreignFields,
-                                    CascadeAction cascadeUpdate = CascadeAction.NoAction,
-                                    CascadeAction cascadeDelete = CascadeAction.NoAction,
-                                    IEnumerable<IMetadata> metadata = null)
+                                    CascadeAction cascadeUpdate,
+                                    CascadeAction cascadeDelete,
+                                    IEnumerable<IMetadata> metadata)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
-            Name = name;
-            ForeignTableName = foreignTableName;
-            LocalFields = new ValueCollection<IForeignKeyConstraintField>(localFields ?? Enumerable.Empty<IForeignKeyConstraintField>());
-            ForeignFields = new ValueCollection<IForeignKeyConstraintField>(foreignFields ?? Enumerable.Empty<IForeignKeyConstraintField>());
-            CascadeUpdate = cascadeUpdate;
-            CascadeDelete = cascadeDelete;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            if (string.IsNullOrWhiteSpace(foreignTableName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(foreignTableName), "ForeignTableName cannot be null or whitespace");
+            }
 
-            if (LocalFields?.Any() != true)
+            if (!localFields.Any())
             {
                 throw new ArgumentException("LocalFields should contain at least 1 value", nameof(localFields));
             }
-            if (ForeignFields?.Any() != true)
+            if (!foreignFields.Any())
             {
                 throw new ArgumentException("ForeignFields should contain at least 1 value", nameof(foreignFields));
             }
+
+            Name = name;
+            ForeignTableName = foreignTableName;
+            LocalFields = new ValueCollection<IForeignKeyConstraintField>(localFields);
+            ForeignFields = new ValueCollection<IForeignKeyConstraintField>(foreignFields);
+            CascadeUpdate = cascadeUpdate;
+            CascadeDelete = cascadeDelete;
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public ValueCollection<IForeignKeyConstraintField> LocalFields { get; }

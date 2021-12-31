@@ -11,6 +11,6 @@ namespace ModelFramework.Database.Contracts
         byte? NumericScale { get; }
         int? StringLength { get; }
         string StringCollation { get; }
-        bool? IsStringMaxLength { get; }
+        bool IsStringMaxLength { get; }
     }
 }

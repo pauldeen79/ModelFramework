@@ -26,9 +26,9 @@
                 return retValue;
             });
 
-            var customTemplateName = metadataContainer == null || metadataPropertyName == null || metadataContainer.Metadata.GetMetadataValue<object>(metadataPropertyName) == null
+            var customTemplateName = metadataContainer == null || metadataPropertyName == null || metadataContainer.Metadata.GetValue<object>(metadataPropertyName, () => null) == null
                 ? null
-                : metadataContainer.Metadata.GetMetadataStringValue(metadataPropertyName);
+                : metadataContainer.Metadata.GetStringValue(metadataPropertyName);
 
             return customTemplateName == null
                 ? defaultTemplateName == null

@@ -4,7 +4,7 @@ namespace ModelFramework.Common.Extensions
 {
     public static class StringBuilderExtensions
     {
-        public static StringBuilder AddWithCondition(this StringBuilder builder, object value, bool condition)
+        public static StringBuilder AddWithCondition(this StringBuilder builder, object? value, bool condition)
         {
             if (!condition)
             {

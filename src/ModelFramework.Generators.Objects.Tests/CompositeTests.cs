@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Generators.Objects;
 using ModelFramework.Generators.Shared;
 using ModelFramework.Generators.Tests.POC;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
@@ -24,7 +26,7 @@ namespace ModelFramework.Generators.Tests
         {
             // Arrange
             var Session = new Dictionary<string, object> { { "GenerateMultipleFiles", GenerateMultipleFiles } };
-            var model = new[] { new Class("MyClass", "MyNamespace") };
+            var model = new[] { new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build() };
             var template = new ModelFrameworkGeneratorBase();
             var templateFileManager = new TemplateFileManager(b => template.GenerationEnvironment = b, () => template.GenerationEnvironment, BasePath);
 
@@ -46,7 +48,7 @@ namespace ModelFramework.Generators.Tests
         {
             // Arrange
             var Session = new Dictionary<string, object> { { "GenerateMultipleFiles", GenerateMultipleFiles } };
-            var model = new[] { new Class("MyClass", "MyNamespace") };
+            var model = new[] { new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build() };
             var multipleContentBuilder = new MultipleContentBuilder(BasePath);
 
             // Act
@@ -77,7 +79,7 @@ namespace ModelFramework.Generators.Tests
             var actual = templateFileManager.MultipleContentBuilder.ToString();
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
+            actual.NormalizeLineEndings().Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
   <BasePath>C:\Temp</BasePath>
   <Contents>
@@ -116,7 +118,7 @@ namespace ModelFramework.Generators.Tests
             var actual = multipleContentBuilder.ToString();
 
             // Assert
-            actual.Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
+            actual.NormalizeLineEndings().Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
 <MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">
   <BasePath>C:\Temp</BasePath>
   <Contents>

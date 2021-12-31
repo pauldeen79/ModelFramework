@@ -7,7 +7,7 @@ namespace ModelFramework.Generators.Objects.Tests.Mocks
     [ExcludeFromCodeCoverage]
     public class DelegateTemplate : CSharpClassGeneratorBase
     {
-        public Action<StringBuilder> RenderDelegate { get; internal set; }
+        public Action<StringBuilder> RenderDelegate { get; set; } = new Action<StringBuilder>(_ => { });
 
         public virtual void Render(StringBuilder builder)
         {

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -13,8 +14,8 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesOutputWithoutComma()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new Parameter("Name", "string");
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ParameterBuilder().WithName("Name").WithTypeName("string").Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultParameterTemplate>(model, rootModel);
 
             // Act
@@ -28,15 +29,23 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesAttributes()
         {
             // Arrange
-            var rootModel = new Class("MyClass", "MyNamespace");
-            var model = new Parameter("Name", "string", attributes: new[] { new Attribute("Attribute1"), new Attribute("Attribute2"), new Attribute("Attribute3") });
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+            var model = new ParameterBuilder()
+                .WithName("Name")
+                .WithTypeName("string")
+                .AddAttributes
+                (
+                    new AttributeBuilder().WithName("Attribute1"),
+                    new AttributeBuilder().WithName("Attribute2"),
+                    new AttributeBuilder().WithName("Attribute3")
+                ).Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultParameterTemplate>(model, rootModel);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be("[Attribute1][Attribute2][Attribute3]string Name");
+            actual.NormalizeLineEndings().Should().Be("[Attribute1][Attribute2][Attribute3]string Name");
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using FluentAssertions;
 using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.CodeStatements;
+using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Extensions;
 using ModelFramework.Objects.Settings;
@@ -100,7 +100,7 @@ namespace MyNamespace
                 .WithName("GeneratedTestClass")
                 .WithNamespace("MyNamespace")
                 .Build());
-            cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatement("Hello world!")));
+            cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("Hello world!")));
             var model = new[]
             {
                 cls.Build()
@@ -156,7 +156,9 @@ namespace MyNamespace
 
         private IEnumerable<ICodeStatement> CreateMethodCodeStatements(MethodInfo mi)
         {
-            yield return new LiteralCodeStatement($"{GetPrefix(mi)}_wrappedInstance.{mi.Name}({GetArguments(mi)});");
+            yield return new LiteralCodeStatementBuilder()
+                .WithStatement($"{GetPrefix(mi)}_wrappedInstance.{mi.Name}({GetArguments(mi)});")
+                .Build();
         }
 
         private string GetPrefix(MethodInfo mi)
@@ -171,7 +173,9 @@ namespace MyNamespace
 
         private IEnumerable<ICodeStatement> CreatePropertyCodeStatements(PropertyInfo pi)
         {
-            yield return new LiteralCodeStatement($"return _wrappedInstance.{pi.Name};");
+            yield return new LiteralCodeStatementBuilder()
+                .WithStatement($"return _wrappedInstance.{pi.Name};")
+                .Build();
         }
     }
 
@@ -247,12 +251,12 @@ namespace MyNamespace
             return _wrappedInstance.MyFunction(parameter);
         }
 
-        public override System.String ToString()
+        public override System.String? ToString()
         {
             return _wrappedInstance.ToString();
         }
 
-        public override System.Boolean Equals(System.Object obj)
+        public override System.Boolean Equals(System.Object? obj)
         {
             return _wrappedInstance.Equals(obj);
         }

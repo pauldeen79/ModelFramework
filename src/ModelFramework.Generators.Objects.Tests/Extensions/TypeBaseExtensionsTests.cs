@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
-using ModelFramework.Common.Default;
-using ModelFramework.Objects;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Extensions;
 using ModelFramework.Objects.Settings;
 using TextTemplateTransformationFramework.Runtime;
@@ -18,7 +17,11 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
         public void Can_Generate_Interface_From_Class()
         {
             // Arrange
-            var input = new Class("Test", "MyNamespace", methods: new[] { new ClassMethod("MyMethod", "MyType", parameters: new[] { new Parameter("param1", "MyType") }) });
+            var input = new ClassBuilder()
+                .WithName("Test")
+                .WithNamespace("MyNamespace")
+                .AddMethods(new ClassMethodBuilder().WithName("MyMethod").WithTypeName("MyType").AddParameters(new ParameterBuilder().WithName("param1").WithTypeName("MyType")))
+                .Build();
 
             // Act
             var actual = input.ToInterface(new InterfaceSettings());
@@ -26,7 +29,7 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
             // Assert
             var generator = new CSharpClassGenerator();
             var src = TemplateRenderHelper.GetTemplateOutput(generator, new[] { actual });
-            src.Should().Be(@"using System;
+            src.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,7 +48,13 @@ namespace MyNamespace
         public void Can_Generate_Interface_From_Class_With_GenericTypeContraints()
         {
             // Arrange
-            var input = new Class("Test", "MyNamespace", methods: new[] { new ClassMethod("MyMethod", "MyType", parameters: new[] { new Parameter("param1", "MyType") }) });
+            var input = new ClassBuilder()
+                .WithName("Test")
+                .WithNamespace("MyNamespace")
+                .AddMethods(new ClassMethodBuilder().WithName("MyMethod")
+                                                    .WithTypeName("MyType")
+                                                    .AddParameters(new ParameterBuilder().WithName("param1").WithTypeName("MyType")))
+                .Build();
 
             // Act
             var actual = input.ToInterface(new InterfaceSettings(applyGenericTypes: new Dictionary<string, string> { { "MyType", "T" } }));
@@ -53,7 +62,7 @@ namespace MyNamespace
             // Assert
             var generator = new CSharpClassGenerator();
             var src = TemplateRenderHelper.GetTemplateOutput(generator, new[] { actual });
-            src.Should().Be(@"using System;
+            src.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,21 +81,17 @@ namespace MyNamespace
         public void Can_Generate_Interface_From_Class_With_Property()
         {
             // Arrange
-            var input = new Class
-            (
-                "Test",
-                "MyNamespace",
-                properties: new[]
-                {
-                    new ClassProperty
-                    (
-                        "Test",
-                        typeof(string).FullName,
-                        getterCodeStatements: new[] { "return _test;" }.ToLiteralCodeStatements(),
-                        setterCodeStatements: new[] { "_test = value;" }.ToLiteralCodeStatements()
-                    )
-                }
-            );
+            var input = new ClassBuilder()
+                .WithName("Test")
+                .WithNamespace("MyNamespace")
+                .AddProperties
+                (
+                    new ClassPropertyBuilder()
+                        .WithName("Test")
+                        .WithType(typeof(string))
+                        .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatementBuilders())
+                        .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatementBuilders())
+                ).Build();
 
             // Act
             var actual = input.ToInterface(new InterfaceSettings());
@@ -94,7 +99,7 @@ namespace MyNamespace
             // Assert
             var generator = new CSharpClassGenerator();
             var src = TemplateRenderHelper.GetTemplateOutput(generator, new[] { actual });
-            src.Should().Be(@"using System;
+            src.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,21 +122,18 @@ namespace MyNamespace
         public void Can_Generate_Interface_From_Immutable_Class()
         {
             // Arrange
-            var input = new Class
-            (
-                "Test",
-                "MyNamespace",
-                properties: new[]
-                {
-                    new ClassProperty
-                    (
-                        "Test",
-                        typeof(string).FullName,
-                        getterCodeStatements: new[] { "return _test;" }.ToLiteralCodeStatements(),
-                        setterCodeStatements: new[] { "_test = value;" }.ToLiteralCodeStatements()
-                    )
-                }
-            ).ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true));
+            var input = new ClassBuilder()
+                .WithName("Test")
+                .WithNamespace("MyNamespace")
+                .AddProperties
+                (
+                    new ClassPropertyBuilder()
+                        .WithName("Test")
+                        .WithType(typeof(string))
+                        .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatementBuilders())
+                        .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatementBuilders())
+                ).Build()
+                .ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true));
 
             // Act
             var actual = input.ToInterface(new InterfaceSettings());
@@ -139,7 +141,7 @@ namespace MyNamespace
             // Assert
             var generator = new CSharpClassGenerator();
             var src = TemplateRenderHelper.GetTemplateOutput(generator, new[] { actual });
-            src.Should().Be(@"using System;
+            src.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

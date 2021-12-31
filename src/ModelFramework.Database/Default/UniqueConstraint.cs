@@ -10,19 +10,24 @@ namespace ModelFramework.Database.Default
     public record UniqueConstraint : IUniqueConstraint
     {
         public UniqueConstraint(string name,
-                                string fileGroupName = null,
-                                IEnumerable<IUniqueConstraintField> fields = null,
-                                IEnumerable<IMetadata> metadata = null)
+                                string fileGroupName,
+                                IEnumerable<IUniqueConstraintField> fields,
+                                IEnumerable<IMetadata> metadata)
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
-            if (fields?.Any() != true)
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (!fields.Any())
             {
                 throw new ArgumentException("Fields should contain at least 1 value", nameof(fields));
             }
+            
             Name = name;
             FileGroupName = fileGroupName;
             Fields = new ValueCollection<IUniqueConstraintField>(fields);
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string Name { get; }

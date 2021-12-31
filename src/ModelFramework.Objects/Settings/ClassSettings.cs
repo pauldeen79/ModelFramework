@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Objects.Settings
 {
-    public class ClassSettings
+    public record ClassSettings
     {
         public bool Partial { get; }
         public bool CreateConstructors { get; }

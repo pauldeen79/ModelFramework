@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWithoutComma()
         {
             // Arrange
-            var model = new EnumMember("Member");
+            var model = new EnumMemberBuilder().WithName("Member").Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultEnumMemberTemplate>(model);
 
             // Act
@@ -27,7 +27,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyWithValueWhenPresent()
         {
             // Arrange
-            var model = new EnumMember("Member", 1);
+            var model = new EnumMemberBuilder().WithName("Member").WithValue(1).Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultEnumMemberTemplate>(model);
 
             // Act

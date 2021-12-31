@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.CodeStatements;
+using ModelFramework.Objects.CodeStatements.Builders;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 
@@ -16,16 +16,19 @@ namespace ModelFramework.Generators.Objects.Tests
         public void GeneratesCodeBodyFromCodeStatementsCorrectly()
         {
             // Arrange
-            var model = new ClassProperty("Name", "string"
-                , getterCodeStatements: new ICodeStatement[] { new LiteralCodeStatement("return null;") }
-                , setterCodeStatements: new ICodeStatement[] { new LiteralCodeStatement("// ignore value") });
+            var model = new ClassPropertyBuilder()
+                .WithName("Name")
+                .WithTypeName("string")
+                .AddGetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement("return null;"))
+                .AddSetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement("// ignore value"))
+                .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
 
             // Act
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public string Name
+            actual.NormalizeLineEndings().Should().Be(@"        public string Name
         {
             get
             {
@@ -53,7 +56,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public string MyProperty
+            actual.NormalizeLineEndings().Should().Be(@"        public string MyProperty
         {
             get;
             set;
@@ -67,7 +70,7 @@ namespace ModelFramework.Generators.Objects.Tests
             // Arrange
             var model = new ClassPropertyBuilder()
                 .WithName("MyProperty")
-                .WithTypeName(typeof(string).FullName)
+                .WithType(typeof(string))
                 .WithVisibility(Visibility.Internal)
                 .Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
@@ -76,7 +79,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        internal string MyProperty
+            actual.NormalizeLineEndings().Should().Be(@"        internal string MyProperty
         {
             get;
             set;
@@ -99,7 +102,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public string MyProperty
+            actual.NormalizeLineEndings().Should().Be(@"        public string MyProperty
         {
             get;
             init;
@@ -121,7 +124,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public int Property
+            actual.NormalizeLineEndings().Should().Be(@"        public int Property
         {
             get;
             set;
@@ -144,7 +147,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public int? Property
+            actual.NormalizeLineEndings().Should().Be(@"        public int? Property
         {
             get;
             set;
@@ -166,7 +169,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public System.Nullable<int> Property
+            actual.NormalizeLineEndings().Should().Be(@"        public System.Nullable<int> Property
         {
             get;
             set;
@@ -187,7 +190,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public string Property
+            actual.NormalizeLineEndings().Should().Be(@"        public string Property
         {
             get;
             set;
@@ -210,7 +213,7 @@ namespace ModelFramework.Generators.Objects.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
             // Assert
-            actual.Should().Be(@"        public string? Property
+            actual.NormalizeLineEndings().Should().Be(@"        public string? Property
         {
             get;
             set;

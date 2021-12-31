@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using ModelFramework.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
@@ -18,18 +19,46 @@ namespace ModelFramework.Objects.Extensions
                 ? CreateCollectionInitialization(property, addNullChecks)
                 : $"{property.Name} = source.{property.Name};";
 
-            return property.Metadata.GetMetadataStringValue(MetadataNames.CustomImmutableBuilderConstructorInitializeExpression, defaultValue, o => string.Format(o?.ToString() ?? string.Empty, property.Name, property.Name.ToPascalCase(), property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(), property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()));
+            return string.Format
+            (
+                property.Metadata.GetStringValue(MetadataNames.CustomBuilderConstructorInitializeExpression, defaultValue),
+                property.Name,
+                property.Name.ToPascalCase(),
+                property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(),
+                addNullChecks ? $"if (source.{property.Name} != null) " : ""
+            );
         }
 
         private static string CreateCollectionInitialization(IClassProperty property, bool addNullChecks)
             => addNullChecks
-                ? $"if (source.{property.Name} != null) foreach (var x in source.{property.Name}) {property.Name}.Add(x);"
-                : $"foreach (var x in source.{property.Name}) {property.Name}.Add(x);";
+                ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name});"
+                : $"{property.Name}.AddRange(source.{property.Name});";
 
-        public static string CreateImmutableBuilderClearCode(this IClassProperty property)
-            => property.TypeName.IsCollectionTypeName()
-                ? $"{property.Name}.Clear();"
-                : $"{property.Name} = default;";
+        internal static string GetDefaultValue(this IClassProperty property)
+        {
+            var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomImmutableDefaultValue);
+            if (md != null && md.Value != null)
+            {
+                if (md.Value is Literal literal && literal.Value != null)
+                {
+                    return literal.Value;
+                }
+                return md.Value.CsharpFormat();
+            }
+
+            if (property.TypeName == typeof(string).FullName && !property.IsNullable)
+            {
+                return "string.Empty";
+            }
+
+            if (property.TypeName == typeof(object).FullName && !property.IsNullable)
+            {
+                return "new object()";
+            }
+
+            return "default";
+        }
 
         public static IEnumerable<IMetadata> GetImmutableCollectionMetadata(this IClassProperty property, string newCollectionTypeName)
             => property.TypeName.IsCollectionTypeName()
@@ -76,7 +105,7 @@ namespace ModelFramework.Objects.Extensions
 
         private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
         {
-            var customModifiers = property.Metadata.GetMetadataStringValue(customModifiersMetadatName);
+            var customModifiers = property.Metadata.GetStringValue(customModifiersMetadatName);
             if (!string.IsNullOrEmpty(customModifiers)
                 && customModifiers != property.Visibility.ToString().ToLower(CultureInfo.InvariantCulture))
             {

@@ -11,7 +11,7 @@ namespace ModelFramework.Objects.Extensions
         public static string GetModifiers<T>(this T instance)
             where T : IMetadataContainer, IVisibilityContainer
         {
-            var customModifiers = instance.Metadata.GetMetadataStringValue(MetadataNames.CustomModifiers);
+            var customModifiers = instance.Metadata.GetStringValue(MetadataNames.CustomModifiers);
             if (!string.IsNullOrEmpty(customModifiers))
             {
                 return customModifiers + " ";

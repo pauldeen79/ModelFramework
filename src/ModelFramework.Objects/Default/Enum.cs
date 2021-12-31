@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
@@ -18,15 +19,25 @@ namespace ModelFramework.Objects.Default
         /// <param name="metadata">The metadata.</param>
         public Enum(string name,
                     IEnumerable<IEnumMember> members,
-                    Visibility visibility = Visibility.Public,
-                    IEnumerable<IAttribute> attributes = null,
-                    IEnumerable<IMetadata> metadata = null)
+                    Visibility visibility,
+                    IEnumerable<IAttribute> attributes,
+                    IEnumerable<IMetadata> metadata)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
+
+            if (!members.Any())
+            {
+                throw new ArgumentException("Enum must have at least one member", nameof(members));
+            }
+
             Name = name;
             Visibility = visibility;
-            Members = new ValueCollection<IEnumMember>(members ?? Enumerable.Empty<IEnumMember>());
-            Attributes = new ValueCollection<IAttribute>(attributes ?? Enumerable.Empty<IAttribute>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Members = new ValueCollection<IEnumMember>(members);
+            Attributes = new ValueCollection<IAttribute>(attributes);
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public ValueCollection<IAttribute> Attributes { get; }

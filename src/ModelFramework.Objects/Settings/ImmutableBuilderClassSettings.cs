@@ -3,24 +3,24 @@ using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Settings
 {
-    public class ImmutableBuilderClassSettings
+    public record ImmutableBuilderClassSettings
     {
         public string NewCollectionTypeName { get; }
-        public bool AddCopyConstructor { get; }
+        public ImmutableBuilderClassConstructorSettings ConstructorSettings { get; }
         public bool Poco { get; }
         public bool AddNullChecks { get; }
         public string SetMethodNameFormatString { get; }
-        public Func<ITypeBase, bool, string> FormatInstanceTypeNameDelegate { get; }
+        public Func<ITypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
 
         public ImmutableBuilderClassSettings(string newCollectionTypeName = "System.Collections.Generic.List",
-                                             bool addCopyConstructor = false,
+                                             ImmutableBuilderClassConstructorSettings? constructorSettings = null,
                                              bool poco = false,
                                              bool addNullChecks = false,
                                              string setMethodNameFormatString = "With{0}",
-                                             Func<ITypeBase, bool, string> formatInstanceTypeNameDelegate = null)
+                                             Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
         {
             NewCollectionTypeName = newCollectionTypeName;
-            AddCopyConstructor = addCopyConstructor;
+            ConstructorSettings = constructorSettings ?? new ImmutableBuilderClassConstructorSettings();
             Poco = poco;
             AddNullChecks = addNullChecks;
             SetMethodNameFormatString = setMethodNameFormatString;
@@ -29,7 +29,7 @@ namespace ModelFramework.Objects.Settings
 
         public ImmutableBuilderClassSettings WithPoco(bool isPoco)
             => new ImmutableBuilderClassSettings(NewCollectionTypeName,
-                                                 AddCopyConstructor,
+                                                 ConstructorSettings,
                                                  Poco || isPoco,
                                                  AddNullChecks,
                                                  SetMethodNameFormatString,

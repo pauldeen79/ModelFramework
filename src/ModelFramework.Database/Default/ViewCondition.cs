@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -8,15 +7,15 @@ namespace ModelFramework.Database.Default
 {
     public record ViewCondition : IViewCondition
     {
-        public ViewCondition(string combination,
-                             string expression,
-                             string fileGroupName = null,
-                             IEnumerable<IMetadata> metadata = null)
+        public ViewCondition(string expression,
+                             string combination,
+                             string fileGroupName,
+                             IEnumerable<IMetadata> metadata)
         {
             Combination = combination;
             Expression = expression;
             FileGroupName = fileGroupName;
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string Expression { get; }

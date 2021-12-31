@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
     <PackageId>pauldeen79.ModelFramework.Generators.Shared</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/ModelFramework</RepositoryUrl>
     <CodeAnalysisRuleSet>..\..\.sonarlint\pauldeen79_modelframeworkcsharp.ruleset</CodeAnalysisRuleSet>

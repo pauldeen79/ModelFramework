@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using CrossCutting.Common;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
@@ -11,29 +10,32 @@ namespace ModelFramework.Database.Default
     {
 #pragma warning disable S107 // Methods should not have too many parameters
         public Table(string name,
-                     string fileGroupName = null,
-                     IEnumerable<ITableField> fields = null,
-                     IEnumerable<IPrimaryKeyConstraint> primaryKeyConstraints = null,
-                     IEnumerable<IUniqueConstraint> uniqueConstraints = null,
-                     IEnumerable<IDefaultValueConstraint> defaultValueConstraints = null,
-                     IEnumerable<IForeignKeyConstraint> foreignKeyConstraints = null,
-                     IEnumerable<IIndex> indexes = null,
-                     IEnumerable<ICheckConstraint> checkConstraints = null,
-                     IEnumerable<IMetadata> metadata = null)
+                     string fileGroupName,
+                     IEnumerable<ITableField> fields,
+                     IEnumerable<IPrimaryKeyConstraint> primaryKeyConstraints,
+                     IEnumerable<IUniqueConstraint> uniqueConstraints,
+                     IEnumerable<IDefaultValueConstraint> defaultValueConstraints,
+                     IEnumerable<IForeignKeyConstraint> foreignKeyConstraints,
+                     IEnumerable<IIndex> indexes,
+                     IEnumerable<ICheckConstraint> checkConstraints,
+                     IEnumerable<IMetadata> metadata)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
-            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+            }
 
             Name = name;
             FileGroupName = fileGroupName;
-            Fields = new ValueCollection<ITableField>(fields ?? Enumerable.Empty<ITableField>());
-            PrimaryKeyConstraints = new ValueCollection<IPrimaryKeyConstraint>(primaryKeyConstraints ?? Enumerable.Empty<IPrimaryKeyConstraint>());
-            UniqueConstraints = new ValueCollection<IUniqueConstraint>(uniqueConstraints ?? Enumerable.Empty<IUniqueConstraint>());
-            DefaultValueConstraints = new ValueCollection<IDefaultValueConstraint>(defaultValueConstraints ?? Enumerable.Empty<IDefaultValueConstraint>());
-            ForeignKeyConstraints = new ValueCollection<IForeignKeyConstraint>(foreignKeyConstraints ?? Enumerable.Empty<IForeignKeyConstraint>());
-            Indexes = new ValueCollection<IIndex>(indexes ?? Enumerable.Empty<IIndex>());
-            CheckConstraints = new ValueCollection<ICheckConstraint>(checkConstraints ?? Enumerable.Empty<ICheckConstraint>());
-            Metadata = new ValueCollection<IMetadata>(metadata ?? Enumerable.Empty<IMetadata>());
+            Fields = new ValueCollection<ITableField>(fields);
+            PrimaryKeyConstraints = new ValueCollection<IPrimaryKeyConstraint>(primaryKeyConstraints);
+            UniqueConstraints = new ValueCollection<IUniqueConstraint>(uniqueConstraints);
+            DefaultValueConstraints = new ValueCollection<IDefaultValueConstraint>(defaultValueConstraints);
+            ForeignKeyConstraints = new ValueCollection<IForeignKeyConstraint>(foreignKeyConstraints);
+            Indexes = new ValueCollection<IIndex>(indexes);
+            CheckConstraints = new ValueCollection<ICheckConstraint>(checkConstraints);
+            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
         public string FileGroupName { get; }

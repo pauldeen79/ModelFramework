@@ -1,356 +1,74 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using ModelFramework.Common.Builders;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
+using ModelFramework.Common.Extensions;
+using ModelFramework.Objects.Extensions;
 
 namespace ModelFramework.Objects.Builders
 {
-    public class ClassPropertyBuilder
+    public partial class ClassPropertyBuilder
     {
-        public bool Static { get; set; }
-        public bool HasGetter { get; set; }
-        public bool HasSetter { get; set; }
-        public bool HasInitializer { get; set; }
-        public List<MetadataBuilder> Metadata { get; set; }
-        public Visibility Visibility { get; set; }
-        public Visibility? GetterVisibility { get; set; }
-        public Visibility? SetterVisibility { get; set; }
-        public Visibility? InitializerVisibility { get; set; }
-        public string Name { get; set; }
-        public List<AttributeBuilder> Attributes { get; set; }
-        public string TypeName { get; set; }
-        public bool Virtual { get; set; }
-        public bool Abstract { get; set; }
-        public bool Protected { get; set; }
-        public bool Override { get; set; }
-        public bool IsNullable { get; set; }
-        public string ExplicitInterfaceName { get; set; }
-        public List<ICodeStatementBuilder> GetterCodeStatements { get; set; }
-        public List<ICodeStatementBuilder> SetterCodeStatements { get; set; }
-        public List<ICodeStatementBuilder> InitializerCodeStatements { get; set; }
-        public IClassProperty Build()
-        {
-            return new ClassProperty(Name,
-                                     TypeName,
-                                     Static,
-                                     Virtual,
-                                     Abstract,
-                                     Protected,
-                                     Override,
-                                     HasGetter,
-                                     HasSetter, 
-                                     HasInitializer,
-                                     IsNullable,
-                                     Visibility,
-                                     GetterVisibility,
-                                     SetterVisibility,
-                                     InitializerVisibility,
-                                     ExplicitInterfaceName,
-                                     Metadata.Select(x => x.Build()),
-                                     Attributes.Select(x => x.Build()),
-                                     GetterCodeStatements.Select(x => x.Build()),
-                                     SetterCodeStatements.Select(x => x.Build()),
-                                     InitializerCodeStatements.Select(x => x.Build()));
-        }
-        public ClassPropertyBuilder Clear()
-        {
-            Static = default;
-            HasGetter = true;
-            HasSetter = true;
-            HasInitializer = default;
-            Metadata.Clear();
-            Visibility = default;
-            GetterVisibility = default;
-            SetterVisibility = default;
-            InitializerVisibility = default;
-            Name = default;
-            Attributes.Clear();
-            TypeName = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            IsNullable = default;
-            ExplicitInterfaceName = default;
-            GetterCodeStatements.Clear();
-            SetterCodeStatements.Clear();
-            InitializerCodeStatements.Clear();
-            return this;
-        }
-        public ClassPropertyBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-        public ClassPropertyBuilder WithHasGetter(bool hasGetter = true)
-        {
-            HasGetter = hasGetter;
-            return this;
-        }
-        public ClassPropertyBuilder WithHasSetter(bool hasSetter = true)
-        {
-            HasSetter = hasSetter;
-            if (hasSetter)
-            {
-                HasInitializer = false;
-            }
-            return this;
-        }
-        public ClassPropertyBuilder WithHasInitializer(bool hasInitializer = true)
-        {
-            HasInitializer = hasInitializer;
-            if (hasInitializer)
-            {
-                HasSetter = false;
-            }
-            return this;
-        }
-        public ClassPropertyBuilder ClearMetadata()
-        {
-            Metadata.Clear();
-            return this;
-        }
-        public ClassPropertyBuilder AddMetadata(IEnumerable<MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-        public ClassPropertyBuilder AddMetadata(params MetadataBuilder[] metadata)
-        {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata);
-            }
-            return this;
-        }
-        public ClassPropertyBuilder AddMetadata(IEnumerable<IMetadata> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-        public ClassPropertyBuilder AddMetadata(params IMetadata[] metadata)
-        {
-            if (metadata != null)
-            {
-                Metadata.AddRange(metadata.Select(x => new MetadataBuilder(x)));
-            }
-            return this;
-        }
-        public ClassPropertyBuilder WithVisibility(Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-        public ClassPropertyBuilder WithGetterVisibility(Visibility? getterVisibility)
-        {
-            GetterVisibility = getterVisibility;
-            return this;
-        }
-        public ClassPropertyBuilder WithSetterVisibility(Visibility? setterVisibility)
-        {
-            SetterVisibility = setterVisibility;
-            return this;
-        }
-        public ClassPropertyBuilder WithInitVisibility(Visibility? initVisibility)
-        {
-            InitializerVisibility = initVisibility;
-            return this;
-        }
-        public ClassPropertyBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-        public ClassPropertyBuilder ClearAttributes()
-        {
-            Attributes.Clear();
-            return this;
-        }
-        public ClassPropertyBuilder AddAttributes(IEnumerable<AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-        public ClassPropertyBuilder AddAttributes(params AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return this;
-        }
-        public ClassPropertyBuilder AddAttributes(IEnumerable<IAttribute> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-        public ClassPropertyBuilder AddAttributes(params IAttribute[] attributes)
-        {
-            if (attributes != null)
-            {
-                foreach (var itemToAdd in attributes)
-                {
-                    Attributes.Add(new AttributeBuilder(itemToAdd));
-                }
-            }
-            return this;
-        }
-        public ClassPropertyBuilder WithTypeName(string typeName)
-        {
-            TypeName = typeName;
-            return this;
-        }
-        public ClassPropertyBuilder WithType(Type type)
-        {
-            TypeName = type.FullName;
-            return this;
-        }
-        public ClassPropertyBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-        public ClassPropertyBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-        public ClassPropertyBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-        public ClassPropertyBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-        public ClassPropertyBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-        public ClassPropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
-        {
-            ExplicitInterfaceName = explicitInterfaceName;
-            return this;
-        }
-        public ClassPropertyBuilder ClearGetterCodeStatements()
-        {
-            GetterCodeStatements.Clear();
-            return this;
-        }
-        public ClassPropertyBuilder AddGetterCodeStatements(IEnumerable<ICodeStatementBuilder> getterCodeStatements)
-        {
-            return AddGetterCodeStatements(getterCodeStatements.ToArray());
-        }
-        public ClassPropertyBuilder AddGetterCodeStatements(params ICodeStatementBuilder[] getterCodeStatements)
-        {
-            if (getterCodeStatements != null)
-            {
-                GetterCodeStatements.AddRange(getterCodeStatements);
-            }
-            return this;
-        }
-        public ClassPropertyBuilder AddGetterCodeStatements(IEnumerable<ICodeStatement> getterCodeStatements)
-        {
-            return AddGetterCodeStatements(getterCodeStatements.ToArray());
-        }
-        public ClassPropertyBuilder AddGetterCodeStatements(params ICodeStatement[] getterCodeStatements)
-        {
-            if (getterCodeStatements != null)
-            {
-                GetterCodeStatements.AddRange(getterCodeStatements.Select(x => x.CreateBuilder()));
-            }
-            return this;
-        }
-        public ClassPropertyBuilder ClearSetterCodeStatements()
-        {
-            SetterCodeStatements.Clear();
-            return this;
-        }
-        public ClassPropertyBuilder AddSetterCodeStatements(IEnumerable<ICodeStatementBuilder> setterCodeStatements)
-        {
-            return AddSetterCodeStatements(setterCodeStatements.ToArray());
-        }
-        public ClassPropertyBuilder AddSetterCodeStatements(params ICodeStatementBuilder[] setterCodeStatements)
-        {
-            if (setterCodeStatements != null)
-            {
-                SetterCodeStatements.AddRange(setterCodeStatements);
-            }
-            return this;
-        }
-        public ClassPropertyBuilder AddSetterCodeStatements(IEnumerable<ICodeStatement> setterCodeStatements)
-        {
-            return AddSetterCodeStatements(setterCodeStatements.ToArray());
-        }
-        public ClassPropertyBuilder AddSetterCodeStatements(params ICodeStatement[] setterCodeStatements)
-        {
-            if (setterCodeStatements != null)
-            {
-                SetterCodeStatements.AddRange(setterCodeStatements.Select(x => x.CreateBuilder()));
-            }
-            return this;
-        }
-        public ClassPropertyBuilder ClearInitCodeStatements()
-        {
-            InitializerCodeStatements.Clear();
-            return this;
-        }
-        public ClassPropertyBuilder AddInitCodeStatements(IEnumerable<ICodeStatementBuilder> initCodeStatements)
-        {
-            return AddInitCodeStatements(initCodeStatements.ToArray());
-        }
-        public ClassPropertyBuilder AddInitCodeStatements(params ICodeStatementBuilder[] initCodeStatements)
-        {
-            if (initCodeStatements != null)
-            {
-                InitializerCodeStatements.AddRange(initCodeStatements);
-            }
-            return this;
-        }
-        public ClassPropertyBuilder AddInitCodeStatements(IEnumerable<ICodeStatement> initCodeStatements)
-        {
-            return AddInitCodeStatements(initCodeStatements.ToArray());
-        }
-        public ClassPropertyBuilder AddInitCodeStatements(params ICodeStatement[] initCodeStatements)
-        {
-            if (initCodeStatements != null)
-            {
-                InitializerCodeStatements.AddRange(initCodeStatements.Select(x => x.CreateBuilder()));
-            }
-            return this;
-        }
-        public ClassPropertyBuilder()
-        {
-            HasGetter = true;
-            HasSetter = true;
-            Metadata = new List<MetadataBuilder>();
-            Attributes = new List<AttributeBuilder>();
-            GetterCodeStatements = new List<ICodeStatementBuilder>();
-            SetterCodeStatements = new List<ICodeStatementBuilder>();
-            InitializerCodeStatements = new List<ICodeStatementBuilder>();
-        }
-        public ClassPropertyBuilder(IClassProperty source)
-        {
-            Static = source.Static;
-            HasGetter = source.HasGetter;
-            HasSetter = source.HasSetter;
-            HasInitializer = source.HasInitializer;
-            Metadata = new List<MetadataBuilder>(source.Metadata?.Select(x => new MetadataBuilder(x)) ?? Enumerable.Empty<MetadataBuilder>());
-            Visibility = source.Visibility;
-            GetterVisibility = source.GetterVisibility;
-            SetterVisibility = source.SetterVisibility;
-            InitializerVisibility = source.InitializerVisibility;
-            Name = source.Name;
-            Attributes = new List<AttributeBuilder>(source.Attributes?.Select(x => new AttributeBuilder(x)) ?? Enumerable.Empty<AttributeBuilder>());
-            TypeName = source.TypeName;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            IsNullable = source.IsNullable;
-            ExplicitInterfaceName = source.ExplicitInterfaceName;
-            GetterCodeStatements = new List<ICodeStatementBuilder>(source.GetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            SetterCodeStatements = new List<ICodeStatementBuilder>(source.SetterCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-            InitializerCodeStatements = new List<ICodeStatementBuilder>(source.InitializerCodeStatements?.Select(x => x.CreateBuilder()) ?? Enumerable.Empty<ICodeStatementBuilder>());
-        }
+        public ClassPropertyBuilder ConvertCollectionToEnumerable()
+            => AddMetadata
+            (
+                new MetadataBuilder().WithName(MetadataNames.CustomImmutableArgumentType).WithValue("System.Collections.Generic.IEnumerable<{1}>"),
+                new MetadataBuilder().WithName(MetadataNames.CustomImmutableDefaultValue).WithValue("new System.Collections.Generic.List<{1}>({0} ?? new Enumerable.Empty<{1}>())")
+            );
+
+        public ClassPropertyBuilder ConvertSinglePropertyToBuilder(string? argumentType = null,
+                                                                   string? customBuilderConstructorInitializeExpression = null)
+            => AddMetadata
+            (
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(argumentType ?? "{0}Builder"),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{0}.Build()"),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue(customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0});" : "{0} = new " + argumentType + "(source.{0});"))
+            );
+
+        public ClassPropertyBuilder ConvertCollectionPropertyToBuilder(string? argumentType = null,
+                                                                       string? customBuilderConstructorInitializeExpression = null)
+            => ConvertCollectionToEnumerable().AddMetadata
+            (
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(argumentType ?? "System.Collections.Generic.IEnumerable<{1}Builder>"),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{0}.Select(x => x.Build())"),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue(customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)));" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)));"))
+            );
+
+        public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
+                                                       Type parameterType,
+                                                       string parameterNameTemplate,
+                                                       string initializeExpression)
+            => AddBuilderOverload(methodNameTemplate,
+                                  parameterType?.FullName ?? throw new ArgumentException("Type does not have a full name"),
+                                  parameterNameTemplate,
+                                  initializeExpression);
+
+        public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
+                                                       string parameterTypeName,
+                                                       string parameterNameTemplate,
+                                                       string initializeExpression)
+            => AddMetadata
+            (
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadMethodName).WithValue(methodNameTemplate),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentType).WithValue(parameterTypeName),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentName).WithValue(parameterNameTemplate),
+                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadInitializeExpression).WithValue(initializeExpression)
+            );
+
+        public ClassPropertyBuilder SetDefaultArgumentValueForWithMethod(object defaultValue)
+            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(defaultValue));
+
+        public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
+            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomImmutableDefaultValue).WithValue(defaultValue));
+
+        public ClassPropertyBuilder SetBuilderWithExpression( string expression)
+            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue(expression));
+
+        public ClassPropertyBuilder AddGetterLiteralCodeStatements(params string[] statements)
+            => AddGetterCodeStatements(statements.ToLiteralCodeStatementBuilders());
+
+        public ClassPropertyBuilder AddSetterLiteralCodeStatements(params string[] statements)
+            => AddSetterCodeStatements(statements.ToLiteralCodeStatementBuilders());
+
+        public ClassPropertyBuilder AddInitializerLiteralCodeStatements(params string[] statements)
+            => AddInitializerCodeStatements(statements.ToLiteralCodeStatementBuilders());
     }
 }
