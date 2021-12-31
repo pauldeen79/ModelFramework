@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Common;
@@ -32,23 +30,14 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCommonModelEntities()
         {
             // Arrange
-            var models = typeof(Metadata).Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(Metadata).FullName?.GetNamespaceWithDefault())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
-                .ToArray();
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+            var builderModels = GetClassBuildersFromSameNamespace(typeof(Metadata))
+                .Select
+                (
+                    c => CreateBuilder(c, "ModelFramework.Common.Builders").Build()
+                ).ToArray();
 
             // Act
-            var builderModels = models.Select(c => c.Build()
-                                                    .ToImmutableBuilderClassBuilder(settings)
-                                                    .WithNamespace("ModelFramework.Common.Builders")
-                                                    .WithPartial()
-                                                    .AddExcludeFromCodeCoverageAttribute()
-                                                    .Build()).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels);
+            var actual = CreateCode(builderModels);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -58,26 +47,18 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpModelEntities()
         {
             // Arrange
-            var models = typeof(Class).Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null &&  t.FullName.GetNamespaceWithDefault() == typeof(Class).FullName?.GetNamespaceWithDefault())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
-                .ToArray();
-
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+            var builderModels = GetClassBuildersFromSameNamespace(typeof(Class))
+                .Select
+                (
+                    c => CreateBuilder(c, "ModelFramework.Objects.Builders")
+                        .AddMethods(CreateAddMetadataOverload(c))
+                        .Build()
+                ).ToArray();
 
             // Act
-            var builderModels = models.Select(c => c.Build()
-                                                    .ToImmutableBuilderClassBuilder(settings)
-                                                    .WithNamespace("ModelFramework.Objects.Builders")
-                                                    .WithPartial()
-                                                    .AddExcludeFromCodeCoverageAttribute()
-                                                    .AddMethods(CreateAddMetadataOverload(c))
-                                                    .Build()).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels, additionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
+            var actual = CreateCode(builderModels);
 
+            // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
@@ -85,28 +66,20 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpCodeStatements()
         {
             // Arrange
-            var models = typeof(LiteralCodeStatement).Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(LiteralCodeStatement).FullName?.GetNamespaceWithDefault())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
-                .ToArray();
-
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+            var builderModels = GetClassBuildersFromSameNamespace(typeof(LiteralCodeStatement))
+                .Select
+                (
+                    c => CreateBuilder(c, "ModelFramework.Objects.CodeStatements.Builders")
+                        .AddMethods(CreateAddMetadataOverload(c))
+                        .AddInterfaces(typeof(ICodeStatementBuilder))
+                        .Chain(x => x.Methods.First(x => x.Name == nameof(ICodeStatementBuilder.Build)).WithType(typeof(ICodeStatement)))
+                        .Build()
+                ).ToArray();
 
             // Act
-            var builderModels = models.Select(c => c.Build()
-                                                    .ToImmutableBuilderClassBuilder(settings)
-                                                    .WithNamespace("ModelFramework.Objects.CodeStatements.Builders")
-                                                    .WithPartial()
-                                                    .AddExcludeFromCodeCoverageAttribute()
-                                                    .AddMethods(CreateAddMetadataOverload(c))
-                                                    .AddInterfaces(typeof(ICodeStatementBuilder))
-                                                    .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(typeof(ICodeStatement)))
-                                                    .Build()).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels, additionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
+            var actual = CreateCode(builderModels);
 
+            // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
@@ -114,55 +87,39 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseModelEntities()
         {
             // Arrange
-            var models = typeof(Table).Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(Table).FullName?.GetNamespaceWithDefault())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
-                .ToArray();
-
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+            var builderModels = GetClassBuildersFromSameNamespace(typeof(Table))
+                .Select
+                (
+                    c => CreateBuilder(c, "ModelFramework.Database.Builders")
+                        .AddMethods(CreateAddMetadataOverload(c))
+                        .Build()
+                ).ToArray();
 
             // Act
-            var builderModels = models.Select(c => c.Build()
-                                                    .ToImmutableBuilderClassBuilder(settings)
-                                                    .WithNamespace("ModelFramework.Database.Builders")
-                                                    .WithPartial()
-                                                    .AddExcludeFromCodeCoverageAttribute()
-                                                    .AddMethods(CreateAddMetadataOverload(c))
-                                                    .Build()).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels, additionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
+            var actual = CreateCode(builderModels);
 
+            // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForDatabaseCodeStalootements()
+        public void CanGenerateImmutableBuilderClassesForDatabaseCodeStatements()
         {
             // Arrange
-            var models = typeof(LiteralSqlStatement).Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(LiteralSqlStatement).FullName?.GetNamespaceWithDefault())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
-                .ToArray();
-
-            FixImmutableBuilderProperties(models);
-            var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+            var builderModels = GetClassBuildersFromSameNamespace(typeof(LiteralSqlStatement))
+                .Select
+                (
+                    c => CreateBuilder(c, "ModelFramework.Database.SqlStatements.Builders")
+                        .AddMethods(CreateAddMetadataOverload(c))
+                        .AddInterfaces(typeof(ISqlStatementBuilder))
+                        .Chain(x => x.Methods.First(x => x.Name == nameof(ISqlStatementBuilder.Build)).WithType(typeof(ISqlStatement)))
+                        .Build()
+                ).ToArray();
 
             // Act
-            var builderModels = models.Select(c => c.Build()
-                                                    .ToImmutableBuilderClassBuilder(settings)
-                                                    .WithNamespace("ModelFramework.Database.SqlStatements.Builders")
-                                                    .WithPartial()
-                                                    .AddExcludeFromCodeCoverageAttribute()
-                                                    .AddMethods(CreateAddMetadataOverload(c))
-                                                    .AddInterfaces(typeof(ISqlStatementBuilder))
-                                                    .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(typeof(ISqlStatement)))
-                                                    .Build()).ToArray();
-            var sut = new CSharpClassGenerator();
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels, additionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
+            var actual = CreateCode(builderModels);
 
+            // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
@@ -181,20 +138,28 @@ namespace ModelFramework.CodeGeneration.Tests
                            .ToImmutableBuilderClass(settings)
                     ).Cast<ITypeBase>().ToArray();
 
-            var generator = new CSharpClassGenerator();
-            generator.Session = new Dictionary<string, object>
-            {
-                { "Model", model }
-            };
-            var builder = new StringBuilder();
-
             // Act
-            generator.Initialize();
-            generator.Render(builder);
-            var output = builder.ToString();
+            var actual = CreateCode(model);
 
             // Assert
-            output.Should().NotBeEmpty();
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        }
+
+        private static ClassBuilder[] GetClassBuildersFromSameNamespace(Type type)
+        {
+            if (type.FullName == null)
+            {
+                throw new ArgumentException("Can't get classes from same namespace, as the FullName of this type is null");
+            }
+
+            var models = type.Assembly.GetExportedTypes()
+                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault())
+                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty))
+                .ToArray();
+
+            FixImmutableBuilderProperties(models);
+
+            return models;
         }
 
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)
@@ -271,8 +236,13 @@ if ({2})
             }
         }
 
-        private static string GetNamespace(Type t)
-            => t.FullName?.GetNamespaceWithDefault() ?? string.Empty;
+        private static ClassBuilder CreateBuilder(ClassBuilder c, string @namespace)
+            => c.Build()
+                .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
+                                                formatInstanceTypeNameDelegate: FormatInstanceTypeName))
+                .WithNamespace(@namespace)
+                .WithPartial()
+                .AddExcludeFromCodeCoverageAttribute();
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {
@@ -308,5 +278,14 @@ if ({2})
                 .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
                 .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
                                           "return this;");
+
+        private static string CreateCode(ITypeBase[] builderModels)
+            => TemplateRenderHelper.GetTemplateOutput(new CSharpClassGenerator(),
+                                                      builderModels,
+                                                      additionalParameters: new
+                                                      {
+                                                          EnableNullableContext = true,
+                                                          CreateCodeGenerationHeader = true
+                                                      });
     }
 }
