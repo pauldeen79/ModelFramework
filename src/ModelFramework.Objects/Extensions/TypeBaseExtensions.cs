@@ -60,7 +60,7 @@ namespace ModelFramework.Objects.Extensions
             return $"[unknown container type: {typeBase.GetType().FullName}]";
         }
 
-        public static IInterface ToInterface(this ITypeBase instance, InterfaceSettings settings)
+        public static IInterface ToInterfaceClass(this ITypeBase instance, InterfaceSettings settings)
             => instance.ToInterfaceBuilder(settings).Build();
 
         public static InterfaceBuilder ToInterfaceBuilder(this ITypeBase instance, InterfaceSettings settings)

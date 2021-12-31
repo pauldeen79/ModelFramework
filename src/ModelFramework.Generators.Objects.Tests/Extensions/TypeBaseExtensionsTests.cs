@@ -24,7 +24,7 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
                 .Build();
 
             // Act
-            var actual = input.ToInterface(new InterfaceSettings());
+            var actual = input.ToInterfaceClass(new InterfaceSettings());
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -57,7 +57,7 @@ namespace MyNamespace
                 .Build();
 
             // Act
-            var actual = input.ToInterface(new InterfaceSettings(applyGenericTypes: new Dictionary<string, string> { { "MyType", "T" } }));
+            var actual = input.ToInterfaceClass(new InterfaceSettings(applyGenericTypes: new Dictionary<string, string> { { "MyType", "T" } }));
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -94,7 +94,7 @@ namespace MyNamespace
                 ).Build();
 
             // Act
-            var actual = input.ToInterface(new InterfaceSettings());
+            var actual = input.ToInterfaceClass(new InterfaceSettings());
 
             // Assert
             var generator = new CSharpClassGenerator();
@@ -136,7 +136,7 @@ namespace MyNamespace
                 .ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true));
 
             // Act
-            var actual = input.ToInterface(new InterfaceSettings());
+            var actual = input.ToInterfaceClass(new InterfaceSettings());
 
             // Assert
             var generator = new CSharpClassGenerator();
