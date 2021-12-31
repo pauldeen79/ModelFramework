@@ -2097,9 +2097,15 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public bool IsParamArray
+        {
+            get;
+            set;
+        }
+
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
-            return new ModelFramework.Objects.Default.Parameter(Name, TypeName, DefaultValue, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.Parameter(Name, TypeName, DefaultValue, IsNullable, IsParamArray, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
         }
 
         public ParameterBuilder WithTypeName(string typeName)
@@ -2154,6 +2160,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ParameterBuilder WithIsParamArray(bool isParamArray = true)
+        {
+            IsParamArray = isParamArray;
+            return this;
+        }
+
         public ParameterBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -2167,6 +2179,7 @@ namespace ModelFramework.Objects.Builders
             TypeName = string.Empty;
             Name = string.Empty;
             IsNullable = default;
+            IsParamArray = default;
         }
 
         public ParameterBuilder(ModelFramework.Objects.Contracts.IParameter source)
@@ -2179,6 +2192,7 @@ namespace ModelFramework.Objects.Builders
             Name = source.Name;
             DefaultValue = source.DefaultValue;
             IsNullable = source.IsNullable;
+            IsParamArray = source.IsParamArray;
         }
     }
 #nullable restore

@@ -1459,6 +1459,11 @@ namespace ModelFramework.Generators.Objects
         {
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
+            if (Model.IsParamArray) {
+
+            Write(this.ToStringHelper.ToStringWithCulture(@"params "));
+            }
+
             Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));

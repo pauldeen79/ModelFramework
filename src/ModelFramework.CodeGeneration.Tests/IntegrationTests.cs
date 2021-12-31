@@ -301,7 +301,7 @@ if ({2})
                 yield return new ClassMethodBuilder()
                     .WithName("AddLiteralCodeStatements")
                     .WithTypeName($"{c.Name}Builder")
-                    .AddParameters(new ParameterBuilder().WithName("statements").WithTypeName("params string[]")) //TODO: Make it possible to indicate params on array type
+                    .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(string[])).WithIsParamArray())
                     .AddLiteralCodeStatements("return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));");
                 yield return new ClassMethodBuilder()
                     .WithName("AddLiteralCodeStatements")

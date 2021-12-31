@@ -830,21 +830,22 @@ namespace ModelFramework.Objects.Extensions
             );
         }
 
-        private static IParameter ChangeParameter(IParameter property, IDictionary<string, string> applyGenericTypes)
+        private static IParameter ChangeParameter(IParameter parameter, IDictionary<string, string> applyGenericTypes)
         {
             if (applyGenericTypes == null || applyGenericTypes.Count == 0)
             {
-                return property;
+                return parameter;
             }
 
             return new Parameter
             (
-                property.Name,
-                ReplaceGenericType(property.TypeName, applyGenericTypes),
-                property.DefaultValue,
-                property.IsNullable,
-                property.Attributes,
-                property.Metadata
+                parameter.Name,
+                ReplaceGenericType(parameter.TypeName, applyGenericTypes),
+                parameter.DefaultValue,
+                parameter.IsNullable,
+                parameter.IsParamArray,
+                parameter.Attributes,
+                parameter.Metadata
             );
         }
 

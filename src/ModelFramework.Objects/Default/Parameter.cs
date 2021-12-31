@@ -12,6 +12,7 @@ namespace ModelFramework.Objects.Default
                          string typeName,
                          object? defaultValue,
                          bool isNullable,
+                         bool isParamArray,
                          IEnumerable<IAttribute> attributes,
                          IEnumerable<IMetadata> metadata)
         {
@@ -29,6 +30,7 @@ namespace ModelFramework.Objects.Default
             TypeName = typeName;
             DefaultValue = defaultValue;
             IsNullable = isNullable;
+            IsParamArray = isParamArray;
             Attributes = new ValueCollection<IAttribute>(attributes);
             Metadata = new ValueCollection<IMetadata>(metadata);
         }
@@ -39,6 +41,7 @@ namespace ModelFramework.Objects.Default
         public string Name { get; }
         public object? DefaultValue { get; }
         public bool IsNullable { get; }
+        public bool IsParamArray { get; }
 
         public override string ToString() => Name;
     }

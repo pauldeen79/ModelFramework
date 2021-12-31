@@ -83,9 +83,9 @@ namespace ModelFramework.Generators.Objects.Tests
                 new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
             ).AddParameters
             (
-                new ParameterBuilder().WithName("parameter1").WithTypeName("string"),
-                new ParameterBuilder().WithName("parameter2").WithTypeName("int"),
-                new ParameterBuilder().WithName("parameter3").WithTypeName("bool")
+                new ParameterBuilder().WithName("parameter1").WithType(typeof(string)),
+                new ParameterBuilder().WithName("parameter2").WithType(typeof(int)),
+                new ParameterBuilder().WithName("parameter3").WithType(typeof(bool))
             ).Build();
             var sut = CreateSut(model, rootModel);
 
@@ -94,6 +94,28 @@ namespace ModelFramework.Generators.Objects.Tests
 
             // Assert
             actual.NormalizeLineEndings().Should().Be(@"        public MyClass(string parameter1, int parameter2, bool parameter3);
+");
+        }
+
+        [Fact]
+        public void GeneratesParamArrayParameter()
+        {
+            // Arrange
+            var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassConstructorBuilder().AddCodeStatements
+            (
+                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+            ).AddParameters
+            (
+                new ParameterBuilder().WithName("parameters").WithType(typeof(string[])).WithIsParamArray()
+            ).Build();
+            var sut = CreateSut(model, rootModel);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().Be(@"        public MyClass(params string[] parameters);
 ");
         }
 

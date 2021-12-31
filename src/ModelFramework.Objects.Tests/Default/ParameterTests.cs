@@ -20,6 +20,7 @@ namespace ModelFramework.Objects.Tests.Default
                                                             "System.String",
                                                             default,
                                                             default,
+                                                            default,
                                                             Enumerable.Empty<IAttribute>(),
                                                             Enumerable.Empty<IMetadata>()));
 
@@ -35,6 +36,7 @@ namespace ModelFramework.Objects.Tests.Default
                                                             "",
                                                             default,
                                                             default,
+                                                            default,
                                                             Enumerable.Empty<IAttribute>(),
                                                             Enumerable.Empty<IMetadata>()));
 
@@ -48,6 +50,7 @@ namespace ModelFramework.Objects.Tests.Default
             // Arrange
             var sut = new Parameter("Test",
                                     "System.String",
+                                    default,
                                     default,
                                     default,
                                     Enumerable.Empty<IAttribute>(),

@@ -134,9 +134,9 @@ namespace ModelFramework.Generators.Objects.Tests
                 .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
                 .AddParameters
                 (
-                    new ParameterBuilder().WithName("parameter1").WithTypeName("string"),
-                    new ParameterBuilder().WithName("parameter2").WithTypeName("int"),
-                    new ParameterBuilder().WithName("parameter3").WithTypeName("bool")
+                    new ParameterBuilder().WithName("parameter1").WithType(typeof(string)),
+                    new ParameterBuilder().WithName("parameter2").WithType(typeof(int)),
+                    new ParameterBuilder().WithName("parameter3").WithType(typeof(bool))
                 ).Build();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
@@ -255,6 +255,32 @@ namespace ModelFramework.Generators.Objects.Tests
 
             // Assert
             actual.NormalizeLineEndings().Should().Be(@"        private string Name()
+        {
+            throw new NotImplementedException();
+        }
+");
+        }
+
+        [Fact]
+        public void GeneratesParamArrayArgument()
+        {
+            // Arrange
+            var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            var model = new ClassMethodBuilder()
+                .WithName("Name")
+                .WithType(typeof(string))
+                .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+                .AddParameters
+                (
+                    new ParameterBuilder().WithName("parameters").WithType(typeof(string[])).WithIsParamArray()
+                ).Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().Be(@"        public string Name(params string[] parameters)
         {
             throw new NotImplementedException();
         }
