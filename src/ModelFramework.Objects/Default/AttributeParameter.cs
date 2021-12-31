@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Contracts;
@@ -14,7 +13,7 @@ namespace ModelFramework.Objects.Default
                                   IEnumerable<IMetadata> metadata)
         {
             Name = name;
-            Value = value ?? throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be null");
+            Value = value;
             Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
@@ -22,6 +21,6 @@ namespace ModelFramework.Objects.Default
         public ValueCollection<IMetadata> Metadata { get; }
         public string Name { get; }
 
-        public override string ToString() => $"{Name.WhenNullOrEmpty(Value.ToStringWithDefault(string.Empty))}";
+        public override string ToString() => $"{Name.WhenNullOrEmpty(() => Value.ToStringWithDefault())}";
     }
 }

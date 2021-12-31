@@ -13,7 +13,7 @@ namespace ModelFramework.Database.Tests.Default
     public class DefaultValueConstraintTests
     {
         [Fact]
-        public void Ctor_Throws_On_Null_Name()
+        public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
             var action = new Action(() => _ = new DefaultValueConstraint("fieldName", "defaultValue", "", Enumerable.Empty<IMetadata>()));
@@ -23,7 +23,7 @@ namespace ModelFramework.Database.Tests.Default
         }
 
         [Fact]
-        public void Ctor_Throws_On_Null_FieldName()
+        public void Ctor_Throws_On_Empty_FieldName()
         {
             // Arrange
             var action = new Action(() => _ = new DefaultValueConstraint("", "defaultValue", "name", Enumerable.Empty<IMetadata>()));
@@ -33,7 +33,7 @@ namespace ModelFramework.Database.Tests.Default
         }
 
         [Fact]
-        public void Ctor_Throws_On_Null_DefaultValue()
+        public void Ctor_Throws_On_Empty_DefaultValue()
         {
             // Arrange
             var action = new Action(() => _ = new DefaultValueConstraint("fieldName", "", "name", Enumerable.Empty<IMetadata>()));

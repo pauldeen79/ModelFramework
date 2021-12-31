@@ -10,7 +10,7 @@ namespace ModelFramework.Common.Tests.Default
     public class MetadataTests
     {
         [Fact]
-        public void Ctor_Throws_On_Null_Name()
+        public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
             var action = new Action(() => _ = new Metadata(string.Empty, "Value"));
