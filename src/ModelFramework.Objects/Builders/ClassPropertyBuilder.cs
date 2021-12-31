@@ -59,7 +59,7 @@ namespace ModelFramework.Objects.Builders
         public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
             => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomImmutableDefaultValue).WithValue(defaultValue));
 
-        public ClassPropertyBuilder SetBuilderWithExpression( string expression)
+        public ClassPropertyBuilder SetBuilderWithExpression(string expression)
             => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue(expression));
 
         public ClassPropertyBuilder AddGetterLiteralCodeStatements(params string[] statements)

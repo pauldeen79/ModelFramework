@@ -670,6 +670,26 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassConstructorBuilder AddParameter(string name, System.Type type)
+        {
+            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
+        }
+
+        public ClassConstructorBuilder AddParameter(string name, string typeName)
+        {
+            return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+        }
+
+        public ClassConstructorBuilder AddLiteralCodeStatements(params string[] statements)
+        {
+            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
+        }
+
+        public ClassConstructorBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
+        {
+            return AddLiteralCodeStatements(statements.ToArray());
+        }
+
         public ClassConstructorBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
@@ -1201,6 +1221,26 @@ namespace ModelFramework.Objects.Builders
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
+        }
+
+        public ClassMethodBuilder AddParameter(string name, System.Type type)
+        {
+            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
+        }
+
+        public ClassMethodBuilder AddParameter(string name, string typeName)
+        {
+            return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+        }
+
+        public ClassMethodBuilder AddLiteralCodeStatements(params string[] statements)
+        {
+            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
+        }
+
+        public ClassMethodBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
+        {
+            return AddLiteralCodeStatements(statements.ToArray());
         }
 
         public ClassMethodBuilder()

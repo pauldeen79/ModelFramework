@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using CrossCutting.Common.Extensions;
@@ -27,10 +28,10 @@ namespace ModelFramework.CodeGeneration.Tests
     public class IntegrationTests
     {
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForCommonModelEntities()
+        public void CanGenerateImmutableBuilderClassesForCommonDefaultEntities()
         {
             // Arrange
-            var builderModels = GetClassBuildersFromSameNamespace(typeof(Metadata))
+            var builderModels = GetClassesFromSameNamespace(typeof(Metadata))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Common.Builders").Build()
@@ -44,14 +45,13 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForCsharpModelEntities()
+        public void CanGenerateImmutableBuilderClassesForCsharpDefaultEntities()
         {
             // Arrange
-            var builderModels = GetClassBuildersFromSameNamespace(typeof(Class))
+            var builderModels = GetClassesFromSameNamespace(typeof(Class))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Objects.Builders")
-                        .AddMethods(CreateAddMetadataOverload(c))
                         .Build()
                 ).ToArray();
 
@@ -66,11 +66,10 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpCodeStatements()
         {
             // Arrange
-            var builderModels = GetClassBuildersFromSameNamespace(typeof(LiteralCodeStatement))
+            var builderModels = GetClassesFromSameNamespace(typeof(LiteralCodeStatement))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Objects.CodeStatements.Builders")
-                        .AddMethods(CreateAddMetadataOverload(c))
                         .AddInterfaces(typeof(ICodeStatementBuilder))
                         .Chain(x => x.Methods.First(x => x.Name == nameof(ICodeStatementBuilder.Build)).WithType(typeof(ICodeStatement)))
                         .Build()
@@ -84,14 +83,13 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForDatabaseModelEntities()
+        public void CanGenerateImmutableBuilderClassesForDatabaseDefaultEntities()
         {
             // Arrange
-            var builderModels = GetClassBuildersFromSameNamespace(typeof(Table))
+            var builderModels = GetClassesFromSameNamespace(typeof(Table))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Database.Builders")
-                        .AddMethods(CreateAddMetadataOverload(c))
                         .Build()
                 ).ToArray();
 
@@ -106,11 +104,10 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseCodeStatements()
         {
             // Arrange
-            var builderModels = GetClassBuildersFromSameNamespace(typeof(LiteralSqlStatement))
+            var builderModels = GetClassesFromSameNamespace(typeof(LiteralSqlStatement))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Database.SqlStatements.Builders")
-                        .AddMethods(CreateAddMetadataOverload(c))
                         .AddInterfaces(typeof(ISqlStatementBuilder))
                         .Chain(x => x.Methods.First(x => x.Name == nameof(ISqlStatementBuilder.Build)).WithType(typeof(ISqlStatement)))
                         .Build()
@@ -145,7 +142,7 @@ namespace ModelFramework.CodeGeneration.Tests
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
 
-        private static ClassBuilder[] GetClassBuildersFromSameNamespace(Type type)
+        private static IClass[] GetClassesFromSameNamespace(Type type)
         {
             if (type.FullName == null)
             {
@@ -159,7 +156,7 @@ namespace ModelFramework.CodeGeneration.Tests
 
             FixImmutableBuilderProperties(models);
 
-            return models;
+            return models.Select(x => x.Build()).ToArray();
         }
 
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)
@@ -236,13 +233,13 @@ if ({2})
             }
         }
 
-        private static ClassBuilder CreateBuilder(ClassBuilder c, string @namespace)
-            => c.Build()
-                .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
+        private static ClassBuilder CreateBuilder(IClass c, string @namespace)
+            => c.ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
                                                 formatInstanceTypeNameDelegate: FormatInstanceTypeName))
                 .WithNamespace(@namespace)
                 .WithPartial()
-                .AddExcludeFromCodeCoverageAttribute();
+                .AddExcludeFromCodeCoverageAttribute()
+                .AddMethods(CreateExtraOverloads(c));
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {
@@ -270,14 +267,49 @@ if ({2})
             return string.Empty;
         }
 
-        private static ClassMethodBuilder CreateAddMetadataOverload(ClassBuilder c)
-            => new ClassMethodBuilder()
-                .WithName("AddMetadata")
-                .WithTypeName($"{c.Name}Builder")
-                .AddParameter("name", typeof(string))
-                .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
-                .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
-                                          "return this;");
+        private static IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
+        {
+            if (c.Properties.Any(p => p.Name == nameof(IMetadataContainer.Metadata)))
+            {
+                yield return new ClassMethodBuilder()
+                    .WithName("AddMetadata")
+                    .WithTypeName($"{c.Name}Builder")
+                    .AddParameter("name", typeof(string))
+                    .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
+                    .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
+                                                "return this;");
+            }
+
+            if (c.Properties.Any(p => p.Name == nameof(IParametersContainer.Parameters) && p.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter)))
+            {
+                yield return new ClassMethodBuilder()
+                    .WithName("AddParameter")
+                    .WithTypeName($"{c.Name}Builder")
+                    .AddParameter("name", typeof(string))
+                    .AddParameter("type", typeof(Type))
+                    .AddLiteralCodeStatements("return AddParameters(new ParameterBuilder().WithName(name).WithType(type));");
+                yield return new ClassMethodBuilder()
+                    .WithName("AddParameter")
+                    .WithTypeName($"{c.Name}Builder")
+                    .AddParameter("name", typeof(string))
+                    .AddParameter("typeName", typeof(string))
+                    .AddLiteralCodeStatements("return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));");
+            }
+
+            if (c.Properties.Any(p => p.Name == nameof(ICodeStatementsContainer.CodeStatements)))
+            {
+                yield return new ClassMethodBuilder()
+                    .WithName("AddLiteralCodeStatements")
+                    .WithTypeName($"{c.Name}Builder")
+                    .AddParameters(new ParameterBuilder().WithName("statements").WithTypeName("params string[]")) //TODO: Make it possible to indicate params on array type
+                    .AddLiteralCodeStatements("return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));");
+                yield return new ClassMethodBuilder()
+                    .WithName("AddLiteralCodeStatements")
+                    .WithTypeName($"{c.Name}Builder")
+                    .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(IEnumerable<string>)))
+                    .AddLiteralCodeStatements("return AddLiteralCodeStatements(statements.ToArray());");
+            }
+        }
 
         private static string CreateCode(ITypeBase[] builderModels)
             => TemplateRenderHelper.GetTemplateOutput(new CSharpClassGenerator(),
