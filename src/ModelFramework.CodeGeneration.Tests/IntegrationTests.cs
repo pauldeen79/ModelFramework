@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Common;
 using ModelFramework.Common.Builders;
+using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Database.Contracts;
@@ -159,6 +162,37 @@ namespace ModelFramework.CodeGeneration.Tests
             var actual = TemplateRenderHelper.GetTemplateOutput(sut, builderModels, additionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
 
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        }
+
+        [Fact]
+        public void CanGenerateBuildersForCommonContracts()
+        {
+            // Arrange
+            var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection");
+            var model = new[]
+            {
+                typeof(IMetadata)
+            }.Select(x => x.ToClassBuilder(new ClassSettings())
+                           .Chain(x => x.Attributes.Clear())
+                           .WithName(x.Name.Substring(1))
+                           .Build()
+                           .ToImmutableBuilderClass(settings)
+                    ).Cast<ITypeBase>().ToArray();
+
+            var generator = new CSharpClassGenerator();
+            generator.Session = new Dictionary<string, object>
+            {
+                { "Model", model }
+            };
+            var builder = new StringBuilder();
+
+            // Act
+            generator.Initialize();
+            generator.Render(builder);
+            var output = builder.ToString();
+
+            // Assert
+            output.Should().NotBeEmpty();
         }
 
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)

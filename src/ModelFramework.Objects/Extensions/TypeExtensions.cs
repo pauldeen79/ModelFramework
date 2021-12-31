@@ -23,7 +23,7 @@ namespace ModelFramework.Objects.Extensions
                 .WithVisibility(instance.IsPublic
                     ? Visibility.Public
                     : Visibility.Private)
-                .WithBaseClass(instance.BaseType == typeof(object)
+                .WithBaseClass(instance.BaseType == null || instance.BaseType == typeof(object)
                     ? string.Empty
                     : instance.BaseType.FullName)
                 .WithStatic(instance.IsAbstract && instance.IsSealed)
