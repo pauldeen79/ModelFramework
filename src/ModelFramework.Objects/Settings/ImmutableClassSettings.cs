@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Objects.Settings
 {
-    public class ImmutableClassSettings
+    public record ImmutableClassSettings
     {
         public string NewCollectionTypeName { get; }
         public bool CreateWithMethod { get; }

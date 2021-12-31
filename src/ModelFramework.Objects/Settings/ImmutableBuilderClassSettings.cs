@@ -3,7 +3,7 @@ using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Settings
 {
-    public class ImmutableBuilderClassSettings
+    public record ImmutableBuilderClassSettings
     {
         public string NewCollectionTypeName { get; }
         public ImmutableBuilderClassConstructorSettings ConstructorSettings { get; }

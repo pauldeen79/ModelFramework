@@ -5,7 +5,7 @@ using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Settings
 {
-    public class InterfaceSettings
+    public record InterfaceSettings
     {
         public Func<IClassProperty, bool>? PropertyFilter { get; }
         public Func<IClassMethod, bool>? MethodFilter { get; }

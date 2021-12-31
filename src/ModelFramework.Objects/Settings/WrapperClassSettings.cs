@@ -5,7 +5,7 @@ using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Settings
 {
-    public class WrapperClassSettings
+    public record WrapperClassSettings
     {
         public Func<MethodInfo, IEnumerable<ICodeStatement>>? MethodCodeStatementsDelegate { get; }
         public Func<PropertyInfo, IEnumerable<ICodeStatement>>? PropertyCodeStatementsDelegate { get; }
