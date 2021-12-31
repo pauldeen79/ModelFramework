@@ -32,5 +32,29 @@ namespace ModelFramework.Generators.Objects.Tests
             // Assert
             actual.Should().BeTrue();
         }
+
+        [Fact]
+        public void CanDetermineNullableField()
+        {
+            // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+            var actual = typeof(NullableTestClass).GetField(nameof(NullableTestClass.ValueField)).IsNullable();
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            // Assert
+            actual.Should().BeTrue();
+        }
+
+        [Fact]
+        public void CanDetermineNullableProperty()
+        {
+            // Act
+#pragma warning disable CS8604 // Possible null reference argument.
+            var actual = typeof(NullableTestClass).GetProperty(nameof(NullableTestClass.Value)).IsNullable();
+#pragma warning restore CS8604 // Possible null reference argument.
+
+            // Assert
+            actual.Should().BeTrue();
+        }
     }
 }
