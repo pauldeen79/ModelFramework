@@ -138,7 +138,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void GetNamespaceWithDefault_Returns_Correct_Result(string input, string expectedResult)
         {
             // Act
-            var actual = input.GetNamespaceWithDefault("");
+            var actual = input.GetNamespaceWithDefault();
 
             // Assert
             actual.Should().Be(expectedResult);

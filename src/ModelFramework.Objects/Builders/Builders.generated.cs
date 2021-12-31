@@ -871,7 +871,7 @@ namespace ModelFramework.Objects.Builders
 
         public ClassFieldBuilder WithType(System.Type type)
         {
-            TypeName = type.FullName;
+            TypeName = type.AssemblyQualifiedName;
             return this;
         }
 
@@ -1176,7 +1176,7 @@ namespace ModelFramework.Objects.Builders
 
         public ClassMethodBuilder WithType(System.Type type)
         {
-            TypeName = type.FullName;
+            TypeName = type.AssemblyQualifiedName;
             return this;
         }
 
@@ -1478,7 +1478,7 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder WithType(System.Type type)
         {
-            TypeName = type.FullName;
+            TypeName = type.AssemblyQualifiedName;
             return this;
         }
 
@@ -2070,7 +2070,7 @@ namespace ModelFramework.Objects.Builders
 
         public ParameterBuilder WithType(System.Type type)
         {
-            TypeName = type.FullName;
+            TypeName = type.AssemblyQualifiedName;
             return this;
         }
 

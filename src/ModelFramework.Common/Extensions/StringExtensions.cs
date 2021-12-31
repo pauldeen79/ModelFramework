@@ -162,7 +162,7 @@ namespace ModelFramework.Common.Extensions
                 : fullyQualifiedClassName.Substring(idx + 1);
         }
 
-        public static string GetNamespaceWithDefault(this string fullyQualifiedClassName, string defaultValue)
+        public static string GetNamespaceWithDefault(this string fullyQualifiedClassName, string defaultValue = "")
         {
             var idx = fullyQualifiedClassName.LastIndexOf(".");
             return idx == -1
@@ -185,6 +185,18 @@ namespace ModelFramework.Common.Extensions
 
             return instance.Substring(0, instance.Length - find.Length) + replace;
         }
+
+        public static bool IsStringTypeName(this string instance)
+            => instance.FixTypeName() == typeof(string).FullName;
+
+        public static bool IsBooleanTypeName(this string instance)
+            => instance.FixTypeName() == typeof(bool).FullName;
+
+        public static bool IsNullableBooleanTypeName(this string instance)
+            => instance.FixTypeName() == typeof(bool?).FullName;
+
+        public static bool IsObjectTypeName(this string instance)
+            => instance.FixTypeName() == typeof(object).FullName;
 
         private static string FixAnonymousTypeName(string instance)
         {

@@ -12,8 +12,10 @@ using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
+using ModelFramework.Database.SqlStatements;
 using ModelFramework.Generators.Objects;
 using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Default;
 using ModelFramework.Objects.Extensions;
@@ -31,7 +33,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             // Arrange
             var models = typeof(Metadata).Assembly.GetExportedTypes()
-                .Where(t => t.FullName?.StartsWith("ModelFramework.Common.Default.") == true)
+                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(Metadata).FullName?.GetNamespaceWithDefault())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
                 .ToArray();
             FixImmutableBuilderProperties(models);
@@ -57,7 +59,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             // Arrange
             var models = typeof(Class).Assembly.GetExportedTypes()
-                .Where(t => t.FullName?.StartsWith("ModelFramework.Objects.Default.") == true)
+                .Where(t => t.FullName != null &&  t.FullName.GetNamespaceWithDefault() == typeof(Class).FullName?.GetNamespaceWithDefault())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
                 .ToArray();
 
@@ -83,8 +85,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpCodeStatements()
         {
             // Arrange
-            var models = typeof(Class).Assembly.GetExportedTypes()
-                .Where(t => t.FullName?.StartsWith("ModelFramework.Objects.CodeStatements.") == true && t.FullName?.Contains(".Builders") != true)
+            var models = typeof(LiteralCodeStatement).Assembly.GetExportedTypes()
+                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(LiteralCodeStatement).FullName?.GetNamespaceWithDefault())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
                 .ToArray();
 
@@ -113,7 +115,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             // Arrange
             var models = typeof(Table).Assembly.GetExportedTypes()
-                .Where(t => t.FullName?.StartsWith("ModelFramework.Database.Default.") == true)
+                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(Table).FullName?.GetNamespaceWithDefault())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
                 .ToArray();
 
@@ -136,11 +138,11 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForDatabaseCodeStatements()
+        public void CanGenerateImmutableBuilderClassesForDatabaseCodeStalootements()
         {
             // Arrange
-            var models = typeof(Table).Assembly.GetExportedTypes()
-                .Where(t => t.FullName?.StartsWith("ModelFramework.Database.SqlStatements.") == true && t.FullName?.Contains(".Builders") != true)
+            var models = typeof(LiteralSqlStatement).Assembly.GetExportedTypes()
+                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == typeof(LiteralSqlStatement).FullName?.GetNamespaceWithDefault())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(GetNamespace(t)))
                 .ToArray();
 
@@ -222,33 +224,33 @@ namespace ModelFramework.CodeGeneration.Tests
                                 : null
                         );
                     }
-                    else if (typeName == typeof(bool).FullName || typeName == typeof(bool?).FullName)
+                    else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
                     {
                         property.SetDefaultArgumentValueForWithMethod(true);
-                        if (property.Name == "HasGetter" || property.Name == "HasSetter")
+                        if (property.Name == nameof(ClassProperty.HasGetter) || property.Name == nameof(ClassProperty.HasSetter))
                         {
                             property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
                         }
                     }
-                    else if (property.Name == "TypeName" && property.TypeName == typeof(string).FullName)
+                    else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
                     {
-                        property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.FullName;");
+                        property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
                     }
 
-                    if (property.Name == "Visibility")
+                    if (property.Name == nameof(IVisibilityContainer.Visibility))
                     {
                         property.SetDefaultValueForBuilderClassConstructor
                         (
                             new Literal
                             (
-                                classBuilder.Name == "ClassField"
-                                    ? "ModelFramework.Objects.Contracts.Visibility.Private"
-                                    : "ModelFramework.Objects.Contracts.Visibility.Public"
+                                classBuilder.Name == nameof(ClassField)
+                                    ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
+                                    : $"{typeof(Visibility).FullName}.{Visibility.Public}"
                             )
                         );
                     }
 
-                    if (property.Name == "HasSetter")
+                    if (property.Name == nameof(ClassProperty.HasSetter))
                     {
                         property.SetBuilderWithExpression(@"{0} = {2};
 if ({2})
@@ -257,7 +259,7 @@ if ({2})
 {6}");
                     }
 
-                    if (property.Name == "HasInitializer")
+                    if (property.Name == nameof(ClassProperty.HasInitializer))
                     {
                         property.SetBuilderWithExpression(@"{0} = {2};
 if ({2})
@@ -270,7 +272,7 @@ if ({2})
         }
 
         private static string GetNamespace(Type t)
-            => t.FullName?.GetNamespaceWithDefault(string.Empty) ?? string.Empty;
+            => t.FullName?.GetNamespaceWithDefault() ?? string.Empty;
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {

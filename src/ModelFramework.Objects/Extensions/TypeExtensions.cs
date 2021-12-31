@@ -19,7 +19,7 @@ namespace ModelFramework.Objects.Extensions
         public static ClassBuilder ToClassBuilder(this Type instance, ClassSettings settings)
             => new ClassBuilder()
                 .WithName(instance.Name)
-                .WithNamespace(instance.FullName.GetNamespaceWithDefault(string.Empty))
+                .WithNamespace(instance.FullName.GetNamespaceWithDefault())
                 .WithVisibility(instance.IsPublic
                     ? Visibility.Public
                     : Visibility.Private)

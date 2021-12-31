@@ -47,12 +47,12 @@ namespace ModelFramework.Objects.Extensions
                 return md.Value.CsharpFormat();
             }
 
-            if (property.TypeName == typeof(string).FullName && !property.IsNullable)
+            if (property.TypeName.IsStringTypeName() && !property.IsNullable)
             {
                 return "string.Empty";
             }
 
-            if (property.TypeName == typeof(object).FullName && !property.IsNullable)
+            if (property.TypeName.IsObjectTypeName() && !property.IsNullable)
             {
                 return "new object()";
             }

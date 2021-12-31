@@ -957,11 +957,11 @@ namespace ModelFramework.Objects.Extensions
             {
                 yield return new ClassMethodBuilder()
                     .WithName("Equals")
-                    .WithTypeName(typeof(bool).FullName)
+                    .WithType(typeof(bool))
                     .WithOverride()
                     .AddParameters
                     (
-                        new ParameterBuilder().WithName("obj").WithTypeName(typeof(object).FullName)
+                        new ParameterBuilder().WithName("obj").WithType(typeof(object))
                     )
                     .AddCodeStatements
                     (
@@ -969,7 +969,7 @@ namespace ModelFramework.Objects.Extensions
                     );
                 yield return new ClassMethodBuilder()
                     .WithName($"IEquatable<{instance.Name}>.Equals")
-                    .WithTypeName(typeof(bool).FullName)
+                    .WithType(typeof(bool))
                     .AddParameters
                     (
                         new ParameterBuilder().WithName("other").WithTypeName(instance.Name)
@@ -981,7 +981,7 @@ namespace ModelFramework.Objects.Extensions
                     );
                 yield return new ClassMethodBuilder()
                     .WithName("GetHashCode")
-                    .WithTypeName(typeof(int).FullName)
+                    .WithType(typeof(int))
                     .WithOverride()
                     .AddCodeStatements
                     (
@@ -995,7 +995,7 @@ namespace ModelFramework.Objects.Extensions
                     );
                 yield return new ClassMethodBuilder()
                     .WithName("==")
-                    .WithTypeName(typeof(bool).FullName)
+                    .WithType(typeof(bool))
                     .WithStatic()
                     .WithOperator()
                     .AddParameters
@@ -1009,7 +1009,7 @@ namespace ModelFramework.Objects.Extensions
                     );
                 yield return new ClassMethodBuilder()
                     .WithName("!=")
-                    .WithTypeName(typeof(bool).FullName)
+                    .WithType(typeof(bool))
                     .WithStatic()
                     .WithOperator()
                     .AddParameters
