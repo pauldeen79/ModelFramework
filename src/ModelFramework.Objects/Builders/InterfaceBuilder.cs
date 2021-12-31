@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ModelFramework.Common.Builders;
 
 namespace ModelFramework.Objects.Builders
@@ -10,5 +11,8 @@ namespace ModelFramework.Objects.Builders
 
         public InterfaceBuilder AddUsings(params string[] usings)
             => AddMetadata(usings.Select(x => new MetadataBuilder().WithName(MetadataNames.CustomUsing).WithValue(x)));
+
+        public InterfaceBuilder AddInterfaces(params Type[] types)
+            => AddInterfaces(types.Select(x => x.FullName));
     }
 }
