@@ -15,7 +15,6 @@ using System.Text;
 namespace ModelFramework.Common.Builders
 {
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class MetadataBuilder
     {
         public object? Value

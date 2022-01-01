@@ -238,7 +238,6 @@ if ({2})
                                                 formatInstanceTypeNameDelegate: FormatInstanceTypeName))
                 .WithNamespace(@namespace)
                 .WithPartial()
-                .AddExcludeFromCodeCoverageAttribute()
                 .AddMethods(CreateExtraOverloads(c));
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)

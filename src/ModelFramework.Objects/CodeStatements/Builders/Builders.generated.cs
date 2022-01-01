@@ -15,7 +15,6 @@ using System.Text;
 namespace ModelFramework.Objects.CodeStatements.Builders
 {
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class LiteralCodeStatementBuilder : ModelFramework.Objects.Contracts.ICodeStatementBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata

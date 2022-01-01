@@ -15,7 +15,6 @@ using System.Text;
 namespace ModelFramework.Objects.Builders
 {
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class AttributeBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeParameterBuilder> Parameters
@@ -94,7 +93,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class AttributeParameterBuilder
     {
         public object Value
@@ -167,7 +165,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ClassBuilder
     {
         public System.Collections.Generic.List<string> Interfaces
@@ -504,7 +501,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ClassConstructorBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -727,7 +723,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ClassFieldBuilder
     {
         public bool Static
@@ -979,7 +974,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ClassMethodBuilder
     {
         public bool Partial
@@ -1292,7 +1286,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ClassPropertyBuilder
     {
         public bool Static
@@ -1652,7 +1645,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class EnumBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -1765,7 +1757,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class EnumMemberBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -1857,7 +1848,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class InterfaceBuilder
     {
         public string Namespace
@@ -2058,7 +2048,6 @@ namespace ModelFramework.Objects.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ParameterBuilder
     {
         public string TypeName

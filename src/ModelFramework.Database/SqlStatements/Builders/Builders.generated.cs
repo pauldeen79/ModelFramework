@@ -15,7 +15,6 @@ using System.Text;
 namespace ModelFramework.Database.SqlStatements.Builders
 {
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class LiteralSqlStatementBuilder : ModelFramework.Database.Contracts.ISqlStatementBuilder
     {
         public string Statement
