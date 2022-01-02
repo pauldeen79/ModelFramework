@@ -150,7 +150,9 @@ namespace ModelFramework.CodeGeneration.Tests
             }
 
             var models = type.Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault())
+                .Where(t => t.FullName != null
+                    && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault()
+                    && t.GetProperties().Any())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty))
                 .ToArray();
 

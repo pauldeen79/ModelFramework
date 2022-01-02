@@ -2366,7 +2366,7 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            this.Property3 = Utilities.Extensions.InitializeObservableCollection(default(System.Collections.ObjectModel.ObservableCollection<string>));
+            this.Property3 = new System.Collections.ObjectModel.ObservableCollection<string>();
         }
 
         private string _property1;

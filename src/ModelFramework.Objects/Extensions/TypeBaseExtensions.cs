@@ -324,7 +324,8 @@ namespace ModelFramework.Objects.Extensions
                         (
                             instance.Properties
                                 .Where(p => p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<"))
-                                .Select(p => new LiteralCodeStatementBuilder().WithStatement($"this.{p.Name} = Utilities.Extensions.InitializeObservableCollection(default({p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}));"))
+                                .Select(p => new LiteralCodeStatementBuilder()
+                                    .WithStatement($"this.{p.Name} = new {p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}();"))
                         )
                 )
                 .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
@@ -531,7 +532,9 @@ namespace ModelFramework.Objects.Extensions
                             (
                                 new ParameterBuilder()
                                     .WithName(property.Name.ToPascalCase())
-                                    .WithTypeName(string.Format(overload.ArgumentType, property.TypeName, property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"))
+                                    .WithTypeName(string.Format(overload.ArgumentType,
+                                                                property.TypeName,
+                                                                property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"))
                                     .WithIsNullable(property.IsNullable)
                             )
                             .AddCodeStatements
@@ -546,7 +549,9 @@ namespace ModelFramework.Objects.Extensions
                             (
                                 new ParameterBuilder()
                                     .WithName(property.Name.ToPascalCase())
-                                    .WithTypeName("params " + string.Format(overload.ArgumentType, property.TypeName, property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
+                                    .WithTypeName("params " + string.Format(overload.ArgumentType,
+                                                                            property.TypeName,
+                                                                            property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
                                     .WithIsNullable(property.IsNullable)
                             )
                             .AddCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings, property, overload.InitializeExpression));
@@ -771,7 +776,9 @@ namespace ModelFramework.Objects.Extensions
                 ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
                 : new Func<IClassProperty, string>(p => $"{p.Name}");
 
-            return string.Join(", ", properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)), p.Name, p.Name.ToPascalCase())));
+            return string.Join(", ", properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
+                                                                          p.Name,
+                                                                          p.Name.ToPascalCase())));
         }
 
         private static IClassProperty ChangeProperty(IClassProperty property,
@@ -899,8 +906,8 @@ namespace ModelFramework.Objects.Extensions
                                             OriginalMetadata = p.Metadata,
                                             Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
                                             Suffix = p.Name != instance.Properties.Last().Name
-                                                    ? ","
-                                                    : string.Empty
+                                                ? ","
+                                                : string.Empty
                                         }
                                     )
                                     .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? this.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")
