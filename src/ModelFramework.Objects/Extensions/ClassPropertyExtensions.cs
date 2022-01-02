@@ -95,13 +95,13 @@ namespace ModelFramework.Objects.Extensions
                 : property.SetterCodeStatements;
 
         public static string GetGetterModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.GetterVisibility, MetadataNames.PropertyGetterVisibility);
+            => property.GetSubModifiers(property.GetterVisibility, MetadataNames.PropertyGetterModifiers);
 
         public static string GetSetterModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.SetterVisibility, MetadataNames.PropertySetterVisibility);
+            => property.GetSubModifiers(property.SetterVisibility, MetadataNames.PropertySetterModifiers);
 
-        public static string GetInitModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitVisibility);
+        public static string GetInitializerModifiers(this IClassProperty property)
+            => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitializerModifiers);
 
         private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
         {
@@ -113,7 +113,10 @@ namespace ModelFramework.Objects.Extensions
             }
             var builder = new StringBuilder();
 
-            builder.AddWithCondition(subVisibility?.ToString()?.ToLower(CultureInfo.InvariantCulture), subVisibility != null && subVisibility != property.Visibility);
+            if (subVisibility != null && subVisibility != property.Visibility)
+            {
+                builder.Append(subVisibility.ToString().ToLower(CultureInfo.InvariantCulture));
+            }
 
             if (builder.Length > 0)
             {

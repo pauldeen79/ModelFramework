@@ -1,5 +1,4 @@
-﻿using System;
-using CrossCutting.Common.Extensions;
+﻿using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Contracts;
 
@@ -82,10 +81,6 @@ namespace ModelFramework.Objects.Extensions
 
         public static string RemoveInterfacePrefix(this string name)
         {
-            if (name == null)
-            {
-                return string.Empty;
-            }
             var index = name.IndexOf(".");
             if (index == -1)
             {

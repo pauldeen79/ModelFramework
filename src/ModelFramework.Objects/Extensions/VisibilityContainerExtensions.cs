@@ -6,7 +6,7 @@ using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.Objects.Extensions
 {
-    public static class IVisibilityContainerExtensions
+    public static class VisibilityContainerExtensions
     {
         public static string GetModifiers<T>(this T instance)
             where T : IMetadataContainer, IVisibilityContainer
@@ -22,7 +22,7 @@ namespace ModelFramework.Objects.Extensions
                 builder.AddWithCondition("protected", extendedVisibilityContainer.Protected);
                 if (!(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal))
                 {
-                    builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), true);
+                    builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
                 }
                 builder.AddWithCondition("static", extendedVisibilityContainer.Static);
                 builder.AddWithCondition("abstract", extendedVisibilityContainer.Abstract);
@@ -31,7 +31,7 @@ namespace ModelFramework.Objects.Extensions
             }
             else
             {
-                builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), true);
+                builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
                 if (instance is IClass cls)
                 {
                     builder.AddWithCondition("sealed", cls.Sealed);
@@ -42,9 +42,15 @@ namespace ModelFramework.Objects.Extensions
                     builder.AddWithCondition("partial", typeBase.Partial);
                 }
             }
+            
             if (builder.Length > 0)
             {
                 builder.Append(" ");
+            }
+
+            if (instance is IClassField classField && classField.ReadOnly)
+            {
+                builder.Append("readonly ");
             }
             return builder.ToString();
         }

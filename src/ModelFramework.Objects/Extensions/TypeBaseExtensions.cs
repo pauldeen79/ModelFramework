@@ -19,7 +19,7 @@ namespace ModelFramework.Objects.Extensions
         public static string GetInheritedClasses(this ITypeBase instance)
             => instance is IClass cls
                 ? GetInheritedClassesForClass(cls)
-                : GetInheritedClassesForInterface(instance);
+                : GetInheritedClassesForTypeBase(instance);
 
         private static string GetInheritedClassesForClass(IClass cls)
         {
@@ -29,18 +29,15 @@ namespace ModelFramework.Objects.Extensions
                 lst.Add(cls.BaseClass);
             }
 
-            if (cls.Interfaces != null)
-            {
-                lst.AddRange(cls.Interfaces);
-            }
+            lst.AddRange(cls.Interfaces);
 
             return lst.Count == 0
                 ? string.Empty
                 : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
         }
 
-        private static string GetInheritedClassesForInterface(ITypeBase instance)
-            => instance.Interfaces?.Any() != true
+        private static string GetInheritedClassesForTypeBase(ITypeBase instance)
+            => !instance.Interfaces.Any()
                 ? string.Empty
                 : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
 
@@ -140,7 +137,7 @@ namespace ModelFramework.Objects.Extensions
                                 .WithOverride(p.Override)
                                 .WithHasGetter(p.HasGetter)
                                 .WithHasInitializer(p.HasInitializer)
-                                .WithHasSetter(false)
+                                .AsReadOnly()
                                 .WithIsNullable(p.IsNullable)
                                 .WithVisibility(p.Visibility)
                                 .WithGetterVisibility(p.GetterVisibility)
@@ -679,7 +676,9 @@ namespace ModelFramework.Objects.Extensions
                         "return this;"
                     }.ToLiteralCodeStatementBuilders().ToList();
 
-        private static List<ICodeStatementBuilder> GetImmutableBuilderAddOverloadMethodStatements(ImmutableBuilderClassSettings settings, IClassProperty property, string overloadExpression)
+        private static List<ICodeStatementBuilder> GetImmutableBuilderAddOverloadMethodStatements(ImmutableBuilderClassSettings settings,
+                                                                                                  IClassProperty property,
+                                                                                                  string overloadExpression)
             => settings.AddNullChecks
                 ? (new[]
                 {
@@ -837,7 +836,7 @@ namespace ModelFramework.Objects.Extensions
             );
         }
 
-        private static IParameter ChangeParameter(IParameter parameter, IDictionary<string, string> applyGenericTypes)
+        private static IParameter ChangeParameter(IParameter parameter, IDictionary<string, string>? applyGenericTypes)
         {
             if (applyGenericTypes == null || applyGenericTypes.Count == 0)
             {

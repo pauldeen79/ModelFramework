@@ -1,4 +1,5 @@
 ﻿using System;
+using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Extensions;
@@ -70,5 +71,23 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder AddInitializerLiteralCodeStatements(params string[] statements)
             => AddInitializerCodeStatements(statements.ToLiteralCodeStatementBuilders());
+
+        public ClassPropertyBuilder AsReadOnly()
+            => WithHasSetter(false);
+
+        public ClassPropertyBuilder WithCustomGetterModifiers(string? customModifiers)
+            => ReplaceMetadata(MetadataNames.PropertyGetterModifiers, customModifiers);
+
+        public ClassPropertyBuilder WithCustomSetterModifiers(string? customModifiers)
+            => ReplaceMetadata(MetadataNames.PropertySetterModifiers, customModifiers);
+
+        public ClassPropertyBuilder WithCustomInitializerModifiers(string? customModifiers)
+            => ReplaceMetadata(MetadataNames.PropertyInitializerModifiers, customModifiers);
+
+        public ClassPropertyBuilder ReplaceMetadata(string name, object? newValue)
+        {
+            Metadata.Replace(name, newValue);
+            return this;
+        }
     }
 }

@@ -17,15 +17,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void CanGenerateNullableContextClass()
         {
             // Arrange
-            var typeBaseMock = new Mock<IClass>();
-            typeBaseMock.SetupGet(x => x.Name).Returns("Test");
-            typeBaseMock.SetupGet(x => x.Methods).Returns(new ValueCollection<IClassMethod>());
-            typeBaseMock.SetupGet(x => x.Properties).Returns(new ValueCollection<IClassProperty>());
-            typeBaseMock.SetupGet(x => x.Constructors).Returns(new ValueCollection<IClassConstructor>());
-            typeBaseMock.SetupGet(x => x.Fields).Returns(new ValueCollection<IClassField>());
-            typeBaseMock.SetupGet(x => x.Enums).Returns(new ValueCollection<IEnum>());
-            typeBaseMock.SetupGet(x => x.Attributes).Returns(new ValueCollection<IAttribute>());
-            typeBaseMock.SetupGet(x => x.Metadata).Returns(new ValueCollection<IMetadata>());
+            var typeBaseMock = CreateTypeBaseMock();
             var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true });
 
             // Act
@@ -44,14 +36,7 @@ namespace ModelFramework.Generators.Objects.Tests
         public void CanTestViewModel()
         {
             // Arrange
-            var typeBaseMock = new Mock<IClass>();
-            typeBaseMock.SetupGet(x => x.Methods).Returns(new ValueCollection<IClassMethod>());
-            typeBaseMock.SetupGet(x => x.Properties).Returns(new ValueCollection<IClassProperty>());
-            typeBaseMock.SetupGet(x => x.Constructors).Returns(new ValueCollection<IClassConstructor>());
-            typeBaseMock.SetupGet(x => x.Fields).Returns(new ValueCollection<IClassField>());
-            typeBaseMock.SetupGet(x => x.Enums).Returns(new ValueCollection<IEnum>());
-            typeBaseMock.SetupGet(x => x.Attributes).Returns(new ValueCollection<IAttribute>());
-            typeBaseMock.SetupGet(x => x.Metadata).Returns(new ValueCollection<IMetadata>());
+            var typeBaseMock = CreateTypeBaseMock();
             var sut = new CSharpClassGenerator_DefaultClassViewModel
             {
                 Model = typeBaseMock.Object,
@@ -63,6 +48,21 @@ namespace ModelFramework.Generators.Objects.Tests
 
             // Assert
             actual.Should().BeTrue();
+        }
+
+        private static Mock<IClass> CreateTypeBaseMock()
+        {
+            var typeBaseMock = new Mock<IClass>();
+            typeBaseMock.SetupGet(x => x.Name).Returns("Test");
+            typeBaseMock.SetupGet(x => x.Methods).Returns(new ValueCollection<IClassMethod>());
+            typeBaseMock.SetupGet(x => x.Properties).Returns(new ValueCollection<IClassProperty>());
+            typeBaseMock.SetupGet(x => x.Constructors).Returns(new ValueCollection<IClassConstructor>());
+            typeBaseMock.SetupGet(x => x.Fields).Returns(new ValueCollection<IClassField>());
+            typeBaseMock.SetupGet(x => x.Enums).Returns(new ValueCollection<IEnum>());
+            typeBaseMock.SetupGet(x => x.Attributes).Returns(new ValueCollection<IAttribute>());
+            typeBaseMock.SetupGet(x => x.Interfaces).Returns(new ValueCollection<string>());
+            typeBaseMock.SetupGet(x => x.Metadata).Returns(new ValueCollection<IMetadata>());
+            return typeBaseMock;
         }
     }
 }

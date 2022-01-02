@@ -12,7 +12,6 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class TypeExtensions
     {
-
         public static IClass ToClass(this Type instance, ClassSettings settings)
             => instance.ToClassBuilder(settings).Build();
 
@@ -178,7 +177,7 @@ namespace ModelFramework.Objects.Extensions
             => new ClassPropertyBuilder()
                 .WithName(propertyInfo.Name)
                 .WithTypeName(propertyInfo.PropertyType.FullName.FixTypeName())
-                .WithHasSetter(false)
+                .AsReadOnly()
                 .AddGetterCodeStatements((propertyCodeStatementsDelegate?.Invoke(propertyInfo) ?? Enumerable.Empty<ICodeStatement>()).Select(x => x.CreateBuilder()));
 
         private static ClassMethodBuilder CreateMockMethod(MethodInfo methodInfo, Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
