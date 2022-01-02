@@ -100,7 +100,7 @@ namespace ModelFramework.Generators.Database
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSelectFieldsTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSelectFieldsTemplate(), typeof(IView));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSourceTemplate(), typeof(IViewSource));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSourcesTemplate(), typeof(IView));
-            RegisterChildTemplate(@"CSharpClassGenerator.DefaultLiteralSqlStatementTemplate", () => new CSharpClassGenerator_DefaultLiteralSqlStatementTemplate(), typeof(LiteralSqlStatement));
+            RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultLiteralSqlStatementTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate(), typeof(LiteralSqlStatement));
             RegisterChildTemplate(@"CommaAndNewLine", () => new CommaAndNewLine());
             RegisterChildTemplate(@"CommaAndSpace", () => new CommaAndSpace());
             RegisterChildTemplate(@"NewLine", () => new NewLine());
@@ -2578,7 +2578,7 @@ AS
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultLiteralSqlStatementTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate : SqlServerDatabaseSchemaGeneratorBase
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
