@@ -92,15 +92,15 @@ namespace ModelFramework.Objects.Extensions
                         properties
                             .Where(p => p.TypeName.IsCollectionTypeName())
                             .Select(p => new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = new {GetConstructorInitializeExpressionForCollection(settings, p)}();"))
-                            .Concat
-                            (
-                                instance.Properties.Select
-                                (
-                                    p => p.TypeName.IsCollectionTypeName()
-                                        ? new LiteralCodeStatementBuilder().WithStatement(CreateConstructorStatementForCollection(p, settings))
-                                        : new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};")
-                                )
-                            )
+                    )
+                    .AddCodeStatements
+                    (
+                        instance.Properties.Select
+                        (
+                            p => p.TypeName.IsCollectionTypeName()
+                                ? new LiteralCodeStatementBuilder().WithStatement(CreateConstructorStatementForCollection(p, settings))
+                                : new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};")
+                        )
                     );
             }
         }
@@ -202,9 +202,10 @@ namespace ModelFramework.Objects.Extensions
                         (
                             new ParameterBuilder()
                                 .WithName(property.Name.ToPascalCase())
+                                .WithIsParamArray()
                                 .WithTypeName
                                 (
-                                    "params " + string.Format
+                                    string.Format
                                     (
                                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                                         property.TypeName,
@@ -219,7 +220,7 @@ namespace ModelFramework.Objects.Extensions
                     foreach (var overload in overloads)
                     {
                         yield return new ClassMethodBuilder()
-                            .WithName($"Add{property.Name}")
+                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
                             .WithTypeName($"{instance.Name}Builder")
                             .AddParameters
                             (
@@ -233,21 +234,24 @@ namespace ModelFramework.Objects.Extensions
                             .AddCodeStatements
                             (
                                 new LiteralCodeStatementBuilder()
-                                    .WithStatement($"return Add{property.Name}({property.Name.ToPascalCase()}.ToArray());")
+                                    .WithStatement($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());")
                             );
                         yield return new ClassMethodBuilder()
-                            .WithName($"Add{property.Name}")
+                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
                             .WithTypeName($"{instance.Name}Builder")
                             .AddParameters
                             (
                                 new ParameterBuilder()
                                     .WithName(property.Name.ToPascalCase())
-                                    .WithTypeName("params " + string.Format(overload.ArgumentType,
+                                    .WithIsParamArray()
+                                    .WithTypeName(string.Format(overload.ArgumentType,
                                                                             property.TypeName,
                                                                             property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
                                     .WithIsNullable(property.IsNullable)
                             )
-                            .AddCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings, property, overload.InitializeExpression));
+                            .AddCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
+                                                                                              property,
+                                                                                              overload.InitializeExpression));
                     }
                 }
                 else
@@ -318,16 +322,6 @@ namespace ModelFramework.Objects.Extensions
             var initializeExpressions = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadInitializeExpression).ToArray();
             var methodNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadMethodName).ToArray();
             var argumentNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadArgumentName).ToArray();
-
-            if (argumentTypes.Length > 0 && methodNames.Length == 0)
-            {
-                methodNames = argumentTypes.Select(_ => "{0}").ToArray();
-            }
-
-            if (argumentTypes.Length > 0 && argumentNames.Length == 0)
-            {
-                argumentNames = argumentTypes.Select(_ => "{0}").ToArray();
-            }
 
             if (argumentTypes.Length != initializeExpressions.Length
                 || argumentTypes.Length != methodNames.Length

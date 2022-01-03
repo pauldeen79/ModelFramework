@@ -232,9 +232,12 @@ Property2.AddRange(source.Property2);");
                                                                                  .AsReadOnly())
                                         .AddProperties(new ClassPropertyBuilder().WithName("Property2")
                                                                                  .WithType(typeof(IReadOnlyCollection<string>))
-                                                                                 .AsReadOnly())
+                                                                                 .AsReadOnly()
+                                                                                 .ConvertCollectionOnBuilderToEnumerable())
                                         .AddConstructors(new ClassConstructorBuilder().AddParameter("property1", typeof(string))
-                                                                                      .AddLiteralCodeStatements("Property1 = property1;"))
+                                                                                      .AddParameter("property2", typeof(IEnumerable<string>))
+                                                                                      .AddLiteralCodeStatements("Property1 = property1;")
+                                                                                      .AddLiteralCodeStatements("Property2 = new List<string>(property2);"))
                                         .Build();
 
             // Act
@@ -250,10 +253,114 @@ Property2.AddRange(source.Property2);");
             actual.Constructors.First().Parameters.Should().BeEmpty();
             actual.Constructors.First().Visibility.Should().Be(Visibility.Public);
 
-            actual.Constructors.Last().Parameters.Should().HaveCount(1);
+            actual.Constructors.Last().Parameters.Should().HaveCount(2);
             actual.Constructors.Last().Parameters.First().Name.Should().Be("property1");
             actual.Constructors.Last().Parameters.First().TypeName.Should().Be("System.String");
+            actual.Constructors.Last().Parameters.Last().Name.Should().Be("property2");
+            actual.Constructors.Last().Parameters.Last().TypeName.Should().Be("System.Collections.Generic.IEnumerable<System.String>");
             actual.Constructors.Last().Visibility.Should().Be(Visibility.Public);
+        }
+
+        [Fact]
+        public void Can_Add_Overload_To_NonCollection_Property()
+        {
+            // Arrange
+            var sut = new ClassBuilder().WithName("TestClass")
+                                        .AddProperties(new ClassPropertyBuilder().WithName("TypeName")
+                                                                                 .WithType(typeof(string))
+                                                                                 .AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;"))
+                                        .Build();
+
+            // Act
+            var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings());
+
+            // Assert
+            actual.Name.Should().Be("TestClassBuilder");
+            actual.Properties.Should().ContainSingle();
+            actual.Properties.First().HasSetter.Should().BeTrue();
+
+            // By default, only a public parameterless constructor should be defined
+            actual.Constructors.Should().ContainSingle();
+            actual.Constructors.First().Parameters.Should().BeEmpty();
+            actual.Constructors.First().Visibility.Should().Be(Visibility.Public);
+            string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeName = string.Empty;");
+
+            // Build method
+            var buildMethod = actual.Methods.SingleOrDefault(x => x.Name == "Build");
+            buildMethod.Should().NotBeNull();
+            if (buildMethod != null)
+            {
+                string.Join(Environment.NewLine, buildMethod.CodeStatements.Select(x => x.ToString())).Should().Be("return new TestClass { TypeName = TypeName };");
+            }
+
+            // Default 'with' method
+            var withTypeNameMethod = actual.Methods.SingleOrDefault(x => x.Name == "WithTypeName");
+            withTypeNameMethod.Should().NotBeNull();
+            if (withTypeNameMethod != null)
+            {
+                string.Join(Environment.NewLine, withTypeNameMethod.CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeName = typeName;
+return this;");
+            }
+
+            // Added overload method
+            var withTypeMethod = actual.Methods.SingleOrDefault(x => x.Name == "WithType");
+            withTypeMethod.Should().NotBeNull();
+            if (withTypeMethod != null)
+            {
+                string.Join(Environment.NewLine, withTypeMethod.CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeName = type.AssemblyQualifiedName;
+return this;");
+            }
+        }
+
+        [Fact]
+        public void Can_Add_Overload_To_Collection_Property()
+        {
+            // Arrange
+            var sut = new ClassBuilder().WithName("TestClass")
+                                        .AddProperties(new ClassPropertyBuilder().WithName("TypeNames")
+                                                                                 .WithType(typeof(IEnumerable<string>))
+                                                                                 .AddBuilderOverload("AddTypes", typeof(IEnumerable<Type>), "types", "{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));"))
+                                        .Build();
+
+            // Act
+            var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings());
+
+            // Assert
+            actual.Name.Should().Be("TestClassBuilder");
+            actual.Properties.Should().ContainSingle();
+            actual.Properties.First().HasSetter.Should().BeTrue();
+
+            // By default, only a public parameterless constructor should be defined
+            actual.Constructors.Should().ContainSingle();
+            actual.Constructors.First().Parameters.Should().BeEmpty();
+            actual.Constructors.First().Visibility.Should().Be(Visibility.Public);
+            string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeNames = new System.Collections.Generic.List<string>();");
+
+            // Build method
+            var buildMethod = actual.Methods.SingleOrDefault(x => x.Name == "Build");
+            buildMethod.Should().NotBeNull();
+            if (buildMethod != null)
+            {
+                string.Join(Environment.NewLine, buildMethod.CodeStatements.Select(x => x.ToString())).Should().Be("return new TestClass { TypeNames = TypeNames };");
+            }
+
+            // Default 'with' method
+            var withTypeNameMethod = actual.Methods.SingleOrDefault(x => x.Name == "AddTypeNames" && x.Parameters.First().TypeName == "System.String[]");
+            withTypeNameMethod.Should().NotBeNull();
+            if (withTypeNameMethod != null)
+            {
+                string.Join(Environment.NewLine, withTypeNameMethod.CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeNames.AddRange(typeNames);
+return this;");
+            }
+
+            // Added overload method
+            var withTypeMethod = actual.Methods.SingleOrDefault(x => x.Name == "AddTypes" && x.Parameters.First().TypeName == "System.Type[]");
+            withTypeMethod.Should().NotBeNull();
+            if (withTypeMethod != null)
+            {
+                string.Join(Environment.NewLine, withTypeMethod.CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeNames.AddRange(types.Select(x => x.AssemblyQualifiedName));
+return this;");
+            }
         }
     }
 }
