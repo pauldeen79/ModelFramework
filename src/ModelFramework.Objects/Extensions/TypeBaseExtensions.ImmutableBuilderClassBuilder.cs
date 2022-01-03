@@ -32,8 +32,7 @@ namespace ModelFramework.Objects.Extensions
                 .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
                 .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
                 .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
-                .AddFields(((instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>())
-                    .Select(x => new ClassFieldBuilder(x)).ToList());
+                .AddFields(instance.GetFields().Select(x => new ClassFieldBuilder(x)));
         }
 
         private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,

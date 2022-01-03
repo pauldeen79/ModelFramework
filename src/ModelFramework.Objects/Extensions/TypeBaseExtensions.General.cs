@@ -53,5 +53,8 @@ namespace ModelFramework.Objects.Extensions
             => instance.GenericTypeArguments != null && instance.GenericTypeArguments.Count > 0
                 ? $"<{string.Join(", ", instance.GenericTypeArguments)}>"
                 : string.Empty;
+
+        public static IEnumerable<IClassField> GetFields(this ITypeBase instance)
+            => (instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>();
     }
 }

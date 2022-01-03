@@ -84,12 +84,12 @@ namespace ModelFramework.Objects.Extensions
                   }
                 : Array.Empty<IMetadata>();
 
-        public static IEnumerable<ICodeStatement> FixObservablePropertyGetterBody(this IClassProperty property, string newCollectionTypeName)
+        public static IEnumerable<ICodeStatement> FixObservablePropertyGetterBody(this IClassProperty property)
             => !property.GetterCodeStatements.Any() && !property.SetterCodeStatements.Any()
                 ? new[] { string.Format("return _{0};", property.Name.ToPascalCase()) }.ToLiteralCodeStatements()
                 : property.GetterCodeStatements;
 
-        public static IEnumerable<ICodeStatement> FixObservablePropertySetterBody(this IClassProperty property, string newCollectionTypeName)
+        public static IEnumerable<ICodeStatement> FixObservablePropertySetterBody(this IClassProperty property)
             => !property.GetterCodeStatements.Any() && !property.SetterCodeStatements.Any()
                 ? new[] { string.Format("_{0} = value;", property.Name.ToPascalCase()) + Environment.NewLine + string.Format(@"if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""{0}""));", property.Name) }.ToLiteralCodeStatements()
                 : property.SetterCodeStatements;

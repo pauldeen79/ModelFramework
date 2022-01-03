@@ -149,8 +149,8 @@ namespace ModelFramework.Objects.Extensions
                                         OriginalMetadata = p.Metadata,
                                         Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
                                         Suffix = p.Name != instance.Properties.Last().Name
-                                                ? ","
-                                                : string.Empty
+                                            ? ","
+                                            : string.Empty
                                     }
                                     )
                                     .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? this.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")

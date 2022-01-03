@@ -40,29 +40,26 @@ namespace ModelFramework.Objects.Extensions
                                 .WithGetterVisibility(p.GetterVisibility)
                                 .WithSetterVisibility(p.SetterVisibility)
                                 .WithInitializerVisibility(p.InitializerVisibility)
-                                .AddGetterCodeStatements(p.FixObservablePropertyGetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()))
-                                .AddSetterCodeStatements(p.FixObservablePropertySetterBody(newCollectionTypeName).Select(x => x.CreateBuilder()))
+                                .AddGetterCodeStatements(p.FixObservablePropertyGetterBody().Select(x => x.CreateBuilder()))
+                                .AddSetterCodeStatements(p.FixObservablePropertySetterBody().Select(x => x.CreateBuilder()))
                                 .WithExplicitInterfaceName(p.ExplicitInterfaceName)
                                 .AddMetadata(p.Metadata.Concat(p.GetObservableCollectionMetadata(newCollectionTypeName))
                                                        .Select(x => new MetadataBuilder(x)))
                                 .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
                         )
                 )
+                .AddFields(instance.GetFields().Select(x => new ClassFieldBuilder(x)))
                 .AddFields
                 (
-                    ((instance as IClass)?.Fields?.Select(x => new ClassFieldBuilder(x)) ?? Enumerable.Empty<ClassFieldBuilder>())
-                    .Concat
-                    (
-                        instance.Properties
-                            .Where(p => !p.GetterCodeStatements.Any() && !p.SetterCodeStatements.Any())
-                            .Select
-                            (
-                                p => new ClassFieldBuilder()
-                                    .WithName("_" + p.Name.ToPascalCase())
-                                    .WithTypeName(p.TypeName)
-                                    .WithIsNullable(p.IsNullable)
-                            )
-                    )
+                    instance.Properties
+                        .Where(p => !p.GetterCodeStatements.Any() && !p.SetterCodeStatements.Any())
+                        .Select
+                        (
+                            p => new ClassFieldBuilder()
+                                .WithName("_" + p.Name.ToPascalCase())
+                                .WithTypeName(p.TypeName)
+                                .WithIsNullable(p.IsNullable)
+                        )
                 )
                 .AddConstructors
                 (
