@@ -9,6 +9,7 @@ namespace ModelFramework.Objects.Settings
         public ImmutableBuilderClassConstructorSettings ConstructorSettings { get; }
         public bool Poco { get; }
         public bool AddNullChecks { get; }
+        public bool SetDefaultValues { get; }
         public string SetMethodNameFormatString { get; }
         public Func<ITypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
 
@@ -16,6 +17,7 @@ namespace ModelFramework.Objects.Settings
                                              ImmutableBuilderClassConstructorSettings? constructorSettings = null,
                                              bool poco = false,
                                              bool addNullChecks = false,
+                                             bool setDefaultValues = true,
                                              string setMethodNameFormatString = "With{0}",
                                              Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
         {
@@ -23,6 +25,7 @@ namespace ModelFramework.Objects.Settings
             ConstructorSettings = constructorSettings ?? new ImmutableBuilderClassConstructorSettings();
             Poco = poco;
             AddNullChecks = addNullChecks;
+            SetDefaultValues = setDefaultValues;
             SetMethodNameFormatString = setMethodNameFormatString;
             FormatInstanceTypeNameDelegate = formatInstanceTypeNameDelegate;
         }
@@ -32,6 +35,7 @@ namespace ModelFramework.Objects.Settings
                                                  ConstructorSettings,
                                                  Poco || isPoco,
                                                  AddNullChecks,
+                                                 SetDefaultValues,
                                                  SetMethodNameFormatString,
                                                  FormatInstanceTypeNameDelegate);
     }

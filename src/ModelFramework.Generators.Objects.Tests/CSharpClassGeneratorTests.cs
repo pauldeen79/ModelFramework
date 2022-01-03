@@ -306,6 +306,8 @@ namespace MyNamespace
         {
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            Property1 = string.Empty;
+            Property3 = default;
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -2470,18 +2472,6 @@ namespace ModelFramework.Generators.Objects.Tests
     }
 }
 ");
-        }
-
-        [Fact]
-        public void Generating_ImmutableBuilderClass_From_Class_Without_Properties_Throws_Exception()
-        {
-            // Arrange
-            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-            // Act & Assert
-            input.Invoking(x => x.ToImmutableBuilderClass(new ImmutableBuilderClassSettings()))
-                 .Should().Throw<InvalidOperationException>()
-                 .WithMessage("To create an immutable builder class, there must be at least one property");
         }
 
         [Fact]

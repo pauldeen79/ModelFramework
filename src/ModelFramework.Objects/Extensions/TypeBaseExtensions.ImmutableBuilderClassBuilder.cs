@@ -32,7 +32,8 @@ namespace ModelFramework.Objects.Extensions
                 .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
                 .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
                 .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
-                .AddFields(((instance as IClass)?.Fields)?.Select(x => new ClassFieldBuilder(x))?.ToList() ?? new List<ClassFieldBuilder>());
+                .AddFields(((instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>())
+                    .Select(x => new ClassFieldBuilder(x)).ToList());
         }
 
         private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
@@ -49,7 +50,7 @@ namespace ModelFramework.Objects.Extensions
                 .AddCodeStatements
                 (
                     instance.Properties
-                        .Where(p => !settings.AddNullChecks && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
+                        .Where(p => settings.SetDefaultValues && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
                         .Select(p => new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = {p.GetDefaultValue()};"))
                 );
 
@@ -73,13 +74,7 @@ namespace ModelFramework.Objects.Extensions
 
             if (settings.ConstructorSettings.AddConstructorWithAllProperties)
             {
-                var cls = instance as IClass;
-                var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
-                var properties = settings.Poco
-                    ? instance.Properties
-                    : ctors.First(x => x.Parameters.Count > 0).Parameters
-                        .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
-                        .Where(x => x != null);
+                var properties = GetImmutableBuilderConstructorProperties(instance, settings.Poco);
 
                 yield return new ClassConstructorBuilder()
                     .AddParameters(properties.Select(p => new ParameterBuilder()
@@ -108,6 +103,25 @@ namespace ModelFramework.Objects.Extensions
                             )
                     );
             }
+        }
+
+        private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance, bool poco)
+        {
+            var cls = instance as IClass;
+            var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
+
+            if (poco)
+            {
+                return instance.Properties;
+            }
+            var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
+            if (ctor == null)
+            {
+                return instance.Properties;
+            }
+            return ctor.Parameters
+                    .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                    .Where(x => x != null);
         }
 
         private static string GetConstructorInitializeExpressionForCollection(ImmutableBuilderClassSettings settings, IClassProperty p)
@@ -330,7 +344,8 @@ namespace ModelFramework.Objects.Extensions
                 select new Overload(argumentType, initializeExpression, methodName, argumentName);
         }
 
-        private static List<ICodeStatementBuilder> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings, IClassProperty property)
+        private static List<ICodeStatementBuilder> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
+                                                                                          IClassProperty property)
             => settings.AddNullChecks
                 ? new[]
                     {
@@ -370,7 +385,7 @@ namespace ModelFramework.Objects.Extensions
                                       property.Name.ToPascalCase(),
                                       property.TypeName.FixTypeName(),
                                       property.TypeName.GetGenericArguments(),
-                                      CreateIndentForImmuableBuilderAddOverloadMethodStatement(settings),
+                                      CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
                                       property.Name),
                         "    }",
                         "}",
@@ -382,12 +397,12 @@ namespace ModelFramework.Objects.Extensions
                                       property.Name.ToPascalCase(),
                                       property.TypeName.FixTypeName(),
                                       property.TypeName.GetGenericArguments(),
-                                      CreateIndentForImmuableBuilderAddOverloadMethodStatement(settings),
+                                      CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
                                       property.Name),
                         "return this;"
                 }).ToLiteralCodeStatementBuilders().ToList();
 
-        private static string CreateIndentForImmuableBuilderAddOverloadMethodStatement(ImmutableBuilderClassSettings settings)
+        private static string CreateIndentForImmutableBuilderAddOverloadMethodStatement(ImmutableBuilderClassSettings settings)
             => settings.AddNullChecks
                 ? "        "
                 : "    ";
@@ -444,14 +459,7 @@ namespace ModelFramework.Objects.Extensions
 
         private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
         {
-            var cls = instance as IClass;
-            var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
-
-            var properties = poco
-                ? instance.Properties
-                : ctors.First(x => x.Parameters.Count > 0).Parameters
-                    .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
-                    .Where(x => x != null);
+            var properties = GetImmutableBuilderConstructorProperties(instance, poco);
 
             var defaultValueDelegate = poco
                 ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
