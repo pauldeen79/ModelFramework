@@ -38,7 +38,7 @@ namespace ModelFramework.Objects.Builders
                                                        string parameterNameTemplate,
                                                        string initializeExpression)
             => AddBuilderOverload(methodNameTemplate,
-                                  parameterType?.FullName ?? throw new ArgumentException("Type does not have a full name"),
+                                  parameterType?.AssemblyQualifiedName ?? throw new ArgumentException("Type does not have a full name"),
                                   parameterNameTemplate,
                                   initializeExpression);
 
