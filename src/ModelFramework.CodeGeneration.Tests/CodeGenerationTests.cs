@@ -25,7 +25,7 @@ using Xunit;
 namespace ModelFramework.CodeGeneration.Tests
 {
     [ExcludeFromCodeCoverage]
-    public class IntegrationTests
+    public class CodeGenerationTests
     {
         [Fact]
         public void CanGenerateImmutableBuilderClassesForCommonDefaultEntities()
