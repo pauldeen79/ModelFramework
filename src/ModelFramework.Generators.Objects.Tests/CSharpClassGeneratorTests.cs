@@ -306,6 +306,8 @@ namespace MyNamespace
         {
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            Property1 = string.Empty;
+            Property3 = default;
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -1589,10 +1591,10 @@ namespace MyNamespace
             var properties = new[]
             {
                 new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionToEnumerable(),
-                new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilder(),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(),
+                new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilder()
+                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuider()
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             };
             var cls = new ClassBuilder()
@@ -1624,11 +1626,11 @@ namespace MyNamespace
             {
                 new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
 #pragma warning disable CS8601 // Possible null reference assignment.
-                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionToEnumerable(),
+                new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName }.ConvertCollectionOnBuilderToEnumerable(),
 #pragma warning restore CS8601 // Possible null reference assignment.
-                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilder(),
+                new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilderOnBuilder(),
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilder()
+                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilderOnBuider()
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             };
             var cls = new ClassBuilder()
@@ -2222,18 +2224,6 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void Generating_ImmutableClass_From_Class_Without_Properties_Throws_Exception()
-        {
-            // Arrange
-            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-            // Act & Assert
-            input.Invoking(x => x.ToImmutableClass(new ImmutableClassSettings()))
-                 .Should().Throw<InvalidOperationException>()
-                 .WithMessage("To create an immutable class, there must be at least one property");
-        }
-
-        [Fact]
         public void GeneratesPocoClass_Model_With_Collection_Property()
         {
             // Arrange
@@ -2366,7 +2356,7 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            this.Property3 = Utilities.Extensions.InitializeObservableCollection(default(System.Collections.ObjectModel.ObservableCollection<string>));
+            this.Property3 = new System.Collections.ObjectModel.ObservableCollection<string>();
         }
 
         private string _property1;
@@ -2470,18 +2460,6 @@ namespace ModelFramework.Generators.Objects.Tests
     }
 }
 ");
-        }
-
-        [Fact]
-        public void Generating_ImmutableBuilderClass_From_Class_Without_Properties_Throws_Exception()
-        {
-            // Arrange
-            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-            // Act & Assert
-            input.Invoking(x => x.ToImmutableBuilderClass(new ImmutableBuilderClassSettings()))
-                 .Should().Throw<InvalidOperationException>()
-                 .WithMessage("To create an immutable builder class, there must be at least one property");
         }
 
         [Fact]

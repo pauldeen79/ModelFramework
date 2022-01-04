@@ -15,17 +15,17 @@
         /// <summary>
         /// Metadata name for defining a property getter visibility.
         /// </summary>
-        public const string PropertyGetterVisibility = "ModelFramework.Objects.GetterVisibility";
+        public const string PropertyGetterModifiers = "ModelFramework.Objects.GetterVisibility";
 
         /// <summary>
         /// Metadata name for defining a property setter visibility.
         /// </summary>
-        public const string PropertySetterVisibility = "ModelFramework.Objects.SetterVisibility";
+        public const string PropertySetterModifiers = "ModelFramework.Objects.SetterVisibility";
 
         /// <summary>
         /// Metadata name for defining a property initializer visibility.
         /// </summary>
-        public const string PropertyInitVisibility = "ModelFramework.Objects.InitVisibility";
+        public const string PropertyInitializerModifiers = "ModelFramework.Objects.InitVisibility";
 
         /// <summary>
         /// Metadata name for defining a property getter template name.

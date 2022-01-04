@@ -15,7 +15,6 @@ using System.Text;
 namespace ModelFramework.Database.Builders
 {
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class CheckConstraintBuilder
     {
         public string Expression
@@ -88,7 +87,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class DefaultValueConstraintBuilder
     {
         public string FieldName
@@ -175,7 +173,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ForeignKeyConstraintBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> LocalFields
@@ -316,7 +313,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ForeignKeyConstraintFieldBuilder
     {
         public string Name
@@ -375,7 +371,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class IndexBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Database.Builders.IndexFieldBuilder> Fields
@@ -482,7 +477,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class IndexFieldBuilder
     {
         public bool IsDescending
@@ -555,7 +549,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class PrimaryKeyConstraintBuilder
     {
         public string Name
@@ -648,7 +641,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class PrimaryKeyConstraintFieldBuilder
     {
         public bool IsDescending
@@ -721,7 +713,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class SchemaBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Database.Builders.TableBuilder> Tables
@@ -840,7 +831,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class StoredProcedureBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder> Parameters
@@ -939,7 +929,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class StoredProcedureParameterBuilder
     {
         public string Type
@@ -1026,7 +1015,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class TableBuilder
     {
         public string FileGroupName
@@ -1239,7 +1227,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class TableFieldBuilder
     {
         public string Type
@@ -1427,7 +1414,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class UniqueConstraintBuilder
     {
         public string Name
@@ -1520,7 +1506,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class UniqueConstraintFieldBuilder
     {
         public string Name
@@ -1579,7 +1564,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ViewBuilder
     {
         public System.Collections.Generic.List<ModelFramework.Database.Builders.ViewFieldBuilder> SelectFields
@@ -1793,7 +1777,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ViewConditionBuilder
     {
         public string Expression
@@ -1880,7 +1863,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ViewFieldBuilder
     {
         public string SourceSchemaName
@@ -1995,7 +1977,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ViewOrderByFieldBuilder
     {
         public bool Descending
@@ -2124,7 +2105,6 @@ namespace ModelFramework.Database.Builders
 #nullable restore
 
 #nullable enable
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
     public partial class ViewSourceBuilder
     {
         public string Alias

@@ -1160,9 +1160,8 @@ namespace ModelFramework.Generators.Objects
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
-            if (Model.Event) Write(" event");
+            if (Model.Event) Write("event ");
 
-            Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
@@ -1873,7 +1872,7 @@ namespace ModelFramework.Generators.Objects
             if (Model.HasInitializer) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.GetInitModifiers()));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetInitializerModifiers()));
             
             RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate", Model, customResolverDelegate: ResolvePropertyInitializerTemplateFromMetadata);
 

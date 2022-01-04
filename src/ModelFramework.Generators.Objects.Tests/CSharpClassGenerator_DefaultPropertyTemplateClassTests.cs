@@ -111,6 +111,29 @@ namespace ModelFramework.Generators.Objects.Tests
         }
 
         [Fact]
+        public void Generates_Property_With_Different_Setter_Visibility_Correcly()
+        {
+            // Arrange
+            var model = new ClassPropertyBuilder()
+                .WithName("MyProperty")
+                .WithType(typeof(string))
+                .WithSetterVisibility(Visibility.Private)
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().Be(@"        public string MyProperty
+        {
+            get;
+            private set;
+        }
+");
+        }
+
+        [Fact]
         public void Can_Generate_Int_Property()
         {
             // Arrange
@@ -176,6 +199,7 @@ namespace ModelFramework.Generators.Objects.Tests
         }
 ");
         }
+
         [Fact]
         public void Can_Generate_Required_String_Property()
         {

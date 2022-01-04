@@ -25,7 +25,7 @@ using Xunit;
 namespace ModelFramework.CodeGeneration.Tests
 {
     [ExcludeFromCodeCoverage]
-    public class IntegrationTests
+    public class CodeGenerationTests
     {
         [Fact]
         public void CanGenerateImmutableBuilderClassesForCommonDefaultEntities()
@@ -150,7 +150,9 @@ namespace ModelFramework.CodeGeneration.Tests
             }
 
             var models = type.Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault())
+                .Where(t => t.FullName != null
+                    && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault()
+                    && t.GetProperties().Any())
                 .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty))
                 .ToArray();
 
@@ -168,7 +170,7 @@ namespace ModelFramework.CodeGeneration.Tests
                     var typeName = property.TypeName.FixTypeName();
                     if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I", "ModelFramework.Database.Contracts.I", "ModelFramework.Common.Contracts.I"))
                     {
-                        property.ConvertSinglePropertyToBuilder
+                        property.ConvertSinglePropertyToBuilderOnBuilder
                         (
                             typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
                         );
@@ -176,7 +178,7 @@ namespace ModelFramework.CodeGeneration.Tests
                     else if (typeName.Contains("Collection<ModelFramework."))
                     {
                         var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement") || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
-                        property.ConvertCollectionPropertyToBuilder
+                        property.ConvertCollectionPropertyToBuilderOnBuider
                         (
                             isCodeStatement
                                 ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
@@ -238,7 +240,6 @@ if ({2})
                                                 formatInstanceTypeNameDelegate: FormatInstanceTypeName))
                 .WithNamespace(@namespace)
                 .WithPartial()
-                .AddExcludeFromCodeCoverageAttribute()
                 .AddMethods(CreateExtraOverloads(c));
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
@@ -277,7 +278,7 @@ if ({2})
                     .AddParameter("name", typeof(string))
                     .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
                     .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
-                                                "return this;");
+                                               "return this;");
             }
 
             if (c.Properties.Any(p => p.Name == nameof(IParametersContainer.Parameters) && p.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter)))

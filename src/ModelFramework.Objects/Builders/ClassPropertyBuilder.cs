@@ -7,37 +7,29 @@ namespace ModelFramework.Objects.Builders
 {
     public partial class ClassPropertyBuilder
     {
-        public ClassPropertyBuilder ConvertCollectionToEnumerable()
-            => AddMetadata
-            (
-                new MetadataBuilder().WithName(MetadataNames.CustomImmutableArgumentType).WithValue("System.Collections.Generic.IEnumerable<{1}>"),
-                new MetadataBuilder().WithName(MetadataNames.CustomImmutableDefaultValue).WithValue("new System.Collections.Generic.List<{1}>({0} ?? new Enumerable.Empty<{1}>())")
-            );
+        public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable()
+            => AddMetadata(MetadataNames.CustomImmutableArgumentType, "System.Collections.Generic.IEnumerable<{1}>")
+              .AddMetadata(MetadataNames.CustomImmutableDefaultValue, "new System.Collections.Generic.List<{1}>({0} ?? new Enumerable.Empty<{1}>())");
 
-        public ClassPropertyBuilder ConvertSinglePropertyToBuilder(string? argumentType = null,
-                                                                   string? customBuilderConstructorInitializeExpression = null)
-            => AddMetadata
-            (
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(argumentType ?? "{0}Builder"),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{0}.Build()"),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue(customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0});" : "{0} = new " + argumentType + "(source.{0});"))
-            );
+        public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
+                                                                            string? customBuilderConstructorInitializeExpression = null)
+            => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType ?? "{0}Builder")
+              .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Build()")
+              .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0});" : "{0} = new " + argumentType + "(source.{0});"));
 
-        public ClassPropertyBuilder ConvertCollectionPropertyToBuilder(string? argumentType = null,
-                                                                       string? customBuilderConstructorInitializeExpression = null)
-            => ConvertCollectionToEnumerable().AddMetadata
-            (
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue(argumentType ?? "System.Collections.Generic.IEnumerable<{1}Builder>"),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{0}.Select(x => x.Build())"),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue(customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)));" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)));"))
-            );
+        public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuider(string? argumentType = null,
+                                                                               string? customBuilderConstructorInitializeExpression = null)
+            => ConvertCollectionOnBuilderToEnumerable()
+              .AddMetadata(MetadataNames.CustomBuilderArgumentType,argumentType ?? "System.Collections.Generic.IEnumerable<{1}Builder>")
+              .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Select(x => x.Build())")
+              .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression,customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)));" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)));"));
 
         public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
                                                        Type parameterType,
                                                        string parameterNameTemplate,
                                                        string initializeExpression)
             => AddBuilderOverload(methodNameTemplate,
-                                  parameterType?.FullName ?? throw new ArgumentException("Type does not have a full name"),
+                                  parameterType?.AssemblyQualifiedName ?? throw new ArgumentException("Type does not have a full name"),
                                   parameterNameTemplate,
                                   initializeExpression);
 
@@ -45,22 +37,20 @@ namespace ModelFramework.Objects.Builders
                                                        string parameterTypeName,
                                                        string parameterNameTemplate,
                                                        string initializeExpression)
-            => AddMetadata
-            (
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadMethodName).WithValue(methodNameTemplate),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentType).WithValue(parameterTypeName),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadArgumentName).WithValue(parameterNameTemplate),
-                new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithOverloadInitializeExpression).WithValue(initializeExpression)
-            );
+            => AddMetadata(MetadataNames.CustomBuilderWithOverloadMethodName, methodNameTemplate)
+              .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentType, parameterTypeName)
+              .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentName, parameterNameTemplate)
+              .AddMetadata(MetadataNames.CustomBuilderWithOverloadInitializeExpression, initializeExpression);
 
         public ClassPropertyBuilder SetDefaultArgumentValueForWithMethod(object defaultValue)
-            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(defaultValue));
+            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue)
+                                                .WithValue(defaultValue));
 
         public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
-            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomImmutableDefaultValue).WithValue(defaultValue));
+            => AddMetadata(MetadataNames.CustomImmutableDefaultValue, defaultValue);
 
         public ClassPropertyBuilder SetBuilderWithExpression(string expression)
-            => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue(expression));
+            => AddMetadata(MetadataNames.CustomBuilderWithExpression, expression);
 
         public ClassPropertyBuilder AddGetterLiteralCodeStatements(params string[] statements)
             => AddGetterCodeStatements(statements.ToLiteralCodeStatementBuilders());
@@ -70,5 +60,23 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder AddInitializerLiteralCodeStatements(params string[] statements)
             => AddInitializerCodeStatements(statements.ToLiteralCodeStatementBuilders());
+
+        public ClassPropertyBuilder AsReadOnly()
+            => WithHasSetter(false);
+
+        public ClassPropertyBuilder WithCustomGetterModifiers(string? customModifiers)
+            => ReplaceMetadata(MetadataNames.PropertyGetterModifiers, customModifiers);
+
+        public ClassPropertyBuilder WithCustomSetterModifiers(string? customModifiers)
+            => ReplaceMetadata(MetadataNames.PropertySetterModifiers, customModifiers);
+
+        public ClassPropertyBuilder WithCustomInitializerModifiers(string? customModifiers)
+            => ReplaceMetadata(MetadataNames.PropertyInitializerModifiers, customModifiers);
+
+        public ClassPropertyBuilder ReplaceMetadata(string name, object? newValue)
+        {
+            Metadata.Replace(name, newValue);
+            return this;
+        }
     }
 }

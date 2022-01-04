@@ -12,7 +12,6 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class TypeExtensions
     {
-
         public static IClass ToClass(this Type instance, ClassSettings settings)
             => instance.ToClassBuilder(settings).Build();
 
@@ -43,13 +42,15 @@ namespace ModelFramework.Objects.Extensions
 
         public static ClassBuilder ToWrapperClassBuilder(this Type instance, WrapperClassSettings settings)
             => new ClassBuilder()
-                .AddFields(GeneratedFields(instance))
-                .AddProperties(GeneratedProperties(instance, settings.PropertyCodeStatementsDelegate))
-                .AddMethods(GeneratedMethods(instance, settings.MethodCodeStatementsDelegate))
-                .AddConstructors(GeneratedCtors(instance));
+                .AddFields(GetWrapperClassFields(instance))
+                .AddProperties(GetWrapperClassProperties(instance, settings.PropertyCodeStatementsDelegate))
+                .AddMethods(GetWrapperClassMethods(instance, settings.MethodCodeStatementsDelegate))
+                .AddConstructors(GetWrapperClassConstructors(instance));
 
         private static IEnumerable<string> GetInterfaces(Type instance)
-            => instance.GetInterfaces().Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName))).Select(t => t.FullName);
+            => instance.GetInterfaces()
+                       .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))
+                       .Select(t => t.FullName);
 
         private static IEnumerable<ClassFieldBuilder> GetFields(Type instance)
             => instance.GetFieldsRecursively().Select
@@ -143,17 +144,19 @@ namespace ModelFramework.Objects.Extensions
         private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
             => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));
 
-        private static IEnumerable<ClassPropertyBuilder> GeneratedProperties(Type type, Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
+        private static IEnumerable<ClassPropertyBuilder> GetWrapperClassProperties(Type type,
+                                                                                   Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
             => type.GetPropertiesRecursively()
                    .Where(p => p.GetGetMethod() != null && p.GetSetMethod() == null)
                    .Select(p => CreateMockProperty(p, propertyCodeStatementsDelegate));
 
-        private static IEnumerable<ClassMethodBuilder> GeneratedMethods(Type type, Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
+        private static IEnumerable<ClassMethodBuilder> GetWrapperClassMethods(Type type,
+                                                                              Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
             => type.GetMethodsRecursively()
                    .Where(m => !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
                    .Select(m => CreateMockMethod(m, methodCodeStatementsDelegate));
 
-        private static IEnumerable<ClassConstructorBuilder> GeneratedCtors(Type type)
+        private static IEnumerable<ClassConstructorBuilder> GetWrapperClassConstructors(Type type)
         {
             yield return new ClassConstructorBuilder()
                 .AddParameters
@@ -165,7 +168,7 @@ namespace ModelFramework.Objects.Extensions
                 .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("_wrappedInstance = wrappedInstance;"));
         }
 
-        private static IEnumerable<ClassFieldBuilder> GeneratedFields(Type type)
+        private static IEnumerable<ClassFieldBuilder> GetWrapperClassFields(Type type)
         {
             yield return new ClassFieldBuilder()
                 .WithName("_wrappedInstance")
@@ -174,14 +177,16 @@ namespace ModelFramework.Objects.Extensions
                 .WithReadOnly(true);
         }
 
-        private static ClassPropertyBuilder CreateMockProperty(PropertyInfo propertyInfo, Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
+        private static ClassPropertyBuilder CreateMockProperty(PropertyInfo propertyInfo,
+                                                               Func<PropertyInfo, IEnumerable<ICodeStatement>>? propertyCodeStatementsDelegate = null)
             => new ClassPropertyBuilder()
                 .WithName(propertyInfo.Name)
                 .WithTypeName(propertyInfo.PropertyType.FullName.FixTypeName())
-                .WithHasSetter(false)
+                .AsReadOnly()
                 .AddGetterCodeStatements((propertyCodeStatementsDelegate?.Invoke(propertyInfo) ?? Enumerable.Empty<ICodeStatement>()).Select(x => x.CreateBuilder()));
 
-        private static ClassMethodBuilder CreateMockMethod(MethodInfo methodInfo, Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
+        private static ClassMethodBuilder CreateMockMethod(MethodInfo methodInfo,
+                                                           Func<MethodInfo, IEnumerable<ICodeStatement>>? methodCodeStatementsDelegate = null)
             => new ClassMethodBuilder()
                 .WithName(methodInfo.Name)
                 .WithTypeName(methodInfo.ReturnType.FullName.FixTypeName())

@@ -84,24 +84,24 @@ namespace ModelFramework.Objects.Extensions
                   }
                 : Array.Empty<IMetadata>();
 
-        public static IEnumerable<ICodeStatement> FixObservablePropertyGetterBody(this IClassProperty property, string newCollectionTypeName)
+        public static IEnumerable<ICodeStatement> FixObservablePropertyGetterBody(this IClassProperty property)
             => !property.GetterCodeStatements.Any() && !property.SetterCodeStatements.Any()
                 ? new[] { string.Format("return _{0};", property.Name.ToPascalCase()) }.ToLiteralCodeStatements()
                 : property.GetterCodeStatements;
 
-        public static IEnumerable<ICodeStatement> FixObservablePropertySetterBody(this IClassProperty property, string newCollectionTypeName)
+        public static IEnumerable<ICodeStatement> FixObservablePropertySetterBody(this IClassProperty property)
             => !property.GetterCodeStatements.Any() && !property.SetterCodeStatements.Any()
                 ? new[] { string.Format("_{0} = value;", property.Name.ToPascalCase()) + Environment.NewLine + string.Format(@"if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(""{0}""));", property.Name) }.ToLiteralCodeStatements()
                 : property.SetterCodeStatements;
 
         public static string GetGetterModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.GetterVisibility, MetadataNames.PropertyGetterVisibility);
+            => property.GetSubModifiers(property.GetterVisibility, MetadataNames.PropertyGetterModifiers);
 
         public static string GetSetterModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.SetterVisibility, MetadataNames.PropertySetterVisibility);
+            => property.GetSubModifiers(property.SetterVisibility, MetadataNames.PropertySetterModifiers);
 
-        public static string GetInitModifiers(this IClassProperty property)
-            => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitVisibility);
+        public static string GetInitializerModifiers(this IClassProperty property)
+            => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitializerModifiers);
 
         private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
         {
@@ -113,7 +113,10 @@ namespace ModelFramework.Objects.Extensions
             }
             var builder = new StringBuilder();
 
-            builder.AddWithCondition(subVisibility?.ToString()?.ToLower(CultureInfo.InvariantCulture), subVisibility != null && subVisibility != property.Visibility);
+            if (subVisibility != null && subVisibility != property.Visibility)
+            {
+                builder.Append(subVisibility.ToString().ToLower(CultureInfo.InvariantCulture));
+            }
 
             if (builder.Length > 0)
             {
