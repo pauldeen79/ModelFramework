@@ -2224,18 +2224,6 @@ namespace MyNamespace
         }
 
         [Fact]
-        public void Generating_ImmutableClass_From_Class_Without_Properties_Throws_Exception()
-        {
-            // Arrange
-            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-            // Act & Assert
-            input.Invoking(x => x.ToImmutableClass(new ImmutableClassSettings()))
-                 .Should().Throw<InvalidOperationException>()
-                 .WithMessage("To create an immutable class, there must be at least one property");
-        }
-
-        [Fact]
         public void GeneratesPocoClass_Model_With_Collection_Property()
         {
             // Arrange
