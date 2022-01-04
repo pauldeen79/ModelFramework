@@ -28,6 +28,12 @@ namespace ModelFramework.Objects.Extensions
                 builder.AddWithCondition("abstract", extendedVisibilityContainer.Abstract);
                 builder.AddWithCondition("virtual", extendedVisibilityContainer.Virtual);
                 builder.AddWithCondition("override", extendedVisibilityContainer.Override);
+
+                if (instance is IClassField classField)
+                {
+                    builder.AddWithCondition("readonly", classField.ReadOnly);
+                    builder.AddWithCondition("const", classField.Constant);
+                }
             }
             else
             {
@@ -42,16 +48,12 @@ namespace ModelFramework.Objects.Extensions
                     builder.AddWithCondition("partial", typeBase.Partial);
                 }
             }
-            
+
             if (builder.Length > 0)
             {
                 builder.Append(" ");
             }
 
-            if (instance is IClassField classField && classField.ReadOnly)
-            {
-                builder.Append("readonly ");
-            }
             return builder.ToString();
         }
     }

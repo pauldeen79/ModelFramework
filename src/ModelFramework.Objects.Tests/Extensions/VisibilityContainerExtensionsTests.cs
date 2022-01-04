@@ -24,5 +24,21 @@ namespace ModelFramework.Objects.Tests.Extensions
             // Assert
             actual.Should().Be("internal readonly ");
         }
+
+        [Fact]
+        public void Can_Specify_Constant_On_Field()
+        {
+            // Arrange
+            var sut = new ClassFieldBuilder().WithName("Test")
+                                             .WithType(typeof(int))
+                                            .WithConstant()
+                                            .Build();
+
+            // Act
+            var actual = sut.GetModifiers();
+
+            // Assert
+            actual.Should().Be("private const ");
+        }
     }
 }
