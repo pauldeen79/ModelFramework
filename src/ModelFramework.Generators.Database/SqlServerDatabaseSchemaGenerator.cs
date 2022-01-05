@@ -186,7 +186,36 @@ namespace ModelFramework.Generators.Database
     }
     #endregion
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultCheckConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGeneratorBaseChild : SqlServerDatabaseSchemaGeneratorBase
+    {
+        public SqlServerDatabaseSchemaGenerator RootTemplate { get; set; }
+
+        public override void Write(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.Write(textToAppend);
+            }
+            else
+            {
+                base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class SqlServerDatabaseSchemaGenerator_DefaultCheckConstraintTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -239,37 +268,11 @@ namespace ModelFramework.Generators.Database
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ICheckConstraint Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -337,37 +340,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IDefaultValueConstraint Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultFieldTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -439,37 +416,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ITableField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultFieldTypeTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultFieldTypeTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -543,37 +494,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ITableField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultForeignKeyTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultForeignKeyTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -618,37 +543,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ITable Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultForeignKeyConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultForeignKeyConstraintTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -736,37 +635,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IForeignKeyConstraint Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultForeignKeyConstraintFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultForeignKeyConstraintFieldTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -814,37 +687,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IForeignKeyConstraintField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultIndexTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultIndexTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -910,37 +757,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IIndex Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultIndexFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultIndexFieldTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -998,37 +819,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IIndexField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultPrimaryKeyConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultPrimaryKeyConstraintTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1080,37 +875,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IPrimaryKeyConstraint Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultPrimaryKeyConstraintFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultPrimaryKeyConstraintFieldTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1168,37 +937,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IPrimaryKeyConstraintField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultSchemaTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultSchemaTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1250,37 +993,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ISchema Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1362,37 +1079,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IStoredProcedure Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureParameterTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultStoredProcedureParameterTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1449,37 +1140,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IStoredProcedureParameter Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultTableTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultTableTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1561,32 +1226,6 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ITable Model { get; set; }
         protected virtual IEnumerable<IMetadataContainer> GetFieldsAndPrimaryKeyConstraints(ITable table)
         {
@@ -1599,7 +1238,7 @@ GO
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultUniqueConstraintTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultUniqueConstraintTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1651,37 +1290,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IUniqueConstraint Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultUniqueConstraintFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultUniqueConstraintFieldTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1731,37 +1344,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IUniqueConstraintField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewConditionTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewConditionTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1809,37 +1396,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IViewCondition Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewConditionsTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewConditionsTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1890,37 +1451,11 @@ GO
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IView Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2032,37 +1567,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IView Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewFieldTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewFieldTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2144,37 +1653,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IViewField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewGroupByFieldsTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewGroupByFieldsTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2225,37 +1708,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IView Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewOrderByFieldsTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewOrderByFieldsTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2306,37 +1763,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IView Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewSelectFieldsTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewSelectFieldsTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2383,37 +1814,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IView Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewSourceTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewSourceTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2473,37 +1878,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IViewSource Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultViewSourcesTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultViewSourcesTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2548,37 +1927,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IView Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate : SqlServerDatabaseSchemaGeneratorBase
+    public class SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2620,37 +1973,11 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public LiteralSqlStatement Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CommaAndNewLine : SqlServerDatabaseSchemaGeneratorBase
+    public class CommaAndNewLine : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2692,36 +2019,10 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CommaAndSpace : SqlServerDatabaseSchemaGeneratorBase
+    public class CommaAndSpace : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2762,36 +2063,10 @@ AS
 
         }
 
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class NewLine : SqlServerDatabaseSchemaGeneratorBase
+    public class NewLine : SqlServerDatabaseSchemaGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2831,32 +2106,6 @@ AS
                 PlaceholderChildrenDictionary.Clear();
             }
 
-        }
-
-        public SqlServerDatabaseSchemaGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
         }
 
 

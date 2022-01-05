@@ -142,5 +142,34 @@ namespace ModelFramework.Generators.Shared
 
     }
     #endregion
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class ModelFrameworkGeneratorBaseChild : ModelFrameworkGeneratorBase
+    {
+        public ModelFrameworkGenerator RootTemplate { get; set; }
+
+        public override void Write(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.Write(textToAppend);
+            }
+            else
+            {
+                base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+    }
 
 }

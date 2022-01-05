@@ -414,7 +414,36 @@ namespace ModelFramework.Generators.Objects
     }
     #endregion
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultAttributeTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGeneratorBaseChild : CSharpClassGeneratorBase
+    {
+        public CSharpClassGenerator RootTemplate { get; set; }
+
+        public override void Write(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.Write(textToAppend);
+            }
+            else
+            {
+                base.Write(textToAppend);
+            }
+        }
+
+        public override void WriteLine(string textToAppend)
+        {
+            if (RootTemplate != null)
+            {
+                RootTemplate.WriteLine(textToAppend);
+            }
+            else
+            {
+                base.WriteLine(textToAppend);
+            }
+        }
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class CSharpClassGenerator_DefaultAttributeTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -485,37 +514,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IAttribute Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultParameterAttributeTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultParameterAttributeTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -583,37 +586,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IAttribute Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultClassTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultClassTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -737,37 +714,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public ITypeBase Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_CodeGenerationHeaderTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_CodeGenerationHeaderTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -823,37 +774,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public CSharpClassGenerator Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultCtorTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultCtorTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -951,37 +876,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassConstructor Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultEnumMemberTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultEnumMemberTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1032,37 +931,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IEnumMember Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultEnumTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultEnumTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1119,37 +992,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IEnum Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultFieldTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultFieldTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1207,37 +1054,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassField Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultMethodTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultMethodTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1346,37 +1167,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassMethod Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultParameterTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultParameterTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1422,37 +1217,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IParameter Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultParameterValueTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultParameterValueTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1506,37 +1275,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IParameter Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultPropertyGetterBodyTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultPropertyGetterBodyTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1602,37 +1345,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassProperty Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1698,37 +1415,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassProperty Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultPropertySetterBodyTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultPropertySetterBodyTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1794,37 +1485,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassProperty Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultPropertyTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultPropertyTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -1931,37 +1596,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IClassProperty Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultUsingsTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultUsingsTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2027,37 +1666,11 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
         public IEnumerable<ITypeBase> Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultLiteralCodeStatementTemplate : CSharpClassGeneratorBase
+    public class CSharpClassGenerator_DefaultLiteralCodeStatementTemplate : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -2097,32 +1710,6 @@ namespace ModelFramework.Generators.Objects
                 PlaceholderChildrenDictionary.Clear();
             }
 
-        }
-
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
         }
 
         public LiteralCodeStatement Model { get; set; }
@@ -3120,7 +2707,7 @@ namespace ModelFramework.Generators.Objects
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CommaAndNewLine : CSharpClassGeneratorBase
+    public class CommaAndNewLine : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -3162,36 +2749,10 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CommaAndSpace : CSharpClassGeneratorBase
+    public class CommaAndSpace : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -3232,36 +2793,10 @@ namespace ModelFramework.Generators.Objects
 
         }
 
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
-        }
-
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class NewLine : CSharpClassGeneratorBase
+    public class NewLine : CSharpClassGeneratorBaseChild
     {
         public virtual void Render(global::System.Text.StringBuilder builder)
         {
@@ -3301,32 +2836,6 @@ namespace ModelFramework.Generators.Objects
                 PlaceholderChildrenDictionary.Clear();
             }
 
-        }
-
-        public CSharpClassGeneratorBase RootTemplate { get; set; }
-
-        public override void Write(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.Write(textToAppend);
-            }
-            else
-            {
-                base.Write(textToAppend);
-            }
-        }
-
-        public override void WriteLine(string textToAppend)
-        {
-            if (RootTemplate != null)
-            {
-                RootTemplate.WriteLine(textToAppend);
-            }
-            else
-            {
-                base.WriteLine(textToAppend);
-            }
         }
 
 
