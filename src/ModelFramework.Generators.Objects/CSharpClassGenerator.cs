@@ -636,10 +636,11 @@ namespace ModelFramework.Generators.Objects
     {
 "));
             
-            RenderChildTemplate(null, ViewModel.SubItems, separatorTemplateName: @"NewLine", footerTemplateName: @"NewLine", footerCondition: ViewModel.HasSubclasses, customResolverDelegate: ResolveFromMetadata, customTemplateNameDelegate: GetTemplateName);
+            RenderChildTemplate(null, ViewModel.SubItems, separatorTemplateName: @"NewLine", customResolverDelegate: ResolveFromMetadata, customTemplateNameDelegate: GetTemplateName);
 
             if (ViewModel.HasSubclasses)
         {
+            if (ViewModel.SubItems.Any()) { WriteLine(""); }
             var childGen = ViewModel.CreateChildGenerator(RootTemplate);
             Write("    "); //fix indentation on first line
             childGen.Render(GenerationEnvironment);

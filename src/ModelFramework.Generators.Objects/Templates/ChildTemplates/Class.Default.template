@@ -18,9 +18,10 @@ namespace <#= Model.Namespace #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
     <#= Model.GetModifiers() #><#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #>
     {
-<#@ renderChildTemplate model="ViewModel.SubItems" customResolverDelegate="ResolveFromMetadata" separatorTemplateName="NewLine" footerTemplateName="NewLine" footerCondition="ViewModel.HasSubclasses" customTemplateNameDelegate="GetTemplateName" #>
+<#@ renderChildTemplate model="ViewModel.SubItems" customResolverDelegate="ResolveFromMetadata" separatorTemplateName="NewLine" customTemplateNameDelegate="GetTemplateName" #>
 <#      if (ViewModel.HasSubclasses)
         {
+            if (ViewModel.SubItems.Any()) { WriteLine(""); }
             var childGen = ViewModel.CreateChildGenerator(RootTemplate);
             Write("    "); //fix indentation on first line
             childGen.Render(GenerationEnvironment);

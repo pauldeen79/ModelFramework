@@ -540,7 +540,7 @@ namespace MyNamespace
             private string _myField1;
     
             private string _myField2;
-    
+
             public class MySubSubClass
             {
                 public class MySubSubSubClass
