@@ -37,6 +37,18 @@ namespace ModelFramework.Generators.Database
         }
 
 
+        protected System.Boolean _createCodeGenerationHeaderField;
+
+        /// <summary>
+        /// Access the CreateCodeGenerationHeader parameter of the template.
+        /// </summary>
+        public System.Boolean CreateCodeGenerationHeader
+        {
+            get
+            {
+                return this._createCodeGenerationHeaderField;
+            }
+        }
         protected System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema> _modelField;
 
         /// <summary>
@@ -48,18 +60,6 @@ namespace ModelFramework.Generators.Database
             get
             {
                 return this._modelField;
-            }
-        }
-        protected System.Boolean _createCodeGenerationHeaderField;
-
-        /// <summary>
-        /// Access the CreateCodeGenerationHeader parameter of the template.
-        /// </summary>
-        public System.Boolean CreateCodeGenerationHeader
-        {
-            get
-            {
-                return this._createCodeGenerationHeaderField;
             }
         }
 
@@ -74,6 +74,10 @@ namespace ModelFramework.Generators.Database
             PlaceholderChildrenDictionary.Clear();
             this.ChildTemplates.Clear();
             this.ViewModels.Clear();
+            if (additionalActionDelegate != null)
+            {
+                additionalActionDelegate();
+            }
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultCheckConstraintTemplate(), typeof(ICheckConstraint));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintTemplate(), typeof(IDefaultValueConstraint));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultFieldTemplate(), typeof(ITableField));
@@ -105,21 +109,6 @@ namespace ModelFramework.Generators.Database
             RegisterChildTemplate(@"CommaAndSpace", () => new CommaAndSpace());
             RegisterChildTemplate(@"NewLine", () => new NewLine());
             RegisterViewModel(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintViewModel", () => new SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintViewModel(), typeof(IDefaultValueConstraint));
-            if (additionalActionDelegate != null)
-            {
-                additionalActionDelegate();
-            }
-            if (this.Session != null && this.Session.ContainsKey("Model") && this.Session["Model"] != null)
-            {
-                if ((typeof(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>).IsAssignableFrom(this.Session["Model"].GetType()) == false))
-                {
-                    this.Error("The type \'System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>\' of the parameter \'Model\' did not match the type of the data passed to the template.");
-                }
-                else
-                {
-                    this._modelField = ((System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>)(this.Session["Model"]));
-                }
-            }
             bool createCodeGenerationHeaderValueAcquired = false;
             if (this.Session != null && this.Session.ContainsKey("CreateCodeGenerationHeader") && this.Session["CreateCodeGenerationHeader"] != null)
             {
@@ -137,6 +126,17 @@ namespace ModelFramework.Generators.Database
             {
                 this._createCodeGenerationHeaderField = default(System.Boolean);
                 createCodeGenerationHeaderValueAcquired = true;
+            }
+            if (this.Session != null && this.Session.ContainsKey("Model") && this.Session["Model"] != null)
+            {
+                if ((typeof(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>).IsAssignableFrom(this.Session["Model"].GetType()) == false))
+                {
+                    this.Error("The type \'System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>\' of the parameter \'Model\' did not match the type of the data passed to the template.");
+                }
+                else
+                {
+                    this._modelField = ((System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISchema>)(this.Session["Model"]));
+                }
             }
 
         }

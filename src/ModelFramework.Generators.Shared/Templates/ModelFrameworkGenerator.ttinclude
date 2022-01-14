@@ -1,0 +1,11 @@
+﻿<#@ skipInitializationCode #>
+<#@ baseClassInheritsFrom type="ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase" #>
+<#@ assembly name="ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ assembly name="TextTemplateTransformationFramework.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ additionalActionDelegate #>
+<#@ import namespace="CrossCutting.Common.Extensions" #>
+<#@ import namespace="ModelFramework.Common" #>
+<#@ import namespace="ModelFramework.Common.Contracts" #>
+<#@ import namespace="ModelFramework.Common.Extensions" #>
+<#@ import namespace="TextTemplateTransformationFramework.Runtime" #>
+<#@ property name="CreateCodeGenerationHeader" type="System.Boolean" #>

@@ -86,6 +86,18 @@ namespace ModelFramework.Generators.Objects
         }
 
 
+        protected System.Boolean _createCodeGenerationHeaderField;
+
+        /// <summary>
+        /// Access the CreateCodeGenerationHeader parameter of the template.
+        /// </summary>
+        public System.Boolean CreateCodeGenerationHeader
+        {
+            get
+            {
+                return this._createCodeGenerationHeaderField;
+            }
+        }
         protected System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ITypeBase> _modelField;
 
         /// <summary>
@@ -109,18 +121,6 @@ namespace ModelFramework.Generators.Objects
             get
             {
                 return this._generateMultipleFilesField;
-            }
-        }
-        protected System.Boolean _createCodeGenerationHeaderField;
-
-        /// <summary>
-        /// Access the CreateCodeGenerationHeader parameter of the template.
-        /// </summary>
-        public System.Boolean CreateCodeGenerationHeader
-        {
-            get
-            {
-                return this._createCodeGenerationHeaderField;
             }
         }
         protected System.String _environmentVersionField;
@@ -200,6 +200,10 @@ namespace ModelFramework.Generators.Objects
             PlaceholderChildrenDictionary.Clear();
             this.ChildTemplates.Clear();
             this.ViewModels.Clear();
+            if (additionalActionDelegate != null)
+            {
+                additionalActionDelegate();
+            }
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", () => new CSharpClassGenerator_DefaultAttributeTemplate(), typeof(IAttribute));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultParameterAttributeTemplate", () => new CSharpClassGenerator_DefaultParameterAttributeTemplate(), typeof(IAttribute));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultClassTemplate", () => new CSharpClassGenerator_DefaultClassTemplate(), typeof(ITypeBase));
@@ -228,9 +232,23 @@ namespace ModelFramework.Generators.Objects
             RegisterChildTemplate(@"CommaAndNewLine", () => new CommaAndNewLine());
             RegisterChildTemplate(@"CommaAndSpace", () => new CommaAndSpace());
             RegisterChildTemplate(@"NewLine", () => new NewLine());
-            if (additionalActionDelegate != null)
+            bool createCodeGenerationHeaderValueAcquired = false;
+            if (this.Session != null && this.Session.ContainsKey("CreateCodeGenerationHeader") && this.Session["CreateCodeGenerationHeader"] != null)
             {
-                additionalActionDelegate();
+                if ((typeof(System.Boolean).IsAssignableFrom(this.Session["CreateCodeGenerationHeader"].GetType()) == false))
+                {
+                    this.Error("The type \'System.Boolean\' of the parameter \'CreateCodeGenerationHeader\' did not match the type of the data passed to the template.");
+                }
+                else
+                {
+                    this._createCodeGenerationHeaderField = ((System.Boolean)(this.Session["CreateCodeGenerationHeader"]));
+                    createCodeGenerationHeaderValueAcquired = true;
+                }
+            }
+            if ((createCodeGenerationHeaderValueAcquired == false))
+            {
+                this._createCodeGenerationHeaderField = default(System.Boolean);
+                createCodeGenerationHeaderValueAcquired = true;
             }
             if (this.Session != null && this.Session.ContainsKey("Model") && this.Session["Model"] != null)
             {
@@ -260,24 +278,6 @@ namespace ModelFramework.Generators.Objects
             {
                 this._generateMultipleFilesField = default(System.Boolean);
                 generateMultipleFilesValueAcquired = true;
-            }
-            bool createCodeGenerationHeaderValueAcquired = false;
-            if (this.Session != null && this.Session.ContainsKey("CreateCodeGenerationHeader") && this.Session["CreateCodeGenerationHeader"] != null)
-            {
-                if ((typeof(System.Boolean).IsAssignableFrom(this.Session["CreateCodeGenerationHeader"].GetType()) == false))
-                {
-                    this.Error("The type \'System.Boolean\' of the parameter \'CreateCodeGenerationHeader\' did not match the type of the data passed to the template.");
-                }
-                else
-                {
-                    this._createCodeGenerationHeaderField = ((System.Boolean)(this.Session["CreateCodeGenerationHeader"]));
-                    createCodeGenerationHeaderValueAcquired = true;
-                }
-            }
-            if ((createCodeGenerationHeaderValueAcquired == false))
-            {
-                this._createCodeGenerationHeaderField = default(System.Boolean);
-                createCodeGenerationHeaderValueAcquired = true;
             }
             bool environmentVersionValueAcquired = false;
             if (this.Session != null && this.Session.ContainsKey("EnvironmentVersion") && this.Session["EnvironmentVersion"] != null)
@@ -1721,23 +1721,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ITypeBase> Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -1753,6 +1736,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
@@ -1842,23 +1842,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public IAttribute Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -1874,6 +1857,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
@@ -1980,23 +1980,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public IAttribute Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -2012,6 +1995,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
@@ -2167,23 +2167,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public IClassConstructor Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -2199,6 +2182,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
@@ -2299,23 +2299,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public IClassMethod Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -2331,6 +2314,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
@@ -2437,23 +2437,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public IClassProperty Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -2469,6 +2452,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
@@ -2567,23 +2567,6 @@ namespace ModelFramework.Generators.Objects
     {
         [global::System.ComponentModel.Browsable(false)]
         public IEnumerable<ITypeBase> Model { get; set; }
-        protected System.Boolean _generateMultipleFilesField;
-
-        /// <summary>
-        /// Access the GenerateMultipleFiles parameter of the template.
-        /// </summary>
-        [global::System.ComponentModel.Browsable(false)]
-        public System.Boolean GenerateMultipleFiles
-        {
-            get
-            {
-                return this._generateMultipleFilesField;
-            }
-            set
-            {
-                 this._generateMultipleFilesField = value;
-            }
-        }
         protected System.Boolean _createCodeGenerationHeaderField;
 
         /// <summary>
@@ -2599,6 +2582,23 @@ namespace ModelFramework.Generators.Objects
             set
             {
                  this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
             }
         }
         protected System.String _environmentVersionField;
