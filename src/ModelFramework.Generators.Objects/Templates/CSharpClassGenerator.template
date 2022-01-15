@@ -1,12 +1,10 @@
 ﻿<#@ template language="C#" className="ModelFramework.Generators.Objects.CSharpClassGenerator" #>
-<#@ addChildTemplateCode override="true" clearFieldsOnOverride="true" #>
-<#@ includes Path="$(BasePath)ModelFramework.Generators.Shared\Templates" SearchPattern="ModelFrameworkGenerator.ttinclude" #>
+<#@ include File="$(BasePath)ModelFramework.Generators.Shared\Templates\ModelFrameworkGenerator.ttinclude" #>
+<#@ includes Path="$(BasePath)ModelFramework.Generators.Objects\Templates\Includes" SearchPattern="*.ttinclude" Recurse="true" #>
 <#@ output extension="cs" #>
 <#@ assembly name="ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
 <#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Objects\Templates\ChildTemplates" searchPattern="*.template" recurse="true" #>
 <#@ registerViewModels path="$(BasePath)ModelFramework.Generators.Objects\Templates" searchPattern="*.viewmodel" recurse="true" #>
-<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Shared\Templates\ChildTemplates" searchPattern="*.template" #>
-<#@ includes Path="$(BasePath)ModelFramework.Generators.Objects\Templates\Includes" SearchPattern="*.ttinclude" Recurse="true" #>
 <#@ import namespace="ModelFramework.Objects.Contracts" #>
 <#@ import namespace="ModelFramework.Objects.CodeStatements" #>
 <#@ import namespace="ModelFramework.Objects.Extensions" #>

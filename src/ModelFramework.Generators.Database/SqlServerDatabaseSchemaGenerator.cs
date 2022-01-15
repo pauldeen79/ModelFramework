@@ -74,6 +74,9 @@ namespace ModelFramework.Generators.Database
             PlaceholderChildrenDictionary.Clear();
             this.ChildTemplates.Clear();
             this.ViewModels.Clear();
+            RegisterChildTemplate(@"CommaAndNewLine", () => new CommaAndNewLine());
+            RegisterChildTemplate(@"CommaAndSpace", () => new CommaAndSpace());
+            RegisterChildTemplate(@"NewLine", () => new NewLine());
             if (additionalActionDelegate != null)
             {
                 additionalActionDelegate();
@@ -105,9 +108,6 @@ namespace ModelFramework.Generators.Database
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSourceTemplate(), typeof(IViewSource));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSourcesTemplate(), typeof(IView));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultLiteralSqlStatementTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate(), typeof(LiteralSqlStatement));
-            RegisterChildTemplate(@"CommaAndNewLine", () => new CommaAndNewLine());
-            RegisterChildTemplate(@"CommaAndSpace", () => new CommaAndSpace());
-            RegisterChildTemplate(@"NewLine", () => new NewLine());
             RegisterViewModel(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintViewModel", () => new SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintViewModel(), typeof(IDefaultValueConstraint));
             bool createCodeGenerationHeaderValueAcquired = false;
             if (this.Session != null && this.Session.ContainsKey("CreateCodeGenerationHeader") && this.Session["CreateCodeGenerationHeader"] != null)
@@ -213,6 +213,140 @@ namespace ModelFramework.Generators.Database
                 base.WriteLine(textToAppend);
             }
         }
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class CommaAndNewLine : SqlServerDatabaseSchemaGeneratorBaseChild
+    {
+        public virtual void Render(global::System.Text.StringBuilder builder)
+        {
+            var backup = this.GenerationEnvironment;
+            if (builder != null) this.GenerationEnvironment = builder;
+            Write(this.ToStringHelper.ToStringWithCulture(@",
+"));
+
+            if (builder != null) this.GenerationEnvironment = backup;
+        }
+
+
+        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
+        {
+            this.Errors.Clear();
+            this.GenerationEnvironment.Clear();
+            if (Session == null)
+            {
+                Session = new global::System.Collections.Generic.Dictionary<string, object>();
+            }
+            if (RootTemplate != null)
+            {
+                ChildTemplates = RootTemplate.ChildTemplates;
+                ViewModels = RootTemplate.ViewModels;
+            }
+            else
+            {
+                ChildTemplates.Clear();
+                ViewModels.Clear();
+            }
+            if (RootTemplate != null)
+            {
+                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
+            }
+            else
+            {
+                PlaceholderChildrenDictionary.Clear();
+            }
+
+        }
+
+
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class CommaAndSpace : SqlServerDatabaseSchemaGeneratorBaseChild
+    {
+        public virtual void Render(global::System.Text.StringBuilder builder)
+        {
+            var backup = this.GenerationEnvironment;
+            if (builder != null) this.GenerationEnvironment = builder;
+            Write(this.ToStringHelper.ToStringWithCulture(@", "));
+
+            if (builder != null) this.GenerationEnvironment = backup;
+        }
+
+
+        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
+        {
+            this.Errors.Clear();
+            this.GenerationEnvironment.Clear();
+            if (Session == null)
+            {
+                Session = new global::System.Collections.Generic.Dictionary<string, object>();
+            }
+            if (RootTemplate != null)
+            {
+                ChildTemplates = RootTemplate.ChildTemplates;
+                ViewModels = RootTemplate.ViewModels;
+            }
+            else
+            {
+                ChildTemplates.Clear();
+                ViewModels.Clear();
+            }
+            if (RootTemplate != null)
+            {
+                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
+            }
+            else
+            {
+                PlaceholderChildrenDictionary.Clear();
+            }
+
+        }
+
+
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class NewLine : SqlServerDatabaseSchemaGeneratorBaseChild
+    {
+        public virtual void Render(global::System.Text.StringBuilder builder)
+        {
+            var backup = this.GenerationEnvironment;
+            if (builder != null) this.GenerationEnvironment = builder;
+            Write(this.ToStringHelper.ToStringWithCulture(@"
+"));
+
+            if (builder != null) this.GenerationEnvironment = backup;
+        }
+
+
+        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
+        {
+            this.Errors.Clear();
+            this.GenerationEnvironment.Clear();
+            if (Session == null)
+            {
+                Session = new global::System.Collections.Generic.Dictionary<string, object>();
+            }
+            if (RootTemplate != null)
+            {
+                ChildTemplates = RootTemplate.ChildTemplates;
+                ViewModels = RootTemplate.ViewModels;
+            }
+            else
+            {
+                ChildTemplates.Clear();
+                ViewModels.Clear();
+            }
+            if (RootTemplate != null)
+            {
+                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
+            }
+            else
+            {
+                PlaceholderChildrenDictionary.Clear();
+            }
+
+        }
+
+
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class SqlServerDatabaseSchemaGenerator_DefaultCheckConstraintTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
@@ -1974,140 +2108,6 @@ AS
         }
 
         public LiteralSqlStatement Model { get; set; }
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CommaAndNewLine : SqlServerDatabaseSchemaGeneratorBaseChild
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(@",
-"));
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CommaAndSpace : SqlServerDatabaseSchemaGeneratorBaseChild
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(@", "));
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class NewLine : SqlServerDatabaseSchemaGeneratorBaseChild
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            Write(this.ToStringHelper.ToStringWithCulture(@"
-"));
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]

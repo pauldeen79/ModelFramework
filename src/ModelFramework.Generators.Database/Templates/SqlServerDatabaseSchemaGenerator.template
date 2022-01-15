@@ -1,12 +1,10 @@
 ﻿<#@ template language="C#" className="ModelFramework.Generators.Database.SqlServerDatabaseSchemaGenerator" #>
-<#@ addChildTemplateCode override="true" clearFieldsOnOverride="true" #>
-<#@ includes Path="$(BasePath)ModelFramework.Generators.Shared\Templates" SearchPattern="ModelFrameworkGenerator.ttinclude" #>
+<#@ include File="$(BasePath)ModelFramework.Generators.Shared\Templates\ModelFrameworkGenerator.ttinclude" #>
+<#@ includes Path="$(BasePath)ModelFramework.Generators.Database\Templates\Includes" SearchPattern="*.ttinclude" Recurse="true" #>
 <#@ output extension="sql" #>
 <#@ assembly name="ModelFramework.Database, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
 <#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Database\Templates\ChildTemplates" searchPattern="*.template" recurse="true" #>
-<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Shared\Templates\ChildTemplates" searchPattern="*.template" #>
 <#@ registerViewModels path="$(BasePath)ModelFramework.Generators.Database\Templates\ChildTemplates" searchPattern="*.viewmodel" #>
-<#@ includes Path="$(BasePath)ModelFramework.Generators.Database\Templates\Includes" SearchPattern="*.ttinclude" Recurse="true" #>
 <#@ import namespace="ModelFramework.Database.Contracts" #>
 <#@ import namespace="ModelFramework.Database.Extensions" #>
 <#@ import namespace="ModelFramework.Database.SqlStatements" #>

@@ -1,7 +1,9 @@
 ﻿<#@ skipInitializationCode #>
+<#@ addChildTemplateCode override="true" clearFieldsOnOverride="true" #>
 <#@ baseClassInheritsFrom type="ModelFramework.Generators.Shared.ModelFrameworkGeneratorBase" #>
 <#@ assembly name="ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
 <#@ assembly name="TextTemplateTransformationFramework.Runtime, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" #>
+<#@ registerChildTemplates path="$(BasePath)ModelFramework.Generators.Shared\Templates\ChildTemplates" searchPattern="*.template" #>
 <#@ additionalActionDelegate #>
 <#@ import namespace="CrossCutting.Common.Extensions" #>
 <#@ import namespace="ModelFramework.Common" #>
