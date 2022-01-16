@@ -66,16 +66,20 @@ namespace ModelFramework.Objects.Extensions
                     new ClassConstructorBuilder()
                         .AddParameters
                         (
-                            instance.Properties.Select(p => new ParameterBuilder()
-                                .WithName(p.Name.ToPascalCase())
-                                .WithTypeName(string.Format
-                                (
-                                    p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                       .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
-                                    p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                    p.TypeName.GetGenericArguments()
-                                )
-                        )))
+                            instance.Properties.Select
+                            (
+                                p => new ParameterBuilder()
+                                    .WithName(p.Name.ToPascalCase())
+                                    .WithTypeName(string.Format
+                                    (
+                                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
+                                                           .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
+                                        p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                                        p.TypeName.GetGenericArguments()
+                                    ))
+                                    .WithIsNullable(p.IsNullable)
+                            )
+                        )
                         .AddCodeStatements
                         (
                             instance.Properties.Select

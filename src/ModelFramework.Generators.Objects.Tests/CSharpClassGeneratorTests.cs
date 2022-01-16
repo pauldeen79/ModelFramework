@@ -1922,7 +1922,7 @@ namespace MyNamespace
             get;
         }
 
-        public MyRecord(string property1)
+        public MyRecord(string? property1)
         {
             this.Property1 = property1;
         }
