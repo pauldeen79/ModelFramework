@@ -1,9 +1,13 @@
-﻿using System.CodeDom.Compiler;
+﻿using System;
+using System.CodeDom.Compiler;
 
 namespace ModelFramework.Objects.Builders
 {
     public partial class AttributeBuilder
     {
+        public AttributeBuilder WithName(Type type)
+            => WithName(type.FullName);
+
         public AttributeBuilder AddNameAndParameter(string name, object value)
             => WithName(name).AddParameters(new AttributeParameterBuilder().WithValue(value));
 
