@@ -7,7 +7,6 @@ using FluentAssertions;
 using ModelFramework.Common;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
-using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Database.Contracts;
 using ModelFramework.Database.Default;
@@ -31,14 +30,19 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCommonDefaultEntities()
         {
             // Arrange
-            var builderModels = GetClassesFromSameNamespace(typeof(Metadata))
-                .Select
-                (
-                    c => CreateBuilder(c, "ModelFramework.Common.Builders").Build()
-                ).ToArray();
+            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
+            var model = new[]
+            {
+                typeof(IMetadata)
+            }.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
+                           .WithName(x.Name.Substring(1))
+                           .WithNamespace("ModelFramework.Common.Default")
+                           .Build()
+                           .ToImmutableClass(settings), "ModelFramework.Common.Builders").Build()
+                    ).ToArray();
 
             // Act
-            var actual = CreateCode(builderModels);
+            var actual = CreateCode(model);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -51,8 +55,7 @@ namespace ModelFramework.CodeGeneration.Tests
             var builderModels = GetClassesFromSameNamespace(typeof(Class))
                 .Select
                 (
-                    c => CreateBuilder(c, "ModelFramework.Objects.Builders")
-                        .Build()
+                    c => CreateBuilder(c, "ModelFramework.Objects.Builders").Build()
                 ).ToArray();
 
             // Act
@@ -89,8 +92,7 @@ namespace ModelFramework.CodeGeneration.Tests
             var builderModels = GetClassesFromSameNamespace(typeof(Table))
                 .Select
                 (
-                    c => CreateBuilder(c, "ModelFramework.Database.Builders")
-                        .Build()
+                    c => CreateBuilder(c, "ModelFramework.Database.Builders").Build()
                 ).ToArray();
 
             // Act
@@ -121,7 +123,7 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateBuildersForCommonContracts()
+        public void CanGenerateImmutableBuilderClassesForCommonContracts()
         {
             // Arrange
             var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection");
@@ -133,7 +135,33 @@ namespace ModelFramework.CodeGeneration.Tests
                            .WithName(x.Name.Substring(1))
                            .Build()
                            .ToImmutableBuilderClass(settings)
-                    ).Cast<ITypeBase>().ToArray();
+                    ).ToArray();
+
+            // Act
+            var actual = CreateCode(model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        }
+
+        [Fact]
+        public void CanGenerateRecordsForCommonContracts()
+        {
+            // Arrange
+            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
+            var model = new[]
+            {
+                typeof(IMetadata)
+            }.Select(x => x.ToClassBuilder(new ClassSettings())
+                           .WithName(x.Name.Substring(1))
+                           .WithNamespace("ModelFramework.Common.Default")
+                           .Build()
+                           .ToImmutableClassBuilder(settings)
+                           .WithRecord()
+                           .WithPartial()
+                           .AddInterfaces(x)
+                           .Build()
+                    ).ToArray();
 
             // Act
             var actual = CreateCode(model);
@@ -146,7 +174,7 @@ namespace ModelFramework.CodeGeneration.Tests
         {
             if (type.FullName == null)
             {
-                throw new ArgumentException("Can't get classes from same namespace, as the FullName of this type is null");
+                throw new ArgumentException("Can't get classes from same namespace when the FullName of this type is null. Could not determine namespace.");
             }
 
             var models = type.Assembly.GetExportedTypes()

@@ -31,7 +31,7 @@ namespace ModelFramework.Common.Builders
 
         public ModelFramework.Common.Contracts.IMetadata Build()
         {
-            return new ModelFramework.Common.Default.Metadata(Name, Value);
+            return new ModelFramework.Common.Default.Metadata(Value, Name);
         }
 
         public MetadataBuilder WithValue(object? value)

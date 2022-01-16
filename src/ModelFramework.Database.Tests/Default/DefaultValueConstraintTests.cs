@@ -46,7 +46,7 @@ namespace ModelFramework.Database.Tests.Default
         public void Can_Create_DefaultValueConstraint()
         {
             // Act
-            var sut = new DefaultValueConstraint("fieldName", "defaultValue", "name1", new[] { new Metadata("name2", "value") });
+            var sut = new DefaultValueConstraint("fieldName", "defaultValue", "name1", new[] { new Metadata("value", "name2") });
 
             // Asert
             sut.FieldName.Should().Be("fieldName");

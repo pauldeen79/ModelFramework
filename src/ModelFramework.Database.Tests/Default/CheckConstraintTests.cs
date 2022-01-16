@@ -36,7 +36,7 @@ namespace ModelFramework.Database.Tests.Default
         public void Can_Create_CheckConstraint()
         {
             // Act
-            var sut = new CheckConstraint("name", "expression", new[] { new Metadata("name", "value") });
+            var sut = new CheckConstraint("name", "expression", new[] { new Metadata("value", "name") });
 
             // Assert
             sut.Name.Should().Be("name");
