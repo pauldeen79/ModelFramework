@@ -102,7 +102,7 @@ namespace ModelFramework.Objects.Extensions
                                 ? new[]
                                     {
                                         new LiteralCodeStatementBuilder()
-                                            .WithStatement("System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new ValidationContext(this, null, null), true);")
+                                            .WithStatement("System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);")
                                     }
                                 : Enumerable.Empty<LiteralCodeStatementBuilder>()
                         )
