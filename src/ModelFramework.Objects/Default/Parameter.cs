@@ -1,47 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelFramework.Objects.Default
 {
-    public record Parameter : IParameter
+    public partial record Parameter : IValidatableObject
     {
-        public Parameter(string name,
-                         string typeName,
-                         object? defaultValue,
-                         bool isNullable,
-                         bool isParamArray,
-                         IEnumerable<IAttribute> attributes,
-                         IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            if (string.IsNullOrWhiteSpace(typeName))
+            if (string.IsNullOrWhiteSpace(TypeName))
             {
-                throw new ArgumentOutOfRangeException(nameof(typeName), "Name cannot be null or whitespace");
+                yield return new ValidationResult("TypeName cannot be null or whitespace", new[] { nameof(TypeName) });
             }
-
-            Name = name;
-            TypeName = typeName;
-            DefaultValue = defaultValue;
-            IsNullable = isNullable;
-            IsParamArray = isParamArray;
-            Attributes = new ValueCollection<IAttribute>(attributes);
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
-
-        public string TypeName { get; }
-        public ValueCollection<IAttribute> Attributes { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
-        public string Name { get; }
-        public object? DefaultValue { get; }
-        public bool IsNullable { get; }
-        public bool IsParamArray { get; }
 
         public override string ToString() => Name;
     }

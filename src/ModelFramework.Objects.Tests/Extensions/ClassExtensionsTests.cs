@@ -15,7 +15,7 @@ namespace ModelFramework.Objects.Tests.Extensions
             // Assert
             var input = new ClassBuilder().WithName("Test")
                                           .AddProperties(new ClassPropertyBuilder().WithName("Name")
-                                                                                   .WithType(typeof(string))
+                                                                                   .WithTypeName("System.String")
                                                                                    .AsReadOnly())
                                           .AddConstructors(new ClassConstructorBuilder().AddParameter("name", typeof(string))
                                                                                         .AddLiteralCodeStatements("Name = name;"))
@@ -34,7 +34,7 @@ namespace ModelFramework.Objects.Tests.Extensions
             // Assert
             var input = new ClassBuilder().WithName("Test")
                                           .AddProperties(new ClassPropertyBuilder().WithName("Name")
-                                                                                   .WithType(typeof(string)))
+                                                                                   .WithTypeName("System.String"))
                                           .Build();
 
             // Act

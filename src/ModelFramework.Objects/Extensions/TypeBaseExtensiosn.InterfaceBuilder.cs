@@ -66,27 +66,30 @@ namespace ModelFramework.Objects.Extensions
                                                      bool changePropertiesToReadOnly)
             => !changePropertiesToReadOnly
                 ? property
-                : new ClassProperty(property.Name,
-                                    ReplaceGenericType(property.TypeName, applyGenericTypes),
-                                    property.Static,
-                                    property.Virtual,
-                                    property.Abstract,
-                                    property.Protected,
-                                    property.Override,
-                                    property.HasGetter,
-                                    false,
-                                    false,
-                                    property.IsNullable,
-                                    property.Visibility,
-                                    property.GetterVisibility,
-                                    property.SetterVisibility,
-                                    property.InitializerVisibility,
-                                    property.ExplicitInterfaceName,
-                                    property.Metadata,
-                                    property.Attributes,
-                                    property.GetterCodeStatements,
-                                    property.SetterCodeStatements,
-                                    Enumerable.Empty<ICodeStatement>());
+                : new ClassProperty
+                (
+                    property.HasGetter,
+                    false,
+                    false,
+                    property.GetterVisibility,
+                    property.SetterVisibility,
+                    property.InitializerVisibility,
+                    property.GetterCodeStatements,
+                    property.SetterCodeStatements,
+                    Enumerable.Empty<ICodeStatement>(),
+                    property.Metadata,
+                    property.Static,
+                    property.Virtual,
+                    property.Abstract,
+                    property.Protected,
+                    property.Override,
+                    property.Visibility,
+                    property.Name,
+                    property.Attributes,
+                    ReplaceGenericType(property.TypeName, applyGenericTypes),
+                    property.IsNullable,
+                    property.ExplicitInterfaceName
+                );
 
         private static IClassMethod ChangeArgumentsAndReturnType(IClassMethod method, IDictionary<string, string>? applyGenericTypes)
         {
@@ -97,23 +100,23 @@ namespace ModelFramework.Objects.Extensions
 
             return new ClassMethod
             (
-                method.Name,
-                ReplaceGenericType(method.TypeName, applyGenericTypes),
-                method.Visibility,
+                method.Partial,
+                method.ExtensionMethod,
+                method.Operator,
+                method.Metadata,
                 method.Static,
                 method.Virtual,
                 method.Abstract,
                 method.Protected,
-                method.Partial,
                 method.Override,
-                method.ExtensionMethod,
-                method.Operator,
-                method.IsNullable,
-                method.ExplicitInterfaceName,
-                method.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
+                method.Visibility,
+                method.Name,
                 method.Attributes,
                 method.CodeStatements,
-                method.Metadata
+                method.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
+                ReplaceGenericType(method.TypeName, applyGenericTypes),
+                method.IsNullable,
+                method.ExplicitInterfaceName
             );
         }
 
@@ -126,13 +129,13 @@ namespace ModelFramework.Objects.Extensions
 
             return new Parameter
             (
-                parameter.Name,
-                ReplaceGenericType(parameter.TypeName, applyGenericTypes),
-                parameter.DefaultValue,
-                parameter.IsNullable,
                 parameter.IsParamArray,
+                ReplaceGenericType(parameter.TypeName, applyGenericTypes),
+                parameter.IsNullable,
                 parameter.Attributes,
-                parameter.Metadata
+                parameter.Metadata,
+                parameter.Name,
+                parameter.DefaultValue
             );
         }
 

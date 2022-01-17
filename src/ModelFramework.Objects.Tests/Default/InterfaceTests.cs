@@ -1,10 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using FluentAssertions;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
 using Xunit;
 
 namespace ModelFramework.Objects.Tests.Default
@@ -16,19 +14,10 @@ namespace ModelFramework.Objects.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new Interface("",
-                                                            "",
-                                                            default,
-                                                            default,
-                                                            Enumerable.Empty<string>(),
-                                                            Enumerable.Empty<IClassProperty>(),
-                                                            Enumerable.Empty<IClassMethod>(),
-                                                            Enumerable.Empty<IMetadata>(),
-                                                            Enumerable.Empty<IAttribute>(),
-                                                            Enumerable.Empty<string>()));
+            var action = new Action(() => _ = new InterfaceBuilder().Build());
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Theory]
@@ -37,16 +26,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_Correct_Result(string name, string @namespace, string expectedResult)
         {
             // Arrange
-            var sut = new Interface(name,
-                                    @namespace,
-                                    default,
-                                    default,
-                                    Enumerable.Empty<string>(),
-                                    Enumerable.Empty<IClassProperty>(),
-                                    Enumerable.Empty<IClassMethod>(),
-                                    Enumerable.Empty<IMetadata>(),
-                                    Enumerable.Empty<IAttribute>(),
-                                    Enumerable.Empty<string>());
+            var sut = new InterfaceBuilder().WithName(name).WithNamespace(@namespace).Build();
 
             // Act
             var actual = sut.ToString();

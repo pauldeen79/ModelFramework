@@ -233,7 +233,7 @@ Property2.AddRange(source.Property2);");
                                         .AddProperties(new ClassPropertyBuilder().WithName("Property2")
                                                                                  .WithType(typeof(IReadOnlyCollection<string>))
                                                                                  .AsReadOnly()
-                                                                                 .ConvertCollectionOnBuilderToEnumerable())
+                                                                                 .ConvertCollectionOnBuilderToEnumerable(true))
                                         .AddConstructors(new ClassConstructorBuilder().AddParameter("property1", typeof(string))
                                                                                       .AddParameter("property2", typeof(IEnumerable<string>))
                                                                                       .AddLiteralCodeStatements("Property1 = property1;")

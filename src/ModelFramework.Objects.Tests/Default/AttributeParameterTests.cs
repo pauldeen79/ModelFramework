@@ -14,7 +14,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_Name_When_Name_Is_Not_Empty()
         {
             // Arrange
-            var sut = new AttributeParameter("TestValue", "TestName", Enumerable.Empty<IMetadata>());
+            var sut = new AttributeParameter("TestValue", Enumerable.Empty<IMetadata>(), "TestName");
 
             // Act
             var actual = sut.ToString();
@@ -27,7 +27,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_Value_When_Name_Is_Empty()
         {
             // Arrange
-            var sut = new AttributeParameter("TestValue", "", Enumerable.Empty<IMetadata>());
+            var sut = new AttributeParameter("TestValue", Enumerable.Empty<IMetadata>(), "");
 
             // Act
             var actual = sut.ToString();
@@ -40,7 +40,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_String_Empty_When_Name_And_Value_Are_Both_Empty()
         {
             // Arrange
-            var sut = new AttributeParameter("", "", Enumerable.Empty<IMetadata>());
+            var sut = new AttributeParameter("", Enumerable.Empty<IMetadata>(), "");
 
             // Act
             var actual = sut.ToString();

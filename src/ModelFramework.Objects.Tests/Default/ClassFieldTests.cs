@@ -1,10 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using FluentAssertions;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects.Builders;
 using Xunit;
 
 namespace ModelFramework.Objects.Tests.Default
@@ -16,69 +14,27 @@ namespace ModelFramework.Objects.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new ClassField("",
-                                                             "System.String",
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             Enumerable.Empty<IMetadata>(),
-                                                             Enumerable.Empty<IAttribute>()));
+            var action = new Action(() => _ = new ClassFieldBuilder().WithTypeName("System.String").Build());
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
         public void Ctor_Throws_On_Empty_TypeName()
         {
             // Arrange
-            var action = new Action(() => _ = new ClassField("Test",
-                                                             "",
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             default,
-                                                             Enumerable.Empty<IMetadata>(),
-                                                             Enumerable.Empty<IAttribute>()));
+            var action = new Action(() => _ = new ClassFieldBuilder().WithName("Test").Build());
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("typeName");
+            action.Should().Throw<ValidationException>().WithMessage("TypeName cannot be null or whitespace");
         }
 
         [Fact]
         public void ToString_Returns_Name()
         {
             // Arrange
-            var sut = new ClassField("Test",
-                                     "System.String",
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     default,
-                                     Enumerable.Empty<IMetadata>(),
-                                     Enumerable.Empty<IAttribute>());
+            var sut = new ClassFieldBuilder().WithTypeName("System.String").WithName("Test").Build();
 
             // Act
             var actual = sut.ToString();

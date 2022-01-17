@@ -17,7 +17,7 @@ namespace ModelFramework.Common.Tests.Default
             var action = new Action(() => _ = new Metadata("Value", string.Empty));
 
             // Act & Assert
-            action.Should().Throw<ValidationException>();
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]

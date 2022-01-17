@@ -37,7 +37,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IAttribute Build()
         {
-            return new ModelFramework.Objects.Default.Attribute(Name, Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
         }
 
         public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
@@ -115,7 +115,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
         {
-            return new ModelFramework.Objects.Default.AttributeParameter(Value, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
         }
 
         public AttributeParameterBuilder WithValue(object value)
@@ -167,19 +167,7 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class ClassBuilder
     {
-        public System.Collections.Generic.List<string> Interfaces
-        {
-            get;
-            set;
-        }
-
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassFieldBuilder> Fields
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder> Properties
         {
             get;
             set;
@@ -197,13 +185,61 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public bool Partial
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder> SubClasses
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder> Constructors
+        {
+            get;
+            set;
+        }
+
+        public string BaseClass
         {
             get;
             set;
         }
 
         public bool Record
+        {
+            get;
+            set;
+        }
+
+        public string Namespace
+        {
+            get;
+            set;
+        }
+
+        public bool Partial
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<string> Interfaces
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder> Properties
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder> Methods
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<string> GenericTypeArguments
         {
             get;
             set;
@@ -233,43 +269,7 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder> SubClasses
-        {
-            get;
-            set;
-        }
-
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder> Enums
-        {
-            get;
-            set;
-        }
-
-        public string Namespace
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder> Constructors
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder> Methods
-        {
-            get;
-            set;
-        }
-
-        public string BaseClass
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<string> GenericTypeArguments
         {
             get;
             set;
@@ -277,18 +277,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClass Build()
         {
-            return new ModelFramework.Objects.Default.Class(Name, Namespace, Visibility, BaseClass, Static, Sealed, Partial, Record, Interfaces, Fields.Select(x => x.Build()), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), Constructors.Select(x => x.Build()), Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()), SubClasses.Select(x => x.Build()), Enums.Select(x => x.Build()), GenericTypeArguments);
-        }
-
-        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
-        {
-            return AddInterfaces(interfaces.ToArray());
-        }
-
-        public ClassBuilder AddInterfaces(params string[] interfaces)
-        {
-            Interfaces.AddRange(interfaces);
-            return this;
+            return new ModelFramework.Objects.Default.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<string>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<string>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
         }
 
         public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
@@ -299,17 +288,6 @@ namespace ModelFramework.Objects.Builders
         public ClassBuilder AddFields(params ModelFramework.Objects.Builders.ClassFieldBuilder[] fields)
         {
             Fields.AddRange(fields);
-            return this;
-        }
-
-        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
-        {
-            return AddProperties(properties.ToArray());
-        }
-
-        public ClassBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
-        {
-            Properties.AddRange(properties);
             return this;
         }
 
@@ -325,15 +303,93 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithPartial(bool partial = true)
+        public ClassBuilder AddSubClasses(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassBuilder> subClasses)
         {
-            Partial = partial;
+            return AddSubClasses(subClasses.ToArray());
+        }
+
+        public ClassBuilder AddSubClasses(params ModelFramework.Objects.Builders.ClassBuilder[] subClasses)
+        {
+            SubClasses.AddRange(subClasses);
+            return this;
+        }
+
+        public ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassConstructorBuilder> constructors)
+        {
+            return AddConstructors(constructors.ToArray());
+        }
+
+        public ClassBuilder AddConstructors(params ModelFramework.Objects.Builders.ClassConstructorBuilder[] constructors)
+        {
+            Constructors.AddRange(constructors);
+            return this;
+        }
+
+        public ClassBuilder WithBaseClass(string baseClass)
+        {
+            BaseClass = baseClass;
             return this;
         }
 
         public ClassBuilder WithRecord(bool record = true)
         {
             Record = record;
+            return this;
+        }
+
+        public ClassBuilder WithNamespace(string @namespace)
+        {
+            Namespace = @namespace;
+            return this;
+        }
+
+        public ClassBuilder WithPartial(bool partial = true)
+        {
+            Partial = partial;
+            return this;
+        }
+
+        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        {
+            return AddInterfaces(interfaces.ToArray());
+        }
+
+        public ClassBuilder AddInterfaces(params string[] interfaces)
+        {
+            Interfaces.AddRange(interfaces);
+            return this;
+        }
+
+        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        {
+            return AddProperties(properties.ToArray());
+        }
+
+        public ClassBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
+        {
+            Properties.AddRange(properties);
+            return this;
+        }
+
+        public ClassBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
+        {
+            return AddMethods(methods.ToArray());
+        }
+
+        public ClassBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
+        {
+            Methods.AddRange(methods);
+            return this;
+        }
+
+        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        {
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+        }
+
+        public ClassBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        {
+            GenericTypeArguments.AddRange(genericTypeArguments);
             return this;
         }
 
@@ -371,17 +427,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder AddSubClasses(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassBuilder> subClasses)
-        {
-            return AddSubClasses(subClasses.ToArray());
-        }
-
-        public ClassBuilder AddSubClasses(params ModelFramework.Objects.Builders.ClassBuilder[] subClasses)
-        {
-            SubClasses.AddRange(subClasses);
-            return this;
-        }
-
         public ClassBuilder AddEnums(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumBuilder> enums)
         {
             return AddEnums(enums.ToArray());
@@ -393,51 +438,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithNamespace(string @namespace)
-        {
-            Namespace = @namespace;
-            return this;
-        }
-
-        public ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassConstructorBuilder> constructors)
-        {
-            return AddConstructors(constructors.ToArray());
-        }
-
-        public ClassBuilder AddConstructors(params ModelFramework.Objects.Builders.ClassConstructorBuilder[] constructors)
-        {
-            Constructors.AddRange(constructors);
-            return this;
-        }
-
-        public ClassBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
-        {
-            return AddMethods(methods.ToArray());
-        }
-
-        public ClassBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
-        {
-            Methods.AddRange(methods);
-            return this;
-        }
-
-        public ClassBuilder WithBaseClass(string baseClass)
-        {
-            BaseClass = baseClass;
-            return this;
-        }
-
-        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
-        {
-            GenericTypeArguments.AddRange(genericTypeArguments);
-            return this;
-        }
-
         public ClassBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -446,56 +446,56 @@ namespace ModelFramework.Objects.Builders
 
         public ClassBuilder()
         {
-            Interfaces = new System.Collections.Generic.List<string>();
             Fields = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassFieldBuilder>();
-            Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             SubClasses = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder>();
-            Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder>();
+            Interfaces = new System.Collections.Generic.List<string>();
+            Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
             GenericTypeArguments = new System.Collections.Generic.List<string>();
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
+            Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             Static = default;
             Sealed = default;
-            Partial = default;
+            BaseClass = string.Empty;
             Record = default;
+            Namespace = string.Empty;
+            Partial = default;
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
             Name = string.Empty;
-            Namespace = string.Empty;
-            BaseClass = string.Empty;
         }
 
         public ClassBuilder(ModelFramework.Objects.Contracts.IClass source)
         {
-            Interfaces = new System.Collections.Generic.List<string>();
             Fields = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassFieldBuilder>();
-            Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             SubClasses = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder>();
-            Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder>();
+            Interfaces = new System.Collections.Generic.List<string>();
+            Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
             GenericTypeArguments = new System.Collections.Generic.List<string>();
-            Interfaces.AddRange(source.Interfaces);
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
+            Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Objects.Builders.ClassFieldBuilder(x)));
-            Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Static = source.Static;
             Sealed = source.Sealed;
-            Partial = source.Partial;
+            SubClasses.AddRange(source.SubClasses.Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)));
+            Constructors.AddRange(source.Constructors.Select(x => new ModelFramework.Objects.Builders.ClassConstructorBuilder(x)));
+            BaseClass = source.BaseClass;
             Record = source.Record;
+            Namespace = source.Namespace;
+            Partial = source.Partial;
+            Interfaces.AddRange(source.Interfaces);
+            Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
+            Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
+            GenericTypeArguments.AddRange(source.GenericTypeArguments);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Visibility = source.Visibility;
             Name = source.Name;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            SubClasses.AddRange(source.SubClasses.Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)));
             Enums.AddRange(source.Enums.Select(x => new ModelFramework.Objects.Builders.EnumBuilder(x)));
-            Namespace = source.Namespace;
-            Constructors.AddRange(source.Constructors.Select(x => new ModelFramework.Objects.Builders.ClassConstructorBuilder(x)));
-            Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
-            BaseClass = source.BaseClass;
-            GenericTypeArguments.AddRange(source.GenericTypeArguments);
         }
     }
 #nullable restore
@@ -503,6 +503,12 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class ClassConstructorBuilder
     {
+        public string ChainCall
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
@@ -551,7 +557,7 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public string ChainCall
+        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> CodeStatements
         {
             get;
             set;
@@ -563,15 +569,15 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> CodeStatements
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Objects.Contracts.IClassConstructor Build()
         {
-            return new ModelFramework.Objects.Default.ClassConstructor(Visibility, Static, Virtual, Abstract, Protected, Override, ChainCall, Parameters.Select(x => x.Build()), Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
+        }
+
+        public ClassConstructorBuilder WithChainCall(string chainCall)
+        {
+            ChainCall = chainCall;
+            return this;
         }
 
         public ClassConstructorBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -632,9 +638,14 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithChainCall(string chainCall)
+        public ClassConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
         {
-            ChainCall = chainCall;
+            return AddCodeStatements(codeStatements.ToArray());
+        }
+
+        public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
+        {
+            CodeStatements.AddRange(codeStatements);
             return this;
         }
 
@@ -646,17 +657,6 @@ namespace ModelFramework.Objects.Builders
         public ClassConstructorBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
         {
             Parameters.AddRange(parameters);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
-        {
-            return AddCodeStatements(codeStatements.ToArray());
-        }
-
-        public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
-        {
-            CodeStatements.AddRange(codeStatements);
             return this;
         }
 
@@ -690,23 +690,24 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
+            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
+            ChainCall = string.Empty;
             Static = default;
             Virtual = default;
             Abstract = default;
             Protected = default;
             Override = default;
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            ChainCall = string.Empty;
         }
 
         public ClassConstructorBuilder(ModelFramework.Objects.Contracts.IClassConstructor source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
+            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
+            ChainCall = source.ChainCall;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Static = source.Static;
             Virtual = source.Virtual;
@@ -715,9 +716,8 @@ namespace ModelFramework.Objects.Builders
             Override = source.Override;
             Visibility = source.Visibility;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            ChainCall = source.ChainCall;
-            Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
             CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
+            Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
         }
     }
 #nullable restore
@@ -725,12 +725,6 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class ClassFieldBuilder
     {
-        public bool Static
-        {
-            get;
-            set;
-        }
-
         public bool ReadOnly
         {
             get;
@@ -743,7 +737,7 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public object? DefaultValue
+        public bool Event
         {
             get;
             set;
@@ -755,25 +749,7 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.Visibility Visibility
-        {
-            get;
-            set;
-        }
-
-        public string Name
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
-        {
-            get;
-            set;
-        }
-
-        public string TypeName
+        public bool Static
         {
             get;
             set;
@@ -803,7 +779,25 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public bool Event
+        public ModelFramework.Objects.Contracts.Visibility Visibility
+        {
+            get;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
+        {
+            get;
+            set;
+        }
+
+        public string TypeName
         {
             get;
             set;
@@ -815,15 +809,15 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IClassField Build()
+        public object? DefaultValue
         {
-            return new ModelFramework.Objects.Default.ClassField(Name, TypeName, Static, Constant, ReadOnly, Virtual, Abstract, Protected, Override, Event, IsNullable, DefaultValue, Visibility, Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()));
+            get;
+            set;
         }
 
-        public ClassFieldBuilder WithStatic(bool @static = true)
+        public ModelFramework.Objects.Contracts.IClassField Build()
         {
-            Static = @static;
-            return this;
+            return new ModelFramework.Objects.Default.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue);
         }
 
         public ClassFieldBuilder WithReadOnly(bool readOnly = true)
@@ -838,9 +832,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithDefaultValue(object? defaultValue)
+        public ClassFieldBuilder WithEvent(bool @event = true)
         {
-            DefaultValue = defaultValue;
+            Event = @event;
             return this;
         }
 
@@ -852,6 +846,36 @@ namespace ModelFramework.Objects.Builders
         public ClassFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ClassFieldBuilder WithStatic(bool @static = true)
+        {
+            Static = @static;
+            return this;
+        }
+
+        public ClassFieldBuilder WithVirtual(bool @virtual = true)
+        {
+            Virtual = @virtual;
+            return this;
+        }
+
+        public ClassFieldBuilder WithAbstract(bool @abstract = true)
+        {
+            Abstract = @abstract;
+            return this;
+        }
+
+        public ClassFieldBuilder WithProtected(bool @protected = true)
+        {
+            Protected = @protected;
+            return this;
+        }
+
+        public ClassFieldBuilder WithOverride(bool @override = true)
+        {
+            Override = @override;
             return this;
         }
 
@@ -890,39 +914,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassFieldBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassFieldBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassFieldBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassFieldBuilder WithEvent(bool @event = true)
-        {
-            Event = @event;
-            return this;
-        }
-
         public ClassFieldBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
+            return this;
+        }
+
+        public ClassFieldBuilder WithDefaultValue(object? defaultValue)
+        {
+            DefaultValue = defaultValue;
             return this;
         }
 
@@ -936,17 +936,17 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Static = default;
             ReadOnly = default;
             Constant = default;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Private;
-            Name = string.Empty;
-            TypeName = string.Empty;
+            Event = default;
+            Static = default;
             Virtual = default;
             Abstract = default;
             Protected = default;
             Override = default;
-            Event = default;
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Private;
+            Name = string.Empty;
+            TypeName = string.Empty;
             IsNullable = default;
         }
 
@@ -954,21 +954,21 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Static = source.Static;
             ReadOnly = source.ReadOnly;
             Constant = source.Constant;
-            DefaultValue = source.DefaultValue;
+            Event = source.Event;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Visibility = source.Visibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            TypeName = source.TypeName;
+            Static = source.Static;
             Virtual = source.Virtual;
             Abstract = source.Abstract;
             Protected = source.Protected;
             Override = source.Override;
-            Event = source.Event;
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
+            TypeName = source.TypeName;
             IsNullable = source.IsNullable;
+            DefaultValue = source.DefaultValue;
         }
     }
 #nullable restore
@@ -1030,12 +1030,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public bool IsNullable
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
             get;
@@ -1054,6 +1048,12 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> CodeStatements
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder> Parameters
         {
             get;
@@ -1066,13 +1066,13 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public string ExplicitInterfaceName
+        public bool IsNullable
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> CodeStatements
+        public string ExplicitInterfaceName
         {
             get;
             set;
@@ -1080,7 +1080,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
-            return new ModelFramework.Objects.Default.ClassMethod(Name, TypeName, Visibility, Static, Virtual, Abstract, Protected, Partial, Override, ExtensionMethod, Operator, IsNullable, ExplicitInterfaceName, Parameters.Select(x => x.Build()), Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.ClassMethod(Partial, ExtensionMethod, Operator, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
         }
 
         public ClassMethodBuilder WithPartial(bool partial = true)
@@ -1142,12 +1142,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
         public ClassMethodBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
@@ -1168,6 +1162,17 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
+            return this;
+        }
+
+        public ClassMethodBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
+        {
+            return AddCodeStatements(codeStatements.ToArray());
+        }
+
+        public ClassMethodBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
+        {
+            CodeStatements.AddRange(codeStatements);
             return this;
         }
 
@@ -1194,20 +1199,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
+        public ClassMethodBuilder WithIsNullable(bool isNullable = true)
         {
-            ExplicitInterfaceName = explicitInterfaceName;
+            IsNullable = isNullable;
             return this;
         }
 
-        public ClassMethodBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
+        public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
         {
-            return AddCodeStatements(codeStatements.ToArray());
-        }
-
-        public ClassMethodBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
-        {
-            CodeStatements.AddRange(codeStatements);
+            ExplicitInterfaceName = explicitInterfaceName;
             return this;
         }
 
@@ -1241,8 +1241,8 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
+            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             Partial = default;
             ExtensionMethod = default;
             Operator = default;
@@ -1251,10 +1251,10 @@ namespace ModelFramework.Objects.Builders
             Abstract = default;
             Protected = default;
             Override = default;
-            IsNullable = default;
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
             Name = string.Empty;
             TypeName = string.Empty;
+            IsNullable = default;
             ExplicitInterfaceName = string.Empty;
         }
 
@@ -1262,8 +1262,8 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
+            Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             Partial = source.Partial;
             ExtensionMethod = source.ExtensionMethod;
             Operator = source.Operator;
@@ -1273,14 +1273,14 @@ namespace ModelFramework.Objects.Builders
             Abstract = source.Abstract;
             Protected = source.Protected;
             Override = source.Override;
-            IsNullable = source.IsNullable;
             Visibility = source.Visibility;
             Name = source.Name;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
+            CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
             TypeName = source.TypeName;
+            IsNullable = source.IsNullable;
             ExplicitInterfaceName = source.ExplicitInterfaceName;
-            CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
         }
     }
 #nullable restore
@@ -1288,12 +1288,6 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class ClassPropertyBuilder
     {
-        public bool Static
-        {
-            get;
-            set;
-        }
-
         public bool HasGetter
         {
             get;
@@ -1307,18 +1301,6 @@ namespace ModelFramework.Objects.Builders
         }
 
         public bool HasInitializer
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
-        {
-            get;
-            set;
-        }
-
-        public ModelFramework.Objects.Contracts.Visibility Visibility
         {
             get;
             set;
@@ -1342,19 +1324,31 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public string Name
+        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> GetterCodeStatements
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
+        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> SetterCodeStatements
         {
             get;
             set;
         }
 
-        public string TypeName
+        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> InitializerCodeStatements
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
+        {
+            get;
+            set;
+        }
+
+        public bool Static
         {
             get;
             set;
@@ -1384,6 +1378,30 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public ModelFramework.Objects.Contracts.Visibility Visibility
+        {
+            get;
+            set;
+        }
+
+        public string Name
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
+        {
+            get;
+            set;
+        }
+
+        public string TypeName
+        {
+            get;
+            set;
+        }
+
         public bool IsNullable
         {
             get;
@@ -1396,33 +1414,9 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> GetterCodeStatements
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> SetterCodeStatements
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> InitializerCodeStatements
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Objects.Contracts.IClassProperty Build()
         {
-            return new ModelFramework.Objects.Default.ClassProperty(Name, TypeName, Static, Virtual, Abstract, Protected, Override, HasGetter, HasSetter, HasInitializer, IsNullable, Visibility, GetterVisibility, SetterVisibility, InitializerVisibility, ExplicitInterfaceName, Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()), GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()));
-        }
-
-        public ClassPropertyBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
+            return new ModelFramework.Objects.Default.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
         }
 
         public ClassPropertyBuilder WithHasGetter(bool hasGetter = true)
@@ -1451,23 +1445,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassPropertyBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ClassPropertyBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ClassPropertyBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-
         public ClassPropertyBuilder WithGetterVisibility(System.Nullable<ModelFramework.Objects.Contracts.Visibility> getterVisibility)
         {
             GetterVisibility = getterVisibility;
@@ -1483,71 +1460,6 @@ namespace ModelFramework.Objects.Builders
         public ClassPropertyBuilder WithInitializerVisibility(System.Nullable<ModelFramework.Objects.Contracts.Visibility> initializerVisibility)
         {
             InitializerVisibility = initializerVisibility;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
-        public ClassPropertyBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassPropertyBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return this;
-        }
-
-        public ClassPropertyBuilder WithTypeName(string typeName)
-        {
-            TypeName = typeName;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithType(System.Type type)
-        {
-            TypeName = type.AssemblyQualifiedName;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
-        {
-            ExplicitInterfaceName = explicitInterfaceName;
             return this;
         }
 
@@ -1584,6 +1496,94 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassPropertyBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ClassPropertyBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithStatic(bool @static = true)
+        {
+            Static = @static;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithVirtual(bool @virtual = true)
+        {
+            Virtual = @virtual;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithAbstract(bool @abstract = true)
+        {
+            Abstract = @abstract;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithProtected(bool @protected = true)
+        {
+            Protected = @protected;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithOverride(bool @override = true)
+        {
+            Override = @override;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
+        {
+            Visibility = visibility;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ClassPropertyBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        {
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public ClassPropertyBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithTypeName(string typeName)
+        {
+            TypeName = typeName;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithType(System.Type type)
+        {
+            TypeName = type.AssemblyQualifiedName;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithIsNullable(bool isNullable = true)
+        {
+            IsNullable = isNullable;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
+        {
+            ExplicitInterfaceName = explicitInterfaceName;
+            return this;
+        }
+
         public ClassPropertyBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -1592,54 +1592,54 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder()
         {
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             GetterCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             SetterCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             InitializerCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
-            Static = default;
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             HasGetter = true;
             HasSetter = true;
             HasInitializer = default;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            Name = string.Empty;
-            TypeName = string.Empty;
+            Static = default;
             Virtual = default;
             Abstract = default;
             Protected = default;
             Override = default;
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
+            Name = string.Empty;
+            TypeName = string.Empty;
             IsNullable = default;
             ExplicitInterfaceName = string.Empty;
         }
 
         public ClassPropertyBuilder(ModelFramework.Objects.Contracts.IClassProperty source)
         {
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             GetterCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             SetterCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             InitializerCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
-            Static = source.Static;
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             HasGetter = source.HasGetter;
             HasSetter = source.HasSetter;
             HasInitializer = source.HasInitializer;
-            Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Visibility = source.Visibility;
             GetterVisibility = source.GetterVisibility;
             SetterVisibility = source.SetterVisibility;
             InitializerVisibility = source.InitializerVisibility;
-            Name = source.Name;
-            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            TypeName = source.TypeName;
+            GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
+            SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
+            InitializerCodeStatements.AddRange(source.InitializerCodeStatements.Select(x => x.CreateBuilder()));
+            Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
+            Static = source.Static;
             Virtual = source.Virtual;
             Abstract = source.Abstract;
             Protected = source.Protected;
             Override = source.Override;
+            Visibility = source.Visibility;
+            Name = source.Name;
+            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
+            TypeName = source.TypeName;
             IsNullable = source.IsNullable;
             ExplicitInterfaceName = source.ExplicitInterfaceName;
-            GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
-            SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
-            InitializerCodeStatements.AddRange(source.InitializerCodeStatements.Select(x => x.CreateBuilder()));
         }
     }
 #nullable restore
@@ -1647,25 +1647,25 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class EnumBuilder
     {
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
-        {
-            get;
-            set;
-        }
-
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder> Members
         {
             get;
             set;
         }
 
-        public string Name
+        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
         {
             get;
             set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
+        {
+            get;
+            set;
+        }
+
+        public string Name
         {
             get;
             set;
@@ -1679,18 +1679,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IEnum Build()
         {
-            return new ModelFramework.Objects.Default.Enum(Name, Members.Select(x => x.Build()), Visibility, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
-        }
-
-        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return this;
+            return new ModelFramework.Objects.Default.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
         }
 
         public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
@@ -1704,9 +1693,14 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumBuilder WithName(string name)
+        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            Name = name;
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
             return this;
         }
 
@@ -1718,6 +1712,12 @@ namespace ModelFramework.Objects.Builders
         public EnumBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public EnumBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 
@@ -1735,8 +1735,8 @@ namespace ModelFramework.Objects.Builders
 
         public EnumBuilder()
         {
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder>();
+            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Name = string.Empty;
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
@@ -1744,13 +1744,13 @@ namespace ModelFramework.Objects.Builders
 
         public EnumBuilder(ModelFramework.Objects.Contracts.IEnum source)
         {
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder>();
+            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Members.AddRange(source.Members.Select(x => new ModelFramework.Objects.Builders.EnumMemberBuilder(x)));
-            Name = source.Name;
+            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
+            Name = source.Name;
             Visibility = source.Visibility;
         }
     }
@@ -1759,6 +1759,12 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class EnumMemberBuilder
     {
+        public object? Value
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
         {
             get;
@@ -1766,12 +1772,6 @@ namespace ModelFramework.Objects.Builders
         }
 
         public string Name
-        {
-            get;
-            set;
-        }
-
-        public object? Value
         {
             get;
             set;
@@ -1785,7 +1785,13 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IEnumMember Build()
         {
-            return new ModelFramework.Objects.Default.EnumMember(Name, Value, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+        }
+
+        public EnumMemberBuilder WithValue(object? value)
+        {
+            Value = value;
+            return this;
         }
 
         public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
@@ -1802,12 +1808,6 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public EnumMemberBuilder WithValue(object? value)
-        {
-            Value = value;
             return this;
         }
 
@@ -1839,9 +1839,9 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Value = source.Value;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Name = source.Name;
-            Value = source.Value;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
     }
@@ -1880,6 +1880,12 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public System.Collections.Generic.List<string> GenericTypeArguments
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
@@ -1904,15 +1910,9 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Collections.Generic.List<string> GenericTypeArguments
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Objects.Contracts.IInterface Build()
         {
-            return new ModelFramework.Objects.Default.Interface(Name, Namespace, Visibility, Partial, Interfaces, Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), Metadata.Select(x => x.Build()), Attributes.Select(x => x.Build()), GenericTypeArguments);
+            return new ModelFramework.Objects.Default.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<string>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<string>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
         }
 
         public InterfaceBuilder WithNamespace(string @namespace)
@@ -1960,6 +1960,17 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        {
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+        }
+
+        public InterfaceBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        {
+            GenericTypeArguments.AddRange(genericTypeArguments);
+            return this;
+        }
+
         public InterfaceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -1994,17 +2005,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public InterfaceBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public InterfaceBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
-        {
-            GenericTypeArguments.AddRange(genericTypeArguments);
-            return this;
-        }
-
         public InterfaceBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -2016,9 +2016,9 @@ namespace ModelFramework.Objects.Builders
             Interfaces = new System.Collections.Generic.List<string>();
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
+            GenericTypeArguments = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            GenericTypeArguments = new System.Collections.Generic.List<string>();
             Namespace = string.Empty;
             Partial = default;
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
@@ -2030,19 +2030,19 @@ namespace ModelFramework.Objects.Builders
             Interfaces = new System.Collections.Generic.List<string>();
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
+            GenericTypeArguments = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            GenericTypeArguments = new System.Collections.Generic.List<string>();
             Namespace = source.Namespace;
             Partial = source.Partial;
             Interfaces.AddRange(source.Interfaces);
             Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
+            GenericTypeArguments.AddRange(source.GenericTypeArguments);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Visibility = source.Visibility;
             Name = source.Name;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            GenericTypeArguments.AddRange(source.GenericTypeArguments);
         }
     }
 #nullable restore
@@ -2050,7 +2050,19 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class ParameterBuilder
     {
+        public bool IsParamArray
+        {
+            get;
+            set;
+        }
+
         public string TypeName
+        {
+            get;
+            set;
+        }
+
+        public bool IsNullable
         {
             get;
             set;
@@ -2080,21 +2092,15 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public bool IsNullable
-        {
-            get;
-            set;
-        }
-
-        public bool IsParamArray
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
-            return new ModelFramework.Objects.Default.Parameter(Name, TypeName, DefaultValue, IsNullable, IsParamArray, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
+        }
+
+        public ParameterBuilder WithIsParamArray(bool isParamArray = true)
+        {
+            IsParamArray = isParamArray;
+            return this;
         }
 
         public ParameterBuilder WithTypeName(string typeName)
@@ -2106,6 +2112,12 @@ namespace ModelFramework.Objects.Builders
         public ParameterBuilder WithType(System.Type type)
         {
             TypeName = type.AssemblyQualifiedName;
+            return this;
+        }
+
+        public ParameterBuilder WithIsNullable(bool isNullable = true)
+        {
+            IsNullable = isNullable;
             return this;
         }
 
@@ -2143,18 +2155,6 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
-        public ParameterBuilder WithIsParamArray(bool isParamArray = true)
-        {
-            IsParamArray = isParamArray;
-            return this;
-        }
-
         public ParameterBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -2165,23 +2165,23 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            TypeName = string.Empty;
-            Name = string.Empty;
-            IsNullable = default;
             IsParamArray = default;
+            TypeName = string.Empty;
+            IsNullable = default;
+            Name = string.Empty;
         }
 
         public ParameterBuilder(ModelFramework.Objects.Contracts.IParameter source)
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            IsParamArray = source.IsParamArray;
             TypeName = source.TypeName;
+            IsNullable = source.IsNullable;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Name = source.Name;
             DefaultValue = source.DefaultValue;
-            IsNullable = source.IsNullable;
-            IsParamArray = source.IsParamArray;
         }
     }
 #nullable restore

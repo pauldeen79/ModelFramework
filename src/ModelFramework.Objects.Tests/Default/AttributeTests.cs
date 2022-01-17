@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -15,17 +16,17 @@ namespace ModelFramework.Objects.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new Objects.Default.Attribute(string.Empty, Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new Objects.Default.Attribute(Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>(), string.Empty));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
         public void ToString_Returns_Name()
         {
             // Arrange
-            var sut = new Objects.Default.Attribute("Test", Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>());
+            var sut = new Objects.Default.Attribute(Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>(), "Test");
 
             // Act
             var actual = sut.ToString();

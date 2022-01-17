@@ -38,7 +38,8 @@ namespace ModelFramework.CodeGeneration.Tests
                            .WithName(x.Name.Substring(1))
                            .WithNamespace("ModelFramework.Common.Default")
                            .Build()
-                           .ToImmutableClass(settings), "ModelFramework.Common.Builders").Build()
+                           .ToImmutableClass(settings), "ModelFramework.Common.Builders")
+                           .Build()
                     ).ToArray();
 
             // Act
@@ -52,14 +53,31 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpDefaultEntities()
         {
             // Arrange
-            var builderModels = GetClassesFromSameNamespace(typeof(Class))
-                .Select
-                (
-                    c => CreateBuilder(c, "ModelFramework.Objects.Builders").Build()
-                ).ToArray();
+            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
+            var models = new[]
+            {
+                typeof(IAttribute),
+                typeof(IAttributeParameter),
+                typeof(IClass),
+                typeof(IClassConstructor),
+                typeof(IClassField),
+                typeof(IClassMethod),
+                typeof(IClassProperty),
+                typeof(IEnum),
+                typeof(IEnumMember),
+                typeof(IInterface),
+                typeof(IParameter)
+            }.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
+                           .WithName(x.Name.Substring(1))
+                           .WithNamespace("ModelFramework.Objects.Default")
+                           .Chain(x => FixImmutableBuilderProperties(x))
+                           .Build()
+                           .ToImmutableClass(settings), "ModelFramework.Objects.Builders")
+                           .Build()
+                    ).ToArray();
 
             // Act
-            var actual = CreateCode(builderModels);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -155,6 +173,44 @@ namespace ModelFramework.CodeGeneration.Tests
             }.Select(x => x.ToClassBuilder(new ClassSettings())
                            .WithName(x.Name.Substring(1))
                            .WithNamespace("ModelFramework.Common.Default")
+                           .Chain(x => FixImmutableBuilderProperties(x))
+                           .Build()
+                           .ToImmutableClassBuilder(settings)
+                           .WithRecord()
+                           .WithPartial()
+                           .AddInterfaces(x)
+                           .Build()
+                    ).ToArray();
+
+            // Act
+            var actual = CreateCode(model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        }
+
+        [Fact]
+        public void CanGenerateRecordsForCsharpContracts()
+        {
+            // Arrange
+            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
+            var model = new[]
+            {
+                typeof(IAttribute),
+                typeof(IAttributeParameter),
+                typeof(IClass),
+                typeof(IClassConstructor),
+                typeof(IClassField),
+                typeof(IClassMethod),
+                typeof(IClassProperty),
+                typeof(IEnum),
+                typeof(IEnumMember),
+                typeof(IInterface),
+                typeof(IParameter)
+            }.Select(x => x.ToClassBuilder(new ClassSettings())
+                           .WithName(x.Name.Substring(1))
+                           .WithNamespace("ModelFramework.Objects.Default")
+                           .Chain(x => FixImmutableBuilderProperties(x))
                            .Build()
                            .ToImmutableClassBuilder(settings)
                            .WithRecord()
@@ -189,6 +245,11 @@ namespace ModelFramework.CodeGeneration.Tests
             return models.Select(x => x.Build()).ToArray();
         }
 
+        private static void FixImmutableBuilderProperties(ClassBuilder model)
+        {
+            FixImmutableBuilderProperties(new[] { model });
+        }
+
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)
         {
             foreach (var classBuilder in models)
@@ -208,6 +269,8 @@ namespace ModelFramework.CodeGeneration.Tests
                         var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement") || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
                         property.ConvertCollectionPropertyToBuilderOnBuider
                         (
+                            false,
+                            "CrossCutting.Common.ValueCollection",
                             isCodeStatement
                                 ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
                                 : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
@@ -215,6 +278,10 @@ namespace ModelFramework.CodeGeneration.Tests
                                 ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()));"
                                 : null
                         );
+                    }
+                    else if (typeName.Contains("Collection<System.String"))
+                    {
+                        property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, "new CrossCutting.Common.ValueCollection<string>({0})");
                     }
                     else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
                     {

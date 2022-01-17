@@ -14,7 +14,7 @@ namespace ModelFramework.Objects.Tests.Extensions
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("Test")
-                                                .WithType(typeof(int))
+                                                .WithTypeName("System.Int32")
                                                 .WithCustomGetterModifiers("internal")
                                                 .Build();
 
@@ -30,7 +30,7 @@ namespace ModelFramework.Objects.Tests.Extensions
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("Test")
-                                                .WithType(typeof(int))
+                                                .WithTypeName("System.Int32")
                                                 .WithCustomSetterModifiers("internal")
                                                 .Build();
 
@@ -46,7 +46,7 @@ namespace ModelFramework.Objects.Tests.Extensions
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("Test")
-                                                .WithType(typeof(int))
+                                                .WithTypeName("System.Int32")
                                                 .WithCustomInitializerModifiers("internal")
                                                 .Build();
 
