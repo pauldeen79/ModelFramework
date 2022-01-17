@@ -9,7 +9,6 @@ using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Database.Contracts;
-using ModelFramework.Database.Default;
 using ModelFramework.Database.SqlStatements;
 using ModelFramework.Generators.Objects;
 using ModelFramework.Objects.Builders;
@@ -161,28 +160,6 @@ namespace ModelFramework.CodeGeneration.Tests
 
             // Act
             var actual = CreateCode(builderModels);
-
-            // Assert
-            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
-        }
-
-        [Fact]
-        public void CanGenerateImmutableBuilderClassesForCommonContracts()
-        {
-            // Arrange
-            var settings = new ImmutableBuilderClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection");
-            var model = new[]
-            {
-                typeof(IMetadata)
-            }.Select(x => x.ToClassBuilder(new ClassSettings())
-                           .Chain(x => x.Attributes.Clear())
-                           .WithName(x.Name.Substring(1))
-                           .Build()
-                           .ToImmutableBuilderClass(settings)
-                    ).ToArray();
-
-            // Act
-            var actual = CreateCode(model);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
