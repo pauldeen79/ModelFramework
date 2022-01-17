@@ -107,14 +107,40 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseDefaultEntities()
         {
             // Arrange
-            var builderModels = GetClassesFromSameNamespace(typeof(Table))
-                .Select
-                (
-                    c => CreateBuilder(c, "ModelFramework.Database.Builders").Build()
-                ).ToArray();
+            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
+            var models = new[]
+            {
+                typeof(ICheckConstraint),
+                typeof(IDefaultValueConstraint),
+                typeof(IForeignKeyConstraint),
+                typeof(IForeignKeyConstraintField),
+                typeof(IIndex),
+                typeof(IIndexField),
+                typeof(IPrimaryKeyConstraint),
+                typeof(IPrimaryKeyConstraintField),
+                typeof(ISchema),
+                typeof(IStoredProcedure),
+                typeof(IStoredProcedureParameter),
+                typeof(ITable),
+                typeof(ITableField),
+                typeof(IUniqueConstraint),
+                typeof(IUniqueConstraintField),
+                typeof(IView),
+                typeof(IViewCondition),
+                typeof(IViewField),
+                typeof(IViewOrderByField),
+                typeof(IViewSource)
+            }.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
+                           .WithName(x.Name.Substring(1))
+                           .WithNamespace("ModelFramework.Database.Default")
+                           .Chain(x => FixImmutableBuilderProperties(x))
+                           .Build()
+                           .ToImmutableClass(settings), "ModelFramework.Database.Builders")
+                           .Build()
+                    ).ToArray();
 
             // Act
-            var actual = CreateCode(builderModels);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -210,6 +236,52 @@ namespace ModelFramework.CodeGeneration.Tests
             }.Select(x => x.ToClassBuilder(new ClassSettings())
                            .WithName(x.Name.Substring(1))
                            .WithNamespace("ModelFramework.Objects.Default")
+                           .Chain(x => FixImmutableBuilderProperties(x))
+                           .Build()
+                           .ToImmutableClassBuilder(settings)
+                           .WithRecord()
+                           .WithPartial()
+                           .AddInterfaces(x)
+                           .Build()
+                    ).ToArray();
+
+            // Act
+            var actual = CreateCode(model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        }
+
+        [Fact]
+        public void CanGenerateRecordsForDatabaseContracts()
+        {
+            // Arrange
+            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
+            var model = new[]
+            {
+                typeof(ICheckConstraint),
+                typeof(IDefaultValueConstraint),
+                typeof(IForeignKeyConstraint),
+                typeof(IForeignKeyConstraintField),
+                typeof(IIndex),
+                typeof(IIndexField),
+                typeof(IPrimaryKeyConstraint),
+                typeof(IPrimaryKeyConstraintField),
+                typeof(ISchema),
+                typeof(IStoredProcedure),
+                typeof(IStoredProcedureParameter),
+                typeof(ITable),
+                typeof(ITableField),
+                typeof(IUniqueConstraint),
+                typeof(IUniqueConstraintField),
+                typeof(IView),
+                typeof(IViewCondition),
+                typeof(IViewField),
+                typeof(IViewOrderByField),
+                typeof(IViewSource)
+            }.Select(x => x.ToClassBuilder(new ClassSettings())
+                           .WithName(x.Name.Substring(1))
+                           .WithNamespace("ModelFramework.Database.Default")
                            .Chain(x => FixImmutableBuilderProperties(x))
                            .Build()
                            .ToImmutableClassBuilder(settings)

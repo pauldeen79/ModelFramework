@@ -1,35 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelFramework.Database.Default
 {
-    public record ViewSource : IViewSource
+    public partial record ViewSource : IValidatableObject
     {
-        public ViewSource(string name,
-                          string sourceObjectName,
-                          string sourceSchemaName,
-                          string alias,
-                          IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            Name = name;
-            Alias = alias;
-            SourceSchemaName = sourceSchemaName;
-            SourceObjectName = sourceObjectName;
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
-        public string Alias { get; }
-        public string Name { get; }
-        public string SourceSchemaName { get; }
-        public string SourceObjectName { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
+        public override string ToString() => Name;
     }
 }

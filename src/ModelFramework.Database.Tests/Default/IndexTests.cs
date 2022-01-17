@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -16,20 +17,28 @@ namespace ModelFramework.Database.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new Database.Default.Index("", true, "", new[] { new IndexField("name", false, Enumerable.Empty<IMetadata>()) }, Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new Database.Default.Index(new[] { new IndexField(false, "name", Enumerable.Empty<IMetadata>()) },
+                                                                         true,
+                                                                         "",
+                                                                         Enumerable.Empty<IMetadata>(),
+                                                                         ""));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
         public void Ctor_Throws_On_Empty_Fields()
         {
             // Arrange
-            var action = new Action(() => _ = new Database.Default.Index("name", true, "", Enumerable.Empty<IIndexField>(), Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new Database.Default.Index(Enumerable.Empty<IIndexField>(),
+                                                                         true,
+                                                                         "name",
+                                                                         Enumerable.Empty<IMetadata>(),
+                                                                         ""));
 
             // Act & Assert
-            action.Should().Throw<ArgumentException>().And.ParamName.Should().Be("fields");
+            action.Should().Throw<ValidationException>().WithMessage("Fields should contain at least 1 value");
         }
     }
 }

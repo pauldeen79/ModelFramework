@@ -1,10 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using FluentAssertions;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
-using ModelFramework.Database.Default;
+using ModelFramework.Database.Builders;
 using Xunit;
 
 namespace ModelFramework.Database.Tests.Default
@@ -16,20 +14,20 @@ namespace ModelFramework.Database.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new TableField("", "type", false, false, null, null, null, "", false, Enumerable.Empty<ICheckConstraint>(), Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new TableFieldBuilder().WithType("int").Build());
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
         public void Ctor_Throws_On_Empty_Type()
         {
             // Arrange
-            var action = new Action(() => _ = new TableField("name", "", false, false, null, null, null, "", false, Enumerable.Empty<ICheckConstraint>(), Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new TableFieldBuilder().WithName("test").Build());
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("type");
+            action.Should().Throw<ValidationException>().WithMessage("Type cannot be null or whitespace");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -16,27 +17,27 @@ namespace ModelFramework.Database.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new CheckConstraint("", "expression", Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new CheckConstraint("expression", "", Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
         public void Ctor_Throws_On_Empty_Expression()
         {
             // Arrange
-            var action = new Action(() => _ = new CheckConstraint("name", "", Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new CheckConstraint("", "name", Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("expression");
+            action.Should().Throw<ValidationException>().WithMessage("Expression cannot be null or whitespace");
         }
 
         [Fact]
         public void Can_Create_CheckConstraint()
         {
             // Act
-            var sut = new CheckConstraint("name", "expression", new[] { new Metadata("value", "name") });
+            var sut = new CheckConstraint("expression", "name", new[] { new Metadata("value", "name") });
 
             // Assert
             sut.Name.Should().Be("name");

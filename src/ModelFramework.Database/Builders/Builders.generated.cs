@@ -37,7 +37,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ICheckConstraint Build()
         {
-            return new ModelFramework.Database.Default.CheckConstraint(Name, Expression, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
         }
 
         public CheckConstraintBuilder WithExpression(string expression)
@@ -219,7 +219,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IForeignKeyConstraint Build()
         {
-            return new ModelFramework.Database.Default.ForeignKeyConstraint(Name, ForeignTableName, LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), CascadeUpdate, CascadeDelete, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.ForeignKeyConstraint(LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), ForeignTableName, CascadeUpdate, CascadeDelete, Name, Metadata.Select(x => x.Build()));
         }
 
         public ForeignKeyConstraintBuilder AddLocalFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> localFields)
@@ -391,13 +391,13 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public string FileGroupName
+        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
+        public string FileGroupName
         {
             get;
             set;
@@ -405,7 +405,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IIndex Build()
         {
-            return new ModelFramework.Database.Default.Index(Name, Unique, FileGroupName, Fields.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.Index(Fields.Select(x => x.Build()), Unique, Name, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
         public IndexBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexFieldBuilder> fields)
@@ -431,12 +431,6 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public IndexBuilder WithFileGroupName(string fileGroupName)
-        {
-            FileGroupName = fileGroupName;
-            return this;
-        }
-
         public IndexBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -445,6 +439,12 @@ namespace ModelFramework.Database.Builders
         public IndexBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public IndexBuilder WithFileGroupName(string fileGroupName)
+        {
+            FileGroupName = fileGroupName;
             return this;
         }
 
@@ -470,8 +470,8 @@ namespace ModelFramework.Database.Builders
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.IndexFieldBuilder(x)));
             Unique = source.Unique;
             Name = source.Name;
-            FileGroupName = source.FileGroupName;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
+            FileGroupName = source.FileGroupName;
         }
     }
 #nullable restore
@@ -499,7 +499,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IIndexField Build()
         {
-            return new ModelFramework.Database.Default.IndexField(Name, IsDescending, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.IndexField(IsDescending, Name, Metadata.Select(x => x.Build()));
         }
 
         public IndexFieldBuilder WithIsDescending(bool isDescending = true)
@@ -551,6 +551,12 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class PrimaryKeyConstraintBuilder
     {
+        public System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> Fields
+        {
+            get;
+            set;
+        }
+
         public string Name
         {
             get;
@@ -569,15 +575,20 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> Fields
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraint Build()
         {
-            return new ModelFramework.Database.Default.PrimaryKeyConstraint(Name, FileGroupName, Fields.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.PrimaryKeyConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+        }
+
+        public PrimaryKeyConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> fields)
+        {
+            return AddFields(fields.ToArray());
+        }
+
+        public PrimaryKeyConstraintBuilder AddFields(params ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder[] fields)
+        {
+            Fields.AddRange(fields);
+            return this;
         }
 
         public PrimaryKeyConstraintBuilder WithName(string name)
@@ -603,17 +614,6 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public PrimaryKeyConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> fields)
-        {
-            return AddFields(fields.ToArray());
-        }
-
-        public PrimaryKeyConstraintBuilder AddFields(params ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder[] fields)
-        {
-            Fields.AddRange(fields);
-            return this;
-        }
-
         public PrimaryKeyConstraintBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -622,20 +622,20 @@ namespace ModelFramework.Database.Builders
 
         public PrimaryKeyConstraintBuilder()
         {
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder>();
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Name = string.Empty;
             FileGroupName = string.Empty;
         }
 
         public PrimaryKeyConstraintBuilder(ModelFramework.Database.Contracts.IPrimaryKeyConstraint source)
         {
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder>();
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder(x)));
             Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             FileGroupName = source.FileGroupName;
-            Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder(x)));
         }
     }
 #nullable restore
@@ -663,7 +663,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraintField Build()
         {
-            return new ModelFramework.Database.Default.PrimaryKeyConstraintField(Name, IsDescending, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.PrimaryKeyConstraintField(IsDescending, Name, Metadata.Select(x => x.Build()));
         }
 
         public PrimaryKeyConstraintFieldBuilder WithIsDescending(bool isDescending = true)
@@ -747,7 +747,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ISchema Build()
         {
-            return new ModelFramework.Database.Default.Schema(Name, Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
         }
 
         public SchemaBuilder AddTables(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.TableBuilder> tables)
@@ -833,6 +833,12 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class StoredProcedureBuilder
     {
+        public System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder> Statements
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder> Parameters
         {
             get;
@@ -840,12 +846,6 @@ namespace ModelFramework.Database.Builders
         }
 
         public string Name
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder> Statements
         {
             get;
             set;
@@ -859,7 +859,18 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IStoredProcedure Build()
         {
-            return new ModelFramework.Database.Default.StoredProcedure(Name, Parameters.Select(x => x.Build()), Statements.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.StoredProcedure(Statements.Select(x => x.Build()), Parameters.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+        }
+
+        public StoredProcedureBuilder AddStatements(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISqlStatementBuilder> statements)
+        {
+            return AddStatements(statements.ToArray());
+        }
+
+        public StoredProcedureBuilder AddStatements(params ModelFramework.Database.Contracts.ISqlStatementBuilder[] statements)
+        {
+            Statements.AddRange(statements);
+            return this;
         }
 
         public StoredProcedureBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.StoredProcedureParameterBuilder> parameters)
@@ -876,17 +887,6 @@ namespace ModelFramework.Database.Builders
         public StoredProcedureBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public StoredProcedureBuilder AddStatements(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISqlStatementBuilder> statements)
-        {
-            return AddStatements(statements.ToArray());
-        }
-
-        public StoredProcedureBuilder AddStatements(params ModelFramework.Database.Contracts.ISqlStatementBuilder[] statements)
-        {
-            Statements.AddRange(statements);
             return this;
         }
 
@@ -909,20 +909,20 @@ namespace ModelFramework.Database.Builders
 
         public StoredProcedureBuilder()
         {
-            Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Statements = new System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder>();
+            Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Name = string.Empty;
         }
 
         public StoredProcedureBuilder(ModelFramework.Database.Contracts.IStoredProcedure source)
         {
-            Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Statements = new System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder>();
+            Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Database.Builders.StoredProcedureParameterBuilder(x)));
             Name = source.Name;
-            Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
     }
@@ -957,7 +957,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
         {
-            return new ModelFramework.Database.Default.StoredProcedureParameter(Name, Type, DefaultValue, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
         }
 
         public StoredProcedureParameterBuilder WithType(string type)
@@ -1017,12 +1017,6 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class TableBuilder
     {
-        public string FileGroupName
-        {
-            get;
-            set;
-        }
-
         public System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder> PrimaryKeyConstraints
         {
             get;
@@ -1030,6 +1024,18 @@ namespace ModelFramework.Database.Builders
         }
 
         public System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintBuilder> UniqueConstraints
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Database.Builders.DefaultValueConstraintBuilder> DefaultValueConstraints
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> ForeignKeyConstraints
         {
             get;
             set;
@@ -1053,13 +1059,13 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Database.Builders.DefaultValueConstraintBuilder> DefaultValueConstraints
+        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> ForeignKeyConstraints
+        public string FileGroupName
         {
             get;
             set;
@@ -1071,21 +1077,9 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Database.Contracts.ITable Build()
         {
-            return new ModelFramework.Database.Default.Table(Name, FileGroupName, Fields.Select(x => x.Build()), PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()), Metadata.Select(x => x.Build()));
-        }
-
-        public TableBuilder WithFileGroupName(string fileGroupName)
-        {
-            FileGroupName = fileGroupName;
-            return this;
+            return new ModelFramework.Database.Default.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
         }
 
         public TableBuilder AddPrimaryKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder> primaryKeyConstraints)
@@ -1107,6 +1101,28 @@ namespace ModelFramework.Database.Builders
         public TableBuilder AddUniqueConstraints(params ModelFramework.Database.Builders.UniqueConstraintBuilder[] uniqueConstraints)
         {
             UniqueConstraints.AddRange(uniqueConstraints);
+            return this;
+        }
+
+        public TableBuilder AddDefaultValueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.DefaultValueConstraintBuilder> defaultValueConstraints)
+        {
+            return AddDefaultValueConstraints(defaultValueConstraints.ToArray());
+        }
+
+        public TableBuilder AddDefaultValueConstraints(params ModelFramework.Database.Builders.DefaultValueConstraintBuilder[] defaultValueConstraints)
+        {
+            DefaultValueConstraints.AddRange(defaultValueConstraints);
+            return this;
+        }
+
+        public TableBuilder AddForeignKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> foreignKeyConstraints)
+        {
+            return AddForeignKeyConstraints(foreignKeyConstraints.ToArray());
+        }
+
+        public TableBuilder AddForeignKeyConstraints(params ModelFramework.Database.Builders.ForeignKeyConstraintBuilder[] foreignKeyConstraints)
+        {
+            ForeignKeyConstraints.AddRange(foreignKeyConstraints);
             return this;
         }
 
@@ -1138,25 +1154,20 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder AddDefaultValueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.DefaultValueConstraintBuilder> defaultValueConstraints)
+        public TableBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            return AddDefaultValueConstraints(defaultValueConstraints.ToArray());
+            return AddMetadata(metadata.ToArray());
         }
 
-        public TableBuilder AddDefaultValueConstraints(params ModelFramework.Database.Builders.DefaultValueConstraintBuilder[] defaultValueConstraints)
+        public TableBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            DefaultValueConstraints.AddRange(defaultValueConstraints);
+            Metadata.AddRange(metadata);
             return this;
         }
 
-        public TableBuilder AddForeignKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> foreignKeyConstraints)
+        public TableBuilder WithFileGroupName(string fileGroupName)
         {
-            return AddForeignKeyConstraints(foreignKeyConstraints.ToArray());
-        }
-
-        public TableBuilder AddForeignKeyConstraints(params ModelFramework.Database.Builders.ForeignKeyConstraintBuilder[] foreignKeyConstraints)
-        {
-            ForeignKeyConstraints.AddRange(foreignKeyConstraints);
+            FileGroupName = fileGroupName;
             return this;
         }
 
@@ -1171,17 +1182,6 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public TableBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
         public TableBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -1192,36 +1192,36 @@ namespace ModelFramework.Database.Builders
         {
             PrimaryKeyConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder>();
             UniqueConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintBuilder>();
-            Indexes = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexBuilder>();
-            Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             DefaultValueConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder>();
-            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
+            Indexes = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexBuilder>();
+            Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            FileGroupName = string.Empty;
+            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             Name = string.Empty;
+            FileGroupName = string.Empty;
         }
 
         public TableBuilder(ModelFramework.Database.Contracts.ITable source)
         {
             PrimaryKeyConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder>();
             UniqueConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintBuilder>();
-            Indexes = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexBuilder>();
-            Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             DefaultValueConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.DefaultValueConstraintBuilder>();
             ForeignKeyConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder>();
-            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
+            Indexes = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexBuilder>();
+            Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            FileGroupName = source.FileGroupName;
+            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             PrimaryKeyConstraints.AddRange(source.PrimaryKeyConstraints.Select(x => new ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder(x)));
             UniqueConstraints.AddRange(source.UniqueConstraints.Select(x => new ModelFramework.Database.Builders.UniqueConstraintBuilder(x)));
+            DefaultValueConstraints.AddRange(source.DefaultValueConstraints.Select(x => new ModelFramework.Database.Builders.DefaultValueConstraintBuilder(x)));
+            ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ModelFramework.Database.Builders.ForeignKeyConstraintBuilder(x)));
             Indexes.AddRange(source.Indexes.Select(x => new ModelFramework.Database.Builders.IndexBuilder(x)));
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.TableFieldBuilder(x)));
             Name = source.Name;
-            DefaultValueConstraints.AddRange(source.DefaultValueConstraints.Select(x => new ModelFramework.Database.Builders.DefaultValueConstraintBuilder(x)));
-            ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ModelFramework.Database.Builders.ForeignKeyConstraintBuilder(x)));
-            CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
+            FileGroupName = source.FileGroupName;
+            CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
     }
 #nullable restore
@@ -1283,13 +1283,13 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder> CheckConstraints
+        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
+        public System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder> CheckConstraints
         {
             get;
             set;
@@ -1297,7 +1297,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ITableField Build()
         {
-            return new ModelFramework.Database.Default.TableField(Name, Type, IsRequired, IsIdentity, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, CheckConstraints.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
         }
 
         public TableFieldBuilder WithType(string type)
@@ -1354,17 +1354,6 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
-        {
-            return AddCheckConstraints(checkConstraints.ToArray());
-        }
-
-        public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
-        {
-            CheckConstraints.AddRange(checkConstraints);
-            return this;
-        }
-
         public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -1376,6 +1365,17 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
+        {
+            return AddCheckConstraints(checkConstraints.ToArray());
+        }
+
+        public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
+        {
+            CheckConstraints.AddRange(checkConstraints);
+            return this;
+        }
+
         public TableFieldBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -1384,8 +1384,8 @@ namespace ModelFramework.Database.Builders
 
         public TableFieldBuilder()
         {
-            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             Type = string.Empty;
             IsIdentity = default;
             IsRequired = default;
@@ -1396,8 +1396,8 @@ namespace ModelFramework.Database.Builders
 
         public TableFieldBuilder(ModelFramework.Database.Contracts.ITableField source)
         {
-            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             Type = source.Type;
             IsIdentity = source.IsIdentity;
             IsRequired = source.IsRequired;
@@ -1407,8 +1407,8 @@ namespace ModelFramework.Database.Builders
             StringCollation = source.StringCollation;
             IsStringMaxLength = source.IsStringMaxLength;
             Name = source.Name;
-            CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
+            CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
     }
 #nullable restore
@@ -1416,6 +1416,12 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class UniqueConstraintBuilder
     {
+        public System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> Fields
+        {
+            get;
+            set;
+        }
+
         public string Name
         {
             get;
@@ -1434,15 +1440,20 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> Fields
-        {
-            get;
-            set;
-        }
-
         public ModelFramework.Database.Contracts.IUniqueConstraint Build()
         {
-            return new ModelFramework.Database.Default.UniqueConstraint(Name, FileGroupName, Fields.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+        }
+
+        public UniqueConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> fields)
+        {
+            return AddFields(fields.ToArray());
+        }
+
+        public UniqueConstraintBuilder AddFields(params ModelFramework.Database.Builders.UniqueConstraintFieldBuilder[] fields)
+        {
+            Fields.AddRange(fields);
+            return this;
         }
 
         public UniqueConstraintBuilder WithName(string name)
@@ -1468,17 +1479,6 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public UniqueConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> fields)
-        {
-            return AddFields(fields.ToArray());
-        }
-
-        public UniqueConstraintBuilder AddFields(params ModelFramework.Database.Builders.UniqueConstraintFieldBuilder[] fields)
-        {
-            Fields.AddRange(fields);
-            return this;
-        }
-
         public UniqueConstraintBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
@@ -1487,20 +1487,20 @@ namespace ModelFramework.Database.Builders
 
         public UniqueConstraintBuilder()
         {
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder>();
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Name = string.Empty;
             FileGroupName = string.Empty;
         }
 
         public UniqueConstraintBuilder(ModelFramework.Database.Contracts.IUniqueConstraint source)
         {
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder>();
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.UniqueConstraintFieldBuilder(x)));
             Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             FileGroupName = source.FileGroupName;
-            Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.UniqueConstraintFieldBuilder(x)));
         }
     }
 #nullable restore
@@ -1634,7 +1634,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IView Build()
         {
-            return new ModelFramework.Database.Default.View(Name, Top, TopPercent, Distinct, Definition, SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewBuilder AddSelectFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> selectFields)
@@ -1805,7 +1805,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewCondition Build()
         {
-            return new ModelFramework.Database.Default.ViewCondition(Expression, Combination, FileGroupName, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
         public ViewConditionBuilder WithExpression(string expression)
@@ -1903,7 +1903,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewField Build()
         {
-            return new ModelFramework.Database.Default.ViewField(Name, SourceSchemaName, SourceObjectName, Expression, Alias, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.ViewField(SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
@@ -2023,7 +2023,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewOrderByField Build()
         {
-            return new ModelFramework.Database.Default.ViewOrderByField(Name, SourceSchemaName, SourceObjectName, Expression, Alias, Descending, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.ViewOrderByField(Descending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewOrderByFieldBuilder WithDescending(bool descending = true)
@@ -2113,12 +2113,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public string Name
-        {
-            get;
-            set;
-        }
-
         public string SourceSchemaName
         {
             get;
@@ -2126,6 +2120,12 @@ namespace ModelFramework.Database.Builders
         }
 
         public string SourceObjectName
+        {
+            get;
+            set;
+        }
+
+        public string Name
         {
             get;
             set;
@@ -2139,18 +2139,12 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewSource Build()
         {
-            return new ModelFramework.Database.Default.ViewSource(Name, SourceObjectName, SourceSchemaName, Alias, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewSourceBuilder WithAlias(string alias)
         {
             Alias = alias;
-            return this;
-        }
-
-        public ViewSourceBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 
@@ -2163,6 +2157,12 @@ namespace ModelFramework.Database.Builders
         public ViewSourceBuilder WithSourceObjectName(string sourceObjectName)
         {
             SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewSourceBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 
@@ -2187,18 +2187,18 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Alias = string.Empty;
-            Name = string.Empty;
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
+            Name = string.Empty;
         }
 
         public ViewSourceBuilder(ModelFramework.Database.Contracts.IViewSource source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Alias = source.Alias;
-            Name = source.Name;
             SourceSchemaName = source.SourceSchemaName;
             SourceObjectName = source.SourceObjectName;
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
     }
