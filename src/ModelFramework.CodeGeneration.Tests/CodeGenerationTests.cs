@@ -26,7 +26,7 @@ namespace ModelFramework.CodeGeneration.Tests
     public class CodeGenerationTests
     {
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForCommonDefaultEntities()
+        public void CanGenerateImmutableBuilderClassesForCommonContracts()
         {
             // Arrange
             var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
@@ -49,7 +49,7 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForCsharpDefaultEntities()
+        public void CanGenerateImmutableBuilderClassesForCsharpContracts()
         {
             // Arrange
             var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
@@ -103,7 +103,7 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateImmutableBuilderClassesForDatabaseDefaultEntities()
+        public void CanGenerateImmutableBuilderClassesForDatabaseContracts()
         {
             // Arrange
             var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
