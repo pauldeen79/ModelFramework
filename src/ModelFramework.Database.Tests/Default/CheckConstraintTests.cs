@@ -37,7 +37,7 @@ namespace ModelFramework.Database.Tests.Default
         public void Can_Create_CheckConstraint()
         {
             // Act
-            var sut = new CheckConstraint("expression", "name", new[] { new Metadata("value", "name") });
+            var sut = CreateSut();
 
             // Assert
             sut.Name.Should().Be("name");
@@ -46,5 +46,21 @@ namespace ModelFramework.Database.Tests.Default
             sut.Metadata.First().Name.Should().Be("name");
             sut.Metadata.First().Value.Should().Be("value");
         }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
+        }
+
+        private static CheckConstraint CreateSut()
+            => new CheckConstraint("expression", "name", new[] { new Metadata("value", "name") });
     }
 }

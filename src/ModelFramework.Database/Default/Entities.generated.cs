@@ -749,7 +749,7 @@ namespace ModelFramework.Database.Default
 #nullable enable
     public partial record ViewOrderByField : ModelFramework.Database.Contracts.IViewOrderByField
     {
-        public bool Descending
+        public bool IsDescending
         {
             get;
         }
@@ -784,9 +784,9 @@ namespace ModelFramework.Database.Default
             get;
         }
 
-        public ViewOrderByField(bool descending, string sourceSchemaName, string sourceObjectName, string expression, string alias, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
+        public ViewOrderByField(bool isDescending, string sourceSchemaName, string sourceObjectName, string expression, string alias, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
         {
-            this.Descending = descending;
+            this.IsDescending = isDescending;
             this.SourceSchemaName = sourceSchemaName;
             this.SourceObjectName = sourceObjectName;
             this.Expression = expression;

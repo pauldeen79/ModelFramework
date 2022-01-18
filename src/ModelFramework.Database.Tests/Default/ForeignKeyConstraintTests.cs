@@ -88,5 +88,27 @@ namespace ModelFramework.Database.Tests.Default
             // Act & Assert
             action.Should().Throw<ValidationException>().WithMessage("ForeignFields should contain at least 1 value");
         }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = new ForeignKeyConstraint
+            (
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                "foreignTableName",
+                CascadeAction.NoAction,
+                CascadeAction.NoAction,
+                "name",
+                Enumerable.Empty<IMetadata>()
+            );
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
+        }
     }
 }

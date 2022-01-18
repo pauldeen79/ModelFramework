@@ -20,9 +20,9 @@ namespace ModelFramework.Database.Tests.Default
             var action = new Action(() => _ = new PrimaryKeyConstraint
             (
                 new[] { new PrimaryKeyConstraintField(false, "name", Enumerable.Empty<IMetadata>()) },
-                "",
+                string.Empty,
                 Enumerable.Empty<IMetadata>(),
-                ""
+                string.Empty
             ));
 
             // Act & Assert
@@ -36,13 +36,32 @@ namespace ModelFramework.Database.Tests.Default
             var action = new Action(() => _ = new PrimaryKeyConstraint
             (
                 Enumerable.Empty<IPrimaryKeyConstraintField>(),
-                "name",
+                "Name",
                 Enumerable.Empty<IMetadata>(),
-                ""
+                string.Empty
             ));
 
             // Act & Assert
             action.Should().Throw<ValidationException>().WithMessage("Fields should contain at least 1 value");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = new PrimaryKeyConstraint
+            (
+                new[] { new PrimaryKeyConstraintField(false, "name", Enumerable.Empty<IMetadata>()) },
+                "Name",
+                Enumerable.Empty<IMetadata>(),
+                string.Empty
+            );
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
         }
     }
 }

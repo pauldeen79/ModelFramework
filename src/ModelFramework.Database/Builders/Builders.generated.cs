@@ -1979,7 +1979,7 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class ViewOrderByFieldBuilder
     {
-        public bool Descending
+        public bool IsDescending
         {
             get;
             set;
@@ -2023,12 +2023,12 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewOrderByField Build()
         {
-            return new ModelFramework.Database.Default.ViewOrderByField(Descending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Default.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
         }
 
-        public ViewOrderByFieldBuilder WithDescending(bool descending = true)
+        public ViewOrderByFieldBuilder WithIsDescending(bool isDescending = true)
         {
-            Descending = descending;
+            IsDescending = isDescending;
             return this;
         }
 
@@ -2082,7 +2082,7 @@ namespace ModelFramework.Database.Builders
         public ViewOrderByFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Descending = default;
+            IsDescending = default;
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
             Expression = string.Empty;
@@ -2093,7 +2093,7 @@ namespace ModelFramework.Database.Builders
         public ViewOrderByFieldBuilder(ModelFramework.Database.Contracts.IViewOrderByField source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Descending = source.Descending;
+            IsDescending = source.IsDescending;
             SourceSchemaName = source.SourceSchemaName;
             SourceObjectName = source.SourceObjectName;
             Expression = source.Expression;

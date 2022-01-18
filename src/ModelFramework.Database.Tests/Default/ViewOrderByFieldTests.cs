@@ -17,15 +17,53 @@ namespace ModelFramework.Database.Tests.Default
         {
             // Arrange
             var action = new Action(() => _ = new ViewOrderByField(false,
-                                                                   "",
-                                                                   "",
-                                                                   "",
-                                                                   "",
-                                                                   "",
+                                                                   string.Empty,
+                                                                   string.Empty,
+                                                                   string.Empty,
+                                                                   string.Empty,
+                                                                   string.Empty,
                                                                    Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
             action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name_And_Direction_Descending()
+        {
+            // Arrange
+            var sut = new ViewOrderByField(true,
+                                           string.Empty,
+                                           string.Empty,
+                                           string.Empty,
+                                           string.Empty,
+                                           "Name",
+                                           Enumerable.Empty<IMetadata>());
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be("Name DESC");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name_And_Direction_Ascending()
+        {
+            // Arrange
+            var sut = new ViewOrderByField(false,
+                                           string.Empty,
+                                           string.Empty,
+                                           string.Empty,
+                                           string.Empty,
+                                           "Name",
+                                           Enumerable.Empty<IMetadata>());
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be("Name ASC");
         }
     }
 }

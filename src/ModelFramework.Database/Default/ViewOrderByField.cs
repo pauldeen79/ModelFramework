@@ -13,7 +13,7 @@ namespace ModelFramework.Database.Default
             }
         }
 
-        public override string ToString() => Descending
+        public override string ToString() => IsDescending
             ? $"{Name} DESC"
             : $"{Name} ASC";
     }

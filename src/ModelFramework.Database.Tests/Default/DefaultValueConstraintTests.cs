@@ -47,7 +47,7 @@ namespace ModelFramework.Database.Tests.Default
         public void Can_Create_DefaultValueConstraint()
         {
             // Act
-            var sut = new DefaultValueConstraint("fieldName", "defaultValue", "name1", new[] { new Metadata("value", "name2") });
+            var sut = CreateSut();
 
             // Asert
             sut.FieldName.Should().Be("fieldName");
@@ -57,5 +57,21 @@ namespace ModelFramework.Database.Tests.Default
             sut.Metadata.First().Name.Should().Be("name2");
             sut.Metadata.First().Value.Should().Be("value");
         }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
+        }
+
+        private static DefaultValueConstraint CreateSut()
+            => new DefaultValueConstraint("fieldName", "defaultValue", "name1", new[] { new Metadata("value", "name2") });
     }
 }

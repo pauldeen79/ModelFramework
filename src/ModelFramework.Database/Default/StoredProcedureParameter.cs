@@ -13,6 +13,8 @@ namespace ModelFramework.Database.Default
             }
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => string.IsNullOrEmpty(Type)
+            ? $"@{Name}"
+            : $"@{Name} {Type}";
     }
 }

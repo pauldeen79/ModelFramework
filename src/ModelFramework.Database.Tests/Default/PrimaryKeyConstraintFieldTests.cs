@@ -21,5 +21,31 @@ namespace ModelFramework.Database.Tests.Default
             // Act & Assert
             action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
+
+        [Fact]
+        public void ToString_Returns_Name_And_Direction_Descending()
+        {
+            // Arrange
+            var sut = new PrimaryKeyConstraintField(true, "Name", Enumerable.Empty<IMetadata>());
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be("Name DESC");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name_And_Direction_Ascending()
+        {
+            // Arrange
+            var sut = new PrimaryKeyConstraintField(false, "Name", Enumerable.Empty<IMetadata>());
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be("Name ASC");
+        }
     }
 }
