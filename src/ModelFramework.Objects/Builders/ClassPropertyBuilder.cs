@@ -7,9 +7,14 @@ namespace ModelFramework.Objects.Builders
 {
     public partial class ClassPropertyBuilder
     {
-        public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable()
+        public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable(bool addNullChecks, string collectionType = "System.Collections.Generic.List")
             => AddMetadata(MetadataNames.CustomImmutableArgumentType, "System.Collections.Generic.IEnumerable<{1}>")
-              .AddMetadata(MetadataNames.CustomImmutableDefaultValue, "new System.Collections.Generic.List<{1}>({0} ?? new Enumerable.Empty<{1}>())");
+              .AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, addNullChecks
+                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+                : "new " + collectionType + "<{1}>({0})")
+            .AddMetadata(MetadataNames.CustomImmutableDefaultValue, addNullChecks
+                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+                : "new " + collectionType + "<{1}>({0})");
 
         public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                             string? customBuilderConstructorInitializeExpression = null)
@@ -17,9 +22,11 @@ namespace ModelFramework.Objects.Builders
               .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Build()")
               .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0});" : "{0} = new " + argumentType + "(source.{0});"));
 
-        public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuider(string? argumentType = null,
+        public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuider(bool addNullChecks,
+                                                                               string collectionType = "System.Collections.Generic.List",
+                                                                               string? argumentType = null,
                                                                                string? customBuilderConstructorInitializeExpression = null)
-            => ConvertCollectionOnBuilderToEnumerable()
+            => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
               .AddMetadata(MetadataNames.CustomBuilderArgumentType,argumentType ?? "System.Collections.Generic.IEnumerable<{1}Builder>")
               .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Select(x => x.Build())")
               .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression,customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)));" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)));"));
@@ -47,7 +54,7 @@ namespace ModelFramework.Objects.Builders
                                                 .WithValue(defaultValue));
 
         public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
-            => AddMetadata(MetadataNames.CustomImmutableDefaultValue, defaultValue);
+            => AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, defaultValue);
 
         public ClassPropertyBuilder SetBuilderWithExpression(string expression)
             => AddMetadata(MetadataNames.CustomBuilderWithExpression, expression);

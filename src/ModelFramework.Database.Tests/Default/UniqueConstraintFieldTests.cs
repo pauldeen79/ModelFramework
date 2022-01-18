@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -18,7 +19,20 @@ namespace ModelFramework.Database.Tests.Default
             var action = new Action(() => _ = new UniqueConstraintField("", Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = new UniqueConstraintField("test", Enumerable.Empty<IMetadata>());
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
         }
     }
 }

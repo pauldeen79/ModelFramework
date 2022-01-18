@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -16,45 +17,45 @@ namespace ModelFramework.Objects.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new Parameter("",
+            var action = new Action(() => _ = new Parameter(default,
                                                             "System.String",
                                                             default,
-                                                            default,
-                                                            default,
                                                             Enumerable.Empty<IAttribute>(),
-                                                            Enumerable.Empty<IMetadata>()));
+                                                            Enumerable.Empty<IMetadata>(),
+                                                            "",
+                                                            default));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
         public void Ctor_Throws_On_Empty_TypeName()
         {
             // Arrange
-            var action = new Action(() => _ = new Parameter("Test",
-                                                            "",
-                                                            default,
-                                                            default,
+            var action = new Action(() => _ = new Parameter(default,
+                                                            string.Empty,
                                                             default,
                                                             Enumerable.Empty<IAttribute>(),
-                                                            Enumerable.Empty<IMetadata>()));
+                                                            Enumerable.Empty<IMetadata>(),
+                                                            "Test",
+                                                            default));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("typeName");
+            action.Should().Throw<ValidationException>().WithMessage("TypeName cannot be null or whitespace");
         }
 
         [Fact]
         public void ToString_Returns_Name()
         {
             // Arrange
-            var sut = new Parameter("Test",
+            var sut = new Parameter(default,
                                     "System.String",
                                     default,
-                                    default,
-                                    default,
                                     Enumerable.Empty<IAttribute>(),
-                                    Enumerable.Empty<IMetadata>());
+                                    Enumerable.Empty<IMetadata>(),
+                                    "Test",
+                                    default);
 
             // Act
             var actual = sut.ToString();

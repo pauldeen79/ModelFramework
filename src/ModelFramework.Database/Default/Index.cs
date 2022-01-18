@@ -1,41 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
 using ModelFramework.Database.Contracts;
 
 namespace ModelFramework.Database.Default
 {
-    public record Index : IIndex
+    public partial record Index : IValidatableObject
     {
-        public Index(string name,
-                     bool unique,
-                     string fileGroupName,
-                     IEnumerable<IIndexField> fields,
-                     IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            if (!fields.Any())
+            if (!Fields.Any())
             {
-                throw new ArgumentException("Fields should contain at least 1 value", nameof(fields));
+                yield return new ValidationResult("Fields should contain at least 1 value", new[] { nameof(Fields) });
             }
-
-            Name = name;
-            Unique = unique;
-            FileGroupName = fileGroupName;
-            Fields = new ValueCollection<IIndexField>(fields);
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
-        public ValueCollection<IIndexField> Fields { get; }
-        public bool Unique { get; }
-        public string Name { get; }
-        public string FileGroupName { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
+        public override string ToString() => Name;
     }
 }

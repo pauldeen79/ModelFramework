@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -19,7 +20,7 @@ namespace ModelFramework.Database.Tests.Default
             var action = new Action(() => _ = new DefaultValueConstraint("fieldName", "defaultValue", "", Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
@@ -29,7 +30,7 @@ namespace ModelFramework.Database.Tests.Default
             var action = new Action(() => _ = new DefaultValueConstraint("", "defaultValue", "name", Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("fieldName");
+            action.Should().Throw<ValidationException>().WithMessage("FieldName cannot be null or whitespace");
         }
 
         [Fact]
@@ -39,14 +40,14 @@ namespace ModelFramework.Database.Tests.Default
             var action = new Action(() => _ = new DefaultValueConstraint("fieldName", "", "name", Enumerable.Empty<IMetadata>()));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("defaultValue");
+            action.Should().Throw<ValidationException>().WithMessage("DefaultValue cannot be null or whitespace");
         }
 
         [Fact]
         public void Can_Create_DefaultValueConstraint()
         {
             // Act
-            var sut = new DefaultValueConstraint("fieldName", "defaultValue", "name1", new[] { new Metadata("name2", "value") });
+            var sut = CreateSut();
 
             // Asert
             sut.FieldName.Should().Be("fieldName");
@@ -56,5 +57,21 @@ namespace ModelFramework.Database.Tests.Default
             sut.Metadata.First().Name.Should().Be("name2");
             sut.Metadata.First().Value.Should().Be("value");
         }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
+        }
+
+        private static DefaultValueConstraint CreateSut()
+            => new DefaultValueConstraint("fieldName", "defaultValue", "name1", new[] { new Metadata("value", "name2") });
     }
 }

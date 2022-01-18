@@ -48,6 +48,11 @@
         public const string CodeTemplateName = "ModelFramework.Objects.CodeTemplateName";
 
         /// <summary>
+        /// Metadata name for defining a custom default value in immutable builder c'tor.
+        /// </summary>
+        public const string CustomImmutableBuilderDefaultValue = "ModelFramework.Objects.Immutable.Builder.Ctor.CustomDefaultValue";
+
+        /// <summary>
         /// Metadata name for defining a custom default value in immutable c'tor.
         /// </summary>
         public const string CustomImmutableDefaultValue = "ModelFramework.Objects.Immutable.Ctor.CustomDefaultValue";

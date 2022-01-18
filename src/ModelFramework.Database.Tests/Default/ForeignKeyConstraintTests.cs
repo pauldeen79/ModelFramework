@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
@@ -18,17 +19,17 @@ namespace ModelFramework.Database.Tests.Default
             // Arrange
             var action = new Action(() => _ = new ForeignKeyConstraint
             (
-                "",
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
                 "foreignTableName",
-                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
-                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
                 CascadeAction.NoAction,
                 CascadeAction.NoAction,
+                "",
                 Enumerable.Empty<IMetadata>()
             ));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
         }
 
         [Fact]
@@ -37,17 +38,17 @@ namespace ModelFramework.Database.Tests.Default
             // Arrange
             var action = new Action(() => _ = new ForeignKeyConstraint
             (
-                "name",
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
                 "",
-                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
-                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
                 CascadeAction.NoAction,
                 CascadeAction.NoAction,
+                "name",
                 Enumerable.Empty<IMetadata>()
             ));
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("foreignTableName");
+            action.Should().Throw<ValidationException>().WithMessage("ForeignTableName cannot be null or whitespace");
         }
 
         [Fact]
@@ -56,17 +57,17 @@ namespace ModelFramework.Database.Tests.Default
             // Arrange
             var action = new Action(() => _ = new ForeignKeyConstraint
             (
-                "name",
-                "foreignTableName",
                 Enumerable.Empty<IForeignKeyConstraintField>(),
                 new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                "foreignTableName",
                 CascadeAction.NoAction,
                 CascadeAction.NoAction,
+                "name",
                 Enumerable.Empty<IMetadata>()
             ));
 
             // Act & Assert
-            action.Should().Throw<ArgumentException>().And.ParamName.Should().Be("localFields");
+            action.Should().Throw<ValidationException>().WithMessage("LocalFields should contain at least 1 value");
         }
 
         [Fact]
@@ -75,17 +76,39 @@ namespace ModelFramework.Database.Tests.Default
             // Arrange
             var action = new Action(() => _ = new ForeignKeyConstraint
             (
-                "name",
-                "foreignTableName",
                 new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
                 Enumerable.Empty<IForeignKeyConstraintField>(),
+                "foreignTableName",
                 CascadeAction.NoAction,
                 CascadeAction.NoAction,
+                "name",
                 Enumerable.Empty<IMetadata>()
             ));
 
             // Act & Assert
-            action.Should().Throw<ArgumentException>().And.ParamName.Should().Be("foreignFields");
+            action.Should().Throw<ValidationException>().WithMessage("ForeignFields should contain at least 1 value");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = new ForeignKeyConstraint
+            (
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                new[] { new ForeignKeyConstraintField("name", Enumerable.Empty<IMetadata>()) },
+                "foreignTableName",
+                CascadeAction.NoAction,
+                CascadeAction.NoAction,
+                "name",
+                Enumerable.Empty<IMetadata>()
+            );
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
         }
     }
 }

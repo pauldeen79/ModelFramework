@@ -626,7 +626,7 @@ GO
                         new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
                     ).AddOrderByFields
                     (
-                        new ViewOrderByFieldBuilder().WithName("table1.Field1").WithDescending(),
+                        new ViewOrderByFieldBuilder().WithName("table1.Field1").WithIsDescending(),
                         new ViewOrderByFieldBuilder().WithName("table1.Field2")
                     ).AddGroupByFields
                     (

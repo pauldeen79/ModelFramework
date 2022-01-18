@@ -66,16 +66,20 @@ namespace ModelFramework.Objects.Extensions
                     new ClassConstructorBuilder()
                         .AddParameters
                         (
-                            instance.Properties.Select(p => new ParameterBuilder()
-                                .WithName(p.Name.ToPascalCase())
-                                .WithTypeName(string.Format
-                                (
-                                    p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                       .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
-                                    p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                    p.TypeName.GetGenericArguments()
-                                )
-                        )))
+                            instance.Properties.Select
+                            (
+                                p => new ParameterBuilder()
+                                    .WithName(p.Name.ToPascalCase())
+                                    .WithTypeName(string.Format
+                                    (
+                                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
+                                                           .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
+                                        p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                                        p.TypeName.GetGenericArguments()
+                                    ))
+                                    .WithIsNullable(p.IsNullable)
+                            )
+                        )
                         .AddCodeStatements
                         (
                             instance.Properties.Select
@@ -98,7 +102,7 @@ namespace ModelFramework.Objects.Extensions
                                 ? new[]
                                     {
                                         new LiteralCodeStatementBuilder()
-                                            .WithStatement("System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new ValidationContext(this, null, null), true);")
+                                            .WithStatement("System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);")
                                     }
                                 : Enumerable.Empty<LiteralCodeStatementBuilder>()
                         )
@@ -153,7 +157,7 @@ namespace ModelFramework.Objects.Extensions
                                             : string.Empty
                                     }
                                     )
-                                    .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? this.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")
+                                    .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? this.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableBuilderDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")
                             )
                             .Concat
                             (

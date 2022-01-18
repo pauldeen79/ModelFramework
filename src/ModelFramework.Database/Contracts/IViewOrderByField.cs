@@ -2,6 +2,6 @@
 {
     public interface IViewOrderByField : IViewField
     {
-        bool Descending { get; }
+        bool IsDescending { get; }
     }
 }

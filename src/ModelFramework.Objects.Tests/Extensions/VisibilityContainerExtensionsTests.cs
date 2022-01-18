@@ -14,7 +14,7 @@ namespace ModelFramework.Objects.Tests.Extensions
         {
             // Arrange
             var sut = new ClassFieldBuilder().WithName("Test")
-                                             .WithType(typeof(int))
+                                             .WithTypeName("System.Int32")
                                              .WithCustomModifiers("internal readonly")
                                              .Build();
 
@@ -30,7 +30,7 @@ namespace ModelFramework.Objects.Tests.Extensions
         {
             // Arrange
             var sut = new ClassFieldBuilder().WithName("Test")
-                                             .WithType(typeof(int))
+                                             .WithTypeName("System.Int32")
                                             .WithConstant()
                                             .Build();
 

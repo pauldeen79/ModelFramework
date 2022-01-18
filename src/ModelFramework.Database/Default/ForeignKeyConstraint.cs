@@ -1,56 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
 
 namespace ModelFramework.Database.Default
 {
-    public record ForeignKeyConstraint : IForeignKeyConstraint
+    public partial record ForeignKeyConstraint : IValidatableObject
     {
-        public ForeignKeyConstraint(string name,
-                                    string foreignTableName,
-                                    IEnumerable<IForeignKeyConstraintField> localFields,
-                                    IEnumerable<IForeignKeyConstraintField> foreignFields,
-                                    CascadeAction cascadeUpdate,
-                                    CascadeAction cascadeDelete,
-                                    IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
+            }
+            if (string.IsNullOrWhiteSpace(ForeignTableName))
+            {
+                yield return new ValidationResult("ForeignTableName cannot be null or whitespace", new[] { nameof(ForeignTableName) });
             }
 
-            if (string.IsNullOrWhiteSpace(foreignTableName))
+            if (!LocalFields.Any())
             {
-                throw new ArgumentOutOfRangeException(nameof(foreignTableName), "ForeignTableName cannot be null or whitespace");
+                yield return new ValidationResult("LocalFields should contain at least 1 value", new[] { nameof(LocalFields) });
             }
-
-            if (!localFields.Any())
+            if (!ForeignFields.Any())
             {
-                throw new ArgumentException("LocalFields should contain at least 1 value", nameof(localFields));
+                yield return new ValidationResult("ForeignFields should contain at least 1 value", new[] { nameof(ForeignFields) });
             }
-            if (!foreignFields.Any())
-            {
-                throw new ArgumentException("ForeignFields should contain at least 1 value", nameof(foreignFields));
-            }
-
-            Name = name;
-            ForeignTableName = foreignTableName;
-            LocalFields = new ValueCollection<IForeignKeyConstraintField>(localFields);
-            ForeignFields = new ValueCollection<IForeignKeyConstraintField>(foreignFields);
-            CascadeUpdate = cascadeUpdate;
-            CascadeDelete = cascadeDelete;
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
-        public ValueCollection<IForeignKeyConstraintField> LocalFields { get; }
-        public ValueCollection<IForeignKeyConstraintField> ForeignFields { get; }
-        public string ForeignTableName { get; }
-        public CascadeAction CascadeUpdate { get; }
-        public CascadeAction CascadeDelete { get; }
-        public string Name { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
+        public override string ToString() => Name;
     }
 }

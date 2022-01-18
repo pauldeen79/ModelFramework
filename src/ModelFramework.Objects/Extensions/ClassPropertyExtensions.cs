@@ -37,7 +37,7 @@ namespace ModelFramework.Objects.Extensions
 
         internal static string GetDefaultValue(this IClassProperty property)
         {
-            var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomImmutableDefaultValue);
+            var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomImmutableBuilderDefaultValue);
             if (md != null && md.Value != null)
             {
                 if (md.Value is Literal literal && literal.Value != null)

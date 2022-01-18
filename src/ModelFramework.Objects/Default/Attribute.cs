@@ -1,30 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Contracts;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelFramework.Objects.Default
 {
-    public record Attribute : IAttribute
+    public partial record Attribute : IValidatableObject
     {
-        public Attribute(string name,
-                         IEnumerable<IAttributeParameter> parameters,
-                         IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            Name = name;
-            Parameters = new ValueCollection<IAttributeParameter>(parameters);
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
-
-        public ValueCollection<IAttributeParameter> Parameters { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
-        public string Name { get; }
 
         public override string ToString() => Name;
     }

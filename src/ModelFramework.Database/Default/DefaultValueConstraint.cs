@@ -1,42 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelFramework.Database.Default
 {
-    public record DefaultValueConstraint : IDefaultValueConstraint
+    public partial record DefaultValueConstraint : IValidatableObject
     {
-        public DefaultValueConstraint(string fieldName,
-                                      string defaultValue,
-                                      string name,
-                                      IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            if (string.IsNullOrWhiteSpace(fieldName))
+            if (string.IsNullOrWhiteSpace(FieldName))
             {
-                throw new ArgumentOutOfRangeException(nameof(fieldName), "FieldName cannot be null or whitespace");
+                yield return new ValidationResult("FieldName cannot be null or whitespace", new[] { nameof(FieldName) });
             }
-
-            if (string.IsNullOrWhiteSpace(defaultValue))
+            if (string.IsNullOrWhiteSpace(DefaultValue))
             {
-                throw new ArgumentOutOfRangeException(nameof(defaultValue), "DefaultValue cannot be null or whitespace");
+                yield return new ValidationResult("DefaultValue cannot be null or whitespace", new[] { nameof(DefaultValue) });
             }
-
-            FieldName = fieldName;
-            DefaultValue = defaultValue;
-            Name = name;
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
-        public string FieldName { get; }
-        public string DefaultValue { get; }
-        public string Name { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
+        public override string ToString() => Name;
     }
 }

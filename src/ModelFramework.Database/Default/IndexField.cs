@@ -1,29 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelFramework.Database.Default
 {
-    public record IndexField : IIndexField
+    public partial record IndexField : IValidatableObject
     {
-        public IndexField(string name,
-                          bool isDescending,
-                          IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            Name = name;
-            IsDescending = isDescending;
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
-        public bool IsDescending { get; }
-        public string Name { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
+        public override string ToString() => IsDescending
+            ? $"{Name} DESC"
+            : $"{Name} ASC";
     }
 }

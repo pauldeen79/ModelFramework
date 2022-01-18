@@ -1,32 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ModelFramework.Database.Default
 {
-    public record StoredProcedure : IStoredProcedure
+    public partial record StoredProcedure : IValidatableObject
     {
-        public StoredProcedure(string name,
-                               IEnumerable<IStoredProcedureParameter> parameters,
-                               IEnumerable<ISqlStatement> statements,
-                               IEnumerable<IMetadata> metadata)
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(Name))
             {
-                throw new ArgumentOutOfRangeException(nameof(name), "Name cannot be null or whitespace");
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-
-            Name = name;
-            Parameters = new ValueCollection<IStoredProcedureParameter>(parameters);
-            Statements = new ValueCollection<ISqlStatement>(statements);
-            Metadata = new ValueCollection<IMetadata>(metadata);
         }
 
-        public ValueCollection<IStoredProcedureParameter> Parameters { get; }
-        public string Name { get; }
-        public ValueCollection<ISqlStatement> Statements { get; }
-        public ValueCollection<IMetadata> Metadata { get; }
+        public override string ToString() => Name;
     }
 }

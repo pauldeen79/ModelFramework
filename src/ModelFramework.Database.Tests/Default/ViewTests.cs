@@ -1,10 +1,8 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using FluentAssertions;
-using ModelFramework.Common.Contracts;
-using ModelFramework.Database.Contracts;
-using ModelFramework.Database.Default;
+using ModelFramework.Database.Builders;
 using Xunit;
 
 namespace ModelFramework.Database.Tests.Default
@@ -16,10 +14,23 @@ namespace ModelFramework.Database.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new View("", null, false, false, "", Enumerable.Empty<IViewField>(), Enumerable.Empty<IViewOrderByField>(), Enumerable.Empty<IViewField>(), Enumerable.Empty<IViewSource>(), Enumerable.Empty<IViewCondition>(), Enumerable.Empty<IMetadata>()));
+            var action = new Action(() => _ = new ViewBuilder().Build());
 
             // Act & Assert
-            action.Should().Throw<ArgumentOutOfRangeException>().And.ParamName.Should().Be("name");
+            action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
+        }
+
+        [Fact]
+        public void ToString_Returns_Name()
+        {
+            // Arrange
+            var sut = new ViewBuilder().WithName("Test").Build();
+
+            // Act
+            var actual = sut.ToString();
+
+            // Assert
+            actual.Should().Be(sut.Name);
         }
     }
 }

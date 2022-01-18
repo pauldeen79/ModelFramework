@@ -16,7 +16,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetValueWhenPresent()
         {
             // Arrange
-            var lst = new[] { new Metadata("name", "value") }.OfType<IMetadata>();
+            var lst = new[] { new Metadata("value", "name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetStringValue("name", "default");
@@ -29,7 +29,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetDefaultValueWhenNotPresent()
         {
             // Arrange
-            var lst = new[] { new Metadata("other name", "value") }.OfType<IMetadata>();
+            var lst = new[] { new Metadata("value", "other name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetStringValue("name", "default");
@@ -42,7 +42,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void GetsFirstValueWhenPresent()
         {
             // Arrange
-            var lst = new[] { new Metadata("name", "value"), new Metadata("name", "second value") }.OfType<IMetadata>();
+            var lst = new[] { new Metadata("value", "name"), new Metadata("second value", "name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetStringValue("name", "default");
@@ -55,7 +55,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetMultipleValues()
         {
             // Arrange
-            var lst = new[] { new Metadata("name", "value"), new Metadata("name", "second value") }.OfType<IMetadata>();
+            var lst = new[] { new Metadata("value", "name"), new Metadata("second value", "name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetStringValues("name");
@@ -68,7 +68,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetBooleanValue()
         {
             // Arrange
-            var lst = new[] { new Metadata("name", true), new Metadata("name", false) }.OfType<IMetadata>();
+            var lst = new[] { new Metadata(true, "name"), new Metadata(false, "name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetBooleanValue("name");
@@ -81,7 +81,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void GetBooleanValueWithDefaultValueReturnsDefaultWhenNotFound()
         {
             // Arrange
-            var lst = new[] { new Metadata("name", true), new Metadata("name", false) }.OfType<IMetadata>();
+            var lst = new[] { new Metadata(true, "name"), new Metadata(false, "name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetBooleanValue("wrongname", true);
@@ -94,7 +94,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void GetBooleanValueWithDefaultValueDelegateReturnsDefaultWhenNotFound()
         {
             // Arrange
-            var lst = new[] { new Metadata("name", true), new Metadata("name", false) }.OfType<IMetadata>();
+            var lst = new[] { new Metadata(true, "name"), new Metadata(false, "name") }.OfType<IMetadata>();
 
             // Act
             var actual = lst.GetBooleanValue("name", () => true);
@@ -107,7 +107,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetEnumValueWhenPresent()
         {
             // Arrange
-            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+            var sut = new[] { new Metadata($"{MyEnumThing.A}", "Test") };
 
             // Act
             var actual = sut.GetValue("Test", () => MyEnumThing.B);
@@ -120,7 +120,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetDefaultValueFromEnumWhenNotPresent()
         {
             // Arrange
-            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+            var sut = new[] { new Metadata($"{MyEnumThing.A}", "Test") };
 
             // Act
             var actual = sut.GetValue("WrongName", () => MyEnumThing.B);
@@ -133,7 +133,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetNullableEnumValueWhenPresent()
         {
             // Arrange
-            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+            var sut = new[] { new Metadata($"{MyEnumThing.A}", "Test") };
 
             // Act
             var actual = sut.GetValue<MyEnumThing?>("Test", () => MyEnumThing.B);
@@ -146,7 +146,7 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetDefaultValueFromNullableEnumWhenNotPresent()
         {
             // Arrange
-            var sut = new[] { new Metadata("Test", $"{MyEnumThing.A}") };
+            var sut = new[] { new Metadata($"{MyEnumThing.A}", "Test") };
 
             // Act
             var actual = sut.GetValue<MyEnumThing?>("WrongName", () => MyEnumThing.B);
@@ -159,10 +159,10 @@ namespace ModelFramework.Common.Tests.Extensions
         public void CanGetValueFromDifferentType()
         {
             // Arrange
-            var sut = new[] { new Metadata("Test", "1") };
+            var sut = new[] { new Metadata("1", "Test") };
 
             // Act
-            var actual = sut.GetValue<int>("Test", () => 0);
+            var actual = sut.GetValue("Test", () => 0);
 
             // Assert
             actual.Should().Be(1);

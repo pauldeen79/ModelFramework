@@ -1742,7 +1742,7 @@ AS
        var orderByField = Model as IViewOrderByField;
        if (orderByField != null)
        {
-           if (orderByField.Descending)
+           if (orderByField.IsDescending)
            {
                Write(" DESC");
            }
