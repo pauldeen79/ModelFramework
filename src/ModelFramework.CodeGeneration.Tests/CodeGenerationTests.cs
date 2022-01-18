@@ -316,7 +316,7 @@ namespace ModelFramework.CodeGeneration.Tests
                     else if (typeName.Contains("Collection<ModelFramework."))
                     {
                         var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement") || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
-                        property.ConvertCollectionPropertyToBuilderOnBuider
+                        property.ConvertCollectionPropertyToBuilderOnBuilder
                         (
                             false,
                             "CrossCutting.Common.ValueCollection",

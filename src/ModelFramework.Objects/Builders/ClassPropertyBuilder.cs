@@ -22,7 +22,7 @@ namespace ModelFramework.Objects.Builders
               .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Build()")
               .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0});" : "{0} = new " + argumentType + "(source.{0});"));
 
-        public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuider(bool addNullChecks,
+        public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(bool addNullChecks,
                                                                                string collectionType = "System.Collections.Generic.List",
                                                                                string? argumentType = null,
                                                                                string? customBuilderConstructorInitializeExpression = null)

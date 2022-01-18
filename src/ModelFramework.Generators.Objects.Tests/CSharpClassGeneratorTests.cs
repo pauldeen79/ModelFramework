@@ -1594,7 +1594,7 @@ namespace MyNamespace
                 new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(true),
                 new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuider(true)
+                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             };
             var cls = new ClassBuilder()
@@ -1630,7 +1630,7 @@ namespace MyNamespace
 #pragma warning restore CS8601 // Possible null reference assignment.
                 new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilderOnBuilder(),
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilderOnBuider(true)
+                new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilderOnBuilder(true)
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             };
             var cls = new ClassBuilder()
