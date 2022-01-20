@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.Common;
@@ -29,20 +30,10 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCommonContracts()
         {
             // Arrange
-            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
-            var model = new[]
-            {
-                typeof(IMetadata)
-            }.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
-                           .WithName(x.Name.Substring(1))
-                           .WithNamespace("ModelFramework.Common.Default")
-                           .Build()
-                           .ToImmutableClass(settings), "ModelFramework.Common.Builders")
-                           .Build()
-                    ).ToArray();
+            var models = GetImmutableBuilderClasses(GetCommonModelTypes(), "ModelFramework.Common.Default", "ModelFramework.Common.Builders");
 
             // Act
-            var actual = CreateCode(model);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -52,28 +43,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpContracts()
         {
             // Arrange
-            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
-            var models = new[]
-            {
-                typeof(IAttribute),
-                typeof(IAttributeParameter),
-                typeof(IClass),
-                typeof(IClassConstructor),
-                typeof(IClassField),
-                typeof(IClassMethod),
-                typeof(IClassProperty),
-                typeof(IEnum),
-                typeof(IEnumMember),
-                typeof(IInterface),
-                typeof(IParameter)
-            }.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
-                           .WithName(x.Name.Substring(1))
-                           .WithNamespace("ModelFramework.Objects.Default")
-                           .Chain(x => FixImmutableBuilderProperties(x))
-                           .Build()
-                           .ToImmutableClass(settings), "ModelFramework.Objects.Builders")
-                           .Build()
-                    ).ToArray();
+            var models = GetImmutableBuilderClasses(GetCsharpModelTypes(), "ModelFramework.Objects.Default", "ModelFramework.Objects.Builders");
 
             // Act
             var actual = CreateCode(models);
@@ -106,37 +76,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseContracts()
         {
             // Arrange
-            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
-            var models = new[]
-            {
-                typeof(ICheckConstraint),
-                typeof(IDefaultValueConstraint),
-                typeof(IForeignKeyConstraint),
-                typeof(IForeignKeyConstraintField),
-                typeof(IIndex),
-                typeof(IIndexField),
-                typeof(IPrimaryKeyConstraint),
-                typeof(IPrimaryKeyConstraintField),
-                typeof(ISchema),
-                typeof(IStoredProcedure),
-                typeof(IStoredProcedureParameter),
-                typeof(ITable),
-                typeof(ITableField),
-                typeof(IUniqueConstraint),
-                typeof(IUniqueConstraintField),
-                typeof(IView),
-                typeof(IViewCondition),
-                typeof(IViewField),
-                typeof(IViewOrderByField),
-                typeof(IViewSource)
-            }.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
-                           .WithName(x.Name.Substring(1))
-                           .WithNamespace("ModelFramework.Database.Default")
-                           .Chain(x => FixImmutableBuilderProperties(x))
-                           .Build()
-                           .ToImmutableClass(settings), "ModelFramework.Database.Builders")
-                           .Build()
-                    ).ToArray();
+            var models = GetImmutableBuilderClasses(GetDatabaseModelTypes(), "ModelFramework.Database.Default", "ModelFramework.Database.Builders");
 
             // Act
             var actual = CreateCode(models);
@@ -169,24 +109,10 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForCommonContracts()
         {
             // Arrange
-            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
-            var model = new[]
-            {
-                typeof(IMetadata)
-            }.Select(x => x.ToClassBuilder(new ClassSettings())
-                           .WithName(x.Name.Substring(1))
-                           .WithNamespace("ModelFramework.Common.Default")
-                           .Chain(x => FixImmutableBuilderProperties(x))
-                           .Build()
-                           .ToImmutableClassBuilder(settings)
-                           .WithRecord()
-                           .WithPartial()
-                           .AddInterfaces(x)
-                           .Build()
-                    ).ToArray();
+            var models = GetImmutableClasses(GetCommonModelTypes(), "ModelFramework.Common.Default");
 
             // Act
-            var actual = CreateCode(model);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -196,34 +122,10 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForCsharpContracts()
         {
             // Arrange
-            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
-            var model = new[]
-            {
-                typeof(IAttribute),
-                typeof(IAttributeParameter),
-                typeof(IClass),
-                typeof(IClassConstructor),
-                typeof(IClassField),
-                typeof(IClassMethod),
-                typeof(IClassProperty),
-                typeof(IEnum),
-                typeof(IEnumMember),
-                typeof(IInterface),
-                typeof(IParameter)
-            }.Select(x => x.ToClassBuilder(new ClassSettings())
-                           .WithName(x.Name.Substring(1))
-                           .WithNamespace("ModelFramework.Objects.Default")
-                           .Chain(x => FixImmutableBuilderProperties(x))
-                           .Build()
-                           .ToImmutableClassBuilder(settings)
-                           .WithRecord()
-                           .WithPartial()
-                           .AddInterfaces(x)
-                           .Build()
-                    ).ToArray();
+            var models = GetImmutableClasses(GetCsharpModelTypes(), "ModelFramework.Objects.Default");
 
             // Act
-            var actual = CreateCode(model);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -233,43 +135,10 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForDatabaseContracts()
         {
             // Arrange
-            var settings = new ImmutableClassSettings(newCollectionTypeName: "CrossCutting.Common.ValueCollection", validateArgumentsInConstructor: true);
-            var model = new[]
-            {
-                typeof(ICheckConstraint),
-                typeof(IDefaultValueConstraint),
-                typeof(IForeignKeyConstraint),
-                typeof(IForeignKeyConstraintField),
-                typeof(IIndex),
-                typeof(IIndexField),
-                typeof(IPrimaryKeyConstraint),
-                typeof(IPrimaryKeyConstraintField),
-                typeof(ISchema),
-                typeof(IStoredProcedure),
-                typeof(IStoredProcedureParameter),
-                typeof(ITable),
-                typeof(ITableField),
-                typeof(IUniqueConstraint),
-                typeof(IUniqueConstraintField),
-                typeof(IView),
-                typeof(IViewCondition),
-                typeof(IViewField),
-                typeof(IViewOrderByField),
-                typeof(IViewSource)
-            }.Select(x => x.ToClassBuilder(new ClassSettings())
-                           .WithName(x.Name.Substring(1))
-                           .WithNamespace("ModelFramework.Database.Default")
-                           .Chain(x => FixImmutableBuilderProperties(x))
-                           .Build()
-                           .ToImmutableClassBuilder(settings)
-                           .WithRecord()
-                           .WithPartial()
-                           .AddInterfaces(x)
-                           .Build()
-                    ).ToArray();
+            var models = GetImmutableClasses(GetDatabaseModelTypes(), "ModelFramework.Database.Default");
 
             // Act
-            var actual = CreateCode(model);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -286,7 +155,8 @@ namespace ModelFramework.CodeGeneration.Tests
                 .Where(t => t.FullName != null
                     && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault()
                     && t.GetProperties().Any())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name).WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty))
+                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name)
+                                                                                          .WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty))
                 .ToArray();
 
             FixImmutableBuilderProperties(models);
@@ -294,88 +164,91 @@ namespace ModelFramework.CodeGeneration.Tests
             return models.Select(x => x.Build()).ToArray();
         }
 
-        private static void FixImmutableBuilderProperties(ClassBuilder model)
+        private static void FixImmutableBuilderProperties(ClassBuilder classBuilder)
         {
-            FixImmutableBuilderProperties(new[] { model });
+            foreach (var property in classBuilder.Properties)
+            {
+                var typeName = property.TypeName.FixTypeName();
+                if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
+                                                                              "ModelFramework.Database.Contracts.I",
+                                                                              "ModelFramework.Common.Contracts.I"))
+                {
+                    property.ConvertSinglePropertyToBuilderOnBuilder
+                    (
+                        typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
+                    );
+                }
+                else if (typeName.Contains("Collection<ModelFramework."))
+                {
+                    var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement")
+                        || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
+                    property.ConvertCollectionPropertyToBuilderOnBuilder
+                    (
+                        false,
+                        typeof(ValueCollection<>).WithoutGenerics(),
+                        isCodeStatement
+                            ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
+                            : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
+                        isCodeStatement
+                            ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()));"
+                            : null
+                    );
+                }
+                else if (typeName.Contains("Collection<System.String"))
+                {
+                    property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
+                }
+                else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
+                {
+                    property.SetDefaultArgumentValueForWithMethod(true);
+                    if (property.Name == nameof(ClassProperty.HasGetter) || property.Name == nameof(ClassProperty.HasSetter))
+                    {
+                        property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
+                    }
+                }
+                else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
+                {
+                    property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
+                }
+
+                if (property.Name == nameof(IVisibilityContainer.Visibility))
+                {
+                    property.SetDefaultValueForBuilderClassConstructor
+                    (
+                        new Literal
+                        (
+                            classBuilder.Name == nameof(ClassField)
+                                ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
+                                : $"{typeof(Visibility).FullName}.{Visibility.Public}"
+                        )
+                    );
+                }
+
+                if (property.Name == nameof(ClassProperty.HasSetter))
+                {
+                    property.SetBuilderWithExpression(@"{0} = {2};
+if ({2})
+{5}
+    HasInitializer = false;
+{6}");
+                }
+
+                if (property.Name == nameof(ClassProperty.HasInitializer))
+                {
+                    property.SetBuilderWithExpression(@"{0} = {2};
+if ({2})
+{5}
+    HasSetter = false;
+{6}");
+                }
+            }
         }
 
         private static void FixImmutableBuilderProperties(ClassBuilder[] models)
         {
             foreach (var classBuilder in models)
             {
-                foreach (var property in classBuilder.Properties)
-                {
-                    var typeName = property.TypeName.FixTypeName();
-                    if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I", "ModelFramework.Database.Contracts.I", "ModelFramework.Common.Contracts.I"))
-                    {
-                        property.ConvertSinglePropertyToBuilderOnBuilder
-                        (
-                            typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
-                        );
-                    }
-                    else if (typeName.Contains("Collection<ModelFramework."))
-                    {
-                        var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement") || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
-                        property.ConvertCollectionPropertyToBuilderOnBuilder
-                        (
-                            false,
-                            "CrossCutting.Common.ValueCollection",
-                            isCodeStatement
-                                ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
-                                : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
-                            isCodeStatement
-                                ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()));"
-                                : null
-                        );
-                    }
-                    else if (typeName.Contains("Collection<System.String"))
-                    {
-                        property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, "new CrossCutting.Common.ValueCollection<string>({0})");
-                    }
-                    else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
-                    {
-                        property.SetDefaultArgumentValueForWithMethod(true);
-                        if (property.Name == nameof(ClassProperty.HasGetter) || property.Name == nameof(ClassProperty.HasSetter))
-                        {
-                            property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
-                        }
-                    }
-                    else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
-                    {
-                        property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
-                    }
-
-                    if (property.Name == nameof(IVisibilityContainer.Visibility))
-                    {
-                        property.SetDefaultValueForBuilderClassConstructor
-                        (
-                            new Literal
-                            (
-                                classBuilder.Name == nameof(ClassField)
-                                    ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
-                                    : $"{typeof(Visibility).FullName}.{Visibility.Public}"
-                            )
-                        );
-                    }
-
-                    if (property.Name == nameof(ClassProperty.HasSetter))
-                    {
-                        property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasInitializer = false;
-{6}");
-                    }
-
-                    if (property.Name == nameof(ClassProperty.HasInitializer))
-                    {
-                        property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasSetter = false;
-{6}");
-                    }
-                }
+                FixImmutableBuilderProperties(classBuilder);
             }
         }
 
@@ -456,13 +329,87 @@ if ({2})
             }
         }
 
-        private static string CreateCode(ITypeBase[] builderModels)
+        private static string CreateCode(ITypeBase[] models)
             => TemplateRenderHelper.GetTemplateOutput(new CSharpClassGenerator(),
-                                                      builderModels,
+                                                      models,
                                                       additionalParameters: new
                                                       {
                                                           EnableNullableContext = true,
                                                           CreateCodeGenerationHeader = true
                                                       });
+
+        private static ImmutableClassSettings CreateImmutableClassSettings()
+            => new ImmutableClassSettings(newCollectionTypeName: typeof(ValueCollection<>).WithoutGenerics(),
+                                          validateArgumentsInConstructor: true);
+
+        private static IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
+            => types.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
+                                                .WithName(x.Name.Substring(1))
+                                                .WithNamespace(entitiesNamespace)
+                                                .Chain(x => FixImmutableBuilderProperties(x))
+                                                .Build()
+                                                .ToImmutableClass(CreateImmutableClassSettings()), buildersNamespace)
+                                                .Build()
+                           ).ToArray();
+
+        private static IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
+            => types.Select(x => x.ToClassBuilder(new ClassSettings())
+                                  .WithName(x.Name.Substring(1))
+                                  .WithNamespace(entitiesNamespace)
+                                  .Chain(x => FixImmutableBuilderProperties(x))
+                                  .Build()
+                                  .ToImmutableClassBuilder(CreateImmutableClassSettings())
+                                  .WithRecord()
+                                  .WithPartial()
+                                  .AddInterfaces(x)
+                                  .Build()
+                           ).ToArray();
+
+        private static Type[] GetCommonModelTypes()
+            => new[]
+            {
+                typeof(IMetadata)
+            };
+
+        private static Type[] GetCsharpModelTypes()
+            => new[]
+            {
+                typeof(IAttribute),
+                typeof(IAttributeParameter),
+                typeof(IClass),
+                typeof(IClassConstructor),
+                typeof(IClassField),
+                typeof(IClassMethod),
+                typeof(IClassProperty),
+                typeof(IEnum),
+                typeof(IEnumMember),
+                typeof(IInterface),
+                typeof(IParameter)
+            };
+
+        private static Type[] GetDatabaseModelTypes()
+            => new[]
+            {
+                typeof(ICheckConstraint),
+                typeof(IDefaultValueConstraint),
+                typeof(IForeignKeyConstraint),
+                typeof(IForeignKeyConstraintField),
+                typeof(IIndex),
+                typeof(IIndexField),
+                typeof(IPrimaryKeyConstraint),
+                typeof(IPrimaryKeyConstraintField),
+                typeof(ISchema),
+                typeof(IStoredProcedure),
+                typeof(IStoredProcedureParameter),
+                typeof(ITable),
+                typeof(ITableField),
+                typeof(IUniqueConstraint),
+                typeof(IUniqueConstraintField),
+                typeof(IView),
+                typeof(IViewCondition),
+                typeof(IViewField),
+                typeof(IViewOrderByField),
+                typeof(IViewSource)
+            };
     }
 }

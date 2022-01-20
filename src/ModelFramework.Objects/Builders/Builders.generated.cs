@@ -277,7 +277,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClass Build()
         {
-            return new ModelFramework.Objects.Default.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<string>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<string>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
         }
 
         public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
@@ -1912,7 +1912,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IInterface Build()
         {
-            return new ModelFramework.Objects.Default.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<string>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<string>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
+            return new ModelFramework.Objects.Default.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
         }
 
         public InterfaceBuilder WithNamespace(string @namespace)

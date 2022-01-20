@@ -19,7 +19,7 @@ namespace ModelFramework.Generators.Objects.Tests.Extensions
     public class TypeExtensionsTests
     {
         [Fact]
-        public void ToClass_Generates_Class_Correctly()
+        public void ToWrapperClass_Generates_Class_Correctly()
         {
             // Arrange
             var methodCodeStatementsDelegate = new Func<MethodInfo, IEnumerable<ICodeStatement>>(mi => CreateMethodCodeStatements(mi));

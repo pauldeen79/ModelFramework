@@ -47,6 +47,24 @@ namespace ModelFramework.Objects.Extensions
                 .AddMethods(GetWrapperClassMethods(instance, settings.MethodCodeStatementsDelegate))
                 .AddConstructors(GetWrapperClassConstructors(instance));
 
+        /// <summary>
+        /// Removes generics from a typename. (`1)
+        /// </summary>
+        /// <param name="typeName">Typename with or without generics</param>
+        /// <returns>Typename without generics (`1)</returns>
+        public static string WithoutGenerics(this Type instance)
+        {
+            if (instance.FullName == null)
+            {
+                throw new ArgumentException("Can't get typename without generics when the FullName of this type is null. Could not determine typename.");
+            }
+
+            var index = instance.FullName.IndexOf('`');
+            return index == -1
+                ? instance.FullName
+                : instance.FullName.Substring(0, index);
+        }
+
         private static IEnumerable<string> GetInterfaces(Type instance)
             => instance.GetInterfaces()
                        .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))
