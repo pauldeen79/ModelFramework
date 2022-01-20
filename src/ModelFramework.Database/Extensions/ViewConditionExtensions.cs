@@ -1,5 +1,4 @@
 ﻿using ModelFramework.Database.Contracts;
-using ModelFramework.Database.Default;
 
 namespace ModelFramework.Database.Extensions
 {

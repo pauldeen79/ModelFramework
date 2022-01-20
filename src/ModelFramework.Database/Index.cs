@@ -1,0 +1,24 @@
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using ModelFramework.Database.Contracts;
+
+namespace ModelFramework.Database
+{
+    public partial record Index : IValidatableObject
+    {
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
+            }
+            if (!Fields.Any())
+            {
+                yield return new ValidationResult("Fields should contain at least 1 value", new[] { nameof(Fields) });
+            }
+        }
+
+        public override string ToString() => Name;
+    }
+}

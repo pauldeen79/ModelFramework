@@ -37,7 +37,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ICheckConstraint Build()
         {
-            return new ModelFramework.Database.Default.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
         }
 
         public CheckConstraintBuilder WithExpression(string expression)
@@ -115,7 +115,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IDefaultValueConstraint Build()
         {
-            return new ModelFramework.Database.Default.DefaultValueConstraint(FieldName, DefaultValue, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.DefaultValueConstraint(FieldName, DefaultValue, Name, Metadata.Select(x => x.Build()));
         }
 
         public DefaultValueConstraintBuilder WithFieldName(string fieldName)
@@ -219,7 +219,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IForeignKeyConstraint Build()
         {
-            return new ModelFramework.Database.Default.ForeignKeyConstraint(LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), ForeignTableName, CascadeUpdate, CascadeDelete, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.ForeignKeyConstraint(LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), ForeignTableName, CascadeUpdate, CascadeDelete, Name, Metadata.Select(x => x.Build()));
         }
 
         public ForeignKeyConstraintBuilder AddLocalFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> localFields)
@@ -329,7 +329,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IForeignKeyConstraintField Build()
         {
-            return new ModelFramework.Database.Default.ForeignKeyConstraintField(Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.ForeignKeyConstraintField(Name, Metadata.Select(x => x.Build()));
         }
 
         public ForeignKeyConstraintFieldBuilder WithName(string name)
@@ -405,7 +405,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IIndex Build()
         {
-            return new ModelFramework.Database.Default.Index(Fields.Select(x => x.Build()), Unique, Name, Metadata.Select(x => x.Build()), FileGroupName);
+            return new ModelFramework.Database.Index(Fields.Select(x => x.Build()), Unique, Name, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
         public IndexBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexFieldBuilder> fields)
@@ -499,7 +499,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IIndexField Build()
         {
-            return new ModelFramework.Database.Default.IndexField(IsDescending, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.IndexField(IsDescending, Name, Metadata.Select(x => x.Build()));
         }
 
         public IndexFieldBuilder WithIsDescending(bool isDescending = true)
@@ -577,7 +577,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraint Build()
         {
-            return new ModelFramework.Database.Default.PrimaryKeyConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+            return new ModelFramework.Database.PrimaryKeyConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
         public PrimaryKeyConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> fields)
@@ -663,7 +663,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraintField Build()
         {
-            return new ModelFramework.Database.Default.PrimaryKeyConstraintField(IsDescending, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.PrimaryKeyConstraintField(IsDescending, Name, Metadata.Select(x => x.Build()));
         }
 
         public PrimaryKeyConstraintFieldBuilder WithIsDescending(bool isDescending = true)
@@ -747,7 +747,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ISchema Build()
         {
-            return new ModelFramework.Database.Default.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
         }
 
         public SchemaBuilder AddTables(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.TableBuilder> tables)
@@ -859,7 +859,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IStoredProcedure Build()
         {
-            return new ModelFramework.Database.Default.StoredProcedure(Statements.Select(x => x.Build()), Parameters.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.StoredProcedure(Statements.Select(x => x.Build()), Parameters.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
         }
 
         public StoredProcedureBuilder AddStatements(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISqlStatementBuilder> statements)
@@ -957,7 +957,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
         {
-            return new ModelFramework.Database.Default.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
         }
 
         public StoredProcedureParameterBuilder WithType(string type)
@@ -1079,7 +1079,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ITable Build()
         {
-            return new ModelFramework.Database.Default.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
+            return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
         }
 
         public TableBuilder AddPrimaryKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder> primaryKeyConstraints)
@@ -1297,7 +1297,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ITableField Build()
         {
-            return new ModelFramework.Database.Default.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
+            return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
         }
 
         public TableFieldBuilder WithType(string type)
@@ -1442,7 +1442,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IUniqueConstraint Build()
         {
-            return new ModelFramework.Database.Default.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+            return new ModelFramework.Database.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
         public UniqueConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> fields)
@@ -1522,7 +1522,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
         {
-            return new ModelFramework.Database.Default.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
         }
 
         public UniqueConstraintFieldBuilder WithName(string name)
@@ -1634,7 +1634,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IView Build()
         {
-            return new ModelFramework.Database.Default.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewBuilder AddSelectFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> selectFields)
@@ -1805,7 +1805,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewCondition Build()
         {
-            return new ModelFramework.Database.Default.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
+            return new ModelFramework.Database.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
         public ViewConditionBuilder WithExpression(string expression)
@@ -1903,7 +1903,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewField Build()
         {
-            return new ModelFramework.Database.Default.ViewField(SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.ViewField(SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
@@ -2023,7 +2023,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewOrderByField Build()
         {
-            return new ModelFramework.Database.Default.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewOrderByFieldBuilder WithIsDescending(bool isDescending = true)
@@ -2139,7 +2139,7 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewSource Build()
         {
-            return new ModelFramework.Database.Default.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
         }
 
         public ViewSourceBuilder WithAlias(string alias)
