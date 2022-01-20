@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ModelFramework.Objects.Default
+namespace ModelFramework.Objects
 {
 #nullable enable
     public partial record Attribute : ModelFramework.Objects.Contracts.IAttribute

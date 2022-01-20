@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ModelFramework.Objects.Default
+namespace ModelFramework.Objects
 {
-    public partial record EnumMember : IValidatableObject
+    public partial record ClassMethod : IValidatableObject
     {
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -13,9 +13,6 @@ namespace ModelFramework.Objects.Default
             }
         }
 
-        public override string ToString()
-            => Value != null
-                ? $"[{Name}] = [{Value}]"
-                : Name;
+        public override string ToString() => Name;
     }
 }

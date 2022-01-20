@@ -3,7 +3,6 @@ using System.Linq;
 using ModelFramework.Common.Builders;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
 using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.Objects.Extensions

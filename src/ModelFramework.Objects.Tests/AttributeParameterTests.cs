@@ -2,10 +2,9 @@
 using System.Linq;
 using FluentAssertions;
 using ModelFramework.Common.Contracts;
-using ModelFramework.Objects.Default;
 using Xunit;
 
-namespace ModelFramework.Objects.Tests.Default
+namespace ModelFramework.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
     public class AttributeParameterTests
@@ -27,7 +26,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_Value_When_Name_Is_Empty()
         {
             // Arrange
-            var sut = new AttributeParameter("TestValue", Enumerable.Empty<IMetadata>(), "");
+            var sut = new AttributeParameter("TestValue", Enumerable.Empty<IMetadata>(), string.Empty);
 
             // Act
             var actual = sut.ToString();
@@ -40,7 +39,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_String_Empty_When_Name_And_Value_Are_Both_Empty()
         {
             // Arrange
-            var sut = new AttributeParameter("", Enumerable.Empty<IMetadata>(), "");
+            var sut = new AttributeParameter(string.Empty, Enumerable.Empty<IMetadata>(), string.Empty);
 
             // Act
             var actual = sut.ToString();

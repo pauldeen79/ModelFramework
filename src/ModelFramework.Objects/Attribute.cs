@@ -1,20 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ModelFramework.Objects.Default
+namespace ModelFramework.Objects
 {
-    public partial record ClassProperty : IValidatableObject
+    public partial record Attribute : IValidatableObject
     {
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
                 yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
-            }
-
-            if (string.IsNullOrWhiteSpace(TypeName))
-            {
-                yield return new ValidationResult("TypeName cannot be null or whitespace", new[] { nameof(TypeName) });
             }
         }
 

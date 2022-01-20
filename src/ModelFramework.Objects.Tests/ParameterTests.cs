@@ -5,10 +5,9 @@ using System.Linq;
 using FluentAssertions;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
 using Xunit;
 
-namespace ModelFramework.Objects.Tests.Default
+namespace ModelFramework.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
     public class ParameterTests
@@ -22,7 +21,7 @@ namespace ModelFramework.Objects.Tests.Default
                                                             default,
                                                             Enumerable.Empty<IAttribute>(),
                                                             Enumerable.Empty<IMetadata>(),
-                                                            "",
+                                                            string.Empty,
                                                             default));
 
             // Act & Assert

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ModelFramework.Objects.Default
+namespace ModelFramework.Objects
 {
-    public partial record Class : IValidatableObject
+    public partial record Interface : IValidatableObject
     {
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

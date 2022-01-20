@@ -37,7 +37,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IAttribute Build()
         {
-            return new ModelFramework.Objects.Default.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
+            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
         }
 
         public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
@@ -115,7 +115,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
         {
-            return new ModelFramework.Objects.Default.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
+            return new ModelFramework.Objects.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
         }
 
         public AttributeParameterBuilder WithValue(object value)
@@ -277,7 +277,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClass Build()
         {
-            return new ModelFramework.Objects.Default.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
         }
 
         public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
@@ -571,7 +571,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassConstructor Build()
         {
-            return new ModelFramework.Objects.Default.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
+            return new ModelFramework.Objects.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
         }
 
         public ClassConstructorBuilder WithChainCall(string chainCall)
@@ -817,7 +817,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassField Build()
         {
-            return new ModelFramework.Objects.Default.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue);
+            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue);
         }
 
         public ClassFieldBuilder WithReadOnly(bool readOnly = true)
@@ -1080,7 +1080,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
-            return new ModelFramework.Objects.Default.ClassMethod(Partial, ExtensionMethod, Operator, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
         }
 
         public ClassMethodBuilder WithPartial(bool partial = true)
@@ -1416,7 +1416,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassProperty Build()
         {
-            return new ModelFramework.Objects.Default.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+            return new ModelFramework.Objects.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
         }
 
         public ClassPropertyBuilder WithHasGetter(bool hasGetter = true)
@@ -1679,7 +1679,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IEnum Build()
         {
-            return new ModelFramework.Objects.Default.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
+            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
         }
 
         public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
@@ -1785,7 +1785,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IEnumMember Build()
         {
-            return new ModelFramework.Objects.Default.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
         }
 
         public EnumMemberBuilder WithValue(object? value)
@@ -1912,7 +1912,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IInterface Build()
         {
-            return new ModelFramework.Objects.Default.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
+            return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
         }
 
         public InterfaceBuilder WithNamespace(string @namespace)
@@ -2094,7 +2094,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
-            return new ModelFramework.Objects.Default.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
+            return new ModelFramework.Objects.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
         }
 
         public ParameterBuilder WithIsParamArray(bool isParamArray = true)

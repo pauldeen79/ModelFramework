@@ -155,8 +155,8 @@ namespace ModelFramework.Objects.Extensions
             );
 
         private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes)
-            => attributes.OfType<Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                                    && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
+            => attributes.OfType<System.Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
+                                                                && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
                          .Select(x => new AttributeBuilder().WithName(x.GetType().FullName));
 
         private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)

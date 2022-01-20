@@ -6,7 +6,6 @@ using ModelFramework.Generators.Objects;
 using ModelFramework.Generators.Shared;
 using ModelFramework.Generators.Tests.POC;
 using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.Default;
 using TextTemplateTransformationFramework.Runtime;
 using Xunit;
 

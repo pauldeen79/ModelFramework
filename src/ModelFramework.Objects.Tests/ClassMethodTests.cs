@@ -5,7 +5,7 @@ using FluentAssertions;
 using ModelFramework.Objects.Builders;
 using Xunit;
 
-namespace ModelFramework.Objects.Tests.Default
+namespace ModelFramework.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
     public class ClassMethodTests

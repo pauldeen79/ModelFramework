@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ModelFramework.Objects.Default
+namespace ModelFramework.Objects
 {
-    public partial record Parameter : IValidatableObject
+    public partial record Class : IValidatableObject
     {
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -11,12 +11,11 @@ namespace ModelFramework.Objects.Default
             {
                 yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
             }
-            if (string.IsNullOrWhiteSpace(TypeName))
-            {
-                yield return new ValidationResult("TypeName cannot be null or whitespace", new[] { nameof(TypeName) });
-            }
         }
 
-        public override string ToString() => Name;
+        public override string ToString()
+            => !string.IsNullOrEmpty(Namespace)
+                ? $"{Namespace}.{Name}"
+                : Name;
     }
 }

@@ -7,7 +7,7 @@ using ModelFramework.Common.Contracts;
 using ModelFramework.Objects.Contracts;
 using Xunit;
 
-namespace ModelFramework.Objects.Tests.Default
+namespace ModelFramework.Objects.Tests
 {
     [ExcludeFromCodeCoverage]
     public class AttributeTests
@@ -16,7 +16,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void Ctor_Throws_On_Empty_Name()
         {
             // Arrange
-            var action = new Action(() => _ = new Objects.Default.Attribute(Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>(), string.Empty));
+            var action = new Action(() => _ = new Attribute(Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>(), string.Empty));
 
             // Act & Assert
             action.Should().Throw<ValidationException>().WithMessage("Name cannot be null or whitespace");
@@ -26,7 +26,7 @@ namespace ModelFramework.Objects.Tests.Default
         public void ToString_Returns_Name()
         {
             // Arrange
-            var sut = new Objects.Default.Attribute(Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>(), "Test");
+            var sut = new Attribute(Enumerable.Empty<IAttributeParameter>(), Enumerable.Empty<IMetadata>(), "Test");
 
             // Act
             var actual = sut.ToString();

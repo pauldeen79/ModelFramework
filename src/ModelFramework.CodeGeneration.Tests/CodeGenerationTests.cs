@@ -15,7 +15,7 @@ using ModelFramework.Generators.Objects;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
-using ModelFramework.Objects.Default;
+using ModelFramework.Objects;
 using ModelFramework.Objects.Extensions;
 using ModelFramework.Objects.Settings;
 using TextTemplateTransformationFramework.Runtime;
@@ -43,7 +43,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpContracts()
         {
             // Arrange
-            var models = GetImmutableBuilderClasses(GetCsharpModelTypes(), "ModelFramework.Objects.Default", "ModelFramework.Objects.Builders");
+            var models = GetImmutableBuilderClasses(GetCsharpModelTypes(), "ModelFramework.Objects", "ModelFramework.Objects.Builders");
 
             // Act
             var actual = CreateCode(models);
@@ -122,7 +122,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForCsharpContracts()
         {
             // Arrange
-            var models = GetImmutableClasses(GetCsharpModelTypes(), "ModelFramework.Objects.Default");
+            var models = GetImmutableClasses(GetCsharpModelTypes(), "ModelFramework.Objects");
 
             // Act
             var actual = CreateCode(models);
@@ -268,10 +268,10 @@ if ({2})
                     : "ModelFramework.Common.Contracts.I" + instance.Name;
             }
 
-            if (instance.Namespace == "ModelFramework.Objects.Default")
+            if (instance.Namespace == "ModelFramework.Objects")
             {
                 return forCreate
-                    ? "ModelFramework.Objects.Default." + instance.Name
+                    ? "ModelFramework.Objects." + instance.Name
                     : "ModelFramework.Objects.Contracts.I" + instance.Name;
             }
 

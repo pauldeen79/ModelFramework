@@ -1,6 +1,6 @@
 ﻿using CrossCutting.Common.Extensions;
 
-namespace ModelFramework.Objects.Default
+namespace ModelFramework.Objects
 {
     public partial record AttributeParameter
     {
