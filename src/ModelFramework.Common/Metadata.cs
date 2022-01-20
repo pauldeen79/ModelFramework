@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace ModelFramework.Common.Default
+namespace ModelFramework.Common
 {
     public partial record Metadata : IValidatableObject
     {

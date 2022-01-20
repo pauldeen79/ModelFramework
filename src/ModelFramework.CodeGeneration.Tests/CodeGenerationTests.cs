@@ -30,7 +30,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCommonContracts()
         {
             // Arrange
-            var models = GetImmutableBuilderClasses(GetCommonModelTypes(), "ModelFramework.Common.Default", "ModelFramework.Common.Builders");
+            var models = GetImmutableBuilderClasses(GetCommonModelTypes(), "ModelFramework.Common", "ModelFramework.Common.Builders");
 
             // Act
             var actual = CreateCode(models);
@@ -109,7 +109,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForCommonContracts()
         {
             // Arrange
-            var models = GetImmutableClasses(GetCommonModelTypes(), "ModelFramework.Common.Default");
+            var models = GetImmutableClasses(GetCommonModelTypes(), "ModelFramework.Common");
 
             // Act
             var actual = CreateCode(models);
@@ -261,10 +261,10 @@ if ({2})
 
         private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {
-            if (instance.Namespace == "ModelFramework.Common.Default")
+            if (instance.Namespace == "ModelFramework.Common")
             {
                 return forCreate
-                    ? "ModelFramework.Common.Default." + instance.Name
+                    ? "ModelFramework.Common." + instance.Name
                     : "ModelFramework.Common.Contracts.I" + instance.Name;
             }
 

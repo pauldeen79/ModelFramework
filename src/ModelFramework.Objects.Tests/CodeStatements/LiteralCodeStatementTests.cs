@@ -2,8 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
+using ModelFramework.Common;
 using ModelFramework.Common.Contracts;
-using ModelFramework.Common.Default;
 using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.CodeStatements.Builders;
 using Xunit;

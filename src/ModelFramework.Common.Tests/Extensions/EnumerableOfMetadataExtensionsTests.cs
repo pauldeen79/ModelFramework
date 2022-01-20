@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using ModelFramework.Common.Contracts;
-using ModelFramework.Common.Default;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Common.Tests.TestFixtures;
 using System.Diagnostics.CodeAnalysis;

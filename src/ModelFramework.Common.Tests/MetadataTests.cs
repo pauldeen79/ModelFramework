@@ -2,10 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
-using ModelFramework.Common.Default;
 using Xunit;
 
-namespace ModelFramework.Common.Tests.Default
+namespace ModelFramework.Common.Tests
 {
     [ExcludeFromCodeCoverage]
     public class MetadataTests

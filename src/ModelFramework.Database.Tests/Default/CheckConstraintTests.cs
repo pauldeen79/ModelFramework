@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FluentAssertions;
+using ModelFramework.Common;
 using ModelFramework.Common.Contracts;
-using ModelFramework.Common.Default;
 using ModelFramework.Database.Default;
 using Xunit;
 

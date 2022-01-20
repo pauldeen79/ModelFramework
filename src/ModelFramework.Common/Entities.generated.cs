@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ModelFramework.Common.Default
+namespace ModelFramework.Common
 {
 #nullable enable
     public partial record Metadata : ModelFramework.Common.Contracts.IMetadata
