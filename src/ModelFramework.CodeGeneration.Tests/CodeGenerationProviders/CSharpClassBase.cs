@@ -20,6 +20,28 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
     public abstract class CSharpClassBase : ICodeGenerationProvider
     {
+        public bool GenerateMultipleFiles { get; set; }
+
+        public string BasePath { get; set; } = string.Empty;
+
+        public abstract string Prefix { get; }
+
+        public abstract string DefaultFileName { get; }
+
+        public abstract object CreateModel();
+
+        public object CreateAdditionalParameters()
+            => new Dictionary<string, object>
+            {
+                { nameof(CSharpClassGenerator.EnableNullableContext), true },
+                { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), true },
+                { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles },
+                { nameof(CSharpClassGenerator.Model), CreateModel() }
+            };
+
+        public object CreateGenerator()
+            => new CSharpClassGenerator();
+
         protected static IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
             => types.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
                                                 .WithName(x.Name.Substring(1))
@@ -278,18 +300,5 @@ if ({2})
         private static ImmutableClassSettings CreateImmutableClassSettings()
             => new ImmutableClassSettings(newCollectionTypeName: typeof(ValueCollection<>).WithoutGenerics(),
                                           validateArgumentsInConstructor: true);
-
-        public abstract object CreateModel();
-
-        public object CreateAdditionalParameters()
-            => new Dictionary<string, object>
-            {
-                { nameof(CSharpClassGenerator.EnableNullableContext), true },
-                { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), true },
-                { nameof(CSharpClassGenerator.GenerateMultipleFiles), false }
-            };
-
-        public object CreateGenerator()
-            => new CSharpClassGenerator();
     }
 }

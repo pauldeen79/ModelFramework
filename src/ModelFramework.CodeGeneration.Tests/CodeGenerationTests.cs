@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
@@ -10,11 +11,30 @@ namespace ModelFramework.CodeGeneration.Tests
     [ExcludeFromCodeCoverage]
     public class CodeGenerationTests
     {
+        private static readonly string BasePath = Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\");
+        private const bool GenerateMultipleFiles = false;
+        private const bool DryRun = true;
+        private const string LastGeneratedFilesFileName = "*.generated.cs;*.generated.sql";
+
+        [Fact]
+        public void CanGenerateAll()
+        {
+            GenerateCode.For<CommonBuilders>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<ObjectsBuilders>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<ObjectsCodeStatements>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<DatabaseBuilders>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<DatabaseCodeStatements>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<CommonRecords>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<ObjectsRecords>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            GenerateCode.For<DatabaseRecords>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+        }
+
         [Fact]
         public void CanGenerateImmutableBuilderClassesForCommonContracts()
         {
             // Act
-            var actual = GenerateCode.For<CommonBuilders>();
+            var generatedCode = GenerateCode.For<CommonBuilders>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -24,7 +44,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForObjectsContracts()
         {
             // Act
-            var actual = GenerateCode.For<ObjectsBuilders>();
+            var generatedCode = GenerateCode.For<ObjectsBuilders>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -34,7 +55,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForObjectsCodeStatements()
         {
             // Act
-            var actual = GenerateCode.For<ObjectsCodeStatements>();
+            var generatedCode = GenerateCode.For<ObjectsCodeStatements>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -44,7 +66,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseContracts()
         {
             // Act
-            var actual = GenerateCode.For<DatabaseBuilders>();
+            var generatedCode = GenerateCode.For<DatabaseBuilders>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -54,7 +77,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseCodeStatements()
         {
             // Act
-            var actual = GenerateCode.For<DatabaseCodeStatements>();
+            var generatedCode = GenerateCode.For<DatabaseCodeStatements>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -64,7 +88,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForCommonContracts()
         {
             // Act
-            var actual = GenerateCode.For<CommonRecords>();
+            var generatedCode = GenerateCode.For<CommonRecords>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -74,7 +99,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForObjectsContracts()
         {
             // Act
-            var actual = GenerateCode.For<ObjectsRecords>();
+            var generatedCode = GenerateCode.For<ObjectsRecords>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -84,7 +110,8 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateRecordsForDatabaseContracts()
         {
             // Act
-            var actual = GenerateCode.For<DatabaseRecords>();
+            var generatedCode = GenerateCode.For<DatabaseRecords>(BasePath, GenerateMultipleFiles, DryRun, LastGeneratedFilesFileName);
+            var actual = generatedCode.GenerationEnvironment.ToString();
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
