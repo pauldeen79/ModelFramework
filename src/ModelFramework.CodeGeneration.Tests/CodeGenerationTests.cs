@@ -56,7 +56,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForCsharpCodeStatements()
         {
             // Arrange
-            var builderModels = GetClassesFromSameNamespace(typeof(LiteralCodeStatement))
+            var models = GetClassesFromSameNamespace(typeof(LiteralCodeStatement))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Objects.CodeStatements.Builders")
@@ -66,7 +66,7 @@ namespace ModelFramework.CodeGeneration.Tests
                 ).ToArray();
 
             // Act
-            var actual = CreateCode(builderModels);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -89,7 +89,7 @@ namespace ModelFramework.CodeGeneration.Tests
         public void CanGenerateImmutableBuilderClassesForDatabaseCodeStatements()
         {
             // Arrange
-            var builderModels = GetClassesFromSameNamespace(typeof(LiteralSqlStatement))
+            var models = GetClassesFromSameNamespace(typeof(LiteralSqlStatement))
                 .Select
                 (
                     c => CreateBuilder(c, "ModelFramework.Database.SqlStatements.Builders")
@@ -99,7 +99,7 @@ namespace ModelFramework.CodeGeneration.Tests
                 ).ToArray();
 
             // Act
-            var actual = CreateCode(builderModels);
+            var actual = CreateCode(models);
 
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
@@ -332,10 +332,11 @@ if ({2})
         private static string CreateCode(ITypeBase[] models)
             => TemplateRenderHelper.GetTemplateOutput(new CSharpClassGenerator(),
                                                       models,
-                                                      additionalParameters: new
+                                                      additionalParameters: new Dictionary<string, object>
                                                       {
-                                                          EnableNullableContext = true,
-                                                          CreateCodeGenerationHeader = true
+                                                          { nameof(CSharpClassGenerator.EnableNullableContext), true },
+                                                          { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), true },
+                                                          { nameof(CSharpClassGenerator.GenerateMultipleFiles), false }
                                                       });
 
         private static ImmutableClassSettings CreateImmutableClassSettings()
