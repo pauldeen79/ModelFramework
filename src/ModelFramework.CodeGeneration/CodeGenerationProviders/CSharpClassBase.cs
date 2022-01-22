@@ -20,19 +20,20 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 
         public string BasePath { get; set; } = string.Empty;
 
-        public abstract string Prefix { get; }
+        public abstract string Path { get; }
 
         public abstract string DefaultFileName { get; }
 
-        protected abstract object CreateModel();
+        public abstract bool RecurseOnDeleteGeneratedFiles { get; }
+
+        public abstract object CreateModel();
 
         public object CreateAdditionalParameters()
             => new Dictionary<string, object>
                 {
                     { nameof(CSharpClassGenerator.EnableNullableContext), EnableNullableContext },
                     { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
-                    { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles },
-                    { nameof(CSharpClassGenerator.Model), CreateModel() }
+                    { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles }
                 };
 
         public object CreateGenerator()

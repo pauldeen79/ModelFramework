@@ -4,10 +4,12 @@
     {
         bool GenerateMultipleFiles { get; set; }
         string BasePath { get; set; }
-        string Prefix { get; }
+        string Path { get; }
         string DefaultFileName { get; }
+        bool RecurseOnDeleteGeneratedFiles { get; }
 
-        object CreateAdditionalParameters();
         object CreateGenerator();
+        object CreateModel();
+        object CreateAdditionalParameters();
     }
 }

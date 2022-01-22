@@ -28,21 +28,15 @@ namespace ModelFramework.CodeGeneration
             var shouldUseLastGeneratedFiles = !string.IsNullOrEmpty(settings.LastGeneratedFilesFileName);
             var additionalParameters = provider.CreateAdditionalParameters();
 
-            //TODO: Add model parameter to render template (default value null)
-            if (!provider.GenerateMultipleFiles)
-            {
-                TemplateRenderHelper.RenderTemplate(template: generator,
-                                                    generationEnvironment: result.TemplateFileManager.StartNewFile(provider.Prefix + Parent + provider.DefaultFileName),
-                                                    additionalParameters: additionalParameters);
-            }
-            else
-            {
-                TemplateRenderHelper.RenderTemplate(template: generator,
-                                                    generationEnvironment: result.TemplateFileManager,
-                                                    fileNamePrefix: provider.Prefix + "\\",
-                                                    defaultFileName: provider.DefaultFileName,
-                                                    additionalParameters: additionalParameters);
-            }
+            TemplateRenderHelper.RenderTemplateWithModel(template: generator,
+                                                         generationEnvironment: !provider.GenerateMultipleFiles
+                                                            ? result.TemplateFileManager.StartNewFile(provider.Path + Parent + provider.DefaultFileName)
+                                                            : result.TemplateFileManager,
+                                                         model: provider.CreateModel(),
+                                                         defaultFileName: !provider.GenerateMultipleFiles
+                                                            ? null
+                                                            : provider.DefaultFileName,
+                                                         additionalParameters: additionalParameters);
 
             result.TemplateFileManager.Process(true, shouldSave);
 
@@ -50,9 +44,8 @@ namespace ModelFramework.CodeGeneration
             {
                 if (shouldUseLastGeneratedFiles)
                 {
-                    var prefixedLastGeneratedFilesFileName = provider.Prefix + Parent + (settings.GenerateMultipleFiles ? settings.LastGeneratedFilesFileName : provider.DefaultFileName);
-                    //TODO: Add Recurse option to delete last generated files (default value true)
-                    result.TemplateFileManager.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFileName);
+                    var prefixedLastGeneratedFilesFileName = provider.Path + Parent + (settings.GenerateMultipleFiles ? settings.LastGeneratedFilesFileName : provider.DefaultFileName);
+                    result.TemplateFileManager.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFileName, provider.RecurseOnDeleteGeneratedFiles);
                     result.TemplateFileManager.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFileName);
                 }
                 result.TemplateFileManager.SaveAll();

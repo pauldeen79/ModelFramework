@@ -2,11 +2,13 @@
 {
     public class CommonBuilders : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
     {
-        public override string Prefix => "ModelFramework.Common\\Builders";
+        public override string Path => "ModelFramework.Common\\Builders";
 
         public override string DefaultFileName => "Builders.generated.cs";
 
-        protected override object CreateModel()
+        public override bool RecurseOnDeleteGeneratedFiles => false;
+
+        public override object CreateModel()
             => GetImmutableBuilderClasses(GetCommonModelTypes(),
                                           "ModelFramework.Common",
                                           "ModelFramework.Common.Builders");

@@ -30,7 +30,7 @@ namespace ModelFramework.Generators.Database
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
 
             if (builder != null) this.GenerationEnvironment = backup;
@@ -488,7 +488,7 @@ GO
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldTypeTemplate", Model, customResolverDelegate: ResolveFieldTypeTemplateFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultFieldTypeTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFieldTypeTemplateFromMetadata, });
 
             if(Model.IsIdentity) {
 
@@ -507,7 +507,7 @@ GO
             if (Model.CheckConstraints.Any()) { WriteLine(""); }
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", Model.CheckConstraints, customResolverDelegate: ResolveCheckConstraintTemplateFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultCheckConstraintTemplate", Model.CheckConstraints, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveCheckConstraintTemplateFromMetadata, });
 
             if (!TemplateContext.IsLastIteration) {
 
@@ -641,7 +641,7 @@ GO
             var tableEntity = Model;
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintTemplate", tableEntity.ForeignKeyConstraints, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintTemplate", tableEntity.ForeignKeyConstraints, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
 
             if (builder != null) this.GenerationEnvironment = backup;
@@ -707,7 +707,7 @@ var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>();
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] FOREIGN KEY("));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate", Model.LocalFields, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate", Model.LocalFields, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@")
 REFERENCES ["));
@@ -716,7 +716,7 @@ REFERENCES ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.ForeignTableName.FormatAsDatabaseIdentifier()));
             Write(this.ToStringHelper.ToStringWithCulture(@"] ("));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate", Model.ForeignFields, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyConstraintFieldTemplate", Model.ForeignFields, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@")
 ON UPDATE "));
@@ -850,7 +850,7 @@ var schemaEntity = TemplateContext.GetModelFromContextByType<ISchema>();
 (
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultIndexFieldTemplate", Model.Fields, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultIndexFieldTemplate", Model.Fields, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@") ON ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier()));
@@ -969,7 +969,7 @@ GO
 (
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintFieldTemplate", Model.Fields, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultPrimaryKeyConstraintFieldTemplate", Model.Fields, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@") ON ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier()));
@@ -1082,16 +1082,16 @@ GO
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultTableTemplate", Model.Tables, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultTableTemplate", Model.Tables, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyTemplate", Model.Tables, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultForeignKeyTemplate", Model.Tables, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureTemplate", Model.StoredProcedures, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureTemplate", Model.StoredProcedures, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewTemplate", Model.Views, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewTemplate", Model.Views, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
 
             if (builder != null) this.GenerationEnvironment = backup;
@@ -1161,7 +1161,7 @@ CREATE PROCEDURE ["));
             Write(this.ToStringHelper.ToStringWithCulture(@"]
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate", Model.Parameters, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultStoredProcedureParameterTemplate", Model.Parameters, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"AS
 BEGIN"));
@@ -1170,7 +1170,7 @@ BEGIN"));
             RootTemplate.PushIndent("    ");
 
             
-            RenderChildTemplate(null, Model.Statements);
+            RenderChildTemplate(null, Model.Statements, null, false, null, null, new CustomDelegates { });
 
             RootTemplate.PopIndent();
 
@@ -1311,7 +1311,7 @@ CREATE TABLE ["));
             Write(this.ToStringHelper.ToStringWithCulture(@"](
 "));
             
-            RenderChildTemplate(null, GetFieldsAndPrimaryKeyConstraints(tableEntity), customResolverDelegate: ResolveFieldAndPrimaryKeyFromMetadata);
+            RenderChildTemplate(null, GetFieldsAndPrimaryKeyConstraints(tableEntity), null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFieldAndPrimaryKeyFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@") ON ["));
             Write(this.ToStringHelper.ToStringWithCulture(tableEntity.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier()));
@@ -1321,10 +1321,10 @@ SET ANSI_PADDING OFF
 GO
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultIndexTemplate", tableEntity.Indexes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultIndexTemplate", tableEntity.Indexes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate", tableEntity.DefaultValueConstraints, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintTemplate", tableEntity.DefaultValueConstraints, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
 
             if (builder != null) this.GenerationEnvironment = backup;
@@ -1384,7 +1384,7 @@ GO
 (
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultUniqueConstraintFieldTemplate", Model.Fields, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultUniqueConstraintFieldTemplate", Model.Fields, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@") ON ["));
             Write(this.ToStringHelper.ToStringWithCulture(Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier()));
@@ -1546,7 +1546,7 @@ GO
             Write(this.ToStringHelper.ToStringWithCulture(@"WHERE
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewConditionTemplate", Model.Conditions.Select(c => c.AsFirstCondition()).Take(1).Concat(Model.Conditions.Skip(1)), separatorTemplateName: @"NewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewConditionTemplate", Model.Conditions.Select(c => c.AsFirstCondition()).Take(1).Concat(Model.Conditions.Skip(1)), null, false, @"NewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             WriteLine("");
    }
@@ -1647,21 +1647,21 @@ AS
             }
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSelectFieldsTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSelectFieldsTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"FROM
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewConditionsTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewConditionsTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewGroupByFieldsTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewGroupByFieldsTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewOrderByFieldsTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewOrderByFieldsTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             }
 
@@ -1803,7 +1803,7 @@ AS
             Write(this.ToStringHelper.ToStringWithCulture(@"GROUP BY
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate", Model.GroupByFields, separatorTemplateName: @"CommaAndNewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate", Model.GroupByFields, null, false, @"CommaAndNewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             WriteLine("");
    }
@@ -1858,7 +1858,7 @@ AS
             Write(this.ToStringHelper.ToStringWithCulture(@"ORDER BY
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate", Model.OrderByFields, separatorTemplateName: @"CommaAndNewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate", Model.OrderByFields, null, false, @"CommaAndNewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             WriteLine("");
    }
@@ -1910,7 +1910,7 @@ AS
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate", Model.SelectFields, separatorTemplateName: @"CommaAndNewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewFieldTemplate", Model.SelectFields, null, false, @"CommaAndNewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
@@ -2023,7 +2023,7 @@ AS
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate", Model.Sources, separatorTemplateName: @"CommaAndNewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate", Model.Sources, null, false, @"CommaAndNewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));

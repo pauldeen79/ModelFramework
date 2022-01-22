@@ -14,7 +14,7 @@ namespace ModelFramework.CodeGeneration.Tests
         (
             basePath: Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\"),
             generateMultipleFiles: false,
-            dryRun: false,
+            dryRun: true,
             lastGeneratedFilesFileName: "*.generated.cs");
 
         [Fact]

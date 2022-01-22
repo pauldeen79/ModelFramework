@@ -37,10 +37,10 @@ namespace ModelFramework.Generators.Objects
                 {
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", this);
+            RenderChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", this, null, false, null, null, new CustomDelegates { });
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultUsingsTemplate", Model, renderAsEnumerable: false, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultUsingsTemplate", Model, false, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             }
             }
@@ -48,7 +48,7 @@ namespace ModelFramework.Generators.Objects
             {
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", this);
+            RenderChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", this, null, false, null, null, new CustomDelegates { });
 
             }
             foreach (var ns in ViewModel.Namespaces)
@@ -66,7 +66,7 @@ namespace ModelFramework.Generators.Objects
             }
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultClassTemplate", ViewModel.GetClassesByNamespace(ns), separatorTemplateName: @"NewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultClassTemplate", ViewModel.GetClassesByNamespace(ns), null, false, @"NewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             if (TemplateContext.IsRootContext && !GenerateMultipleFiles)
                 {
@@ -735,10 +735,10 @@ namespace ModelFramework.Generators.Objects
        this.GenerationEnvironment = ViewModel.StartNewFile();
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", ViewModel.Root);
+            RenderChildTemplate(@"CSharpClassGenerator.CodeGenerationHeaderTemplate", ViewModel.Root, null, false, null, null, new CustomDelegates { });
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultUsingsTemplate", ViewModel.Root.Model, renderAsEnumerable: false, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultUsingsTemplate", ViewModel.Root.Model, false, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
@@ -757,7 +757,7 @@ namespace ModelFramework.Generators.Objects
             }
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"    "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
@@ -770,7 +770,7 @@ namespace ModelFramework.Generators.Objects
     {
 "));
             
-            RenderChildTemplate(null, ViewModel.SubItems, separatorTemplateName: @"NewLine", customResolverDelegate: ResolveFromMetadata, customTemplateNameDelegate: GetTemplateName);
+            RenderChildTemplate(null, ViewModel.SubItems, null, false, @"NewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, TemplateNameDelegate = GetTemplateName, });
 
             if (ViewModel.HasSubclasses)
         {
@@ -920,14 +920,14 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
             Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
             Write(this.ToStringHelper.ToStringWithCulture(@"("));
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterTemplate", Model.Parameters, separatorTemplateName: @"CommaAndSpace", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterTemplate", Model.Parameters, null, false, @"CommaAndSpace", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
             if (ViewModel.ShouldRenderChainCall) {
@@ -949,7 +949,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("            ");
 
             
-            RenderChildTemplate(null, Model.CodeStatements);
+            RenderChildTemplate(null, Model.CodeStatements, null, false, null, null, new CustomDelegates { });
 
             RootTemplate.PopIndent();
 
@@ -1022,7 +1022,7 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
@@ -1077,7 +1077,7 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
@@ -1087,7 +1087,7 @@ namespace ModelFramework.Generators.Objects
         {
 "));
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultEnumMemberTemplate", Model.Members, separatorTemplateName: @"CommaAndNewLine", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultEnumMemberTemplate", Model.Members, null, false, @"CommaAndNewLine", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"
 "));
@@ -1138,7 +1138,7 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
@@ -1200,7 +1200,7 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             if (ViewModel.ShouldRenderModifiers) {
@@ -1224,7 +1224,7 @@ namespace ModelFramework.Generators.Objects
             }
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterTemplate", Model.Parameters, separatorTemplateName: @"CommaAndSpace", customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterTemplate", Model.Parameters, null, false, @"CommaAndSpace", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
             if (ViewModel.OmitCode) {
@@ -1240,7 +1240,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("            ");
 
             
-            RenderChildTemplate(null, Model.CodeStatements);
+            RenderChildTemplate(null, Model.CodeStatements, null, false, null, null, new CustomDelegates { });
 
             RootTemplate.PopIndent();
 
@@ -1313,10 +1313,10 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterAttributeTemplate", Model.Attributes, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterValueTemplate", Model, customResolverDelegate: ResolveFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterValueTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
 
             if (builder != null) this.GenerationEnvironment = backup;
@@ -1436,7 +1436,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.GetterCodeStatements);
+            RenderChildTemplate(null, Model.GetterCodeStatements, null, false, null, null, new CustomDelegates { });
 
             RootTemplate.PopIndent();
 
@@ -1506,7 +1506,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.InitializerCodeStatements);
+            RenderChildTemplate(null, Model.InitializerCodeStatements, null, false, null, null, new CustomDelegates { });
 
             RootTemplate.PopIndent();
 
@@ -1576,7 +1576,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.SetterCodeStatements);
+            RenderChildTemplate(null, Model.SetterCodeStatements, null, false, null, null, new CustomDelegates { });
 
             RootTemplate.PopIndent();
 
@@ -1631,7 +1631,7 @@ namespace ModelFramework.Generators.Objects
             var backup = this.GenerationEnvironment;
             if (builder != null) this.GenerationEnvironment = builder;
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultAttributeTemplate", Model.Attributes, null, false, null, null, new CustomDelegates { });
 
             Write(this.ToStringHelper.ToStringWithCulture(@"        "));
             if (ViewModel.ShouldRenderModifiers) {
@@ -1656,7 +1656,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetGetterModifiers()));
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyGetterBodyTemplate", Model, customResolverDelegate: ResolvePropertyGetterTemplateFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyGetterBodyTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolvePropertyGetterTemplateFromMetadata, });
 
             }
 
@@ -1665,7 +1665,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetSetterModifiers()));
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertySetterBodyTemplate", Model, customResolverDelegate: ResolvePropertySetterTemplateFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertySetterBodyTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolvePropertySetterTemplateFromMetadata, });
 
             }
 
@@ -1674,7 +1674,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"            "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetInitializerModifiers()));
             
-            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate", Model, customResolverDelegate: ResolvePropertyInitializerTemplateFromMetadata);
+            RenderChildTemplate(@"CSharpClassGenerator.DefaultPropertyInitializerBodyTemplate", Model, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolvePropertyInitializerTemplateFromMetadata, });
 
             }
 

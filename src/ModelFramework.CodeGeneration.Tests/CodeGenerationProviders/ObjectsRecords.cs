@@ -2,11 +2,13 @@
 {
     public class ObjectsRecords : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
     {
-        public override string Prefix => "ModelFramework.Objects";
+        public override string Path => "ModelFramework.Objects";
 
         public override string DefaultFileName => "Entities.generated.cs";
 
-        protected override object CreateModel()
+        public override bool RecurseOnDeleteGeneratedFiles => false;
+
+        public override object CreateModel()
             => GetImmutableClasses(GetObjectsModelTypes(), "ModelFramework.Objects");
     }
 }

@@ -5,11 +5,13 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
     public class DatabaseCodeStatements : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
     {
-        public override string Prefix => "ModelFramework.Database\\SqlStatements\\Builders";
+        public override string Path => "ModelFramework.Database\\SqlStatements\\Builders";
 
         public override string DefaultFileName => "Builders.Generated.cs";
 
-        protected override object CreateModel()
+        public override bool RecurseOnDeleteGeneratedFiles => false;
+
+        public override object CreateModel()
             => GetCodeStatementBuilderClasses(typeof(LiteralSqlStatement),
                                               typeof(ISqlStatement),
                                               typeof(ISqlStatementBuilder),
