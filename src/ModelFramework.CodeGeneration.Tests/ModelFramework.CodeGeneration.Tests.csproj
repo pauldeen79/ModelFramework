@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ModelFramework.CodeGeneration\ModelFramework.CodeGeneration.csproj" />
     <ProjectReference Include="..\ModelFramework.Common\ModelFramework.Common.csproj" />
     <ProjectReference Include="..\ModelFramework.Database\ModelFramework.Database.csproj" />
     <ProjectReference Include="..\ModelFramework.Generators.Objects\ModelFramework.Generators.Objects.csproj" />

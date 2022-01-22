@@ -3,70 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
-using ModelFramework.CodeGeneration.Tests.Helpers;
+using ModelFramework.CodeGeneration.CodeGenerationProviders;
 using ModelFramework.Common;
 using ModelFramework.Common.Builders;
 using ModelFramework.Common.Contracts;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Database.Contracts;
-using ModelFramework.Generators.Objects;
 using ModelFramework.Objects;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Extensions;
-using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
-    public abstract class CSharpClassBase : ICodeGenerationProvider
+    public abstract class ModelFrameworkCSharpClassBase : CSharpClassBase
     {
-        public bool GenerateMultipleFiles { get; set; }
+        protected override bool CreateCodeGenerationHeader => true;
+        protected override bool EnableNullableContext => true;
 
-        public string BasePath { get; set; } = string.Empty;
-
-        public abstract string Prefix { get; }
-
-        public abstract string DefaultFileName { get; }
-
-        public abstract object CreateModel();
-
-        public object CreateAdditionalParameters()
-            => new Dictionary<string, object>
-            {
-                { nameof(CSharpClassGenerator.EnableNullableContext), true },
-                { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), true },
-                { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles },
-                { nameof(CSharpClassGenerator.Model), CreateModel() }
-            };
-
-        public object CreateGenerator()
-            => new CSharpClassGenerator();
-
-        protected static IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
-            => types.Select(x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
-                                                .WithName(x.Name.Substring(1))
-                                                .WithNamespace(entitiesNamespace)
-                                                .Chain(x => FixImmutableBuilderProperties(x))
-                                                .Build()
-                                                .ToImmutableClass(CreateImmutableClassSettings()), buildersNamespace)
-                                                .Build()
-                           ).ToArray();
-
-        protected static IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
-            => types.Select(x => x.ToClassBuilder(new ClassSettings())
-                                  .WithName(x.Name.Substring(1))
-                                  .WithNamespace(entitiesNamespace)
-                                  .Chain(x => FixImmutableBuilderProperties(x))
-                                  .Build()
-                                  .ToImmutableClassBuilder(CreateImmutableClassSettings())
-                                  .WithRecord()
-                                  .WithPartial()
-                                  .AddInterfaces(x)
-                                  .Build()
-                           ).ToArray();
-
-        protected static IClass[] GetCodeStatementBuilderClasses(Type codeStatementType, Type codeStatementInterfaceType, Type codeStatementBuilderInterfaceType, string buildersNamespace)
-            => GetClassesFromSameNamespace(codeStatementType)
+        protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType, Type codeStatementInterfaceType, Type codeStatementBuilderInterfaceType, string buildersNamespace)
+            => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
                 .Select
                 (
                     c => CreateBuilder(c, buildersNamespace)
@@ -75,79 +31,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         .Build()
                 ).ToArray();
 
-        private static IClass[] GetClassesFromSameNamespace(Type type)
-        {
-            if (type.FullName == null)
-            {
-                throw new ArgumentException("Can't get classes from same namespace when the FullName of this type is null. Could not determine namespace.");
-            }
-
-            var models = type.Assembly.GetExportedTypes()
-                .Where(t => t.FullName != null
-                    && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault()
-                    && t.GetProperties().Any())
-                .Select(t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name)
-                                                                                          .WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty))
-                .ToArray();
-
-            return models.Select(x => x.Chain(x => FixImmutableBuilderProperties(x)).Build()).ToArray();
-        }
-
-        protected static Type[] GetCommonModelTypes()
-            => new[]
-            {
-                        typeof(IMetadata)
-            };
-
-        protected static Type[] GetObjectsModelTypes()
-            => new[]
-            {
-                typeof(IAttribute),
-                typeof(IAttributeParameter),
-                typeof(IClass),
-                typeof(IClassConstructor),
-                typeof(IClassField),
-                typeof(IClassMethod),
-                typeof(IClassProperty),
-                typeof(IEnum),
-                typeof(IEnumMember),
-                typeof(IInterface),
-                typeof(IParameter)
-            };
-
-        protected static Type[] GetDatabaseModelTypes()
-            => new[]
-            {
-                typeof(ICheckConstraint),
-                typeof(IDefaultValueConstraint),
-                typeof(IForeignKeyConstraint),
-                typeof(IForeignKeyConstraintField),
-                typeof(IIndex),
-                typeof(IIndexField),
-                typeof(IPrimaryKeyConstraint),
-                typeof(IPrimaryKeyConstraintField),
-                typeof(ISchema),
-                typeof(IStoredProcedure),
-                typeof(IStoredProcedureParameter),
-                typeof(ITable),
-                typeof(ITableField),
-                typeof(IUniqueConstraint),
-                typeof(IUniqueConstraintField),
-                typeof(IView),
-                typeof(IViewCondition),
-                typeof(IViewField),
-                typeof(IViewOrderByField),
-                typeof(IViewSource)
-            };
-
-        private static ClassBuilder CreateBuilder(IClass c, string @namespace)
-            => c.ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                formatInstanceTypeNameDelegate: FormatInstanceTypeName))
-                .WithNamespace(@namespace)
-                .WithPartial()
-                .AddMethods(CreateExtraOverloads(c));
-
-        private static string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
+        protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {
             if (instance.Namespace == "ModelFramework.Common")
             {
@@ -173,7 +57,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
             return string.Empty;
         }
 
-        private static void FixImmutableBuilderProperties(ClassBuilder classBuilder)
+        protected override void FixImmutableBuilderProperties(ClassBuilder classBuilder)
         {
             foreach (var property in classBuilder.Properties)
             {
@@ -253,7 +137,7 @@ if ({2})
             }
         }
 
-        private static IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
+        protected override IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
         {
             if (c.Properties.Any(p => p.Name == nameof(IMetadataContainer.Metadata)))
             {
@@ -297,8 +181,51 @@ if ({2})
             }
         }
 
-        private static ImmutableClassSettings CreateImmutableClassSettings()
-            => new ImmutableClassSettings(newCollectionTypeName: typeof(ValueCollection<>).WithoutGenerics(),
-                                          validateArgumentsInConstructor: true);
+        protected static Type[] GetCommonModelTypes()
+            => new[]
+            {
+                typeof(IMetadata)
+            };
+
+        protected static Type[] GetObjectsModelTypes()
+            => new[]
+            {
+                typeof(IAttribute),
+                typeof(IAttributeParameter),
+                typeof(IClass),
+                typeof(IClassConstructor),
+                typeof(IClassField),
+                typeof(IClassMethod),
+                typeof(IClassProperty),
+                typeof(IEnum),
+                typeof(IEnumMember),
+                typeof(IInterface),
+                typeof(IParameter)
+            };
+
+        protected static Type[] GetDatabaseModelTypes()
+            => new[]
+            {
+                typeof(ICheckConstraint),
+                typeof(IDefaultValueConstraint),
+                typeof(IForeignKeyConstraint),
+                typeof(IForeignKeyConstraintField),
+                typeof(IIndex),
+                typeof(IIndexField),
+                typeof(IPrimaryKeyConstraint),
+                typeof(IPrimaryKeyConstraintField),
+                typeof(ISchema),
+                typeof(IStoredProcedure),
+                typeof(IStoredProcedureParameter),
+                typeof(ITable),
+                typeof(ITableField),
+                typeof(IUniqueConstraint),
+                typeof(IUniqueConstraintField),
+                typeof(IView),
+                typeof(IViewCondition),
+                typeof(IViewField),
+                typeof(IViewOrderByField),
+                typeof(IViewSource)
+            };
     }
 }

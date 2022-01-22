@@ -1,4 +1,4 @@
-﻿namespace ModelFramework.CodeGeneration.Tests.Helpers
+﻿namespace ModelFramework.CodeGeneration
 {
     public interface ICodeGenerationProvider
     {
@@ -7,7 +7,6 @@
         string Prefix { get; }
         string DefaultFileName { get; }
 
-        object CreateModel();
         object CreateAdditionalParameters();
         object CreateGenerator();
     }

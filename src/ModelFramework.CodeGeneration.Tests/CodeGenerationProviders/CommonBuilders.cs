@@ -1,14 +1,12 @@
-﻿using ModelFramework.CodeGeneration.Tests.Helpers;
-
-namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
+﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
-    public class CommonBuilders : CSharpClassBase, ICodeGenerationProvider
+    public class CommonBuilders : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
     {
         public override string Prefix => "ModelFramework.Common\\Builders";
 
         public override string DefaultFileName => "Builders.generated.cs";
 
-        public override object CreateModel()
+        protected override object CreateModel()
             => GetImmutableBuilderClasses(GetCommonModelTypes(),
                                           "ModelFramework.Common",
                                           "ModelFramework.Common.Builders");

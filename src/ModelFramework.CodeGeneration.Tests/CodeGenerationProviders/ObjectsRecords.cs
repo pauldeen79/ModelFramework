@@ -1,14 +1,12 @@
-﻿using ModelFramework.CodeGeneration.Tests.Helpers;
-
-namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
+﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
-    public class ObjectsRecords : CSharpClassBase, ICodeGenerationProvider
+    public class ObjectsRecords : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
     {
         public override string Prefix => "ModelFramework.Objects";
 
         public override string DefaultFileName => "Entities.generated.cs";
 
-        public override object CreateModel()
+        protected override object CreateModel()
             => GetImmutableClasses(GetObjectsModelTypes(), "ModelFramework.Objects");
     }
 }
