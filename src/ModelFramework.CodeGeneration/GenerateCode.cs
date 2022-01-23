@@ -19,11 +19,8 @@ namespace ModelFramework.CodeGeneration
         public static GenerateCode For<T>(CodeGenerationSettings settings)
             where T : ICodeGenerationProvider, new()
         {
-            var provider = new T
-            {
-                BasePath = settings.BasePath,
-                GenerateMultipleFiles = settings.GenerateMultipleFiles
-            };
+            var provider = new T();
+            provider.Initialize(settings.GenerateMultipleFiles, settings.BasePath);
             var result = new GenerateCode(provider.BasePath);
             var generator = provider.CreateGenerator();
             var shouldSave = !string.IsNullOrEmpty(provider.BasePath) && !settings.DryRun;

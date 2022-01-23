@@ -13,8 +13,8 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 {
     public abstract class CSharpClassBase : ICodeGenerationProvider
     {
-        public bool GenerateMultipleFiles { get; set; }
-        public string BasePath { get; set; } = string.Empty;
+        public bool GenerateMultipleFiles { get; private set; }
+        public string BasePath { get; private set; } = string.Empty;
 
         public abstract string Path { get; }
         public abstract string DefaultFileName { get; }
@@ -23,6 +23,12 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 
         public virtual string LastGeneratedFilesFileName => "*.generated.cs";
         public virtual Action? AdditionalActionDelegate => null;
+
+        public void Initialize(bool generateMultipleFiles, string basePath)
+        {
+            GenerateMultipleFiles = generateMultipleFiles;
+            BasePath = basePath;
+        }
 
         public object CreateAdditionalParameters()
             => new Dictionary<string, object>
@@ -96,7 +102,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 
         protected ClassBuilder CreateBuilder(IClass c, string @namespace)
             => c.ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
-                                                formatInstanceTypeNameDelegate: FormatInstanceTypeName))
+                                                                                  formatInstanceTypeNameDelegate: FormatInstanceTypeName))
                 .WithNamespace(@namespace)
                 .WithPartial()
                 .AddMethods(CreateExtraOverloads(c));
