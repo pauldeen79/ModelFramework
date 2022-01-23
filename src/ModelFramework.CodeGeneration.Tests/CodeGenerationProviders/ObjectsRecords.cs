@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
+﻿using TextTemplateTransformationFramework.Runtime.CodeGeneration;
+
+namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
     public class ObjectsRecords : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
     {

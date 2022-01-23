@@ -8,6 +8,7 @@ using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Extensions;
 using ModelFramework.Objects.Settings;
+using TextTemplateTransformationFramework.Runtime.CodeGeneration;
 
 namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 {

@@ -3,6 +3,7 @@ using System.IO;
 using CrossCutting.Common.Extensions;
 using FluentAssertions;
 using ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
+using TextTemplateTransformationFramework.Runtime.CodeGeneration;
 using Xunit;
 
 namespace ModelFramework.CodeGeneration.Tests

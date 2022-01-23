@@ -1,5 +1,6 @@
 ﻿using ModelFramework.Objects.CodeStatements;
 using ModelFramework.Objects.Contracts;
+using TextTemplateTransformationFramework.Runtime.CodeGeneration;
 
 namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {

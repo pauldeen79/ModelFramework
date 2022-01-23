@@ -1,5 +1,6 @@
 ﻿using ModelFramework.Database.Contracts;
 using ModelFramework.Database.SqlStatements;
+using TextTemplateTransformationFramework.Runtime.CodeGeneration;
 
 namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
