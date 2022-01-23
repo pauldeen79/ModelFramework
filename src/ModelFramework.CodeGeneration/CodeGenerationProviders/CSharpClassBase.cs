@@ -20,8 +20,9 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         public abstract string DefaultFileName { get; }
         public abstract bool RecurseOnDeleteGeneratedFiles { get; }
         public abstract object CreateModel();
-        public abstract string LastGeneratedFilesFileName { get; }
-        public abstract Action? AdditionalActionDelegate { get; }
+
+        public virtual string LastGeneratedFilesFileName => "*.generated.cs";
+        public virtual Action? AdditionalActionDelegate => null;
 
         public object CreateAdditionalParameters()
             => new Dictionary<string, object>
