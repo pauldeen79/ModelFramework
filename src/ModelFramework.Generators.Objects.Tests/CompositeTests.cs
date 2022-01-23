@@ -75,7 +75,7 @@ namespace ModelFramework.Generators.Tests
             TemplateRenderHelper.RenderTemplate(new MultipleOutputExample(), templateFileManager, Session, additionalParameters: new { Model });
             TemplateRenderHelper.RenderTemplate(new MultipleOutputExample(), templateFileManager, Session, additionalParameters: new { Model });
             templateFileManager.Process(GenerateMultipleFiles);
-            var actual = templateFileManager.MultipleContentBuilder.ToString();
+            var actual = templateFileManager.MultipleContentBuilder.ToString() ?? string.Empty;
 
             // Assert
             actual.NormalizeLineEndings().Should().Be(@"<?xml version=""1.0"" encoding=""utf-16""?>
