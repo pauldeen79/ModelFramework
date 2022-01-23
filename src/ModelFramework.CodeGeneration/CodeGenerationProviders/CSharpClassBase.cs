@@ -20,6 +20,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         public abstract string DefaultFileName { get; }
         public abstract bool RecurseOnDeleteGeneratedFiles { get; }
         public abstract object CreateModel();
+        public abstract string LastGeneratedFilesFileName { get; }
 
         public object CreateAdditionalParameters()
             => new Dictionary<string, object>
@@ -35,6 +36,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         protected abstract bool EnableNullableContext { get; }
         protected abstract bool CreateCodeGenerationHeader { get; }
         protected abstract Type RecordCollectionType { get; }
+
         protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
         protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
         protected abstract IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c);

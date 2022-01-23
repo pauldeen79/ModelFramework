@@ -18,6 +18,8 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 {
     public abstract class ModelFrameworkCSharpClassBase : CSharpClassBase
     {
+        public override string LastGeneratedFilesFileName => "*.generated.cs";
+
         protected override bool CreateCodeGenerationHeader => true;
         protected override bool EnableNullableContext => true;
         protected override Type RecordCollectionType => typeof(ValueCollection<>);

@@ -27,7 +27,7 @@ namespace ModelFramework.CodeGeneration
             var result = new GenerateCode(provider.BasePath);
             var generator = provider.CreateGenerator();
             var shouldSave = !string.IsNullOrEmpty(provider.BasePath) && !settings.DryRun;
-            var shouldUseLastGeneratedFiles = !string.IsNullOrEmpty(settings.LastGeneratedFilesFileName);
+            var shouldUseLastGeneratedFiles = !string.IsNullOrEmpty(provider.LastGeneratedFilesFileName);
             var additionalParameters = provider.CreateAdditionalParameters();
 
             TemplateRenderHelper.RenderTemplateWithModel(template: generator,
@@ -46,7 +46,7 @@ namespace ModelFramework.CodeGeneration
             {
                 if (shouldUseLastGeneratedFiles)
                 {
-                    var prefixedLastGeneratedFilesFileName = provider.Path + Parent + (settings.GenerateMultipleFiles ? settings.LastGeneratedFilesFileName : provider.DefaultFileName);
+                    var prefixedLastGeneratedFilesFileName = provider.Path + Parent + (settings.GenerateMultipleFiles ? provider.LastGeneratedFilesFileName : provider.DefaultFileName);
                     result.TemplateFileManager.DeleteLastGeneratedFiles(prefixedLastGeneratedFilesFileName, provider.RecurseOnDeleteGeneratedFiles);
                     result.TemplateFileManager.SaveLastGeneratedFiles(prefixedLastGeneratedFilesFileName);
                 }
