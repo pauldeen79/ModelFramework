@@ -63,7 +63,7 @@ namespace ModelFramework.Objects.Extensions
             => property.TypeName.IsCollectionTypeName()
                 ? new[]
                   {
-                    new Metadata(MetadataNames.CustomImmutableArgumentType, property.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()),
+                    new Metadata(MetadataNames.CustomImmutableArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()),
                   }
                 : Array.Empty<IMetadata>();
 
@@ -71,7 +71,7 @@ namespace ModelFramework.Objects.Extensions
             => property.TypeName.IsCollectionTypeName()
                 ? new[]
                   {
-                    new Metadata(MetadataNames.CustomBuilderArgumentType, property.TypeName.FixBuilderCollectionTypeName(newCollectionTypeName))
+                    new Metadata(MetadataNames.CustomBuilderArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName))
                   }
                 : Array.Empty<IMetadata>();
 
@@ -79,7 +79,7 @@ namespace ModelFramework.Objects.Extensions
             => property.TypeName.IsCollectionTypeName()
                 ? new[]
                   {
-                    new Metadata(MetadataNames.CustomObservableArgumentType, property.TypeName.FixObservableCollectionTypeName(newCollectionTypeName))
+                    new Metadata(MetadataNames.CustomObservableArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName))
                   }
                 : Array.Empty<IMetadata>();
 

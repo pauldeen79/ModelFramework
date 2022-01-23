@@ -34,7 +34,7 @@ namespace ModelFramework.Objects.Extensions
                         (
                             p => new ClassPropertyBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName))
+                                .WithTypeName(p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName))
                                 .WithStatic(p.Static)
                                 .WithVirtual(p.Virtual)
                                 .WithAbstract(p.Abstract)
@@ -73,7 +73,7 @@ namespace ModelFramework.Objects.Extensions
                                     .WithTypeName(string.Format
                                     (
                                         p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                           .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
+                                                           .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
                                         p.Name.ToPascalCase().GetCsharpFriendlyName(),
                                         p.TypeName.GetGenericArguments()
                                     ))
@@ -149,7 +149,7 @@ namespace ModelFramework.Objects.Extensions
                                     (p => new
                                     {
                                         p.Name,
-                                        TypeName = p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName),
+                                        TypeName = p.TypeName.FixCollectionTypeName(newCollectionTypeName),
                                         OriginalMetadata = p.Metadata,
                                         Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
                                         Suffix = p.Name != instance.Properties.Last().Name
@@ -178,10 +178,10 @@ namespace ModelFramework.Objects.Extensions
                                             p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetStringValue
                                             (
                                                 MetadataNames.CustomImmutableArgumentType,
-                                                p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)
-                                            ), p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)
+                                                p.TypeName.FixCollectionTypeName(newCollectionTypeName)
+                                            ), p.TypeName.FixCollectionTypeName(newCollectionTypeName)
                                         ).GetCsharpFriendlyTypeName())
-                                        .WithDefaultValue(new Literal($"default({p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(newCollectionTypeName)).GetCsharpFriendlyTypeName()})"))
+                                        .WithDefaultValue(new Literal($"default({p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(newCollectionTypeName)).GetCsharpFriendlyTypeName()})"))
                                 )
                         );
             }

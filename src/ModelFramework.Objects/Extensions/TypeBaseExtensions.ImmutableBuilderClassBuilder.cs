@@ -80,7 +80,7 @@ namespace ModelFramework.Objects.Extensions
                         .WithName(p.Name.ToPascalCase())
                         .WithTypeName(string.Format
                         (
-                            p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixImmutableCollectionTypeName(settings.NewCollectionTypeName)),
+                            p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
                             p.Name.ToPascalCase().GetCsharpFriendlyName(),
                             p.TypeName.GetGenericArguments()
                         ))
@@ -127,14 +127,14 @@ namespace ModelFramework.Objects.Extensions
             => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
                              p.TypeName,
                              p.TypeName.GetGenericArguments()
-                            ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+                            ).FixCollectionTypeName(settings.NewCollectionTypeName)
                              .GetCsharpFriendlyTypeName();
 
         private static string GetCopyConstructorInitializeExpression(ImmutableBuilderClassSettings settings, IClassProperty p)
             => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
                              p.TypeName,
                              p.TypeName.GetGenericArguments()
-                            ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+                            ).FixCollectionTypeName(settings.NewCollectionTypeName)
                              .GetCsharpFriendlyTypeName();
 
         private static string GetImmutableBuilderClassConstructorInitializer(ImmutableBuilderClassSettings settings, IClassProperty p)
@@ -143,7 +143,7 @@ namespace ModelFramework.Objects.Extensions
                 p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
                 p.TypeName,
                 p.TypeName.GetGenericArguments()
-            ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+            ).FixCollectionTypeName(settings.NewCollectionTypeName)
              .GetCsharpFriendlyTypeName();
 
         private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
@@ -185,7 +185,7 @@ namespace ModelFramework.Objects.Extensions
                                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                                         property.TypeName,
                                         property.TypeName.GetGenericArguments()
-                                    ).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable")
+                                    ).FixCollectionTypeName("System.Collections.Generic.IEnumerable")
                                 )
                                 .WithIsNullable(property.IsNullable)
                         )
@@ -227,7 +227,7 @@ namespace ModelFramework.Objects.Extensions
                                     .WithName(property.Name.ToPascalCase())
                                     .WithTypeName(string.Format(overload.ArgumentType,
                                                                 property.TypeName,
-                                                                property.TypeName.GetGenericArguments()).FixBuilderCollectionTypeName("System.Collections.Generic.IEnumerable"))
+                                                                property.TypeName.GetGenericArguments()).FixCollectionTypeName("System.Collections.Generic.IEnumerable"))
                                     .WithIsNullable(property.IsNullable)
                             )
                             .AddCodeStatements
@@ -441,7 +441,7 @@ namespace ModelFramework.Objects.Extensions
                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                         property.TypeName,
                         property.TypeName.GetGenericArguments()
-                    ).FixBuilderCollectionTypeName(settings.NewCollectionTypeName)
+                    ).FixCollectionTypeName(settings.NewCollectionTypeName)
                 )
                 .WithIsNullable(property.IsNullable)
                 .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))

@@ -273,7 +273,7 @@ namespace MyNamespace
             return AddProperty2(property2.ToArray());
         }
 
-        public MyRecordBuilder AddProperty2(params System.Collections.Generic.IReadOnlyCollection<string>[] property2)
+        public MyRecordBuilder AddProperty2(params string[] property2)
         {
             if (property2 != null)
             {
@@ -402,7 +402,7 @@ namespace MyNamespace
             return AddProperty2(property2.ToArray());
         }
 
-        public MyRecordBuilder AddProperty2(params System.Collections.Generic.IReadOnlyCollection<string>[] property2)
+        public MyRecordBuilder AddProperty2(params string[] property2)
         {
             Property2.AddRange(property2);
             return this;

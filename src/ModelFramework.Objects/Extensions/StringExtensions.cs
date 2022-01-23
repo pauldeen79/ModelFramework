@@ -1,4 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
+﻿using System.Linq;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Objects.Contracts;
 
@@ -6,77 +6,26 @@ namespace ModelFramework.Objects.Extensions
 {
     public static class StringExtensions
     {
-        public static string ReplaceGeneric(this string typeName, string prefix)
-        {
-            if (typeName.StartsWith(prefix + "<") && typeName.EndsWith(">"))
-            {
-                return typeName.Substring(prefix.Length + 1, typeName.Length - prefix.Length - 2);
-            }
-            return typeName;
-        }
-
-        public static string FixImmutableCollectionTypeName(this string typeName, string newCollectionTypeName)
-            => typeName
-                .FixTypeName()
-                .Replace("System.Collections.Generic.IEnumerable<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.ICollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.IReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.IList<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.ObservableCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.ReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.List<", newCollectionTypeName + "<")
-                .Replace("CrossCutting.Common.ValueCollection<", newCollectionTypeName + "<");
-
-        public static string FixBuilderCollectionTypeName(this string typeName, string newCollectionTypeName)
-            => typeName
-                .FixTypeName()
-                .Replace("System.Collections.Generic.IEnumerable<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.IList<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.List<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.ICollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.IReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.ReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.ObservableCollection<", newCollectionTypeName + "<")
-                .Replace("CrossCutting.Common.ValueCollection<", newCollectionTypeName + "<");
+        public static bool ContainsAny(this string instance, params string[] verbs)
+            => verbs.Any(instance.Contains);
 
         public static string ConvertTypeNameToArray(this string typeName)
-            => typeName
-                .FixTypeName()
-                .ReplaceGeneric("System.Collections.Generic.IEnumerable")
-                .ReplaceGeneric("System.Collections.Generic.IList")
-                .ReplaceGeneric("System.Collections.Generic.List")
-                .ReplaceGeneric("System.Collections.Generic.ICollection")
-                .ReplaceGeneric("System.Collections.ObjectModel.Collection")
-                .ReplaceGeneric("System.Collections.ObjectModel.ObservableCollection")
-                .ReplaceGeneric("CrossCutting.Common.ValueCollection")
-                + "[]";
+            => $"{typeName.FixTypeName().GetGenericArguments()}[]";
 
-        public static string FixObservableCollectionTypeName(this string typeName, string newCollectionTypeName)
-            => typeName
-                .FixTypeName()
-                .Replace("System.Collections.Generic.IEnumerable<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.IList<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.List<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.ICollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.Generic.IReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.ReadOnlyCollection<", newCollectionTypeName + "<")
-                .Replace("System.Collections.ObjectModel.Collection<", newCollectionTypeName + "<")
-                .Replace("CrossCutting.Common.ValueCollection<", newCollectionTypeName + "<");
+        public static string FixCollectionTypeName(this string typeName, string newCollectionTypeName)
+            => typeName.IsCollectionTypeName()
+                && !string.IsNullOrEmpty(newCollectionTypeName)
+                && !string.IsNullOrEmpty(typeName.FixTypeName().GetGenericArguments())
+                    ? $"{newCollectionTypeName}<{typeName.FixTypeName().GetGenericArguments()}>"
+                    : typeName.FixTypeName();
 
         public static bool IsCollectionTypeName(this string typeName)
-            => typeName.FixTypeName().StartsWithAny
+            => typeName.FixTypeName().ContainsAny
                 (
-                    "System.Collections.Generic.IEnumerable<",
-                    "System.Collections.Generic.IList<",
-                    "System.Collections.Generic.List<",
-                    "System.Collections.Generic.ICollection<",
-                    "System.Collections.Generic.IReadOnlyCollection<",
-                    "System.Collections.ObjectModel.Collection<",
-                    "System.Collections.ObjectModel.ReadOnlyCollection<",
-                    "System.Collections.ObjectModel.ObservableCollection<",
-                    "CrossCutting.Common.ValueCollection<"
+                    "Enumerable<",
+                    "List<",
+                    "Collection<",
+                    "Array<"
                 );
 
         public static string RemoveInterfacePrefix(this string name)

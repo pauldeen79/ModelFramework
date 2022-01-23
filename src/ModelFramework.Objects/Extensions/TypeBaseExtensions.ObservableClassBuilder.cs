@@ -26,7 +26,7 @@ namespace ModelFramework.Objects.Extensions
                         (
                             p => new ClassPropertyBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName))
+                                .WithTypeName(p.TypeName.FixCollectionTypeName(newCollectionTypeName))
                                 .WithStatic(p.Static)
                                 .WithVirtual(p.Virtual)
                                 .WithAbstract(p.Abstract)
@@ -67,9 +67,9 @@ namespace ModelFramework.Objects.Extensions
                         .AddCodeStatements
                         (
                             instance.Properties
-                                .Where(p => p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<"))
+                                .Where(p => p.TypeName.FixCollectionTypeName(newCollectionTypeName).StartsWith("System.Collections.ObjectModel.ObservableCollection<"))
                                 .Select(p => new LiteralCodeStatementBuilder()
-                                    .WithStatement($"this.{p.Name} = new {p.TypeName.FixObservableCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}();"))
+                                    .WithStatement($"this.{p.Name} = new {p.TypeName.FixCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}();"))
                         )
                 )
                 .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));

@@ -24,7 +24,7 @@ namespace ModelFramework.Objects.Extensions
                         (
                             p => new ClassPropertyBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(p.TypeName.FixBuilderCollectionTypeName(newCollectionTypeName))
+                                .WithTypeName(p.TypeName.FixCollectionTypeName(newCollectionTypeName))
                                 .WithStatic(p.Static)
                                 .WithVirtual(p.Virtual)
                                 .WithAbstract(p.Abstract)

@@ -12,7 +12,7 @@ namespace ModelFramework.Objects.Builders
               .AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, addNullChecks
                 ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
                 : "new " + collectionType + "<{1}>({0})")
-            .AddMetadata(MetadataNames.CustomImmutableDefaultValue, addNullChecks
+              .AddMetadata(MetadataNames.CustomImmutableDefaultValue, addNullChecks
                 ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
                 : "new " + collectionType + "<{1}>({0})");
 

@@ -34,6 +34,12 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 
         protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {
+            if (instance == null)
+            {
+                // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
+                return string.Empty;
+            }
+
             if (instance.Namespace == "ModelFramework.Common")
             {
                 return forCreate
@@ -60,6 +66,12 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
 
         protected override void FixImmutableBuilderProperties(ClassBuilder classBuilder)
         {
+            if (classBuilder == null)
+            {
+                // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
+                return;
+            }
+
             foreach (var property in classBuilder.Properties)
             {
                 var typeName = property.TypeName.FixTypeName();
@@ -140,6 +152,12 @@ if ({2})
 
         protected override IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
         {
+            if (c == null)
+            {
+                // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
+                yield break;
+            }
+
             if (c.Properties.Any(p => p.Name == nameof(IMetadataContainer.Metadata)))
             {
                 yield return new ClassMethodBuilder()
