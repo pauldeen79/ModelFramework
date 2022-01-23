@@ -38,6 +38,7 @@ namespace ModelFramework.CodeGeneration
                                                          defaultFileName: !provider.GenerateMultipleFiles
                                                             ? null
                                                             : provider.DefaultFileName,
+                                                         additionalActionDelegate: provider.AdditionalActionDelegate,
                                                          additionalParameters: additionalParameters);
 
             result.TemplateFileManager.Process(true, shouldSave);

@@ -21,6 +21,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         public abstract bool RecurseOnDeleteGeneratedFiles { get; }
         public abstract object CreateModel();
         public abstract string LastGeneratedFilesFileName { get; }
+        public abstract Action? AdditionalActionDelegate { get; }
 
         public object CreateAdditionalParameters()
             => new Dictionary<string, object>

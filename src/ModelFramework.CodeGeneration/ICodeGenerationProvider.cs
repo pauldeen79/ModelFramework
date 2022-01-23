@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.CodeGeneration
+﻿using System;
+
+namespace ModelFramework.CodeGeneration
 {
     public interface ICodeGenerationProvider
     {
@@ -8,6 +10,7 @@
         string DefaultFileName { get; }
         bool RecurseOnDeleteGeneratedFiles { get; }
         string LastGeneratedFilesFileName { get; }
+        Action? AdditionalActionDelegate { get; }
 
         object CreateGenerator();
         object CreateModel();
