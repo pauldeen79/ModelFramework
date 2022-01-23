@@ -20,6 +20,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
     {
         protected override bool CreateCodeGenerationHeader => true;
         protected override bool EnableNullableContext => true;
+        protected override Type RecordCollectionType => typeof(ValueCollection<>);
 
         protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType, Type codeStatementInterfaceType, Type codeStatementBuilderInterfaceType, string buildersNamespace)
             => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))

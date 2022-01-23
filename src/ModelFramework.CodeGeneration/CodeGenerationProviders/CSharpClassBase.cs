@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CrossCutting.Common;
 using CrossCutting.Common.Extensions;
 using ModelFramework.Common.Extensions;
 using ModelFramework.Generators.Objects;
@@ -15,17 +14,11 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
     public abstract class CSharpClassBase : ICodeGenerationProvider
     {
         public bool GenerateMultipleFiles { get; set; }
-        protected abstract bool EnableNullableContext { get; }
-        protected abstract bool CreateCodeGenerationHeader { get; }
-
         public string BasePath { get; set; } = string.Empty;
 
         public abstract string Path { get; }
-
         public abstract string DefaultFileName { get; }
-
         public abstract bool RecurseOnDeleteGeneratedFiles { get; }
-
         public abstract object CreateModel();
 
         public object CreateAdditionalParameters()
@@ -38,6 +31,13 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 
         public object CreateGenerator()
             => new CSharpClassGenerator();
+
+        protected abstract bool EnableNullableContext { get; }
+        protected abstract bool CreateCodeGenerationHeader { get; }
+        protected abstract Type RecordCollectionType { get; }
+        protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
+        protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
+        protected abstract IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c);
 
         protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
             => types.Select
@@ -97,14 +97,8 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
                 .WithPartial()
                 .AddMethods(CreateExtraOverloads(c));
 
-        protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
-
-        protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
-
-        protected abstract IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c);
-       
-        private static ImmutableClassSettings CreateImmutableClassSettings()
-            => new ImmutableClassSettings(newCollectionTypeName: typeof(ValueCollection<>).WithoutGenerics(),
+        private ImmutableClassSettings CreateImmutableClassSettings()
+            => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                                           validateArgumentsInConstructor: true);
     }
 }
