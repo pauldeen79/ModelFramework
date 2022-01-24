@@ -56,5 +56,29 @@ namespace ModelFramework.Objects.Tests.Extensions
                  .Should().Throw<InvalidOperationException>()
                  .WithMessage("To create an immutable extensions class, there must be at least one property");
         }
+
+        [Fact]
+        public void ToBuilderExtensionsClass_Throws_When_Properties_Are_Empty()
+        {
+            // Arrange
+            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+
+            // Act & Assert
+            input.Invoking(x => x.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings()))
+                 .Should().Throw<InvalidOperationException>()
+                 .WithMessage("To create a builder extensions class, there must be at least one property");
+        }
+
+        [Fact]
+        public void ToBuilderExtensionsClassBuilder_Throws_When_Properties_Are_Empty()
+        {
+            // Arrange
+            var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+
+            // Act & Assert
+            input.Invoking(x => x.ToBuilderExtensionsClassBuilder(new ImmutableBuilderClassSettings()))
+                 .Should().Throw<InvalidOperationException>()
+                 .WithMessage("To create a builder extensions class, there must be at least one property");
+        }
     }
 }

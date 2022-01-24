@@ -35,6 +35,24 @@ namespace ModelFramework.Objects.Extensions
                 .AddFields(instance.GetFields().Select(x => new ClassFieldBuilder(x)));
         }
 
+        public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
+            => instance.ToBuilderExtensionsClassBuilder(settings).Build();
+
+        public static ClassBuilder ToBuilderExtensionsClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
+        {
+            if (!instance.Properties.Any())
+            {
+                throw new InvalidOperationException("To create a builder extensions class, there must be at least one property");
+            }
+
+            return new ClassBuilder()
+                .WithName(instance.Name + "BuilderExtensions")
+                .WithNamespace(instance.Namespace)
+                .WithPartial()
+                .WithStatic()
+                .AddMethods(GetImmutableBuilderClassPropertyMethods(instance, settings, true));
+        }
+
         private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
                                                                                                  ImmutableBuilderClassSettings settings)
         {
@@ -165,14 +183,15 @@ namespace ModelFramework.Objects.Extensions
                         .WithStatement($"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};")
                 );
 
-            foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings))
+            foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
             {
                 yield return classMethodBuilder;
             }
         }
 
         private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassPropertyMethods(ITypeBase instance,
-                                                                                               ImmutableBuilderClassSettings settings)
+                                                                                               ImmutableBuilderClassSettings settings,
+                                                                                               bool extensionMethod)
         {
             foreach (var property in instance.Properties)
             {
@@ -183,6 +202,13 @@ namespace ModelFramework.Objects.Extensions
                     yield return new ClassMethodBuilder()
                         .WithName($"Add{property.Name}")
                         .WithTypeName($"{instance.Name}Builder")
+                        .WithStatic(extensionMethod)
+                        .WithExtensionMethod(extensionMethod)
+                        .AddParameters(new[]
+                        {
+                            new ParameterBuilder().WithName("instance")
+                                                  .WithTypeName($"{instance.Name}Builder")
+                        }.Where(_ => extensionMethod))
                         .AddParameters
                         (
                             new ParameterBuilder()
@@ -201,12 +227,18 @@ namespace ModelFramework.Objects.Extensions
                         .AddCodeStatements
                         (
                             new LiteralCodeStatementBuilder()
-                                .WithStatement($"return Add{property.Name}({property.Name.ToPascalCase()}.ToArray());")
+                                .WithStatement($"return {GetCallPrefix(extensionMethod)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());")
                         );
                     yield return new ClassMethodBuilder()
                         .WithName($"Add{property.Name}")
                         .WithTypeName($"{instance.Name}Builder")
-                        .AddParameters
+                        .WithStatic(extensionMethod)
+                        .WithExtensionMethod(extensionMethod)
+                        .AddParameters(new[]
+                        {
+                            new ParameterBuilder().WithName("instance")
+                                                  .WithTypeName($"{instance.Name}Builder")
+                        }.Where(_ => extensionMethod)).AddParameters
                         (
                             new ParameterBuilder()
                                 .WithName(property.Name.ToPascalCase())
@@ -223,13 +255,20 @@ namespace ModelFramework.Objects.Extensions
                                 )
                                 .WithIsNullable(property.IsNullable)
                         )
-                        .AddCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property));
+                        .AddCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property, extensionMethod));
 
                     foreach (var overload in overloads)
                     {
                         yield return new ClassMethodBuilder()
                             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
                             .WithTypeName($"{instance.Name}Builder")
+                            .WithStatic(extensionMethod)
+                            .WithExtensionMethod(extensionMethod)
+                            .AddParameters(new[]
+                            {
+                                new ParameterBuilder().WithName("instance")
+                                                      .WithTypeName($"{instance.Name}Builder")
+                            }.Where(_ => extensionMethod))
                             .AddParameters
                             (
                                 new ParameterBuilder()
@@ -248,6 +287,13 @@ namespace ModelFramework.Objects.Extensions
                             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
                                                     property.Name))
                             .WithTypeName($"{instance.Name}Builder")
+                            .WithStatic(extensionMethod)
+                            .WithExtensionMethod(extensionMethod)
+                            .AddParameters(new[]
+                            {
+                                new ParameterBuilder().WithName("instance")
+                                                      .WithTypeName($"{instance.Name}Builder")
+                            }.Where(_ => extensionMethod))
                             .AddParameters
                             (
                                 new ParameterBuilder()
@@ -260,7 +306,8 @@ namespace ModelFramework.Objects.Extensions
                             )
                             .AddCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
                                                                                               property,
-                                                                                              overload.InitializeExpression));
+                                                                                              overload.InitializeExpression,
+                                                                                              extensionMethod));
                     }
                 }
                 else
@@ -270,6 +317,13 @@ namespace ModelFramework.Objects.Extensions
                     .WithName(string.Format(settings.SetMethodNameFormatString,
                                             property.Name))
                     .WithTypeName($"{instance.Name}Builder")
+                    .WithStatic(extensionMethod)
+                    .WithExtensionMethod(extensionMethod)
+                    .AddParameters(new[]
+                    {
+                        new ParameterBuilder().WithName("instance")
+                                              .WithTypeName($"{instance.Name}Builder")
+                    }.Where(_ => extensionMethod))
                     .AddParameters
                     (
                         new ParameterBuilder()
@@ -290,7 +344,7 @@ namespace ModelFramework.Objects.Extensions
                     (
                         new LiteralCodeStatementBuilder().WithStatement(string.Format
                         (
-                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};"),
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod)}{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};"),
                             property.Name,
                             property.Name.ToPascalCase(),
                             property.Name.ToPascalCase().GetCsharpFriendlyName(),
@@ -299,7 +353,7 @@ namespace ModelFramework.Objects.Extensions
                             "{",
                             "}"
                         )),
-                        new LiteralCodeStatementBuilder().WithStatement("return this;")
+                        new LiteralCodeStatementBuilder().WithStatement($"return {GetReturnValue(extensionMethod)};")
                     );
                     foreach (var overload in overloads)
                     {
@@ -307,6 +361,13 @@ namespace ModelFramework.Objects.Extensions
                             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
                                                     property.Name))
                             .WithTypeName($"{instance.Name}Builder")
+                            .WithStatic(extensionMethod)
+                            .WithExtensionMethod(extensionMethod)
+                            .AddParameters(new[]
+                            {
+                                new ParameterBuilder().WithName("instance")
+                                                      .WithTypeName($"{instance.Name}Builder")
+                            }.Where(_ => extensionMethod))
                             .AddParameters
                             (
                                 new ParameterBuilder()
@@ -320,12 +381,17 @@ namespace ModelFramework.Objects.Extensions
                                                                                               property.Name.ToPascalCase(),
                                                                                               property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
                                                                                               property.Name)),
-                                new LiteralCodeStatementBuilder().WithStatement("return this;")
+                                new LiteralCodeStatementBuilder().WithStatement($"return {GetReturnValue(extensionMethod)};")
                             );
                     }
                 }
             }
         }
+
+        private static string GetCallPrefix(bool extensionMethod)
+            => extensionMethod
+                ? "instance."
+                : string.Empty;
 
         private static IEnumerable<Overload> GetOverloads(IClassProperty property)
         {
@@ -350,7 +416,8 @@ namespace ModelFramework.Objects.Extensions
         }
 
         private static List<ICodeStatementBuilder> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
-                                                                                          IClassProperty property)
+                                                                                          IClassProperty property,
+                                                                                          bool extensionMethod)
             => settings.AddNullChecks
                 ? new[]
                     {
@@ -358,29 +425,35 @@ namespace ModelFramework.Objects.Extensions
                         "{",
                         string.Format
                         (
-                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"    {property.Name}.AddRange({property.Name.ToPascalCase()});"),
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"    {GetCallPrefix(extensionMethod)}{property.Name}.AddRange({property.Name.ToPascalCase()});"),
                             property.Name.ToPascalCase(),
                             property.TypeName,
                             property.TypeName.GetGenericArguments()
                         ),
                         "}",
-                        "return this;"
+                        $"return {GetReturnValue(extensionMethod)};"
                     }.ToLiteralCodeStatementBuilders().ToList()
                 : new[]
                     {
                         string.Format
                         (
-                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"{property.Name}.AddRange({property.Name.ToPascalCase()});"),
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"{GetCallPrefix(extensionMethod)}{property.Name}.AddRange({property.Name.ToPascalCase()});"),
                             property.Name.ToPascalCase(),
                             property.TypeName,
                             property.TypeName.GetGenericArguments()
                         ),
-                        "return this;"
+                        $"return {GetReturnValue(extensionMethod)};"
                     }.ToLiteralCodeStatementBuilders().ToList();
+
+        private static string GetReturnValue(bool extensionMethod)
+            => extensionMethod
+                ? "instance"
+                : "this";
 
         private static List<ICodeStatementBuilder> GetImmutableBuilderAddOverloadMethodStatements(ImmutableBuilderClassSettings settings,
                                                                                                   IClassProperty property,
-                                                                                                  string overloadExpression)
+                                                                                                  string overloadExpression,
+                                                                                                  bool extensionMethod)
             => settings.AddNullChecks
                 ? (new[]
                 {
@@ -394,7 +467,7 @@ namespace ModelFramework.Objects.Extensions
                                       property.Name),
                         "    }",
                         "}",
-                        "return this;"
+                        $"return {GetReturnValue(extensionMethod)};"
                 }).ToLiteralCodeStatementBuilders().ToList()
                 : (new[]
                 {
@@ -404,7 +477,7 @@ namespace ModelFramework.Objects.Extensions
                                       property.TypeName.GetGenericArguments(),
                                       CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
                                       property.Name),
-                        "return this;"
+                        $"return {GetReturnValue(extensionMethod)};"
                 }).ToLiteralCodeStatementBuilders().ToList();
 
         private static string CreateIndentForImmutableBuilderAddOverloadMethodStatement(ImmutableBuilderClassSettings settings)

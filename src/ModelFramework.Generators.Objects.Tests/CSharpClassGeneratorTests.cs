@@ -2119,6 +2119,87 @@ namespace MyNamespace
         }
 
         [Fact]
+        public void Can_Generate_Builder_Extensions_Class()
+        {
+            // Arrange
+            var properties = new[]
+            {
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
+            };
+
+            var cls = new ClassBuilder()
+                .WithName("MyRecord")
+                .WithNamespace("MyNamespace")
+                .AddProperties(properties)
+                .Build();
+
+            var model = new[]
+            {
+                cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
+                   .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings())
+                   .Chain(x => x.Methods.RemoveAll(x => x.Name != "Build"))
+                   .Build(),
+                cls.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings())
+            };
+            var sut = new CSharpClassGenerator();
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecordBuilder
+    {
+        public string Property1
+        {
+            get;
+            set;
+        }
+
+        public bool Property2
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord(Property1, Property2);
+        }
+
+        public MyRecordBuilder()
+        {
+            Property1 = string.Empty;
+            Property2 = default;
+        }
+    }
+
+    public static partial class MyRecordBuilderExtensions
+    {
+        public static MyRecordBuilder WithProperty1(this MyRecordBuilder instance, string property1)
+        {
+            instance.Property1 = property1;
+            return instance;
+        }
+
+        public static MyRecordBuilder WithProperty2(this MyRecordBuilder instance, bool property2)
+        {
+            instance.Property2 = property2;
+            return instance;
+        }
+    }
+}
+");
+        }
+
+        [Fact]
         public void GeneratesPocoClass_Model()
         {
             // Arrange
