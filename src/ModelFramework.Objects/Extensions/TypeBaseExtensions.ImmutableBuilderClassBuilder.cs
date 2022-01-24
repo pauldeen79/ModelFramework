@@ -165,6 +165,15 @@ namespace ModelFramework.Objects.Extensions
                         .WithStatement($"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};")
                 );
 
+            foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings))
+            {
+                yield return classMethodBuilder;
+            }
+        }
+
+        private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassPropertyMethods(ITypeBase instance,
+                                                                                               ImmutableBuilderClassSettings settings)
+        {
             foreach (var property in instance.Properties)
             {
                 var overloads = GetOverloads(property);
