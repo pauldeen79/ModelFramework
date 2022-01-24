@@ -201,14 +201,7 @@ namespace ModelFramework.Objects.Extensions
                     // collection
                     yield return new ClassMethodBuilder()
                         .WithName($"Add{property.Name}")
-                        .WithTypeName($"{instance.Name}Builder")
-                        .WithStatic(extensionMethod)
-                        .WithExtensionMethod(extensionMethod)
-                        .AddParameters(new[]
-                        {
-                            new ParameterBuilder().WithName("instance")
-                                                  .WithTypeName($"{instance.Name}Builder")
-                        }.Where(_ => extensionMethod))
+                        .ConfigureForExtensionMethod(instance, extensionMethod)
                         .AddParameters
                         (
                             new ParameterBuilder()
@@ -231,14 +224,8 @@ namespace ModelFramework.Objects.Extensions
                         );
                     yield return new ClassMethodBuilder()
                         .WithName($"Add{property.Name}")
-                        .WithTypeName($"{instance.Name}Builder")
-                        .WithStatic(extensionMethod)
-                        .WithExtensionMethod(extensionMethod)
-                        .AddParameters(new[]
-                        {
-                            new ParameterBuilder().WithName("instance")
-                                                  .WithTypeName($"{instance.Name}Builder")
-                        }.Where(_ => extensionMethod)).AddParameters
+                        .ConfigureForExtensionMethod(instance, extensionMethod)
+                        .AddParameters
                         (
                             new ParameterBuilder()
                                 .WithName(property.Name.ToPascalCase())
@@ -261,14 +248,7 @@ namespace ModelFramework.Objects.Extensions
                     {
                         yield return new ClassMethodBuilder()
                             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
-                            .WithTypeName($"{instance.Name}Builder")
-                            .WithStatic(extensionMethod)
-                            .WithExtensionMethod(extensionMethod)
-                            .AddParameters(new[]
-                            {
-                                new ParameterBuilder().WithName("instance")
-                                                      .WithTypeName($"{instance.Name}Builder")
-                            }.Where(_ => extensionMethod))
+                            .ConfigureForExtensionMethod(instance, extensionMethod)
                             .AddParameters
                             (
                                 new ParameterBuilder()
@@ -286,14 +266,7 @@ namespace ModelFramework.Objects.Extensions
                         yield return new ClassMethodBuilder()
                             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
                                                     property.Name))
-                            .WithTypeName($"{instance.Name}Builder")
-                            .WithStatic(extensionMethod)
-                            .WithExtensionMethod(extensionMethod)
-                            .AddParameters(new[]
-                            {
-                                new ParameterBuilder().WithName("instance")
-                                                      .WithTypeName($"{instance.Name}Builder")
-                            }.Where(_ => extensionMethod))
+                            .ConfigureForExtensionMethod(instance, extensionMethod)
                             .AddParameters
                             (
                                 new ParameterBuilder()
@@ -316,14 +289,7 @@ namespace ModelFramework.Objects.Extensions
                     yield return new ClassMethodBuilder()
                     .WithName(string.Format(settings.SetMethodNameFormatString,
                                             property.Name))
-                    .WithTypeName($"{instance.Name}Builder")
-                    .WithStatic(extensionMethod)
-                    .WithExtensionMethod(extensionMethod)
-                    .AddParameters(new[]
-                    {
-                        new ParameterBuilder().WithName("instance")
-                                              .WithTypeName($"{instance.Name}Builder")
-                    }.Where(_ => extensionMethod))
+                    .ConfigureForExtensionMethod(instance, extensionMethod)
                     .AddParameters
                     (
                         new ParameterBuilder()
@@ -360,14 +326,7 @@ namespace ModelFramework.Objects.Extensions
                         yield return new ClassMethodBuilder()
                             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
                                                     property.Name))
-                            .WithTypeName($"{instance.Name}Builder")
-                            .WithStatic(extensionMethod)
-                            .WithExtensionMethod(extensionMethod)
-                            .AddParameters(new[]
-                            {
-                                new ParameterBuilder().WithName("instance")
-                                                      .WithTypeName($"{instance.Name}Builder")
-                            }.Where(_ => extensionMethod))
+                            .ConfigureForExtensionMethod(instance, extensionMethod)
                             .AddParameters
                             (
                                 new ParameterBuilder()
@@ -387,6 +346,16 @@ namespace ModelFramework.Objects.Extensions
                 }
             }
         }
+
+        private static ClassMethodBuilder ConfigureForExtensionMethod(this ClassMethodBuilder builder, ITypeBase instance, bool extensionMethod)
+            => builder.WithTypeName($"{instance.Name}Builder")
+                      .WithStatic(extensionMethod)
+                      .WithExtensionMethod(extensionMethod)
+                      .AddParameters(new[]
+                      {
+                              new ParameterBuilder().WithName("instance")
+                                                    .WithTypeName($"{instance.Name}Builder")
+                      }.Where(_ => extensionMethod));
 
         private static string GetCallPrefix(bool extensionMethod)
             => extensionMethod
