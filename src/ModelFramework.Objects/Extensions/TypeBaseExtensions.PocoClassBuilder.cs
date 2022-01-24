@@ -23,21 +23,7 @@ namespace ModelFramework.Objects.Extensions
                         .Select
                         (
                             p => new ClassPropertyBuilder()
-                                .WithName(p.Name)
-                                .WithTypeName(p.TypeName.FixCollectionTypeName(newCollectionTypeName))
-                                .WithStatic(p.Static)
-                                .WithVirtual(p.Virtual)
-                                .WithAbstract(p.Abstract)
-                                .WithProtected(p.Protected)
-                                .WithOverride(p.Override)
-                                .WithHasGetter(p.HasGetter)
-                                .WithHasSetter()
-                                .WithHasInitializer(false)
-                                .WithIsNullable(p.IsNullable)
-                                .WithVisibility(p.Visibility)
-                                .WithGetterVisibility(p.GetterVisibility)
-                                .WithSetterVisibility(p.SetterVisibility)
-                                .WithInitializerVisibility(p.InitializerVisibility)
+                                .ForPocoClassBuilder(p, newCollectionTypeName)
                                 .WithExplicitInterfaceName(p.ExplicitInterfaceName)
                                 .AddMetadata
                                 (
