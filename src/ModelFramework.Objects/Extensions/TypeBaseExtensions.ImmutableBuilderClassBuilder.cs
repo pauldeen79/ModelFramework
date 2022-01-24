@@ -236,7 +236,8 @@ namespace ModelFramework.Objects.Extensions
                                     .WithStatement($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());")
                             );
                         yield return new ClassMethodBuilder()
-                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
+                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
+                                                    property.Name))
                             .WithTypeName($"{instance.Name}Builder")
                             .AddParameters
                             (
@@ -244,8 +245,8 @@ namespace ModelFramework.Objects.Extensions
                                     .WithName(property.Name.ToPascalCase())
                                     .WithIsParamArray()
                                     .WithTypeName(string.Format(overload.ArgumentType,
-                                                                            property.TypeName,
-                                                                            property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
+                                                                property.TypeName,
+                                                                property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
                                     .WithIsNullable(property.IsNullable)
                             )
                             .AddCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
@@ -257,7 +258,8 @@ namespace ModelFramework.Objects.Extensions
                 {
                     // single
                     yield return new ClassMethodBuilder()
-                    .WithName(string.Format(settings.SetMethodNameFormatString, property.Name))
+                    .WithName(string.Format(settings.SetMethodNameFormatString,
+                                            property.Name))
                     .WithTypeName($"{instance.Name}Builder")
                     .AddParameters
                     (
@@ -293,7 +295,8 @@ namespace ModelFramework.Objects.Extensions
                     foreach (var overload in overloads)
                     {
                         yield return new ClassMethodBuilder()
-                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
+                            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
+                                                    property.Name))
                             .WithTypeName($"{instance.Name}Builder")
                             .AddParameters
                             (
