@@ -112,7 +112,8 @@ namespace ModelFramework.Objects.Extensions
                     GetImmutableClassMethods(instance,
                                              settings.NewCollectionTypeName,
                                              settings.CreateWithMethod,
-                                             settings.ImplementIEquatable)
+                                             settings.ImplementIEquatable,
+                                             false)
                 )
                 .AddInterfaces
                 (
@@ -123,10 +124,35 @@ namespace ModelFramework.Objects.Extensions
                 .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
         }
 
+        public static IClass ToImmutableExtensionClass(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
+            => instance.ToImmutableExtensionClassBuilder(settings).Build();
+
+        public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
+        {
+            if (!instance.Properties.Any())
+            {
+                throw new InvalidOperationException("To create an immutable extensions class, there must be at least one property");
+            }
+
+            return new ClassBuilder()
+                .WithName(instance.Name + "Extensions")
+                .WithNamespace(instance.Namespace)
+                .AddMethods(GetImmutableClassMethods
+                (
+                    instance,
+                    settings.NewCollectionTypeName,
+                    createWithMethod: true,
+                    implementIEquatable: false,
+                    extensionMethod: true
+                ))
+                .WithStatic();
+        }
+
         private static IEnumerable<ClassMethodBuilder> GetImmutableClassMethods(ITypeBase instance,
                                                                                 string newCollectionTypeName,
                                                                                 bool createWithMethod,
-                                                                                bool implementIEquatable)
+                                                                                bool implementIEquatable,
+                                                                                bool extensionMethod)
         {
             if (createWithMethod)
             {
@@ -134,6 +160,8 @@ namespace ModelFramework.Objects.Extensions
                     new ClassMethodBuilder()
                         .WithName("With")
                         .WithTypeName(instance.Name)
+                        .WithStatic(extensionMethod)
+                        .WithExtensionMethod(extensionMethod)
                         .AddCodeStatements
                         (
                             new[]
@@ -157,13 +185,19 @@ namespace ModelFramework.Objects.Extensions
                                             : string.Empty
                                     }
                                     )
-                                    .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? this.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableBuilderDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")
+                                    .Select(p => $"    {p.Name.ToPascalCase()} == default({string.Format(p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName), p.TypeName).GetCsharpFriendlyTypeName()}) ? {GetInstanceName(extensionMethod)}.{p.Name} : {string.Format(p.OriginalMetadata.GetStringValue(MetadataNames.CustomImmutableBuilderDefaultValue, p.Name.ToPascalCase()), p.Name.ToPascalCase())}{p.Suffix}")
                             )
                             .Concat
                             (
                                 new[] { ");" }
                             )
                             .ToLiteralCodeStatementBuilders()
+                        )
+                        .AddParameters
+                        (
+                            extensionMethod
+                                ? new[] { new ParameterBuilder().WithName("instance").WithTypeName(instance.Name) }
+                                : Enumerable.Empty<ParameterBuilder>()
                         )
                         .AddParameters
                         (
@@ -256,6 +290,11 @@ namespace ModelFramework.Objects.Extensions
                     );
             }
         }
+
+        private static string GetInstanceName(bool extensionMethod)
+            => extensionMethod
+                ? "instance"
+                : "this";
 
         private static string GetEqualsProperties(ITypeBase instance)
             => string.Join(" &&" + Environment.NewLine + "       ", instance.Properties.Select(p => $"{p.Name} == other.{p.Name}"));
