@@ -48,7 +48,8 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 
         protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
         protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
-        protected abstract IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c);
+        protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
+            => Enumerable.Empty<ClassMethodBuilder>();
 
         protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
             => types.Select
@@ -62,10 +63,13 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
                                     .Build()
             ).ToArray();
 
-        protected IClass[] GetImmutableBuilderClasses(IClass[] models, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
+        protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace)
+            => GetImmutableBuilderClasses(models, entitiesNamespace, buildersNamespace, Array.Empty<string>());
+
+        protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
             => models.Select
             (
-                x => CreateBuilder(new ClassBuilder(x)
+                x => CreateBuilder(new ClassBuilder(x.ToClass())
                                     .WithName(x.Name.Substring(1))
                                     .WithNamespace(entitiesNamespace)
                                     .Chain(y => FixImmutableBuilderProperties(y))
@@ -91,10 +95,10 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
                       .Build()
             ).ToArray();
 
-        protected IClass[] GetImmutableClasses(IClass[] models, string entitiesNamespace)
+        protected IClass[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
             => models.Select
             (
-                x => new ClassBuilder(x)
+                x => new ClassBuilder(x.ToClass())
                       .WithName(x.Name.Substring(1))
                       .WithNamespace(entitiesNamespace)
                       .Chain(y => FixImmutableBuilderProperties(y))

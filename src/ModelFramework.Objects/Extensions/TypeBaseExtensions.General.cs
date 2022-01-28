@@ -56,5 +56,30 @@ namespace ModelFramework.Objects.Extensions
 
         public static IEnumerable<IClassField> GetFields(this ITypeBase instance)
             => (instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>();
+
+        public static IClass ToClass(this ITypeBase instance)
+            => instance is IClass c
+                ? c
+                : new Class
+                    (
+                        Enumerable.Empty<IClassField>(),
+                        false,
+                        false,
+                        Enumerable.Empty<IClass>(),
+                        Enumerable.Empty<IClassConstructor>(),
+                        string.Empty,
+                        false,
+                        instance.Namespace,
+                        instance.Partial,
+                        instance.Interfaces,
+                        instance.Properties,
+                        instance.Methods,
+                        instance.GenericTypeArguments,
+                        instance.Metadata,
+                        instance.Visibility,
+                        instance.Name,
+                        instance.Attributes,
+                        Enumerable.Empty<IEnum>()
+                    );
     }
 }

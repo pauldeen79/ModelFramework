@@ -7,11 +7,11 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using ModelFramework.Objects.Extensions;
 using ModelFramework.Objects.Settings;
-//using QueryFramework.Abstractions;
 using ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProviders;
-//using QueryFramework.CodeGeneration.ObjectHandlerPropertyFilters;
 using TextTemplateTransformationFramework.Runtime.CodeGeneration;
 using Xunit;
+using ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters;
+using ModelFramework.Objects.Contracts;
 
 namespace ModelFramework.CodeGeneration.Tests.QueryFramework
 {
@@ -27,32 +27,37 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework
         );
 
         // Bootstrap test that generates c# code for the model used in code generation :)
-        //[Fact]
-        //public void Can_Generate_Model_For_Abstractions()
-        //{
-        //    // Arrange
-        //    var models = new[]
-        //    {
-        //        typeof(IQueryCondition),
-        //        typeof(IQueryExpression),
-        //        typeof(IQueryExpressionFunction),
-        //        typeof(IQueryParameter),
-        //        typeof(IQueryParameterValue),
-        //        typeof(IQuerySortOrder)
-        //    }.Select(x => x.ToClassBuilder(new ClassSettings())).ToArray();
-        //    var serviceCollection = new ServiceCollection();
-        //    var serviceProvider = serviceCollection
-        //        .AddCsharpExpressionDumper()
-        //        .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
-        //        .BuildServiceProvider();
-        //    var dumper = serviceProvider.GetRequiredService<ICsharpExpressionDumper>();
+        [Fact]
+        public void Can_Generate_Model_For_Abstractions()
+        {
+            // Arrange
+            var models = new[]
+            {
+                typeof(IAttribute),
+                typeof(IAttributeParameter),
+                typeof(IClass),
+                typeof(IClassConstructor),
+                typeof(IClassField),
+                typeof(IClassMethod),
+                typeof(IClassProperty),
+                typeof(IEnum),
+                typeof(IEnumMember),
+                typeof(IInterface),
+                typeof(IParameter)
+            }.Select(x => x.ToClassBuilder(new ClassSettings()).Build()).Select(x => x.ToInterfaceBuilder()).ToArray();
+            var serviceCollection = new ServiceCollection();
+            var serviceProvider = serviceCollection
+                .AddCsharpExpressionDumper()
+                .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+                .BuildServiceProvider();
+            var dumper = serviceProvider.GetRequiredService<ICsharpExpressionDumper>();
 
-        //    // Act
-        //    var code = dumper.Dump(models);
+            // Act
+            var code = dumper.Dump(models);
 
-        //    // Assert
-        //    code.Should().NotBeEmpty();
-        //}
+            // Assert
+            code.Should().NotBeEmpty();
+        }
 
         [Fact]
         public void Can_Generate_Records_From_Model()

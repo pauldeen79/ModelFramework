@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using CrossCutting.Common;
-using CrossCutting.Common.Extensions;
 using ModelFramework.CodeGeneration.CodeGenerationProviders;
 using ModelFramework.Common;
 using ModelFramework.Common.Extensions;
@@ -10,7 +8,6 @@ using ModelFramework.Objects;
 using ModelFramework.Objects.Builders;
 using ModelFramework.Objects.Contracts;
 using ModelFramework.Objects.Extensions;
-using ModelFramework.Objects.Settings;
 
 namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProviders
 {
@@ -19,9 +16,6 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
         protected override bool CreateCodeGenerationHeader => true;
         protected override bool EnableNullableContext => true;
         protected override Type RecordCollectionType => typeof(ValueCollection<>);
-
-        protected override IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
-            => Enumerable.Empty<ClassMethodBuilder>();
 
         protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
         {
@@ -88,10 +82,10 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
                 : "{0} = new " + typeName.Replace("QueryFramework.Abstractions.I", "QueryFramework.Core.Builders.") + "Builder" + "(source.{0})";
         }
 
-        protected static IClass[] GetModels()
+        protected static ITypeBase[] GetModels()
             => new[]
             {
-                new ModelFramework.Objects.Builders.ClassBuilder
+                new ModelFramework.Objects.Builders.InterfaceBuilder
                 {
                     Namespace = @"QueryFramework.Abstractions",
                     Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>(new[]
@@ -136,7 +130,7 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
                     } ),
                     Name = @"IQueryCondition",
                 },
-                new ModelFramework.Objects.Builders.ClassBuilder
+                new ModelFramework.Objects.Builders.InterfaceBuilder
                 {
                     Namespace = @"QueryFramework.Abstractions",
                     Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>(new[]
@@ -157,7 +151,7 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
                     } ),
                     Name = @"IQueryExpression",
                 },
-                new ModelFramework.Objects.Builders.ClassBuilder
+                new ModelFramework.Objects.Builders.InterfaceBuilder
                 {
                     Namespace = @"QueryFramework.Abstractions",
                     Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>(new[]
@@ -172,7 +166,7 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
                     } ),
                     Name = @"IQueryExpressionFunction",
                 },
-                new ModelFramework.Objects.Builders.ClassBuilder
+                new ModelFramework.Objects.Builders.InterfaceBuilder
                 {
                     Namespace = @"QueryFramework.Abstractions",
                     Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>(new[]
@@ -192,7 +186,7 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
                     } ),
                     Name = @"IQueryParameter",
                 },
-                new ModelFramework.Objects.Builders.ClassBuilder
+                new ModelFramework.Objects.Builders.InterfaceBuilder
                 {
                     Namespace = @"QueryFramework.Abstractions",
                     Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>(new[]
@@ -206,7 +200,7 @@ namespace ModelFramework.CodeGeneration.Tests.QueryFramework.CodeGenerationProvi
                     } ),
                     Name = @"IQueryParameterValue",
                 },
-                new ModelFramework.Objects.Builders.ClassBuilder
+                new ModelFramework.Objects.Builders.InterfaceBuilder
                 {
                     Namespace = @"QueryFramework.Abstractions",
                     Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>(new[]
