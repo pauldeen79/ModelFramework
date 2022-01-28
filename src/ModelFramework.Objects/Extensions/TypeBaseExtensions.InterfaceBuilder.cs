@@ -16,6 +16,7 @@ namespace ModelFramework.Objects.Extensions
                 .WithNamespace(instance.Namespace)
                 .WithPartial(instance.Partial)
                 .WithVisibility(instance.Visibility)
+                .AddInterfaces(instance.Interfaces)
                 .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
                 .AddMetadata(instance.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddMethods(instance.Methods.Select(x => new ClassMethodBuilder(x)))
