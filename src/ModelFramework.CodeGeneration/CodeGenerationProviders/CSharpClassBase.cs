@@ -62,6 +62,20 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
                                     .Build()
             ).ToArray();
 
+        protected IClass[] GetImmutableBuilderClasses(IClass[] models, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
+            => models.Select
+            (
+                x => CreateBuilder(new ClassBuilder(x)
+                                    .WithName(x.Name.Substring(1))
+                                    .WithNamespace(entitiesNamespace)
+                                    .Chain(y => FixImmutableBuilderProperties(y))
+                                    .Build()
+                                    .ToImmutableClass(CreateImmutableClassSettings()), buildersNamespace
+                                  )
+                                  .Chain(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
+                                  .Build()
+            ).ToArray();
+
         protected IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
             => types.Select
             (
@@ -74,6 +88,21 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
                       .WithRecord()
                       .WithPartial()
                       .AddInterfaces(x)
+                      .Build()
+            ).ToArray();
+
+        protected IClass[] GetImmutableClasses(IClass[] models, string entitiesNamespace)
+            => models.Select
+            (
+                x => new ClassBuilder(x)
+                      .WithName(x.Name.Substring(1))
+                      .WithNamespace(entitiesNamespace)
+                      .Chain(y => FixImmutableBuilderProperties(y))
+                      .Build()
+                      .ToImmutableClassBuilder(CreateImmutableClassSettings())
+                      .WithRecord()
+                      .WithPartial()
+                      .AddInterfaces($"{x.Namespace}.{x.Name}")
                       .Build()
             ).ToArray();
 
@@ -108,7 +137,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
                 .WithPartial()
                 .AddMethods(CreateExtraOverloads(c));
 
-        private ImmutableClassSettings CreateImmutableClassSettings()
+        protected ImmutableClassSettings CreateImmutableClassSettings()
             => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                                           validateArgumentsInConstructor: true);
     }

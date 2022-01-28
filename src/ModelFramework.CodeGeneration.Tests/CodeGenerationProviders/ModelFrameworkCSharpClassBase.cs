@@ -96,7 +96,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                             ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
                             : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
                         isCodeStatement
-                            ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()));"
+                            ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()))"
                             : null
                     );
                 }

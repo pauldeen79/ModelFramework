@@ -85,7 +85,7 @@ namespace ModelFramework.Objects.Extensions
                         instance.Properties
                             .Where(p => p.TypeName.IsCollectionTypeName())
                             .Select(p => new LiteralCodeStatementBuilder().WithStatement($"{p.Name} = new {GetCopyConstructorInitializeExpression(settings, p)}();"))
-                            .Concat(instance.Properties.Select(p => new LiteralCodeStatementBuilder().WithStatement(p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks))))
+                            .Concat(instance.Properties.Select(p => new LiteralCodeStatementBuilder().WithStatement(p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks) + ";")))
                     );
             }
 
