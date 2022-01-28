@@ -52,16 +52,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
             => Enumerable.Empty<ClassMethodBuilder>();
 
         protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
-            => types.Select
-            (
-                x => CreateBuilder(x.ToClassBuilder(new ClassSettings())
-                                    .WithName(x.Name.Substring(1))
-                                    .WithNamespace(entitiesNamespace)
-                                    .Chain(y => FixImmutableBuilderProperties(y))
-                                    .Build()
-                                    .ToImmutableClass(CreateImmutableClassSettings()), buildersNamespace)
-                                    .Build()
-            ).ToArray();
+            => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace);
 
         protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace)
             => GetImmutableBuilderClasses(models, entitiesNamespace, buildersNamespace, Array.Empty<string>());
@@ -81,19 +72,7 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
             ).ToArray();
 
         protected IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
-            => types.Select
-            (
-                x => x.ToClassBuilder(new ClassSettings())
-                      .WithName(x.Name.Substring(1))
-                      .WithNamespace(entitiesNamespace)
-                      .Chain(y => FixImmutableBuilderProperties(y))
-                      .Build()
-                      .ToImmutableClassBuilder(CreateImmutableClassSettings())
-                      .WithRecord()
-                      .WithPartial()
-                      .AddInterfaces(x)
-                      .Build()
-            ).ToArray();
+            => GetImmutableClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace);
 
         protected IClass[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
             => models.Select
