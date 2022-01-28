@@ -1,8 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using CrossCutting.Common.Extensions;
+using CsharpExpressionDumper.Abstractions;
+using CsharpExpressionDumper.Core.Extensions;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
+using ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters;
 using ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
+using ModelFramework.Objects.Contracts;
+using ModelFramework.Objects.Extensions;
+using ModelFramework.Objects.Settings;
 using TextTemplateTransformationFramework.Runtime.CodeGeneration;
 using Xunit;
 
@@ -17,6 +25,39 @@ namespace ModelFramework.CodeGeneration.Tests
             generateMultipleFiles: false,
             dryRun: true
         );
+
+        // Bootstrap test that generates c# code for the model used in code generation :)
+        [Fact]
+        public void Can_Generate_Model_For_Abstractions()
+        {
+            // Arrange
+            var models = new[]
+            {
+                typeof(IAttribute),
+                typeof(IAttributeParameter),
+                typeof(IClass),
+                typeof(IClassConstructor),
+                typeof(IClassField),
+                typeof(IClassMethod),
+                typeof(IClassProperty),
+                typeof(IEnum),
+                typeof(IEnumMember),
+                typeof(IInterface),
+                typeof(IParameter)
+            }.Select(x => x.ToClass(new ClassSettings()).ToInterfaceBuilder()).ToArray();
+            var serviceCollection = new ServiceCollection();
+            var serviceProvider = serviceCollection
+                .AddCsharpExpressionDumper()
+                .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+                .BuildServiceProvider();
+            var dumper = serviceProvider.GetRequiredService<ICsharpExpressionDumper>();
+
+            // Act
+            var code = dumper.Dump(models);
+
+            // Assert
+            code.Should().NotBeEmpty();
+        }
 
         [Fact]
         public void CanGenerateAll()

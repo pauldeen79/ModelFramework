@@ -39,10 +39,10 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
             }
             var defaultValue = GetDefaultValue(command, propertyInfo);
             var actualValue = propertyInfo.GetValue(command.Instance);
-            return ValueIsEmptyOrUnequal(propertyInfo, defaultValue, actualValue);
+            return ValueIsEmptyOrUnequalToDefaultValue(propertyInfo, defaultValue, actualValue);
         }
 
-        private static bool ValueIsEmptyOrUnequal(PropertyInfo propertyInfo, object? defaultValue, object actualValue)
+        private static bool ValueIsEmptyOrUnequalToDefaultValue(PropertyInfo propertyInfo, object? defaultValue, object actualValue)
         {
             if (typeof(ICollection).IsAssignableFrom(propertyInfo.PropertyType) && actualValue is ICollection c && c.Count == 0)
             {
@@ -65,7 +65,7 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
             if (propertyInfo.Name == nameof(ClassPropertyBuilder.HasGetter)
                 || propertyInfo.Name == nameof(ClassPropertyBuilder.HasSetter))
             {
-                // Skip default values for HasGetter and HasSetter
+                // HasGetter and HasSetter are true by default
                 return true;
             }
             else if (propertyInfo.PropertyType == typeof(string) && !propertyInfo.IsNullable())
