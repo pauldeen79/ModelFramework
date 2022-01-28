@@ -13,34 +13,13 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
     {
         public bool IsValid(ObjectHandlerRequest command, PropertyInfo propertyInfo)
         {
-            object? defaultValue;
-
-            if (propertyInfo.Name == nameof(ClassPropertyBuilder.HasGetter)
-                || propertyInfo.Name == nameof(ClassPropertyBuilder.HasSetter))
-            {
-                // Skip default values for HasGetter and HasSetter
-                defaultValue = true;
-            }
-            else if (propertyInfo.PropertyType == typeof(string) && !propertyInfo.IsNullable())
-            {
-                defaultValue = string.Empty;
-            }
-            else if (propertyInfo.Name == nameof(IVisibilityContainer.Visibility))
-            {
-                // Not really necessary at this time because we're currently only using ClassBuilder and ClassPropertyBuilder instances...
-                defaultValue = propertyInfo.DeclaringType == typeof(ClassFieldBuilder)
-                    ? Visibility.Private
-                    : Visibility.Public;
-            }
-            else if (propertyInfo.Name == nameof(ClassPropertyBuilder.GetterVisibility))
+            if (propertyInfo.Name == nameof(ClassPropertyBuilder.GetterVisibility))
             {
                 var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
                 if (classPropertyBuilder != null && !classPropertyBuilder.HasGetter)
                 {
                     return false;
                 }
-
-                defaultValue = propertyInfo.DeclaringType?.GetProperty(nameof(ClassPropertyBuilder.Visibility))?.GetValue(command.Instance);
             }
             else if (propertyInfo.Name == nameof(ClassPropertyBuilder.SetterVisibility))
             {
@@ -49,8 +28,6 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
                 {
                     return false;
                 }
-
-                defaultValue = propertyInfo.DeclaringType?.GetProperty(nameof(ClassPropertyBuilder.Visibility))?.GetValue(command.Instance);
             }
             else if (propertyInfo.Name == nameof(ClassPropertyBuilder.InitializerVisibility))
             {
@@ -59,18 +36,14 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
                 {
                     return false;
                 }
-
-                defaultValue = propertyInfo.DeclaringType?.GetProperty(nameof(ClassPropertyBuilder.Visibility))?.GetValue(command.Instance);
             }
-            else
-            {
-                defaultValue = propertyInfo.PropertyType.IsValueType && Nullable.GetUnderlyingType(propertyInfo.PropertyType) == null
-                    ? Activator.CreateInstance(propertyInfo.PropertyType)
-                    : null;
-            }
-
+            var defaultValue = GetDefaultValue(command, propertyInfo);
             var actualValue = propertyInfo.GetValue(command.Instance);
+            return ValueIsEmptyOrUnequal(propertyInfo, defaultValue, actualValue);
+        }
 
+        private static bool ValueIsEmptyOrUnequal(PropertyInfo propertyInfo, object? defaultValue, object actualValue)
+        {
             if (typeof(ICollection).IsAssignableFrom(propertyInfo.PropertyType) && actualValue is ICollection c && c.Count == 0)
             {
                 // Skip empty collections
@@ -85,6 +58,45 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
             return defaultValue == null
                 || actualValue == null
                 || !actualValue.Equals(defaultValue);
+        }
+
+        private static object? GetDefaultValue(ObjectHandlerRequest command, PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.Name == nameof(ClassPropertyBuilder.HasGetter)
+                || propertyInfo.Name == nameof(ClassPropertyBuilder.HasSetter))
+            {
+                // Skip default values for HasGetter and HasSetter
+                return true;
+            }
+            else if (propertyInfo.PropertyType == typeof(string) && !propertyInfo.IsNullable())
+            {
+                return string.Empty;
+            }
+            else if (propertyInfo.Name == nameof(IVisibilityContainer.Visibility))
+            {
+                // Not really necessary at this time because we're currently only using ClassBuilder and ClassPropertyBuilder instances...
+                return propertyInfo.DeclaringType == typeof(ClassFieldBuilder)
+                    ? Visibility.Private
+                    : Visibility.Public;
+            }
+            else if (propertyInfo.Name == nameof(ClassPropertyBuilder.GetterVisibility))
+            {
+                return propertyInfo.DeclaringType?.GetProperty(nameof(ClassPropertyBuilder.Visibility))?.GetValue(command.Instance);
+            }
+            else if (propertyInfo.Name == nameof(ClassPropertyBuilder.SetterVisibility))
+            {
+                return propertyInfo.DeclaringType?.GetProperty(nameof(ClassPropertyBuilder.Visibility))?.GetValue(command.Instance);
+            }
+            else if (propertyInfo.Name == nameof(ClassPropertyBuilder.InitializerVisibility))
+            {
+                return propertyInfo.DeclaringType?.GetProperty(nameof(ClassPropertyBuilder.Visibility))?.GetValue(command.Instance);
+            }
+            else
+            {
+                return propertyInfo.PropertyType.IsValueType && Nullable.GetUnderlyingType(propertyInfo.PropertyType) == null
+                    ? Activator.CreateInstance(propertyInfo.PropertyType)
+                    : null;
+            }
         }
     }
 }
