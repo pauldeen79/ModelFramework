@@ -33,11 +33,11 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
 
         public object CreateAdditionalParameters()
             => new Dictionary<string, object>
-                {
-                    { nameof(CSharpClassGenerator.EnableNullableContext), EnableNullableContext },
-                    { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
-                    { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles }
-                };
+            {
+                { nameof(CSharpClassGenerator.EnableNullableContext), EnableNullableContext },
+                { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
+                { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles }
+            };
 
         public object CreateGenerator()
             => new CSharpClassGenerator();
