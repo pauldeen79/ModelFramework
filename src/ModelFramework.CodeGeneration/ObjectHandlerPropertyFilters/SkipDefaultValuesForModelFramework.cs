@@ -13,26 +13,18 @@ namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters
     {
         public bool IsValid(ObjectHandlerRequest command, PropertyInfo propertyInfo)
         {
-            if (propertyInfo.Name == nameof(ClassPropertyBuilder.GetterVisibility))
+            var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
+            if (classPropertyBuilder != null)
             {
-                var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
-                if (classPropertyBuilder != null && !classPropertyBuilder.HasGetter)
+                if (propertyInfo.Name == nameof(ClassPropertyBuilder.GetterVisibility) && !classPropertyBuilder.HasGetter)
                 {
                     return false;
                 }
-            }
-            else if (propertyInfo.Name == nameof(ClassPropertyBuilder.SetterVisibility))
-            {
-                var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
-                if (classPropertyBuilder != null && !classPropertyBuilder.HasSetter)
+                else if (propertyInfo.Name == nameof(ClassPropertyBuilder.SetterVisibility) && !classPropertyBuilder.HasSetter)
                 {
                     return false;
                 }
-            }
-            else if (propertyInfo.Name == nameof(ClassPropertyBuilder.InitializerVisibility))
-            {
-                var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
-                if (classPropertyBuilder != null && !classPropertyBuilder.HasInitializer)
+                else if (propertyInfo.Name == nameof(ClassPropertyBuilder.InitializerVisibility) && !classPropertyBuilder.HasInitializer)
                 {
                     return false;
                 }
