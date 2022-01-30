@@ -66,15 +66,19 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
             => models.Select
             (
-                x => CreateBuilder(new ClassBuilder(x.ToClass())
-                                    .WithName(x.Name.Substring(1))
-                                    .WithNamespace(entitiesNamespace)
-                                    .Chain(y => FixImmutableBuilderProperties(y))
-                                    .Build()
-                                    .ToImmutableClass(CreateImmutableClassSettings()), buildersNamespace
-                                  )
-                                  .Chain(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
-                                  .Build()
+                x => CreateBuilder(CreateImmutableEntities(entitiesNamespace, x), buildersNamespace)
+                    .Chain(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
+                    .Build()
+            ).ToArray();
+
+        protected IClass[] GetImmutableBuilderExtensionClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
+            => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace);
+
+        protected IClass[] GetImmutableBuilderExtensionClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace)
+            => models.Select
+            (
+                x => CreateBuilderExtensions(CreateImmutableEntities(entitiesNamespace, x), buildersNamespace)
+                    .Build()
             ).ToArray();
 
         protected IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
@@ -120,18 +124,35 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         }
 
         protected ClassBuilder CreateBuilder(IClass c, string @namespace)
-            => c.ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(newCollectionTypeName: NewCollectionTypeName,
-                                                                                  constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor),
-                                                                                  poco: Poco,
-                                                                                  addNullChecks: AddNullChecks,
-                                                                                  setMethodNameFormatString: SetMethodNameFormatString,
-                                                                                  formatInstanceTypeNameDelegate: FormatInstanceTypeName))
+            => c.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
                 .WithNamespace(@namespace)
                 .WithPartial()
                 .AddMethods(CreateExtraOverloads(c));
 
+        protected ClassBuilder CreateBuilderExtensions(IClass c, string @namespace)
+            => c.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
+                .WithNamespace(@namespace)
+                .WithPartial()
+                .AddMethods(CreateExtraOverloads(c));
+
+        protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
+            => new ImmutableBuilderClassSettings(newCollectionTypeName: NewCollectionTypeName,
+                                                 constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor),
+                                                 poco: Poco,
+                                                 addNullChecks: AddNullChecks,
+                                                 setMethodNameFormatString: SetMethodNameFormatString,
+                                                 formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+
         protected ImmutableClassSettings CreateImmutableClassSettings()
             => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                                           validateArgumentsInConstructor: true);
+
+        private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
+            => new ClassBuilder(x.ToClass())
+                .WithName(x.Name.Substring(1))
+                .WithNamespace(entitiesNamespace)
+                .Chain(y => FixImmutableBuilderProperties(y))
+                .Build()
+                .ToImmutableClass(CreateImmutableClassSettings());
     }
 }
