@@ -11,5 +11,6 @@ namespace ModelFramework.Objects.Contracts
         ValueCollection<IClassProperty> Properties { get; }
         ValueCollection<IClassMethod> Methods { get; }
         ValueCollection<string> GenericTypeArguments { get; }
+        ValueCollection<string> GenericTypeArgumentConstraints { get; }
     }
 }

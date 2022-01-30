@@ -245,6 +245,12 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public System.Collections.Generic.List<string> GenericTypeArgumentConstraints
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
@@ -277,7 +283,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClass Build()
         {
-            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
         }
 
         public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
@@ -393,6 +399,17 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        {
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+        }
+
+        public ClassBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
+        {
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
+            return this;
+        }
+
         public ClassBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -453,6 +470,7 @@ namespace ModelFramework.Objects.Builders
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
             GenericTypeArguments = new System.Collections.Generic.List<string>();
+            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
@@ -475,6 +493,7 @@ namespace ModelFramework.Objects.Builders
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
             GenericTypeArguments = new System.Collections.Generic.List<string>();
+            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
@@ -491,6 +510,7 @@ namespace ModelFramework.Objects.Builders
             Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
+            GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Visibility = source.Visibility;
             Name = source.Name;
@@ -994,6 +1014,18 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public System.Collections.Generic.List<string> GenericTypeArguments
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.List<string> GenericTypeArgumentConstraints
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
@@ -1080,7 +1112,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
-            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
         }
 
         public ClassMethodBuilder WithPartial(bool partial = true)
@@ -1098,6 +1130,28 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder WithOperator(bool @operator = true)
         {
             Operator = @operator;
+            return this;
+        }
+
+        public ClassMethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        {
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+        }
+
+        public ClassMethodBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        {
+            GenericTypeArguments.AddRange(genericTypeArguments);
+            return this;
+        }
+
+        public ClassMethodBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        {
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+        }
+
+        public ClassMethodBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
+        {
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
             return this;
         }
 
@@ -1239,6 +1293,8 @@ namespace ModelFramework.Objects.Builders
 
         public ClassMethodBuilder()
         {
+            GenericTypeArguments = new System.Collections.Generic.List<string>();
+            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
@@ -1260,6 +1316,8 @@ namespace ModelFramework.Objects.Builders
 
         public ClassMethodBuilder(ModelFramework.Objects.Contracts.IClassMethod source)
         {
+            GenericTypeArguments = new System.Collections.Generic.List<string>();
+            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
@@ -1267,6 +1325,8 @@ namespace ModelFramework.Objects.Builders
             Partial = source.Partial;
             ExtensionMethod = source.ExtensionMethod;
             Operator = source.Operator;
+            GenericTypeArguments.AddRange(source.GenericTypeArguments);
+            GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Static = source.Static;
             Virtual = source.Virtual;
@@ -1886,6 +1946,12 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public System.Collections.Generic.List<string> GenericTypeArgumentConstraints
+        {
+            get;
+            set;
+        }
+
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
@@ -1912,7 +1978,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IInterface Build()
         {
-            return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
+            return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
         }
 
         public InterfaceBuilder WithNamespace(string @namespace)
@@ -1971,6 +2037,17 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        {
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+        }
+
+        public InterfaceBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
+        {
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
+            return this;
+        }
+
         public InterfaceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -2017,6 +2094,7 @@ namespace ModelFramework.Objects.Builders
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
             GenericTypeArguments = new System.Collections.Generic.List<string>();
+            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Namespace = string.Empty;
@@ -2031,6 +2109,7 @@ namespace ModelFramework.Objects.Builders
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
             Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
             GenericTypeArguments = new System.Collections.Generic.List<string>();
+            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Namespace = source.Namespace;
@@ -2039,6 +2118,7 @@ namespace ModelFramework.Objects.Builders
             Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
+            GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             Visibility = source.Visibility;
             Name = source.Name;

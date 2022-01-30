@@ -16,7 +16,7 @@ namespace <#= Model.Namespace #>
 #nullable enable
 <# } #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
-    <#= Model.GetModifiers() #><#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetInheritedClasses() #>
+    <#= Model.GetModifiers() #><#= Model.GetContainerType() #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><#= Model.GetGenericTypeArgumentsString() #><#= Model.GetGenericTypeArgumentConstraintsString() #><#= Model.GetInheritedClasses() #>
     {
 <#@ renderChildTemplate model="ViewModel.SubItems" customResolverDelegate="ResolveFromMetadata" separatorTemplateName="NewLine" customTemplateNameDelegate="GetTemplateName" #>
 <#      if (ViewModel.HasSubclasses)

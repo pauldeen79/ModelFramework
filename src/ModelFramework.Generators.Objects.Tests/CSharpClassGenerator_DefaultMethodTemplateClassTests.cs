@@ -286,5 +286,28 @@ namespace ModelFramework.Generators.Objects.Tests
         }
 ");
         }
+
+        [Fact]
+        public void Can_Generate_Method_With_Multiple_Generic_Type_Arguments_And_Constraints()
+        {
+            // Arrange
+            var model = new ClassMethodBuilder()
+                .WithName("Test")
+                .AddGenericTypeArguments("T1", "T2")
+                .AddGenericTypeArgumentConstraints("where T1 : class", "where T2 : new()")
+                .Build();
+            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model);
+
+            // Act
+            var actual = TemplateRenderHelper.GetTemplateOutput(sut);
+
+            // Assert
+            actual.NormalizeLineEndings().Should().Be(@"        public void Test<T1, T2>()
+            where T1 : class
+            where T2 : new()
+        {
+        }
+");
+        }
     }
 }
