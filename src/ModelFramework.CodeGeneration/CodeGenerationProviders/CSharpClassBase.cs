@@ -42,14 +42,20 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         public object CreateGenerator()
             => new CSharpClassGenerator();
 
+        protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
+            => Enumerable.Empty<ClassMethodBuilder>();
+        protected virtual string NewCollectionTypeName => "System.Collections.Generic.List";
+        protected virtual string SetMethodNameFormatString => "With{0}";
+        protected virtual bool Poco => false;
+        protected virtual bool AddNullChecks => false;
+        protected virtual bool AddCopyConstructor => true;
+
         protected abstract bool EnableNullableContext { get; }
         protected abstract bool CreateCodeGenerationHeader { get; }
         protected abstract Type RecordCollectionType { get; }
 
         protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
         protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
-        protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
-            => Enumerable.Empty<ClassMethodBuilder>();
 
         protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
             => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace);
@@ -114,7 +120,11 @@ namespace ModelFramework.CodeGeneration.CodeGenerationProviders
         }
 
         protected ClassBuilder CreateBuilder(IClass c, string @namespace)
-            => c.ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true),
+            => c.ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(newCollectionTypeName: NewCollectionTypeName,
+                                                                                  constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor),
+                                                                                  poco: Poco,
+                                                                                  addNullChecks: AddNullChecks,
+                                                                                  setMethodNameFormatString: SetMethodNameFormatString,
                                                                                   formatInstanceTypeNameDelegate: FormatInstanceTypeName))
                 .WithNamespace(@namespace)
                 .WithPartial()
