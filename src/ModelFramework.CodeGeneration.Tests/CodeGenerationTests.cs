@@ -60,8 +60,9 @@ namespace ModelFramework.CodeGeneration.Tests
         }
 
         [Fact]
-        public void CanGenerateAll()
+        public void Can_Generate_All_Classes_For_ModelFramework()
         {
+            // Act & Assert
             Verify(GenerateCode.For<CommonBuilders>(Settings));
             Verify(GenerateCode.For<ObjectsBuilders>(Settings));
             Verify(GenerateCode.For<ObjectsCodeStatements>(Settings));
@@ -72,10 +73,30 @@ namespace ModelFramework.CodeGeneration.Tests
             Verify(GenerateCode.For<DatabaseRecords>(Settings));
         }
 
+        [Fact]
+        public void Can_Generate_Builder_Extensions_For_ModelFramework()
+        {
+            // Arrange
+            var settings = new CodeGenerationSettings
+            (
+                basePath: @"C:\Temp\ModelFramework",
+                generateMultipleFiles: false,
+                dryRun: true
+            );
+
+            // Act
+            var generatedCode = GenerateCode.For<CommonBuildersExtensions>(settings);
+            var actual = generatedCode.GenerationEnvironment.ToString();
+
+            // Assert
+            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        }
+
         private void Verify(GenerateCode generatedCode)
         {
             if (Settings.DryRun)
             {
+                // Act
                 var actual = generatedCode.GenerationEnvironment.ToString();
 
                 // Assert
