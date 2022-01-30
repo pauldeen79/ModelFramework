@@ -102,6 +102,8 @@ namespace ModelFramework.Objects.Extensions
                 method.Partial,
                 method.ExtensionMethod,
                 method.Operator,
+                method.GenericTypeArguments,
+                method.GenericTypeArgumentConstraints,
                 method.Metadata,
                 method.Static,
                 method.Virtual,

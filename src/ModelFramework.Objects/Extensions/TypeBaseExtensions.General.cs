@@ -50,8 +50,15 @@ namespace ModelFramework.Objects.Extensions
         }
 
         public static string GetGenericTypeArgumentsString(this ITypeBase instance)
-            => instance.GenericTypeArguments != null && instance.GenericTypeArguments.Count > 0
+            => instance.GenericTypeArguments.Count > 0
                 ? $"<{string.Join(", ", instance.GenericTypeArguments)}>"
+                : string.Empty;
+
+        public static string GetGenericTypeArgumentConstraintsString(this ITypeBase instance)
+            => instance.GenericTypeArgumentConstraints.Any()
+                ? string.Concat(Environment.NewLine,
+                                "        ",
+                                string.Join(string.Concat(Environment.NewLine, "        "), instance.GenericTypeArgumentConstraints))
                 : string.Empty;
 
         public static IEnumerable<IClassField> GetFields(this ITypeBase instance)
@@ -75,6 +82,7 @@ namespace ModelFramework.Objects.Extensions
                         instance.Properties,
                         instance.Methods,
                         instance.GenericTypeArguments,
+                        instance.GenericTypeArgumentConstraints,
                         instance.Metadata,
                         instance.Visibility,
                         instance.Name,

@@ -765,6 +765,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetGenericTypeArgumentsString()));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetGenericTypeArgumentConstraintsString()));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetInheritedClasses()));
             Write(this.ToStringHelper.ToStringWithCulture(@"
     {
@@ -1217,6 +1218,7 @@ namespace ModelFramework.Generators.Objects
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetGenericTypeArgumentsString()));
             Write(this.ToStringHelper.ToStringWithCulture(@"("));
             if (Model.ExtensionMethod) {
 
@@ -1227,6 +1229,7 @@ namespace ModelFramework.Generators.Objects
             RenderChildTemplate(@"CSharpClassGenerator.DefaultParameterTemplate", Model.Parameters, null, false, @"CommaAndSpace", null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, });
 
             Write(this.ToStringHelper.ToStringWithCulture(@")"));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.GetGenericTypeArgumentConstraintsString()));
             if (ViewModel.OmitCode) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@";"));

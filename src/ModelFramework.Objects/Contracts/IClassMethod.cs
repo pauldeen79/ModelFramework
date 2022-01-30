@@ -1,4 +1,5 @@
-﻿using ModelFramework.Common.Contracts;
+﻿using CrossCutting.Common;
+using ModelFramework.Common.Contracts;
 
 namespace ModelFramework.Objects.Contracts
 {
@@ -7,5 +8,7 @@ namespace ModelFramework.Objects.Contracts
         bool Partial { get; }
         bool ExtensionMethod { get; }
         bool Operator { get; }
+        ValueCollection<string> GenericTypeArguments { get; }
+        ValueCollection<string> GenericTypeArgumentConstraints { get; }
     }
 }
