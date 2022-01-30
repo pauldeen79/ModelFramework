@@ -14,6 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ModelFramework.Generators.Objects\ModelFramework.Generators.Objects.csproj" />
   </ItemGroup>
 

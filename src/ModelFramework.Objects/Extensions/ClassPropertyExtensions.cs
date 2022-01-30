@@ -13,26 +13,28 @@ namespace ModelFramework.Objects.Extensions
     public static class ClassPropertyExtensions
     {
         public static string CreateImmutableBuilderInitializationCode(this IClassProperty property, bool addNullChecks)
-        {
-            var defaultValue = property.TypeName.IsCollectionTypeName()
-                ? CreateCollectionInitialization(property, addNullChecks)
-                : $"{property.Name} = source.{property.Name};";
-
-            return string.Format
+            => string.Format
             (
-                property.Metadata.GetStringValue(MetadataNames.CustomBuilderConstructorInitializeExpression, defaultValue),
+                property.Metadata.GetStringValue
+                (
+                    MetadataNames.CustomBuilderConstructorInitializeExpression,
+                    () => property.TypeName.IsCollectionTypeName()
+                        ? CreateCollectionInitialization(property, addNullChecks)
+                        : $"{property.Name} = source.{property.Name}"
+                ),
                 property.Name,
                 property.Name.ToPascalCase(),
                 property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
                 property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(),
-                addNullChecks ? $"if (source.{property.Name} != null) " : ""
+                addNullChecks
+                    ? $"if (source.{property.Name} != null) "
+                    : ""
             );
-        }
 
         private static string CreateCollectionInitialization(IClassProperty property, bool addNullChecks)
             => addNullChecks
-                ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name});"
-                : $"{property.Name}.AddRange(source.{property.Name});";
+                ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name})"
+                : $"{property.Name}.AddRange(source.{property.Name})";
 
         internal static string GetDefaultValue(this IClassProperty property)
         {

@@ -11,7 +11,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
         public override bool RecurseOnDeleteGeneratedFiles => false;
 
         public override object CreateModel()
-            => GetImmutableBuilderClasses(GetObjectsModelTypes(),
+            => GetImmutableBuilderClasses(GetObjectsModelTypeBases(),
                                           "ModelFramework.Objects",
                                           "ModelFramework.Objects.Builders");
     }

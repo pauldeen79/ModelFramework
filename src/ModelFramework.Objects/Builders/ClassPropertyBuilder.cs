@@ -19,17 +19,19 @@ namespace ModelFramework.Objects.Builders
         public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                             string? customBuilderConstructorInitializeExpression = null)
             => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType ?? "{0}Builder")
-              .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Build()")
-              .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0});" : "{0} = new " + argumentType + "(source.{0});"));
+              .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, IsNullable
+                    ? "{0}?.Build()"
+                    : "{0}.Build()")
+              .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0})" : "{0} = new " + argumentType + "(source.{0})"));
 
         public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(bool addNullChecks,
-                                                                               string collectionType = "System.Collections.Generic.List",
-                                                                               string? argumentType = null,
-                                                                               string? customBuilderConstructorInitializeExpression = null)
+                                                                                string collectionType = "System.Collections.Generic.List",
+                                                                                string? argumentType = null,
+                                                                                string? customBuilderConstructorInitializeExpression = null)
             => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
               .AddMetadata(MetadataNames.CustomBuilderArgumentType,argumentType ?? "System.Collections.Generic.IEnumerable<{1}Builder>")
               .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Select(x => x.Build())")
-              .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression,customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)));" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)));"));
+              .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression,customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)))" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)))"));
 
         public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
                                                        Type parameterType,
