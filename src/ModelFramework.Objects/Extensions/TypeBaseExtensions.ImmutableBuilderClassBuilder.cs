@@ -193,6 +193,11 @@ namespace ModelFramework.Objects.Extensions
                                                                                                ImmutableBuilderClassSettings settings,
                                                                                                bool extensionMethod)
         {
+            if (string.IsNullOrEmpty(settings.SetMethodNameFormatString))
+            {
+                yield break;
+            }
+
             foreach (var property in instance.Properties)
             {
                 var overloads = GetOverloads(property);
