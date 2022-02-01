@@ -185,6 +185,15 @@ if ({2})
                 .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(IEnumerable<string>)))
                 .AddLiteralCodeStatements("return AddLiteralCodeStatements(statements.ToArray());");
         }
+
+        if (c.Properties.Any(p => p.Name == nameof(ITypeBase.Interfaces)))
+        {
+            yield return new ClassMethodBuilder()
+                .WithName("AddInterfaces")
+                .WithTypeName($"{c.Name}Builder")
+                .AddParameters(new ParameterBuilder().WithName("types").WithType(typeof(Type[])).WithIsParamArray())
+                .AddLiteralCodeStatements("return AddInterfaces(types.Select(x => x.FullName));");
+        }
     }
 
     protected static Type[] GetCommonModelTypes()

@@ -7,8 +7,4 @@ public partial class InterfaceBuilder
 
     public InterfaceBuilder AddUsings(params string[] usings)
         => AddMetadata(usings.Select(x => new MetadataBuilder().WithName(MetadataNames.CustomUsing).WithValue(x)));
-
-    //TODO: generate overload for this
-    public InterfaceBuilder AddInterfaces(params Type[] types)
-        => AddInterfaces(types.Select(x => x.FullName));
 }
