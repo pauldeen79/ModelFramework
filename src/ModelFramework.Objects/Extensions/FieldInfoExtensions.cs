@@ -1,10 +1,7 @@
-﻿using System.Reflection;
+﻿namespace ModelFramework.Objects.Extensions;
 
-namespace ModelFramework.Objects.Extensions
+public static class FieldInfoExtensions
 {
-    public static class FieldInfoExtensions
-    {
-        public static bool IsNullable(this FieldInfo fieldInfo)
-            => NullableHelper.IsNullable(fieldInfo.FieldType, fieldInfo.DeclaringType, fieldInfo.CustomAttributes);
-    }
+    public static bool IsNullable(this FieldInfo fieldInfo)
+        => NullableHelper.IsNullable(fieldInfo.FieldType, fieldInfo.DeclaringType, fieldInfo.CustomAttributes);
 }

@@ -1,8 +1,7 @@
-﻿namespace ModelFramework.Objects.Contracts
+﻿namespace ModelFramework.Objects.Contracts;
+
+public interface ITypeContainer
 {
-    public interface ITypeContainer
-    {
-        string TypeName { get; }
-        bool IsNullable { get; }
-    }
+    string TypeName { get; }
+    bool IsNullable { get; }
 }

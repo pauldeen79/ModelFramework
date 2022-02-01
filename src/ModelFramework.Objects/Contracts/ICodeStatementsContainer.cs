@@ -1,9 +1,6 @@
-﻿using CrossCutting.Common;
+﻿namespace ModelFramework.Objects.Contracts;
 
-namespace ModelFramework.Objects.Contracts
+public interface ICodeStatementsContainer
 {
-    public interface ICodeStatementsContainer
-    {
-        ValueCollection<ICodeStatement> CodeStatements { get; }
-    }
+    ValueCollection<ICodeStatement> CodeStatements { get; }
 }

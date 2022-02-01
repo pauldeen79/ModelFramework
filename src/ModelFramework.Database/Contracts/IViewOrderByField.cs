@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Database.Contracts
+﻿namespace ModelFramework.Database.Contracts;
+
+public interface IViewOrderByField : IViewField
 {
-    public interface IViewOrderByField : IViewField
-    {
-        bool IsDescending { get; }
-    }
+    bool IsDescending { get; }
 }

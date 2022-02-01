@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Common.Contracts
+﻿namespace ModelFramework.Common.Contracts;
+
+public interface IDefaultValueContainer
 {
-    public interface IDefaultValueContainer
-    {
-        object? DefaultValue { get; }
-    }
+    object? DefaultValue { get; }
 }

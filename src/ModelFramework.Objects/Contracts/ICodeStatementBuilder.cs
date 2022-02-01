@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Objects.Contracts
+﻿namespace ModelFramework.Objects.Contracts;
+
+public interface ICodeStatementBuilder
 {
-    public interface ICodeStatementBuilder
-    {
-        ICodeStatement Build();
-    }
+    ICodeStatement Build();
 }

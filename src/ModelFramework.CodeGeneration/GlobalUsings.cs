@@ -1,0 +1,15 @@
+﻿global using System;
+global using System.Collections;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Reflection;
+global using CrossCutting.Common.Extensions;
+global using CsharpExpressionDumper.Abstractions;
+global using CsharpExpressionDumper.Abstractions.Requests;
+global using ModelFramework.Common.Extensions;
+global using ModelFramework.Generators.Objects;
+global using ModelFramework.Objects.Builders;
+global using ModelFramework.Objects.Contracts;
+global using ModelFramework.Objects.Extensions;
+global using ModelFramework.Objects.Settings;
+global using TextTemplateTransformationFramework.Runtime.CodeGeneration;

@@ -1,9 +1,8 @@
-﻿namespace ModelFramework.Common.Tests.TestFixtures
+﻿namespace ModelFramework.Common.Tests.TestFixtures;
+
+public enum MyEnumThing
 {
-    public enum MyEnumThing
-    {
-        A,
-        B,
-        C
-    }
+    A,
+    B,
+    C
 }

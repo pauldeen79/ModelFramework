@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Objects.Contracts
+﻿namespace ModelFramework.Objects.Contracts;
+
+public interface IVisibilityContainer
 {
-    public interface IVisibilityContainer
-    {
-        Visibility Visibility { get; }
-    }
+    Visibility Visibility { get; }
 }

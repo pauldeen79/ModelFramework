@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.2.0" />
+    <PackageReference Include="CsharpExpressionDumper.Core" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>

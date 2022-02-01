@@ -1,38 +1,27 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CrossCutting.Common.Extensions;
-using FluentAssertions;
-using ModelFramework.Database.Builders;
-using ModelFramework.Database.Contracts;
-using ModelFramework.Database.SqlStatements.Builders;
-using ModelFramework.Generators.Database;
-using TextTemplateTransformationFramework.Runtime;
-using Xunit;
+﻿namespace ModelFramework.Generators.Database.Tests;
 
-namespace ModelFramework.Generators.Tests.Database
+public class SqlServerDatabaseSchemaGeneratorTests
 {
-    [ExcludeFromCodeCoverage]
-    public class SqlServerDatabaseSchemaGeneratorTests
+    [Fact]
+    public void CanGenerateSchemaForTables()
     {
-        [Fact]
-        public void CanGenerateSchemaForTables()
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
-                (
-                    new TableBuilder().WithName("Table1").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int)),
-                    new TableBuilder().WithName("Table2").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int)),
-                    new TableBuilder().WithName("Table3").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int))
-                ).Build()
-            };
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int)),
+                new TableBuilder().WithName("Table2").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int)),
+                new TableBuilder().WithName("Table3").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlTableFieldTypes.Int))
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true });
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true });
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -72,31 +61,31 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithFields()
+    [Fact]
+    public void CanGenerateSchemaForTableWithFields()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
-                    (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32).WithStringCollation("Latin1_General_CI_AS"),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    )
-                ).Build()
-            };
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32).WithStringCollation("Latin1_General_CI_AS"),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -111,32 +100,32 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithCheckConstraintOnFieldLevel()
+    [Fact]
+    public void CanGenerateSchemaForTableWithCheckConstraintOnFieldLevel()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo")
-                .AddTables
+            new SchemaBuilder().WithName("dbo")
+            .AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
-                    (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int).AddCheckConstraints(new CheckConstraintBuilder().WithName("CHK1").WithExpression("[Field1] BETWEEN 1 AND 10")),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    )
-                ).Build()
-            };
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int).AddCheckConstraints(new CheckConstraintBuilder().WithName("CHK1").WithExpression("[Field1] BETWEEN 1 AND 10")),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -153,34 +142,34 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithCheckContraintOnTableLevel()
+    [Fact]
+    public void CanGenerateSchemaForTableWithCheckContraintOnTableLevel()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
-                    (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.Int)
-                    ).AddCheckConstraints
-                    (
-                        new CheckConstraintBuilder().WithName("MyCheckContraint1").WithExpression("Field1 > 10"),
-                        new CheckConstraintBuilder().WithName("MyCheckContraint2").WithExpression("Field2 > 20")
-                    )
-                ).Build()
-            };
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.Int)
+                ).AddCheckConstraints
+                (
+                    new CheckConstraintBuilder().WithName("MyCheckContraint1").WithExpression("Field1 > 10"),
+                    new CheckConstraintBuilder().WithName("MyCheckContraint2").WithExpression("Field2 > 20")
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -198,41 +187,41 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithIndexes()
+    [Fact]
+    public void CanGenerateSchemaForTableWithIndexes()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int)
+                ).AddIndexes
+                (
+                    new IndexBuilder().WithName("IX_Index1").WithUnique().AddFields
                     (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int)
-                    ).AddIndexes
+                        new IndexFieldBuilder().WithName("Field1"),
+                        new IndexFieldBuilder().WithName("Field2").WithIsDescending()
+                    ),
+                    new IndexBuilder().WithName("IX_Index2").AddFields
                     (
-                        new IndexBuilder().WithName("IX_Index1").WithUnique().AddFields
-                        (
-                            new IndexFieldBuilder().WithName("Field1"),
-                            new IndexFieldBuilder().WithName("Field2").WithIsDescending()
-                        ),
-                        new IndexBuilder().WithName("IX_Index2").AddFields
-                        (
-                            new IndexFieldBuilder().WithName("Field1"),
-                            new IndexFieldBuilder().WithName("Field2").WithIsDescending()
-                        )
+                        new IndexFieldBuilder().WithName("Field1"),
+                        new IndexFieldBuilder().WithName("Field2").WithIsDescending()
                     )
-                ).Build()
-            };
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -257,37 +246,37 @@ CREATE NONCLUSTERED INDEX [IX_Index2] ON [dbo].[Table1]
 ) ON [PRIMARY]
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithPrimaryKeyConstraint()
+    [Fact]
+    public void CanGenerateSchemaForTableWithPrimaryKeyConstraint()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                ).AddPrimaryKeyConstraints
+                (
+                    new PrimaryKeyConstraintBuilder().WithName("PK").AddFields
                     (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    ).AddPrimaryKeyConstraints
-                    (
-                        new PrimaryKeyConstraintBuilder().WithName("PK").AddFields
-                        (
-                            new PrimaryKeyConstraintFieldBuilder().WithName("Field1")
-                        )
+                        new PrimaryKeyConstraintFieldBuilder().WithName("Field1")
                     )
-                ).Build()
-            };
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -306,37 +295,37 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithUniqueConstraint()
+    [Fact]
+    public void CanGenerateSchemaForTableWithUniqueConstraint()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                ).AddUniqueConstraints
+                (
+                    new UniqueConstraintBuilder().WithName("UC").AddFields
                     (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    ).AddUniqueConstraints
-                    (
-                        new UniqueConstraintBuilder().WithName("UC").AddFields
-                        (
-                            new UniqueConstraintFieldBuilder().WithName("Field1")
-                        )
+                        new UniqueConstraintFieldBuilder().WithName("Field1")
                     )
-                ).Build()
-            };
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true});
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { CreateCodeGenerationHeader = true });
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -356,34 +345,34 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithDefaultValueConstraint()
+    [Fact]
+    public void CanGenerateSchemaForTableWithDefaultValueConstraint()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
-                    (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    ).AddDefaultValueConstraints
-                    (
-                        new DefaultValueConstraintBuilder().WithFieldName("Field1").WithDefaultValue("2").WithName("DVC")
-                    )
-                ).Build()
-            };
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                ).AddDefaultValueConstraints
+                (
+                    new DefaultValueConstraintBuilder().WithFieldName("Field1").WithDefaultValue("2").WithName("DVC")
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -400,34 +389,34 @@ GO
 ALTER TABLE [Table1] ADD CONSTRAINT [DVC] DEFAULT (2) FOR [Field1]
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithStoredProcedureContainingStatements()
+    [Fact]
+    public void CanGenerateSchemaForTableWithStoredProcedureContainingStatements()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddStoredProcedures
+            new SchemaBuilder().WithName("dbo").AddStoredProcedures
+            (
+                new StoredProcedureBuilder().WithName("usp_Test").AddParameters
                 (
-                    new StoredProcedureBuilder().WithName("usp_Test").AddParameters
-                    (
-                        new StoredProcedureParameterBuilder().WithName("Param1").WithType("int"),
-                        new StoredProcedureParameterBuilder().WithName("Param2").WithType("int").WithDefaultValue("5")
-                    ).AddStatements
-                    (
-                        new LiteralSqlStatementBuilder().WithStatement("--statement 1 goes here"),
-                        new LiteralSqlStatementBuilder().WithStatement("--statement 2 goes here")
-                    )
-                ).Build()
-            };
+                    new StoredProcedureParameterBuilder().WithName("Param1").WithType("int"),
+                    new StoredProcedureParameterBuilder().WithName("Param2").WithType("int").WithDefaultValue("5")
+                ).AddStatements
+                (
+                    new LiteralSqlStatementBuilder().WithStatement("--statement 1 goes here"),
+                    new LiteralSqlStatementBuilder().WithStatement("--statement 2 goes here")
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -441,42 +430,42 @@ BEGIN
 END
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithForeignKeyConstraint()
+    [Fact]
+    public void CanGenerateSchemaForTableWithForeignKeyConstraint()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                ).AddForeignKeyConstraints
+                (
+                    new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
                     (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    ).AddForeignKeyConstraints
+                        new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
+                        new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
+                    ).AddForeignFields
                     (
-                        new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
-                        (
-                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
-                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
-                        ).AddForeignFields
-                        (
-                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
-                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
-                        )
+                        new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
+                        new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
                     )
-                ).Build()
-            };
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -498,42 +487,42 @@ GO
 ALTER TABLE [dbo].[Table1] CHECK CONSTRAINT [FK]
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithCascadeForeignKeyConstraint()
+    [Fact]
+    public void CanGenerateSchemaForTableWithCascadeForeignKeyConstraint()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                ).AddForeignKeyConstraints
+                (
+                    new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
                     (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    ).AddForeignKeyConstraints
+                        new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
+                        new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
+                    ).AddForeignFields
                     (
-                        new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
-                        (
-                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
-                            new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
-                        ).AddForeignFields
-                        (
-                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
-                            new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
-                        ).WithCascadeUpdate(CascadeAction.Cascade).WithCascadeDelete(CascadeAction.Cascade)
-                    )
-                ).Build()
-            };
+                        new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
+                        new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
+                    ).WithCascadeUpdate(CascadeAction.Cascade).WithCascadeDelete(CascadeAction.Cascade)
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -555,31 +544,31 @@ GO
 ALTER TABLE [dbo].[Table1] CHECK CONSTRAINT [FK]
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForTableWithIdentityField()
+    [Fact]
+    public void CanGenerateSchemaForTableWithIdentityField()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddTables
+            new SchemaBuilder().WithName("dbo").AddTables
+            (
+                new TableBuilder().WithName("Table1").AddFields
                 (
-                    new TableBuilder().WithName("Table1").AddFields
-                    (
-                        new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int).WithIsIdentity(),
-                        new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
-                        new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
-                    )
-                ).Build()
-            };
+                    new TableFieldBuilder().WithName("Field1").WithType(SqlTableFieldTypes.Int).WithIsIdentity(),
+                    new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.VarChar).WithStringLength(32),
+                    new TableFieldBuilder().WithName("Field3").WithType(SqlTableFieldTypes.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+                )
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -594,55 +583,55 @@ GO
 SET ANSI_PADDING OFF
 GO
 ");
-        }
+    }
 
-        [Fact]
-        public void CanGenerateSchemaForViews()
+    [Fact]
+    public void CanGenerateSchemaForViews()
+    {
+        // Arrange
+        var sut = new SqlServerDatabaseSchemaGenerator();
+        var model = new[]
         {
-            // Arrange
-            var sut = new SqlServerDatabaseSchemaGenerator();
-            var model = new[]
-            {
-                new SchemaBuilder().WithName("dbo").AddViews
+            new SchemaBuilder().WithName("dbo").AddViews
+            (
+                new ViewBuilder().WithName("View1").AddSources
                 (
-                    new ViewBuilder().WithName("View1").AddSources
-                    (
-                        new ViewSourceBuilder().WithName("Table1")
-                    ).AddSelectFields
-                    (
-                        new ViewFieldBuilder().WithName("Field1"),
-                        new ViewFieldBuilder().WithName("Field2")
-                    ),
-                    new ViewBuilder().WithName("View2").AddSources
-                    (
-                        new ViewSourceBuilder().WithName("Table1"),
-                        new ViewSourceBuilder().WithName("Table2")
-                    ).AddSelectFields
-                    (
-                        new ViewFieldBuilder().WithName("Field2").WithAlias("Alias2")
-                    ).AddConditions
-                    (
-                        new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
-                        new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
-                    ).AddOrderByFields
-                    (
-                        new ViewOrderByFieldBuilder().WithName("table1.Field1").WithIsDescending(),
-                        new ViewOrderByFieldBuilder().WithName("table1.Field2")
-                    ).AddGroupByFields
-                    (
-                        new ViewFieldBuilder().WithName("Field1"),
-                        new ViewFieldBuilder().WithName("Field2")
-                    )
-                    .WithTop(50)
-                    .WithTopPercent()
-                ).Build()
-            };
+                    new ViewSourceBuilder().WithName("Table1")
+                ).AddSelectFields
+                (
+                    new ViewFieldBuilder().WithName("Field1"),
+                    new ViewFieldBuilder().WithName("Field2")
+                ),
+                new ViewBuilder().WithName("View2").AddSources
+                (
+                    new ViewSourceBuilder().WithName("Table1"),
+                    new ViewSourceBuilder().WithName("Table2")
+                ).AddSelectFields
+                (
+                    new ViewFieldBuilder().WithName("Field2").WithAlias("Alias2")
+                ).AddConditions
+                (
+                    new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
+                    new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
+                ).AddOrderByFields
+                (
+                    new ViewOrderByFieldBuilder().WithName("table1.Field1").WithIsDescending(),
+                    new ViewOrderByFieldBuilder().WithName("table1.Field2")
+                ).AddGroupByFields
+                (
+                    new ViewFieldBuilder().WithName("Field1"),
+                    new ViewFieldBuilder().WithName("Field2")
+                )
+                .WithTop(50)
+                .WithTopPercent()
+            ).Build()
+        };
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -676,6 +665,5 @@ ORDER BY
     [table1.Field2] ASC
 GO
 ");
-        }
     }
 }

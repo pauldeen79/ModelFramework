@@ -1,8 +1,5 @@
-﻿using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Database.Contracts;
 
-namespace ModelFramework.Database.Contracts
+public interface IForeignKeyConstraintField : INameContainer, IMetadataContainer
 {
-    public interface IForeignKeyConstraintField : INameContainer, IMetadataContainer
-    {
-    }
 }

@@ -1,9 +1,6 @@
-﻿using CrossCutting.Common;
+﻿namespace ModelFramework.Database.Contracts;
 
-namespace ModelFramework.Database.Contracts
+public interface ICheckConstraintContainer
 {
-    public interface ICheckConstraintContainer
-    {
-        ValueCollection<ICheckConstraint> CheckConstraints { get; }
-    }
+    ValueCollection<ICheckConstraint> CheckConstraints { get; }
 }

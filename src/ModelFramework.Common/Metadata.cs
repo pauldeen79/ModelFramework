@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿namespace ModelFramework.Common;
 
-namespace ModelFramework.Common
+public partial record Metadata : IValidatableObject
 {
-    public partial record Metadata : IValidatableObject
-    {
-        public override string ToString() => Value == null
-            ? $"[{Name}] = NULL"
-            : $"[{Name}] = [{Value}]";
+    public override string ToString() => Value == null
+        ? $"[{Name}] = NULL"
+        : $"[{Name}] = [{Value}]";
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (string.IsNullOrWhiteSpace(Name))
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
-            }
+            yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
         }
     }
 }

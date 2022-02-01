@@ -1,9 +1,6 @@
-﻿using CrossCutting.Common;
+﻿namespace ModelFramework.Objects.Contracts;
 
-namespace ModelFramework.Objects.Contracts
+public interface IParametersContainer
 {
-    public interface IParametersContainer
-    {
-        ValueCollection<IParameter> Parameters { get; }
-    }
+    ValueCollection<IParameter> Parameters { get; }
 }

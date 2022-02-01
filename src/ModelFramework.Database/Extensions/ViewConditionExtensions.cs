@@ -1,10 +1,7 @@
-﻿using ModelFramework.Database.Contracts;
+﻿namespace ModelFramework.Database.Extensions;
 
-namespace ModelFramework.Database.Extensions
+public static class ViewConditionExtensions
 {
-    public static class ViewConditionExtensions
-    {
-        public static IViewCondition AsFirstCondition(this IViewCondition instance)
-            => new ViewCondition(instance.Expression, string.Empty, instance.Metadata, instance.FileGroupName);
-    }
+    public static IViewCondition AsFirstCondition(this IViewCondition instance)
+        => new ViewCondition(instance.Expression, string.Empty, instance.Metadata, instance.FileGroupName);
 }

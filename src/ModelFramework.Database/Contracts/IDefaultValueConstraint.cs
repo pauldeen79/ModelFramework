@@ -1,10 +1,7 @@
-﻿using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Database.Contracts;
 
-namespace ModelFramework.Database.Contracts
+public interface IDefaultValueConstraint : INameContainer, IMetadataContainer
 {
-    public interface IDefaultValueConstraint : INameContainer, IMetadataContainer
-    {
-        string FieldName { get; }
-        string DefaultValue { get; }
-    }
+    string FieldName { get; }
+    string DefaultValue { get; }
 }

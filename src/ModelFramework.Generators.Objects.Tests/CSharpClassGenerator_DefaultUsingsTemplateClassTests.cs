@@ -1,11 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿namespace ModelFramework.Generators.Objects.Tests;
 
-namespace ModelFramework.Generators.Objects.Tests
+public class CSharpClassGenerator_DefaultUsingsTemplateClassTests
 {
-    [ExcludeFromCodeCoverage]
-    public class CSharpClassGenerator_DefaultUsingsTemplateClassTests
-    {
-        //DefaultUsings
-        //AdditionalUsings
-    }
+    //DefaultUsings
+    //AdditionalUsings
 }

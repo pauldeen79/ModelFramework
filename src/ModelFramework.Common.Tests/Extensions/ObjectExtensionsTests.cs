@@ -1,50 +1,43 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using ModelFramework.Common.Extensions;
-using Xunit;
+﻿namespace ModelFramework.Common.Tests.Extensions;
 
-namespace ModelFramework.Common.Tests.Extensions
+public class ObjectExtensionsTests
 {
-    [ExcludeFromCodeCoverage]
-    public class ObjectExtensionsTests
+    [Fact]
+    public void CsharpFormat_Returns_Formatted_String_Value()
     {
-        [Fact]
-        public void CsharpFormat_Returns_Formatted_String_Value()
-        {
-            // Arrange
-            var input = "test";
+        // Arrange
+        var input = "test";
 
-            // Act
-            var actual = input.CsharpFormat();
+        // Act
+        var actual = input.CsharpFormat();
 
-            // Assert
-            actual.Should().Be(@"@""test""");
-        }
+        // Assert
+        actual.Should().Be(@"@""test""");
+    }
 
-        [Fact]
-        public void CsharpFormat_Returns_Boolean_String()
-        {
-            // Arrange
-            var input = false;
+    [Fact]
+    public void CsharpFormat_Returns_Boolean_String()
+    {
+        // Arrange
+        var input = false;
 
-            // Act
-            var actual = input.CsharpFormat();
+        // Act
+        var actual = input.CsharpFormat();
 
-            // Assert
-            actual.Should().Be(@"false");
-        }
+        // Assert
+        actual.Should().Be(@"false");
+    }
 
-        [Fact]
-        public void CsharpFormat_Returns_Int32_String()
-        {
-            // Arrange
-            var input = 12345;
+    [Fact]
+    public void CsharpFormat_Returns_Int32_String()
+    {
+        // Arrange
+        var input = 12345;
 
-            // Act
-            var actual = input.CsharpFormat();
+        // Act
+        var actual = input.CsharpFormat();
 
-            // Assert
-            actual.Should().Be(@"12345");
-        }
+        // Assert
+        actual.Should().Be(@"12345");
     }
 }

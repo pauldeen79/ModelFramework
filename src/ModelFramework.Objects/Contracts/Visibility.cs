@@ -1,9 +1,8 @@
-﻿namespace ModelFramework.Objects.Contracts
+﻿namespace ModelFramework.Objects.Contracts;
+
+public enum Visibility
 {
-    public enum Visibility
-    {
-        Public,
-        Internal,
-        Private
-    }
+    Public,
+    Internal,
+    Private
 }

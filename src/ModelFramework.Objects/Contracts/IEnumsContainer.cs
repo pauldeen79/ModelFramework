@@ -1,9 +1,6 @@
-﻿using CrossCutting.Common;
+﻿namespace ModelFramework.Objects.Contracts;
 
-namespace ModelFramework.Objects.Contracts
+public interface IEnumsContainer
 {
-    public interface IEnumsContainer
-    {
-        ValueCollection<IEnum> Enums { get; }
-    }
+    ValueCollection<IEnum> Enums { get; }
 }

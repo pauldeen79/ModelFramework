@@ -1,11 +1,8 @@
-﻿using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Database.Contracts;
 
-namespace ModelFramework.Database.Contracts
+public interface IViewSource : INameContainer, IMetadataContainer
 {
-    public interface IViewSource : INameContainer, IMetadataContainer
-    {
-        string Alias { get; }
-        string SourceSchemaName { get; }
-        string SourceObjectName { get; }
-    }
+    string Alias { get; }
+    string SourceSchemaName { get; }
+    string SourceObjectName { get; }
 }
