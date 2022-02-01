@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Database.Contracts
+﻿namespace ModelFramework.Database.Contracts;
+
+public interface IFileGroupNameContainer
 {
-    public interface IFileGroupNameContainer
-    {
-        string FileGroupName { get; }
-    }
+    string FileGroupName { get; }
 }

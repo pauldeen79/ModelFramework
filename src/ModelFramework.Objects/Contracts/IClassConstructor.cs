@@ -1,9 +1,6 @@
-﻿using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Objects.Contracts;
 
-namespace ModelFramework.Objects.Contracts
+public interface IClassConstructor : IMetadataContainer, IExtendedVisibilityContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer
 {
-    public interface IClassConstructor : IMetadataContainer, IExtendedVisibilityContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer
-    {
-        string ChainCall { get; }
-    }
+    string ChainCall { get; }
 }

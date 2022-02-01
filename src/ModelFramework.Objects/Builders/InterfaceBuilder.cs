@@ -1,18 +1,10 @@
-﻿using System;
-using System.Linq;
-using ModelFramework.Common.Builders;
+﻿namespace ModelFramework.Objects.Builders;
 
-namespace ModelFramework.Objects.Builders
+public partial class InterfaceBuilder
 {
-    public partial class InterfaceBuilder
-    {
-        public InterfaceBuilder AddGeneratedCodeAttribute(string generatorName, string generatorVersion)
-            => AddAttributes(new AttributeBuilder().ForCodeGenerator(generatorName, generatorVersion));
+    public InterfaceBuilder AddGeneratedCodeAttribute(string generatorName, string generatorVersion)
+        => AddAttributes(new AttributeBuilder().ForCodeGenerator(generatorName, generatorVersion));
 
-        public InterfaceBuilder AddUsings(params string[] usings)
-            => AddMetadata(usings.Select(x => new MetadataBuilder().WithName(MetadataNames.CustomUsing).WithValue(x)));
-
-        public InterfaceBuilder AddInterfaces(params Type[] types)
-            => AddInterfaces(types.Select(x => x.FullName));
-    }
+    public InterfaceBuilder AddUsings(params string[] usings)
+        => AddMetadata(usings.Select(x => new MetadataBuilder().WithName(MetadataNames.CustomUsing).WithValue(x)));
 }

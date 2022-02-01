@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Database.Contracts
+﻿namespace ModelFramework.Database.Contracts;
+
+public interface ISqlStatementBuilder
 {
-    public interface ISqlStatementBuilder
-    {
-        ISqlStatement Build();
-    }
+    ISqlStatement Build();
 }

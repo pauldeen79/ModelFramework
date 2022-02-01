@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace ModelFramework.Generators.Tests.POC
+﻿namespace ModelFramework.Generators.Tests.POC
 {
-    [ExcludeFromCodeCoverage]
     public class ImmutableClass
     {
         public System.String Property1

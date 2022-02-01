@@ -1,15 +1,14 @@
-﻿namespace ModelFramework.Objects.Settings
-{
-    public record ClassSettings
-    {
-        public bool Partial { get; }
-        public bool CreateConstructors { get; }
+﻿namespace ModelFramework.Objects.Settings;
 
-        public ClassSettings(bool partial = false,
-                             bool createConstructors = false)
-        {
-            Partial = partial;
-            CreateConstructors = createConstructors;
-        }
+public record ClassSettings
+{
+    public bool Partial { get; }
+    public bool CreateConstructors { get; }
+
+    public ClassSettings(bool partial = false,
+                         bool createConstructors = false)
+    {
+        Partial = partial;
+        CreateConstructors = createConstructors;
     }
 }

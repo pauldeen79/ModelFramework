@@ -1,17 +1,8 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿namespace ModelFramework.Generators.Objects.Tests.Mocks;
 
-namespace ModelFramework.Generators.Objects.Tests.Mocks
+public class DelegateTemplate : CSharpClassGeneratorBase
 {
-    [ExcludeFromCodeCoverage]
-    public class DelegateTemplate : CSharpClassGeneratorBase
-    {
-        public Action<StringBuilder> RenderDelegate { get; set; } = new Action<StringBuilder>(_ => { });
+    public Action<StringBuilder> RenderDelegate { get; set; } = new Action<StringBuilder>(_ => { });
 
-        public virtual void Render(StringBuilder builder)
-        {
-            RenderDelegate.Invoke(builder);
-        }
-    }
+    public virtual void Render(StringBuilder builder) => RenderDelegate.Invoke(builder);
 }

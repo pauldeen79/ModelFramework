@@ -1,9 +1,6 @@
-﻿using CrossCutting.Common;
+﻿namespace ModelFramework.Common.Contracts;
 
-namespace ModelFramework.Common.Contracts
+public interface IMetadataContainer
 {
-    public interface IMetadataContainer
-    {
-        ValueCollection<IMetadata> Metadata { get; }
-    }
+    ValueCollection<IMetadata> Metadata { get; }
 }

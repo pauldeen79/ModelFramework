@@ -1,22 +1,18 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿namespace ModelFramework.Database;
 
-namespace ModelFramework.Database
+public partial record CheckConstraint : IValidatableObject
 {
-    public partial record CheckConstraint : IValidatableObject
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        if (string.IsNullOrWhiteSpace(Name))
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
-            }
-            if (string.IsNullOrWhiteSpace(Expression))
-            {
-                yield return new ValidationResult("Expression cannot be null or whitespace", new[] { nameof(Expression) });
-            }
+            yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
         }
-
-        public override string ToString() => Name;
+        if (string.IsNullOrWhiteSpace(Expression))
+        {
+            yield return new ValidationResult("Expression cannot be null or whitespace", new[] { nameof(Expression) });
+        }
     }
+
+    public override string ToString() => Name;
 }

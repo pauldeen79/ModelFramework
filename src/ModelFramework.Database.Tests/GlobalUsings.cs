@@ -1,0 +1,12 @@
+﻿global using System;
+global using System.ComponentModel.DataAnnotations;
+global using System.Linq;
+global using FluentAssertions;
+global using ModelFramework.Common;
+global using ModelFramework.Common.Contracts;
+global using ModelFramework.Database.Builders;
+global using ModelFramework.Database.Contracts;
+global using ModelFramework.Database.Extensions;
+global using ModelFramework.Database.SqlStatements;
+global using ModelFramework.Database.SqlStatements.Builders;
+global using Xunit;

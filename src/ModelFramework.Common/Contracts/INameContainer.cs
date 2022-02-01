@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Common.Contracts
+﻿namespace ModelFramework.Common.Contracts;
+
+public interface INameContainer
 {
-    public interface INameContainer
-    {
-        string Name { get; }
-    }
+    string Name { get; }
 }

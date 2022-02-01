@@ -1,9 +1,6 @@
-﻿using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Objects.Contracts;
 
-namespace ModelFramework.Objects.Contracts
+public interface IAttributeParameter : IMetadataContainer, INameContainer
 {
-    public interface IAttributeParameter : IMetadataContainer, INameContainer
-    {
-        object Value { get; }
-    }
+    object Value { get; }
 }

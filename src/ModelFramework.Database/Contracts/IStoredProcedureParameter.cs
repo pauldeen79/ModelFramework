@@ -1,10 +1,7 @@
-﻿using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Database.Contracts;
 
-namespace ModelFramework.Database.Contracts
+public interface IStoredProcedureParameter : INameContainer, IMetadataContainer
 {
-    public interface IStoredProcedureParameter : INameContainer, IMetadataContainer
-    {
-        string Type { get; }
-        string DefaultValue { get; }
-    }
+    string Type { get; }
+    string DefaultValue { get; }
 }

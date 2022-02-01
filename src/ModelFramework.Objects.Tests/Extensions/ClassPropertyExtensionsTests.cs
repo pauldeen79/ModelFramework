@@ -1,60 +1,52 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.Extensions;
-using Xunit;
+﻿namespace ModelFramework.Objects.Tests.Extensions;
 
-namespace ModelFramework.Objects.Tests.Extensions
+public class ClassPropertyExtensionsTests
 {
-    [ExcludeFromCodeCoverage]
-    public class ClassPropertyExtensionsTests
+    [Fact]
+    public void Can_Specify_Custom_Modifiers_For_Getter()
     {
-        [Fact]
-        public void Can_Specify_Custom_Modifiers_For_Getter()
-        {
-            // Arrange
-            var sut = new ClassPropertyBuilder().WithName("Test")
-                                                .WithTypeName("System.Int32")
-                                                .WithCustomGetterModifiers("internal")
-                                                .Build();
+        // Arrange
+        var sut = new ClassPropertyBuilder().WithName("Test")
+                                            .WithTypeName("System.Int32")
+                                            .WithCustomGetterModifiers("internal")
+                                            .Build();
 
-            // Act
-            var actual = sut.GetGetterModifiers();
+        // Act
+        var actual = sut.GetGetterModifiers();
 
-            // Assert
-            actual.Should().Be("internal ");
-        }
+        // Assert
+        actual.Should().Be("internal ");
+    }
 
-        [Fact]
-        public void Can_Specify_Custom_Modifiers_For_Setter()
-        {
-            // Arrange
-            var sut = new ClassPropertyBuilder().WithName("Test")
-                                                .WithTypeName("System.Int32")
-                                                .WithCustomSetterModifiers("internal")
-                                                .Build();
+    [Fact]
+    public void Can_Specify_Custom_Modifiers_For_Setter()
+    {
+        // Arrange
+        var sut = new ClassPropertyBuilder().WithName("Test")
+                                            .WithTypeName("System.Int32")
+                                            .WithCustomSetterModifiers("internal")
+                                            .Build();
 
-            // Act
-            var actual = sut.GetSetterModifiers();
+        // Act
+        var actual = sut.GetSetterModifiers();
 
-            // Assert
-            actual.Should().Be("internal ");
-        }
+        // Assert
+        actual.Should().Be("internal ");
+    }
 
-        [Fact]
-        public void Can_Specify_Custom_Modifiers_For_Initializer()
-        {
-            // Arrange
-            var sut = new ClassPropertyBuilder().WithName("Test")
-                                                .WithTypeName("System.Int32")
-                                                .WithCustomInitializerModifiers("internal")
-                                                .Build();
+    [Fact]
+    public void Can_Specify_Custom_Modifiers_For_Initializer()
+    {
+        // Arrange
+        var sut = new ClassPropertyBuilder().WithName("Test")
+                                            .WithTypeName("System.Int32")
+                                            .WithCustomInitializerModifiers("internal")
+                                            .Build();
 
-            // Act
-            var actual = sut.GetInitializerModifiers();
+        // Act
+        var actual = sut.GetInitializerModifiers();
 
-            // Assert
-            actual.Should().Be("internal ");
-        }
+        // Assert
+        actual.Should().Be("internal ");
     }
 }

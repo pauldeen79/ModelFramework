@@ -1,19 +1,14 @@
-﻿using System.Collections.Generic;
-using CrossCutting.Common.Extensions;
-using ModelFramework.Common.Builders;
+﻿namespace ModelFramework.Objects.Extensions;
 
-namespace ModelFramework.Objects.Extensions
+public static class ListOfMetadataBuilderExtensions
 {
-    public static class ListOfMetadataBuilderExtensions
-    {
-        public static List<MetadataBuilder> Replace(this List<MetadataBuilder> instance, string name, object? newValue)
-            => instance.Chain(() =>
+    public static List<MetadataBuilder> Replace(this List<MetadataBuilder> instance, string name, object? newValue)
+        => instance.Chain(() =>
+        {
+            instance.RemoveAll(x => x.Name == name);
+            if (newValue != null)
             {
-                instance.RemoveAll(x => x.Name == name);
-                if (newValue != null)
-                {
-                    instance.Add(new MetadataBuilder().WithName(name).WithValue(newValue));
-                }
-            });
-    }
+                instance.Add(new MetadataBuilder().WithName(name).WithValue(newValue));
+            }
+        });
 }

@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Objects.Contracts
+﻿namespace ModelFramework.Objects.Contracts;
+
+public interface IExplicitInterfaceNameContainer
 {
-    public interface IExplicitInterfaceNameContainer
-    {
-        string ExplicitInterfaceName { get; }
-    }
+    string ExplicitInterfaceName { get; }
 }

@@ -1,6 +1,5 @@
-﻿namespace ModelFramework.Objects.Contracts
+﻿namespace ModelFramework.Objects.Contracts;
+
+public interface IInterface : ITypeBase
 {
-    public interface IInterface : ITypeBase
-    {
-    }
 }

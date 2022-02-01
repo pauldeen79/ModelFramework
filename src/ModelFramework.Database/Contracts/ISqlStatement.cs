@@ -1,6 +1,4 @@
-﻿using ModelFramework.Common.Contracts;
-
-namespace ModelFramework.Database.Contracts
+﻿namespace ModelFramework.Database.Contracts
 {
     public interface ISqlStatement : IMetadataContainer
     {

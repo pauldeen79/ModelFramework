@@ -1,7 +1,6 @@
-﻿namespace ModelFramework.Common.Contracts
+﻿namespace ModelFramework.Common.Contracts;
+
+public interface IMetadata : INameContainer
 {
-    public interface IMetadata : INameContainer
-    {
-        object? Value { get; }
-    }
+    object? Value { get; }
 }

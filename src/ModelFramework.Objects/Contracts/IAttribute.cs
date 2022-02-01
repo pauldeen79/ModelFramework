@@ -1,10 +1,6 @@
-﻿using CrossCutting.Common;
-using ModelFramework.Common.Contracts;
+﻿namespace ModelFramework.Objects.Contracts;
 
-namespace ModelFramework.Objects.Contracts
+public interface IAttribute : IMetadataContainer, INameContainer
 {
-    public interface IAttribute : IMetadataContainer, INameContainer
-    {
-        ValueCollection<IAttributeParameter> Parameters { get; }
-    }
+    ValueCollection<IAttributeParameter> Parameters { get; }
 }

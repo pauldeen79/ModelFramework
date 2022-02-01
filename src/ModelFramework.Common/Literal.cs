@@ -1,17 +1,16 @@
-﻿namespace ModelFramework.Common
+﻿namespace ModelFramework.Common;
+
+public class Literal
 {
-    public class Literal
+    public string? Value { get; }
+
+    public object? OriginalValue { get; }
+
+    public Literal(string? value, object? originalValue = null)
     {
-        public string? Value { get; }
-
-        public object? OriginalValue { get; }
-
-        public Literal(string? value, object? originalValue = null)
-        {
-            Value = value;
-            OriginalValue = originalValue;
-        }
-
-        public override string ToString() => Value ?? "null";
+        Value = value;
+        OriginalValue = originalValue;
     }
+
+    public override string ToString() => Value ?? "null";
 }

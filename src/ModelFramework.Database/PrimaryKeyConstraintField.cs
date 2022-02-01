@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿namespace ModelFramework.Database;
 
-namespace ModelFramework.Database
+public partial record PrimaryKeyConstraintField : IValidatableObject
 {
-    public partial record PrimaryKeyConstraintField : IValidatableObject
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        if (string.IsNullOrWhiteSpace(Name))
         {
-            if (string.IsNullOrWhiteSpace(Name))
-            {
-                yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
-            }
+            yield return new ValidationResult("Name cannot be null or whitespace", new[] { nameof(Name) });
         }
-
-        public override string ToString() => IsDescending
-            ? $"{Name} DESC"
-            : $"{Name} ASC";
     }
+
+    public override string ToString() => IsDescending
+        ? $"{Name} DESC"
+        : $"{Name} ASC";
 }

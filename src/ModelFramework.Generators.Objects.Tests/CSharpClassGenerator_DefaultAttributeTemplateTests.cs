@@ -1,66 +1,57 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CrossCutting.Common.Extensions;
-using FluentAssertions;
-using ModelFramework.Objects.Builders;
-using TextTemplateTransformationFramework.Runtime;
-using Xunit;
+﻿namespace ModelFramework.Generators.Objects.Tests;
 
-namespace ModelFramework.Generators.Objects.Tests
+public class CSharpClassGenerator_DefaultAttributeTemplateTests
 {
-    [ExcludeFromCodeCoverage]
-    public class CSharpClassGenerator_DefaultAttributeTemplateTests
+    [Fact]
+    public void GeneratesAttributeCode()
     {
-        [Fact]
-        public void GeneratesAttributeCode()
-        {
-            // Arrange
-            var model = new AttributeBuilder().WithName("Attribute1").Build();
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
+        // Arrange
+        var model = new AttributeBuilder().WithName("Attribute1").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
 
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
 
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1]
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"        [Attribute1]
 ");
-        }
-
-        [Fact]
-        public void GeneratesCodeForAttributeWithParameterWithNameAndValue()
-        {
-            // Arrange
-            var model = new AttributeBuilder()
-                .WithName("Attribute1")
-                .AddParameters(new AttributeParameterBuilder().WithValue("Value").WithName("Name"))
-                .Build();
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
-
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
-
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1(Name = @""Value"")]
-");
-        }
-
-        [Fact]
-        public void GeneratesCodeForAttributeWithParameterWithValueOnly()
-        {
-            // Arrange
-            var model = new AttributeBuilder().WithName("Attribute1")
-                .AddParameters(new AttributeParameterBuilder().WithValue("Value"))
-                .Build();
-            var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
-
-            // Act
-            var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
-
-            // Assert
-            actual.NormalizeLineEndings().Should().Be(@"        [Attribute1(@""Value"")]
-");
-        }
-
-        //IndentFourSpacesOnClass
-        //IndentEightSpacesOnChildItem
     }
+
+    [Fact]
+    public void GeneratesCodeForAttributeWithParameterWithNameAndValue()
+    {
+        // Arrange
+        var model = new AttributeBuilder()
+            .WithName("Attribute1")
+            .AddParameters(new AttributeParameterBuilder().WithValue("Value").WithName("Name"))
+            .Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"        [Attribute1(Name = @""Value"")]
+");
+    }
+
+    [Fact]
+    public void GeneratesCodeForAttributeWithParameterWithValueOnly()
+    {
+        // Arrange
+        var model = new AttributeBuilder().WithName("Attribute1")
+            .AddParameters(new AttributeParameterBuilder().WithValue("Value"))
+            .Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultAttributeTemplate>(model);
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"        [Attribute1(@""Value"")]
+");
+    }
+
+    //IndentFourSpacesOnClass
+    //IndentEightSpacesOnChildItem
 }

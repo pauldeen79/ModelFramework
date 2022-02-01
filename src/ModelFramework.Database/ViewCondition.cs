@@ -1,9 +1,8 @@
-﻿namespace ModelFramework.Database
+﻿namespace ModelFramework.Database;
+
+public partial record ViewCondition
 {
-    public partial record ViewCondition
-    {
-        public override string ToString() => string.IsNullOrEmpty(Combination)
-            ? Expression
-            : $"{Combination} {Expression}";
-    }
+    public override string ToString() => string.IsNullOrEmpty(Combination)
+        ? Expression
+        : $"{Combination} {Expression}";
 }
