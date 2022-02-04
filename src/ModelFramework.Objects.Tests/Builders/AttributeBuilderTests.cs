@@ -18,7 +18,7 @@ public class AttributeBuilderTests
     }
 
     [Fact]
-    public void Bla()
+    public void AddNameAndParameter_Sets_Name_And_Parameter_Correctly()
     {
         // Arrange
         var sut = new AttributeBuilder();
