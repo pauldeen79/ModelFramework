@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.CodeGeneration.Tests;
+﻿using CsharpExpressionDumper.Core.TypeNameFormatters;
+
+namespace ModelFramework.CodeGeneration.Tests;
 
 public class CodeGenerationTests
 {
@@ -14,6 +16,11 @@ public class CodeGenerationTests
     public void Can_Generate_Model_For_Abstractions()
     {
         // Arrange
+        var namespacesToAbbreviate = new[]
+        {
+            "System.Collections.Generic",
+            "ModelFramework.Objects.Builders"
+        };
         var models = new[]
         {
             typeof(IAttribute),
@@ -30,8 +37,11 @@ public class CodeGenerationTests
         }.Select(x => x.ToClass(new ClassSettings()).ToInterfaceBuilder()).ToArray();
         var serviceCollection = new ServiceCollection();
         var serviceProvider = serviceCollection
-            .AddCsharpExpressionDumper()
-            .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+            .AddCsharpExpressionDumper
+            (
+                x => x.AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+                      .AddSingleton<ITypeNameFormatter>(new SkipNamespacesTypeNameFormatter(namespacesToAbbreviate))
+            )
             .BuildServiceProvider();
         var dumper = serviceProvider.GetRequiredService<ICsharpExpressionDumper>();
 
