@@ -1,13 +1,9 @@
 ﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
-public abstract class CsharpExpressionDumperClassBase : CSharpClassBase
+public abstract class CSharpExpressionDumperClassBase : ClassBase
 {
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
-    protected override string SetMethodNameFormatString => string.Empty;
-
-    protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
-    protected override void FixImmutableBuilderProperties(ClassBuilder classBuilder) { }
 
     protected abstract string[] NamespacesToAbbreviate { get; }
     protected abstract Type[] Models { get; }

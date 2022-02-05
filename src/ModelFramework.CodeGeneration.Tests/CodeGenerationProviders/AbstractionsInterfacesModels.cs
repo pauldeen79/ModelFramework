@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class AbstractionsInterfacesModels : CsharpExpressionDumperClassBase
+public class AbstractionsInterfacesModels : CSharpExpressionDumperClassBase
 {
     public override string Path => "ModelFramework.CodeGeneration.Tests\\CodeGenerationProviders";
 
@@ -8,7 +8,6 @@ public class AbstractionsInterfacesModels : CsharpExpressionDumperClassBase
 
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
-    protected override Type RecordCollectionType => typeof(ValueCollection<>);
     protected override string Namespace => "ModelFramework.CodeGeneration.Tests.CodeGenerationProviders";
     protected override string ClassName => "ModelFrameworkCSharpClassBase";
 
