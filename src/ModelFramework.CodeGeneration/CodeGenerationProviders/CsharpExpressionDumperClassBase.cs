@@ -37,6 +37,7 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
             .AddCsharpExpressionDumper
             (
                 x => x.AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+                      .AddSingleton<ITypeNameFormatter>(new CsharpFriendlyNameFormatter())
                       .AddSingleton<ITypeNameFormatter>(new SkipNamespacesTypeNameFormatter(NamespacesToAbbreviate))
             )
             .BuildServiceProvider();

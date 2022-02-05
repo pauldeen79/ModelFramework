@@ -26,7 +26,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
@@ -57,7 +57,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
@@ -88,7 +88,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Objects.Contracts.ITypeBase",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
@@ -219,7 +219,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
@@ -302,7 +302,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
@@ -411,7 +411,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
@@ -545,7 +545,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
@@ -692,7 +692,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
@@ -737,7 +737,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
@@ -776,7 +776,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Objects.Contracts.ITypeBase",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
@@ -858,7 +858,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                 new ClassBuilder
                 {
                     Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<System.String>(new[]
+                    Interfaces = new List<string>(new[]
                     {
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
