@@ -8,6 +8,6 @@ init;
    else
    { #>
 init
-            {<# WriteLine(""); if (Model.InitializerCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.InitializerCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
+            {<# WriteLine(""); if (Model.InitializerCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.InitializerCodeStatements" customResolverDelegate="ResolveFromMetadata" customRenderChildTemplateDelegate="RenderModel" #><# RootTemplate.PopIndent(); #><# } #>
             }
 <# } #>

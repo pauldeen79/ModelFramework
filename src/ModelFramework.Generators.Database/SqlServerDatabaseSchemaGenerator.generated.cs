@@ -15,7 +15,6 @@ namespace ModelFramework.Generators.Database
     using ModelFramework.Common.Extensions;
     using ModelFramework.Database.Contracts;
     using ModelFramework.Database.Extensions;
-    using ModelFramework.Database.SqlStatements;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -107,7 +106,6 @@ namespace ModelFramework.Generators.Database
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSelectFieldsTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSelectFieldsTemplate(), typeof(IView));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourceTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSourceTemplate(), typeof(IViewSource));
             RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultViewSourcesTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultViewSourcesTemplate(), typeof(IView));
-            RegisterChildTemplate(@"SqlServerDatabaseSchemaGenerator.DefaultLiteralSqlStatementTemplate", () => new SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate(), typeof(LiteralSqlStatement));
             RegisterViewModel(@"SqlServerDatabaseSchemaGenerator.DefaultDefaultValueConstraintViewModel", () => new SqlServerDatabaseSchemaGenerator_DefaultDefaultValueConstraintViewModel(), typeof(IDefaultValueConstraint));
             bool createCodeGenerationHeaderValueAcquired = false;
             if (this.Session != null && this.Session.ContainsKey("CreateCodeGenerationHeader") && this.Session["CreateCodeGenerationHeader"] != null)
@@ -1170,7 +1168,7 @@ BEGIN"));
             RootTemplate.PushIndent("    ");
 
             
-            RenderChildTemplate(null, Model.Statements, null, false, null, null, new CustomDelegates { });
+            RenderChildTemplate(null, Model.Statements, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, RenderChildTemplateDelegate = RenderModel, });
 
             RootTemplate.PopIndent();
 
@@ -2062,52 +2060,6 @@ AS
         }
 
         public IView Model { get; set; }
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class SqlServerDatabaseSchemaGenerator_DefaultLiteralSqlStatementTemplate : SqlServerDatabaseSchemaGeneratorBaseChild
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            WriteLine(Model.Statement);
-
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-        public LiteralSqlStatement Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
