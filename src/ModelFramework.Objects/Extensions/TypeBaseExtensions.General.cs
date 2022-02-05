@@ -7,26 +7,6 @@ public static partial class TypeBaseExtensions
             ? GetInheritedClassesForClass(cls)
             : GetInheritedClassesForTypeBase(instance);
 
-    private static string GetInheritedClassesForClass(IClass cls)
-    {
-        var lst = new List<string>();
-        if (!string.IsNullOrEmpty(cls.BaseClass))
-        {
-            lst.Add(cls.BaseClass);
-        }
-
-        lst.AddRange(cls.Interfaces);
-
-        return lst.Count == 0
-            ? string.Empty
-            : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
-    }
-
-    private static string GetInheritedClassesForTypeBase(ITypeBase instance)
-        => !instance.Interfaces.Any()
-            ? string.Empty
-            : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
-
     public static string GetContainerType(this ITypeBase type)
     {
         if (type is IClass cls)
@@ -83,4 +63,27 @@ public static partial class TypeBaseExtensions
                     instance.Attributes,
                     Enumerable.Empty<IEnum>()
                 );
+
+    public static IEnumerable<string> GetNamespacesToAbbreviate(this ITypeBase instance)
+        => instance.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate);
+
+    private static string GetInheritedClassesForClass(IClass cls)
+    {
+        var lst = new List<string>();
+        if (!string.IsNullOrEmpty(cls.BaseClass))
+        {
+            lst.Add(cls.BaseClass);
+        }
+
+        lst.AddRange(cls.Interfaces);
+
+        return lst.Count == 0
+            ? string.Empty
+            : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
+    }
+
+    private static string GetInheritedClassesForTypeBase(ITypeBase instance)
+        => !instance.Interfaces.Any()
+            ? string.Empty
+            : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
 }

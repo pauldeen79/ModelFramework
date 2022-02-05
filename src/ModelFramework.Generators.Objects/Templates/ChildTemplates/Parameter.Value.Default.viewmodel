@@ -1,13 +1,13 @@
 ﻿<#@ template language="c#" #>
-<#@ templateName value="CSharpClassGenerator.DefaultPropertyViewModel" #>
-<#@ model type="IClassProperty" #>
+<#@ templateName value="CSharpClassGenerator.DefaultParameterViewModel" #>
+<#@ model type="IParameter" #>
 <#@ templateContext #>
 <#+
-    public bool ShouldRenderModifiers => !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
-    public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
     public string TypeName => Model.TypeName.FixTypeName()
                                             .GetCsharpFriendlyTypeName()
                                             .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
                                             .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
     public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
+    public bool ShouldRenderDefaultValue => Model.DefaultValue != null;
+    public string DefaultValue => Model.DefaultValue.CsharpFormat();
 #>

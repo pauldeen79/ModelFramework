@@ -1,6 +1,4 @@
-﻿using CsharpExpressionDumper.Core.TypeNameFormatters;
-
-namespace ModelFramework.CodeGeneration.Tests;
+﻿namespace ModelFramework.CodeGeneration.Tests;
 
 public class CodeGenerationTests
 {
@@ -15,41 +13,8 @@ public class CodeGenerationTests
     [Fact]
     public void Can_Generate_Model_For_Abstractions()
     {
-        // Arrange
-        var namespacesToAbbreviate = new[]
-        {
-            "System.Collections.Generic",
-            "ModelFramework.Objects.Builders"
-        };
-        var models = new[]
-        {
-            typeof(IAttribute),
-            typeof(IAttributeParameter),
-            typeof(IClass),
-            typeof(IClassConstructor),
-            typeof(IClassField),
-            typeof(IClassMethod),
-            typeof(IClassProperty),
-            typeof(IEnum),
-            typeof(IEnumMember),
-            typeof(IInterface),
-            typeof(IParameter)
-        }.Select(x => x.ToClass(new ClassSettings()).ToInterfaceBuilder()).ToArray();
-        var serviceCollection = new ServiceCollection();
-        var serviceProvider = serviceCollection
-            .AddCsharpExpressionDumper
-            (
-                x => x.AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
-                      .AddSingleton<ITypeNameFormatter>(new SkipNamespacesTypeNameFormatter(namespacesToAbbreviate))
-            )
-            .BuildServiceProvider();
-        var dumper = serviceProvider.GetRequiredService<ICsharpExpressionDumper>();
-
-        // Act
-        var code = dumper.Dump(models);
-
-        // Assert
-        code.Should().NotBeEmpty();
+        // Act & Assert
+        Verify(GenerateCode.For<AbstractionsInterfacesModels>(Settings));
     }
 
     [Fact]
@@ -66,6 +31,7 @@ public class CodeGenerationTests
         Verify(GenerateCode.For<DatabaseRecords>(Settings));
     }
 
+    // Example how to generate builder extensions
     [Fact]
     public void Can_Generate_Builder_Extensions_For_ModelFramework()
     {

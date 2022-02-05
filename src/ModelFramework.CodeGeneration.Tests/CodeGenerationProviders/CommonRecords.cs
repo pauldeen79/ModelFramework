@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class CommonRecords : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
+public class CommonRecords : ModelFrameworkCSharpClassBase
 {
     public override string Path => "ModelFramework.Common";
 

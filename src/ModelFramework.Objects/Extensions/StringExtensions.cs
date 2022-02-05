@@ -44,4 +44,18 @@ public static class StringExtensions
             && enableNullableReferenceTypes
                 ? $"{instance}?"
                 : instance;
+
+    public static string AbbreviateNamespaces(this string instance,
+                                              IEnumerable<string> namespacesToAbbreviate)
+    {
+        foreach (var ns in namespacesToAbbreviate)
+        {
+            if (instance.GetNamespaceWithDefault() == ns)
+            {
+                return instance.GetClassName();
+            }
+        }
+
+        return instance;
+    }
 }

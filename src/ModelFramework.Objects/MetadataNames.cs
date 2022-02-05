@@ -8,6 +8,11 @@ public static class MetadataNames
     public const string CustomUsing = "ModelFramework.Objects.CustomUsing";
 
     /// <summary>
+    /// Metadata name for defining a namespace that can be abbreviated in code generation.
+    /// </summary>
+    public const string NamespaceToAbbreviate = "ModelFramework.Objects.NamespaceToAbbreviate";
+
+    /// <summary>
     /// Metadata name for defining custom modifiers.
     /// </summary>
     public const string CustomModifiers = "ModelFramework.Objects.CustomModifiers";

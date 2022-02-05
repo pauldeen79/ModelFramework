@@ -1,4 +1,5 @@
 ﻿<#@ template language="c#" #>
 <#@ templateName value="CSharpClassGenerator.DefaultParameterValueTemplate" #>
 <#@ model type="IParameter" #>
-<# if (Model.IsParamArray) { #>params <# } #><#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext) #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><# if (Model.DefaultValue != null) { #> = <#= Model.DefaultValue.CsharpFormat() #><# } #>
+<#@ viewModel name="CSharpClassGenerator.DefaultParameterViewModel" model="Model" #>
+<# if (Model.IsParamArray) { #>params <# } #><#= ViewModel.TypeName #> <#= ViewModel.Name #><# if (ViewModel.ShouldRenderDefaultValue) { #> = <#= ViewModel.DefaultValue #><# } #>

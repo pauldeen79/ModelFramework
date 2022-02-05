@@ -12,7 +12,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .AddGetterLiteralCodeStatements("return null;")
             .AddSetterLiteralCodeStatements("// ignore value")
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -40,7 +41,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithName("MyProperty")
             .WithType(typeof(string))
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -63,7 +65,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithType(typeof(string))
             .WithVisibility(Visibility.Internal)
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -86,7 +89,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithType(typeof(string))
             .WithHasInitializer()
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -109,7 +113,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithType(typeof(string))
             .WithSetterVisibility(Visibility.Private)
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -131,7 +136,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithName("Property")
             .WithType(typeof(int))
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel, rootAdditionalParameters: new { EnableNullableContext = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -154,7 +160,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithType(typeof(int))
             .WithIsNullable()
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel, rootAdditionalParameters: new { EnableNullableContext = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -176,7 +183,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithName("Property")
             .WithType(typeof(int?))
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel, rootAdditionalParameters: new { EnableNullableContext = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -198,7 +206,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithName("Property")
             .WithType(typeof(string))
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel, rootAdditionalParameters: new { EnableNullableContext = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -221,7 +230,8 @@ public class CSharpClassGenerator_DefaultPropertyTemplateClassTests
             .WithType(typeof(string))
             .WithIsNullable()
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyTemplate>(model, rootModel, rootAdditionalParameters: new { EnableNullableContext = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);

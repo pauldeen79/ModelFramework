@@ -1,35 +1,7 @@
 ﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
-public abstract class CSharpClassBase : ICodeGenerationProvider
+public abstract class CSharpClassBase : ClassBase
 {
-    public bool GenerateMultipleFiles { get; private set; }
-    public string BasePath { get; private set; } = string.Empty;
-
-    public abstract string Path { get; }
-    public abstract string DefaultFileName { get; }
-    public abstract bool RecurseOnDeleteGeneratedFiles { get; }
-    public abstract object CreateModel();
-
-    public virtual string LastGeneratedFilesFileName => "*.generated.cs";
-    public virtual Action? AdditionalActionDelegate => null;
-
-    public void Initialize(bool generateMultipleFiles, string basePath)
-    {
-        GenerateMultipleFiles = generateMultipleFiles;
-        BasePath = basePath;
-    }
-
-    public object CreateAdditionalParameters()
-        => new Dictionary<string, object>
-        {
-                { nameof(CSharpClassGenerator.EnableNullableContext), EnableNullableContext },
-                { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
-                { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles }
-        };
-
-    public object CreateGenerator()
-        => new CSharpClassGenerator();
-
     protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
         => Enumerable.Empty<ClassMethodBuilder>();
     protected virtual string NewCollectionTypeName => "System.Collections.Generic.List";
@@ -38,8 +10,6 @@ public abstract class CSharpClassBase : ICodeGenerationProvider
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
 
-    protected abstract bool EnableNullableContext { get; }
-    protected abstract bool CreateCodeGenerationHeader { get; }
     protected abstract Type RecordCollectionType { get; }
 
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);

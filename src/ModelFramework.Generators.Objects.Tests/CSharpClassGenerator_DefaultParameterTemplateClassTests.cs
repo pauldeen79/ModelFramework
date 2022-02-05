@@ -21,7 +21,7 @@ public class Parameter_DefaultClassTests
     public void GeneratesAttributes()
     {
         // Arrange
-        var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+        var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ParameterBuilder()
             .WithName("Name")
             .WithTypeName("string")

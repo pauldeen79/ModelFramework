@@ -542,7 +542,7 @@ namespace MyNamespace
         var sut = new CSharpClassGenerator();
 
         // Act
-        var actual = TemplateRenderHelper.GetTemplateOutput(sut, null);
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, Enumerable.Empty<ITypeBase>());
 
         // Assert
         actual.NormalizeLineEndings().Should().Be(@"using System;

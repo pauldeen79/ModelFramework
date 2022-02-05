@@ -31,4 +31,21 @@ public class ClassBuilderTests
             $"{MetadataNames.CustomUsing} = ModelFramework.Database.Contracts"
         });
     }
+
+    [Fact]
+    public void Can_Add_Abbreviated_Namespaces_For_CodeGeneration()
+    {
+        // Arrange
+        var sut = new ClassBuilder();
+
+        // Act
+        var actual = sut.AddNamespacesToAbbreviate("ModelFramework.Objects.Contracts", "ModelFramework.Database.Contracts");
+
+        // Assert
+        actual.Metadata.Select(x => $"{x.Name} = {x.Value}").Should().BeEquivalentTo(new[]
+        {
+            $"{MetadataNames.NamespaceToAbbreviate} = ModelFramework.Objects.Contracts",
+            $"{MetadataNames.NamespaceToAbbreviate} = ModelFramework.Database.Contracts"
+        });
+    }
 }

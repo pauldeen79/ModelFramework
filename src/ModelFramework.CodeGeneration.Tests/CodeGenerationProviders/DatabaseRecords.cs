@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class DatabaseRecords : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
+public class DatabaseRecords : ModelFrameworkCSharpClassBase
 {
     public override string Path => "ModelFramework.Database";
 
