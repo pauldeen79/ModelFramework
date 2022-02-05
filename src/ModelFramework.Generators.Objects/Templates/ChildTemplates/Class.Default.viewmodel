@@ -8,6 +8,7 @@
     public bool GenerateMultipleFiles => Root.GenerateMultipleFiles;
     public IClass Class => Model as IClass;
     public bool EnableNullableContext => Root.EnableNullableContext;
+    public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
     public bool HasSubclasses
     {
         get

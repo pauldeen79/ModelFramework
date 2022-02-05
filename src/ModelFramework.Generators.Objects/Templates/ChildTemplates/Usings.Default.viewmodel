@@ -12,12 +12,7 @@
         
         public IEnumerable<string> Usings
             => DefaultUsings
-                .Union
-                (
-                    Model
-                    .DefaultWhenNull()
-                    .SelectMany(classItem => classItem.Metadata.GetStringValues(ModelFramework.Objects.MetadataNames.CustomUsing))
-                )
+                .Union(Model.SelectMany(classItem => classItem.Metadata.GetStringValues(ModelFramework.Objects.MetadataNames.CustomUsing)))
                 .OrderBy(ns => ns)
                 .Distinct();
 #>

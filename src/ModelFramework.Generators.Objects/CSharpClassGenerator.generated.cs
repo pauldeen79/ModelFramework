@@ -229,7 +229,9 @@ namespace ModelFramework.Generators.Objects
             RegisterViewModel(@"CSharpClassGenerator.DefaultParameterAttributeViewModel", () => new CSharpClassGenerator_DefaultParameterAttributeViewModel(), typeof(IAttribute));
             RegisterViewModel(@"CSharpClassGenerator.DefaultClassViewModel", () => new CSharpClassGenerator_DefaultClassViewModel(), typeof(ITypeBase));
             RegisterViewModel(@"CSharpClassGenerator.DefaultCtorViewModel", () => new CSharpClassGenerator_DefaultCtorViewModel(), typeof(IClassConstructor));
+            RegisterViewModel(@"CSharpClassGenerator.DefaultFieldViewModel", () => new CSharpClassGenerator_DefaultFieldViewModel(), typeof(IClassField));
             RegisterViewModel(@"CSharpClassGenerator.DefaultMethodViewModel", () => new CSharpClassGenerator_DefaultMethodViewModel(), typeof(IClassMethod));
+            RegisterViewModel(@"CSharpClassGenerator.DefaultParameterViewModel", () => new CSharpClassGenerator_DefaultParameterViewModel(), typeof(IParameter));
             RegisterViewModel(@"CSharpClassGenerator.DefaultPropertyViewModel", () => new CSharpClassGenerator_DefaultPropertyViewModel(), typeof(IClassProperty));
             RegisterViewModel(@"CSharpClassGenerator.DefaultUsingsViewModel", () => new CSharpClassGenerator_DefaultUsingsViewModel(), typeof(IEnumerable<ITypeBase>));
             bool createCodeGenerationHeaderValueAcquired = false;
@@ -763,7 +765,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetContainerType()));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetGenericTypeArgumentsString()));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetGenericTypeArgumentConstraintsString()));
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetInheritedClasses()));
@@ -1145,13 +1147,13 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
             if (Model.Event) Write("event ");
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate())));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.TypeName));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
-            if (Model.DefaultValue != null) {
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
+            if (ViewModel.ShouldRenderDefaultValue) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@" = "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.DefaultValue.CsharpFormat()));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.DefaultValue));
             }
 
             Write(this.ToStringHelper.ToStringWithCulture(@";
@@ -1160,6 +1162,22 @@ namespace ModelFramework.Generators.Objects
             if (builder != null) this.GenerationEnvironment = backup;
         }
 
+        protected CSharpClassGenerator_DefaultFieldViewModel _viewModelField;
+
+        /// <summary>
+        /// Access the ViewModel parameter of the template.
+        /// </summary>
+        public CSharpClassGenerator_DefaultFieldViewModel ViewModel
+        {
+            get
+            {
+                return this._viewModelField;
+            }
+            set
+            {
+                 this._viewModelField = value;
+            }
+        }
 
         public virtual void Initialize(global::System.Action additionalActionDelegate = null)
         {
@@ -1187,6 +1205,7 @@ namespace ModelFramework.Generators.Objects
             {
                 PlaceholderChildrenDictionary.Clear();
             }
+            ViewModel = GetViewModel(@"CSharpClassGenerator.DefaultFieldViewModel", Model) as CSharpClassGenerator_DefaultFieldViewModel;
 
         }
 
@@ -1370,19 +1389,35 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"params "));
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate())));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.TypeName));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
-            if (Model.DefaultValue != null) {
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
+            if (ViewModel.ShouldRenderDefaultValue) {
 
             Write(this.ToStringHelper.ToStringWithCulture(@" = "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.DefaultValue.CsharpFormat()));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.DefaultValue));
             }
 
 
             if (builder != null) this.GenerationEnvironment = backup;
         }
 
+        protected CSharpClassGenerator_DefaultParameterViewModel _viewModelField;
+
+        /// <summary>
+        /// Access the ViewModel parameter of the template.
+        /// </summary>
+        public CSharpClassGenerator_DefaultParameterViewModel ViewModel
+        {
+            get
+            {
+                return this._viewModelField;
+            }
+            set
+            {
+                 this._viewModelField = value;
+            }
+        }
 
         public virtual void Initialize(global::System.Action additionalActionDelegate = null)
         {
@@ -1410,6 +1445,7 @@ namespace ModelFramework.Generators.Objects
             {
                 PlaceholderChildrenDictionary.Clear();
             }
+            ViewModel = GetViewModel(@"CSharpClassGenerator.DefaultParameterViewModel", Model) as CSharpClassGenerator_DefaultParameterViewModel;
 
         }
 
@@ -1648,9 +1684,9 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"."));
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate())));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.TypeName));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
-            Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
+            Write(this.ToStringHelper.ToStringWithCulture(ViewModel.Name));
             Write(this.ToStringHelper.ToStringWithCulture(@"
         {
 "));
@@ -2255,6 +2291,7 @@ namespace ModelFramework.Generators.Objects
     public bool GenerateMultipleFiles => Root.GenerateMultipleFiles;
     public IClass Class => Model as IClass;
     public bool EnableNullableContext => Root.EnableNullableContext;
+    public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
     public bool HasSubclasses
     {
         get
@@ -2432,6 +2469,141 @@ namespace ModelFramework.Generators.Objects
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class CSharpClassGenerator_DefaultFieldViewModel
+    {
+        [global::System.ComponentModel.Browsable(false)]
+        public IClassField Model { get; set; }
+        protected System.Boolean _createCodeGenerationHeaderField;
+
+        /// <summary>
+        /// Access the CreateCodeGenerationHeader parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean CreateCodeGenerationHeader
+        {
+            get
+            {
+                return this._createCodeGenerationHeaderField;
+            }
+            set
+            {
+                 this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
+            }
+        }
+        protected System.String _environmentVersionField;
+
+        /// <summary>
+        /// Access the EnvironmentVersion parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.String EnvironmentVersion
+        {
+            get
+            {
+                return this._environmentVersionField;
+            }
+            set
+            {
+                 this._environmentVersionField = value;
+            }
+        }
+        protected System.String _basePathField;
+
+        /// <summary>
+        /// Access the BasePath parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.String BasePath
+        {
+            get
+            {
+                return this._basePathField;
+            }
+            set
+            {
+                 this._basePathField = value;
+            }
+        }
+        protected System.String _fileNameSuffixField;
+
+        /// <summary>
+        /// Access the FileNameSuffix parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.String FileNameSuffix
+        {
+            get
+            {
+                return this._fileNameSuffixField;
+            }
+            set
+            {
+                 this._fileNameSuffixField = value;
+            }
+        }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
+            }
+        }
+        protected CSharpClassGenerator_ViewModel _viewModelField;
+
+        /// <summary>
+        /// Access the ViewModel parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public CSharpClassGenerator_ViewModel ViewModel
+        {
+            get
+            {
+                return this._viewModelField;
+            }
+            set
+            {
+                 this._viewModelField = value;
+            }
+        }
+        public string TypeName => Model.TypeName.FixTypeName()
+                                            .GetCsharpFriendlyTypeName()
+                                            .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
+                                            .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
+    public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
+    public bool ShouldRenderDefaultValue => Model.DefaultValue != null;
+    public string DefaultValue => Model.DefaultValue.CsharpFormat();
+
+        public TemplateInstanceContext TemplateContext { get; set; }
+
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class CSharpClassGenerator_DefaultMethodViewModel
     {
         [global::System.ComponentModel.Browsable(false)]
@@ -2570,6 +2742,141 @@ namespace ModelFramework.Generators.Objects
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
+    public class CSharpClassGenerator_DefaultParameterViewModel
+    {
+        [global::System.ComponentModel.Browsable(false)]
+        public IParameter Model { get; set; }
+        protected System.Boolean _createCodeGenerationHeaderField;
+
+        /// <summary>
+        /// Access the CreateCodeGenerationHeader parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean CreateCodeGenerationHeader
+        {
+            get
+            {
+                return this._createCodeGenerationHeaderField;
+            }
+            set
+            {
+                 this._createCodeGenerationHeaderField = value;
+            }
+        }
+        protected System.Boolean _generateMultipleFilesField;
+
+        /// <summary>
+        /// Access the GenerateMultipleFiles parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean GenerateMultipleFiles
+        {
+            get
+            {
+                return this._generateMultipleFilesField;
+            }
+            set
+            {
+                 this._generateMultipleFilesField = value;
+            }
+        }
+        protected System.String _environmentVersionField;
+
+        /// <summary>
+        /// Access the EnvironmentVersion parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.String EnvironmentVersion
+        {
+            get
+            {
+                return this._environmentVersionField;
+            }
+            set
+            {
+                 this._environmentVersionField = value;
+            }
+        }
+        protected System.String _basePathField;
+
+        /// <summary>
+        /// Access the BasePath parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.String BasePath
+        {
+            get
+            {
+                return this._basePathField;
+            }
+            set
+            {
+                 this._basePathField = value;
+            }
+        }
+        protected System.String _fileNameSuffixField;
+
+        /// <summary>
+        /// Access the FileNameSuffix parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.String FileNameSuffix
+        {
+            get
+            {
+                return this._fileNameSuffixField;
+            }
+            set
+            {
+                 this._fileNameSuffixField = value;
+            }
+        }
+        protected System.Boolean _enableNullableContextField;
+
+        /// <summary>
+        /// Access the EnableNullableContext parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public System.Boolean EnableNullableContext
+        {
+            get
+            {
+                return this._enableNullableContextField;
+            }
+            set
+            {
+                 this._enableNullableContextField = value;
+            }
+        }
+        protected CSharpClassGenerator_ViewModel _viewModelField;
+
+        /// <summary>
+        /// Access the ViewModel parameter of the template.
+        /// </summary>
+        [global::System.ComponentModel.Browsable(false)]
+        public CSharpClassGenerator_ViewModel ViewModel
+        {
+            get
+            {
+                return this._viewModelField;
+            }
+            set
+            {
+                 this._viewModelField = value;
+            }
+        }
+        public string TypeName => Model.TypeName.FixTypeName()
+                                            .GetCsharpFriendlyTypeName()
+                                            .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
+                                            .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
+    public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
+    public bool ShouldRenderDefaultValue => Model.DefaultValue != null;
+    public string DefaultValue => Model.DefaultValue.CsharpFormat();
+
+        public TemplateInstanceContext TemplateContext { get; set; }
+
+    }
+    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
     public class CSharpClassGenerator_DefaultPropertyViewModel
     {
         [global::System.ComponentModel.Browsable(false)]
@@ -2695,6 +3002,11 @@ namespace ModelFramework.Generators.Objects
         }
         public bool ShouldRenderModifiers => !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
     public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
+    public string TypeName => Model.TypeName.FixTypeName()
+                                            .GetCsharpFriendlyTypeName()
+                                            .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
+                                            .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
+    public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
 
         public TemplateInstanceContext TemplateContext { get; set; }
 
@@ -2833,12 +3145,7 @@ namespace ModelFramework.Generators.Objects
         
         public IEnumerable<string> Usings
             => DefaultUsings
-                .Union
-                (
-                    Model
-                    .DefaultWhenNull()
-                    .SelectMany(classItem => classItem.Metadata.GetStringValues(ModelFramework.Objects.MetadataNames.CustomUsing))
-                )
+                .Union(Model.SelectMany(classItem => classItem.Metadata.GetStringValues(ModelFramework.Objects.MetadataNames.CustomUsing)))
                 .OrderBy(ns => ns)
                 .Distinct();
 
