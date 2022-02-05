@@ -1,4 +1,0 @@
-﻿<#@ template language="c#" #>
-<#@ templateName value="SqlServerDatabaseSchemaGenerator.DefaultLiteralSqlStatementTemplate" #>
-<#@ model type="LiteralSqlStatement" #>
-<# WriteLine(Model.Statement); #>

@@ -8,6 +8,6 @@ get;
    else
    { #>
 get
-            {<# WriteLine(""); if (Model.GetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.GetterCodeStatements" #><# RootTemplate.PopIndent(); #><# } #>
+            {<# WriteLine(""); if (Model.GetterCodeStatements.Any()) { #><# RootTemplate.PushIndent("                "); #><#@ renderChildTemplate model="Model.GetterCodeStatements" customResolverDelegate="ResolveFromMetadata" customRenderChildTemplateDelegate="RenderModel" #><# RootTemplate.PopIndent(); #><# } #>
             }
 <# } #>

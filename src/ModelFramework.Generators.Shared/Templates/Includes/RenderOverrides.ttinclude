@@ -39,4 +39,38 @@
             }
             base.RenderTemplate(template, model, iterationNumber, iterationCount, resolveTemplateName);
         }
+
+        protected void RenderModel(string templateName, object template, object item, bool renderAsEnumerable, bool silentlyContinueOnError, int? iterationNumber, int? iterationCount)
+        {
+            var templates = template as IEnumerable<object>;
+            if (templates == null)
+            {
+                // Template is known, so use default rendering.
+                RenderChildTemplate(templateName, item, renderAsEnumerable, silentlyContinueOnError);
+                return;
+            }
+
+            var count = templates.Count();
+            if (count == 1)
+            {
+                //TODO: Review if this path is reachable
+                // Template is known, so use default rendering.
+                RenderChildTemplate(templateName, item, renderAsEnumerable, silentlyContinueOnError);
+            }
+            else if (count > 1)
+            {
+                //TODO: Review if this path is reachable
+                if (!silentlyContinueOnError)
+                {
+                    Error("RenderModel error: Multiple templates found!");
+                }
+            }
+            else
+            {
+                // Template is unknown, so use ToString on the model.
+                // Note that by using this, the model is tightly coupled with the generator!
+                Write(ToStringHelper.ToStringWithCulture(item));
+                WriteLine("");
+            }
+        }
 #>

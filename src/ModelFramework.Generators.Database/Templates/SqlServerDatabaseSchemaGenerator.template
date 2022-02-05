@@ -7,6 +7,5 @@
 <#@ registerViewModels path="$(BasePath)ModelFramework.Generators.Database\Templates\ChildTemplates" searchPattern="*.viewmodel" #>
 <#@ import namespace="ModelFramework.Database.Contracts" #>
 <#@ import namespace="ModelFramework.Database.Extensions" #>
-<#@ import namespace="ModelFramework.Database.SqlStatements" #>
 <#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Database.Contracts.ISchema" #>
 <#@ renderChildTemplate name="SqlServerDatabaseSchemaGenerator.DefaultSchemaTemplate" model="Model" customResolverDelegate="ResolveFromMetadata" #>

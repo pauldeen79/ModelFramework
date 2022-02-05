@@ -13,7 +13,6 @@ namespace ModelFramework.Generators.Objects
     using ModelFramework.Common;
     using ModelFramework.Common.Contracts;
     using ModelFramework.Common.Extensions;
-    using ModelFramework.Objects.CodeStatements;
     using ModelFramework.Objects.Contracts;
     using ModelFramework.Objects.Extensions;
     using ModelFramework.Objects.Settings;
@@ -223,7 +222,6 @@ namespace ModelFramework.Generators.Objects
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertySetterBodyTemplate", () => new CSharpClassGenerator_DefaultPropertySetterBodyTemplate(), typeof(IClassProperty));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultPropertyTemplate", () => new CSharpClassGenerator_DefaultPropertyTemplate(), typeof(IClassProperty));
             RegisterChildTemplate(@"CSharpClassGenerator.DefaultUsingsTemplate", () => new CSharpClassGenerator_DefaultUsingsTemplate(), typeof(IEnumerable<ITypeBase>));
-            RegisterChildTemplate(@"CSharpClassGenerator.DefaultLiteralCodeStatementTemplate", () => new CSharpClassGenerator_DefaultLiteralCodeStatementTemplate(), typeof(LiteralCodeStatement));
             RegisterViewModel(@"CSharpClassGenerator.ViewModel", () => new CSharpClassGenerator_ViewModel(), typeof(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ITypeBase>));
             RegisterViewModel(@"CSharpClassGenerator.DefaultAttributeViewModel", () => new CSharpClassGenerator_DefaultAttributeViewModel(), typeof(IAttribute));
             RegisterViewModel(@"CSharpClassGenerator.DefaultParameterAttributeViewModel", () => new CSharpClassGenerator_DefaultParameterAttributeViewModel(), typeof(IAttribute));
@@ -952,7 +950,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("            ");
 
             
-            RenderChildTemplate(null, Model.CodeStatements, null, false, null, null, new CustomDelegates { });
+            RenderChildTemplate(null, Model.CodeStatements, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, RenderChildTemplateDelegate = RenderModel, });
 
             RootTemplate.PopIndent();
 
@@ -1262,7 +1260,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("            ");
 
             
-            RenderChildTemplate(null, Model.CodeStatements, null, false, null, null, new CustomDelegates { });
+            RenderChildTemplate(null, Model.CodeStatements, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, RenderChildTemplateDelegate = RenderModel, });
 
             RootTemplate.PopIndent();
 
@@ -1475,7 +1473,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.GetterCodeStatements, null, false, null, null, new CustomDelegates { });
+            RenderChildTemplate(null, Model.GetterCodeStatements, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, RenderChildTemplateDelegate = RenderModel, });
 
             RootTemplate.PopIndent();
 
@@ -1545,7 +1543,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.InitializerCodeStatements, null, false, null, null, new CustomDelegates { });
+            RenderChildTemplate(null, Model.InitializerCodeStatements, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, RenderChildTemplateDelegate = RenderModel, });
 
             RootTemplate.PopIndent();
 
@@ -1615,7 +1613,7 @@ namespace ModelFramework.Generators.Objects
             RootTemplate.PushIndent("                ");
 
             
-            RenderChildTemplate(null, Model.SetterCodeStatements, null, false, null, null, new CustomDelegates { });
+            RenderChildTemplate(null, Model.SetterCodeStatements, null, false, null, null, new CustomDelegates { ResolverDelegate = ResolveFromMetadata, RenderChildTemplateDelegate = RenderModel, });
 
             RootTemplate.PopIndent();
 
@@ -1841,52 +1839,6 @@ namespace ModelFramework.Generators.Objects
         }
 
         public IEnumerable<ITypeBase> Model { get; set; }
-
-    }
-    [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]
-    public class CSharpClassGenerator_DefaultLiteralCodeStatementTemplate : CSharpClassGeneratorBaseChild
-    {
-        public virtual void Render(global::System.Text.StringBuilder builder)
-        {
-            var backup = this.GenerationEnvironment;
-            if (builder != null) this.GenerationEnvironment = builder;
-            WriteLine(Model.Statement);
-
-
-            if (builder != null) this.GenerationEnvironment = backup;
-        }
-
-
-        public virtual void Initialize(global::System.Action additionalActionDelegate = null)
-        {
-            this.Errors.Clear();
-            this.GenerationEnvironment.Clear();
-            if (Session == null)
-            {
-                Session = new global::System.Collections.Generic.Dictionary<string, object>();
-            }
-            if (RootTemplate != null)
-            {
-                ChildTemplates = RootTemplate.ChildTemplates;
-                ViewModels = RootTemplate.ViewModels;
-            }
-            else
-            {
-                ChildTemplates.Clear();
-                ViewModels.Clear();
-            }
-            if (RootTemplate != null)
-            {
-                PlaceholderChildrenDictionary = RootTemplate.PlaceholderChildrenDictionary;
-            }
-            else
-            {
-                PlaceholderChildrenDictionary.Clear();
-            }
-
-        }
-
-        public LiteralCodeStatement Model { get; set; }
 
     }
     [System.CodeDom.Compiler.GeneratedCodeAttribute(@"T4PlusCSharpCodeGenerator", @"1.0.0.0")]

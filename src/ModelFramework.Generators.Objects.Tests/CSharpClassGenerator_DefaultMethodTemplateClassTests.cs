@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Generators.Objects.Tests;
+﻿using ModelFramework.Objects.CodeStatements;
+
+namespace ModelFramework.Generators.Objects.Tests;
 
 public class Method_DefaultClassTests
 {
@@ -325,5 +327,45 @@ public class Method_DefaultClassTests
             throw new NotImplementedException();
         }
 ");
+    }
+
+    [Fact]
+    public void Can_Generate_Method_With_Custom_Template_On_CodeStatement()
+    {
+        // Arrange
+        var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+        var model = new ClassMethodBuilder()
+            .WithName("Name")
+            .WithType(typeof(string))
+            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
+        sut.RootTemplate.RegisterChildTemplate("Test", () => new CustomStatementTemplate(), typeof(LiteralCodeStatement));
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"        public string Name()
+        {
+            throw new NotImplementedException(); // added in template
+        }
+");
+    }
+
+    private sealed class CustomStatementTemplate : CSharpClassGeneratorBaseChild
+    {
+        public LiteralCodeStatement? Model { get; set; }
+
+        public void Render(StringBuilder builder)
+        {
+            if (Model == null)
+            {
+                Error("CustomStatementTemplate: Model is null! How did you do this?");
+                return;
+            }
+
+            WriteLine(Model.Statement + " // added in template");
+        }
     }
 }
