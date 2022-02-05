@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class CommonBuilders : ModelFrameworkCSharpClassBase, ICodeGenerationProvider
+public class CommonBuilders : ModelFrameworkCSharpClassBase
 {
     public override string Path => "ModelFramework.Common\\Builders";
 

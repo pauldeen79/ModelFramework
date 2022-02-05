@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public abstract class ModelFrameworkCSharpClassBase : CSharpClassBase
+public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 {
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
