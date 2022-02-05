@@ -159,4 +159,41 @@ public class StringExtensionsTests
         // Assert
         actual.Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData("SomeUnknownType", "SomeUnknownType")]
+    [InlineData("", "")]
+    [InlineData(" ", " ")]
+    [InlineData("    ", "    ")]
+    [InlineData("System.Char", "char")]
+    [InlineData("System.Char with some prefix", "System.Char with some prefix")]
+    [InlineData("suffix System.Char", "suffix System.Char")]
+    [InlineData("System.String", "string")]
+    [InlineData("System.Boolean", "bool")]
+    [InlineData("System.Object", "object")]
+    [InlineData("System.Decimal", "decimal")]
+    [InlineData("System.Double", "double")]
+    [InlineData("System.Single", "float")]
+    [InlineData("System.Byte", "byte")]
+    [InlineData("System.SByte", "sbyte")]
+    [InlineData("System.Int16", "short")]
+    [InlineData("System.UInt16", "ushort")]
+    [InlineData("System.Int32", "int")]
+    [InlineData("System.UInt32", "uint")]
+    [InlineData("System.Int64", "long")]
+    [InlineData("System.UInt64", "ulong")]
+    [InlineData("System.String[]", "string[]")]
+    [InlineData("IEnumerable<System.String>", "IEnumerable<string>")]
+    [InlineData("KeyValuePair<System.String, System.String>", "KeyValuePair<string, string>")]
+    [InlineData("KeyValuePair<System.String,System.String>", "KeyValuePair<string,string>")]
+    [InlineData("TripleGeneric<System.String, System.String, System.String>", "TripleGeneric<string, string, string>")]
+    [InlineData("TripleGeneric<System.String,System.String,System.String>", "TripleGeneric<string,string,string>")]
+    public void GetCsharpFriendlyTypeName_Returns_Correct_Result(string input, string expectedResult)
+    {
+        // Act
+        var actual = input.GetCsharpFriendlyTypeName();
+
+        // Assert
+        actual.Should().Be(expectedResult);
+    }
 }

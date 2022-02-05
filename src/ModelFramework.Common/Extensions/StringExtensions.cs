@@ -64,29 +64,48 @@ public static class StringExtensions
     }
 
     public static string GetCsharpFriendlyTypeName(this string instance)
-    {
-        if (string.IsNullOrEmpty(instance))
+        => instance switch
         {
-            return instance;
-        }
+            "System.Char" => "char",
+            "System.String" => "string",
+            "System.Boolean" => "bool",
+            "System.Object" => "object",
+            "System.Decimal" => "decimal",
+            "System.Double" => "double",
+            "System.Single" => "float",
+            "System.Byte" => "byte",
+            "System.SByte" => "sbyte",
+            "System.Int16" => "short",
+            "System.UInt16" => "ushort",
+            "System.Int32" => "int",
+            "System.UInt32" => "uint",
+            "System.Int64" => "long",
+            "System.UInt64" => "ulong",
+            _ => instance
+                .ReplaceGenericArgument("System.Char", "char")
+                .ReplaceGenericArgument("System.String", "string")
+                .ReplaceGenericArgument("System.Boolean", "bool")
+                .ReplaceGenericArgument("System.Object", "object")
+                .ReplaceGenericArgument("System.Decimal", "decimal")
+                .ReplaceGenericArgument("System.Double", "double")
+                .ReplaceGenericArgument("System.Single", "float")
+                .ReplaceGenericArgument("System.Byte", "byte")
+                .ReplaceGenericArgument("System.SByte", "sbyte")
+                .ReplaceGenericArgument("System.Int16", "short")
+                .ReplaceGenericArgument("System.UInt16", "ushort")
+                .ReplaceGenericArgument("System.Int32", "int")
+                .ReplaceGenericArgument("System.UInt32", "uint")
+                .ReplaceGenericArgument("System.Int64", "long")
+                .ReplaceGenericArgument("System.UInt64", "ulong")
+        };
 
-        return instance
-            .Replace("System.Char", "char")
-            .Replace("System.String", "string")
-            .Replace("System.Boolean", "bool")
-            .Replace("System.Object", "object")
-            .Replace("System.Decimal", "decimal")
-            .Replace("System.Double", "double")
-            .Replace("System.Single", "float")
-            .Replace("System.Byte", "byte")
-            .Replace("System.SByte", "sbyte")
-            .Replace("System.Int16", "short")
-            .Replace("System.UInt16", "ushort")
-            .Replace("System.Int32", "int")
-            .Replace("System.UInt32", "uint")
-            .Replace("System.Int64", "long")
-            .Replace("System.UInt64", "ulong");
-    }
+    private static string ReplaceGenericArgument(this string instance, string find, string replace)
+        => instance
+            .Replace($"<{find}", $"<{replace}")
+            .Replace($"{find}>", $"{replace}>")
+            .Replace($",{find}", $",{replace}")
+            .Replace($", {find}", $", {replace}")
+            .Replace($"{find}[]", $"{replace}[]");
 
     public static string GetCsharpFriendlyName(this string instance)
         => _keywords.Contains(instance)
