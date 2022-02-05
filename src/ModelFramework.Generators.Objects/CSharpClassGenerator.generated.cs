@@ -1145,7 +1145,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(Model.GetModifiers()));
             if (Model.Event) Write("event ");
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate())));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             if (Model.DefaultValue != null) {
@@ -1370,7 +1370,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"params "));
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate())));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             if (Model.DefaultValue != null) {
@@ -1648,7 +1648,7 @@ namespace ModelFramework.Generators.Objects
             Write(this.ToStringHelper.ToStringWithCulture(@"."));
             }
 
-            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)));
+            Write(this.ToStringHelper.ToStringWithCulture(Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate())));
             Write(this.ToStringHelper.ToStringWithCulture(@" "));
             Write(this.ToStringHelper.ToStringWithCulture(Model.Name.Sanitize().GetCsharpFriendlyName()));
             Write(this.ToStringHelper.ToStringWithCulture(@"
@@ -2556,7 +2556,7 @@ namespace ModelFramework.Generators.Objects
             }
         }
         public bool ShouldRenderModifiers => string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
-    public string ReturnTypeName => Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).WhenNullOrEmpty("void");
+    public string ReturnTypeName => Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate()).WhenNullOrEmpty("void");
     public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
     public string Name => Model.Operator
         ? "operator " + Model.Name

@@ -285,7 +285,8 @@ public class Method_DefaultClassTests
             .AddGenericTypeArguments("T1", "T2")
             .AddGenericTypeArgumentConstraints("where T1 : class", "where T2 : new()")
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut);
@@ -295,6 +296,33 @@ public class Method_DefaultClassTests
             where T1 : class
             where T2 : new()
         {
+        }
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Method_With_Abbreviated_Namespace_In_ReturnType()
+    {
+        // Arrange
+        var rootModel = new ClassBuilder()
+            .WithName("MyClass")
+            .WithNamespace("MyNamespace")
+            .AddNamespacesToAbbreviate("MyNamespace")
+            .Build();
+        var model = new ClassMethodBuilder()
+            .WithName("Name")
+            .WithTypeName("MyNamespace.MyClass")
+            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"        public MyClass Name()
+        {
+            throw new NotImplementedException();
         }
 ");
     }

@@ -12,7 +12,8 @@ public class CSharpClassGenerator_DefaultFieldTemplateTests
             .WithEvent()
             .WithVisibility(Visibility.Public)
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -30,7 +31,8 @@ public class CSharpClassGenerator_DefaultFieldTemplateTests
             .WithName("Name")
             .WithType(typeof(string))
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -49,7 +51,8 @@ public class CSharpClassGenerator_DefaultFieldTemplateTests
             .WithType(typeof(string))
             .WithDefaultValue("Hello world")
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -72,7 +75,8 @@ public class CSharpClassGenerator_DefaultFieldTemplateTests
                 new AttributeBuilder().WithName("Attribute2"),
                 new AttributeBuilder().WithName("Attribute3")
             ).Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model);
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootModel);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
@@ -94,7 +98,8 @@ public class CSharpClassGenerator_DefaultFieldTemplateTests
             .WithType(typeof(string))
             .WithIsNullable()
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootAdditionalParameters: new { EnableNullableContext = true });
+        var rootModel = new ClassBuilder().WithName("Test").Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultFieldTemplate>(model, rootModel, rootAdditionalParameters: new { EnableNullableContext = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);

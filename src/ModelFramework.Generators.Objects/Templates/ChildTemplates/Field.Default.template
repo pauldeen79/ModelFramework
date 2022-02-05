@@ -2,4 +2,4 @@
 <#@ templateName value="CSharpClassGenerator.DefaultFieldTemplate" #>
 <#@ model type="IClassField" #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
-        <#= Model.GetModifiers() #><# if (Model.Event) Write("event "); #><#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext) #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><# if (Model.DefaultValue != null) { #> = <#= Model.DefaultValue.CsharpFormat() #><# } #>;
+        <#= Model.GetModifiers() #><# if (Model.Event) Write("event "); #><#= Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate()) #> <#= Model.Name.Sanitize().GetCsharpFriendlyName() #><# if (Model.DefaultValue != null) { #> = <#= Model.DefaultValue.CsharpFormat() #><# } #>;
