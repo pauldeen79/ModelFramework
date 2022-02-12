@@ -15,11 +15,8 @@ public abstract class CSharpClassBase : ClassBase
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
     protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
 
-    protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
-        => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace);
-
-    protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace)
-        => GetImmutableBuilderClasses(models, entitiesNamespace, buildersNamespace, Array.Empty<string>());
+    protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
+        => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace, interfacesToAdd);
 
     protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
         => models.Select
