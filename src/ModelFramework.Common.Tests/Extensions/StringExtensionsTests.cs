@@ -72,6 +72,84 @@ public class StringExtensionsTests
         actual.Should().Be("AnonymousType[]");
     }
 
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_NonGeneric_Type()
+    {
+        // Arrange
+        var input = typeof(int).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        actual.Should().Be("System.Int32");
+    }
+
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_Nullable_Type()
+    {
+        // Arrange
+        var input = typeof(int?).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        actual.Should().Be("System.Nullable<System.Int32>");
+    }
+
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_Generic_Func()
+    {
+        // Arrange
+        var input = typeof(Func<int>).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        actual.Should().Be("System.Func<System.Int32>");
+    }
+
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_Nullable_Generic_Func()
+    {
+        // Arrange
+        var input = typeof(Func<int?>).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        actual.Should().Be("System.Func<System.Nullable<System.Int32>>");
+    }
+
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_Generic_Enumerable()
+    {
+        // Arrange
+        var input = typeof(Func<int>).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        actual.Should().Be("System.Func<System.Int32>");
+    }
+
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_Nullable_Generic_Enumerable()
+    {
+        // Arrange
+        var input = typeof(IEnumerable<int?>).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        actual.Should().Be("System.Collections.Generic.IEnumerable<System.Nullable<System.Int32>>");
+    }
+
     [Theory]
     [InlineData("ModelFramework.Common.Tests.TestFixtures.MyEnumThing, ModelFramework.Common.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", true)]
     [InlineData("System.Nullable`1[[ModelFramework.Common.Tests.TestFixtures.MyEnumThing, ModelFramework.Common.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", false)]
