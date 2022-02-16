@@ -15,10 +15,19 @@ public abstract class CSharpClassBase : ClassBase
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
     protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
 
-    protected IClass[] GetImmutableBuilderClasses(Type[] types, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace, interfacesToAdd);
+    protected IClass[] GetImmutableBuilderClasses(Type[] types,
+                                                  string entitiesNamespace,
+                                                  string buildersNamespace,
+                                                  params string[] interfacesToAdd)
+        => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(),
+                                                                  entitiesNamespace,
+                                                                  buildersNamespace,
+                                                                  interfacesToAdd);
 
-    protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace, params string[] interfacesToAdd)
+    protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models,
+                                                  string entitiesNamespace,
+                                                  string buildersNamespace,
+                                                  params string[] interfacesToAdd)
         => models.Select
         (
             x => CreateBuilder(CreateImmutableEntities(entitiesNamespace, x), buildersNamespace)
@@ -26,15 +35,35 @@ public abstract class CSharpClassBase : ClassBase
                 .Build()
         ).ToArray();
 
-    protected IClass[] GetImmutableBuilderExtensionClasses(Type[] types, string entitiesNamespace, string buildersNamespace)
-        => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace, buildersNamespace);
+    protected IClass[] GetImmutableBuilderExtensionClasses(Type[] types,
+                                                           string entitiesNamespace,
+                                                           string buildersNamespace,
+                                                           string builderInterfacesNamespace)
+        => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(),
+                                                                           entitiesNamespace,
+                                                                           buildersNamespace,
+                                                                           builderInterfacesNamespace);
 
-    protected IClass[] GetImmutableBuilderExtensionClasses(ITypeBase[] models, string entitiesNamespace, string buildersNamespace)
+    protected IClass[] GetImmutableBuilderExtensionClasses(ITypeBase[] models,
+                                                           string entitiesNamespace,
+                                                           string buildersNamespace,
+                                                           string builderInterfacesNamespace)
         => models.Select
         (
             x => CreateBuilderExtensions(CreateImmutableEntities(entitiesNamespace, x), buildersNamespace)
+                .Chain
+                (
+                    x => x.Methods.ForEach(y => y.AddGenericTypeArguments("T")
+                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
+                )
+                .Chain
+                (
+                    x => x.Methods.ForEach(y => y.WithTypeName("T")
+                                                 .Chain(z => z.Parameters.First().WithTypeName(z.TypeName)))
+                )
                 .Build()
-        ).ToArray();
+        )
+        .ToArray();
 
     protected IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
         => GetImmutableClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace);

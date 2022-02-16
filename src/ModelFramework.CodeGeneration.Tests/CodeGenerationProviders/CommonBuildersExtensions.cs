@@ -11,5 +11,6 @@ public class CommonBuildersExtensions : ModelFrameworkCSharpClassBase
     public override object CreateModel()
         => GetImmutableBuilderExtensionClasses(GetCommonModelTypes(),
                                                "ModelFramework.Common",
-                                               "ModelFramework.Common.Builders");
+                                               "ModelFramework.Common.Extensions",
+                                               "ModelFramework.Common.Contracts.Builders");
 }
