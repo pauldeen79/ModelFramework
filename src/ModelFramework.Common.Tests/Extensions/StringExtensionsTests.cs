@@ -150,6 +150,20 @@ public class StringExtensionsTests
         actual.Should().Be("System.Collections.Generic.IEnumerable<System.Nullable<System.Int32>>");
     }
 
+    [Fact]
+    public void FixTypeName_Returns_Correct_Result_For_Generics_With_Multiple_Generic_Parameters()
+    {
+        // Arrange
+        var input = typeof(Func<object?, IAsyncDisposable, object?>).FullName;
+
+        // Act
+        var actual = input.FixTypeName();
+
+        // Assert
+        //Note that nullable generic argument types are not recognized. I'm not sure how to fix this...
+        actual.Should().Be("System.Func<System.Object,System.IAsyncDisposable,System.Object>");
+    }
+
     [Theory]
     [InlineData("ModelFramework.Common.Tests.TestFixtures.MyEnumThing, ModelFramework.Common.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", true)]
     [InlineData("System.Nullable`1[[ModelFramework.Common.Tests.TestFixtures.MyEnumThing, ModelFramework.Common.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]], System.Private.CoreLib, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e", false)]
