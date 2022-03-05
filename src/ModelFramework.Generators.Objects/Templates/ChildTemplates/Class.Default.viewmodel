@@ -28,7 +28,7 @@
         }
     }
     public StringBuilder StartNewFile()
-        => Root.ViewModel.TemplateFileManager.StartNewFile(Model.Name + (Root.FileNameSuffix ?? string.Empty) + ".cs");
+        => Root.ViewModel.TemplateFileManager.StartNewFile((Root.FileNamePrefix ?? string.Empty) + Model.Name + (Root.FileNameSuffix ?? string.Empty) + ".cs");
     public CSharpClassGenerator CreateChildGenerator(CSharpClassGeneratorBase rootTemplate)
     {
         if (!HasSubclasses)

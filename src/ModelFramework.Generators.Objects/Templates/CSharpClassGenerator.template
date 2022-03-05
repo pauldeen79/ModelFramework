@@ -12,6 +12,7 @@
 <#@ property name="GenerateMultipleFiles" type="System.Boolean" #>
 <#@ property name="EnvironmentVersion" type="System.String" browsable="false" #>
 <#@ property name="BasePath" type="System.String" #>
+<#@ property name="FileNamePrefix" type="System.String" #>
 <#@ property name="FileNameSuffix" type="System.String" #>
 <#@ property name="EnableNullableContext" type="System.Boolean" #>
 <#@ viewModel name="CSharpClassGenerator.ViewModel" model="Model" #>
