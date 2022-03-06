@@ -23,396 +23,262 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
         {
             return new[]
             {
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
-                        @"ModelFramework.Common.Contracts.INameContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Parameters",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttributeParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                    } ),
-                    Name = @"IAttribute",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Common.Contracts.INameContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Parameters")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttributeParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"))
+                    .WithName(@"IAttribute"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
-                        @"ModelFramework.Common.Contracts.INameContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Value",
-                            TypeName = @"System.Object",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                    } ),
-                    Name = @"IAttributeParameter",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Common.Contracts.INameContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Value")
+                            .WithTypeName(@"System.Object"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"))
+                    .WithName(@"IAttributeParameter"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Objects.Contracts.ITypeBase",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IVisibilityContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
-                        @"ModelFramework.Objects.Contracts.IEnumsContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Fields",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassField, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Static",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Sealed",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"SubClasses",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Constructors",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassConstructor, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"BaseClass",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Record",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Namespace",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Partial",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Interfaces",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Properties",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Methods",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GenericTypeArguments",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GenericTypeArgumentConstraints",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Enums",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IEnum, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                    } ),
-                    Name = @"IClass",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Objects.Contracts.IEnumsContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Fields")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassField, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Static")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Sealed")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"SubClasses")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Constructors")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassConstructor, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"BaseClass")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Record")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Namespace")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Partial")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Interfaces")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Properties")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Methods")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GenericTypeArguments")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GenericTypeArgumentConstraints")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Enums")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IEnum, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                    .WithName(@"IClass"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
                         @"ModelFramework.Objects.Contracts.IVisibilityContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ICodeStatementsContainer",
-                        @"ModelFramework.Objects.Contracts.IParametersContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"ChainCall",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Static",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Virtual",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Abstract",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Protected",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Override",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"CodeStatements",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Parameters",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                    } ),
-                    Name = @"IClassConstructor",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Objects.Contracts.IParametersContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ChainCall")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Static")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Virtual")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Abstract")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Protected")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Override")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"CodeStatements")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Parameters")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                    .WithName(@"IClassConstructor"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
                         @"ModelFramework.Objects.Contracts.IVisibilityContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Common.Contracts.IDefaultValueContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"ReadOnly",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Constant",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Event",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Static",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Virtual",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Abstract",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Protected",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Override",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"TypeName",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"IsNullable",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"DefaultValue",
-                            TypeName = @"System.Object",
-                            IsNullable = true,
-                        },
-                    } ),
-                    Name = @"IClassField",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Common.Contracts.IDefaultValueContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ReadOnly")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Constant")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Event")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Static")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Virtual")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Abstract")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Protected")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Override")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"TypeName")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"IsNullable")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"DefaultValue")
+                            .WithTypeName(@"System.Object")
+                            .WithIsNullable(true))
+                    .WithName(@"IClassField"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
                         @"ModelFramework.Objects.Contracts.IVisibilityContainer",
@@ -421,499 +287,331 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Objects.Contracts.ICodeStatementsContainer",
                         @"ModelFramework.Objects.Contracts.IParametersContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Partial",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"ExtensionMethod",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Operator",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GenericTypeArguments",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GenericTypeArgumentConstraints",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Static",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Virtual",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Abstract",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Protected",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Override",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"CodeStatements",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Parameters",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"TypeName",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"IsNullable",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"ExplicitInterfaceName",
-                            TypeName = @"System.String",
-                        },
-                    } ),
-                    Name = @"IClassMethod",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Partial")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ExtensionMethod")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Operator")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GenericTypeArguments")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GenericTypeArgumentConstraints")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Static")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Virtual")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Abstract")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Protected")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Override")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"CodeStatements")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Parameters")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"TypeName")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"IsNullable")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ExplicitInterfaceName")
+                            .WithTypeName(@"System.String"))
+                    .WithName(@"IClassMethod"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer",
                         @"ModelFramework.Objects.Contracts.IVisibilityContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"HasGetter",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"HasSetter",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"HasInitializer",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GetterVisibility",
-                            TypeName = @"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                            IsNullable = true,
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"SetterVisibility",
-                            TypeName = @"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                            IsNullable = true,
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"InitializerVisibility",
-                            TypeName = @"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                            IsNullable = true,
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GetterCodeStatements",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"SetterCodeStatements",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"InitializerCodeStatements",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Static",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Virtual",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Abstract",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Protected",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Override",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"TypeName",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"IsNullable",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"ExplicitInterfaceName",
-                            TypeName = @"System.String",
-                        },
-                    } ),
-                    Name = @"IClassProperty",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"HasGetter")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"HasSetter")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"HasInitializer")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GetterVisibility")
+                            .WithTypeName(@"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithIsNullable(true),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"SetterVisibility")
+                            .WithTypeName(@"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithIsNullable(true),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"InitializerVisibility")
+                            .WithTypeName(@"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithIsNullable(true),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GetterCodeStatements")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"SetterCodeStatements")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"InitializerCodeStatements")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Static")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Virtual")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Abstract")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Protected")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Override")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"TypeName")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"IsNullable")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ExplicitInterfaceName")
+                            .WithTypeName(@"System.String"))
+                    .WithName(@"IClassProperty"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
-                        @"ModelFramework.Objects.Contracts.IVisibilityContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Members",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IEnumMember, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                    } ),
-                    Name = @"IEnum",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Objects.Contracts.IVisibilityContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Members")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IEnumMember, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"))
+                    .WithName(@"IEnum"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
-                        @"ModelFramework.Common.Contracts.IMetadataContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Value",
-                            TypeName = @"System.Object",
-                            IsNullable = true,
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                    } ),
-                    Name = @"IEnumMember",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Common.Contracts.IMetadataContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Value")
+                            .WithTypeName(@"System.Object")
+                            .WithIsNullable(true),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                    .WithName(@"IEnumMember"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Objects.Contracts.ITypeBase",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Objects.Contracts.IVisibilityContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
-                        @"ModelFramework.Objects.Contracts.IAttributesContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Namespace",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Partial",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Interfaces",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Properties",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Methods",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GenericTypeArguments",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"GenericTypeArgumentConstraints",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Visibility",
-                            TypeName = @"ModelFramework.Objects.Contracts.Visibility",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                    } ),
-                    Name = @"IInterface",
-                },
-                new ClassBuilder
-                {
-                    Namespace = @"ModelFramework.Objects.Contracts",
-                    Interfaces = new List<string>(new[]
-                    {
+                        @"ModelFramework.Objects.Contracts.IAttributesContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Namespace")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Partial")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Interfaces")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Properties")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Methods")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GenericTypeArguments")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"GenericTypeArgumentConstraints")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Visibility")
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                    .WithName(@"IInterface"),
+                new ClassBuilder()
+                    .WithNamespace(@"ModelFramework.Objects.Contracts")
+                    .AddInterfaces(
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Common.Contracts.IMetadataContainer",
                         @"ModelFramework.Common.Contracts.INameContainer",
-                        @"ModelFramework.Common.Contracts.IDefaultValueContainer",
-                    } ),
-                    Properties = new List<ClassPropertyBuilder>(new[]
-                    {
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"IsParamArray",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"TypeName",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"IsNullable",
-                            TypeName = @"System.Boolean",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Attributes",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Metadata",
-                            TypeName = @"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"Name",
-                            TypeName = @"System.String",
-                        },
-                        new ClassPropertyBuilder
-                        {
-                            HasSetter = false,
-                            Name = @"DefaultValue",
-                            TypeName = @"System.Object",
-                            IsNullable = true,
-                        },
-                    } ),
-                    Name = @"IParameter",
-                },
+                        @"ModelFramework.Common.Contracts.IDefaultValueContainer")
+                    .AddProperties(
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"IsParamArray")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"TypeName")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"IsNullable")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Attributes")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Metadata")
+                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Name")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"DefaultValue")
+                            .WithTypeName(@"System.Object")
+                            .WithIsNullable(true))
+                    .WithName(@"IParameter"),
             }.Select(x => x.Build()).ToArray();
         }
     }

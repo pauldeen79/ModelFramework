@@ -38,8 +38,9 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
         using var serviceProvider = serviceCollection
             .AddCsharpExpressionDumper
             (
-                x => x.AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
-                      .AddSingleton<ITypeNameFormatter>(new CsharpFriendlyNameFormatter())
+                x => x.AddSingleton<IObjectHandler, BuilderObjectHandler>()
+                      .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+                      .AddSingleton<ITypeNameFormatter, CsharpFriendlyNameFormatter>()
                       .AddSingleton<ITypeNameFormatter>(new SkipNamespacesTypeNameFormatter(NamespacesToAbbreviate))
             )
             .BuildServiceProvider();
