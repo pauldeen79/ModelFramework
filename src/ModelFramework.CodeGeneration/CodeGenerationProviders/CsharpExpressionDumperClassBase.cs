@@ -10,6 +10,8 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
     protected abstract string Namespace { get; }
     protected abstract string ClassName { get; }
 
+    protected virtual string MethodName => "GetModels";
+
     public override object CreateModel()
         => new[]
         {
@@ -20,7 +22,7 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
                 .AddUsings(NamespacesToAbbreviate)
                 .AddNamespacesToAbbreviate(NamespacesToAbbreviate)
                 .AddMethods(new ClassMethodBuilder()
-                    .WithName("GetModels")
+                    .WithName(MethodName)
                     .WithProtected()
                     .WithStatic()
                     .WithType(typeof(ITypeBase[]))
@@ -36,8 +38,9 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
         using var serviceProvider = serviceCollection
             .AddCsharpExpressionDumper
             (
-                x => x.AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
-                      .AddSingleton<ITypeNameFormatter>(new CsharpFriendlyNameFormatter())
+                x => x.AddSingleton<IObjectHandler, BuilderObjectHandler>()
+                      .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
+                      .AddSingleton<ITypeNameFormatter, CsharpFriendlyNameFormatter>()
                       .AddSingleton<ITypeNameFormatter>(new SkipNamespacesTypeNameFormatter(NamespacesToAbbreviate))
             )
             .BuildServiceProvider();

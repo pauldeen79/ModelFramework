@@ -10,6 +10,7 @@ global using CsharpExpressionDumper.Core.Extensions;
 global using CsharpExpressionDumper.Core.TypeNameFormatters;
 global using Microsoft.Extensions.DependencyInjection;
 global using ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters;
+global using ModelFramework.CodeGeneration.ObjectHandlers;
 global using ModelFramework.CodeGeneration.TypeNameFormatters;
 global using ModelFramework.Common.Extensions;
 global using ModelFramework.Generators.Objects;

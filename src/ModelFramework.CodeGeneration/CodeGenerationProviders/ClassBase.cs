@@ -27,8 +27,14 @@ public abstract class ClassBase : ICodeGenerationProvider
         {
             { nameof(CSharpClassGenerator.EnableNullableContext), EnableNullableContext },
             { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
-            { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles }
+            { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles },
+            { nameof(CSharpClassGenerator.FileNamePrefix), FileNamePrefix },
+            { nameof(CSharpClassGenerator.FileNameSuffix), ".generated" }
         };
+
+    private string FileNamePrefix => string.IsNullOrEmpty(Path)
+        ? string.Empty
+        : Path + "\\";
 
     public object CreateGenerator()
         => new CSharpClassGenerator();

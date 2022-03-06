@@ -1,15 +1,14 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class AbstractionsInterfacesModels : CSharpExpressionDumperClassBase
+public class ObjectsInterfacesModels : CSharpExpressionDumperClassBase
 {
     public override string Path => "ModelFramework.CodeGeneration.Tests\\CodeGenerationProviders";
-
-    public override string DefaultFileName => "ModelFrameworkCSharpClassBase.generated.cs";
-
+    public override string DefaultFileName => "ModelFrameworkCSharpClassBase.Objects.generated.cs";
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
     protected override string Namespace => "ModelFramework.CodeGeneration.Tests.CodeGenerationProviders";
     protected override string ClassName => "ModelFrameworkCSharpClassBase";
+    protected override string MethodName => "GetObjectsModels";
 
     protected override string[] NamespacesToAbbreviate => new[]
     {

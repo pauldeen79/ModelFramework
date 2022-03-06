@@ -5,7 +5,7 @@ public class CodeGenerationTests
     private static readonly CodeGenerationSettings Settings = new CodeGenerationSettings
     (
         basePath: Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\"),
-        generateMultipleFiles: false,
+        generateMultipleFiles: true,
         dryRun: true
     );
 
@@ -14,7 +14,7 @@ public class CodeGenerationTests
     public void Can_Generate_Model_For_Abstractions()
     {
         // Act & Assert
-        Verify(GenerateCode.For<AbstractionsInterfacesModels>(Settings));
+        Verify(GenerateCode.For<ObjectsInterfacesModels>(Settings));
     }
 
     [Fact]
