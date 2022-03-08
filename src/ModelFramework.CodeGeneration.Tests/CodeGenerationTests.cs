@@ -20,15 +20,21 @@ public class CodeGenerationTests
     [Fact]
     public void Can_Generate_All_Classes_For_ModelFramework()
     {
-        // Act & Assert
-        Verify(GenerateCode.For<CommonBuilders>(Settings));
-        Verify(GenerateCode.For<ObjectsBuilders>(Settings));
-        Verify(GenerateCode.For<ObjectsCodeStatements>(Settings));
-        Verify(GenerateCode.For<DatabaseBuilders>(Settings));
-        Verify(GenerateCode.For<DatabaseCodeStatements>(Settings));
-        Verify(GenerateCode.For<CommonRecords>(Settings));
-        Verify(GenerateCode.For<ObjectsRecords>(Settings));
-        Verify(GenerateCode.For<DatabaseRecords>(Settings));
+        // Arrange
+        var multipleContentBuilder = new MultipleContentBuilder(Settings.BasePath);
+        
+        // Act
+        GenerateCode.For<CommonBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseCodeStatements>(Settings, multipleContentBuilder);
+        GenerateCode.For<CommonRecords>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseRecords>(Settings, multipleContentBuilder);
+
+        // Assert
+        Verify(multipleContentBuilder);
     }
 
     // Example how to generate builder extensions
@@ -61,5 +67,13 @@ public class CodeGenerationTests
             // Assert
             actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
+    }
+
+    private void Verify(MultipleContentBuilder multipleContentBuilder)
+    {
+        var actual = multipleContentBuilder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().NotBeNullOrEmpty();
     }
 }
