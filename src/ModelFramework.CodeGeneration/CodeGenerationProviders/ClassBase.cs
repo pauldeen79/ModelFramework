@@ -35,7 +35,7 @@ public abstract class ClassBase : ICodeGenerationProvider
 
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty
-        : Path + "\\";
+        : Path + "/";
 
     public object CreateGenerator()
         => new CSharpClassGenerator();

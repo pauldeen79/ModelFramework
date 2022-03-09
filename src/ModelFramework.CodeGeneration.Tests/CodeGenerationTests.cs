@@ -4,7 +4,7 @@ public class CodeGenerationTests
 {
     private static readonly CodeGenerationSettings Settings = new CodeGenerationSettings
     (
-        basePath: Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\"),
+        basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
         generateMultipleFiles: true,
         dryRun: true
     );

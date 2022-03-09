@@ -2,7 +2,7 @@
 
 public class CommonBuilders : ModelFrameworkCSharpClassBase
 {
-    public override string Path => "ModelFramework.Common\\Builders";
+    public override string Path => "ModelFramework.Common/Builders";
 
     public override string DefaultFileName => "Builders.generated.cs";
 

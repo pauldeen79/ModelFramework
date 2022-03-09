@@ -2,7 +2,7 @@
 
 public class CommonBuildersExtensions : ModelFrameworkCSharpClassBase
 {
-    public override string Path => "ModelFramework.Common\\Builders";
+    public override string Path => "ModelFramework.Common/Builders";
 
     public override string DefaultFileName => "Extensions.generated.cs";
 

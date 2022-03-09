@@ -2,7 +2,7 @@
 
 public class ObjectsInterfacesModels : CSharpExpressionDumperClassBase
 {
-    public override string Path => "ModelFramework.CodeGeneration.Tests\\CodeGenerationProviders";
+    public override string Path => "ModelFramework.CodeGeneration.Tests/CodeGenerationProviders";
     public override string DefaultFileName => "ModelFrameworkCSharpClassBase.Objects.generated.cs";
     public override bool RecurseOnDeleteGeneratedFiles => false;
 

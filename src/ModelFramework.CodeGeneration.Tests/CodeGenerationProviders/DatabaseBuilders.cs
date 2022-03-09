@@ -2,7 +2,7 @@
 
 public class DatabaseBuilders : ModelFrameworkCSharpClassBase
 {
-    public override string Path => "ModelFramework.Database\\Builders";
+    public override string Path => "ModelFramework.Database/Builders";
 
     public override string DefaultFileName => "Builders.generated.cs";
 
