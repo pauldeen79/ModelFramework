@@ -10,11 +10,12 @@ public abstract class ClassBase : ICodeGenerationProvider
     public abstract bool RecurseOnDeleteGeneratedFiles { get; }
     public abstract object CreateModel();
 
-    public virtual string LastGeneratedFilesFileName => "*.generated.cs";
+    public virtual string LastGeneratedFilesFileName => $"*{FileNameSuffix}.cs";
     public virtual Action? AdditionalActionDelegate => null;
 
     protected abstract bool EnableNullableContext { get; }
     protected abstract bool CreateCodeGenerationHeader { get; }
+    protected virtual string FileNameSuffix => ".generated";
 
     public void Initialize(bool generateMultipleFiles, string basePath)
     {
@@ -29,7 +30,7 @@ public abstract class ClassBase : ICodeGenerationProvider
             { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
             { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles },
             { nameof(CSharpClassGenerator.FileNamePrefix), FileNamePrefix },
-            { nameof(CSharpClassGenerator.FileNameSuffix), ".generated" }
+            { nameof(CSharpClassGenerator.FileNameSuffix), FileNameSuffix }
         };
 
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
