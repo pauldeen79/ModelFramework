@@ -40,7 +40,6 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
             (
                 x => x.AddSingleton<IObjectHandler, BuilderObjectHandler>()
                       .AddSingleton<IObjectHandlerPropertyFilter, SkipDefaultValuesForModelFramework>()
-                      .AddSingleton<IObjectHandlerPropertyFilter, SkipHasSetterValuesForModelFramework>()
                       .AddSingleton<ITypeNameFormatter, CsharpFriendlyNameFormatter>()
                       .AddSingleton<ITypeNameFormatter>(new SkipNamespacesTypeNameFormatter(NamespacesToAbbreviate))
             )
