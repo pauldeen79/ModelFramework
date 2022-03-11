@@ -31,7 +31,7 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
         .Select(x => x.Build())
         .ToArray();
 
-    private string CreateCode()
+    public string CreateCode()
     {
         var models = Models.Select(x => x.ToClassBuilder(new ClassSettings())).ToArray();
         var serviceCollection = new ServiceCollection();

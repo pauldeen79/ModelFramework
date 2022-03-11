@@ -62,11 +62,10 @@ namespace MyNamespace
         var sut = new Sut();
 
         // Act
-        var model = (IClass[])sut.CreateModel();
-        var code = string.Join(Environment.NewLine, model.First().Methods.First().CodeStatements.Select(x => x.ToString()));
+        var code = sut.CreateCode();
 
         // Assert
-        code.Should().Be(@"return new[]
+        code.Should().Be(@"new[]
 {
     new ModelFramework.Objects.Builders.ClassBuilder()
         .WithNamespace(@""ModelFramework.Common.Contracts"")
@@ -83,7 +82,7 @@ namespace MyNamespace
                 .WithName(@""Name"")
                 .WithTypeName(@""System.String""))
         .WithName(@""IMetadata""),
-}.Select(x => x.Build()).ToArray();");
+}");
     }
 
     private class Sut : CSharpExpressionDumperClassBase
