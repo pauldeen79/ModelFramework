@@ -59,35 +59,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IParameter Build()
-        {
-            return new ModelFramework.Objects.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
-        }
-
-        public ParameterBuilder WithIsParamArray(bool isParamArray = true)
-        {
-            IsParamArray = isParamArray;
-            return this;
-        }
-
-        public ParameterBuilder WithTypeName(string typeName)
-        {
-            TypeName = typeName;
-            return this;
-        }
-
-        public ParameterBuilder WithType(System.Type type)
-        {
-            TypeName = type.AssemblyQualifiedName;
-            return this;
-        }
-
-        public ParameterBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
-            return this;
-        }
-
         public ParameterBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
             return AddAttributes(attributes.ToArray());
@@ -110,10 +81,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithName(string name)
+        public ParameterBuilder AddMetadata(string name, object? value)
         {
-            Name = name;
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
+        }
+
+        public ModelFramework.Objects.Contracts.IParameter Build()
+        {
+            return new ModelFramework.Objects.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
         }
 
         public ParameterBuilder WithDefaultValue(object? defaultValue)
@@ -122,9 +98,33 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder AddMetadata(string name, object? value)
+        public ParameterBuilder WithIsNullable(bool isNullable = true)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            IsNullable = isNullable;
+            return this;
+        }
+
+        public ParameterBuilder WithIsParamArray(bool isParamArray = true)
+        {
+            IsParamArray = isParamArray;
+            return this;
+        }
+
+        public ParameterBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ParameterBuilder WithType(System.Type type)
+        {
+            TypeName = type.AssemblyQualifiedName;
+            return this;
+        }
+
+        public ParameterBuilder WithTypeName(string typeName)
+        {
+            TypeName = typeName;
             return this;
         }
 

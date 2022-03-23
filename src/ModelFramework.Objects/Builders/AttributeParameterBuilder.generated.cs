@@ -35,17 +35,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IAttributeParameter Build()
-        {
-            return new ModelFramework.Objects.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
-        }
-
-        public AttributeParameterBuilder WithValue(object value)
-        {
-            Value = value;
-            return this;
-        }
-
         public AttributeParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -57,15 +46,26 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public AttributeParameterBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Objects.Contracts.IAttributeParameter Build()
+        {
+            return new ModelFramework.Objects.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
+        }
+
         public AttributeParameterBuilder WithName(string name)
         {
             Name = name;
             return this;
         }
 
-        public AttributeParameterBuilder AddMetadata(string name, object? value)
+        public AttributeParameterBuilder WithValue(object value)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Value = value;
             return this;
         }
 

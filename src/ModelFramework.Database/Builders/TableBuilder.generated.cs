@@ -77,30 +77,14 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.ITable Build()
+        public TableBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
         {
-            return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
+            return AddCheckConstraints(checkConstraints.ToArray());
         }
 
-        public TableBuilder AddPrimaryKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder> primaryKeyConstraints)
+        public TableBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
         {
-            return AddPrimaryKeyConstraints(primaryKeyConstraints.ToArray());
-        }
-
-        public TableBuilder AddPrimaryKeyConstraints(params ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder[] primaryKeyConstraints)
-        {
-            PrimaryKeyConstraints.AddRange(primaryKeyConstraints);
-            return this;
-        }
-
-        public TableBuilder AddUniqueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintBuilder> uniqueConstraints)
-        {
-            return AddUniqueConstraints(uniqueConstraints.ToArray());
-        }
-
-        public TableBuilder AddUniqueConstraints(params ModelFramework.Database.Builders.UniqueConstraintBuilder[] uniqueConstraints)
-        {
-            UniqueConstraints.AddRange(uniqueConstraints);
+            CheckConstraints.AddRange(checkConstraints);
             return this;
         }
 
@@ -113,6 +97,17 @@ namespace ModelFramework.Database.Builders
         {
             DefaultValueConstraints.AddRange(defaultValueConstraints);
             return this;
+        }
+
+        public TableBuilder AddFields(params ModelFramework.Database.Builders.TableFieldBuilder[] fields)
+        {
+            Fields.AddRange(fields);
+            return this;
+        }
+
+        public TableBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.TableFieldBuilder> fields)
+        {
+            return AddFields(fields.ToArray());
         }
 
         public TableBuilder AddForeignKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> foreignKeyConstraints)
@@ -137,20 +132,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.TableFieldBuilder> fields)
+        public TableBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            return AddFields(fields.ToArray());
-        }
-
-        public TableBuilder AddFields(params ModelFramework.Database.Builders.TableFieldBuilder[] fields)
-        {
-            Fields.AddRange(fields);
-            return this;
-        }
-
-        public TableBuilder WithName(string name)
-        {
-            Name = name;
+            Metadata.AddRange(metadata);
             return this;
         }
 
@@ -159,10 +143,37 @@ namespace ModelFramework.Database.Builders
             return AddMetadata(metadata.ToArray());
         }
 
-        public TableBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        public TableBuilder AddMetadata(string name, object? value)
         {
-            Metadata.AddRange(metadata);
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
+        }
+
+        public TableBuilder AddPrimaryKeyConstraints(params ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder[] primaryKeyConstraints)
+        {
+            PrimaryKeyConstraints.AddRange(primaryKeyConstraints);
+            return this;
+        }
+
+        public TableBuilder AddPrimaryKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintBuilder> primaryKeyConstraints)
+        {
+            return AddPrimaryKeyConstraints(primaryKeyConstraints.ToArray());
+        }
+
+        public TableBuilder AddUniqueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintBuilder> uniqueConstraints)
+        {
+            return AddUniqueConstraints(uniqueConstraints.ToArray());
+        }
+
+        public TableBuilder AddUniqueConstraints(params ModelFramework.Database.Builders.UniqueConstraintBuilder[] uniqueConstraints)
+        {
+            UniqueConstraints.AddRange(uniqueConstraints);
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.ITable Build()
+        {
+            return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
         }
 
         public TableBuilder WithFileGroupName(string fileGroupName)
@@ -171,20 +182,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
+        public TableBuilder WithName(string name)
         {
-            return AddCheckConstraints(checkConstraints.ToArray());
-        }
-
-        public TableBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
-        {
-            CheckConstraints.AddRange(checkConstraints);
-            return this;
-        }
-
-        public TableBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Name = name;
             return this;
         }
 

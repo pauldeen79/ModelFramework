@@ -34,15 +34,15 @@ namespace ModelFramework.Common.Builders
             return new ModelFramework.Common.Metadata(Value, Name);
         }
 
-        public MetadataBuilder WithValue(object? value)
-        {
-            Value = value;
-            return this;
-        }
-
         public MetadataBuilder WithName(string name)
         {
             Name = name;
+            return this;
+        }
+
+        public MetadataBuilder WithValue(object? value)
+        {
+            Value = value;
             return this;
         }
 

@@ -41,17 +41,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IEnumMember Build()
-        {
-            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
-        }
-
-        public EnumMemberBuilder WithValue(object? value)
-        {
-            Value = value;
-            return this;
-        }
-
         public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
             return AddAttributes(attributes.ToArray());
@@ -60,12 +49,6 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
-            return this;
-        }
-
-        public EnumMemberBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 
@@ -83,6 +66,23 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Objects.Contracts.IEnumMember Build()
+        {
+            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+        }
+
+        public EnumMemberBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public EnumMemberBuilder WithValue(object? value)
+        {
+            Value = value;
             return this;
         }
 

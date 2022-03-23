@@ -41,23 +41,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IViewCondition Build()
-        {
-            return new ModelFramework.Database.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
-        }
-
-        public ViewConditionBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
-        }
-
-        public ViewConditionBuilder WithCombination(string combination)
-        {
-            Combination = combination;
-            return this;
-        }
-
         public ViewConditionBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -69,15 +52,32 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewConditionBuilder WithFileGroupName(string fileGroupName)
-        {
-            FileGroupName = fileGroupName;
-            return this;
-        }
-
         public ViewConditionBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IViewCondition Build()
+        {
+            return new ModelFramework.Database.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
+        }
+
+        public ViewConditionBuilder WithCombination(string combination)
+        {
+            Combination = combination;
+            return this;
+        }
+
+        public ViewConditionBuilder WithExpression(string expression)
+        {
+            Expression = expression;
+            return this;
+        }
+
+        public ViewConditionBuilder WithFileGroupName(string fileGroupName)
+        {
+            FileGroupName = fileGroupName;
             return this;
         }
 

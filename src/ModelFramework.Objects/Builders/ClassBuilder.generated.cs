@@ -131,43 +131,15 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IClass Build()
+        public ClassBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
-            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
-        }
-
-        public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
-        {
-            return AddFields(fields.ToArray());
-        }
-
-        public ClassBuilder AddFields(params ModelFramework.Objects.Builders.ClassFieldBuilder[] fields)
-        {
-            Fields.AddRange(fields);
+            Attributes.AddRange(attributes);
             return this;
         }
 
-        public ClassBuilder WithStatic(bool @static = true)
+        public ClassBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            Static = @static;
-            return this;
-        }
-
-        public ClassBuilder WithSealed(bool @sealed = true)
-        {
-            Sealed = @sealed;
-            return this;
-        }
-
-        public ClassBuilder AddSubClasses(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassBuilder> subClasses)
-        {
-            return AddSubClasses(subClasses.ToArray());
-        }
-
-        public ClassBuilder AddSubClasses(params ModelFramework.Objects.Builders.ClassBuilder[] subClasses)
-        {
-            SubClasses.AddRange(subClasses);
-            return this;
+            return AddAttributes(attributes.ToArray());
         }
 
         public ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassConstructorBuilder> constructors)
@@ -181,15 +153,130 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassBuilder AddEnums(params ModelFramework.Objects.Builders.EnumBuilder[] enums)
+        {
+            Enums.AddRange(enums);
+            return this;
+        }
+
+        public ClassBuilder AddEnums(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumBuilder> enums)
+        {
+            return AddEnums(enums.ToArray());
+        }
+
+        public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
+        {
+            return AddFields(fields.ToArray());
+        }
+
+        public ClassBuilder AddFields(params ModelFramework.Objects.Builders.ClassFieldBuilder[] fields)
+        {
+            Fields.AddRange(fields);
+            return this;
+        }
+
+        public ClassBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
+        {
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
+            return this;
+        }
+
+        public ClassBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        {
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+        }
+
+        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        {
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+        }
+
+        public ClassBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        {
+            GenericTypeArguments.AddRange(genericTypeArguments);
+            return this;
+        }
+
+        public ClassBuilder AddInterfaces(params string[] interfaces)
+        {
+            Interfaces.AddRange(interfaces);
+            return this;
+        }
+
+        public ClassBuilder AddInterfaces(params System.Type[] types)
+        {
+            return AddInterfaces(types.Select(x => x.FullName));
+        }
+
+        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        {
+            return AddInterfaces(interfaces.ToArray());
+        }
+
+        public ClassBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ClassBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ClassBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ClassBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
+        {
+            Methods.AddRange(methods);
+            return this;
+        }
+
+        public ClassBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
+        {
+            return AddMethods(methods.ToArray());
+        }
+
+        public ClassBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
+        {
+            Properties.AddRange(properties);
+            return this;
+        }
+
+        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        {
+            return AddProperties(properties.ToArray());
+        }
+
+        public ClassBuilder AddSubClasses(params ModelFramework.Objects.Builders.ClassBuilder[] subClasses)
+        {
+            SubClasses.AddRange(subClasses);
+            return this;
+        }
+
+        public ClassBuilder AddSubClasses(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassBuilder> subClasses)
+        {
+            return AddSubClasses(subClasses.ToArray());
+        }
+
+        public ModelFramework.Objects.Contracts.IClass Build()
+        {
+            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+        }
+
         public ClassBuilder WithBaseClass(string baseClass)
         {
             BaseClass = baseClass;
             return this;
         }
 
-        public ClassBuilder WithRecord(bool record = true)
+        public ClassBuilder WithName(string name)
         {
-            Record = record;
+            Name = name;
             return this;
         }
 
@@ -205,69 +292,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        public ClassBuilder WithRecord(bool record = true)
         {
-            return AddInterfaces(interfaces.ToArray());
-        }
-
-        public ClassBuilder AddInterfaces(params string[] interfaces)
-        {
-            Interfaces.AddRange(interfaces);
+            Record = record;
             return this;
         }
 
-        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        public ClassBuilder WithSealed(bool @sealed = true)
         {
-            return AddProperties(properties.ToArray());
-        }
-
-        public ClassBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
-        {
-            Properties.AddRange(properties);
+            Sealed = @sealed;
             return this;
         }
 
-        public ClassBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
+        public ClassBuilder WithStatic(bool @static = true)
         {
-            return AddMethods(methods.ToArray());
-        }
-
-        public ClassBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
-        {
-            Methods.AddRange(methods);
-            return this;
-        }
-
-        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
-        {
-            GenericTypeArguments.AddRange(genericTypeArguments);
-            return this;
-        }
-
-        public ClassBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
-        {
-            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
-        }
-
-        public ClassBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
-        {
-            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
-            return this;
-        }
-
-        public ClassBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ClassBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
+            Static = @static;
             return this;
         }
 
@@ -275,45 +314,6 @@ namespace ModelFramework.Objects.Builders
         {
             Visibility = visibility;
             return this;
-        }
-
-        public ClassBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
-        public ClassBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return this;
-        }
-
-        public ClassBuilder AddEnums(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumBuilder> enums)
-        {
-            return AddEnums(enums.ToArray());
-        }
-
-        public ClassBuilder AddEnums(params ModelFramework.Objects.Builders.EnumBuilder[] enums)
-        {
-            Enums.AddRange(enums);
-            return this;
-        }
-
-        public ClassBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
-        public ClassBuilder AddInterfaces(params System.Type[] types)
-        {
-            return AddInterfaces(types.Select(x => x.FullName));
         }
 
         public ClassBuilder()

@@ -29,17 +29,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
-        {
-            return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
-        }
-
-        public UniqueConstraintFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public UniqueConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -54,6 +43,17 @@ namespace ModelFramework.Database.Builders
         public UniqueConstraintFieldBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
+        {
+            return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
+        }
+
+        public UniqueConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

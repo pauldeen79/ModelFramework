@@ -35,9 +35,21 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IAttribute Build()
+        public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public AttributeBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public AttributeBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
         }
 
         public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
@@ -51,26 +63,14 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public ModelFramework.Objects.Contracts.IAttribute Build()
         {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public AttributeBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
+            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
         }
 
         public AttributeBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public AttributeBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

@@ -53,41 +53,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IViewField Build()
-        {
-            return new ModelFramework.Database.ViewField(SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
-        {
-            SourceSchemaName = sourceSchemaName;
-            return this;
-        }
-
-        public ViewFieldBuilder WithSourceObjectName(string sourceObjectName)
-        {
-            SourceObjectName = sourceObjectName;
-            return this;
-        }
-
-        public ViewFieldBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
-        }
-
-        public ViewFieldBuilder WithAlias(string alias)
-        {
-            Alias = alias;
-            return this;
-        }
-
-        public ViewFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public ViewFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -102,6 +67,41 @@ namespace ModelFramework.Database.Builders
         public ViewFieldBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IViewField Build()
+        {
+            return new ModelFramework.Database.ViewField(SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public ViewFieldBuilder WithAlias(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
+
+        public ViewFieldBuilder WithExpression(string expression)
+        {
+            Expression = expression;
+            return this;
+        }
+
+        public ViewFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewFieldBuilder WithSourceObjectName(string sourceObjectName)
+        {
+            SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
+        {
+            SourceSchemaName = sourceSchemaName;
             return this;
         }
 

@@ -35,23 +35,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.ICheckConstraint Build()
-        {
-            return new ModelFramework.Database.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public CheckConstraintBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
-        }
-
-        public CheckConstraintBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public CheckConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -66,6 +49,23 @@ namespace ModelFramework.Database.Builders
         public CheckConstraintBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.ICheckConstraint Build()
+        {
+            return new ModelFramework.Database.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public CheckConstraintBuilder WithExpression(string expression)
+        {
+            Expression = expression;
+            return this;
+        }
+
+        public CheckConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

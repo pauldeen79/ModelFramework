@@ -47,11 +47,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IIndex Build()
-        {
-            return new ModelFramework.Database.Index(Fields.Select(x => x.Build()), Unique, Name, Metadata.Select(x => x.Build()), FileGroupName);
-        }
-
         public IndexBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexFieldBuilder> fields)
         {
             return AddFields(fields.ToArray());
@@ -60,18 +55,6 @@ namespace ModelFramework.Database.Builders
         public IndexBuilder AddFields(params ModelFramework.Database.Builders.IndexFieldBuilder[] fields)
         {
             Fields.AddRange(fields);
-            return this;
-        }
-
-        public IndexBuilder WithUnique(bool unique = true)
-        {
-            Unique = unique;
-            return this;
-        }
-
-        public IndexBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 
@@ -86,15 +69,32 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public IndexBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IIndex Build()
+        {
+            return new ModelFramework.Database.Index(Fields.Select(x => x.Build()), Unique, Name, Metadata.Select(x => x.Build()), FileGroupName);
+        }
+
         public IndexBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
             return this;
         }
 
-        public IndexBuilder AddMetadata(string name, object? value)
+        public IndexBuilder WithName(string name)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Name = name;
+            return this;
+        }
+
+        public IndexBuilder WithUnique(bool unique = true)
+        {
+            Unique = unique;
             return this;
         }
 

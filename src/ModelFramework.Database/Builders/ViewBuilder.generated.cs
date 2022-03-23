@@ -83,55 +83,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IView Build()
-        {
-            return new ModelFramework.Database.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public ViewBuilder AddSelectFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> selectFields)
-        {
-            return AddSelectFields(selectFields.ToArray());
-        }
-
-        public ViewBuilder AddSelectFields(params ModelFramework.Database.Builders.ViewFieldBuilder[] selectFields)
-        {
-            SelectFields.AddRange(selectFields);
-            return this;
-        }
-
-        public ViewBuilder AddOrderByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewOrderByFieldBuilder> orderByFields)
-        {
-            return AddOrderByFields(orderByFields.ToArray());
-        }
-
-        public ViewBuilder AddOrderByFields(params ModelFramework.Database.Builders.ViewOrderByFieldBuilder[] orderByFields)
-        {
-            OrderByFields.AddRange(orderByFields);
-            return this;
-        }
-
-        public ViewBuilder AddGroupByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> groupByFields)
-        {
-            return AddGroupByFields(groupByFields.ToArray());
-        }
-
-        public ViewBuilder AddGroupByFields(params ModelFramework.Database.Builders.ViewFieldBuilder[] groupByFields)
-        {
-            GroupByFields.AddRange(groupByFields);
-            return this;
-        }
-
-        public ViewBuilder AddSources(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewSourceBuilder> sources)
-        {
-            return AddSources(sources.ToArray());
-        }
-
-        public ViewBuilder AddSources(params ModelFramework.Database.Builders.ViewSourceBuilder[] sources)
-        {
-            Sources.AddRange(sources);
-            return this;
-        }
-
         public ViewBuilder AddConditions(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewConditionBuilder> conditions)
         {
             return AddConditions(conditions.ToArray());
@@ -143,34 +94,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewBuilder WithTop(System.Nullable<int> top)
+        public ViewBuilder AddGroupByFields(params ModelFramework.Database.Builders.ViewFieldBuilder[] groupByFields)
         {
-            Top = top;
+            GroupByFields.AddRange(groupByFields);
             return this;
         }
 
-        public ViewBuilder WithTopPercent(bool topPercent = true)
+        public ViewBuilder AddGroupByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> groupByFields)
         {
-            TopPercent = topPercent;
-            return this;
-        }
-
-        public ViewBuilder WithDistinct(bool distinct = true)
-        {
-            Distinct = distinct;
-            return this;
-        }
-
-        public ViewBuilder WithDefinition(string definition)
-        {
-            Definition = definition;
-            return this;
-        }
-
-        public ViewBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
+            return AddGroupByFields(groupByFields.ToArray());
         }
 
         public ViewBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -187,6 +119,74 @@ namespace ModelFramework.Database.Builders
         public ViewBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ViewBuilder AddOrderByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewOrderByFieldBuilder> orderByFields)
+        {
+            return AddOrderByFields(orderByFields.ToArray());
+        }
+
+        public ViewBuilder AddOrderByFields(params ModelFramework.Database.Builders.ViewOrderByFieldBuilder[] orderByFields)
+        {
+            OrderByFields.AddRange(orderByFields);
+            return this;
+        }
+
+        public ViewBuilder AddSelectFields(params ModelFramework.Database.Builders.ViewFieldBuilder[] selectFields)
+        {
+            SelectFields.AddRange(selectFields);
+            return this;
+        }
+
+        public ViewBuilder AddSelectFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> selectFields)
+        {
+            return AddSelectFields(selectFields.ToArray());
+        }
+
+        public ViewBuilder AddSources(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewSourceBuilder> sources)
+        {
+            return AddSources(sources.ToArray());
+        }
+
+        public ViewBuilder AddSources(params ModelFramework.Database.Builders.ViewSourceBuilder[] sources)
+        {
+            Sources.AddRange(sources);
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IView Build()
+        {
+            return new ModelFramework.Database.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public ViewBuilder WithDefinition(string definition)
+        {
+            Definition = definition;
+            return this;
+        }
+
+        public ViewBuilder WithDistinct(bool distinct = true)
+        {
+            Distinct = distinct;
+            return this;
+        }
+
+        public ViewBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewBuilder WithTop(System.Nullable<int> top)
+        {
+            Top = top;
+            return this;
+        }
+
+        public ViewBuilder WithTopPercent(bool topPercent = true)
+        {
+            TopPercent = topPercent;
             return this;
         }
 

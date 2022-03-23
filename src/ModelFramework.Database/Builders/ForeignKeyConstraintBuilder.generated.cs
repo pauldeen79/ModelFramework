@@ -59,22 +59,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IForeignKeyConstraint Build()
-        {
-            return new ModelFramework.Database.ForeignKeyConstraint(LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), ForeignTableName, CascadeUpdate, CascadeDelete, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public ForeignKeyConstraintBuilder AddLocalFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> localFields)
-        {
-            return AddLocalFields(localFields.ToArray());
-        }
-
-        public ForeignKeyConstraintBuilder AddLocalFields(params ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder[] localFields)
-        {
-            LocalFields.AddRange(localFields);
-            return this;
-        }
-
         public ForeignKeyConstraintBuilder AddForeignFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> foreignFields)
         {
             return AddForeignFields(foreignFields.ToArray());
@@ -86,27 +70,14 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ForeignKeyConstraintBuilder WithForeignTableName(string foreignTableName)
+        public ForeignKeyConstraintBuilder AddLocalFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> localFields)
         {
-            ForeignTableName = foreignTableName;
-            return this;
+            return AddLocalFields(localFields.ToArray());
         }
 
-        public ForeignKeyConstraintBuilder WithCascadeUpdate(ModelFramework.Database.Contracts.CascadeAction cascadeUpdate)
+        public ForeignKeyConstraintBuilder AddLocalFields(params ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder[] localFields)
         {
-            CascadeUpdate = cascadeUpdate;
-            return this;
-        }
-
-        public ForeignKeyConstraintBuilder WithCascadeDelete(ModelFramework.Database.Contracts.CascadeAction cascadeDelete)
-        {
-            CascadeDelete = cascadeDelete;
-            return this;
-        }
-
-        public ForeignKeyConstraintBuilder WithName(string name)
-        {
-            Name = name;
+            LocalFields.AddRange(localFields);
             return this;
         }
 
@@ -124,6 +95,35 @@ namespace ModelFramework.Database.Builders
         public ForeignKeyConstraintBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IForeignKeyConstraint Build()
+        {
+            return new ModelFramework.Database.ForeignKeyConstraint(LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), ForeignTableName, CascadeUpdate, CascadeDelete, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public ForeignKeyConstraintBuilder WithCascadeDelete(ModelFramework.Database.Contracts.CascadeAction cascadeDelete)
+        {
+            CascadeDelete = cascadeDelete;
+            return this;
+        }
+
+        public ForeignKeyConstraintBuilder WithCascadeUpdate(ModelFramework.Database.Contracts.CascadeAction cascadeUpdate)
+        {
+            CascadeUpdate = cascadeUpdate;
+            return this;
+        }
+
+        public ForeignKeyConstraintBuilder WithForeignTableName(string foreignTableName)
+        {
+            ForeignTableName = foreignTableName;
+            return this;
+        }
+
+        public ForeignKeyConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

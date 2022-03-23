@@ -29,17 +29,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IForeignKeyConstraintField Build()
-        {
-            return new ModelFramework.Database.ForeignKeyConstraintField(Name, Metadata.Select(x => x.Build()));
-        }
-
-        public ForeignKeyConstraintFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public ForeignKeyConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -54,6 +43,17 @@ namespace ModelFramework.Database.Builders
         public ForeignKeyConstraintFieldBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IForeignKeyConstraintField Build()
+        {
+            return new ModelFramework.Database.ForeignKeyConstraintField(Name, Metadata.Select(x => x.Build()));
+        }
+
+        public ForeignKeyConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

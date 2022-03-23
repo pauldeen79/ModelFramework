@@ -35,23 +35,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IIndexField Build()
-        {
-            return new ModelFramework.Database.IndexField(IsDescending, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public IndexFieldBuilder WithIsDescending(bool isDescending = true)
-        {
-            IsDescending = isDescending;
-            return this;
-        }
-
-        public IndexFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public IndexFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -66,6 +49,23 @@ namespace ModelFramework.Database.Builders
         public IndexFieldBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IIndexField Build()
+        {
+            return new ModelFramework.Database.IndexField(IsDescending, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public IndexFieldBuilder WithIsDescending(bool isDescending = true)
+        {
+            IsDescending = isDescending;
+            return this;
+        }
+
+        public IndexFieldBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

@@ -41,11 +41,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IPrimaryKeyConstraint Build()
-        {
-            return new ModelFramework.Database.PrimaryKeyConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
-        }
-
         public PrimaryKeyConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> fields)
         {
             return AddFields(fields.ToArray());
@@ -54,12 +49,6 @@ namespace ModelFramework.Database.Builders
         public PrimaryKeyConstraintBuilder AddFields(params ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder[] fields)
         {
             Fields.AddRange(fields);
-            return this;
-        }
-
-        public PrimaryKeyConstraintBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 
@@ -74,15 +63,26 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public PrimaryKeyConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IPrimaryKeyConstraint Build()
+        {
+            return new ModelFramework.Database.PrimaryKeyConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+        }
+
         public PrimaryKeyConstraintBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
             return this;
         }
 
-        public PrimaryKeyConstraintBuilder AddMetadata(string name, object? value)
+        public PrimaryKeyConstraintBuilder WithName(string name)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Name = name;
             return this;
         }
 

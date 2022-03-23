@@ -47,9 +47,15 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IEnum Build()
+        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
+            return this;
         }
 
         public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
@@ -60,17 +66,6 @@ namespace ModelFramework.Objects.Builders
         public EnumBuilder AddMembers(params ModelFramework.Objects.Builders.EnumMemberBuilder[] members)
         {
             Members.AddRange(members);
-            return this;
-        }
-
-        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
             return this;
         }
 
@@ -85,6 +80,17 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public EnumBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Objects.Contracts.IEnum Build()
+        {
+            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
+        }
+
         public EnumBuilder WithName(string name)
         {
             Name = name;
@@ -94,12 +100,6 @@ namespace ModelFramework.Objects.Builders
         public EnumBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
-            return this;
-        }
-
-        public EnumBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

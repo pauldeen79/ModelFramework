@@ -29,11 +29,6 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.ICodeStatement Build()
-        {
-            return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement, Metadata.Select(x => x.Build()));
-        }
-
         public LiteralCodeStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -45,15 +40,20 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             return this;
         }
 
-        public LiteralCodeStatementBuilder WithStatement(string statement)
-        {
-            Statement = statement;
-            return this;
-        }
-
         public LiteralCodeStatementBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Objects.Contracts.ICodeStatement Build()
+        {
+            return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement, Metadata.Select(x => x.Build()));
+        }
+
+        public LiteralCodeStatementBuilder WithStatement(string statement)
+        {
+            Statement = statement;
             return this;
         }
 

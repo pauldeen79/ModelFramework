@@ -111,7 +111,8 @@ public abstract class CSharpClassBase : ClassBase
         => c.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
-            .AddMethods(CreateExtraOverloads(c));
+            .AddMethods(CreateExtraOverloads(c))
+            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x,y) => x.Name.CompareTo(y.Name))));
 
     protected ClassBuilder CreateBuilderExtensions(IClass c, string @namespace)
         => c.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())

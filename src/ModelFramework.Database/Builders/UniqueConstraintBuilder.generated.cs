@@ -41,11 +41,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IUniqueConstraint Build()
-        {
-            return new ModelFramework.Database.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
-        }
-
         public UniqueConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> fields)
         {
             return AddFields(fields.ToArray());
@@ -54,12 +49,6 @@ namespace ModelFramework.Database.Builders
         public UniqueConstraintBuilder AddFields(params ModelFramework.Database.Builders.UniqueConstraintFieldBuilder[] fields)
         {
             Fields.AddRange(fields);
-            return this;
-        }
-
-        public UniqueConstraintBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 
@@ -74,15 +63,26 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public UniqueConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IUniqueConstraint Build()
+        {
+            return new ModelFramework.Database.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+        }
+
         public UniqueConstraintBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
             return this;
         }
 
-        public UniqueConstraintBuilder AddMetadata(string name, object? value)
+        public UniqueConstraintBuilder WithName(string name)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Name = name;
             return this;
         }
 

@@ -41,29 +41,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
-        {
-            return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public StoredProcedureParameterBuilder WithType(string type)
-        {
-            Type = type;
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public StoredProcedureParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -78,6 +55,29 @@ namespace ModelFramework.Database.Builders
         public StoredProcedureParameterBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
+        {
+            return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
+        {
+            DefaultValue = defaultValue;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithType(string type)
+        {
+            Type = type;
             return this;
         }
 

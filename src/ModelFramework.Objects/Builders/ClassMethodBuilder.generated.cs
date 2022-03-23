@@ -131,104 +131,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IClassMethod Build()
-        {
-            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
-        }
-
-        public ClassMethodBuilder WithPartial(bool partial = true)
-        {
-            Partial = partial;
-            return this;
-        }
-
-        public ClassMethodBuilder WithExtensionMethod(bool extensionMethod = true)
-        {
-            ExtensionMethod = extensionMethod;
-            return this;
-        }
-
-        public ClassMethodBuilder WithOperator(bool @operator = true)
-        {
-            Operator = @operator;
-            return this;
-        }
-
-        public ClassMethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public ClassMethodBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
-        {
-            GenericTypeArguments.AddRange(genericTypeArguments);
-            return this;
-        }
-
-        public ClassMethodBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
-        {
-            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
-        }
-
-        public ClassMethodBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
-        {
-            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
-            return this;
-        }
-
-        public ClassMethodBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ClassMethodBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ClassMethodBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassMethodBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassMethodBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassMethodBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassMethodBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassMethodBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
-        {
-            Visibility = visibility;
-            return this;
-        }
-
-        public ClassMethodBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public ClassMethodBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
             return AddAttributes(attributes.ToArray());
@@ -251,38 +153,41 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
+        public ClassMethodBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
         {
-            return AddParameters(parameters.ToArray());
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
         }
 
-        public ClassMethodBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
+        public ClassMethodBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
         {
-            Parameters.AddRange(parameters);
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
             return this;
         }
 
-        public ClassMethodBuilder WithTypeName(string typeName)
+        public ClassMethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
         {
-            TypeName = typeName;
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+        }
+
+        public ClassMethodBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        {
+            GenericTypeArguments.AddRange(genericTypeArguments);
             return this;
         }
 
-        public ClassMethodBuilder WithType(System.Type type)
+        public ClassMethodBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
         {
-            TypeName = type.AssemblyQualifiedName;
-            return this;
+            return AddLiteralCodeStatements(statements.ToArray());
         }
 
-        public ClassMethodBuilder WithIsNullable(bool isNullable = true)
+        public ClassMethodBuilder AddLiteralCodeStatements(params string[] statements)
         {
-            IsNullable = isNullable;
-            return this;
+            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
         }
 
-        public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
+        public ClassMethodBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            ExplicitInterfaceName = explicitInterfaceName;
+            Metadata.AddRange(metadata);
             return this;
         }
 
@@ -290,6 +195,11 @@ namespace ModelFramework.Objects.Builders
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
+        }
+
+        public ClassMethodBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public ClassMethodBuilder AddParameter(string name, System.Type type)
@@ -302,14 +212,104 @@ namespace ModelFramework.Objects.Builders
             return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
         }
 
-        public ClassMethodBuilder AddLiteralCodeStatements(params string[] statements)
+        public ClassMethodBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
         {
-            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
+            Parameters.AddRange(parameters);
+            return this;
         }
 
-        public ClassMethodBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
+        public ClassMethodBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
         {
-            return AddLiteralCodeStatements(statements.ToArray());
+            return AddParameters(parameters.ToArray());
+        }
+
+        public ModelFramework.Objects.Contracts.IClassMethod Build()
+        {
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+        }
+
+        public ClassMethodBuilder WithAbstract(bool @abstract = true)
+        {
+            Abstract = @abstract;
+            return this;
+        }
+
+        public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
+        {
+            ExplicitInterfaceName = explicitInterfaceName;
+            return this;
+        }
+
+        public ClassMethodBuilder WithExtensionMethod(bool extensionMethod = true)
+        {
+            ExtensionMethod = extensionMethod;
+            return this;
+        }
+
+        public ClassMethodBuilder WithIsNullable(bool isNullable = true)
+        {
+            IsNullable = isNullable;
+            return this;
+        }
+
+        public ClassMethodBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ClassMethodBuilder WithOperator(bool @operator = true)
+        {
+            Operator = @operator;
+            return this;
+        }
+
+        public ClassMethodBuilder WithOverride(bool @override = true)
+        {
+            Override = @override;
+            return this;
+        }
+
+        public ClassMethodBuilder WithPartial(bool partial = true)
+        {
+            Partial = partial;
+            return this;
+        }
+
+        public ClassMethodBuilder WithProtected(bool @protected = true)
+        {
+            Protected = @protected;
+            return this;
+        }
+
+        public ClassMethodBuilder WithStatic(bool @static = true)
+        {
+            Static = @static;
+            return this;
+        }
+
+        public ClassMethodBuilder WithType(System.Type type)
+        {
+            TypeName = type.AssemblyQualifiedName;
+            return this;
+        }
+
+        public ClassMethodBuilder WithTypeName(string typeName)
+        {
+            TypeName = typeName;
+            return this;
+        }
+
+        public ClassMethodBuilder WithVirtual(bool @virtual = true)
+        {
+            Virtual = @virtual;
+            return this;
+        }
+
+        public ClassMethodBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
+        {
+            Visibility = visibility;
+            return this;
         }
 
         public ClassMethodBuilder()

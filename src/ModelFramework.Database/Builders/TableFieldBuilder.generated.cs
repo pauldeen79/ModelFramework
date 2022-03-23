@@ -83,15 +83,37 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
+        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
+        {
+            return AddCheckConstraints(checkConstraints.ToArray());
+        }
+
+        public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
+        {
+            CheckConstraints.AddRange(checkConstraints);
+            return this;
+        }
+
+        public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public TableFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ModelFramework.Database.Contracts.ITableField Build()
         {
             return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
-        }
-
-        public TableFieldBuilder WithType(string type)
-        {
-            Type = type;
-            return this;
         }
 
         public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
@@ -103,30 +125,6 @@ namespace ModelFramework.Database.Builders
         public TableFieldBuilder WithIsRequired(bool isRequired = true)
         {
             IsRequired = isRequired;
-            return this;
-        }
-
-        public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
-        {
-            NumericPrecision = numericPrecision;
-            return this;
-        }
-
-        public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
-        {
-            NumericScale = numericScale;
-            return this;
-        }
-
-        public TableFieldBuilder WithStringLength(System.Nullable<int> stringLength)
-        {
-            StringLength = stringLength;
-            return this;
-        }
-
-        public TableFieldBuilder WithStringCollation(string stringCollation)
-        {
-            StringCollation = stringCollation;
             return this;
         }
 
@@ -142,31 +140,33 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
         {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
+            NumericPrecision = numericPrecision;
             return this;
         }
 
-        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
+        public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
         {
-            return AddCheckConstraints(checkConstraints.ToArray());
-        }
-
-        public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
-        {
-            CheckConstraints.AddRange(checkConstraints);
+            NumericScale = numericScale;
             return this;
         }
 
-        public TableFieldBuilder AddMetadata(string name, object? value)
+        public TableFieldBuilder WithStringCollation(string stringCollation)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            StringCollation = stringCollation;
+            return this;
+        }
+
+        public TableFieldBuilder WithStringLength(System.Nullable<int> stringLength)
+        {
+            StringLength = stringLength;
+            return this;
+        }
+
+        public TableFieldBuilder WithType(string type)
+        {
+            Type = type;
             return this;
         }
 

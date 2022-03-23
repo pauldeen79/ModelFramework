@@ -29,17 +29,6 @@ namespace ModelFramework.Database.SqlStatements.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.ISqlStatement Build()
-        {
-            return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
-        }
-
-        public LiteralSqlStatementBuilder WithStatement(string statement)
-        {
-            Statement = statement;
-            return this;
-        }
-
         public LiteralSqlStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -54,6 +43,17 @@ namespace ModelFramework.Database.SqlStatements.Builders
         public LiteralSqlStatementBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.ISqlStatement Build()
+        {
+            return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
+        }
+
+        public LiteralSqlStatementBuilder WithStatement(string statement)
+        {
+            Statement = statement;
             return this;
         }
 

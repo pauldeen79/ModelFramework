@@ -59,47 +59,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ModelFramework.Database.Contracts.IViewOrderByField Build()
-        {
-            return new ModelFramework.Database.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public ViewOrderByFieldBuilder WithIsDescending(bool isDescending = true)
-        {
-            IsDescending = isDescending;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithSourceSchemaName(string sourceSchemaName)
-        {
-            SourceSchemaName = sourceSchemaName;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithSourceObjectName(string sourceObjectName)
-        {
-            SourceObjectName = sourceObjectName;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithAlias(string alias)
-        {
-            Alias = alias;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public ViewOrderByFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
@@ -114,6 +73,47 @@ namespace ModelFramework.Database.Builders
         public ViewOrderByFieldBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ModelFramework.Database.Contracts.IViewOrderByField Build()
+        {
+            return new ModelFramework.Database.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public ViewOrderByFieldBuilder WithAlias(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithExpression(string expression)
+        {
+            Expression = expression;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithIsDescending(bool isDescending = true)
+        {
+            IsDescending = isDescending;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithSourceObjectName(string sourceObjectName)
+        {
+            SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithSourceSchemaName(string sourceSchemaName)
+        {
+            SourceSchemaName = sourceSchemaName;
             return this;
         }
 
