@@ -10,13 +10,13 @@ namespace ModelFramework.Objects.Tests.Builders
     public partial class TestBuilder
     {
         private Lazy<object> _valueDelegate = new Lazy<object>(() => new object());
-        public object Value
+        public object Value //note that single properties should be optional.
         {
             get { return _valueDelegate.Value; }
             set { _valueDelegate = new Lazy<object>(() => value); }
         }
 
-        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
+        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata //note that collection properties should always be generated
         {
             get;
             set;
