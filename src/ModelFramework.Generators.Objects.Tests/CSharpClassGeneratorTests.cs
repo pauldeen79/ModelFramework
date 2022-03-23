@@ -1582,7 +1582,7 @@ namespace MyNamespace
             .AddProperties(properties)
             .Build()
             .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true), addNullChecks: true);
+        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: true));
         var model = new[]
         {
             cls,
@@ -1614,7 +1614,7 @@ namespace MyNamespace
             .AddProperties(properties)
             .Build()
             .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true), addNullChecks: false);
+        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: false));
         var model = new[]
         {
             cls,

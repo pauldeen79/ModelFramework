@@ -62,7 +62,7 @@ Property1 = string.Empty;");
                                     .Build();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(addNullChecks: true));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addNullChecks: true)));
 
         // Assert
         // By default, only a public parameterless constructor should be defined

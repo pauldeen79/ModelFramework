@@ -122,9 +122,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
         => new ImmutableBuilderClassSettings(newCollectionTypeName: NewCollectionTypeName,
-                                             constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor),
+                                             constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
                                              poco: Poco,
-                                             addNullChecks: AddNullChecks,
                                              setMethodNameFormatString: SetMethodNameFormatString,
                                              formatInstanceTypeNameDelegate: FormatInstanceTypeName);
 

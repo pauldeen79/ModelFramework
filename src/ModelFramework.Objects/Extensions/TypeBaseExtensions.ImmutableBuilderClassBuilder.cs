@@ -54,7 +54,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(p => settings.SetDefaultValues && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
+                    .Where(p => settings.ConstructorSettings.SetDefaultValues && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
                     .Select(p => $"{p.Name} = {p.GetDefaultValue()};")
             );
 
@@ -75,7 +75,7 @@ public static partial class TypeBaseEtensions
                 )
                 .AddLiteralCodeStatements
                 (
-                    instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.AddNullChecks) + ";")
+                    instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.ConstructorSettings.AddNullChecks) + ";")
                 );
         }
 
@@ -155,7 +155,7 @@ public static partial class TypeBaseEtensions
          .GetCsharpFriendlyTypeName();
 
     private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
-        => settings.AddNullChecks
+        => settings.ConstructorSettings.AddNullChecks
             ? $"if ({p.Name.ToPascalCase()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
             : $"{p.Name}.AddRange({p.Name.ToPascalCase()});";
 
@@ -370,7 +370,7 @@ public static partial class TypeBaseEtensions
     private static List<string> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
                                                                                       IClassProperty property,
                                                                                       bool extensionMethod)
-        => settings.AddNullChecks
+        => settings.ConstructorSettings.AddNullChecks
             ? new[]
                 {
                     $"if ({property.Name.ToPascalCase()} != null)",
@@ -406,7 +406,7 @@ public static partial class TypeBaseEtensions
                                                                                               IClassProperty property,
                                                                                               string overloadExpression,
                                                                                               bool extensionMethod)
-        => settings.AddNullChecks
+        => settings.ConstructorSettings.AddNullChecks
             ? (new[]
             {
                 $"if ({property.Name.ToPascalCase()} != null)",
@@ -433,7 +433,7 @@ public static partial class TypeBaseEtensions
             }).ToList();
 
     private static string CreateIndentForImmutableBuilderAddOverloadMethodStatement(ImmutableBuilderClassSettings settings)
-        => settings.AddNullChecks
+        => settings.ConstructorSettings.AddNullChecks
             ? "        "
             : "    ";
 
