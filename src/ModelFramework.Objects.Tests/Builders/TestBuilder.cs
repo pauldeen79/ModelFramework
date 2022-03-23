@@ -16,12 +16,12 @@ namespace ModelFramework.Objects.Tests.Builders
             set { _valueDelegate = new Lazy<object>(() => value); }
         }
 
-        private Lazy<System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>> _metadataDelegate = new Lazy<System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>>(() => new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>());
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
-            get { return _metadataDelegate.Value; }
-            set { _metadataDelegate = new Lazy<System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>>(() => value); }
+            get;
+            set;
         }
+
         private Lazy<string> _nameDelegate = new Lazy<string>(() => string.Empty);
         public string Name
         {
@@ -31,7 +31,7 @@ namespace ModelFramework.Objects.Tests.Builders
 
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
         {
-            return new ModelFramework.Objects.AttributeParameter(_valueDelegate.Value, _metadataDelegate.Value.Select(x => x.Build()), _nameDelegate.Value);
+            return new ModelFramework.Objects.AttributeParameter(_valueDelegate.Value, Metadata.Select(x => x.Build()), _nameDelegate.Value);
         }
 
         public TestBuilder WithValue(object value)
@@ -53,7 +53,7 @@ namespace ModelFramework.Objects.Tests.Builders
 
         public TestBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            _metadataDelegate.Value.AddRange(metadata);
+            Metadata.AddRange(metadata);
             return this;
         }
 
@@ -77,14 +77,14 @@ namespace ModelFramework.Objects.Tests.Builders
 
         public TestBuilder()
         {
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
         }
 
         public TestBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _metadataDelegate = new Lazy<System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>>(() => metadata);
+            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             _valueDelegate = new Lazy<object>(() => source.Value);
             _nameDelegate = new Lazy<string>(() => source.Name);
         }
