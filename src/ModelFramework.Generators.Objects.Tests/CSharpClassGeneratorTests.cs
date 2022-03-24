@@ -294,6 +294,7 @@ namespace MyNamespace
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
         {
+            if (source == null) throw new System.ArgumentNullException(""source"");
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = source.Property1;

@@ -61,6 +61,7 @@ public static partial class TypeBaseEtensions
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
             yield return new ClassConstructorBuilder()
+                .Chain(x => { if (settings.ConstructorSettings.AddNullChecks) { x.AddLiteralCodeStatements(@"if (source == null) throw new System.ArgumentNullException(""source"");"); } })
                 .AddParameters
                 (
                     new ParameterBuilder()
