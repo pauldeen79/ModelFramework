@@ -463,7 +463,8 @@ return this;");
         string.Join(Environment.NewLine, actual.Properties.Last().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property3Delegate = new System.Lazy<string?>(() => value);");
         actual.Constructors.Should().HaveCount(1);
         string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
-_property1Delegate = new System.Lazy<string>(() => string.Empty);");
+_property1Delegate = new System.Lazy<string>(() => string.Empty);
+_property3Delegate = new System.Lazy<string?>(() => default);");
     }
 
     [Fact]
@@ -481,7 +482,8 @@ _property1Delegate = new System.Lazy<string>(() => string.Empty);");
         string.Join(Environment.NewLine, actual.Properties.First().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property1Delegate = new (() => value);");
         string.Join(Environment.NewLine, actual.Properties.Last().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property3Delegate = new (() => value);");
         string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
-_property1Delegate = new (() => string.Empty);");
+_property1Delegate = new (() => string.Empty);
+_property3Delegate = new (() => default);");
     }
 
     [Fact]

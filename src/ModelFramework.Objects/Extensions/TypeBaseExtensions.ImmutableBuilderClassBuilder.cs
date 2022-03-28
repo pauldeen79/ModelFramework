@@ -73,7 +73,9 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(p => settings.ConstructorSettings.SetDefaultValues && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
+                    .Where(p => settings.ConstructorSettings.SetDefaultValues
+                        && !p.TypeName.IsCollectionTypeName()
+                        && (!p.IsNullable || settings.UseLazyInitialization))
                     .Select(p => GenerateDefaultValueStatement(p, settings))
             );
 
