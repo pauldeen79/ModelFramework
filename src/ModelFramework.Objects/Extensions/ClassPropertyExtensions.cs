@@ -2,27 +2,32 @@
 
 public static class ClassPropertyExtensions
 {
-    public static string CreateImmutableBuilderInitializationCode(this IClassProperty property, bool addNullChecks)
+    public static string CreateImmutableBuilderInitializationCode(this IClassProperty property, ImmutableBuilderClassSettings settings)
         => string.Format
         (
             property.Metadata.GetStringValue
             (
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
                 () => property.TypeName.IsCollectionTypeName()
-                    ? CreateCollectionInitialization(property, addNullChecks)
-                    : $"{property.Name} = source.{property.Name}"
+                    ? CreateCollectionInitialization(property, settings)
+                    : CreateSingleInitialization(property, settings)
             ),
             property.Name,
             property.Name.ToPascalCase(),
             property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
             property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(),
-            addNullChecks
+            settings.ConstructorSettings.AddNullChecks
                 ? $"if (source.{property.Name} != null) "
                 : ""
         );
 
-    private static string CreateCollectionInitialization(IClassProperty property, bool addNullChecks)
-        => addNullChecks
+    private static string CreateSingleInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
+        => settings.UseLazyInitialization
+            ? $"_{property.Name.ToPascalCase()}Delegate = new {property.GetNewExpression(settings)}(() => source.{property.Name})"
+            : $"{property.Name} = source.{property.Name}";
+
+    private static string CreateCollectionInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
+        => settings.ConstructorSettings.AddNullChecks
             ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name})"
             : $"{property.Name}.AddRange(source.{property.Name})";
 

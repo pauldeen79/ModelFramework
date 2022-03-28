@@ -84,7 +84,7 @@ namespace MyNamespace
             .WithName("GeneratedTestClass")
             .WithNamespace("MyNamespace")
             .Build());
-        cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("Hello world!")));
+        cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatementBuilder("Hello world!")));
         var model = new[]
         {
             cls.Build()
@@ -139,9 +139,7 @@ namespace MyNamespace
 
     private IEnumerable<ICodeStatement> CreateMethodCodeStatements(MethodInfo mi)
     {
-        yield return new LiteralCodeStatementBuilder()
-            .WithStatement($"{GetPrefix(mi)}_wrappedInstance.{mi.Name}({GetArguments(mi)});")
-            .Build();
+        yield return new LiteralCodeStatementBuilder($"{GetPrefix(mi)}_wrappedInstance.{mi.Name}({GetArguments(mi)});").Build();
     }
 
     private string GetPrefix(MethodInfo mi)
@@ -154,9 +152,7 @@ namespace MyNamespace
 
     private IEnumerable<ICodeStatement> CreatePropertyCodeStatements(PropertyInfo pi)
     {
-        yield return new LiteralCodeStatementBuilder()
-            .WithStatement($"return _wrappedInstance.{pi.Name};")
-            .Build();
+        yield return new LiteralCodeStatementBuilder($"return _wrappedInstance.{pi.Name};").Build();
     }
 }
 

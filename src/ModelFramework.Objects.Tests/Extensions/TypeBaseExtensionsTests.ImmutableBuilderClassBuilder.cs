@@ -6,18 +6,25 @@ public partial class TypeBaseExtensionsTests
     public void Can_Build_ImmutableBuilderClass_From_Immutable_Class()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property1")
-                                                                             .WithType(typeof(string))
-                                                                             .AsReadOnly())
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property2")
-                                                                             .WithType(typeof(IReadOnlyCollection<string>))
-                                                                             .AsReadOnly())
-                                    .AddConstructors(new ClassConstructorBuilder().AddParameter("property1", typeof(string))
-                                                                                  .AddParameter("property2", typeof(IEnumerable<string>))
-                                                                                  .AddLiteralCodeStatements("Property1 = property1;")
-                                                                                  .AddLiteralCodeStatements("Property2 = new List<string>(property2);"))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string))
+                .AsReadOnly())
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(IReadOnlyCollection<string>))
+                .AsReadOnly())
+            .AddConstructors(new ClassConstructorBuilder()
+                .AddParameter("property1", typeof(string))
+                .AddParameter("property2", typeof(IEnumerable<string>))
+                .AddLiteralCodeStatements
+                (
+                    "Property1 = property1;",
+                    "Property2 = new List<string>(property2);"
+                ))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings());
@@ -48,18 +55,25 @@ Property1 = string.Empty;");
     public void Can_Build_ImmutableBuilderClass_From_Immutable_Class_With_NullChecks()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property1")
-                                                                             .WithType(typeof(string))
-                                                                             .AsReadOnly())
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property2")
-                                                                             .WithType(typeof(IReadOnlyCollection<string>))
-                                                                             .AsReadOnly())
-                                    .AddConstructors(new ClassConstructorBuilder().AddParameter("property1", typeof(string))
-                                                                                  .AddParameter("property2", typeof(IEnumerable<string>))
-                                                                                  .AddLiteralCodeStatements("Property1 = property1;")
-                                                                                  .AddLiteralCodeStatements("Property2 = new List<string>(property2);"))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string))
+                .AsReadOnly())
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(IReadOnlyCollection<string>))
+                .AsReadOnly())
+            .AddConstructors(new ClassConstructorBuilder()
+                .AddParameter("property1", typeof(string))
+                .AddParameter("property2", typeof(IEnumerable<string>))
+                .AddLiteralCodeStatements
+                (
+                    "Property1 = property1;",
+                    "Property2 = new List<string>(property2);"
+                ))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addNullChecks: true)));
@@ -85,12 +99,15 @@ Property1 = string.Empty;");
     public void Can_Build_ImmutableBuilderClass_From_Poco_Class()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property1")
-                                                                             .WithType(typeof(string)))
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property2")
-                                                                             .WithType(typeof(List<string>)))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string)))
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(List<string>)))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings());
@@ -133,14 +150,17 @@ Property1 = string.Empty;");
     public void Can_Build_ImmutableBuilderClass_From_Interface()
     {
         // Arrange
-        var sut = new InterfaceBuilder().WithName("ITestClass")
-                                        .AddProperties(new ClassPropertyBuilder().WithName("Property1")
-                                                                                 .WithType(typeof(string))
-                                                                                 .AsReadOnly())
-                                        .AddProperties(new ClassPropertyBuilder().WithName("Property2")
-                                                                                 .WithType(typeof(IReadOnlyCollection<string>))
-                                                                                 .AsReadOnly())
-                                        .Build();
+        var sut = new InterfaceBuilder()
+            .WithName("ITestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string))
+                .AsReadOnly())
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(IReadOnlyCollection<string>))
+                .AsReadOnly())
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(formatInstanceTypeNameDelegate: (type, forCreate) =>
@@ -177,16 +197,20 @@ Property1 = string.Empty;");
     public void Can_Add_CopyConstructor_To_ImmutableBuilderClass()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property1")
-                                                                             .WithType(typeof(string))
-                                                                             .AsReadOnly())
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property2")
-                                                                             .WithType(typeof(IReadOnlyCollection<string>))
-                                                                             .AsReadOnly())
-                                    .AddConstructors(new ClassConstructorBuilder().AddParameter("property1", typeof(string))
-                                                                                  .AddLiteralCodeStatements("Property1 = property1;"))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string))
+                .AsReadOnly())
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(IReadOnlyCollection<string>))
+                .AsReadOnly())
+            .AddConstructors(new ClassConstructorBuilder()
+                .AddParameter("property1", typeof(string))
+                .AddLiteralCodeStatements("Property1 = property1;"))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true)));
@@ -216,19 +240,23 @@ Property2.AddRange(source.Property2);");
     public void Can_Add_Constructor_With_All_Parameters_To_ImmutableBuilderClass()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property1")
-                                                                             .WithType(typeof(string))
-                                                                             .AsReadOnly())
-                                    .AddProperties(new ClassPropertyBuilder().WithName("Property2")
-                                                                             .WithType(typeof(IReadOnlyCollection<string>))
-                                                                             .AsReadOnly()
-                                                                             .ConvertCollectionOnBuilderToEnumerable(true))
-                                    .AddConstructors(new ClassConstructorBuilder().AddParameter("property1", typeof(string))
-                                                                                  .AddParameter("property2", typeof(IEnumerable<string>))
-                                                                                  .AddLiteralCodeStatements("Property1 = property1;")
-                                                                                  .AddLiteralCodeStatements("Property2 = new List<string>(property2);"))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string))
+                .AsReadOnly())
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(IReadOnlyCollection<string>))
+                .AsReadOnly()
+                .ConvertCollectionOnBuilderToEnumerable(true))
+            .AddConstructors(new ClassConstructorBuilder()
+                .AddParameter("property1", typeof(string))
+                .AddParameter("property2", typeof(IEnumerable<string>))
+                .AddLiteralCodeStatements("Property1 = property1;")
+                .AddLiteralCodeStatements("Property2 = new List<string>(property2);"))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addConstructorWithAllProperties: true)));
@@ -255,11 +283,13 @@ Property2.AddRange(source.Property2);");
     public void Can_Add_Overload_To_NonCollection_Property()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("TypeName")
-                                                                             .WithType(typeof(string))
-                                                                             .AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;"))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("TypeName")
+                .WithType(typeof(string))
+                .AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;"))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings());
@@ -306,11 +336,13 @@ return this;");
     public void Can_Add_Overload_To_Collection_Property()
     {
         // Arrange
-        var sut = new ClassBuilder().WithName("TestClass")
-                                    .AddProperties(new ClassPropertyBuilder().WithName("TypeNames")
-                                                                             .WithType(typeof(IEnumerable<string>))
-                                                                             .AddBuilderOverload("AddTypes", typeof(IEnumerable<Type>), "types", "{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));"))
-                                    .Build();
+        var sut = new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("TypeNames")
+                .WithType(typeof(IEnumerable<string>))
+                .AddBuilderOverload("AddTypes", typeof(IEnumerable<Type>), "types", "{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));"))
+            .Build();
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings());
@@ -405,14 +437,97 @@ return this;");
         });
     }
 
+    [Fact]
+    public void Can_Create_ImmutableBuilderClass_With_Lazy_Initialization()
+    {
+        // Arrange
+        var sut = CreateImmutableBuilderClass();
+
+        // Act
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
+                                                                                   useTargetTypeNewExpressions: false,
+                                                                                   enableNullableReferenceTypes: true));
+
+        // Assert
+        actual.Fields.Should().HaveCount(3);
+        actual.Fields.First().Name.Should().Be("_property1Delegate");
+        actual.Fields.First().TypeName.Should().Be("System.Lazy<string>");
+        actual.Fields.Last().TypeName.Should().Be("System.Lazy<string?>");
+        actual.Properties.Should().HaveCount(3);
+        actual.Properties.First().Name.Should().Be("Property1");
+        actual.Properties.First().TypeName.Should().Be("System.String");
+        string.Join(Environment.NewLine, actual.Properties.First().GetterCodeStatements.Select(y => y.ToString())).Should().Be(@"return _property1Delegate.Value;");
+        string.Join(Environment.NewLine, actual.Properties.First().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property1Delegate = new System.Lazy<string>(() => value);");
+        actual.Properties.Last().TypeName.Should().Be("System.String"); // note that the nullable annotation will be aded during code generation (in the template)
+        string.Join(Environment.NewLine, actual.Properties.Last().GetterCodeStatements.Select(y => y.ToString())).Should().Be(@"return _property3Delegate.Value;");
+        string.Join(Environment.NewLine, actual.Properties.Last().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property3Delegate = new System.Lazy<string?>(() => value);");
+        actual.Constructors.Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
+_property1Delegate = new System.Lazy<string>(() => string.Empty);");
+    }
+
+    [Fact]
+    public void Can_Create_ImmutableBuilderClass_With_Lazy_Initialization_And_TargetTypeNewExpressions()
+    {
+        // Arrange
+        var sut = CreateImmutableBuilderClass();
+
+        // Act
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
+                                                                                   useTargetTypeNewExpressions: true,
+                                                                                   enableNullableReferenceTypes: true));
+
+        // Assert
+        string.Join(Environment.NewLine, actual.Properties.First().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property1Delegate = new (() => value);");
+        string.Join(Environment.NewLine, actual.Properties.Last().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property3Delegate = new (() => value);");
+        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
+_property1Delegate = new (() => string.Empty);");
+    }
+
+    [Fact]
+    public void Can_Create_ImmutableBuilderClass_With_CopyConstructor_With_Lazy_Initilization_And_TargetTypeNewExpressions()
+    {
+        // Arrange
+        var sut = CreateImmutableBuilderClass();
+
+        // Act
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
+                                                                                   useTargetTypeNewExpressions: true,
+                                                                                   enableNullableReferenceTypes: true,
+                                                                                   constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true)));
+
+        // Assert
+        actual.Constructors.Should().HaveCount(2);
+        string.Join(Environment.NewLine, actual.Constructors.Last().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
+_property1Delegate = new (() => source.Property1);
+Property2.AddRange(source.Property2);
+_property3Delegate = new (() => source.Property3);");
+    }
+
+    private static IClass CreateImmutableBuilderClass()
+        => new ClassBuilder()
+            .WithName("TestClass")
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property1")
+                .WithType(typeof(string)))
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property2")
+                .WithType(typeof(IReadOnlyCollection<string>)))
+            .AddProperties(new ClassPropertyBuilder()
+                .WithName("Property3")
+                .WithType(typeof(string))
+                .WithIsNullable())
+            .AsReadOnly()
+            .Build();
+
     private static ClassPropertyBuilder[] CreateProperties()
         => new[]
         {
-                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(true),
-                new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
+            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+            new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(true),
+            new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-                new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
+            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
         };
 }

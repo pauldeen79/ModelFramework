@@ -11,7 +11,6 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddCopyConstructor => true;
 
     protected abstract Type RecordCollectionType { get; }
-
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
     protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
 

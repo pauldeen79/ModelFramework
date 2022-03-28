@@ -24,7 +24,7 @@ public class CSharpClassGenerator_DefaultPropertySetterBodyTemplateClassTests
         var model = new ClassPropertyBuilder()
             .WithName("Name")
             .WithTypeName("string")
-            .AddSetterCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddSetterCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertySetterBodyTemplate>(model);
 

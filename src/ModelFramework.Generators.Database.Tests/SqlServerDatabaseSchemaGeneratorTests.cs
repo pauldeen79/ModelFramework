@@ -406,8 +406,8 @@ GO
                     new StoredProcedureParameterBuilder().WithName("Param2").WithType("int").WithDefaultValue("5")
                 ).AddStatements
                 (
-                    new LiteralSqlStatementBuilder().WithStatement("--statement 1 goes here"),
-                    new LiteralSqlStatementBuilder().WithStatement("--statement 2 goes here")
+                    new LiteralSqlStatementBuilder("--statement 1 goes here"),
+                    new LiteralSqlStatementBuilder("--statement 2 goes here")
                 )
             ).Build()
         };

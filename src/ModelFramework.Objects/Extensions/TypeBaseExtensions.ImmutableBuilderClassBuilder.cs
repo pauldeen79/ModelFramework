@@ -20,7 +20,7 @@ public static partial class TypeBaseEtensions
             .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
-            .AddFields(instance.GetFields().Select(x => new ClassFieldBuilder(x)));
+            .AddFields(GetImmutableBuilderClassFields(instance, settings));
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -41,6 +41,25 @@ public static partial class TypeBaseEtensions
             .AddMethods(GetImmutableBuilderClassPropertyMethods(instance, settings, true));
     }
 
+    private static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(ITypeBase instance, ImmutableBuilderClassSettings settings)
+    {
+        foreach (var field in instance.GetFields().Select(x => new ClassFieldBuilder(x)))
+        {
+            yield return field;
+        }
+
+        if (settings.UseLazyInitialization)
+        {
+            foreach (var property in instance.Properties)
+            {
+
+                yield return new ClassFieldBuilder()
+                    .WithName($"_{property.Name.ToPascalCase()}Delegate")
+                    .WithTypeName($"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>");
+            }
+        }
+    }
+
     private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
                                                                                              ImmutableBuilderClassSettings settings)
     {
@@ -55,13 +74,25 @@ public static partial class TypeBaseEtensions
             (
                 instance.Properties
                     .Where(p => settings.ConstructorSettings.SetDefaultValues && !p.TypeName.IsCollectionTypeName() && !p.IsNullable)
-                    .Select(p => $"{p.Name} = {p.GetDefaultValue()};")
+                    .Select(p => GenerateDefaultValueStatement(p, settings))
             );
 
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
             yield return new ClassConstructorBuilder()
-                .Chain(x => { if (settings.ConstructorSettings.AddNullChecks) { x.AddLiteralCodeStatements(@"if (source == null) throw new System.ArgumentNullException(""source"");"); } })
+                .Chain(x =>
+                {
+                    if (settings.ConstructorSettings.AddNullChecks)
+                    {
+                        x.AddLiteralCodeStatements
+                        (
+                            "if (source == null)",
+                            "{",
+                            @"    throw new System.ArgumentNullException(""source"");",
+                            "}"
+                        );
+                    }
+                })
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -76,7 +107,7 @@ public static partial class TypeBaseEtensions
                 )
                 .AddLiteralCodeStatements
                 (
-                    instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings.ConstructorSettings.AddNullChecks) + ";")
+                    instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings) + ";")
                 );
         }
 
@@ -87,12 +118,15 @@ public static partial class TypeBaseEtensions
             yield return new ClassConstructorBuilder()
                 .AddParameters(properties.Select(p => new ParameterBuilder()
                     .WithName(p.Name.ToPascalCase())
-                    .WithTypeName(string.Format
+                    .WithTypeName
                     (
-                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
-                        p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                        p.TypeName.GetGenericArguments()
-                    ))
+                        string.Format
+                        (
+                            p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
+                            p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                            p.TypeName.GetGenericArguments()
+                        )
+                    )
                     .WithIsNullable(p.IsNullable)
                 ))
                 .AddLiteralCodeStatements
@@ -103,15 +137,34 @@ public static partial class TypeBaseEtensions
                 )
                 .AddLiteralCodeStatements
                 (
-                    instance.Properties.Select
-                    (
-                        p => p.TypeName.IsCollectionTypeName()
-                            ? CreateConstructorStatementForCollection(p, settings)
-                            : $"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};"
-                    )
+                    instance.Properties
+                        .Where(p => !settings.UseLazyInitialization || p.TypeName.IsCollectionTypeName())
+                        .Select
+                        (
+                            p => p.TypeName.IsCollectionTypeName()
+                                ? CreateConstructorStatementForCollection(p, settings)
+                                : $"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};"
+                        )
                 );
         }
     }
+
+    private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
+        => settings.UseLazyInitialization
+            ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {property.GetDefaultValue()});"
+            : $"{property.Name} = {property.GetDefaultValue()};";
+
+    internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
+        => settings.UseTargetTypeNewExpressions
+            ? string.Empty
+            : $"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>";
+
+    private static string CreateLazyPropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
+        => property
+            .TypeName
+            .FixTypeName()
+            .GetCsharpFriendlyTypeName()
+            .AppendNullableAnnotation(property, settings.EnableNullableReferenceTypes);
 
     private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance, bool poco)
     {
@@ -127,24 +180,31 @@ public static partial class TypeBaseEtensions
         {
             return instance.Properties;
         }
-        return ctor.Parameters
-                .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
-                .Where(x => x != null);
+        return ctor
+            .Parameters
+            .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+            .Where(x => x != null);
     }
 
     private static string GetConstructorInitializeExpressionForCollection(ImmutableBuilderClassSettings settings, IClassProperty p)
-        => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
-                         p.TypeName,
-                         p.TypeName.GetGenericArguments()
-                        ).FixCollectionTypeName(settings.NewCollectionTypeName)
-                         .GetCsharpFriendlyTypeName();
+        => string.Format
+        (
+            p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
+            p.TypeName,
+            p.TypeName.GetGenericArguments()
+        )
+        .FixCollectionTypeName(settings.NewCollectionTypeName)
+        .GetCsharpFriendlyTypeName();
 
     private static string GetCopyConstructorInitializeExpression(ImmutableBuilderClassSettings settings, IClassProperty p)
-        => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
-                         p.TypeName,
-                         p.TypeName.GetGenericArguments()
-                        ).FixCollectionTypeName(settings.NewCollectionTypeName)
-                         .GetCsharpFriendlyTypeName();
+        => string.Format
+        (
+            p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
+            p.TypeName,
+            p.TypeName.GetGenericArguments()
+        )
+        .FixCollectionTypeName(settings.NewCollectionTypeName)
+        .GetCsharpFriendlyTypeName();
 
     private static string GetImmutableBuilderClassConstructorInitializer(ImmutableBuilderClassSettings settings, IClassProperty p)
         => string.Format
@@ -152,8 +212,9 @@ public static partial class TypeBaseEtensions
             p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
             p.TypeName,
             p.TypeName.GetGenericArguments()
-        ).FixCollectionTypeName(settings.NewCollectionTypeName)
-         .GetCsharpFriendlyTypeName();
+        )
+        .FixCollectionTypeName(settings.NewCollectionTypeName)
+        .GetCsharpFriendlyTypeName();
 
     private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
         => settings.ConstructorSettings.AddNullChecks
@@ -191,145 +252,182 @@ public static partial class TypeBaseEtensions
             if (property.TypeName.IsCollectionTypeName())
             {
                 // collection
-                yield return new ClassMethodBuilder()
-                    .WithName($"Add{property.Name}")
-                    .ConfigureForExtensionMethod(instance, extensionMethod)
-                    .AddParameters
-                    (
-                        new ParameterBuilder()
-                            .WithName(property.Name.ToPascalCase())
-                            .WithTypeName
-                            (
-                                string.Format
-                                (
-                                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                                    property.TypeName,
-                                    property.TypeName.GetGenericArguments()
-                                ).FixCollectionTypeName("System.Collections.Generic.IEnumerable")
-                            )
-                            .WithIsNullable(property.IsNullable)
-                    )
-                    .AddLiteralCodeStatements($"return {GetCallPrefix(extensionMethod)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
-                yield return new ClassMethodBuilder()
-                    .WithName($"Add{property.Name}")
-                    .ConfigureForExtensionMethod(instance, extensionMethod)
-                    .AddParameters
-                    (
-                        new ParameterBuilder()
-                            .WithName(property.Name.ToPascalCase())
-                            .WithIsParamArray()
-                            .WithTypeName
-                            (
-                                string.Format
-                                (
-                                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                                    property.TypeName,
-                                    property.TypeName.GetGenericArguments()
-                                ).FixTypeName()
-                                 .ConvertTypeNameToArray()
-                            )
-                            .WithIsNullable(property.IsNullable)
-                    )
-                    .AddLiteralCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property, extensionMethod));
+                yield return CreateCollectionPropertyWithEnumerableParameter(instance, extensionMethod, property);
+                yield return CreateCollectionPropertyWithArrayParameter(instance, settings, extensionMethod, property);
 
                 foreach (var overload in overloads)
                 {
-                    yield return new ClassMethodBuilder()
-                        .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
-                        .ConfigureForExtensionMethod(instance, extensionMethod)
-                        .AddParameters
-                        (
-                            new ParameterBuilder()
-                                .WithName(property.Name.ToPascalCase())
-                                .WithTypeName(string.Format(overload.ArgumentType,
-                                                            property.TypeName,
-                                                            property.TypeName.GetGenericArguments()).FixCollectionTypeName("System.Collections.Generic.IEnumerable"))
-                                .WithIsNullable(property.IsNullable)
-                        )
-                        .AddLiteralCodeStatements($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());");
-                    yield return new ClassMethodBuilder()
-                        .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
-                                                property.Name))
-                        .ConfigureForExtensionMethod(instance, extensionMethod)
-                        .AddParameters
-                        (
-                            new ParameterBuilder()
-                                .WithName(property.Name.ToPascalCase())
-                                .WithIsParamArray()
-                                .WithTypeName(string.Format(overload.ArgumentType,
-                                                            property.TypeName,
-                                                            property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
-                                .WithIsNullable(property.IsNullable)
-                        )
-                        .AddLiteralCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
-                                                                                                 property,
-                                                                                                 overload.InitializeExpression,
-                                                                                                 extensionMethod));
+                    yield return CreateCollectionPropertyOverloadWithEnumerableParameter(instance, settings, extensionMethod, property, overload);
+                    yield return CreateCollectionPropertyOverloadWithArrayParameter(instance, settings, extensionMethod, property, overload);
                 }
             }
             else
             {
                 // single
-                yield return new ClassMethodBuilder()
-                .WithName(string.Format(settings.SetMethodNameFormatString,
-                                        property.Name))
-                .ConfigureForExtensionMethod(instance, extensionMethod)
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName(property.Name.ToPascalCase())
-                        .WithTypeName
-                        (
-                            string.Format
-                            (
-                                property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                                property.TypeName,
-                                property.TypeName.GetGenericArguments()
-                            )
-                        )
-                        .WithIsNullable(property.IsNullable)
-                        .WithDefaultValue(property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
-                )
-                .AddLiteralCodeStatements
-                (
-                    string.Format
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod)}{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};"),
-                        property.Name,
-                        property.Name.ToPascalCase(),
-                        property.Name.ToPascalCase().GetCsharpFriendlyName(),
-                        property.TypeName,
-                        property.TypeName.GetGenericArguments(),
-                        "{",
-                        "}"
-                    ),
-                    $"return {GetReturnValue(extensionMethod)};"
-                );
+                yield return CreateSingleProperty(instance, settings, extensionMethod, property);
                 foreach (var overload in overloads)
                 {
-                    yield return new ClassMethodBuilder()
-                        .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
-                                                property.Name))
-                        .ConfigureForExtensionMethod(instance, extensionMethod)
-                        .AddParameters
-                        (
-                            new ParameterBuilder()
-                                .WithName(overload.ArgumentName.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
-                                .WithTypeName(string.Format(overload.ArgumentType, property.TypeName))
-                                .WithIsNullable(property.IsNullable)
-                        )
-                        .AddLiteralCodeStatements
-                        (
-                            string.Format(overload.InitializeExpression,
-                                          property.Name.ToPascalCase(),
-                                          property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
-                                          property.Name),
-                            $"return {GetReturnValue(extensionMethod)};"
-                        );
+                    yield return CreateSinglePropertyOverload(instance, settings, extensionMethod, property, overload);
                 }
             }
         }
     }
+
+    private static ClassMethodBuilder CreateCollectionPropertyOverloadWithArrayParameter(ITypeBase instance,
+                                                                                         ImmutableBuilderClassSettings settings,
+                                                                                         bool extensionMethod,
+                                                                                         IClassProperty property,
+                                                                                         Overload overload)
+        => new ClassMethodBuilder()
+            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
+                                    property.Name))
+            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName(property.Name.ToPascalCase())
+                    .WithIsParamArray()
+                    .WithTypeName(string.Format(overload.ArgumentType,
+                                                property.TypeName,
+                                                property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
+                    .WithIsNullable(property.IsNullable)
+            )
+            .AddLiteralCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
+                                                                                     property,
+                                                                                     overload.InitializeExpression,
+                                                                                     extensionMethod));
+
+    private static ClassMethodBuilder CreateCollectionPropertyOverloadWithEnumerableParameter(ITypeBase instance,
+                                                                                              ImmutableBuilderClassSettings settings,
+                                                                                              bool extensionMethod,
+                                                                                              IClassProperty property,
+                                                                                              Overload overload)
+        => new ClassMethodBuilder()
+            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
+            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName(property.Name.ToPascalCase())
+                    .WithTypeName(string.Format(overload.ArgumentType,
+                                                property.TypeName,
+                                                property.TypeName.GetGenericArguments()).FixCollectionTypeName("System.Collections.Generic.IEnumerable"))
+                    .WithIsNullable(property.IsNullable)
+            )
+            .AddLiteralCodeStatements($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());");
+
+    private static ClassMethodBuilder CreateCollectionPropertyWithEnumerableParameter(ITypeBase instance,
+                                                                                      bool extensionMethod,
+                                                                                      IClassProperty property)
+        => new ClassMethodBuilder()
+            .WithName($"Add{property.Name}")
+            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName(property.Name.ToPascalCase())
+                    .WithTypeName
+                    (
+                        string.Format
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                            property.TypeName,
+                            property.TypeName.GetGenericArguments()
+                        ).FixCollectionTypeName("System.Collections.Generic.IEnumerable")
+                    )
+                    .WithIsNullable(property.IsNullable)
+            )
+            .AddLiteralCodeStatements($"return {GetCallPrefix(extensionMethod)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
+
+    private static ClassMethodBuilder CreateCollectionPropertyWithArrayParameter(ITypeBase instance,
+                                                                                 ImmutableBuilderClassSettings settings,
+                                                                                 bool extensionMethod,
+                                                                                 IClassProperty property)
+        => new ClassMethodBuilder()
+            .WithName($"Add{property.Name}")
+            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName(property.Name.ToPascalCase())
+                    .WithIsParamArray()
+                    .WithTypeName
+                    (
+                        string.Format
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                            property.TypeName,
+                            property.TypeName.GetGenericArguments()
+                        )
+                        .FixTypeName()
+                        .ConvertTypeNameToArray()
+                    ).WithIsNullable(property.IsNullable)
+            ).AddLiteralCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property, extensionMethod));
+
+    private static ClassMethodBuilder CreateSingleProperty(ITypeBase instance,
+                                                           ImmutableBuilderClassSettings settings,
+                                                           bool extensionMethod,
+                                                           IClassProperty property)
+        => new ClassMethodBuilder()
+            .WithName(string.Format(settings.SetMethodNameFormatString,
+                                    property.Name))
+            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName(property.Name.ToPascalCase())
+                    .WithTypeName
+                    (
+                        string.Format
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                            property.TypeName,
+                            property.TypeName.GetGenericArguments()
+                        )
+                    )
+                    .WithIsNullable(property.IsNullable)
+                    .WithDefaultValue(property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
+            )
+            .AddLiteralCodeStatements
+            (
+                string.Format
+                (
+                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod)}{property.Name} = {property.Name.ToPascalCase().GetCsharpFriendlyName()};"),
+                    property.Name,
+                    property.Name.ToPascalCase(),
+                    property.Name.ToPascalCase().GetCsharpFriendlyName(),
+                    property.TypeName,
+                    property.TypeName.GetGenericArguments(),
+                    "{",
+                    "}"
+                ),
+                $"return {GetReturnValue(extensionMethod)};"
+            );
+
+    private static ClassMethodBuilder CreateSinglePropertyOverload(ITypeBase instance,
+                                                                   ImmutableBuilderClassSettings settings,
+                                                                   bool extensionMethod,
+                                                                   IClassProperty property,
+                                                                   Overload overload)
+        => new ClassMethodBuilder()
+            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
+                                    property.Name))
+            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName(overload.ArgumentName.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
+                    .WithTypeName(string.Format(overload.ArgumentType, property.TypeName))
+                    .WithIsNullable(property.IsNullable)
+            )
+            .AddLiteralCodeStatements
+            (
+                string.Format(overload.InitializeExpression,
+                                property.Name.ToPascalCase(),
+                                property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                                property.Name),
+                $"return {GetReturnValue(extensionMethod)};"
+            );
 
     private static ClassMethodBuilder ConfigureForExtensionMethod(this ClassMethodBuilder builder, ITypeBase instance, bool extensionMethod)
         => builder.WithTypeName($"{instance.Name}Builder")
@@ -484,9 +582,41 @@ public static partial class TypeBaseEtensions
             .WithIsNullable(property.IsNullable)
             .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))
             .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
-            .AddGetterCodeStatements(property.GetterCodeStatements.Select(x => x.CreateBuilder()))
-            .AddSetterCodeStatements(property.SetterCodeStatements.Select(x => x.CreateBuilder()))
+            .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))
+            .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, settings))
         );
+
+    private static IEnumerable<ICodeStatementBuilder> CreateImmutableBuilderPropertyGetterStatements(IClassProperty property,
+                                                                                                     ImmutableBuilderClassSettings settings)
+    {
+        if (settings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
+        {
+            yield return new LiteralCodeStatementBuilder($"return _{property.Name.ToPascalCase()}Delegate.Value;");
+        }
+        else
+        {
+            foreach (var statement in property.GetterCodeStatements.Select(x => x.CreateBuilder()))
+            {
+                yield return statement;
+            }
+        }
+    }
+
+    private static IEnumerable<ICodeStatementBuilder> CreateImmutableBuilderPropertySetterStatements(IClassProperty property,
+                                                                                                     ImmutableBuilderClassSettings settings)
+    {
+        if (settings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
+        {
+            yield return new LiteralCodeStatementBuilder($"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => value);");
+        }
+        else
+        {
+            foreach (var statement in property.SetterCodeStatements.Select(x => x.CreateBuilder()))
+            {
+                yield return statement;
+            }
+        }
+    }
 
     private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
     {
@@ -503,6 +633,6 @@ public static partial class TypeBaseEtensions
                                                  p.Name,
                                                  p.Name.ToPascalCase()))
         );
-   
+
     }
 }

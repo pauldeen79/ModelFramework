@@ -9,11 +9,11 @@ namespace ModelFramework.Objects.Tests.Builders
 //#nullable enable
     public partial class TestBuilder
     {
-        private Lazy<object> _valueDelegate = new Lazy<object>(() => new object());
+        private Lazy<object> _valueDelegate;
         public object Value //note that single properties should be optional.
         {
             get { return _valueDelegate.Value; }
-            set { _valueDelegate = new Lazy<object>(() => value); }
+            set { _valueDelegate = new Lazy<object>(() => value); } // target-typed new expression
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata //note that collection properties should always be generated
@@ -22,11 +22,11 @@ namespace ModelFramework.Objects.Tests.Builders
             set;
         }
 
-        private Lazy<string> _nameDelegate = new Lazy<string>(() => string.Empty);
+        private Lazy<string> _nameDelegate;
         public string Name
         {
             get { return _nameDelegate.Value; }
-            set { _nameDelegate = new Lazy<string>(() => value); }
+            set { _nameDelegate = new (() => value); }
         }
 
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
@@ -78,6 +78,8 @@ namespace ModelFramework.Objects.Tests.Builders
         public TestBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            _valueDelegate = new Lazy<object>(() => new object());
+            _nameDelegate = new (() => string.Empty); // target-typed new expression
         }
 
         public TestBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)
@@ -86,7 +88,7 @@ namespace ModelFramework.Objects.Tests.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             _valueDelegate = new Lazy<object>(() => source.Value);
-            _nameDelegate = new Lazy<string>(() => source.Name);
+            _nameDelegate = new (() => source.Name); // target-typed new expression
         }
     }
 //#nullable restore
