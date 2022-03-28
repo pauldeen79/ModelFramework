@@ -50,7 +50,7 @@ public static partial class TypeBaseEtensions
 
         if (settings.UseLazyInitialization)
         {
-            foreach (var property in instance.Properties)
+            foreach (var property in instance.Properties.Where(x => !x.TypeName.IsCollectionTypeName()))
             {
 
                 yield return new ClassFieldBuilder()

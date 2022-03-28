@@ -449,7 +449,7 @@ return this;");
                                                                                    enableNullableReferenceTypes: true));
 
         // Assert
-        actual.Fields.Should().HaveCount(3);
+        actual.Fields.Should().HaveCount(2);
         actual.Fields.First().Name.Should().Be("_property1Delegate");
         actual.Fields.First().TypeName.Should().Be("System.Lazy<string>");
         actual.Fields.Last().TypeName.Should().Be("System.Lazy<string?>");
