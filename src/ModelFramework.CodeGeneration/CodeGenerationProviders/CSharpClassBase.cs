@@ -9,6 +9,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool Poco => false;
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
+    protected virtual bool UseLazyInitialization => true;
 
     protected abstract Type RecordCollectionType { get; }
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
@@ -124,7 +125,9 @@ public abstract class CSharpClassBase : ClassBase
                                              constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
                                              poco: Poco,
                                              setMethodNameFormatString: SetMethodNameFormatString,
-                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName,
+                                             enableNullableReferenceTypes: EnableNullableContext,
+                                             useLazyInitialization: UseLazyInitialization);
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
