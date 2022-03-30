@@ -504,6 +504,21 @@ _property3Delegate = new (() => default);");
 _property1Delegate = new (() => source.Property1);
 Property2.AddRange(source.Property2);
 _property3Delegate = new (() => source.Property3);");
+        actual.Methods.Should().HaveCount(7);
+        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo(new[]
+        {
+            "Build",
+            "WithProperty1",
+            "WithProperty1",
+            "AddProperty2",
+            "AddProperty2",
+            "WithProperty3",
+            "WithProperty3"
+        });
+        string.Join(Environment.NewLine, actual.Methods[1].CodeStatements.Select(x => x.ToString())).Should().Be(@"Property1 = property1;
+return this;");
+        string.Join(Environment.NewLine, actual.Methods[2].CodeStatements.Select(x => x.ToString())).Should().Be(@"_property1Delegate = new (property1Delegate);
+return this;");
     }
 
     private static IClass CreateImmutableBuilderClass()
