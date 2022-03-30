@@ -10,6 +10,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
+    protected virtual bool UseTargetTypeNewExpressions => true;
 
     protected abstract Type RecordCollectionType { get; }
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
@@ -127,7 +128,8 @@ public abstract class CSharpClassBase : ClassBase
                                              setMethodNameFormatString: SetMethodNameFormatString,
                                              formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                                              enableNullableReferenceTypes: EnableNullableContext,
-                                             useLazyInitialization: UseLazyInitialization);
+                                             useLazyInitialization: UseLazyInitialization,
+                                             useTargetTypeNewExpressions: UseTargetTypeNewExpressions);
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
