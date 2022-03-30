@@ -19,14 +19,26 @@ namespace ModelFramework.Objects.Builders
     {
         public string Namespace
         {
-            get;
-            set;
+            get
+            {
+                return _namespaceDelegate.Value;
+            }
+            set
+            {
+                _namespaceDelegate = new (() => value);
+            }
         }
 
         public bool Partial
         {
-            get;
-            set;
+            get
+            {
+                return _partialDelegate.Value;
+            }
+            set
+            {
+                _partialDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<string> Interfaces
@@ -67,14 +79,26 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get;
-            set;
+            get
+            {
+                return _visibilityDelegate.Value;
+            }
+            set
+            {
+                _visibilityDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -121,20 +145,14 @@ namespace ModelFramework.Objects.Builders
             return AddInterfaces(types.Select(x => x.FullName));
         }
 
-        public InterfaceBuilder AddInterfaces(params string[] interfaces)
-        {
-            Interfaces.AddRange(interfaces);
-            return this;
-        }
-
         public InterfaceBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
         {
             return AddInterfaces(interfaces.ToArray());
         }
 
-        public InterfaceBuilder AddMetadata(string name, object? value)
+        public InterfaceBuilder AddInterfaces(params string[] interfaces)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Interfaces.AddRange(interfaces);
             return this;
         }
 
@@ -146,6 +164,12 @@ namespace ModelFramework.Objects.Builders
         public InterfaceBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public InterfaceBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -182,9 +206,27 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public InterfaceBuilder WithNamespace(System.Func<string> namespaceDelegate)
+        {
+            _namespaceDelegate = new (@namespaceDelegate);
+            return this;
+        }
+
         public InterfaceBuilder WithNamespace(string @namespace)
         {
             Namespace = @namespace;
+            return this;
+        }
+
+        public InterfaceBuilder WithPartial(System.Func<bool> partialDelegate)
+        {
+            _partialDelegate = new (partialDelegate);
             return this;
         }
 
@@ -200,6 +242,12 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        {
+            _visibilityDelegate = new (visibilityDelegate);
+            return this;
+        }
+
         public InterfaceBuilder()
         {
             Interfaces = new System.Collections.Generic.List<string>();
@@ -209,10 +257,10 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Namespace = string.Empty;
-            Partial = default;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            Name = string.Empty;
+            _namespaceDelegate = new (() => string.Empty);
+            _partialDelegate = new (() => default);
+            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public InterfaceBuilder(ModelFramework.Objects.Contracts.IInterface source)
@@ -224,18 +272,26 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            Namespace = source.Namespace;
-            Partial = source.Partial;
+            _namespaceDelegate = new (() => source.Namespace);
+            _partialDelegate = new (() => source.Partial);
             Interfaces.AddRange(source.Interfaces);
             Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
             GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Visibility = source.Visibility;
-            Name = source.Name;
+            _visibilityDelegate = new (() => source.Visibility);
+            _nameDelegate = new (() => source.Name);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
         }
+
+        private System.Lazy<string> _namespaceDelegate;
+
+        private System.Lazy<bool> _partialDelegate;
+
+        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

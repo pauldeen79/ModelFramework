@@ -25,8 +25,14 @@ namespace ModelFramework.Objects.CodeStatements.Builders
 
         public string Statement
         {
-            get;
-            set;
+            get
+            {
+                return _statementDelegate.Value;
+            }
+            set
+            {
+                _statementDelegate = new (() => value);
+            }
         }
 
         public LiteralCodeStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -57,18 +63,26 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             return this;
         }
 
+        public LiteralCodeStatementBuilder WithStatement(System.Func<string> statementDelegate)
+        {
+            _statementDelegate = new (statementDelegate);
+            return this;
+        }
+
         public LiteralCodeStatementBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Statement = string.Empty;
+            _statementDelegate = new (() => string.Empty);
         }
 
         public LiteralCodeStatementBuilder(ModelFramework.Objects.CodeStatements.LiteralCodeStatement source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Statement = source.Statement;
+            _statementDelegate = new (() => source.Statement);
         }
+
+        private System.Lazy<string> _statementDelegate;
     }
 #nullable restore
 }

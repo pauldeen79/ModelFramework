@@ -37,14 +37,26 @@ namespace ModelFramework.Objects.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get;
-            set;
+            get
+            {
+                return _visibilityDelegate.Value;
+            }
+            set
+            {
+                _visibilityDelegate = new (() => value);
+            }
         }
 
         public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
@@ -97,9 +109,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public EnumBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public EnumBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
+            return this;
+        }
+
+        public EnumBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        {
+            _visibilityDelegate = new (visibilityDelegate);
             return this;
         }
 
@@ -108,8 +132,8 @@ namespace ModelFramework.Objects.Builders
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
+            _nameDelegate = new (() => string.Empty);
+            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
         }
 
         public EnumBuilder(ModelFramework.Objects.Contracts.IEnum source)
@@ -120,9 +144,13 @@ namespace ModelFramework.Objects.Builders
             Members.AddRange(source.Members.Select(x => new ModelFramework.Objects.Builders.EnumMemberBuilder(x)));
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Name = source.Name;
-            Visibility = source.Visibility;
+            _nameDelegate = new (() => source.Name);
+            _visibilityDelegate = new (() => source.Visibility);
         }
+
+        private System.Lazy<string> _nameDelegate;
+
+        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
     }
 #nullable restore
 }

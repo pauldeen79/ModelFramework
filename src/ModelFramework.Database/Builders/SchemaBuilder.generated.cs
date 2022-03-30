@@ -37,8 +37,14 @@ namespace ModelFramework.Database.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -108,13 +114,19 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public SchemaBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public SchemaBuilder()
         {
             Tables = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableBuilder>();
             StoredProcedures = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureBuilder>();
             Views = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _nameDelegate = new (() => string.Empty);
         }
 
         public SchemaBuilder(ModelFramework.Database.Contracts.ISchema source)
@@ -126,9 +138,11 @@ namespace ModelFramework.Database.Builders
             Tables.AddRange(source.Tables.Select(x => new ModelFramework.Database.Builders.TableBuilder(x)));
             StoredProcedures.AddRange(source.StoredProcedures.Select(x => new ModelFramework.Database.Builders.StoredProcedureBuilder(x)));
             Views.AddRange(source.Views.Select(x => new ModelFramework.Database.Builders.ViewBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

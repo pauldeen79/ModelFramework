@@ -19,8 +19,14 @@ namespace ModelFramework.Database.Builders
     {
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -57,18 +63,26 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ForeignKeyConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public ForeignKeyConstraintFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _nameDelegate = new (() => string.Empty);
         }
 
         public ForeignKeyConstraintFieldBuilder(ModelFramework.Database.Contracts.IForeignKeyConstraintField source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

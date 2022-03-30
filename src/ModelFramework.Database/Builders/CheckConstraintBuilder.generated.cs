@@ -19,14 +19,26 @@ namespace ModelFramework.Database.Builders
     {
         public string Expression
         {
-            get;
-            set;
+            get
+            {
+                return _expressionDelegate.Value;
+            }
+            set
+            {
+                _expressionDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -63,26 +75,42 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public CheckConstraintBuilder WithExpression(System.Func<string> expressionDelegate)
+        {
+            _expressionDelegate = new (expressionDelegate);
+            return this;
+        }
+
         public CheckConstraintBuilder WithName(string name)
         {
             Name = name;
             return this;
         }
 
+        public CheckConstraintBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public CheckConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Expression = string.Empty;
-            Name = string.Empty;
+            _expressionDelegate = new (() => string.Empty);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public CheckConstraintBuilder(ModelFramework.Database.Contracts.ICheckConstraint source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Expression = source.Expression;
-            Name = source.Name;
+            _expressionDelegate = new (() => source.Expression);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _expressionDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

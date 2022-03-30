@@ -55,8 +55,14 @@ namespace ModelFramework.Database.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -67,8 +73,14 @@ namespace ModelFramework.Database.Builders
 
         public string FileGroupName
         {
-            get;
-            set;
+            get
+            {
+                return _fileGroupNameDelegate.Value;
+            }
+            set
+            {
+                _fileGroupNameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder> CheckConstraints
@@ -121,15 +133,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder AddIndexes(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexBuilder> indexes)
-        {
-            return AddIndexes(indexes.ToArray());
-        }
-
         public TableBuilder AddIndexes(params ModelFramework.Database.Builders.IndexBuilder[] indexes)
         {
             Indexes.AddRange(indexes);
             return this;
+        }
+
+        public TableBuilder AddIndexes(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexBuilder> indexes)
+        {
+            return AddIndexes(indexes.ToArray());
         }
 
         public TableBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
@@ -182,9 +194,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public TableBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
+        {
+            _fileGroupNameDelegate = new (fileGroupNameDelegate);
+            return this;
+        }
+
         public TableBuilder WithName(string name)
         {
             Name = name;
+            return this;
+        }
+
+        public TableBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 
@@ -198,8 +222,8 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
-            Name = string.Empty;
-            FileGroupName = string.Empty;
+            _nameDelegate = new (() => string.Empty);
+            _fileGroupNameDelegate = new (() => string.Empty);
         }
 
         public TableBuilder(ModelFramework.Database.Contracts.ITable source)
@@ -218,11 +242,15 @@ namespace ModelFramework.Database.Builders
             ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ModelFramework.Database.Builders.ForeignKeyConstraintBuilder(x)));
             Indexes.AddRange(source.Indexes.Select(x => new ModelFramework.Database.Builders.IndexBuilder(x)));
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.TableFieldBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            FileGroupName = source.FileGroupName;
+            _fileGroupNameDelegate = new (() => source.FileGroupName);
             CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
+
+        private System.Lazy<string> _nameDelegate;
+
+        private System.Lazy<string> _fileGroupNameDelegate;
     }
 #nullable restore
 }

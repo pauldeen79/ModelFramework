@@ -31,8 +31,14 @@ namespace ModelFramework.Database.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -91,12 +97,18 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public StoredProcedureBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public StoredProcedureBuilder()
         {
             Statements = new System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _nameDelegate = new (() => string.Empty);
         }
 
         public StoredProcedureBuilder(ModelFramework.Database.Contracts.IStoredProcedure source)
@@ -106,9 +118,11 @@ namespace ModelFramework.Database.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Statements.AddRange(source.Statements.Select(x => x.CreateBuilder()));
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Database.Builders.StoredProcedureParameterBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

@@ -25,14 +25,26 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get;
-            set;
+            get
+            {
+                return _staticDelegate.Value;
+            }
+            set
+            {
+                _staticDelegate = new (() => value);
+            }
         }
 
         public bool Sealed
         {
-            get;
-            set;
+            get
+            {
+                return _sealedDelegate.Value;
+            }
+            set
+            {
+                _sealedDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder> SubClasses
@@ -49,26 +61,50 @@ namespace ModelFramework.Objects.Builders
 
         public string BaseClass
         {
-            get;
-            set;
+            get
+            {
+                return _baseClassDelegate.Value;
+            }
+            set
+            {
+                _baseClassDelegate = new (() => value);
+            }
         }
 
         public bool Record
         {
-            get;
-            set;
+            get
+            {
+                return _recordDelegate.Value;
+            }
+            set
+            {
+                _recordDelegate = new (() => value);
+            }
         }
 
         public string Namespace
         {
-            get;
-            set;
+            get
+            {
+                return _namespaceDelegate.Value;
+            }
+            set
+            {
+                _namespaceDelegate = new (() => value);
+            }
         }
 
         public bool Partial
         {
-            get;
-            set;
+            get
+            {
+                return _partialDelegate.Value;
+            }
+            set
+            {
+                _partialDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<string> Interfaces
@@ -109,14 +145,26 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get;
-            set;
+            get
+            {
+                return _visibilityDelegate.Value;
+            }
+            set
+            {
+                _visibilityDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -186,15 +234,15 @@ namespace ModelFramework.Objects.Builders
             return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
         }
 
-        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
         public ClassBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
         {
             GenericTypeArguments.AddRange(genericTypeArguments);
             return this;
+        }
+
+        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        {
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
         public ClassBuilder AddInterfaces(params string[] interfaces)
@@ -203,14 +251,20 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        {
+            return AddInterfaces(interfaces.ToArray());
+        }
+
         public ClassBuilder AddInterfaces(params System.Type[] types)
         {
             return AddInterfaces(types.Select(x => x.FullName));
         }
 
-        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        public ClassBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            return AddInterfaces(interfaces.ToArray());
+            Metadata.AddRange(metadata);
+            return this;
         }
 
         public ClassBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -221,12 +275,6 @@ namespace ModelFramework.Objects.Builders
         public ClassBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
-        public ClassBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
             return this;
         }
 
@@ -241,15 +289,15 @@ namespace ModelFramework.Objects.Builders
             return AddMethods(methods.ToArray());
         }
 
+        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        {
+            return AddProperties(properties.ToArray());
+        }
+
         public ClassBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
         {
             Properties.AddRange(properties);
             return this;
-        }
-
-        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
-        {
-            return AddProperties(properties.ToArray());
         }
 
         public ClassBuilder AddSubClasses(params ModelFramework.Objects.Builders.ClassBuilder[] subClasses)
@@ -268,6 +316,12 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
         }
 
+        public ClassBuilder WithBaseClass(System.Func<string> baseClassDelegate)
+        {
+            _baseClassDelegate = new (baseClassDelegate);
+            return this;
+        }
+
         public ClassBuilder WithBaseClass(string baseClass)
         {
             BaseClass = baseClass;
@@ -280,9 +334,27 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ClassBuilder WithNamespace(System.Func<string> namespaceDelegate)
+        {
+            _namespaceDelegate = new (@namespaceDelegate);
+            return this;
+        }
+
         public ClassBuilder WithNamespace(string @namespace)
         {
             Namespace = @namespace;
+            return this;
+        }
+
+        public ClassBuilder WithPartial(System.Func<bool> partialDelegate)
+        {
+            _partialDelegate = new (partialDelegate);
             return this;
         }
 
@@ -292,15 +364,33 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassBuilder WithRecord(System.Func<bool> recordDelegate)
+        {
+            _recordDelegate = new (recordDelegate);
+            return this;
+        }
+
         public ClassBuilder WithRecord(bool record = true)
         {
             Record = record;
             return this;
         }
 
+        public ClassBuilder WithSealed(System.Func<bool> sealedDelegate)
+        {
+            _sealedDelegate = new (@sealedDelegate);
+            return this;
+        }
+
         public ClassBuilder WithSealed(bool @sealed = true)
         {
             Sealed = @sealed;
+            return this;
+        }
+
+        public ClassBuilder WithStatic(System.Func<bool> staticDelegate)
+        {
+            _staticDelegate = new (@staticDelegate);
             return this;
         }
 
@@ -313,6 +403,12 @@ namespace ModelFramework.Objects.Builders
         public ClassBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
+            return this;
+        }
+
+        public ClassBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        {
+            _visibilityDelegate = new (visibilityDelegate);
             return this;
         }
 
@@ -329,14 +425,14 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
-            Static = default;
-            Sealed = default;
-            BaseClass = string.Empty;
-            Record = default;
-            Namespace = string.Empty;
-            Partial = default;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            Name = string.Empty;
+            _staticDelegate = new (() => default);
+            _sealedDelegate = new (() => default);
+            _baseClassDelegate = new (() => string.Empty);
+            _recordDelegate = new (() => default);
+            _namespaceDelegate = new (() => string.Empty);
+            _partialDelegate = new (() => default);
+            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public ClassBuilder(ModelFramework.Objects.Contracts.IClass source)
@@ -353,25 +449,41 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Objects.Builders.ClassFieldBuilder(x)));
-            Static = source.Static;
-            Sealed = source.Sealed;
+            _staticDelegate = new (() => source.Static);
+            _sealedDelegate = new (() => source.Sealed);
             SubClasses.AddRange(source.SubClasses.Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)));
             Constructors.AddRange(source.Constructors.Select(x => new ModelFramework.Objects.Builders.ClassConstructorBuilder(x)));
-            BaseClass = source.BaseClass;
-            Record = source.Record;
-            Namespace = source.Namespace;
-            Partial = source.Partial;
+            _baseClassDelegate = new (() => source.BaseClass);
+            _recordDelegate = new (() => source.Record);
+            _namespaceDelegate = new (() => source.Namespace);
+            _partialDelegate = new (() => source.Partial);
             Interfaces.AddRange(source.Interfaces);
             Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
             GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Visibility = source.Visibility;
-            Name = source.Name;
+            _visibilityDelegate = new (() => source.Visibility);
+            _nameDelegate = new (() => source.Name);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Enums.AddRange(source.Enums.Select(x => new ModelFramework.Objects.Builders.EnumBuilder(x)));
         }
+
+        private System.Lazy<bool> _staticDelegate;
+
+        private System.Lazy<bool> _sealedDelegate;
+
+        private System.Lazy<string> _baseClassDelegate;
+
+        private System.Lazy<bool> _recordDelegate;
+
+        private System.Lazy<string> _namespaceDelegate;
+
+        private System.Lazy<bool> _partialDelegate;
+
+        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

@@ -19,8 +19,14 @@ namespace ModelFramework.Objects.Builders
     {
         public object Value
         {
-            get;
-            set;
+            get
+            {
+                return _valueDelegate.Value;
+            }
+            set
+            {
+                _valueDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -31,8 +37,14 @@ namespace ModelFramework.Objects.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public AttributeParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -63,26 +75,42 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public AttributeParameterBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public AttributeParameterBuilder WithValue(object value)
         {
             Value = value;
             return this;
         }
 
+        public AttributeParameterBuilder WithValue(System.Func<object> valueDelegate)
+        {
+            _valueDelegate = new (valueDelegate);
+            return this;
+        }
+
         public AttributeParameterBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Value = new object();
-            Name = string.Empty;
+            _valueDelegate = new (() => new object());
+            _nameDelegate = new (() => string.Empty);
         }
 
         public AttributeParameterBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Value = source.Value;
+            _valueDelegate = new (() => source.Value);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
         }
+
+        private System.Lazy<object> _valueDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

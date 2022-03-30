@@ -19,8 +19,14 @@ namespace ModelFramework.Database.SqlStatements.Builders
     {
         public string Statement
         {
-            get;
-            set;
+            get
+            {
+                return _statementDelegate.Value;
+            }
+            set
+            {
+                _statementDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -57,18 +63,26 @@ namespace ModelFramework.Database.SqlStatements.Builders
             return this;
         }
 
+        public LiteralSqlStatementBuilder WithStatement(System.Func<string> statementDelegate)
+        {
+            _statementDelegate = new (statementDelegate);
+            return this;
+        }
+
         public LiteralSqlStatementBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Statement = string.Empty;
+            _statementDelegate = new (() => string.Empty);
         }
 
         public LiteralSqlStatementBuilder(ModelFramework.Database.SqlStatements.LiteralSqlStatement source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Statement = source.Statement;
+            _statementDelegate = new (() => source.Statement);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _statementDelegate;
     }
 #nullable restore
 }

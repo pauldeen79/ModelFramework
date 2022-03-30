@@ -25,14 +25,26 @@ namespace ModelFramework.Database.Builders
 
         public bool Unique
         {
-            get;
-            set;
+            get
+            {
+                return _uniqueDelegate.Value;
+            }
+            set
+            {
+                _uniqueDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -43,8 +55,14 @@ namespace ModelFramework.Database.Builders
 
         public string FileGroupName
         {
-            get;
-            set;
+            get
+            {
+                return _fileGroupNameDelegate.Value;
+            }
+            set
+            {
+                _fileGroupNameDelegate = new (() => value);
+            }
         }
 
         public IndexBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexFieldBuilder> fields)
@@ -86,9 +104,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public IndexBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
+        {
+            _fileGroupNameDelegate = new (fileGroupNameDelegate);
+            return this;
+        }
+
         public IndexBuilder WithName(string name)
         {
             Name = name;
+            return this;
+        }
+
+        public IndexBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 
@@ -98,13 +128,19 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public IndexBuilder WithUnique(System.Func<bool> uniqueDelegate)
+        {
+            _uniqueDelegate = new (uniqueDelegate);
+            return this;
+        }
+
         public IndexBuilder()
         {
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Unique = default;
-            Name = string.Empty;
-            FileGroupName = string.Empty;
+            _uniqueDelegate = new (() => default);
+            _nameDelegate = new (() => string.Empty);
+            _fileGroupNameDelegate = new (() => string.Empty);
         }
 
         public IndexBuilder(ModelFramework.Database.Contracts.IIndex source)
@@ -112,11 +148,17 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.IndexFieldBuilder(x)));
-            Unique = source.Unique;
-            Name = source.Name;
+            _uniqueDelegate = new (() => source.Unique);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            FileGroupName = source.FileGroupName;
+            _fileGroupNameDelegate = new (() => source.FileGroupName);
         }
+
+        private System.Lazy<bool> _uniqueDelegate;
+
+        private System.Lazy<string> _nameDelegate;
+
+        private System.Lazy<string> _fileGroupNameDelegate;
     }
 #nullable restore
 }

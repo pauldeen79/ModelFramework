@@ -19,14 +19,26 @@ namespace ModelFramework.Database.Builders
     {
         public bool IsDescending
         {
-            get;
-            set;
+            get
+            {
+                return _isDescendingDelegate.Value;
+            }
+            set
+            {
+                _isDescendingDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -63,26 +75,42 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public IndexFieldBuilder WithIsDescending(System.Func<bool> isDescendingDelegate)
+        {
+            _isDescendingDelegate = new (isDescendingDelegate);
+            return this;
+        }
+
         public IndexFieldBuilder WithName(string name)
         {
             Name = name;
             return this;
         }
 
+        public IndexFieldBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public IndexFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            IsDescending = default;
-            Name = string.Empty;
+            _isDescendingDelegate = new (() => default);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public IndexFieldBuilder(ModelFramework.Database.Contracts.IIndexField source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            IsDescending = source.IsDescending;
-            Name = source.Name;
+            _isDescendingDelegate = new (() => source.IsDescending);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<bool> _isDescendingDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

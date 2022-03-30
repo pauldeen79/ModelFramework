@@ -49,32 +49,62 @@ namespace ModelFramework.Database.Builders
 
         public System.Nullable<int> Top
         {
-            get;
-            set;
+            get
+            {
+                return _topDelegate.Value;
+            }
+            set
+            {
+                _topDelegate = new (() => value);
+            }
         }
 
         public bool TopPercent
         {
-            get;
-            set;
+            get
+            {
+                return _topPercentDelegate.Value;
+            }
+            set
+            {
+                _topPercentDelegate = new (() => value);
+            }
         }
 
         public bool Distinct
         {
-            get;
-            set;
+            get
+            {
+                return _distinctDelegate.Value;
+            }
+            set
+            {
+                _distinctDelegate = new (() => value);
+            }
         }
 
         public string Definition
         {
-            get;
-            set;
+            get
+            {
+                return _definitionDelegate.Value;
+            }
+            set
+            {
+                _definitionDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -94,20 +124,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ViewBuilder AddGroupByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> groupByFields)
+        {
+            return AddGroupByFields(groupByFields.ToArray());
+        }
+
         public ViewBuilder AddGroupByFields(params ModelFramework.Database.Builders.ViewFieldBuilder[] groupByFields)
         {
             GroupByFields.AddRange(groupByFields);
             return this;
         }
 
-        public ViewBuilder AddGroupByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> groupByFields)
+        public ViewBuilder AddMetadata(string name, object? value)
         {
-            return AddGroupByFields(groupByFields.ToArray());
-        }
-
-        public ViewBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
         }
 
         public ViewBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
@@ -116,10 +147,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewBuilder AddMetadata(string name, object? value)
+        public ViewBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
+            return AddMetadata(metadata.ToArray());
         }
 
         public ViewBuilder AddOrderByFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewOrderByFieldBuilder> orderByFields)
@@ -133,15 +163,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ViewBuilder AddSelectFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> selectFields)
+        {
+            return AddSelectFields(selectFields.ToArray());
+        }
+
         public ViewBuilder AddSelectFields(params ModelFramework.Database.Builders.ViewFieldBuilder[] selectFields)
         {
             SelectFields.AddRange(selectFields);
             return this;
-        }
-
-        public ViewBuilder AddSelectFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewFieldBuilder> selectFields)
-        {
-            return AddSelectFields(selectFields.ToArray());
         }
 
         public ViewBuilder AddSources(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewSourceBuilder> sources)
@@ -166,9 +196,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ViewBuilder WithDefinition(System.Func<string> definitionDelegate)
+        {
+            _definitionDelegate = new (definitionDelegate);
+            return this;
+        }
+
         public ViewBuilder WithDistinct(bool distinct = true)
         {
             Distinct = distinct;
+            return this;
+        }
+
+        public ViewBuilder WithDistinct(System.Func<bool> distinctDelegate)
+        {
+            _distinctDelegate = new (distinctDelegate);
             return this;
         }
 
@@ -178,9 +220,27 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ViewBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ViewBuilder WithTop(System.Func<System.Nullable<int>>? topDelegate)
+        {
+            _topDelegate = new (topDelegate);
+            return this;
+        }
+
         public ViewBuilder WithTop(System.Nullable<int> top)
         {
             Top = top;
+            return this;
+        }
+
+        public ViewBuilder WithTopPercent(System.Func<bool> topPercentDelegate)
+        {
+            _topPercentDelegate = new (topPercentDelegate);
             return this;
         }
 
@@ -198,10 +258,11 @@ namespace ModelFramework.Database.Builders
             Sources = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewSourceBuilder>();
             Conditions = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewConditionBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            TopPercent = default;
-            Distinct = default;
-            Definition = string.Empty;
-            Name = string.Empty;
+            _topDelegate = new (() => default);
+            _topPercentDelegate = new (() => default);
+            _distinctDelegate = new (() => default);
+            _definitionDelegate = new (() => string.Empty);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public ViewBuilder(ModelFramework.Database.Contracts.IView source)
@@ -217,13 +278,23 @@ namespace ModelFramework.Database.Builders
             GroupByFields.AddRange(source.GroupByFields.Select(x => new ModelFramework.Database.Builders.ViewFieldBuilder(x)));
             Sources.AddRange(source.Sources.Select(x => new ModelFramework.Database.Builders.ViewSourceBuilder(x)));
             Conditions.AddRange(source.Conditions.Select(x => new ModelFramework.Database.Builders.ViewConditionBuilder(x)));
-            Top = source.Top;
-            TopPercent = source.TopPercent;
-            Distinct = source.Distinct;
-            Definition = source.Definition;
-            Name = source.Name;
+            _topDelegate = new (() => source.Top);
+            _topPercentDelegate = new (() => source.TopPercent);
+            _distinctDelegate = new (() => source.Distinct);
+            _definitionDelegate = new (() => source.Definition);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<System.Nullable<int>> _topDelegate;
+
+        private System.Lazy<bool> _topPercentDelegate;
+
+        private System.Lazy<bool> _distinctDelegate;
+
+        private System.Lazy<string> _definitionDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

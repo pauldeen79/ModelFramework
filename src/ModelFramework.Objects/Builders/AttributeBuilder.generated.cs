@@ -31,8 +31,14 @@ namespace ModelFramework.Objects.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -74,11 +80,17 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public AttributeBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public AttributeBuilder()
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _nameDelegate = new (() => string.Empty);
         }
 
         public AttributeBuilder(ModelFramework.Objects.Contracts.IAttribute source)
@@ -87,8 +99,10 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.AttributeParameterBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
         }
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }
