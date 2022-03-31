@@ -359,9 +359,16 @@ public class Method_DefaultClassTests
 
     private sealed class CustomStatementTemplate : CSharpClassGeneratorBaseChild
     {
+#pragma warning disable S3459 // Unassigned members should be removed
+#pragma warning disable S1144 // Unused private types or members should be removed
         public LiteralCodeStatement? Model { get; set; }
+#pragma warning restore S1144 // Unused private types or members should be removed
+#pragma warning restore S3459 // Unassigned members should be removed
 
+#pragma warning disable S1144 // Unused private types or members should be removed
+#pragma warning disable S1172 // Unused method parameters should be removed
         public void Render(StringBuilder builder)
+#pragma warning restore S1172 // Unused method parameters should be removed
         {
             if (Model == null)
             {
@@ -371,5 +378,6 @@ public class Method_DefaultClassTests
 
             WriteLine(Model.Statement + " // added in template");
         }
+#pragma warning restore S1144 // Unused private types or members should be removed
     }
 }

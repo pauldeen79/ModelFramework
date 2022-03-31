@@ -543,8 +543,6 @@ return this;");
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
             new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(true),
             new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
         };
 }
