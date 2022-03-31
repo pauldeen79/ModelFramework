@@ -163,14 +163,14 @@ Property1 = string.Empty;");
             .Build();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(formatInstanceTypeNameDelegate: (type, forCreate) =>
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings( formatInstanceTypeNameDelegate: (type, forCreate) =>
         {
             if (type.Name == "ITestClass" && forCreate)
             {
                 return "TestClass";
             }
             return string.Empty;
-        }));
+        })));
 
         // Assert
         actual.Name.Should().Be("ITestClassBuilder");

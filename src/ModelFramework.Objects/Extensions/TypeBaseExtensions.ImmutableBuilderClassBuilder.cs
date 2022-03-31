@@ -99,7 +99,7 @@ public static partial class TypeBaseEtensions
                 (
                     new ParameterBuilder()
                         .WithName("source")
-                        .WithTypeName(FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate))
+                        .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
                 )
                 .AddLiteralCodeStatements
                 (
@@ -124,7 +124,7 @@ public static partial class TypeBaseEtensions
                     (
                         string.Format
                         (
-                            p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
+                            p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.TypeSettings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)),
                             p.Name.ToPascalCase().GetCsharpFriendlyName(),
                             p.TypeName.GetGenericArguments()
                         )
@@ -195,7 +195,7 @@ public static partial class TypeBaseEtensions
             p.TypeName,
             p.TypeName.GetGenericArguments()
         )
-        .FixCollectionTypeName(settings.NewCollectionTypeName)
+        .FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
         .GetCsharpFriendlyTypeName();
 
     private static string GetCopyConstructorInitializeExpression(ImmutableBuilderClassSettings settings, IClassProperty p)
@@ -205,7 +205,7 @@ public static partial class TypeBaseEtensions
             p.TypeName,
             p.TypeName.GetGenericArguments()
         )
-        .FixCollectionTypeName(settings.NewCollectionTypeName)
+        .FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
         .GetCsharpFriendlyTypeName();
 
     private static string GetImmutableBuilderClassConstructorInitializer(ImmutableBuilderClassSettings settings, IClassProperty p)
@@ -215,7 +215,7 @@ public static partial class TypeBaseEtensions
             p.TypeName,
             p.TypeName.GetGenericArguments()
         )
-        .FixCollectionTypeName(settings.NewCollectionTypeName)
+        .FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
         .GetCsharpFriendlyTypeName();
 
     private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
@@ -230,8 +230,8 @@ public static partial class TypeBaseEtensions
         var closeSign = GetImmutableBuilderPocoCloseSign(settings.Poco);
         yield return new ClassMethodBuilder()
             .WithName("Build")
-            .WithTypeName(FormatInstanceName(instance, false, settings.FormatInstanceTypeNameDelegate))
-            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};");
+            .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};");
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
@@ -622,7 +622,7 @@ public static partial class TypeBaseEtensions
                     property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                     property.TypeName,
                     property.TypeName.GetGenericArguments()
-                ).FixCollectionTypeName(settings.NewCollectionTypeName)
+                ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
             )
             .WithIsNullable(property.IsNullable)
             .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))

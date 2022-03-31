@@ -122,11 +122,10 @@ public abstract class CSharpClassBase : ClassBase
             .AddMethods(CreateExtraOverloads(c));
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
-        => new ImmutableBuilderClassSettings(newCollectionTypeName: NewCollectionTypeName,
+        => new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings(newCollectionTypeName: NewCollectionTypeName, formatInstanceTypeNameDelegate: FormatInstanceTypeName),
                                              constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
                                              poco: Poco,
                                              setMethodNameFormatString: SetMethodNameFormatString,
-                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                                              enableNullableReferenceTypes: EnableNullableContext,
                                              useLazyInitialization: UseLazyInitialization,
                                              useTargetTypeNewExpressions: UseTargetTypeNewExpressions);
