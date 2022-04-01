@@ -35,15 +35,15 @@ namespace ModelFramework.Database.SqlStatements.Builders
             set;
         }
 
-        public LiteralSqlStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public LiteralSqlStatementBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public LiteralSqlStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public LiteralSqlStatementBuilder AddMetadata(string name, object? value)
@@ -57,15 +57,15 @@ namespace ModelFramework.Database.SqlStatements.Builders
             return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
         }
 
-        public LiteralSqlStatementBuilder WithStatement(string statement)
-        {
-            Statement = statement;
-            return this;
-        }
-
         public LiteralSqlStatementBuilder WithStatement(System.Func<string> statementDelegate)
         {
             _statementDelegate = new (statementDelegate);
+            return this;
+        }
+
+        public LiteralSqlStatementBuilder WithStatement(string statement)
+        {
+            Statement = statement;
             return this;
         }
 

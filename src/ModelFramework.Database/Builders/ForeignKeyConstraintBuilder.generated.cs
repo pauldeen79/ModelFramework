@@ -83,20 +83,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ForeignKeyConstraintBuilder AddForeignFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> foreignFields)
-        {
-            return AddForeignFields(foreignFields.ToArray());
-        }
-
         public ForeignKeyConstraintBuilder AddForeignFields(params ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder[] foreignFields)
         {
             ForeignFields.AddRange(foreignFields);
             return this;
         }
 
-        public ForeignKeyConstraintBuilder AddLocalFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> localFields)
+        public ForeignKeyConstraintBuilder AddForeignFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> foreignFields)
         {
-            return AddLocalFields(localFields.ToArray());
+            return AddForeignFields(foreignFields.ToArray());
         }
 
         public ForeignKeyConstraintBuilder AddLocalFields(params ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder[] localFields)
@@ -105,15 +100,20 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ForeignKeyConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public ForeignKeyConstraintBuilder AddLocalFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder> localFields)
         {
-            return AddMetadata(metadata.ToArray());
+            return AddLocalFields(localFields.ToArray());
         }
 
         public ForeignKeyConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public ForeignKeyConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public ForeignKeyConstraintBuilder AddMetadata(string name, object? value)
@@ -151,27 +151,27 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ForeignKeyConstraintBuilder WithForeignTableName(string foreignTableName)
-        {
-            ForeignTableName = foreignTableName;
-            return this;
-        }
-
         public ForeignKeyConstraintBuilder WithForeignTableName(System.Func<string> foreignTableNameDelegate)
         {
             _foreignTableNameDelegate = new (foreignTableNameDelegate);
             return this;
         }
 
-        public ForeignKeyConstraintBuilder WithName(string name)
+        public ForeignKeyConstraintBuilder WithForeignTableName(string foreignTableName)
         {
-            Name = name;
+            ForeignTableName = foreignTableName;
             return this;
         }
 
         public ForeignKeyConstraintBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ForeignKeyConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

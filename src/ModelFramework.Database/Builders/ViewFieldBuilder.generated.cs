@@ -83,15 +83,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ViewFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public ViewFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public ViewFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public ViewFieldBuilder AddMetadata(string name, object? value)
@@ -105,21 +105,15 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.ViewField(SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
         }
 
-        public ViewFieldBuilder WithAlias(string alias)
-        {
-            Alias = alias;
-            return this;
-        }
-
         public ViewFieldBuilder WithAlias(System.Func<string> aliasDelegate)
         {
             _aliasDelegate = new (aliasDelegate);
             return this;
         }
 
-        public ViewFieldBuilder WithExpression(string expression)
+        public ViewFieldBuilder WithAlias(string alias)
         {
-            Expression = expression;
+            Alias = alias;
             return this;
         }
 
@@ -129,9 +123,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewFieldBuilder WithName(string name)
+        public ViewFieldBuilder WithExpression(string expression)
         {
-            Name = name;
+            Expression = expression;
             return this;
         }
 
@@ -141,9 +135,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewFieldBuilder WithSourceObjectName(string sourceObjectName)
+        public ViewFieldBuilder WithName(string name)
         {
-            SourceObjectName = sourceObjectName;
+            Name = name;
             return this;
         }
 
@@ -153,15 +147,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
+        public ViewFieldBuilder WithSourceObjectName(string sourceObjectName)
         {
-            SourceSchemaName = sourceSchemaName;
+            SourceObjectName = sourceObjectName;
             return this;
         }
 
         public ViewFieldBuilder WithSourceSchemaName(System.Func<string> sourceSchemaNameDelegate)
         {
             _sourceSchemaNameDelegate = new (sourceSchemaNameDelegate);
+            return this;
+        }
+
+        public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
+        {
+            SourceSchemaName = sourceSchemaName;
             return this;
         }
 

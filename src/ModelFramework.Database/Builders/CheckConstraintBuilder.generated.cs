@@ -47,15 +47,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public CheckConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public CheckConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public CheckConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public CheckConstraintBuilder AddMetadata(string name, object? value)
@@ -69,27 +69,27 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
         }
 
-        public CheckConstraintBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
-        }
-
         public CheckConstraintBuilder WithExpression(System.Func<string> expressionDelegate)
         {
             _expressionDelegate = new (expressionDelegate);
             return this;
         }
 
-        public CheckConstraintBuilder WithName(string name)
+        public CheckConstraintBuilder WithExpression(string expression)
         {
-            Name = name;
+            Expression = expression;
             return this;
         }
 
         public CheckConstraintBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public CheckConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

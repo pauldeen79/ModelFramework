@@ -53,15 +53,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public SchemaBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public SchemaBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public SchemaBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public SchemaBuilder AddMetadata(string name, object? value)
@@ -70,20 +70,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public SchemaBuilder AddStoredProcedures(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.StoredProcedureBuilder> storedProcedures)
-        {
-            return AddStoredProcedures(storedProcedures.ToArray());
-        }
-
         public SchemaBuilder AddStoredProcedures(params ModelFramework.Database.Builders.StoredProcedureBuilder[] storedProcedures)
         {
             StoredProcedures.AddRange(storedProcedures);
             return this;
         }
 
-        public SchemaBuilder AddTables(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.TableBuilder> tables)
+        public SchemaBuilder AddStoredProcedures(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.StoredProcedureBuilder> storedProcedures)
         {
-            return AddTables(tables.ToArray());
+            return AddStoredProcedures(storedProcedures.ToArray());
         }
 
         public SchemaBuilder AddTables(params ModelFramework.Database.Builders.TableBuilder[] tables)
@@ -92,9 +87,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public SchemaBuilder AddViews(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewBuilder> views)
+        public SchemaBuilder AddTables(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.TableBuilder> tables)
         {
-            return AddViews(views.ToArray());
+            return AddTables(tables.ToArray());
         }
 
         public SchemaBuilder AddViews(params ModelFramework.Database.Builders.ViewBuilder[] views)
@@ -103,20 +98,25 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public SchemaBuilder AddViews(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ViewBuilder> views)
+        {
+            return AddViews(views.ToArray());
+        }
+
         public ModelFramework.Database.Contracts.ISchema Build()
         {
             return new ModelFramework.Database.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
         }
 
-        public SchemaBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public SchemaBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public SchemaBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

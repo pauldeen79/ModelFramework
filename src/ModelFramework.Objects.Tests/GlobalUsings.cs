@@ -7,6 +7,7 @@ global using FluentAssertions;
 global using ModelFramework.Common;
 global using ModelFramework.Common.Builders;
 global using ModelFramework.Common.Contracts;
+global using ModelFramework.Common.Extensions;
 global using ModelFramework.Objects.Builders;
 global using ModelFramework.Objects.CodeStatements;
 global using ModelFramework.Objects.CodeStatements.Builders;

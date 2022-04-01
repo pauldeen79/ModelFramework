@@ -35,15 +35,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public UniqueConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public UniqueConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public UniqueConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public UniqueConstraintFieldBuilder AddMetadata(string name, object? value)
@@ -57,15 +57,15 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
         }
 
-        public UniqueConstraintFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public UniqueConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public UniqueConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

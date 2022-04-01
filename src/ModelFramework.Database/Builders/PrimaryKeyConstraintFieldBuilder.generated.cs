@@ -47,15 +47,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public PrimaryKeyConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public PrimaryKeyConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public PrimaryKeyConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public PrimaryKeyConstraintFieldBuilder AddMetadata(string name, object? value)
@@ -81,15 +81,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public PrimaryKeyConstraintFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public PrimaryKeyConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public PrimaryKeyConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

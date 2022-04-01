@@ -59,20 +59,15 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
-        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
         public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
             return this;
         }
 
-        public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
+        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            return AddMembers(members.ToArray());
+            return AddAttributes(attributes.ToArray());
         }
 
         public EnumBuilder AddMembers(params ModelFramework.Objects.Builders.EnumMemberBuilder[] members)
@@ -81,15 +76,20 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
         {
-            return AddMetadata(metadata.ToArray());
+            return AddMembers(members.ToArray());
         }
 
         public EnumBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public EnumBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public EnumBuilder AddMetadata(string name, object? value)
@@ -103,15 +103,15 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
         }
 
-        public EnumBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public EnumBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public EnumBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

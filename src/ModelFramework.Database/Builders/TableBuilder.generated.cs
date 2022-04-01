@@ -89,26 +89,26 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public TableBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
-        {
-            return AddCheckConstraints(checkConstraints.ToArray());
-        }
-
         public TableBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
         {
             CheckConstraints.AddRange(checkConstraints);
             return this;
         }
 
-        public TableBuilder AddDefaultValueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.DefaultValueConstraintBuilder> defaultValueConstraints)
+        public TableBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
         {
-            return AddDefaultValueConstraints(defaultValueConstraints.ToArray());
+            return AddCheckConstraints(checkConstraints.ToArray());
         }
 
         public TableBuilder AddDefaultValueConstraints(params ModelFramework.Database.Builders.DefaultValueConstraintBuilder[] defaultValueConstraints)
         {
             DefaultValueConstraints.AddRange(defaultValueConstraints);
             return this;
+        }
+
+        public TableBuilder AddDefaultValueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.DefaultValueConstraintBuilder> defaultValueConstraints)
+        {
+            return AddDefaultValueConstraints(defaultValueConstraints.ToArray());
         }
 
         public TableBuilder AddFields(params ModelFramework.Database.Builders.TableFieldBuilder[] fields)
@@ -122,15 +122,15 @@ namespace ModelFramework.Database.Builders
             return AddFields(fields.ToArray());
         }
 
-        public TableBuilder AddForeignKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> foreignKeyConstraints)
-        {
-            return AddForeignKeyConstraints(foreignKeyConstraints.ToArray());
-        }
-
         public TableBuilder AddForeignKeyConstraints(params ModelFramework.Database.Builders.ForeignKeyConstraintBuilder[] foreignKeyConstraints)
         {
             ForeignKeyConstraints.AddRange(foreignKeyConstraints);
             return this;
+        }
+
+        public TableBuilder AddForeignKeyConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.ForeignKeyConstraintBuilder> foreignKeyConstraints)
+        {
+            return AddForeignKeyConstraints(foreignKeyConstraints.ToArray());
         }
 
         public TableBuilder AddIndexes(params ModelFramework.Database.Builders.IndexBuilder[] indexes)
@@ -172,26 +172,20 @@ namespace ModelFramework.Database.Builders
             return AddPrimaryKeyConstraints(primaryKeyConstraints.ToArray());
         }
 
-        public TableBuilder AddUniqueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintBuilder> uniqueConstraints)
-        {
-            return AddUniqueConstraints(uniqueConstraints.ToArray());
-        }
-
         public TableBuilder AddUniqueConstraints(params ModelFramework.Database.Builders.UniqueConstraintBuilder[] uniqueConstraints)
         {
             UniqueConstraints.AddRange(uniqueConstraints);
             return this;
         }
 
+        public TableBuilder AddUniqueConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintBuilder> uniqueConstraints)
+        {
+            return AddUniqueConstraints(uniqueConstraints.ToArray());
+        }
+
         public ModelFramework.Database.Contracts.ITable Build()
         {
             return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
-        }
-
-        public TableBuilder WithFileGroupName(string fileGroupName)
-        {
-            FileGroupName = fileGroupName;
-            return this;
         }
 
         public TableBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
@@ -200,15 +194,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder WithName(string name)
+        public TableBuilder WithFileGroupName(string fileGroupName)
         {
-            Name = name;
+            FileGroupName = fileGroupName;
             return this;
         }
 
         public TableBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public TableBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

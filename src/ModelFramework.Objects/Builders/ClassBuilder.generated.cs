@@ -190,15 +190,15 @@ namespace ModelFramework.Objects.Builders
             return AddAttributes(attributes.ToArray());
         }
 
-        public ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassConstructorBuilder> constructors)
-        {
-            return AddConstructors(constructors.ToArray());
-        }
-
         public ClassBuilder AddConstructors(params ModelFramework.Objects.Builders.ClassConstructorBuilder[] constructors)
         {
             Constructors.AddRange(constructors);
             return this;
+        }
+
+        public ClassBuilder AddConstructors(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassConstructorBuilder> constructors)
+        {
+            return AddConstructors(constructors.ToArray());
         }
 
         public ClassBuilder AddEnums(params ModelFramework.Objects.Builders.EnumBuilder[] enums)
@@ -212,15 +212,20 @@ namespace ModelFramework.Objects.Builders
             return AddEnums(enums.ToArray());
         }
 
+        public ClassBuilder AddFields(params ModelFramework.Objects.Builders.ClassFieldBuilder[] fields)
+        {
+            Fields.AddRange(fields);
+            return this;
+        }
+
         public ClassBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassFieldBuilder> fields)
         {
             return AddFields(fields.ToArray());
         }
 
-        public ClassBuilder AddFields(params ModelFramework.Objects.Builders.ClassFieldBuilder[] fields)
+        public ClassBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
         {
-            Fields.AddRange(fields);
-            return this;
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
         }
 
         public ClassBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
@@ -229,9 +234,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
         {
-            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
         public ClassBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
@@ -240,20 +245,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
         {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+            return AddInterfaces(interfaces.ToArray());
         }
 
         public ClassBuilder AddInterfaces(params string[] interfaces)
         {
             Interfaces.AddRange(interfaces);
             return this;
-        }
-
-        public ClassBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
-        {
-            return AddInterfaces(interfaces.ToArray());
         }
 
         public ClassBuilder AddInterfaces(params System.Type[] types)
@@ -289,15 +289,15 @@ namespace ModelFramework.Objects.Builders
             return AddMethods(methods.ToArray());
         }
 
-        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
-        {
-            return AddProperties(properties.ToArray());
-        }
-
         public ClassBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
         {
             Properties.AddRange(properties);
             return this;
+        }
+
+        public ClassBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        {
+            return AddProperties(properties.ToArray());
         }
 
         public ClassBuilder AddSubClasses(params ModelFramework.Objects.Builders.ClassBuilder[] subClasses)
@@ -328,15 +328,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public ClassBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ClassBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 
@@ -352,21 +352,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithPartial(System.Func<bool> partialDelegate)
-        {
-            _partialDelegate = new (partialDelegate);
-            return this;
-        }
-
         public ClassBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
             return this;
         }
 
-        public ClassBuilder WithRecord(System.Func<bool> recordDelegate)
+        public ClassBuilder WithPartial(System.Func<bool> partialDelegate)
         {
-            _recordDelegate = new (recordDelegate);
+            _partialDelegate = new (partialDelegate);
             return this;
         }
 
@@ -376,9 +370,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithSealed(System.Func<bool> sealedDelegate)
+        public ClassBuilder WithRecord(System.Func<bool> recordDelegate)
         {
-            _sealedDelegate = new (@sealedDelegate);
+            _recordDelegate = new (recordDelegate);
             return this;
         }
 
@@ -388,15 +382,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithStatic(System.Func<bool> staticDelegate)
+        public ClassBuilder WithSealed(System.Func<bool> sealedDelegate)
         {
-            _staticDelegate = new (@staticDelegate);
+            _sealedDelegate = new (@sealedDelegate);
             return this;
         }
 
         public ClassBuilder WithStatic(bool @static = true)
         {
             Static = @static;
+            return this;
+        }
+
+        public ClassBuilder WithStatic(System.Func<bool> staticDelegate)
+        {
+            _staticDelegate = new (@staticDelegate);
             return this;
         }
 

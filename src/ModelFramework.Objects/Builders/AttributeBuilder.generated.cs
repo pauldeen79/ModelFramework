@@ -41,15 +41,15 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
-        public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public AttributeBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public AttributeBuilder AddMetadata(string name, object? value)
@@ -58,15 +58,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
-        {
-            return AddParameters(parameters.ToArray());
-        }
-
         public AttributeBuilder AddParameters(params ModelFramework.Objects.Builders.AttributeParameterBuilder[] parameters)
         {
             Parameters.AddRange(parameters);
             return this;
+        }
+
+        public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
+        {
+            return AddParameters(parameters.ToArray());
         }
 
         public ModelFramework.Objects.Contracts.IAttribute Build()
@@ -74,15 +74,15 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
         }
 
-        public AttributeBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public AttributeBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public AttributeBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

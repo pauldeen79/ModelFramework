@@ -89,15 +89,15 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
-        public ParameterBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
         public ParameterBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
             return this;
+        }
+
+        public ParameterBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        {
+            return AddAttributes(attributes.ToArray());
         }
 
         public ParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
@@ -122,7 +122,7 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
         }
 
-        public ParameterBuilder WithDefaultValue(System.Func<object>? defaultValueDelegate)
+        public ParameterBuilder WithDefaultValue(System.Func<object?> defaultValueDelegate)
         {
             _defaultValueDelegate = new (defaultValueDelegate);
             return this;
@@ -146,21 +146,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithIsParamArray(System.Func<bool> isParamArrayDelegate)
-        {
-            _isParamArrayDelegate = new (isParamArrayDelegate);
-            return this;
-        }
-
         public ParameterBuilder WithIsParamArray(bool isParamArray = true)
         {
             IsParamArray = isParamArray;
             return this;
         }
 
-        public ParameterBuilder WithName(string name)
+        public ParameterBuilder WithIsParamArray(System.Func<bool> isParamArrayDelegate)
         {
-            Name = name;
+            _isParamArrayDelegate = new (isParamArrayDelegate);
             return this;
         }
 
@@ -170,21 +164,27 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ParameterBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
         public ParameterBuilder WithType(System.Type type)
         {
             TypeName = type.AssemblyQualifiedName;
             return this;
         }
 
-        public ParameterBuilder WithTypeName(string typeName)
-        {
-            TypeName = typeName;
-            return this;
-        }
-
         public ParameterBuilder WithTypeName(System.Func<string> typeNameDelegate)
         {
             _typeNameDelegate = new (typeNameDelegate);
+            return this;
+        }
+
+        public ParameterBuilder WithTypeName(string typeName)
+        {
+            TypeName = typeName;
             return this;
         }
 

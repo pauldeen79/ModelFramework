@@ -53,26 +53,26 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
         public EnumMemberBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
             return this;
         }
 
-        public EnumMemberBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            return AddMetadata(metadata.ToArray());
+            return AddAttributes(attributes.ToArray());
         }
 
         public EnumMemberBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public EnumMemberBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public EnumMemberBuilder AddMetadata(string name, object? value)
@@ -86,27 +86,27 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
         }
 
-        public EnumMemberBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public EnumMemberBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
             return this;
         }
 
-        public EnumMemberBuilder WithValue(object? value)
+        public EnumMemberBuilder WithName(string name)
         {
-            Value = value;
+            Name = name;
             return this;
         }
 
-        public EnumMemberBuilder WithValue(System.Func<object>? valueDelegate)
+        public EnumMemberBuilder WithValue(System.Func<object?> valueDelegate)
         {
             _valueDelegate = new (valueDelegate);
+            return this;
+        }
+
+        public EnumMemberBuilder WithValue(object? value)
+        {
+            Value = value;
             return this;
         }
 

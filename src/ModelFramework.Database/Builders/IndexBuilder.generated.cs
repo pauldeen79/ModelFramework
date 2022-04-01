@@ -65,26 +65,26 @@ namespace ModelFramework.Database.Builders
             }
         }
 
-        public IndexBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexFieldBuilder> fields)
-        {
-            return AddFields(fields.ToArray());
-        }
-
         public IndexBuilder AddFields(params ModelFramework.Database.Builders.IndexFieldBuilder[] fields)
         {
             Fields.AddRange(fields);
             return this;
         }
 
-        public IndexBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public IndexBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.IndexFieldBuilder> fields)
         {
-            return AddMetadata(metadata.ToArray());
+            return AddFields(fields.ToArray());
         }
 
         public IndexBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public IndexBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public IndexBuilder AddMetadata(string name, object? value)
@@ -98,27 +98,27 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.Index(Fields.Select(x => x.Build()), Unique, Name, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
-        public IndexBuilder WithFileGroupName(string fileGroupName)
-        {
-            FileGroupName = fileGroupName;
-            return this;
-        }
-
         public IndexBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
         {
             _fileGroupNameDelegate = new (fileGroupNameDelegate);
             return this;
         }
 
-        public IndexBuilder WithName(string name)
+        public IndexBuilder WithFileGroupName(string fileGroupName)
         {
-            Name = name;
+            FileGroupName = fileGroupName;
             return this;
         }
 
         public IndexBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public IndexBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

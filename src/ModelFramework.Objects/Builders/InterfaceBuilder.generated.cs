@@ -118,20 +118,14 @@ namespace ModelFramework.Objects.Builders
             return AddAttributes(attributes.ToArray());
         }
 
-        public InterfaceBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
-        {
-            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
-            return this;
-        }
-
         public InterfaceBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
         {
             return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
         }
 
-        public InterfaceBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        public InterfaceBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
         {
-            GenericTypeArguments.AddRange(genericTypeArguments);
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
             return this;
         }
 
@@ -140,9 +134,10 @@ namespace ModelFramework.Objects.Builders
             return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
-        public InterfaceBuilder AddInterfaces(params System.Type[] types)
+        public InterfaceBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
         {
-            return AddInterfaces(types.Select(x => x.FullName));
+            GenericTypeArguments.AddRange(genericTypeArguments);
+            return this;
         }
 
         public InterfaceBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
@@ -156,9 +151,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public InterfaceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public InterfaceBuilder AddInterfaces(params System.Type[] types)
         {
-            return AddMetadata(metadata.ToArray());
+            return AddInterfaces(types.Select(x => x.FullName));
         }
 
         public InterfaceBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
@@ -167,15 +162,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
         public InterfaceBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
-        }
-
-        public InterfaceBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
-        {
-            return AddMethods(methods.ToArray());
         }
 
         public InterfaceBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
@@ -184,9 +179,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public InterfaceBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        public InterfaceBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
         {
-            return AddProperties(properties.ToArray());
+            return AddMethods(methods.ToArray());
         }
 
         public InterfaceBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
@@ -195,20 +190,25 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public InterfaceBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        {
+            return AddProperties(properties.ToArray());
+        }
+
         public ModelFramework.Objects.Contracts.IInterface Build()
         {
             return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
         }
 
-        public InterfaceBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public InterfaceBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public InterfaceBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 
@@ -224,15 +224,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public InterfaceBuilder WithPartial(System.Func<bool> partialDelegate)
-        {
-            _partialDelegate = new (partialDelegate);
-            return this;
-        }
-
         public InterfaceBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
+            return this;
+        }
+
+        public InterfaceBuilder WithPartial(System.Func<bool> partialDelegate)
+        {
+            _partialDelegate = new (partialDelegate);
             return this;
         }
 

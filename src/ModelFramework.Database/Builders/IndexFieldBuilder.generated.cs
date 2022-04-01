@@ -47,15 +47,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public IndexFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public IndexFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public IndexFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public IndexFieldBuilder AddMetadata(string name, object? value)
@@ -81,15 +81,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public IndexFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public IndexFieldBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public IndexFieldBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

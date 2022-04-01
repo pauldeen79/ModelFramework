@@ -137,21 +137,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
-        {
-            return AddCheckConstraints(checkConstraints.ToArray());
-        }
-
         public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
         {
             CheckConstraints.AddRange(checkConstraints);
             return this;
         }
 
-        public TableFieldBuilder AddMetadata(string name, object? value)
+        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
+            return AddCheckConstraints(checkConstraints.ToArray());
         }
 
         public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
@@ -165,15 +159,15 @@ namespace ModelFramework.Database.Builders
             return AddMetadata(metadata.ToArray());
         }
 
+        public TableFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public ModelFramework.Database.Contracts.ITableField Build()
         {
             return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
-        }
-
-        public TableFieldBuilder WithIsIdentity(System.Func<bool> isIdentityDelegate)
-        {
-            _isIdentityDelegate = new (isIdentityDelegate);
-            return this;
         }
 
         public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
@@ -182,15 +176,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableFieldBuilder WithIsRequired(System.Func<bool> isRequiredDelegate)
+        public TableFieldBuilder WithIsIdentity(System.Func<bool> isIdentityDelegate)
         {
-            _isRequiredDelegate = new (isRequiredDelegate);
+            _isIdentityDelegate = new (isIdentityDelegate);
             return this;
         }
 
         public TableFieldBuilder WithIsRequired(bool isRequired = true)
         {
             IsRequired = isRequired;
+            return this;
+        }
+
+        public TableFieldBuilder WithIsRequired(System.Func<bool> isRequiredDelegate)
+        {
+            _isRequiredDelegate = new (isRequiredDelegate);
             return this;
         }
 
@@ -218,27 +218,27 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public TableFieldBuilder WithNumericPrecision(System.Func<System.Nullable<byte>> numericPrecisionDelegate)
+        {
+            _numericPrecisionDelegate = new (numericPrecisionDelegate);
+            return this;
+        }
+
         public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
         {
             NumericPrecision = numericPrecision;
             return this;
         }
 
-        public TableFieldBuilder WithNumericPrecision(System.Func<System.Nullable<byte>>? numericPrecisionDelegate)
+        public TableFieldBuilder WithNumericScale(System.Func<System.Nullable<byte>> numericScaleDelegate)
         {
-            _numericPrecisionDelegate = new (numericPrecisionDelegate);
+            _numericScaleDelegate = new (numericScaleDelegate);
             return this;
         }
 
         public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
         {
             NumericScale = numericScale;
-            return this;
-        }
-
-        public TableFieldBuilder WithNumericScale(System.Func<System.Nullable<byte>>? numericScaleDelegate)
-        {
-            _numericScaleDelegate = new (numericScaleDelegate);
             return this;
         }
 
@@ -254,7 +254,7 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableFieldBuilder WithStringLength(System.Func<System.Nullable<int>>? stringLengthDelegate)
+        public TableFieldBuilder WithStringLength(System.Func<System.Nullable<int>> stringLengthDelegate)
         {
             _stringLengthDelegate = new (stringLengthDelegate);
             return this;

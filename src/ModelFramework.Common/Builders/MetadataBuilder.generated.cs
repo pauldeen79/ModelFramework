@@ -46,27 +46,27 @@ namespace ModelFramework.Common.Builders
             return new ModelFramework.Common.Metadata(Value, Name);
         }
 
-        public MetadataBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
         public MetadataBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
             return this;
         }
 
-        public MetadataBuilder WithValue(object? value)
+        public MetadataBuilder WithName(string name)
         {
-            Value = value;
+            Name = name;
             return this;
         }
 
-        public MetadataBuilder WithValue(System.Func<object>? valueDelegate)
+        public MetadataBuilder WithValue(System.Func<object?> valueDelegate)
         {
             _valueDelegate = new (valueDelegate);
+            return this;
+        }
+
+        public MetadataBuilder WithValue(object? value)
+        {
+            Value = value;
             return this;
         }
 

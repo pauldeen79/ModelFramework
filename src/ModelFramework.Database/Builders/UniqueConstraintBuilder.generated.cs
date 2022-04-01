@@ -53,26 +53,26 @@ namespace ModelFramework.Database.Builders
             }
         }
 
-        public UniqueConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> fields)
-        {
-            return AddFields(fields.ToArray());
-        }
-
         public UniqueConstraintBuilder AddFields(params ModelFramework.Database.Builders.UniqueConstraintFieldBuilder[] fields)
         {
             Fields.AddRange(fields);
             return this;
         }
 
-        public UniqueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public UniqueConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder> fields)
         {
-            return AddMetadata(metadata.ToArray());
+            return AddFields(fields.ToArray());
         }
 
         public UniqueConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public UniqueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public UniqueConstraintBuilder AddMetadata(string name, object? value)
@@ -86,27 +86,27 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
-        public UniqueConstraintBuilder WithFileGroupName(string fileGroupName)
-        {
-            FileGroupName = fileGroupName;
-            return this;
-        }
-
         public UniqueConstraintBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
         {
             _fileGroupNameDelegate = new (fileGroupNameDelegate);
             return this;
         }
 
-        public UniqueConstraintBuilder WithName(string name)
+        public UniqueConstraintBuilder WithFileGroupName(string fileGroupName)
         {
-            Name = name;
+            FileGroupName = fileGroupName;
             return this;
         }
 
         public UniqueConstraintBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public UniqueConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

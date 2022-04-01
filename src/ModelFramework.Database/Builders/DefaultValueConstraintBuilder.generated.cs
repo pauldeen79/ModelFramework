@@ -59,15 +59,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public DefaultValueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public DefaultValueConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public DefaultValueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public DefaultValueConstraintBuilder AddMetadata(string name, object? value)
@@ -81,21 +81,15 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.DefaultValueConstraint(FieldName, DefaultValue, Name, Metadata.Select(x => x.Build()));
         }
 
-        public DefaultValueConstraintBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
         public DefaultValueConstraintBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
         {
             _defaultValueDelegate = new (defaultValueDelegate);
             return this;
         }
 
-        public DefaultValueConstraintBuilder WithFieldName(string fieldName)
+        public DefaultValueConstraintBuilder WithDefaultValue(string defaultValue)
         {
-            FieldName = fieldName;
+            DefaultValue = defaultValue;
             return this;
         }
 
@@ -105,15 +99,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public DefaultValueConstraintBuilder WithName(string name)
+        public DefaultValueConstraintBuilder WithFieldName(string fieldName)
         {
-            Name = name;
+            FieldName = fieldName;
             return this;
         }
 
         public DefaultValueConstraintBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 

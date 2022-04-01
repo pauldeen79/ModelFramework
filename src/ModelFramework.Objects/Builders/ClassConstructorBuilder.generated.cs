@@ -157,15 +157,15 @@ namespace ModelFramework.Objects.Builders
             return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
         }
 
-        public ClassConstructorBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public ClassConstructorBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public ClassConstructorBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public ClassConstructorBuilder AddMetadata(string name, object? value)
@@ -200,15 +200,15 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
         }
 
-        public ClassConstructorBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
-            return this;
-        }
-
         public ClassConstructorBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithAbstract(System.Func<bool> abstractDelegate)
+        {
+            _abstractDelegate = new (@abstractDelegate);
             return this;
         }
 
@@ -224,15 +224,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithOverride(System.Func<bool> overrideDelegate)
-        {
-            _overrideDelegate = new (@overrideDelegate);
-            return this;
-        }
-
         public ClassConstructorBuilder WithOverride(bool @override = true)
         {
             Override = @override;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithOverride(System.Func<bool> overrideDelegate)
+        {
+            _overrideDelegate = new (@overrideDelegate);
             return this;
         }
 
@@ -248,27 +248,27 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithStatic(System.Func<bool> staticDelegate)
-        {
-            _staticDelegate = new (@staticDelegate);
-            return this;
-        }
-
         public ClassConstructorBuilder WithStatic(bool @static = true)
         {
             Static = @static;
             return this;
         }
 
-        public ClassConstructorBuilder WithVirtual(System.Func<bool> virtualDelegate)
+        public ClassConstructorBuilder WithStatic(System.Func<bool> staticDelegate)
         {
-            _virtualDelegate = new (@virtualDelegate);
+            _staticDelegate = new (@staticDelegate);
             return this;
         }
 
         public ClassConstructorBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithVirtual(System.Func<bool> virtualDelegate)
+        {
+            _virtualDelegate = new (@virtualDelegate);
             return this;
         }
 

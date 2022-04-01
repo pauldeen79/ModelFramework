@@ -59,15 +59,15 @@ namespace ModelFramework.Database.Builders
             }
         }
 
-        public ViewConditionBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public ViewConditionBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public ViewConditionBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public ViewConditionBuilder AddMetadata(string name, object? value)
@@ -81,21 +81,15 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
         }
 
-        public ViewConditionBuilder WithCombination(string combination)
-        {
-            Combination = combination;
-            return this;
-        }
-
         public ViewConditionBuilder WithCombination(System.Func<string> combinationDelegate)
         {
             _combinationDelegate = new (combinationDelegate);
             return this;
         }
 
-        public ViewConditionBuilder WithExpression(string expression)
+        public ViewConditionBuilder WithCombination(string combination)
         {
-            Expression = expression;
+            Combination = combination;
             return this;
         }
 
@@ -105,15 +99,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewConditionBuilder WithFileGroupName(string fileGroupName)
+        public ViewConditionBuilder WithExpression(string expression)
         {
-            FileGroupName = fileGroupName;
+            Expression = expression;
             return this;
         }
 
         public ViewConditionBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
         {
             _fileGroupNameDelegate = new (fileGroupNameDelegate);
+            return this;
+        }
+
+        public ViewConditionBuilder WithFileGroupName(string fileGroupName)
+        {
+            FileGroupName = fileGroupName;
             return this;
         }
 

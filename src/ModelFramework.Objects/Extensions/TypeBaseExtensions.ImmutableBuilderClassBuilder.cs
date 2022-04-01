@@ -400,10 +400,10 @@ public static partial class TypeBaseEtensions
                     .WithTypeName
                     (
                         useLazyInitialization
-                        ? $"System.Func<{typeName}>"
-                        : typeName
+                            ? $"System.Func<{typeName.FixTypeName().AppendNullableAnnotation(property, settings.EnableNullableReferenceTypes)}>"
+                            : typeName
                     )
-                    .WithIsNullable(property.IsNullable)
+                    .WithIsNullable(!useLazyInitialization ? property.IsNullable : false)
                     .WithDefaultValue(useLazyInitialization
                         ? null
                         : property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))

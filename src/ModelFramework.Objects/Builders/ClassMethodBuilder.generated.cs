@@ -220,15 +220,20 @@ namespace ModelFramework.Objects.Builders
             return AddAttributes(attributes.ToArray());
         }
 
+        public ClassMethodBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
+        {
+            CodeStatements.AddRange(codeStatements);
+            return this;
+        }
+
         public ClassMethodBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
         {
             return AddCodeStatements(codeStatements.ToArray());
         }
 
-        public ClassMethodBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
+        public ClassMethodBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
         {
-            CodeStatements.AddRange(codeStatements);
-            return this;
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
         }
 
         public ClassMethodBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
@@ -237,20 +242,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        public ClassMethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
         {
-            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
         public ClassMethodBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
         {
             GenericTypeArguments.AddRange(genericTypeArguments);
             return this;
-        }
-
-        public ClassMethodBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
         public ClassMethodBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
@@ -263,9 +263,9 @@ namespace ModelFramework.Objects.Builders
             return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
         }
 
-        public ClassMethodBuilder AddMetadata(string name, object? value)
+        public ClassMethodBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            Metadata.AddRange(metadata);
             return this;
         }
 
@@ -274,20 +274,20 @@ namespace ModelFramework.Objects.Builders
             return AddMetadata(metadata.ToArray());
         }
 
-        public ClassMethodBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        public ClassMethodBuilder AddMetadata(string name, object? value)
         {
-            Metadata.AddRange(metadata);
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
-        }
-
-        public ClassMethodBuilder AddParameter(string name, System.Type type)
-        {
-            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
         }
 
         public ClassMethodBuilder AddParameter(string name, string typeName)
         {
             return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+        }
+
+        public ClassMethodBuilder AddParameter(string name, System.Type type)
+        {
+            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
         }
 
         public ClassMethodBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
@@ -306,15 +306,15 @@ namespace ModelFramework.Objects.Builders
             return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
         }
 
-        public ClassMethodBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
+            return this;
+        }
+
+        public ClassMethodBuilder WithAbstract(System.Func<bool> abstractDelegate)
+        {
+            _abstractDelegate = new (@abstractDelegate);
             return this;
         }
 
@@ -342,21 +342,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
-        {
-            _isNullableDelegate = new (isNullableDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithIsNullable(bool isNullable = true)
         {
             IsNullable = isNullable;
             return this;
         }
 
-        public ClassMethodBuilder WithName(string name)
+        public ClassMethodBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
         {
-            Name = name;
+            _isNullableDelegate = new (isNullableDelegate);
             return this;
         }
 
@@ -366,15 +360,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithOperator(System.Func<bool> operatorDelegate)
+        public ClassMethodBuilder WithName(string name)
         {
-            _operatorDelegate = new (@operatorDelegate);
+            Name = name;
             return this;
         }
 
         public ClassMethodBuilder WithOperator(bool @operator = true)
         {
             Operator = @operator;
+            return this;
+        }
+
+        public ClassMethodBuilder WithOperator(System.Func<bool> operatorDelegate)
+        {
+            _operatorDelegate = new (@operatorDelegate);
             return this;
         }
 
@@ -390,21 +390,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithPartial(System.Func<bool> partialDelegate)
-        {
-            _partialDelegate = new (partialDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
             return this;
         }
 
-        public ClassMethodBuilder WithProtected(System.Func<bool> protectedDelegate)
+        public ClassMethodBuilder WithPartial(System.Func<bool> partialDelegate)
         {
-            _protectedDelegate = new (@protectedDelegate);
+            _partialDelegate = new (partialDelegate);
             return this;
         }
 
@@ -414,9 +408,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithStatic(System.Func<bool> staticDelegate)
+        public ClassMethodBuilder WithProtected(System.Func<bool> protectedDelegate)
         {
-            _staticDelegate = new (@staticDelegate);
+            _protectedDelegate = new (@protectedDelegate);
             return this;
         }
 
@@ -426,21 +420,27 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassMethodBuilder WithStatic(System.Func<bool> staticDelegate)
+        {
+            _staticDelegate = new (@staticDelegate);
+            return this;
+        }
+
         public ClassMethodBuilder WithType(System.Type type)
         {
             TypeName = type.AssemblyQualifiedName;
             return this;
         }
 
-        public ClassMethodBuilder WithTypeName(string typeName)
-        {
-            TypeName = typeName;
-            return this;
-        }
-
         public ClassMethodBuilder WithTypeName(System.Func<string> typeNameDelegate)
         {
             _typeNameDelegate = new (typeNameDelegate);
+            return this;
+        }
+
+        public ClassMethodBuilder WithTypeName(string typeName)
+        {
+            TypeName = typeName;
             return this;
         }
 
@@ -456,15 +456,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
-        {
-            _visibilityDelegate = new (visibilityDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
+            return this;
+        }
+
+        public ClassMethodBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        {
+            _visibilityDelegate = new (visibilityDelegate);
             return this;
         }
 

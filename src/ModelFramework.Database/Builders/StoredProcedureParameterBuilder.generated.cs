@@ -59,15 +59,15 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public StoredProcedureParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
         public StoredProcedureParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
             return this;
+        }
+
+        public StoredProcedureParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
         }
 
         public StoredProcedureParameterBuilder AddMetadata(string name, object? value)
@@ -81,21 +81,15 @@ namespace ModelFramework.Database.Builders
             return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
         }
 
-        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
         public StoredProcedureParameterBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
         {
             _defaultValueDelegate = new (defaultValueDelegate);
             return this;
         }
 
-        public StoredProcedureParameterBuilder WithName(string name)
+        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
         {
-            Name = name;
+            DefaultValue = defaultValue;
             return this;
         }
 
@@ -105,15 +99,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public StoredProcedureParameterBuilder WithType(string type)
+        public StoredProcedureParameterBuilder WithName(string name)
         {
-            Type = type;
+            Name = name;
             return this;
         }
 
         public StoredProcedureParameterBuilder WithType(System.Func<string> typeDelegate)
         {
             _typeDelegate = new (typeDelegate);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithType(string type)
+        {
+            Type = type;
             return this;
         }
 

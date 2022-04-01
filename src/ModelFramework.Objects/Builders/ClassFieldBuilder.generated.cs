@@ -196,12 +196,6 @@ namespace ModelFramework.Objects.Builders
             return AddAttributes(attributes.ToArray());
         }
 
-        public ClassFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ClassFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
@@ -211,6 +205,12 @@ namespace ModelFramework.Objects.Builders
         public ClassFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
+        }
+
+        public ClassFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
         }
 
         public ModelFramework.Objects.Contracts.IClassField Build()
@@ -230,15 +230,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassFieldBuilder WithConstant(bool constant = true)
+        {
+            Constant = constant;
+            return this;
+        }
+
         public ClassFieldBuilder WithConstant(System.Func<bool> constantDelegate)
         {
             _constantDelegate = new (constantDelegate);
             return this;
         }
 
-        public ClassFieldBuilder WithConstant(bool constant = true)
+        public ClassFieldBuilder WithDefaultValue(System.Func<object?> defaultValueDelegate)
         {
-            Constant = constant;
+            _defaultValueDelegate = new (defaultValueDelegate);
             return this;
         }
 
@@ -248,9 +254,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithDefaultValue(System.Func<object>? defaultValueDelegate)
+        public ClassFieldBuilder WithEvent(bool @event = true)
         {
-            _defaultValueDelegate = new (defaultValueDelegate);
+            Event = @event;
             return this;
         }
 
@@ -260,21 +266,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithEvent(bool @event = true)
+        public ClassFieldBuilder WithIsNullable(bool isNullable = true)
         {
-            Event = @event;
+            IsNullable = isNullable;
             return this;
         }
 
         public ClassFieldBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
         {
             _isNullableDelegate = new (isNullableDelegate);
-            return this;
-        }
-
-        public ClassFieldBuilder WithIsNullable(bool isNullable = true)
-        {
-            IsNullable = isNullable;
             return this;
         }
 
@@ -302,21 +302,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithProtected(System.Func<bool> protectedDelegate)
-        {
-            _protectedDelegate = new (@protectedDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
             return this;
         }
 
-        public ClassFieldBuilder WithReadOnly(System.Func<bool> readOnlyDelegate)
+        public ClassFieldBuilder WithProtected(System.Func<bool> protectedDelegate)
         {
-            _readOnlyDelegate = new (readOnlyDelegate);
+            _protectedDelegate = new (@protectedDelegate);
             return this;
         }
 
@@ -326,9 +320,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithStatic(System.Func<bool> staticDelegate)
+        public ClassFieldBuilder WithReadOnly(System.Func<bool> readOnlyDelegate)
         {
-            _staticDelegate = new (@staticDelegate);
+            _readOnlyDelegate = new (readOnlyDelegate);
             return this;
         }
 
@@ -338,15 +332,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithType(System.Type type)
+        public ClassFieldBuilder WithStatic(System.Func<bool> staticDelegate)
         {
-            TypeName = type.AssemblyQualifiedName;
+            _staticDelegate = new (@staticDelegate);
             return this;
         }
 
-        public ClassFieldBuilder WithTypeName(string typeName)
+        public ClassFieldBuilder WithType(System.Type type)
         {
-            TypeName = typeName;
+            TypeName = type.AssemblyQualifiedName;
             return this;
         }
 
@@ -356,9 +350,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithVirtual(System.Func<bool> virtualDelegate)
+        public ClassFieldBuilder WithTypeName(string typeName)
         {
-            _virtualDelegate = new (@virtualDelegate);
+            TypeName = typeName;
             return this;
         }
 
@@ -368,15 +362,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        public ClassFieldBuilder WithVirtual(System.Func<bool> virtualDelegate)
         {
-            _visibilityDelegate = new (visibilityDelegate);
+            _virtualDelegate = new (@virtualDelegate);
             return this;
         }
 
         public ClassFieldBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
+            return this;
+        }
+
+        public ClassFieldBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        {
+            _visibilityDelegate = new (visibilityDelegate);
             return this;
         }
 
