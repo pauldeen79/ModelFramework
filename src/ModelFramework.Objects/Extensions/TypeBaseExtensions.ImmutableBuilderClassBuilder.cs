@@ -115,7 +115,7 @@ public static partial class TypeBaseEtensions
 
         if (settings.ConstructorSettings.AddConstructorWithAllProperties)
         {
-            var properties = GetImmutableBuilderConstructorProperties(instance, settings.Poco);
+            var properties = GetImmutableBuilderConstructorProperties(instance, true);
 
             yield return new ClassConstructorBuilder()
                 .AddParameters(properties.Select(p => new ParameterBuilder()
@@ -157,7 +157,7 @@ public static partial class TypeBaseEtensions
             : $"{property.Name} = {property.GetDefaultValue()};";
 
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.UseTargetTypeNewExpressions
+        => settings.TypeSettings.UseTargetTypeNewExpressions
             ? string.Empty
             : $"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>";
 
@@ -171,12 +171,12 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance, bool poco)
     {
         var cls = instance as IClass;
-        var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
-
         if (poco)
         {
             return instance.Properties;
         }
+
+        var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
         var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
         if (ctor == null)
         {
@@ -226,12 +226,12 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                    ImmutableBuilderClassSettings settings)
     {
-        var openSign = GetImmutableBuilderPocoOpenSign(settings.Poco);
-        var closeSign = GetImmutableBuilderPocoCloseSign(settings.Poco);
+        var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
+        var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
         yield return new ClassMethodBuilder()
             .WithName("Build")
             .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
-            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetBuildMethodParameters(instance, settings.Poco)}{closeSign};");
+            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance)}{closeSign};");
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
@@ -243,7 +243,8 @@ public static partial class TypeBaseEtensions
                                                                                            ImmutableBuilderClassSettings settings,
                                                                                            bool extensionMethod)
     {
-        if (string.IsNullOrEmpty(settings.SetMethodNameFormatString))
+        if (string.IsNullOrEmpty(settings.NameSettings.SetMethodNameFormatString)
+            && string.IsNullOrEmpty(settings.NameSettings.AddMethodNameFormatString))
         {
             yield break;
         }
@@ -251,10 +252,9 @@ public static partial class TypeBaseEtensions
         foreach (var property in instance.Properties)
         {
             var overloads = GetOverloads(property);
-            if (property.TypeName.IsCollectionTypeName())
+            if (ShouldCreateCollectionProperty(settings, property))
             {
-                // collection
-                yield return CreateCollectionPropertyWithEnumerableParameter(instance, extensionMethod, property);
+                yield return CreateCollectionPropertyWithEnumerableParameter(instance, settings, extensionMethod, property);
                 yield return CreateCollectionPropertyWithArrayParameter(instance, settings, extensionMethod, property);
 
                 foreach (var overload in overloads)
@@ -263,9 +263,8 @@ public static partial class TypeBaseEtensions
                     yield return CreateCollectionPropertyOverloadWithArrayParameter(instance, settings, extensionMethod, property, overload);
                 }
             }
-            else
+            else if (ShouldCreateSingleProperty(settings))
             {
-                // single
                 yield return CreateSingleProperty(instance, settings, extensionMethod, false, property);
                 if (settings.UseLazyInitialization)
                 {
@@ -279,14 +278,20 @@ public static partial class TypeBaseEtensions
         }
     }
 
+    private static bool ShouldCreateSingleProperty(ImmutableBuilderClassSettings settings)
+        => !string.IsNullOrEmpty(settings.NameSettings.SetMethodNameFormatString);
+
+    private static bool ShouldCreateCollectionProperty(ImmutableBuilderClassSettings settings, IClassProperty property)
+        => property.TypeName.IsCollectionTypeName()
+            && !string.IsNullOrEmpty(settings.NameSettings.AddMethodNameFormatString);
+
     private static ClassMethodBuilder CreateCollectionPropertyOverloadWithArrayParameter(ITypeBase instance,
                                                                                          ImmutableBuilderClassSettings settings,
                                                                                          bool extensionMethod,
                                                                                          IClassProperty property,
                                                                                          Overload overload)
         => new ClassMethodBuilder()
-            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
-                                    property.Name))
+            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
             .ConfigureForExtensionMethod(instance, extensionMethod)
             .AddParameters
             (
@@ -309,7 +314,7 @@ public static partial class TypeBaseEtensions
                                                                                               IClassProperty property,
                                                                                               Overload overload)
         => new ClassMethodBuilder()
-            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name))
+            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
             .ConfigureForExtensionMethod(instance, extensionMethod)
             .AddParameters
             (
@@ -320,13 +325,14 @@ public static partial class TypeBaseEtensions
                                                 property.TypeName.GetGenericArguments()).FixCollectionTypeName("System.Collections.Generic.IEnumerable"))
                     .WithIsNullable(property.IsNullable)
             )
-            .AddLiteralCodeStatements($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());");
+            .AddLiteralCodeStatements($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());");
 
     private static ClassMethodBuilder CreateCollectionPropertyWithEnumerableParameter(ITypeBase instance,
+                                                                                      ImmutableBuilderClassSettings settings,
                                                                                       bool extensionMethod,
                                                                                       IClassProperty property)
         => new ClassMethodBuilder()
-            .WithName($"Add{property.Name}")
+            .WithName(string.Format(settings.NameSettings.AddMethodNameFormatString, property.Name))
             .ConfigureForExtensionMethod(instance, extensionMethod)
             .AddParameters
             (
@@ -350,7 +356,7 @@ public static partial class TypeBaseEtensions
                                                                                  bool extensionMethod,
                                                                                  IClassProperty property)
         => new ClassMethodBuilder()
-            .WithName($"Add{property.Name}")
+            .WithName(string.Format(settings.NameSettings.AddMethodNameFormatString, property.Name))
             .ConfigureForExtensionMethod(instance, extensionMethod)
             .AddParameters
             (
@@ -383,8 +389,7 @@ public static partial class TypeBaseEtensions
             property.TypeName.GetGenericArguments()
         );
         return new ClassMethodBuilder()
-            .WithName(string.Format(settings.SetMethodNameFormatString,
-                                    property.Name))
+            .WithName(string.Format(settings.NameSettings.SetMethodNameFormatString, property.Name))
             .ConfigureForExtensionMethod(instance, extensionMethod)
             .AddParameters
             (
@@ -428,7 +433,7 @@ public static partial class TypeBaseEtensions
                                                                    IClassProperty property,
                                                                    Overload overload)
         => new ClassMethodBuilder()
-            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.SetMethodNameFormatString),
+            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.SetMethodNameFormatString),
                                     property.Name))
             .ConfigureForExtensionMethod(instance, extensionMethod)
             .AddParameters
@@ -663,8 +668,9 @@ public static partial class TypeBaseEtensions
         }
     }
 
-    private static string GetBuildMethodParameters(ITypeBase instance, bool poco)
+    private static string GetConstructionMethodParameters(ITypeBase instance)
     {
+        var poco = instance.IsPoco();
         var properties = GetImmutableBuilderConstructorProperties(instance, poco);
 
         var defaultValueDelegate = poco

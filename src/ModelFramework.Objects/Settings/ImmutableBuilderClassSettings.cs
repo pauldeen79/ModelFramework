@@ -4,35 +4,20 @@ public record ImmutableBuilderClassSettings
 {
     public ImmutableBuilderClassConstructorSettings ConstructorSettings { get; }
     public ImmutableBuilderClassTypeSettings TypeSettings { get; }
-    public bool Poco { get; }
+    public ImmutableBuilderClassNameSettings NameSettings { get; }
     public bool UseLazyInitialization { get; }
-    public bool UseTargetTypeNewExpressions { get; }
     public bool EnableNullableReferenceTypes { get; }
-    public string SetMethodNameFormatString { get; }
 
     public ImmutableBuilderClassSettings(ImmutableBuilderClassTypeSettings? typeSettings = null,
                                          ImmutableBuilderClassConstructorSettings? constructorSettings = null,
-                                         bool poco = false,
+                                         ImmutableBuilderClassNameSettings? nameSettings = null,
                                          bool useLazyInitialization = false,
-                                         bool useTargetTypeNewExpressions = true,
-                                         bool enableNullableReferenceTypes = false,
-                                         string setMethodNameFormatString = "With{0}")
+                                         bool enableNullableReferenceTypes = false)
     {
         TypeSettings = typeSettings ?? new ImmutableBuilderClassTypeSettings();
         ConstructorSettings = constructorSettings ?? new ImmutableBuilderClassConstructorSettings();
-        Poco = poco;
+        NameSettings = nameSettings ?? new ImmutableBuilderClassNameSettings();
         UseLazyInitialization = useLazyInitialization;
-        UseTargetTypeNewExpressions = useTargetTypeNewExpressions;
         EnableNullableReferenceTypes = enableNullableReferenceTypes;
-        SetMethodNameFormatString = setMethodNameFormatString;
     }
-
-    public ImmutableBuilderClassSettings WithPoco(bool isPoco)
-        => new ImmutableBuilderClassSettings(TypeSettings,
-                                             ConstructorSettings,
-                                             Poco || isPoco,
-                                             UseLazyInitialization,
-                                             UseTargetTypeNewExpressions,
-                                             EnableNullableReferenceTypes,
-                                             SetMethodNameFormatString);
 }

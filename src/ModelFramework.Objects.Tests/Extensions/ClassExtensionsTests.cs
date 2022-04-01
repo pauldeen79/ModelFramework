@@ -15,7 +15,7 @@ public class ClassExtensionsTests
                                       .Build();
 
         // Act
-        var actual = input.IsPoco();
+        var actual = input.HasPublicParameterlessConstructor();
 
         // Assert
         actual.Should().BeFalse();
@@ -31,7 +31,7 @@ public class ClassExtensionsTests
                                       .Build();
 
         // Act
-        var actual = input.IsPoco();
+        var actual = input.HasPublicParameterlessConstructor();
 
         // Assert
         actual.Should().BeTrue();

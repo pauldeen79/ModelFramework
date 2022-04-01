@@ -419,7 +419,7 @@ return this;");
     {
         // Arrange
         var properties = CreateProperties();
-        var settings = new ImmutableBuilderClassSettings(setMethodNameFormatString: string.Empty);
+        var settings = new ImmutableBuilderClassSettings(nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: string.Empty, addMethodNameFormatString: string.Empty));
         var cls = new ClassBuilder()
             .WithName("MyRecord")
             .WithNamespace("MyNamespace")
@@ -445,7 +445,7 @@ return this;");
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   useTargetTypeNewExpressions: false,
+                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: false),
                                                                                    enableNullableReferenceTypes: true));
 
         // Assert
@@ -475,7 +475,7 @@ _property3Delegate = new System.Lazy<string?>(() => default);");
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   useTargetTypeNewExpressions: true,
+                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true),
                                                                                    enableNullableReferenceTypes: true));
 
         // Assert
@@ -494,7 +494,7 @@ _property3Delegate = new (() => default);");
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   useTargetTypeNewExpressions: true,
+                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true),
                                                                                    enableNullableReferenceTypes: true,
                                                                                    constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true)));
 

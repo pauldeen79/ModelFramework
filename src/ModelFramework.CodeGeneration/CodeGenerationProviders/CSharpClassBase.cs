@@ -6,7 +6,7 @@ public abstract class CSharpClassBase : ClassBase
         => Enumerable.Empty<ClassMethodBuilder>();
     protected virtual string NewCollectionTypeName => "System.Collections.Generic.List";
     protected virtual string SetMethodNameFormatString => "With{0}";
-    protected virtual bool Poco => false;
+    protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
@@ -122,13 +122,11 @@ public abstract class CSharpClassBase : ClassBase
             .AddMethods(CreateExtraOverloads(c));
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
-        => new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings(newCollectionTypeName: NewCollectionTypeName, formatInstanceTypeNameDelegate: FormatInstanceTypeName),
+        => new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings(newCollectionTypeName: NewCollectionTypeName, formatInstanceTypeNameDelegate: FormatInstanceTypeName, useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
                                              constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
-                                             poco: Poco,
-                                             setMethodNameFormatString: SetMethodNameFormatString,
+                                             nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: SetMethodNameFormatString, addMethodNameFormatString: AddMethodNameFormatString),
                                              enableNullableReferenceTypes: EnableNullableContext,
-                                             useLazyInitialization: UseLazyInitialization,
-                                             useTargetTypeNewExpressions: UseTargetTypeNewExpressions);
+                                             useLazyInitialization: UseLazyInitialization);
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),

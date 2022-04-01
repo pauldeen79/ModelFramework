@@ -1722,7 +1722,7 @@ namespace MyNamespace
             .AddProperties(properties)
             .Build()
             .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-        var settings = new ImmutableBuilderClassSettings(setMethodNameFormatString: "Set{0}");
+        var settings = new ImmutableBuilderClassSettings(nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: "Set{0}"));
         var model = new[]
         {
             cls,
