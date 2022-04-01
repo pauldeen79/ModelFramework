@@ -12,7 +12,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
@@ -35,7 +35,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithTypeName(string.Empty)
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
@@ -59,8 +59,8 @@ public class Method_DefaultClassTests
             .WithName("Name")
             .AddCodeStatements
             (
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"),
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();"),
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();")
             ).Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
@@ -102,7 +102,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel, iterationContextModel: rootModel.First());
 
@@ -122,7 +122,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .AddParameters
             (
                 new ParameterBuilder().WithName("parameter1").WithType(typeof(string)),
@@ -150,7 +150,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .AddParameters
             (
                 new ParameterBuilder().WithName("parameter1").WithTypeName("string"),
@@ -181,8 +181,8 @@ public class Method_DefaultClassTests
             .WithExplicitInterfaceName("IMyInterface")
             .AddCodeStatements
             (
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"),
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();"),
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();")
             ).Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
@@ -205,7 +205,7 @@ public class Method_DefaultClassTests
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassMethodBuilder()
             .WithName("Name")
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .AddAttributes
             (
                 new AttributeBuilder().WithName("Attribute1"),
@@ -236,7 +236,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .WithVisibility(Visibility.Private)
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
@@ -260,7 +260,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .AddParameters
             (
                 new ParameterBuilder().WithName("parameters").WithType(typeof(string[])).WithIsParamArray()
@@ -314,7 +314,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithTypeName("MyNamespace.MyClass")
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel);
 
@@ -337,7 +337,7 @@ public class Method_DefaultClassTests
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>
         (
@@ -359,9 +359,16 @@ public class Method_DefaultClassTests
 
     private sealed class CustomStatementTemplate : CSharpClassGeneratorBaseChild
     {
+#pragma warning disable S3459 // Unassigned members should be removed
+#pragma warning disable S1144 // Unused private types or members should be removed
         public LiteralCodeStatement? Model { get; set; }
+#pragma warning restore S1144 // Unused private types or members should be removed
+#pragma warning restore S3459 // Unassigned members should be removed
 
+#pragma warning disable S1144 // Unused private types or members should be removed
+#pragma warning disable S1172 // Unused method parameters should be removed
         public void Render(StringBuilder builder)
+#pragma warning restore S1172 // Unused method parameters should be removed
         {
             if (Model == null)
             {
@@ -371,5 +378,6 @@ public class Method_DefaultClassTests
 
             WriteLine(Model.Statement + " // added in template");
         }
+#pragma warning restore S1144 // Unused private types or members should be removed
     }
 }

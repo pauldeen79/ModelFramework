@@ -16,4 +16,7 @@ public partial class ClassBuilder
 
     public ClassBuilder AddExcludeFromCodeCoverageAttribute()
         => AddAttributes(new AttributeBuilder().WithName(typeof(ExcludeFromCodeCoverageAttribute).FullName));
+
+    public ClassBuilder AsReadOnly()
+        => this.Chain(x => x.Properties.ForEach(x => x.AsReadOnly()));
 }

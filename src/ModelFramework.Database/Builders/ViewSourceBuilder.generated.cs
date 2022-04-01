@@ -19,61 +19,56 @@ namespace ModelFramework.Database.Builders
     {
         public string Alias
         {
-            get;
-            set;
+            get
+            {
+                return _aliasDelegate.Value;
+            }
+            set
+            {
+                _aliasDelegate = new (() => value);
+            }
         }
 
         public string SourceSchemaName
         {
-            get;
-            set;
+            get
+            {
+                return _sourceSchemaNameDelegate.Value;
+            }
+            set
+            {
+                _sourceSchemaNameDelegate = new (() => value);
+            }
         }
 
         public string SourceObjectName
         {
-            get;
-            set;
+            get
+            {
+                return _sourceObjectNameDelegate.Value;
+            }
+            set
+            {
+                _sourceObjectNameDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
-        }
-
-        public ModelFramework.Database.Contracts.IViewSource Build()
-        {
-            return new ModelFramework.Database.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public ViewSourceBuilder WithAlias(string alias)
-        {
-            Alias = alias;
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceSchemaName(string sourceSchemaName)
-        {
-            SourceSchemaName = sourceSchemaName;
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceObjectName(string sourceObjectName)
-        {
-            SourceObjectName = sourceObjectName;
-            return this;
-        }
-
-        public ViewSourceBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
         }
 
         public ViewSourceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -93,24 +88,85 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ModelFramework.Database.Contracts.IViewSource Build()
+        {
+            return new ModelFramework.Database.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public ViewSourceBuilder WithAlias(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
+
+        public ViewSourceBuilder WithAlias(System.Func<string> aliasDelegate)
+        {
+            _aliasDelegate = new (aliasDelegate);
+            return this;
+        }
+
+        public ViewSourceBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewSourceBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ViewSourceBuilder WithSourceObjectName(string sourceObjectName)
+        {
+            SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewSourceBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
+        {
+            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
+            return this;
+        }
+
+        public ViewSourceBuilder WithSourceSchemaName(string sourceSchemaName)
+        {
+            SourceSchemaName = sourceSchemaName;
+            return this;
+        }
+
+        public ViewSourceBuilder WithSourceSchemaName(System.Func<string> sourceSchemaNameDelegate)
+        {
+            _sourceSchemaNameDelegate = new (sourceSchemaNameDelegate);
+            return this;
+        }
+
         public ViewSourceBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Alias = string.Empty;
-            SourceSchemaName = string.Empty;
-            SourceObjectName = string.Empty;
-            Name = string.Empty;
+            _aliasDelegate = new (() => string.Empty);
+            _sourceSchemaNameDelegate = new (() => string.Empty);
+            _sourceObjectNameDelegate = new (() => string.Empty);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public ViewSourceBuilder(ModelFramework.Database.Contracts.IViewSource source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Alias = source.Alias;
-            SourceSchemaName = source.SourceSchemaName;
-            SourceObjectName = source.SourceObjectName;
-            Name = source.Name;
+            _aliasDelegate = new (() => source.Alias);
+            _sourceSchemaNameDelegate = new (() => source.SourceSchemaName);
+            _sourceObjectNameDelegate = new (() => source.SourceObjectName);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _aliasDelegate;
+
+        private System.Lazy<string> _sourceSchemaNameDelegate;
+
+        private System.Lazy<string> _sourceObjectNameDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

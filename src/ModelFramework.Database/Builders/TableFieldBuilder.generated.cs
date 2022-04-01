@@ -19,56 +19,110 @@ namespace ModelFramework.Database.Builders
     {
         public string Type
         {
-            get;
-            set;
+            get
+            {
+                return _typeDelegate.Value;
+            }
+            set
+            {
+                _typeDelegate = new (() => value);
+            }
         }
 
         public bool IsIdentity
         {
-            get;
-            set;
+            get
+            {
+                return _isIdentityDelegate.Value;
+            }
+            set
+            {
+                _isIdentityDelegate = new (() => value);
+            }
         }
 
         public bool IsRequired
         {
-            get;
-            set;
+            get
+            {
+                return _isRequiredDelegate.Value;
+            }
+            set
+            {
+                _isRequiredDelegate = new (() => value);
+            }
         }
 
         public System.Nullable<byte> NumericPrecision
         {
-            get;
-            set;
+            get
+            {
+                return _numericPrecisionDelegate.Value;
+            }
+            set
+            {
+                _numericPrecisionDelegate = new (() => value);
+            }
         }
 
         public System.Nullable<byte> NumericScale
         {
-            get;
-            set;
+            get
+            {
+                return _numericScaleDelegate.Value;
+            }
+            set
+            {
+                _numericScaleDelegate = new (() => value);
+            }
         }
 
         public System.Nullable<int> StringLength
         {
-            get;
-            set;
+            get
+            {
+                return _stringLengthDelegate.Value;
+            }
+            set
+            {
+                _stringLengthDelegate = new (() => value);
+            }
         }
 
         public string StringCollation
         {
-            get;
-            set;
+            get
+            {
+                return _stringCollationDelegate.Value;
+            }
+            set
+            {
+                _stringCollationDelegate = new (() => value);
+            }
         }
 
         public bool IsStringMaxLength
         {
-            get;
-            set;
+            get
+            {
+                return _isStringMaxLengthDelegate.Value;
+            }
+            set
+            {
+                _isStringMaxLengthDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -81,76 +135,6 @@ namespace ModelFramework.Database.Builders
         {
             get;
             set;
-        }
-
-        public ModelFramework.Database.Contracts.ITableField Build()
-        {
-            return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
-        }
-
-        public TableFieldBuilder WithType(string type)
-        {
-            Type = type;
-            return this;
-        }
-
-        public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
-        {
-            IsIdentity = isIdentity;
-            return this;
-        }
-
-        public TableFieldBuilder WithIsRequired(bool isRequired = true)
-        {
-            IsRequired = isRequired;
-            return this;
-        }
-
-        public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
-        {
-            NumericPrecision = numericPrecision;
-            return this;
-        }
-
-        public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
-        {
-            NumericScale = numericScale;
-            return this;
-        }
-
-        public TableFieldBuilder WithStringLength(System.Nullable<int> stringLength)
-        {
-            StringLength = stringLength;
-            return this;
-        }
-
-        public TableFieldBuilder WithStringCollation(string stringCollation)
-        {
-            StringCollation = stringCollation;
-            return this;
-        }
-
-        public TableFieldBuilder WithIsStringMaxLength(bool isStringMaxLength = true)
-        {
-            IsStringMaxLength = isStringMaxLength;
-            return this;
-        }
-
-        public TableFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
-        public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
         }
 
         public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
@@ -170,34 +154,179 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ModelFramework.Database.Contracts.ITableField Build()
+        {
+            return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
+        }
+
+        public TableFieldBuilder WithIsIdentity(System.Func<bool> isIdentityDelegate)
+        {
+            _isIdentityDelegate = new (isIdentityDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
+        {
+            IsIdentity = isIdentity;
+            return this;
+        }
+
+        public TableFieldBuilder WithIsRequired(System.Func<bool> isRequiredDelegate)
+        {
+            _isRequiredDelegate = new (isRequiredDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithIsRequired(bool isRequired = true)
+        {
+            IsRequired = isRequired;
+            return this;
+        }
+
+        public TableFieldBuilder WithIsStringMaxLength(bool isStringMaxLength = true)
+        {
+            IsStringMaxLength = isStringMaxLength;
+            return this;
+        }
+
+        public TableFieldBuilder WithIsStringMaxLength(System.Func<bool> isStringMaxLengthDelegate)
+        {
+            _isStringMaxLengthDelegate = new (isStringMaxLengthDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
+        {
+            NumericPrecision = numericPrecision;
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericPrecision(System.Func<System.Nullable<byte>>? numericPrecisionDelegate)
+        {
+            _numericPrecisionDelegate = new (numericPrecisionDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
+        {
+            NumericScale = numericScale;
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericScale(System.Func<System.Nullable<byte>>? numericScaleDelegate)
+        {
+            _numericScaleDelegate = new (numericScaleDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithStringCollation(System.Func<string> stringCollationDelegate)
+        {
+            _stringCollationDelegate = new (stringCollationDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithStringCollation(string stringCollation)
+        {
+            StringCollation = stringCollation;
+            return this;
+        }
+
+        public TableFieldBuilder WithStringLength(System.Func<System.Nullable<int>>? stringLengthDelegate)
+        {
+            _stringLengthDelegate = new (stringLengthDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithStringLength(System.Nullable<int> stringLength)
+        {
+            StringLength = stringLength;
+            return this;
+        }
+
+        public TableFieldBuilder WithType(System.Func<string> typeDelegate)
+        {
+            _typeDelegate = new (typeDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithType(string type)
+        {
+            Type = type;
+            return this;
+        }
+
         public TableFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
-            Type = string.Empty;
-            IsIdentity = default;
-            IsRequired = default;
-            StringCollation = string.Empty;
-            IsStringMaxLength = default;
-            Name = string.Empty;
+            _typeDelegate = new (() => string.Empty);
+            _isIdentityDelegate = new (() => default);
+            _isRequiredDelegate = new (() => default);
+            _numericPrecisionDelegate = new (() => default);
+            _numericScaleDelegate = new (() => default);
+            _stringLengthDelegate = new (() => default);
+            _stringCollationDelegate = new (() => string.Empty);
+            _isStringMaxLengthDelegate = new (() => default);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public TableFieldBuilder(ModelFramework.Database.Contracts.ITableField source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
-            Type = source.Type;
-            IsIdentity = source.IsIdentity;
-            IsRequired = source.IsRequired;
-            NumericPrecision = source.NumericPrecision;
-            NumericScale = source.NumericScale;
-            StringLength = source.StringLength;
-            StringCollation = source.StringCollation;
-            IsStringMaxLength = source.IsStringMaxLength;
-            Name = source.Name;
+            _typeDelegate = new (() => source.Type);
+            _isIdentityDelegate = new (() => source.IsIdentity);
+            _isRequiredDelegate = new (() => source.IsRequired);
+            _numericPrecisionDelegate = new (() => source.NumericPrecision);
+            _numericScaleDelegate = new (() => source.NumericScale);
+            _stringLengthDelegate = new (() => source.StringLength);
+            _stringCollationDelegate = new (() => source.StringCollation);
+            _isStringMaxLengthDelegate = new (() => source.IsStringMaxLength);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
+
+        private System.Lazy<string> _typeDelegate;
+
+        private System.Lazy<bool> _isIdentityDelegate;
+
+        private System.Lazy<bool> _isRequiredDelegate;
+
+        private System.Lazy<System.Nullable<byte>> _numericPrecisionDelegate;
+
+        private System.Lazy<System.Nullable<byte>> _numericScaleDelegate;
+
+        private System.Lazy<System.Nullable<int>> _stringLengthDelegate;
+
+        private System.Lazy<string> _stringCollationDelegate;
+
+        private System.Lazy<bool> _isStringMaxLengthDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

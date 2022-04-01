@@ -19,25 +19,20 @@ namespace ModelFramework.Database.Builders
     {
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
-        }
-
-        public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
-        {
-            return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
-        }
-
-        public UniqueConstraintFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
         }
 
         public UniqueConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -57,18 +52,37 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
+        {
+            return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
+        }
+
+        public UniqueConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public UniqueConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public UniqueConstraintFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _nameDelegate = new (() => string.Empty);
         }
 
         public UniqueConstraintFieldBuilder(ModelFramework.Database.Contracts.IUniqueConstraintField source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

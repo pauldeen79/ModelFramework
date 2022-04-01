@@ -31,24 +31,14 @@ namespace ModelFramework.Objects.Builders
 
         public string Name
         {
-            get;
-            set;
-        }
-
-        public ModelFramework.Objects.Contracts.IAttribute Build()
-        {
-            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
-        }
-
-        public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
-        {
-            return AddParameters(parameters.ToArray());
-        }
-
-        public AttributeBuilder AddParameters(params ModelFramework.Objects.Builders.AttributeParameterBuilder[] parameters)
-        {
-            Parameters.AddRange(parameters);
-            return this;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -62,15 +52,37 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public AttributeBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
+        {
+            return AddParameters(parameters.ToArray());
+        }
+
+        public AttributeBuilder AddParameters(params ModelFramework.Objects.Builders.AttributeParameterBuilder[] parameters)
+        {
+            Parameters.AddRange(parameters);
+            return this;
+        }
+
+        public ModelFramework.Objects.Contracts.IAttribute Build()
+        {
+            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
+        }
+
         public AttributeBuilder WithName(string name)
         {
             Name = name;
             return this;
         }
 
-        public AttributeBuilder AddMetadata(string name, object? value)
+        public AttributeBuilder WithName(System.Func<string> nameDelegate)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 
@@ -78,7 +90,7 @@ namespace ModelFramework.Objects.Builders
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _nameDelegate = new (() => string.Empty);
         }
 
         public AttributeBuilder(ModelFramework.Objects.Contracts.IAttribute source)
@@ -87,8 +99,10 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.AttributeParameterBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
         }
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

@@ -19,25 +19,31 @@ namespace ModelFramework.Common.Builders
     {
         public object? Value
         {
-            get;
-            set;
+            get
+            {
+                return _valueDelegate.Value;
+            }
+            set
+            {
+                _valueDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public ModelFramework.Common.Contracts.IMetadata Build()
         {
             return new ModelFramework.Common.Metadata(Value, Name);
-        }
-
-        public MetadataBuilder WithValue(object? value)
-        {
-            Value = value;
-            return this;
         }
 
         public MetadataBuilder WithName(string name)
@@ -46,16 +52,39 @@ namespace ModelFramework.Common.Builders
             return this;
         }
 
+        public MetadataBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public MetadataBuilder WithValue(object? value)
+        {
+            Value = value;
+            return this;
+        }
+
+        public MetadataBuilder WithValue(System.Func<object>? valueDelegate)
+        {
+            _valueDelegate = new (valueDelegate);
+            return this;
+        }
+
         public MetadataBuilder()
         {
-            Name = string.Empty;
+            _valueDelegate = new (() => default);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public MetadataBuilder(ModelFramework.Common.Contracts.IMetadata source)
         {
-            Value = source.Value;
-            Name = source.Name;
+            _valueDelegate = new (() => source.Value);
+            _nameDelegate = new (() => source.Name);
         }
+
+        private System.Lazy<object?> _valueDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

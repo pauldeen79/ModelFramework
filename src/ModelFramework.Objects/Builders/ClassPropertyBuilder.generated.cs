@@ -19,38 +19,74 @@ namespace ModelFramework.Objects.Builders
     {
         public bool HasGetter
         {
-            get;
-            set;
+            get
+            {
+                return _hasGetterDelegate.Value;
+            }
+            set
+            {
+                _hasGetterDelegate = new (() => value);
+            }
         }
 
         public bool HasSetter
         {
-            get;
-            set;
+            get
+            {
+                return _hasSetterDelegate.Value;
+            }
+            set
+            {
+                _hasSetterDelegate = new (() => value);
+            }
         }
 
         public bool HasInitializer
         {
-            get;
-            set;
+            get
+            {
+                return _hasInitializerDelegate.Value;
+            }
+            set
+            {
+                _hasInitializerDelegate = new (() => value);
+            }
         }
 
         public System.Nullable<ModelFramework.Objects.Contracts.Visibility> GetterVisibility
         {
-            get;
-            set;
+            get
+            {
+                return _getterVisibilityDelegate.Value;
+            }
+            set
+            {
+                _getterVisibilityDelegate = new (() => value);
+            }
         }
 
         public System.Nullable<ModelFramework.Objects.Contracts.Visibility> SetterVisibility
         {
-            get;
-            set;
+            get
+            {
+                return _setterVisibilityDelegate.Value;
+            }
+            set
+            {
+                _setterVisibilityDelegate = new (() => value);
+            }
         }
 
         public System.Nullable<ModelFramework.Objects.Contracts.Visibility> InitializerVisibility
         {
-            get;
-            set;
+            get
+            {
+                return _initializerVisibilityDelegate.Value;
+            }
+            set
+            {
+                _initializerVisibilityDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder> GetterCodeStatements
@@ -79,44 +115,86 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get;
-            set;
+            get
+            {
+                return _staticDelegate.Value;
+            }
+            set
+            {
+                _staticDelegate = new (() => value);
+            }
         }
 
         public bool Virtual
         {
-            get;
-            set;
+            get
+            {
+                return _virtualDelegate.Value;
+            }
+            set
+            {
+                _virtualDelegate = new (() => value);
+            }
         }
 
         public bool Abstract
         {
-            get;
-            set;
+            get
+            {
+                return _abstractDelegate.Value;
+            }
+            set
+            {
+                _abstractDelegate = new (() => value);
+            }
         }
 
         public bool Protected
         {
-            get;
-            set;
+            get
+            {
+                return _protectedDelegate.Value;
+            }
+            set
+            {
+                _protectedDelegate = new (() => value);
+            }
         }
 
         public bool Override
         {
-            get;
-            set;
+            get
+            {
+                return _overrideDelegate.Value;
+            }
+            set
+            {
+                _overrideDelegate = new (() => value);
+            }
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get;
-            set;
+            get
+            {
+                return _visibilityDelegate.Value;
+            }
+            set
+            {
+                _visibilityDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -127,25 +205,140 @@ namespace ModelFramework.Objects.Builders
 
         public string TypeName
         {
-            get;
-            set;
+            get
+            {
+                return _typeNameDelegate.Value;
+            }
+            set
+            {
+                _typeNameDelegate = new (() => value);
+            }
         }
 
         public bool IsNullable
         {
-            get;
-            set;
+            get
+            {
+                return _isNullableDelegate.Value;
+            }
+            set
+            {
+                _isNullableDelegate = new (() => value);
+            }
         }
 
         public string ExplicitInterfaceName
         {
-            get;
-            set;
+            get
+            {
+                return _explicitInterfaceNameDelegate.Value;
+            }
+            set
+            {
+                _explicitInterfaceNameDelegate = new (() => value);
+            }
+        }
+
+        public ClassPropertyBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
+            return this;
+        }
+
+        public ClassPropertyBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        {
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public ClassPropertyBuilder AddGetterCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] getterCodeStatements)
+        {
+            GetterCodeStatements.AddRange(getterCodeStatements);
+            return this;
+        }
+
+        public ClassPropertyBuilder AddGetterCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> getterCodeStatements)
+        {
+            return AddGetterCodeStatements(getterCodeStatements.ToArray());
+        }
+
+        public ClassPropertyBuilder AddInitializerCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] initializerCodeStatements)
+        {
+            InitializerCodeStatements.AddRange(initializerCodeStatements);
+            return this;
+        }
+
+        public ClassPropertyBuilder AddInitializerCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> initializerCodeStatements)
+        {
+            return AddInitializerCodeStatements(initializerCodeStatements.ToArray());
+        }
+
+        public ClassPropertyBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public ClassPropertyBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ClassPropertyBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ClassPropertyBuilder AddSetterCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] setterCodeStatements)
+        {
+            SetterCodeStatements.AddRange(setterCodeStatements);
+            return this;
+        }
+
+        public ClassPropertyBuilder AddSetterCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> setterCodeStatements)
+        {
+            return AddSetterCodeStatements(setterCodeStatements.ToArray());
         }
 
         public ModelFramework.Objects.Contracts.IClassProperty Build()
         {
             return new ModelFramework.Objects.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+        }
+
+        public ClassPropertyBuilder WithAbstract(System.Func<bool> abstractDelegate)
+        {
+            _abstractDelegate = new (@abstractDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithAbstract(bool @abstract = true)
+        {
+            Abstract = @abstract;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
+        {
+            ExplicitInterfaceName = explicitInterfaceName;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithExplicitInterfaceName(System.Func<string> explicitInterfaceNameDelegate)
+        {
+            _explicitInterfaceNameDelegate = new (explicitInterfaceNameDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithGetterVisibility(System.Func<System.Nullable<ModelFramework.Objects.Contracts.Visibility>>? getterVisibilityDelegate)
+        {
+            _getterVisibilityDelegate = new (getterVisibilityDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithGetterVisibility(System.Nullable<ModelFramework.Objects.Contracts.Visibility> getterVisibility)
+        {
+            GetterVisibility = getterVisibility;
+            return this;
         }
 
         public ClassPropertyBuilder WithHasGetter(bool hasGetter = true)
@@ -154,12 +347,18 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassPropertyBuilder WithHasSetter(bool hasSetter = true)
+        public ClassPropertyBuilder WithHasGetter(System.Func<bool> hasGetterDelegate)
         {
-            HasSetter = hasSetter;
-            if (hasSetter)
+            _hasGetterDelegate = new (hasGetterDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithHasInitializer(System.Func<bool> hasInitializerDelegate)
+        {
+            HasInitializer = hasInitializerDelegate.Invoke();
+            if (hasInitializerDelegate.Invoke())
             {
-                HasInitializer = false;
+                HasSetter = false;
             }
             return this;
         }
@@ -174,15 +373,29 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassPropertyBuilder WithGetterVisibility(System.Nullable<ModelFramework.Objects.Contracts.Visibility> getterVisibility)
+        public ClassPropertyBuilder WithHasSetter(System.Func<bool> hasSetterDelegate)
         {
-            GetterVisibility = getterVisibility;
+            HasSetter = hasSetterDelegate.Invoke();
+            if (hasSetterDelegate.Invoke())
+            {
+                HasInitializer = false;
+            }
             return this;
         }
 
-        public ClassPropertyBuilder WithSetterVisibility(System.Nullable<ModelFramework.Objects.Contracts.Visibility> setterVisibility)
+        public ClassPropertyBuilder WithHasSetter(bool hasSetter = true)
         {
-            SetterVisibility = setterVisibility;
+            HasSetter = hasSetter;
+            if (hasSetter)
+            {
+                HasInitializer = false;
+            }
+            return this;
+        }
+
+        public ClassPropertyBuilder WithInitializerVisibility(System.Func<System.Nullable<ModelFramework.Objects.Contracts.Visibility>>? initializerVisibilityDelegate)
+        {
+            _initializerVisibilityDelegate = new (initializerVisibilityDelegate);
             return this;
         }
 
@@ -192,83 +405,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassPropertyBuilder AddGetterCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> getterCodeStatements)
+        public ClassPropertyBuilder WithIsNullable(bool isNullable = true)
         {
-            return AddGetterCodeStatements(getterCodeStatements.ToArray());
-        }
-
-        public ClassPropertyBuilder AddGetterCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] getterCodeStatements)
-        {
-            GetterCodeStatements.AddRange(getterCodeStatements);
+            IsNullable = isNullable;
             return this;
         }
 
-        public ClassPropertyBuilder AddSetterCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> setterCodeStatements)
+        public ClassPropertyBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
         {
-            return AddSetterCodeStatements(setterCodeStatements.ToArray());
-        }
-
-        public ClassPropertyBuilder AddSetterCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] setterCodeStatements)
-        {
-            SetterCodeStatements.AddRange(setterCodeStatements);
+            _isNullableDelegate = new (isNullableDelegate);
             return this;
         }
 
-        public ClassPropertyBuilder AddInitializerCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> initializerCodeStatements)
+        public ClassPropertyBuilder WithName(System.Func<string> nameDelegate)
         {
-            return AddInitializerCodeStatements(initializerCodeStatements.ToArray());
-        }
-
-        public ClassPropertyBuilder AddInitializerCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] initializerCodeStatements)
-        {
-            InitializerCodeStatements.AddRange(initializerCodeStatements);
-            return this;
-        }
-
-        public ClassPropertyBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ClassPropertyBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ClassPropertyBuilder WithStatic(bool @static = true)
-        {
-            Static = @static;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithVirtual(bool @virtual = true)
-        {
-            Virtual = @virtual;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithAbstract(bool @abstract = true)
-        {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithOverride(bool @override = true)
-        {
-            Override = @override;
-            return this;
-        }
-
-        public ClassPropertyBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
-        {
-            Visibility = visibility;
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 
@@ -278,20 +429,51 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassPropertyBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        public ClassPropertyBuilder WithOverride(bool @override = true)
         {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassPropertyBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
+            Override = @override;
             return this;
         }
 
-        public ClassPropertyBuilder WithTypeName(string typeName)
+        public ClassPropertyBuilder WithOverride(System.Func<bool> overrideDelegate)
         {
-            TypeName = typeName;
+            _overrideDelegate = new (@overrideDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithProtected(System.Func<bool> protectedDelegate)
+        {
+            _protectedDelegate = new (@protectedDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithProtected(bool @protected = true)
+        {
+            Protected = @protected;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithSetterVisibility(System.Nullable<ModelFramework.Objects.Contracts.Visibility> setterVisibility)
+        {
+            SetterVisibility = setterVisibility;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithSetterVisibility(System.Func<System.Nullable<ModelFramework.Objects.Contracts.Visibility>>? setterVisibilityDelegate)
+        {
+            _setterVisibilityDelegate = new (setterVisibilityDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithStatic(bool @static = true)
+        {
+            Static = @static;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithStatic(System.Func<bool> staticDelegate)
+        {
+            _staticDelegate = new (@staticDelegate);
             return this;
         }
 
@@ -301,21 +483,39 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassPropertyBuilder WithIsNullable(bool isNullable = true)
+        public ClassPropertyBuilder WithTypeName(string typeName)
         {
-            IsNullable = isNullable;
+            TypeName = typeName;
             return this;
         }
 
-        public ClassPropertyBuilder WithExplicitInterfaceName(string explicitInterfaceName)
+        public ClassPropertyBuilder WithTypeName(System.Func<string> typeNameDelegate)
         {
-            ExplicitInterfaceName = explicitInterfaceName;
+            _typeNameDelegate = new (typeNameDelegate);
             return this;
         }
 
-        public ClassPropertyBuilder AddMetadata(string name, object? value)
+        public ClassPropertyBuilder WithVirtual(System.Func<bool> virtualDelegate)
         {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            _virtualDelegate = new (@virtualDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithVirtual(bool @virtual = true)
+        {
+            Virtual = @virtual;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
+        {
+            Visibility = visibility;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        {
+            _visibilityDelegate = new (visibilityDelegate);
             return this;
         }
 
@@ -326,19 +526,22 @@ namespace ModelFramework.Objects.Builders
             InitializerCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            HasGetter = true;
-            HasSetter = true;
-            HasInitializer = default;
-            Static = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            Name = string.Empty;
-            TypeName = string.Empty;
-            IsNullable = default;
-            ExplicitInterfaceName = string.Empty;
+            _hasGetterDelegate = new (() => true);
+            _hasSetterDelegate = new (() => true);
+            _hasInitializerDelegate = new (() => default);
+            _getterVisibilityDelegate = new (() => default);
+            _setterVisibilityDelegate = new (() => default);
+            _initializerVisibilityDelegate = new (() => default);
+            _staticDelegate = new (() => default);
+            _virtualDelegate = new (() => default);
+            _abstractDelegate = new (() => default);
+            _protectedDelegate = new (() => default);
+            _overrideDelegate = new (() => default);
+            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            _nameDelegate = new (() => string.Empty);
+            _typeNameDelegate = new (() => string.Empty);
+            _isNullableDelegate = new (() => default);
+            _explicitInterfaceNameDelegate = new (() => string.Empty);
         }
 
         public ClassPropertyBuilder(ModelFramework.Objects.Contracts.IClassProperty source)
@@ -348,28 +551,60 @@ namespace ModelFramework.Objects.Builders
             InitializerCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            HasGetter = source.HasGetter;
-            HasSetter = source.HasSetter;
-            HasInitializer = source.HasInitializer;
-            GetterVisibility = source.GetterVisibility;
-            SetterVisibility = source.SetterVisibility;
-            InitializerVisibility = source.InitializerVisibility;
+            _hasGetterDelegate = new (() => source.HasGetter);
+            _hasSetterDelegate = new (() => source.HasSetter);
+            _hasInitializerDelegate = new (() => source.HasInitializer);
+            _getterVisibilityDelegate = new (() => source.GetterVisibility);
+            _setterVisibilityDelegate = new (() => source.SetterVisibility);
+            _initializerVisibilityDelegate = new (() => source.InitializerVisibility);
             GetterCodeStatements.AddRange(source.GetterCodeStatements.Select(x => x.CreateBuilder()));
             SetterCodeStatements.AddRange(source.SetterCodeStatements.Select(x => x.CreateBuilder()));
             InitializerCodeStatements.AddRange(source.InitializerCodeStatements.Select(x => x.CreateBuilder()));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Static = source.Static;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            Visibility = source.Visibility;
-            Name = source.Name;
+            _staticDelegate = new (() => source.Static);
+            _virtualDelegate = new (() => source.Virtual);
+            _abstractDelegate = new (() => source.Abstract);
+            _protectedDelegate = new (() => source.Protected);
+            _overrideDelegate = new (() => source.Override);
+            _visibilityDelegate = new (() => source.Visibility);
+            _nameDelegate = new (() => source.Name);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            TypeName = source.TypeName;
-            IsNullable = source.IsNullable;
-            ExplicitInterfaceName = source.ExplicitInterfaceName;
+            _typeNameDelegate = new (() => source.TypeName);
+            _isNullableDelegate = new (() => source.IsNullable);
+            _explicitInterfaceNameDelegate = new (() => source.ExplicitInterfaceName);
         }
+
+        private System.Lazy<bool> _hasGetterDelegate;
+
+        private System.Lazy<bool> _hasSetterDelegate;
+
+        private System.Lazy<bool> _hasInitializerDelegate;
+
+        private System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _getterVisibilityDelegate;
+
+        private System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _setterVisibilityDelegate;
+
+        private System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _initializerVisibilityDelegate;
+
+        private System.Lazy<bool> _staticDelegate;
+
+        private System.Lazy<bool> _virtualDelegate;
+
+        private System.Lazy<bool> _abstractDelegate;
+
+        private System.Lazy<bool> _protectedDelegate;
+
+        private System.Lazy<bool> _overrideDelegate;
+
+        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+
+        private System.Lazy<string> _nameDelegate;
+
+        private System.Lazy<string> _typeNameDelegate;
+
+        private System.Lazy<bool> _isNullableDelegate;
+
+        private System.Lazy<string> _explicitInterfaceNameDelegate;
     }
 #nullable restore
 }

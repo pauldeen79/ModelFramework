@@ -19,8 +19,14 @@ namespace ModelFramework.Objects.Builders
     {
         public string ChainCall
         {
-            get;
-            set;
+            get
+            {
+                return _chainCallDelegate.Value;
+            }
+            set
+            {
+                _chainCallDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -31,38 +37,74 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get;
-            set;
+            get
+            {
+                return _staticDelegate.Value;
+            }
+            set
+            {
+                _staticDelegate = new (() => value);
+            }
         }
 
         public bool Virtual
         {
-            get;
-            set;
+            get
+            {
+                return _virtualDelegate.Value;
+            }
+            set
+            {
+                _virtualDelegate = new (() => value);
+            }
         }
 
         public bool Abstract
         {
-            get;
-            set;
+            get
+            {
+                return _abstractDelegate.Value;
+            }
+            set
+            {
+                _abstractDelegate = new (() => value);
+            }
         }
 
         public bool Protected
         {
-            get;
-            set;
+            get
+            {
+                return _protectedDelegate.Value;
+            }
+            set
+            {
+                _protectedDelegate = new (() => value);
+            }
         }
 
         public bool Override
         {
-            get;
-            set;
+            get
+            {
+                return _overrideDelegate.Value;
+            }
+            set
+            {
+                _overrideDelegate = new (() => value);
+            }
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get;
-            set;
+            get
+            {
+                return _visibilityDelegate.Value;
+            }
+            set
+            {
+                _visibilityDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -83,15 +125,36 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ModelFramework.Objects.Contracts.IClassConstructor Build()
+        public ClassConstructorBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
-            return new ModelFramework.Objects.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
+            Attributes.AddRange(attributes);
+            return this;
         }
 
-        public ClassConstructorBuilder WithChainCall(string chainCall)
+        public ClassConstructorBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            ChainCall = chainCall;
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
+        {
+            CodeStatements.AddRange(codeStatements);
             return this;
+        }
+
+        public ClassConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
+        {
+            return AddCodeStatements(codeStatements.ToArray());
+        }
+
+        public ClassConstructorBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
+        {
+            return AddLiteralCodeStatements(statements.ToArray());
+        }
+
+        public ClassConstructorBuilder AddLiteralCodeStatements(params string[] statements)
+        {
+            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
         }
 
         public ClassConstructorBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -105,15 +168,41 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithStatic(bool @static = true)
+        public ClassConstructorBuilder AddMetadata(string name, object? value)
         {
-            Static = @static;
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
-        public ClassConstructorBuilder WithVirtual(bool @virtual = true)
+        public ClassConstructorBuilder AddParameter(string name, string typeName)
         {
-            Virtual = @virtual;
+            return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+        }
+
+        public ClassConstructorBuilder AddParameter(string name, System.Type type)
+        {
+            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
+        }
+
+        public ClassConstructorBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
+        {
+            Parameters.AddRange(parameters);
+            return this;
+        }
+
+        public ClassConstructorBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
+        {
+            return AddParameters(parameters.ToArray());
+        }
+
+        public ModelFramework.Objects.Contracts.IClassConstructor Build()
+        {
+            return new ModelFramework.Objects.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
+        }
+
+        public ClassConstructorBuilder WithAbstract(System.Func<bool> abstractDelegate)
+        {
+            _abstractDelegate = new (@abstractDelegate);
             return this;
         }
 
@@ -123,9 +212,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithProtected(bool @protected = true)
+        public ClassConstructorBuilder WithChainCall(System.Func<string> chainCallDelegate)
         {
-            Protected = @protected;
+            _chainCallDelegate = new (chainCallDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder WithChainCall(string chainCall)
+        {
+            ChainCall = chainCall;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithOverride(System.Func<bool> overrideDelegate)
+        {
+            _overrideDelegate = new (@overrideDelegate);
             return this;
         }
 
@@ -135,69 +236,52 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassConstructorBuilder WithProtected(bool @protected = true)
+        {
+            Protected = @protected;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithProtected(System.Func<bool> protectedDelegate)
+        {
+            _protectedDelegate = new (@protectedDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder WithStatic(System.Func<bool> staticDelegate)
+        {
+            _staticDelegate = new (@staticDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder WithStatic(bool @static = true)
+        {
+            Static = @static;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithVirtual(System.Func<bool> virtualDelegate)
+        {
+            _virtualDelegate = new (@virtualDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder WithVirtual(bool @virtual = true)
+        {
+            Virtual = @virtual;
+            return this;
+        }
+
         public ClassConstructorBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
             return this;
         }
 
-        public ClassConstructorBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        public ClassConstructorBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
         {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassConstructorBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
+            _visibilityDelegate = new (visibilityDelegate);
             return this;
-        }
-
-        public ClassConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
-        {
-            return AddCodeStatements(codeStatements.ToArray());
-        }
-
-        public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
-        {
-            CodeStatements.AddRange(codeStatements);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
-        {
-            return AddParameters(parameters.ToArray());
-        }
-
-        public ClassConstructorBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
-        {
-            Parameters.AddRange(parameters);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
-        public ClassConstructorBuilder AddParameter(string name, System.Type type)
-        {
-            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
-        }
-
-        public ClassConstructorBuilder AddParameter(string name, string typeName)
-        {
-            return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
-        }
-
-        public ClassConstructorBuilder AddLiteralCodeStatements(params string[] statements)
-        {
-            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
-        }
-
-        public ClassConstructorBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
-        {
-            return AddLiteralCodeStatements(statements.ToArray());
         }
 
         public ClassConstructorBuilder()
@@ -206,13 +290,13 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            ChainCall = string.Empty;
-            Static = default;
-            Virtual = default;
-            Abstract = default;
-            Protected = default;
-            Override = default;
-            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
+            _chainCallDelegate = new (() => string.Empty);
+            _staticDelegate = new (() => default);
+            _virtualDelegate = new (() => default);
+            _abstractDelegate = new (() => default);
+            _protectedDelegate = new (() => default);
+            _overrideDelegate = new (() => default);
+            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
         }
 
         public ClassConstructorBuilder(ModelFramework.Objects.Contracts.IClassConstructor source)
@@ -221,18 +305,32 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            ChainCall = source.ChainCall;
+            _chainCallDelegate = new (() => source.ChainCall);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            Static = source.Static;
-            Virtual = source.Virtual;
-            Abstract = source.Abstract;
-            Protected = source.Protected;
-            Override = source.Override;
-            Visibility = source.Visibility;
+            _staticDelegate = new (() => source.Static);
+            _virtualDelegate = new (() => source.Virtual);
+            _abstractDelegate = new (() => source.Abstract);
+            _protectedDelegate = new (() => source.Protected);
+            _overrideDelegate = new (() => source.Override);
+            _visibilityDelegate = new (() => source.Visibility);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
         }
+
+        private System.Lazy<string> _chainCallDelegate;
+
+        private System.Lazy<bool> _staticDelegate;
+
+        private System.Lazy<bool> _virtualDelegate;
+
+        private System.Lazy<bool> _abstractDelegate;
+
+        private System.Lazy<bool> _protectedDelegate;
+
+        private System.Lazy<bool> _overrideDelegate;
+
+        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
     }
 #nullable restore
 }

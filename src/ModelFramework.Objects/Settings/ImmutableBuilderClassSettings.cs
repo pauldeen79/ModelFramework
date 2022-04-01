@@ -2,37 +2,22 @@
 
 public record ImmutableBuilderClassSettings
 {
-    public string NewCollectionTypeName { get; }
     public ImmutableBuilderClassConstructorSettings ConstructorSettings { get; }
-    public bool Poco { get; }
-    public bool AddNullChecks { get; }
-    public bool SetDefaultValues { get; }
-    public string SetMethodNameFormatString { get; }
-    public Func<ITypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
+    public ImmutableBuilderClassTypeSettings TypeSettings { get; }
+    public ImmutableBuilderClassNameSettings NameSettings { get; }
+    public bool UseLazyInitialization { get; }
+    public bool EnableNullableReferenceTypes { get; }
 
-    public ImmutableBuilderClassSettings(string newCollectionTypeName = "System.Collections.Generic.List",
+    public ImmutableBuilderClassSettings(ImmutableBuilderClassTypeSettings? typeSettings = null,
                                          ImmutableBuilderClassConstructorSettings? constructorSettings = null,
-                                         bool poco = false,
-                                         bool addNullChecks = false,
-                                         bool setDefaultValues = true,
-                                         string setMethodNameFormatString = "With{0}",
-                                         Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
+                                         ImmutableBuilderClassNameSettings? nameSettings = null,
+                                         bool useLazyInitialization = false,
+                                         bool enableNullableReferenceTypes = false)
     {
-        NewCollectionTypeName = newCollectionTypeName;
+        TypeSettings = typeSettings ?? new ImmutableBuilderClassTypeSettings();
         ConstructorSettings = constructorSettings ?? new ImmutableBuilderClassConstructorSettings();
-        Poco = poco;
-        AddNullChecks = addNullChecks;
-        SetDefaultValues = setDefaultValues;
-        SetMethodNameFormatString = setMethodNameFormatString;
-        FormatInstanceTypeNameDelegate = formatInstanceTypeNameDelegate;
+        NameSettings = nameSettings ?? new ImmutableBuilderClassNameSettings();
+        UseLazyInitialization = useLazyInitialization;
+        EnableNullableReferenceTypes = enableNullableReferenceTypes;
     }
-
-    public ImmutableBuilderClassSettings WithPoco(bool isPoco)
-        => new ImmutableBuilderClassSettings(NewCollectionTypeName,
-                                             ConstructorSettings,
-                                             Poco || isPoco,
-                                             AddNullChecks,
-                                             SetDefaultValues,
-                                             SetMethodNameFormatString,
-                                             FormatInstanceTypeNameDelegate);
 }

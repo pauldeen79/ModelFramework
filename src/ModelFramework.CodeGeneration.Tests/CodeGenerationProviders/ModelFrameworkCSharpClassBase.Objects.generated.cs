@@ -617,3 +617,4 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
     }
 #nullable restore
 }
+

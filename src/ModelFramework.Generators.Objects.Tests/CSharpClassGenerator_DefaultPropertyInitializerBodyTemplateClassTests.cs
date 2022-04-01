@@ -24,7 +24,7 @@ public class CSharpClassGenerator_DefaultPropertyInitializerBodyTemplateClassTes
         var model = new ClassPropertyBuilder()
             .WithName("Name")
             .WithTypeName("string")
-            .AddInitializerCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddInitializerCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultPropertyInitializerBodyTemplate>(model);
 

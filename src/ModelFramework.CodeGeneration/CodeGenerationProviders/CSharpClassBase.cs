@@ -6,12 +6,13 @@ public abstract class CSharpClassBase : ClassBase
         => Enumerable.Empty<ClassMethodBuilder>();
     protected virtual string NewCollectionTypeName => "System.Collections.Generic.List";
     protected virtual string SetMethodNameFormatString => "With{0}";
-    protected virtual bool Poco => false;
+    protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
+    protected virtual bool UseLazyInitialization => true;
+    protected virtual bool UseTargetTypeNewExpressions => true;
 
     protected abstract Type RecordCollectionType { get; }
-
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
     protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
 
@@ -111,21 +112,25 @@ public abstract class CSharpClassBase : ClassBase
         => c.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
-            .AddMethods(CreateExtraOverloads(c));
+            .AddMethods(CreateExtraOverloads(c))
+            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
 
     protected ClassBuilder CreateBuilderExtensions(IClass c, string @namespace)
         => c.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
-            .AddMethods(CreateExtraOverloads(c));
+            .AddMethods(CreateExtraOverloads(c))
+            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
+
+    private static string CreateSortString(ClassMethodBuilder x)
+        => $"{x.Name}({string.Join(", ", x.Parameters.Select(x => x.TypeName))})";
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
-        => new ImmutableBuilderClassSettings(newCollectionTypeName: NewCollectionTypeName,
-                                             constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor),
-                                             poco: Poco,
-                                             addNullChecks: AddNullChecks,
-                                             setMethodNameFormatString: SetMethodNameFormatString,
-                                             formatInstanceTypeNameDelegate: FormatInstanceTypeName);
+        => new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings(newCollectionTypeName: NewCollectionTypeName, formatInstanceTypeNameDelegate: FormatInstanceTypeName, useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
+                                             constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
+                                             nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: SetMethodNameFormatString, addMethodNameFormatString: AddMethodNameFormatString),
+                                             enableNullableReferenceTypes: EnableNullableContext,
+                                             useLazyInitialization: UseLazyInitialization);
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),

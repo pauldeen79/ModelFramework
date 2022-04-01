@@ -19,25 +19,20 @@ namespace ModelFramework.Database.SqlStatements.Builders
     {
         public string Statement
         {
-            get;
-            set;
+            get
+            {
+                return _statementDelegate.Value;
+            }
+            set
+            {
+                _statementDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
-        }
-
-        public ModelFramework.Database.Contracts.ISqlStatement Build()
-        {
-            return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
-        }
-
-        public LiteralSqlStatementBuilder WithStatement(string statement)
-        {
-            Statement = statement;
-            return this;
         }
 
         public LiteralSqlStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -57,18 +52,37 @@ namespace ModelFramework.Database.SqlStatements.Builders
             return this;
         }
 
+        public ModelFramework.Database.Contracts.ISqlStatement Build()
+        {
+            return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
+        }
+
+        public LiteralSqlStatementBuilder WithStatement(string statement)
+        {
+            Statement = statement;
+            return this;
+        }
+
+        public LiteralSqlStatementBuilder WithStatement(System.Func<string> statementDelegate)
+        {
+            _statementDelegate = new (statementDelegate);
+            return this;
+        }
+
         public LiteralSqlStatementBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Statement = string.Empty;
+            _statementDelegate = new (() => string.Empty);
         }
 
         public LiteralSqlStatementBuilder(ModelFramework.Database.SqlStatements.LiteralSqlStatement source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Statement = source.Statement;
+            _statementDelegate = new (() => source.Statement);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _statementDelegate;
     }
 #nullable restore
 }

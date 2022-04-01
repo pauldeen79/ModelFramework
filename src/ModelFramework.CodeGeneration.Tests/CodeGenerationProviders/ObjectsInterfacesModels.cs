@@ -9,6 +9,7 @@ public class ObjectsInterfacesModels : CSharpExpressionDumperClassBase
     protected override string Namespace => "ModelFramework.CodeGeneration.Tests.CodeGenerationProviders";
     protected override string ClassName => "ModelFrameworkCSharpClassBase";
     protected override string MethodName => "GetObjectsModels";
+    protected override string FileNameSuffix => ".Objects.generated";
 
     protected override string[] NamespacesToAbbreviate => new[]
     {

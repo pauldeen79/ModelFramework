@@ -19,8 +19,14 @@ namespace ModelFramework.Objects.Builders
     {
         public object? Value
         {
-            get;
-            set;
+            get
+            {
+                return _valueDelegate.Value;
+            }
+            set
+            {
+                _valueDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -31,25 +37,20 @@ namespace ModelFramework.Objects.Builders
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
-        }
-
-        public ModelFramework.Objects.Contracts.IEnumMember Build()
-        {
-            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
-        }
-
-        public EnumMemberBuilder WithValue(object? value)
-        {
-            Value = value;
-            return this;
         }
 
         public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
@@ -60,12 +61,6 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
-            return this;
-        }
-
-        public EnumMemberBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 
@@ -86,22 +81,56 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ModelFramework.Objects.Contracts.IEnumMember Build()
+        {
+            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+        }
+
+        public EnumMemberBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public EnumMemberBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public EnumMemberBuilder WithValue(object? value)
+        {
+            Value = value;
+            return this;
+        }
+
+        public EnumMemberBuilder WithValue(System.Func<object>? valueDelegate)
+        {
+            _valueDelegate = new (valueDelegate);
+            return this;
+        }
+
         public EnumMemberBuilder()
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Name = string.Empty;
+            _valueDelegate = new (() => default);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public EnumMemberBuilder(ModelFramework.Objects.Contracts.IEnumMember source)
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Value = source.Value;
+            _valueDelegate = new (() => source.Value);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            Name = source.Name;
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<object?> _valueDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

@@ -67,6 +67,10 @@ public static partial class TypeBaseExtensions
     public static IEnumerable<string> GetNamespacesToAbbreviate(this ITypeBase instance)
         => instance.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate);
 
+    public static bool IsPoco(this ITypeBase instance)
+    => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
+        && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
+
     private static string GetInheritedClassesForClass(IClass cls)
     {
         var lst = new List<string>();

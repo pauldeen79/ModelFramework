@@ -128,13 +128,13 @@ public class StringExtensionsTests
     public void FixTypeName_Returns_Correct_Result_For_Generic_Enumerable()
     {
         // Arrange
-        var input = typeof(Func<int>).FullName;
+        var input = typeof(IEnumerable<int>).FullName;
 
         // Act
         var actual = input.FixTypeName();
 
         // Assert
-        actual.Should().Be("System.Func<System.Int32>");
+        actual.Should().Be("System.Collections.Generic.IEnumerable<System.Int32>");
     }
 
     [Fact]

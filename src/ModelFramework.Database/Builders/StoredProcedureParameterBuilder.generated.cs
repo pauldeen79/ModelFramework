@@ -19,49 +19,44 @@ namespace ModelFramework.Database.Builders
     {
         public string Type
         {
-            get;
-            set;
+            get
+            {
+                return _typeDelegate.Value;
+            }
+            set
+            {
+                _typeDelegate = new (() => value);
+            }
         }
 
         public string DefaultValue
         {
-            get;
-            set;
+            get
+            {
+                return _defaultValueDelegate.Value;
+            }
+            set
+            {
+                _defaultValueDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
-        }
-
-        public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
-        {
-            return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public StoredProcedureParameterBuilder WithType(string type)
-        {
-            Type = type;
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
         }
 
         public StoredProcedureParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -81,22 +76,69 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
+        {
+            return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
+        {
+            DefaultValue = defaultValue;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
+        {
+            _defaultValueDelegate = new (defaultValueDelegate);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithType(string type)
+        {
+            Type = type;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithType(System.Func<string> typeDelegate)
+        {
+            _typeDelegate = new (typeDelegate);
+            return this;
+        }
+
         public StoredProcedureParameterBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Type = string.Empty;
-            DefaultValue = string.Empty;
-            Name = string.Empty;
+            _typeDelegate = new (() => string.Empty);
+            _defaultValueDelegate = new (() => string.Empty);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public StoredProcedureParameterBuilder(ModelFramework.Database.Contracts.IStoredProcedureParameter source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Type = source.Type;
-            DefaultValue = source.DefaultValue;
-            Name = source.Name;
+            _typeDelegate = new (() => source.Type);
+            _defaultValueDelegate = new (() => source.DefaultValue);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _typeDelegate;
+
+        private System.Lazy<string> _defaultValueDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

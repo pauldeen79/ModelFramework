@@ -6,5 +6,5 @@ public static class EnumerableOfStringExtensions
         => instance.Select(s => new LiteralCodeStatement(s, Enumerable.Empty<IMetadata>()));
 
     public static IEnumerable<ICodeStatementBuilder> ToLiteralCodeStatementBuilders(this IEnumerable<string> instance)
-        => instance.Select(s => new LiteralCodeStatementBuilder().WithStatement(s));
+        => instance.Select(s => new LiteralCodeStatementBuilder(s));
 }

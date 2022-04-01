@@ -294,6 +294,10 @@ namespace MyNamespace
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
         {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = source.Property1;
@@ -1582,7 +1586,7 @@ namespace MyNamespace
             .AddProperties(properties)
             .Build()
             .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true), addNullChecks: true);
+        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: true));
         var model = new[]
         {
             cls,
@@ -1614,7 +1618,7 @@ namespace MyNamespace
             .AddProperties(properties)
             .Build()
             .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true), addNullChecks: false);
+        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: false));
         var model = new[]
         {
             cls,
@@ -1718,7 +1722,7 @@ namespace MyNamespace
             .AddProperties(properties)
             .Build()
             .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
-        var settings = new ImmutableBuilderClassSettings(setMethodNameFormatString: "Set{0}");
+        var settings = new ImmutableBuilderClassSettings(nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: "Set{0}"));
         var model = new[]
         {
             cls,
@@ -2660,7 +2664,7 @@ namespace MyNamespace
                 new ParameterBuilder().WithName("Parameter2").WithType(typeof(int))
             ).AddCodeStatements
             (
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();")
             );
     }
 
@@ -2672,7 +2676,7 @@ namespace MyNamespace
             (
                 new ParameterBuilder().WithName("Parameter1").WithType(typeof(string)),
                 new ParameterBuilder().WithName("Parameter2").WithType(typeof(int))
-            ).AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"));
+            ).AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"));
     }
 
     private static IEnumerable<ClassPropertyBuilder> GetProperties()

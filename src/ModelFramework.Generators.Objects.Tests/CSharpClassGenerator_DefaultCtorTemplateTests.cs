@@ -6,7 +6,7 @@ public class Ctor_DefaultClassTests
     public void GeneratesCodeBody()
     {
         // Arrange
-        var model = new ClassConstructorBuilder().AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")).Build();
+        var model = new ClassConstructorBuilder().AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();")).Build();
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var sut = CreateSut(model, rootModel);
 
@@ -29,8 +29,8 @@ public class Ctor_DefaultClassTests
         var model = new ClassConstructorBuilder()
             .AddCodeStatements
             (
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"),
-                new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();"),
+                new LiteralCodeStatementBuilder("throw new NotImplementedException();")
             )
             .Build();
         var sut = CreateSut(model, rootModel);
@@ -52,7 +52,7 @@ public class Ctor_DefaultClassTests
     {
         // Arrange
         var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-        var model = new ClassConstructorBuilder().AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")).Build();
+        var model = new ClassConstructorBuilder().AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();")).Build();
         var sut = CreateSut(model, rootModel);
 
         // Act
@@ -70,7 +70,7 @@ public class Ctor_DefaultClassTests
         var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder().AddCodeStatements
         (
-            new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+            new LiteralCodeStatementBuilder("throw new NotImplementedException();")
         ).AddParameters
         (
             new ParameterBuilder().WithName("parameter1").WithType(typeof(string)),
@@ -94,7 +94,7 @@ public class Ctor_DefaultClassTests
         var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder().AddCodeStatements
         (
-            new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();")
+            new LiteralCodeStatementBuilder("throw new NotImplementedException();")
         ).AddParameters
         (
             new ParameterBuilder().WithName("parameters").WithType(typeof(string[])).WithIsParamArray()
@@ -115,7 +115,7 @@ public class Ctor_DefaultClassTests
         // Arrange
         var rootModel = new InterfaceBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder()
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .AddAttributes
             (
             new AttributeBuilder().WithName("Attribute1"),
@@ -142,7 +142,7 @@ public class Ctor_DefaultClassTests
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder()
             .WithVisibility(Visibility.Internal)
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = CreateSut(model, rootModel);
 
@@ -164,7 +164,7 @@ public class Ctor_DefaultClassTests
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder()
             .WithVisibility(Visibility.Private)
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = CreateSut(model, rootModel);
 
@@ -186,7 +186,7 @@ public class Ctor_DefaultClassTests
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder()
             .WithStatic()
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = CreateSut(model, rootModel);
 
@@ -208,7 +208,7 @@ public class Ctor_DefaultClassTests
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
         var model = new ClassConstructorBuilder()
             .WithVirtual()
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = CreateSut(model, rootModel);
 
@@ -247,7 +247,7 @@ public class Ctor_DefaultClassTests
         var model = new ClassConstructorBuilder()
             .WithVisibility(Visibility.Private)
             .WithProtected()
-            .AddCodeStatements(new LiteralCodeStatementBuilder().WithStatement("throw new NotImplementedException();"))
+            .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
         var sut = CreateSut(model, rootModel);
 

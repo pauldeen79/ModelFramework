@@ -19,49 +19,44 @@ namespace ModelFramework.Database.Builders
     {
         public string FieldName
         {
-            get;
-            set;
+            get
+            {
+                return _fieldNameDelegate.Value;
+            }
+            set
+            {
+                _fieldNameDelegate = new (() => value);
+            }
         }
 
         public string DefaultValue
         {
-            get;
-            set;
+            get
+            {
+                return _defaultValueDelegate.Value;
+            }
+            set
+            {
+                _defaultValueDelegate = new (() => value);
+            }
         }
 
         public string Name
         {
-            get;
-            set;
+            get
+            {
+                return _nameDelegate.Value;
+            }
+            set
+            {
+                _nameDelegate = new (() => value);
+            }
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
         {
             get;
             set;
-        }
-
-        public ModelFramework.Database.Contracts.IDefaultValueConstraint Build()
-        {
-            return new ModelFramework.Database.DefaultValueConstraint(FieldName, DefaultValue, Name, Metadata.Select(x => x.Build()));
-        }
-
-        public DefaultValueConstraintBuilder WithFieldName(string fieldName)
-        {
-            FieldName = fieldName;
-            return this;
-        }
-
-        public DefaultValueConstraintBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
-        public DefaultValueConstraintBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
         }
 
         public DefaultValueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
@@ -81,22 +76,69 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public ModelFramework.Database.Contracts.IDefaultValueConstraint Build()
+        {
+            return new ModelFramework.Database.DefaultValueConstraint(FieldName, DefaultValue, Name, Metadata.Select(x => x.Build()));
+        }
+
+        public DefaultValueConstraintBuilder WithDefaultValue(string defaultValue)
+        {
+            DefaultValue = defaultValue;
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
+        {
+            _defaultValueDelegate = new (defaultValueDelegate);
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithFieldName(string fieldName)
+        {
+            FieldName = fieldName;
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithFieldName(System.Func<string> fieldNameDelegate)
+        {
+            _fieldNameDelegate = new (fieldNameDelegate);
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
         public DefaultValueConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            FieldName = string.Empty;
-            DefaultValue = string.Empty;
-            Name = string.Empty;
+            _fieldNameDelegate = new (() => string.Empty);
+            _defaultValueDelegate = new (() => string.Empty);
+            _nameDelegate = new (() => string.Empty);
         }
 
         public DefaultValueConstraintBuilder(ModelFramework.Database.Contracts.IDefaultValueConstraint source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            FieldName = source.FieldName;
-            DefaultValue = source.DefaultValue;
-            Name = source.Name;
+            _fieldNameDelegate = new (() => source.FieldName);
+            _defaultValueDelegate = new (() => source.DefaultValue);
+            _nameDelegate = new (() => source.Name);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
+
+        private System.Lazy<string> _fieldNameDelegate;
+
+        private System.Lazy<string> _defaultValueDelegate;
+
+        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

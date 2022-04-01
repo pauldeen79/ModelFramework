@@ -6,8 +6,8 @@ public static class ClassExtensions
         => instance.ToImmutableBuilderClassBuilder(settings).Build();
 
     public static ClassBuilder ToImmutableBuilderClassBuilder(this IClass instance, ImmutableBuilderClassSettings settings)
-        => ((ITypeBase)instance).ToImmutableBuilderClassBuilder(settings.WithPoco(instance.IsPoco()));
+        => ((ITypeBase)instance).ToImmutableBuilderClassBuilder(settings);
 
-    public static bool IsPoco(this IClass instance)
+    public static bool HasPublicParameterlessConstructor(this IClass instance)
         => instance.Constructors.Count == 0 || instance.Constructors.Any(x => x.Parameters.Count == 0);
 }
