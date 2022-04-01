@@ -113,13 +113,17 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(@namespace)
             .WithPartial()
             .AddMethods(CreateExtraOverloads(c))
-            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x,y) => x.Name.CompareTo(y.Name))));
+            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
 
     protected ClassBuilder CreateBuilderExtensions(IClass c, string @namespace)
         => c.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
-            .AddMethods(CreateExtraOverloads(c));
+            .AddMethods(CreateExtraOverloads(c))
+            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
+
+    private static string CreateSortString(ClassMethodBuilder x)
+        => $"{x.Name}({string.Join(", ", x.Parameters.Select(x => x.TypeName))})";
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
         => new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings(newCollectionTypeName: NewCollectionTypeName, formatInstanceTypeNameDelegate: FormatInstanceTypeName, useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
