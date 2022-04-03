@@ -3,7 +3,7 @@
 public class Parameter_DefaultClassTests
 {
     [Fact]
-    public void GeneratesOutputWithoutComma()
+    public void GeneratesOutputCorrectly()
     {
         // Arrange
         var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
@@ -15,6 +15,36 @@ public class Parameter_DefaultClassTests
 
         // Assert
         actual.Should().Be("string Name");
+    }
+
+    [Fact]
+    public void GeneratesOutputForRefParameterCorrectly()
+    {
+        // Arrange
+        var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+        var model = new ParameterBuilder().WithName("Name").WithTypeName("string").WithIsRef().Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultParameterTemplate>(model, rootModel);
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.Should().Be("ref string Name");
+    }
+
+    [Fact]
+    public void GeneratesOutputForOutParameterCorrectly()
+    {
+        // Arrange
+        var rootModel = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+        var model = new ParameterBuilder().WithName("Name").WithTypeName("string").WithIsOut().Build();
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultParameterTemplate>(model, rootModel);
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.Should().Be("out string Name");
     }
 
     [Fact]

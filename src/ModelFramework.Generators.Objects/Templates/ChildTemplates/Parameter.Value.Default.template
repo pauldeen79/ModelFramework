@@ -2,4 +2,4 @@
 <#@ templateName value="CSharpClassGenerator.DefaultParameterValueTemplate" #>
 <#@ model type="IParameter" #>
 <#@ viewModel name="CSharpClassGenerator.DefaultParameterViewModel" model="Model" #>
-<# if (Model.IsParamArray) { #>params <# } #><#= ViewModel.TypeName #> <#= ViewModel.Name #><# if (ViewModel.ShouldRenderDefaultValue) { #> = <#= ViewModel.DefaultValue #><# } #>
+<# if (Model.IsParamArray) { #>params <# } #><# if (Model.IsRef) { #>ref <# } #><# if (Model.IsOut) { #>out <# } #><#= ViewModel.TypeName #> <#= ViewModel.Name #><# if (ViewModel.ShouldRenderDefaultValue) { #> = <#= ViewModel.DefaultValue #><# } #>

@@ -7,6 +7,8 @@ public class ParameterTests
     {
         // Arrange
         var action = new Action(() => _ = new Parameter(default,
+                                                        default,
+                                                        default,
                                                         "System.String",
                                                         default,
                                                         Enumerable.Empty<IAttribute>(),
@@ -23,6 +25,8 @@ public class ParameterTests
     {
         // Arrange
         var action = new Action(() => _ = new Parameter(default,
+                                                        default,
+                                                        default,
                                                         string.Empty,
                                                         default,
                                                         Enumerable.Empty<IAttribute>(),
@@ -39,6 +43,8 @@ public class ParameterTests
     {
         // Arrange
         var sut = new Parameter(default,
+                                default,
+                                default,
                                 "System.String",
                                 default,
                                 Enumerable.Empty<IAttribute>(),

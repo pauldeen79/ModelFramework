@@ -588,6 +588,14 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                             .WithTypeName(@"System.Boolean"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
+                            .WithName(@"IsOut")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"IsRef")
+                            .WithTypeName(@"System.Boolean"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
                             .WithName(@"TypeName")
                             .WithTypeName(@"System.String"),
                         new ClassPropertyBuilder()

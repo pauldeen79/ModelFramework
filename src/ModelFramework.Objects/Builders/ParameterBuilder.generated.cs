@@ -29,6 +29,30 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool IsOut
+        {
+            get
+            {
+                return _isOutDelegate.Value;
+            }
+            set
+            {
+                _isOutDelegate = new (() => value);
+            }
+        }
+
+        public bool IsRef
+        {
+            get
+            {
+                return _isRefDelegate.Value;
+            }
+            set
+            {
+                _isRefDelegate = new (() => value);
+            }
+        }
+
         public string TypeName
         {
             get
@@ -119,7 +143,7 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
-            return new ModelFramework.Objects.Parameter(IsParamArray, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
+            return new ModelFramework.Objects.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
         }
 
         public ParameterBuilder WithDefaultValue(System.Func<object?> defaultValueDelegate)
@@ -146,6 +170,18 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ParameterBuilder WithIsOut(bool isOut = true)
+        {
+            IsOut = isOut;
+            return this;
+        }
+
+        public ParameterBuilder WithIsOut(System.Func<bool> isOutDelegate)
+        {
+            _isOutDelegate = new (isOutDelegate);
+            return this;
+        }
+
         public ParameterBuilder WithIsParamArray(bool isParamArray = true)
         {
             IsParamArray = isParamArray;
@@ -155,6 +191,18 @@ namespace ModelFramework.Objects.Builders
         public ParameterBuilder WithIsParamArray(System.Func<bool> isParamArrayDelegate)
         {
             _isParamArrayDelegate = new (isParamArrayDelegate);
+            return this;
+        }
+
+        public ParameterBuilder WithIsRef(bool isRef = true)
+        {
+            IsRef = isRef;
+            return this;
+        }
+
+        public ParameterBuilder WithIsRef(System.Func<bool> isRefDelegate)
+        {
+            _isRefDelegate = new (isRefDelegate);
             return this;
         }
 
@@ -193,6 +241,8 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             _isParamArrayDelegate = new (() => default);
+            _isOutDelegate = new (() => default);
+            _isRefDelegate = new (() => default);
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
@@ -204,6 +254,8 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             _isParamArrayDelegate = new (() => source.IsParamArray);
+            _isOutDelegate = new (() => source.IsOut);
+            _isRefDelegate = new (() => source.IsRef);
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
@@ -213,6 +265,10 @@ namespace ModelFramework.Objects.Builders
         }
 
         private System.Lazy<bool> _isParamArrayDelegate;
+
+        private System.Lazy<bool> _isOutDelegate;
+
+        private System.Lazy<bool> _isRefDelegate;
 
         private System.Lazy<string> _typeNameDelegate;
 

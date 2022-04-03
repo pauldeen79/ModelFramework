@@ -124,6 +124,8 @@ public static partial class TypeBaseExtensiosn
         return new Parameter
         (
             parameter.IsParamArray,
+            parameter.IsOut,
+            parameter.IsRef,
             ReplaceGenericType(parameter.TypeName, applyGenericTypes),
             parameter.IsNullable,
             parameter.Attributes,
