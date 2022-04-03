@@ -403,7 +403,7 @@ public static partial class TypeBaseEtensions
                             ? $"System.Func<{typeName.FixTypeName().AppendNullableAnnotation(property, settings.EnableNullableReferenceTypes)}>"
                             : typeName
                     )
-                    .WithIsNullable(!useLazyInitialization ? property.IsNullable : false)
+                    .WithIsNullable(!useLazyInitialization && property.IsNullable)
                     .WithDefaultValue(useLazyInitialization
                         ? null
                         : property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
