@@ -162,8 +162,12 @@ public static partial class TypeBaseEtensions
             : $"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>";
 
     private static string CreateLazyPropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => property
-            .TypeName
+        => string.Format
+            (
+                property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                property.TypeName,
+                property.TypeName.GetGenericArguments()
+            )
             .FixTypeName()
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(property, settings.EnableNullableReferenceTypes);
