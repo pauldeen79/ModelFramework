@@ -70,6 +70,7 @@ public static partial class TypeBaseEtensions
                     .Where(p => p.TypeName.IsCollectionTypeName())
                     .Select(p => $"{p.Name} = new {GetImmutableBuilderClassConstructorInitializer(settings, p)}();")
             )
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8603 // Possible null reference return." } : Array.Empty<string>())
             .AddLiteralCodeStatements
             (
                 instance.Properties
@@ -77,7 +78,8 @@ public static partial class TypeBaseEtensions
                         && !p.TypeName.IsCollectionTypeName()
                         && (!p.IsNullable || settings.UseLazyInitialization))
                     .Select(p => GenerateDefaultValueStatement(p, settings))
-            );
+            )
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8603 // Possible null reference return." } : Array.Empty<string>());
 
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
