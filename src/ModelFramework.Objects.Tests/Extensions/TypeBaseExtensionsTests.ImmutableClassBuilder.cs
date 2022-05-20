@@ -53,7 +53,6 @@ this.Property2 = property2;");
         // Assert
         actual.Constructors.Should().HaveCount(1);
         string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"if (property1 == null) throw new System.ArgumentNullException(""property1"");
-if (property2 == null) throw new System.ArgumentNullException(""property2"");
 this.Property1 = property1;
 this.Property2 = property2;");
     }

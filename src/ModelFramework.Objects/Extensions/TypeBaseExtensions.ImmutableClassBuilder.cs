@@ -71,7 +71,7 @@ public static partial class TypeBaseExtensions
                     )
                     .AddLiteralCodeStatements
                     (
-                        instance.Properties.Where(p => settings.AddNullChecks && !p.IsNullable).Select
+                        instance.Properties.Where(p => settings.AddNullChecks && !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true).Select
                         (
                             p => @$"if ({p.Name.ToPascalCase()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
                         )
