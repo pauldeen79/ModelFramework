@@ -15,62 +15,46 @@ public partial class TypeBaseExtensionsTests
     }
 
     [Fact]
-    public void Generating_ImmutableClassBuilder_From_Class_Without_Properties_Throws_Exception()
+    public void Can_Build_ImmutableClass_Without_NullChecks()
     {
         // Arrange
-        var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+        var input = new ClassBuilder()
+            .WithName("MyClass")
+            .WithNamespace("MyNamespace")
+            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)))
+            .Build();
+        var settings = new ImmutableClassSettings(addNullChecks: false);
 
-        // Act & Assert
-        input.Invoking(x => x.ToImmutableClassBuilder(new ImmutableClassSettings()))
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("To create an immutable class, there must be at least one property");
+        // Act
+        var actual = input.ToImmutableClass(settings);
+
+        // Assert
+        actual.Constructors.Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"this.Property1 = property1;
+this.Property2 = property2;");
     }
 
     [Fact]
-    public void ToImmutableExtensionClass_Throws_When_Properties_Are_Empty()
+    public void Can_Build_ImmutableClass_With_NullChecks()
     {
         // Arrange
-        var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+        var input = new ClassBuilder()
+            .WithName("MyClass")
+            .WithNamespace("MyNamespace")
+            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)))
+            .Build();
+        var settings = new ImmutableClassSettings(addNullChecks: true);
 
-        // Act & Assert
-        input.Invoking(x => x.ToImmutableExtensionClass(new ImmutableClassExtensionsSettings()))
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("To create an immutable extensions class, there must be at least one property");
-    }
+        // Act
+        var actual = input.ToImmutableClass(settings);
 
-    [Fact]
-    public void ToImmutableExtensionClassBuilder_Throws_When_Properties_Are_Empty()
-    {
-        // Arrange
-        var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-        // Act & Assert
-        input.Invoking(x => x.ToImmutableExtensionClassBuilder(new ImmutableClassExtensionsSettings()))
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("To create an immutable extensions class, there must be at least one property");
-    }
-
-    [Fact]
-    public void ToBuilderExtensionsClass_Throws_When_Properties_Are_Empty()
-    {
-        // Arrange
-        var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-        // Act & Assert
-        input.Invoking(x => x.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings()))
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("To create a builder extensions class, there must be at least one property");
-    }
-
-    [Fact]
-    public void ToBuilderExtensionsClassBuilder_Throws_When_Properties_Are_Empty()
-    {
-        // Arrange
-        var input = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
-
-        // Act & Assert
-        input.Invoking(x => x.ToBuilderExtensionsClassBuilder(new ImmutableBuilderClassSettings()))
-             .Should().Throw<InvalidOperationException>()
-             .WithMessage("To create a builder extensions class, there must be at least one property");
+        // Assert
+        actual.Constructors.Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"if (property1 == null) throw new System.ArgumentNullException(""property1"");
+if (property2 == null) throw new System.ArgumentNullException(""property2"");
+this.Property1 = property1;
+this.Property2 = property2;");
     }
 }

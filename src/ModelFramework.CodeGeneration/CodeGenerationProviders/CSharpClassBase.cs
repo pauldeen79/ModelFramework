@@ -11,6 +11,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
     protected virtual bool UseTargetTypeNewExpressions => true;
+    protected virtual bool ValidateArgumentsInConstructor => true;
 
     protected abstract Type RecordCollectionType { get; }
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
@@ -134,7 +135,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-                                      validateArgumentsInConstructor: true);
+                                      validateArgumentsInConstructor: ValidateArgumentsInConstructor,
+                                      addNullChecks: AddNullChecks);
 
     private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
         => new ClassBuilder(x.ToClass())
