@@ -412,6 +412,8 @@ return this;");
             "AddProperty4",
             "AddProperty4"
         });
+        actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"return new MyNamespace.MyRecord(Property1, Property2, Property3?.Build(), Property4.Select(x => x.Build()));");
     }
 
     [Fact]
@@ -435,6 +437,8 @@ return this;");
         {
             "Build"
         });
+        actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"return new MyNamespace.MyRecord(Property1, Property2, Property3?.Build(), Property4.Select(x => x.Build()));");
     }
 
     [Fact]
@@ -467,6 +471,10 @@ return this;");
 _property1Delegate = new System.Lazy<string>(() => string.Empty);
 _property3Delegate = new System.Lazy<string?>(() => default);
 #pragma warning restore CS8603 // Possible null reference return.");
+        actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"#pragma warning disable CS8604 // Possible null reference argument.
+return new TestClass(Property1, Property2, Property3);
+#pragma warning restore CS8604 // Possible null reference argument.");
     }
 
     [Fact]

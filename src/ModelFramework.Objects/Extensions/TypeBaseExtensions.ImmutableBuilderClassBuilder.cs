@@ -237,7 +237,9 @@ public static partial class TypeBaseEtensions
         yield return new ClassMethodBuilder()
             .WithName("Build")
             .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
-            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance)}{closeSign};");
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
+            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance)}{closeSign};")
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." } : Array.Empty<string>());
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
