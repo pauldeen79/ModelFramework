@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Objects.Extensions;
 
-internal static class ClassPropertyBuilderExtensions
+public static class ClassPropertyBuilderExtensions
 {
     internal static ClassPropertyBuilder ForPocoClassBuilder(this ClassPropertyBuilder builder,
                                                              IClassProperty p,
@@ -20,4 +20,7 @@ internal static class ClassPropertyBuilderExtensions
             .WithGetterVisibility(p.GetterVisibility)
             .WithSetterVisibility(p.SetterVisibility)
             .WithInitializerVisibility(p.InitializerVisibility);
+
+    public static ClassPropertyBuilder WithConstructorNullCheck(this ClassPropertyBuilder builder, bool nullCheck = true)
+        => builder.AddMetadata(TypeBaseExtensions.NullCheckMetadataValue, nullCheck);
 }

@@ -56,4 +56,26 @@ this.Property2 = property2;");
 this.Property1 = property1;
 this.Property2 = property2;");
     }
+
+    [Fact]
+    public void Can_Build_ImmutableClass_With_Correct_NullChecks_On_Custom_Types()
+    {
+        // Arrange
+        var input = new ClassBuilder()
+            .WithName("MyClass")
+            .WithNamespace("MyNamespace")
+            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithTypeName("MyNullableType").WithConstructorNullCheck(false))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithTypeName("MyNonNullableType").WithConstructorNullCheck(true))
+            .Build();
+        var settings = new ImmutableClassSettings(addNullChecks: true);
+
+        // Act
+        var actual = input.ToImmutableClass(settings);
+
+        // Assert
+        actual.Constructors.Should().HaveCount(1);
+        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"if (property2 == null) throw new System.ArgumentNullException(""property2"");
+this.Property1 = property1;
+this.Property2 = property2;");
+    }
 }
