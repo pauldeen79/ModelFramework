@@ -241,7 +241,7 @@ namespace MyNamespace
 
         public MyNamespace.MyRecord Build()
         {
-            return new MyNamespace.MyRecord(Property1, Property2, Property3.Build(), Property4.Select(x => x.Build()));
+            return new MyNamespace.MyRecord(Property1, Property2, Property3?.Build(), Property4.Select(x => x.Build()));
         }
 
         public MyRecordBuilder WithProperty1(string property1)
@@ -374,7 +374,7 @@ namespace MyNamespace
 
         public MyNamespace.MyRecord Build()
         {
-            return new MyNamespace.MyRecord(Property1, Property2, Property3.Build(), Property4.Select(x => x.Build()));
+            return new MyNamespace.MyRecord(Property1, Property2, Property3?.Build(), Property4.Select(x => x.Build()));
         }
 
         public MyRecordBuilder WithProperty1(string property1)

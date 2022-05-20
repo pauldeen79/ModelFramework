@@ -12,9 +12,10 @@ public partial class ClassPropertyBuilder
             : "new " + collectionType + "<{1}>({0})");
 
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
-                                                                        string? customBuilderConstructorInitializeExpression = null)
+                                                                        string? customBuilderConstructorInitializeExpression = null,
+                                                                        bool addNullableCheck = true)
         => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType ?? "{0}Builder")
-          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, IsNullable
+          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, IsNullable || addNullableCheck
                 ? "{0}?.Build()"
                 : "{0}.Build()")
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0})" : "{0} = new " + argumentType + "(source.{0})"));
