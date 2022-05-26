@@ -124,7 +124,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IForeignKeyConstraint Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.ForeignKeyConstraint(LocalFields.Select(x => x.Build()), ForeignFields.Select(x => x.Build()), ForeignTableName, CascadeUpdate, CascadeDelete, Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ForeignKeyConstraintBuilder WithCascadeDelete(ModelFramework.Database.Contracts.CascadeAction cascadeDelete)
@@ -180,10 +182,12 @@ namespace ModelFramework.Database.Builders
             LocalFields = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder>();
             ForeignFields = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _foreignTableNameDelegate = new (() => string.Empty);
             _cascadeUpdateDelegate = new (() => default);
             _cascadeDeleteDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ForeignKeyConstraintBuilder(ModelFramework.Database.Contracts.IForeignKeyConstraint source)

@@ -2,6 +2,6 @@
 
 public interface IIndex : INameContainer, IMetadataContainer, IFileGroupNameContainer
 {
-    ValueCollection<IIndexField> Fields { get; }
+    IReadOnlyCollection<IIndexField> Fields { get; }
     bool Unique { get; }
 }

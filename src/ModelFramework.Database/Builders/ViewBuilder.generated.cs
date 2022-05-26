@@ -187,7 +187,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IView Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ViewBuilder WithDefinition(System.Func<string> definitionDelegate)
@@ -258,11 +260,13 @@ namespace ModelFramework.Database.Builders
             Sources = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewSourceBuilder>();
             Conditions = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewConditionBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _topDelegate = new (() => default);
             _topPercentDelegate = new (() => default);
             _distinctDelegate = new (() => default);
             _definitionDelegate = new (() => string.Empty);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewBuilder(ModelFramework.Database.Contracts.IView source)

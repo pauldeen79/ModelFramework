@@ -2,5 +2,5 @@
 
 public interface IAttribute : IMetadataContainer, INameContainer
 {
-    ValueCollection<IAttributeParameter> Parameters { get; }
+    IReadOnlyCollection<IAttributeParameter> Parameters { get; }
 }

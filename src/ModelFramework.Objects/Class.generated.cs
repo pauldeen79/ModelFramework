@@ -17,7 +17,7 @@ namespace ModelFramework.Objects
 #nullable enable
     public partial record Class : ModelFramework.Objects.Contracts.IClass
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassField> Fields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClassField> Fields
         {
             get;
         }
@@ -32,12 +32,12 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClass> SubClasses
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClass> SubClasses
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassConstructor> Constructors
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClassConstructor> Constructors
         {
             get;
         }
@@ -62,32 +62,32 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> Interfaces
+        public System.Collections.Generic.IReadOnlyCollection<string> Interfaces
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassProperty> Properties
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClassProperty> Properties
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassMethod> Methods
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClassMethod> Methods
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> GenericTypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> GenericTypeArgumentConstraints
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArgumentConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }
@@ -102,17 +102,17 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IEnum> Enums
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IEnum> Enums
         {
             get;
         }
 
-        public Class(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassField> fields, bool @static, bool @sealed, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClass> subClasses, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassConstructor> constructors, string baseClass, bool record, string @namespace, bool partial, CrossCutting.Common.ValueCollection<string> interfaces, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassProperty> properties, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassMethod> methods, CrossCutting.Common.ValueCollection<string> genericTypeArguments, CrossCutting.Common.ValueCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IEnum> enums)
+        public Class(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassField> fields, bool @static, bool @sealed, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClass> subClasses, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassConstructor> constructors, string baseClass, bool record, string @namespace, bool partial, System.Collections.Generic.IReadOnlyCollection<string> interfaces, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassProperty> properties, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassMethod> methods, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IEnum> enums)
         {
             this.Fields = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassField>(fields);
             this.Static = @static;

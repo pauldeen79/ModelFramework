@@ -2,5 +2,5 @@
 
 public interface ICheckConstraintContainer
 {
-    ValueCollection<ICheckConstraint> CheckConstraints { get; }
+    IReadOnlyCollection<ICheckConstraint> CheckConstraints { get; }
 }

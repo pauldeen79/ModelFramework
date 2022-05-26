@@ -2,5 +2,5 @@
 
 public interface IAttributesContainer
 {
-    ValueCollection<IAttribute> Attributes { get; }
+    IReadOnlyCollection<IAttribute> Attributes { get; }
 }

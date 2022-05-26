@@ -167,7 +167,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ITableField Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
@@ -282,6 +284,7 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _typeDelegate = new (() => string.Empty);
             _isIdentityDelegate = new (() => default);
             _isRequiredDelegate = new (() => default);
@@ -291,6 +294,7 @@ namespace ModelFramework.Database.Builders
             _stringCollationDelegate = new (() => string.Empty);
             _isStringMaxLengthDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TableFieldBuilder(ModelFramework.Database.Contracts.ITableField source)

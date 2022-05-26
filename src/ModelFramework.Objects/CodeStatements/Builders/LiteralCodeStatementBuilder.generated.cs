@@ -54,7 +54,9 @@ namespace ModelFramework.Objects.CodeStatements.Builders
 
         public ModelFramework.Objects.Contracts.ICodeStatement Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public LiteralCodeStatementBuilder WithStatement(System.Func<string> statementDelegate)
@@ -72,7 +74,9 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         public LiteralCodeStatementBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _statementDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public LiteralCodeStatementBuilder(ModelFramework.Objects.CodeStatements.LiteralCodeStatement source)

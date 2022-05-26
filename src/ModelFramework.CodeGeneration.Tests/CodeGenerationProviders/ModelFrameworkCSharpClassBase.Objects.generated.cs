@@ -32,11 +32,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Parameters")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttributeParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttributeParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
@@ -55,7 +55,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
@@ -74,7 +74,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Fields")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassField, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassField, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
@@ -86,11 +86,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"SubClasses")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Constructors")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassConstructor, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassConstructor, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"BaseClass")
@@ -110,27 +110,27 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Interfaces")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Properties")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Methods")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArguments")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArgumentConstraints")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
@@ -142,11 +142,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Enums")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IEnum, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IEnum, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
                     .WithName(@"IClass"),
                 new ClassBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -165,7 +165,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
@@ -193,15 +193,15 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"CodeStatements")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Parameters")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
                     .WithName(@"IClassConstructor"),
                 new ClassBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -229,7 +229,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
@@ -261,7 +261,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
@@ -304,15 +304,15 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArguments")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArgumentConstraints")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
@@ -344,15 +344,15 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"CodeStatements")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Parameters")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
@@ -407,19 +407,19 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GetterCodeStatements")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"SetterCodeStatements")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"InitializerCodeStatements")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
@@ -451,7 +451,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
@@ -476,15 +476,15 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Members")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IEnumMember, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IEnumMember, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
@@ -509,7 +509,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
@@ -517,7 +517,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
                     .WithName(@"IEnumMember"),
                 new ClassBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -539,27 +539,27 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Interfaces")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Properties")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Methods")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArguments")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArgumentConstraints")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
@@ -571,7 +571,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
                     .WithName(@"IInterface"),
                 new ClassBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -605,11 +605,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"CrossCutting.Common.ValueCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")

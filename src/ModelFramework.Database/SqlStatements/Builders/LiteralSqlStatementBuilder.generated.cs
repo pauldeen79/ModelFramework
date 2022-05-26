@@ -54,7 +54,9 @@ namespace ModelFramework.Database.SqlStatements.Builders
 
         public ModelFramework.Database.Contracts.ISqlStatement Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public LiteralSqlStatementBuilder WithStatement(System.Func<string> statementDelegate)
@@ -72,7 +74,9 @@ namespace ModelFramework.Database.SqlStatements.Builders
         public LiteralSqlStatementBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _statementDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public LiteralSqlStatementBuilder(ModelFramework.Database.SqlStatements.LiteralSqlStatement source)

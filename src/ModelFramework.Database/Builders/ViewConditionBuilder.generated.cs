@@ -78,7 +78,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewCondition Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ViewConditionBuilder WithCombination(System.Func<string> combinationDelegate)
@@ -120,9 +122,11 @@ namespace ModelFramework.Database.Builders
         public ViewConditionBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _expressionDelegate = new (() => string.Empty);
             _combinationDelegate = new (() => string.Empty);
             _fileGroupNameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewConditionBuilder(ModelFramework.Database.Contracts.IViewCondition source)

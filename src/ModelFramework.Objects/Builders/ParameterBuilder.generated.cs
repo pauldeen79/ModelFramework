@@ -143,7 +143,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ParameterBuilder WithDefaultValue(System.Func<object?> defaultValueDelegate)
@@ -240,6 +242,7 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _isParamArrayDelegate = new (() => default);
             _isOutDelegate = new (() => default);
             _isRefDelegate = new (() => default);
@@ -247,6 +250,7 @@ namespace ModelFramework.Objects.Builders
             _isNullableDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
             _defaultValueDelegate = new (() => default);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ParameterBuilder(ModelFramework.Objects.Contracts.IParameter source)

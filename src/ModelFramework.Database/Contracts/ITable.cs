@@ -2,10 +2,10 @@
 
 public interface ITable : INameContainer, IMetadataContainer, IFileGroupNameContainer, ICheckConstraintContainer
 {
-    ValueCollection<IPrimaryKeyConstraint> PrimaryKeyConstraints { get; }
-    ValueCollection<IUniqueConstraint> UniqueConstraints { get; }
-    ValueCollection<IDefaultValueConstraint> DefaultValueConstraints { get; }
-    ValueCollection<IForeignKeyConstraint> ForeignKeyConstraints { get; }
-    ValueCollection<IIndex> Indexes { get; }
-    ValueCollection<ITableField> Fields { get; }
+    IReadOnlyCollection<IPrimaryKeyConstraint> PrimaryKeyConstraints { get; }
+    IReadOnlyCollection<IUniqueConstraint> UniqueConstraints { get; }
+    IReadOnlyCollection<IDefaultValueConstraint> DefaultValueConstraints { get; }
+    IReadOnlyCollection<IForeignKeyConstraint> ForeignKeyConstraints { get; }
+    IReadOnlyCollection<IIndex> Indexes { get; }
+    IReadOnlyCollection<ITableField> Fields { get; }
 }

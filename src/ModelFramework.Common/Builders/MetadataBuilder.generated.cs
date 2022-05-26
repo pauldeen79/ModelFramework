@@ -43,7 +43,9 @@ namespace ModelFramework.Common.Builders
 
         public ModelFramework.Common.Contracts.IMetadata Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Common.Metadata(Value, Name);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public MetadataBuilder WithName(System.Func<string> nameDelegate)
@@ -72,8 +74,10 @@ namespace ModelFramework.Common.Builders
 
         public MetadataBuilder()
         {
+            #pragma warning disable CS8603 // Possible null reference return.
             _valueDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MetadataBuilder(ModelFramework.Common.Contracts.IMetadata source)

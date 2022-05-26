@@ -5,6 +5,6 @@ public interface IClassMethod : IMetadataContainer, IExtendedVisibilityContainer
     bool Partial { get; }
     bool ExtensionMethod { get; }
     bool Operator { get; }
-    ValueCollection<string> GenericTypeArguments { get; }
-    ValueCollection<string> GenericTypeArgumentConstraints { get; }
+    IReadOnlyCollection<string> GenericTypeArguments { get; }
+    IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
 }

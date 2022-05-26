@@ -17,27 +17,27 @@ namespace ModelFramework.Database
 #nullable enable
     public partial record View : ModelFramework.Database.Contracts.IView
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewField> SelectFields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IViewField> SelectFields
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewOrderByField> OrderByFields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IViewOrderByField> OrderByFields
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewField> GroupByFields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IViewField> GroupByFields
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewSource> Sources
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IViewSource> Sources
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewCondition> Conditions
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IViewCondition> Conditions
         {
             get;
         }
@@ -67,7 +67,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

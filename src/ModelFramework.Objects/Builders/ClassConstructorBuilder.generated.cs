@@ -197,7 +197,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassConstructor Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ClassConstructorBuilder WithAbstract(bool @abstract = true)
@@ -290,6 +292,7 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _chainCallDelegate = new (() => string.Empty);
             _staticDelegate = new (() => default);
             _virtualDelegate = new (() => default);
@@ -297,6 +300,7 @@ namespace ModelFramework.Objects.Builders
             _protectedDelegate = new (() => default);
             _overrideDelegate = new (() => default);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassConstructorBuilder(ModelFramework.Objects.Contracts.IClassConstructor source)

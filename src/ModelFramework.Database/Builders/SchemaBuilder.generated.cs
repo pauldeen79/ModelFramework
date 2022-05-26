@@ -105,7 +105,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ISchema Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public SchemaBuilder WithName(System.Func<string> nameDelegate)
@@ -126,7 +128,9 @@ namespace ModelFramework.Database.Builders
             StoredProcedures = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureBuilder>();
             Views = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public SchemaBuilder(ModelFramework.Database.Contracts.ISchema source)

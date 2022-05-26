@@ -17,12 +17,12 @@ namespace ModelFramework.Database
 #nullable enable
     public partial record StoredProcedure : ModelFramework.Database.Contracts.IStoredProcedure
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ISqlStatement> Statements
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.ISqlStatement> Statements
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IStoredProcedureParameter> Parameters
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IStoredProcedureParameter> Parameters
         {
             get;
         }
@@ -32,7 +32,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

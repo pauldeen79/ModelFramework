@@ -4,7 +4,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 {
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
-    protected override Type RecordCollectionType => typeof(ValueCollection<>);
+    protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
 
     protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType,
                                                       Type codeStatementInterfaceType,

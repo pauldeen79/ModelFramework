@@ -2,5 +2,5 @@
 
 public interface IPrimaryKeyConstraint : INameContainer, IMetadataContainer, IFileGroupNameContainer
 {
-    ValueCollection<IPrimaryKeyConstraintField> Fields { get; }
+    IReadOnlyCollection<IPrimaryKeyConstraintField> Fields { get; }
 }

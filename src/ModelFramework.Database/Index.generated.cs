@@ -17,7 +17,7 @@ namespace ModelFramework.Database
 #nullable enable
     public partial record Index : ModelFramework.Database.Contracts.IIndex
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IIndexField> Fields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IIndexField> Fields
         {
             get;
         }
@@ -32,7 +32,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

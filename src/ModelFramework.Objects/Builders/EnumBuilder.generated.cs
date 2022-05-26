@@ -100,7 +100,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IEnum Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public EnumBuilder WithName(System.Func<string> nameDelegate)
@@ -132,8 +134,10 @@ namespace ModelFramework.Objects.Builders
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _nameDelegate = new (() => string.Empty);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public EnumBuilder(ModelFramework.Objects.Contracts.IEnum source)

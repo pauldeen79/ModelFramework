@@ -78,7 +78,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.StoredProcedureParameter(Type, DefaultValue, Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public StoredProcedureParameterBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
@@ -120,9 +122,11 @@ namespace ModelFramework.Database.Builders
         public StoredProcedureParameterBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _typeDelegate = new (() => string.Empty);
             _defaultValueDelegate = new (() => string.Empty);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public StoredProcedureParameterBuilder(ModelFramework.Database.Contracts.IStoredProcedureParameter source)

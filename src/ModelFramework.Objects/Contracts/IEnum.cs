@@ -2,5 +2,5 @@
 
 public interface IEnum : IAttributesContainer, IMetadataContainer, INameContainer, IVisibilityContainer
 {
-    ValueCollection<IEnumMember> Members { get; }
+    IReadOnlyCollection<IEnumMember> Members { get; }
 }

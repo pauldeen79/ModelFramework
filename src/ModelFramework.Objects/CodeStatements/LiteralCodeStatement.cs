@@ -2,7 +2,7 @@
 
 public record LiteralCodeStatement : ICodeStatement
 {
-    public ValueCollection<IMetadata> Metadata { get; }
+    public IReadOnlyCollection<IMetadata> Metadata { get; }
     public string Statement { get; }
 
     public LiteralCodeStatement(string statement, IEnumerable<IMetadata> metadata)

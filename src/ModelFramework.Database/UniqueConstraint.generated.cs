@@ -17,7 +17,7 @@ namespace ModelFramework.Database
 #nullable enable
     public partial record UniqueConstraint : ModelFramework.Database.Contracts.IUniqueConstraint
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IUniqueConstraintField> Fields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IUniqueConstraintField> Fields
         {
             get;
         }
@@ -27,7 +27,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

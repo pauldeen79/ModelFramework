@@ -3,7 +3,7 @@
 public record LiteralSqlStatement : ISqlStatement
 {
     public string Statement { get; }
-    public ValueCollection<IMetadata> Metadata { get; }
+    public IReadOnlyCollection<IMetadata> Metadata { get; }
 
     public LiteralSqlStatement(string statement, IEnumerable<IMetadata> metadata)
     {

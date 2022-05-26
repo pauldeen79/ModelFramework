@@ -17,12 +17,12 @@ namespace ModelFramework.Database
 #nullable enable
     public partial record ForeignKeyConstraint : ModelFramework.Database.Contracts.IForeignKeyConstraint
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField> LocalFields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField> LocalFields
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField> ForeignFields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField> ForeignFields
         {
             get;
         }
@@ -47,7 +47,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

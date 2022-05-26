@@ -54,7 +54,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public UniqueConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
@@ -72,7 +74,9 @@ namespace ModelFramework.Database.Builders
         public UniqueConstraintFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public UniqueConstraintFieldBuilder(ModelFramework.Database.Contracts.IUniqueConstraintField source)

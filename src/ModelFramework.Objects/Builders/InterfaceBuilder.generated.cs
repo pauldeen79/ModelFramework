@@ -197,7 +197,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IInterface Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public InterfaceBuilder WithName(System.Func<string> nameDelegate)
@@ -257,10 +259,12 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _namespaceDelegate = new (() => string.Empty);
             _partialDelegate = new (() => default);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public InterfaceBuilder(ModelFramework.Objects.Contracts.IInterface source)

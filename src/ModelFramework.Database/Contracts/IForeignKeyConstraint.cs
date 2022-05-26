@@ -2,8 +2,8 @@
 
 public interface IForeignKeyConstraint : INameContainer, IMetadataContainer
 {
-    ValueCollection<IForeignKeyConstraintField> LocalFields { get; }
-    ValueCollection<IForeignKeyConstraintField> ForeignFields { get; }
+    IReadOnlyCollection<IForeignKeyConstraintField> LocalFields { get; }
+    IReadOnlyCollection<IForeignKeyConstraintField> ForeignFields { get; }
     string ForeignTableName { get; }
     CascadeAction CascadeUpdate { get; }
     CascadeAction CascadeDelete { get; }

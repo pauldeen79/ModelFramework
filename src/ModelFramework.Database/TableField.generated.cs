@@ -62,12 +62,12 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ICheckConstraint> CheckConstraints
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.ICheckConstraint> CheckConstraints
         {
             get;
         }

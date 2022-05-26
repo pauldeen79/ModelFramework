@@ -88,7 +88,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IStoredProcedure Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.StoredProcedure(Statements.Select(x => x.Build()), Parameters.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public StoredProcedureBuilder WithName(System.Func<string> nameDelegate)
@@ -108,7 +110,9 @@ namespace ModelFramework.Database.Builders
             Statements = new System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public StoredProcedureBuilder(ModelFramework.Database.Contracts.IStoredProcedure source)

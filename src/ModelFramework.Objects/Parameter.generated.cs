@@ -42,12 +42,12 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

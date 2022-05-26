@@ -17,32 +17,32 @@ namespace ModelFramework.Database
 #nullable enable
     public partial record Table : ModelFramework.Database.Contracts.ITable
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IPrimaryKeyConstraint> PrimaryKeyConstraints
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IPrimaryKeyConstraint> PrimaryKeyConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IUniqueConstraint> UniqueConstraints
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IUniqueConstraint> UniqueConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IDefaultValueConstraint> DefaultValueConstraints
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IDefaultValueConstraint> DefaultValueConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraint> ForeignKeyConstraints
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IForeignKeyConstraint> ForeignKeyConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IIndex> Indexes
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.IIndex> Indexes
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ITableField> Fields
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.ITableField> Fields
         {
             get;
         }
@@ -52,7 +52,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }
@@ -62,7 +62,7 @@ namespace ModelFramework.Database
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ICheckConstraint> CheckConstraints
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Database.Contracts.ICheckConstraint> CheckConstraints
         {
             get;
         }

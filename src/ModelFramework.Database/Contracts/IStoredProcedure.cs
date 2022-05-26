@@ -2,6 +2,6 @@
 
 public interface IStoredProcedure : INameContainer, IMetadataContainer
 {
-    ValueCollection<ISqlStatement> Statements { get; }
-    ValueCollection<IStoredProcedureParameter> Parameters { get; }
+    IReadOnlyCollection<ISqlStatement> Statements { get; }
+    IReadOnlyCollection<IStoredProcedureParameter> Parameters { get; }
 }

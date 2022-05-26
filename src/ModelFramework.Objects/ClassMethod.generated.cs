@@ -32,17 +32,17 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> GenericTypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> GenericTypeArgumentConstraints
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArgumentConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }
@@ -82,17 +82,17 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.ICodeStatement> CodeStatements
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.ICodeStatement> CodeStatements
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IParameter> Parameters
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IParameter> Parameters
         {
             get;
         }
@@ -112,7 +112,7 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public ClassMethod(bool partial, bool extensionMethod, bool @operator, CrossCutting.Common.ValueCollection<string> genericTypeArguments, CrossCutting.Common.ValueCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> codeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IParameter> parameters, string typeName, bool isNullable, string explicitInterfaceName)
+        public ClassMethod(bool partial, bool extensionMethod, bool @operator, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> codeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IParameter> parameters, string typeName, bool isNullable, string explicitInterfaceName)
         {
             this.Partial = partial;
             this.ExtensionMethod = extensionMethod;

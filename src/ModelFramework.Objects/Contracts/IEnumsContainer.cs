@@ -2,5 +2,5 @@
 
 public interface IEnumsContainer
 {
-    ValueCollection<IEnum> Enums { get; }
+    IReadOnlyCollection<IEnum> Enums { get; }
 }

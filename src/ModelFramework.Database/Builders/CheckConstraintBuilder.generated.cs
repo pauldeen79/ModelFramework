@@ -66,7 +66,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ICheckConstraint Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public CheckConstraintBuilder WithExpression(System.Func<string> expressionDelegate)
@@ -96,8 +98,10 @@ namespace ModelFramework.Database.Builders
         public CheckConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _expressionDelegate = new (() => string.Empty);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public CheckConstraintBuilder(ModelFramework.Database.Contracts.ICheckConstraint source)

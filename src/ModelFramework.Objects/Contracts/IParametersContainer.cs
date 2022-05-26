@@ -2,5 +2,5 @@
 
 public interface IParametersContainer
 {
-    ValueCollection<IParameter> Parameters { get; }
+    IReadOnlyCollection<IParameter> Parameters { get; }
 }

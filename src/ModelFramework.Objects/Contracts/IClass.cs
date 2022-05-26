@@ -2,11 +2,11 @@
 
 public interface IClass : ITypeBase, IEnumsContainer
 {
-    ValueCollection<IClassField> Fields { get; }
+    IReadOnlyCollection<IClassField> Fields { get; }
     bool Static { get; }
     bool Sealed { get; }
-    ValueCollection<IClass> SubClasses { get; }
-    ValueCollection<IClassConstructor> Constructors { get; }
+    IReadOnlyCollection<IClass> SubClasses { get; }
+    IReadOnlyCollection<IClassConstructor> Constructors { get; }
     string BaseClass { get; }
     bool Record { get; }
 }

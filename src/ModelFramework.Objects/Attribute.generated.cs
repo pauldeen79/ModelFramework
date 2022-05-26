@@ -17,12 +17,12 @@ namespace ModelFramework.Objects
 #nullable enable
     public partial record Attribute : ModelFramework.Objects.Contracts.IAttribute
     {
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttributeParameter> Parameters
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttributeParameter> Parameters
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }

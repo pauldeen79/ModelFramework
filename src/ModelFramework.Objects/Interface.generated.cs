@@ -27,32 +27,32 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> Interfaces
+        public System.Collections.Generic.IReadOnlyCollection<string> Interfaces
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassProperty> Properties
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClassProperty> Properties
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassMethod> Methods
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClassMethod> Methods
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> GenericTypeArguments
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<string> GenericTypeArgumentConstraints
+        public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArgumentConstraints
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }
@@ -67,12 +67,12 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
         {
             get;
         }
 
-        public Interface(string @namespace, bool partial, CrossCutting.Common.ValueCollection<string> interfaces, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassProperty> properties, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassMethod> methods, CrossCutting.Common.ValueCollection<string> genericTypeArguments, CrossCutting.Common.ValueCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes)
+        public Interface(string @namespace, bool partial, System.Collections.Generic.IReadOnlyCollection<string> interfaces, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassProperty> properties, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassMethod> methods, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes)
         {
             this.Namespace = @namespace;
             this.Partial = partial;

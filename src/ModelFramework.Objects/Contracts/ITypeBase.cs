@@ -4,9 +4,9 @@ public interface ITypeBase : IMetadataContainer, IVisibilityContainer, INameCont
 {
     string Namespace { get; }
     bool Partial { get; }
-    ValueCollection<string> Interfaces { get; }
-    ValueCollection<IClassProperty> Properties { get; }
-    ValueCollection<IClassMethod> Methods { get; }
-    ValueCollection<string> GenericTypeArguments { get; }
-    ValueCollection<string> GenericTypeArgumentConstraints { get; }
+    IReadOnlyCollection<string> Interfaces { get; }
+    IReadOnlyCollection<IClassProperty> Properties { get; }
+    IReadOnlyCollection<IClassMethod> Methods { get; }
+    IReadOnlyCollection<string> GenericTypeArguments { get; }
+    IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
 }

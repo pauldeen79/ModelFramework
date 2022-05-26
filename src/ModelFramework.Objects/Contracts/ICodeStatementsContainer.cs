@@ -2,5 +2,5 @@
 
 public interface ICodeStatementsContainer
 {
-    ValueCollection<ICodeStatement> CodeStatements { get; }
+    IReadOnlyCollection<ICodeStatement> CodeStatements { get; }
 }

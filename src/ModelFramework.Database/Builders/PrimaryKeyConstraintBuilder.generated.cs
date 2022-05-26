@@ -83,7 +83,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraint Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.PrimaryKeyConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public PrimaryKeyConstraintBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
@@ -114,8 +116,10 @@ namespace ModelFramework.Database.Builders
         {
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _nameDelegate = new (() => string.Empty);
             _fileGroupNameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public PrimaryKeyConstraintBuilder(ModelFramework.Database.Contracts.IPrimaryKeyConstraint source)

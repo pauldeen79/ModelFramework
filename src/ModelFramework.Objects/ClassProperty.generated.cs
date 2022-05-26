@@ -47,22 +47,22 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.ICodeStatement> GetterCodeStatements
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.ICodeStatement> GetterCodeStatements
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.ICodeStatement> SetterCodeStatements
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.ICodeStatement> SetterCodeStatements
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.ICodeStatement> InitializerCodeStatements
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.ICodeStatement> InitializerCodeStatements
         {
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
         {
             get;
         }
@@ -102,7 +102,7 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
         {
             get;
         }

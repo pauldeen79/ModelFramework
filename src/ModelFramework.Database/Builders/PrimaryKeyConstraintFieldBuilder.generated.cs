@@ -66,7 +66,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraintField Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.PrimaryKeyConstraintField(IsDescending, Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public PrimaryKeyConstraintFieldBuilder WithIsDescending(bool isDescending = true)
@@ -96,8 +98,10 @@ namespace ModelFramework.Database.Builders
         public PrimaryKeyConstraintFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _isDescendingDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public PrimaryKeyConstraintFieldBuilder(ModelFramework.Database.Contracts.IPrimaryKeyConstraintField source)

@@ -215,7 +215,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassField Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ClassFieldBuilder WithAbstract(bool @abstract = true)
@@ -384,6 +386,7 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _readOnlyDelegate = new (() => default);
             _constantDelegate = new (() => default);
             _eventDelegate = new (() => default);
@@ -397,6 +400,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
             _defaultValueDelegate = new (() => default);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassFieldBuilder(ModelFramework.Objects.Contracts.IClassField source)

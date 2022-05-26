@@ -303,7 +303,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ClassMethodBuilder WithAbstract(bool @abstract = true)
@@ -476,6 +478,7 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _partialDelegate = new (() => default);
             _extensionMethodDelegate = new (() => default);
             _operatorDelegate = new (() => default);
@@ -489,6 +492,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
             _explicitInterfaceNameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassMethodBuilder(ModelFramework.Objects.Contracts.IClassMethod source)

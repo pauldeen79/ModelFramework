@@ -2,7 +2,7 @@
 
 public interface ISchema : INameContainer, IMetadataContainer
 {
-    ValueCollection<ITable> Tables { get; }
-    ValueCollection<IStoredProcedure> StoredProcedures { get; }
-    ValueCollection<IView> Views { get; }
+    IReadOnlyCollection<ITable> Tables { get; }
+    IReadOnlyCollection<IStoredProcedure> StoredProcedures { get; }
+    IReadOnlyCollection<IView> Views { get; }
 }

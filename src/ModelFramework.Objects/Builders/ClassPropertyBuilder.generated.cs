@@ -302,7 +302,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClassProperty Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ClassPropertyBuilder WithAbstract(bool @abstract = true)
@@ -526,6 +528,7 @@ namespace ModelFramework.Objects.Builders
             InitializerCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _hasGetterDelegate = new (() => true);
             _hasSetterDelegate = new (() => true);
             _hasInitializerDelegate = new (() => default);
@@ -542,6 +545,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
             _explicitInterfaceNameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassPropertyBuilder(ModelFramework.Objects.Contracts.IClassProperty source)

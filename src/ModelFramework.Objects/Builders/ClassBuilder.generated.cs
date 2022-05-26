@@ -313,7 +313,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IClass Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ClassBuilder WithBaseClass(System.Func<string> baseClassDelegate)
@@ -425,6 +427,7 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _staticDelegate = new (() => default);
             _sealedDelegate = new (() => default);
             _baseClassDelegate = new (() => string.Empty);
@@ -433,6 +436,7 @@ namespace ModelFramework.Objects.Builders
             _partialDelegate = new (() => default);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassBuilder(ModelFramework.Objects.Contracts.IClass source)

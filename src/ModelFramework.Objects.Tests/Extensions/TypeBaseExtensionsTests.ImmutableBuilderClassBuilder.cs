@@ -587,14 +587,14 @@ _property3Delegate = new (() => source.Property3);");
             "WithProperty3",
             "WithProperty3"
         });
-        string.Join(Environment.NewLine, actual.Methods[1].CodeStatements.Select(x => x.ToString())).Should().Be(@"Property1 = property1;
+        string.Join(Environment.NewLine, actual.Methods.ElementAt(1).CodeStatements.Select(x => x.ToString())).Should().Be(@"Property1 = property1;
 return this;");
-        string.Join(Environment.NewLine, actual.Methods[2].CodeStatements.Select(x => x.ToString())).Should().Be(@"_property1Delegate = new (property1Delegate);
+        string.Join(Environment.NewLine, actual.Methods.ElementAt(2).CodeStatements.Select(x => x.ToString())).Should().Be(@"_property1Delegate = new (property1Delegate);
 return this;");
-        actual.Methods[5].Parameters.First().TypeName.FixTypeName().Should().Be("System.String");
-        actual.Methods[5].Parameters.First().IsNullable.Should().BeTrue();
-        actual.Methods[6].Parameters.First().TypeName.FixTypeName().Should().Be("System.Func<System.String?>");
-        actual.Methods[6].Parameters.First().IsNullable.Should().BeFalse();
+        actual.Methods.ElementAt(5).Parameters.First().TypeName.FixTypeName().Should().Be("System.String");
+        actual.Methods.ElementAt(5).Parameters.First().IsNullable.Should().BeTrue();
+        actual.Methods.ElementAt(6).Parameters.First().TypeName.FixTypeName().Should().Be("System.Func<System.String?>");
+        actual.Methods.ElementAt(6).Parameters.First().IsNullable.Should().BeFalse();
     }
 
     private static IClass CreateImmutableBuilderClass()

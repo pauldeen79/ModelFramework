@@ -114,7 +114,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.IViewOrderByField Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ViewOrderByFieldBuilder WithAlias(System.Func<string> aliasDelegate)
@@ -192,12 +194,14 @@ namespace ModelFramework.Database.Builders
         public ViewOrderByFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _isDescendingDelegate = new (() => default);
             _sourceSchemaNameDelegate = new (() => string.Empty);
             _sourceObjectNameDelegate = new (() => string.Empty);
             _expressionDelegate = new (() => string.Empty);
             _aliasDelegate = new (() => string.Empty);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewOrderByFieldBuilder(ModelFramework.Database.Contracts.IViewOrderByField source)

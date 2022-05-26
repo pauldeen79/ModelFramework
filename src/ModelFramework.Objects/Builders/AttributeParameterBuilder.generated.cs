@@ -66,7 +66,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public AttributeParameterBuilder WithName(System.Func<string> nameDelegate)
@@ -96,8 +98,10 @@ namespace ModelFramework.Objects.Builders
         public AttributeParameterBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _valueDelegate = new (() => new object());
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public AttributeParameterBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)

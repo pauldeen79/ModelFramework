@@ -185,7 +185,9 @@ namespace ModelFramework.Database.Builders
 
         public ModelFramework.Database.Contracts.ITable Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public TableBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
@@ -222,8 +224,10 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _nameDelegate = new (() => string.Empty);
             _fileGroupNameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TableBuilder(ModelFramework.Database.Contracts.ITable source)

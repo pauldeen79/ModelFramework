@@ -83,7 +83,9 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.IEnumMember Build()
         {
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public EnumMemberBuilder WithName(System.Func<string> nameDelegate)
@@ -114,8 +116,10 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
             _valueDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public EnumMemberBuilder(ModelFramework.Objects.Contracts.IEnumMember source)

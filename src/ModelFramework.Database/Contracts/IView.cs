@@ -2,11 +2,11 @@
 
 public interface IView : INameContainer, IMetadataContainer
 {
-    ValueCollection<IViewField> SelectFields { get; }
-    ValueCollection<IViewOrderByField> OrderByFields { get; }
-    ValueCollection<IViewField> GroupByFields { get; }
-    ValueCollection<IViewSource> Sources { get; }
-    ValueCollection<IViewCondition> Conditions { get; }
+    IReadOnlyCollection<IViewField> SelectFields { get; }
+    IReadOnlyCollection<IViewOrderByField> OrderByFields { get; }
+    IReadOnlyCollection<IViewField> GroupByFields { get; }
+    IReadOnlyCollection<IViewSource> Sources { get; }
+    IReadOnlyCollection<IViewCondition> Conditions { get; }
     int? Top { get; }
     bool TopPercent { get; }
     bool Distinct { get; }
