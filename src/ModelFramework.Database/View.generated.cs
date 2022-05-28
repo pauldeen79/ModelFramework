@@ -74,17 +74,17 @@ namespace ModelFramework.Database
 
         public View(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IViewField> selectFields, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IViewOrderByField> orderByFields, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IViewField> groupByFields, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IViewSource> sources, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IViewCondition> conditions, System.Nullable<int> top, bool topPercent, bool distinct, string definition, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
         {
-            this.SelectFields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewField>(selectFields);
-            this.OrderByFields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewOrderByField>(orderByFields);
-            this.GroupByFields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewField>(groupByFields);
-            this.Sources = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewSource>(sources);
-            this.Conditions = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IViewCondition>(conditions);
+            this.SelectFields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IViewField>(selectFields);
+            this.OrderByFields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IViewOrderByField>(orderByFields);
+            this.GroupByFields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IViewField>(groupByFields);
+            this.Sources = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IViewSource>(sources);
+            this.Conditions = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IViewCondition>(conditions);
             this.Top = top;
             this.TopPercent = topPercent;
             this.Distinct = distinct;
             this.Definition = definition;
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

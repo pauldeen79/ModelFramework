@@ -119,7 +119,7 @@ namespace ModelFramework.Objects
             this.Operator = @operator;
             this.GenericTypeArguments = genericTypeArguments;
             this.GenericTypeArgumentConstraints = genericTypeArgumentConstraints;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.Static = @static;
             this.Virtual = @virtual;
             this.Abstract = @abstract;
@@ -127,9 +127,9 @@ namespace ModelFramework.Objects
             this.Override = @override;
             this.Visibility = visibility;
             this.Name = name;
-            this.Attributes = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
-            this.CodeStatements = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.ICodeStatement>(codeStatements);
-            this.Parameters = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IParameter>(parameters);
+            this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
+            this.CodeStatements = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.ICodeStatement>(codeStatements);
+            this.Parameters = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IParameter>(parameters);
             this.TypeName = typeName;
             this.IsNullable = isNullable;
             this.ExplicitInterfaceName = explicitInterfaceName;

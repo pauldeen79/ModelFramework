@@ -39,10 +39,10 @@ namespace ModelFramework.Database
 
         public StoredProcedure(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ISqlStatement> statements, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IStoredProcedureParameter> parameters, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
         {
-            this.Statements = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ISqlStatement>(statements);
-            this.Parameters = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IStoredProcedureParameter>(parameters);
+            this.Statements = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.ISqlStatement>(statements);
+            this.Parameters = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IStoredProcedureParameter>(parameters);
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

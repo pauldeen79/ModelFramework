@@ -78,7 +78,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 property.ConvertCollectionPropertyToBuilderOnBuilder
                 (
                     false,
-                    typeof(ValueCollection<>).WithoutGenerics(),
+                    typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                     isCodeStatement
                         ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
                         : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),

@@ -77,14 +77,14 @@ namespace ModelFramework.Objects
             this.Namespace = @namespace;
             this.Partial = partial;
             this.Interfaces = interfaces;
-            this.Properties = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassProperty>(properties);
-            this.Methods = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IClassMethod>(methods);
+            this.Properties = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IClassProperty>(properties);
+            this.Methods = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IClassMethod>(methods);
             this.GenericTypeArguments = genericTypeArguments;
             this.GenericTypeArgumentConstraints = genericTypeArgumentConstraints;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.Visibility = visibility;
             this.Name = name;
-            this.Attributes = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
+            this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

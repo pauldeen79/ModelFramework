@@ -44,11 +44,11 @@ namespace ModelFramework.Database
 
         public Schema(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ITable> tables, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IStoredProcedure> storedProcedures, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IView> views, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
         {
-            this.Tables = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ITable>(tables);
-            this.StoredProcedures = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IStoredProcedure>(storedProcedures);
-            this.Views = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IView>(views);
+            this.Tables = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.ITable>(tables);
+            this.StoredProcedures = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IStoredProcedure>(storedProcedures);
+            this.Views = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IView>(views);
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

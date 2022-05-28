@@ -54,13 +54,13 @@ namespace ModelFramework.Database
 
         public ForeignKeyConstraint(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IForeignKeyConstraintField> localFields, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IForeignKeyConstraintField> foreignFields, string foreignTableName, ModelFramework.Database.Contracts.CascadeAction cascadeUpdate, ModelFramework.Database.Contracts.CascadeAction cascadeDelete, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
         {
-            this.LocalFields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField>(localFields);
-            this.ForeignFields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField>(foreignFields);
+            this.LocalFields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField>(localFields);
+            this.ForeignFields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraintField>(foreignFields);
             this.ForeignTableName = foreignTableName;
             this.CascadeUpdate = cascadeUpdate;
             this.CascadeDelete = cascadeDelete;
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

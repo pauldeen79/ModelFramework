@@ -8,8 +8,8 @@ public class SystemTests
         // Arrange
         var md1 = new Metadata("Value1", "Name1");
         var md2 = new Metadata("Value2", "Name2");
-        var sut1 = new MyRecord(new ValueCollection<IMetadata>(new[] { md1, md2 }));
-        var sut2 = new MyRecord(new ValueCollection<IMetadata>(new[] { md1, md2 }));
+        var sut1 = new MyRecord(new ReadOnlyValueCollection<IMetadata>(new[] { md1, md2 }));
+        var sut2 = new MyRecord(new ReadOnlyValueCollection<IMetadata>(new[] { md1, md2 }));
 
         // Act
         var actual = sut1.Equals(sut2);
@@ -26,7 +26,7 @@ public interface IMetadataContainer2
 
 public record MyRecord : IMetadataContainer2
 {
-    public MyRecord(IEnumerable<IMetadata> metadata) => Metadata = new ValueCollection<IMetadata>(metadata);
+    public MyRecord(IEnumerable<IMetadata> metadata) => Metadata = new ReadOnlyValueCollection<IMetadata>(metadata);
 
     public IReadOnlyCollection<IMetadata> Metadata { get; }
 }

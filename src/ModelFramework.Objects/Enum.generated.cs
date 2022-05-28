@@ -44,9 +44,9 @@ namespace ModelFramework.Objects
 
         public Enum(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IEnumMember> members, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, string name, ModelFramework.Objects.Contracts.Visibility visibility)
         {
-            this.Members = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IEnumMember>(members);
-            this.Attributes = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Members = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IEnumMember>(members);
+            this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.Name = name;
             this.Visibility = visibility;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

@@ -13,7 +13,7 @@ public record LiteralCodeStatement : ICodeStatement
         }
 
         Statement = statement;
-        Metadata = new ValueCollection<IMetadata>(metadata);
+        Metadata = new ReadOnlyValueCollection<IMetadata>(metadata);
     }
 
     public ICodeStatementBuilder CreateBuilder()

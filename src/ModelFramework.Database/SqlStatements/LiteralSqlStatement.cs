@@ -13,7 +13,7 @@ public record LiteralSqlStatement : ISqlStatement
         }
 
         Statement = statement;
-        Metadata = new ValueCollection<IMetadata>(metadata);
+        Metadata = new ReadOnlyValueCollection<IMetadata>(metadata);
     }
 
     public ISqlStatementBuilder CreateBuilder()

@@ -44,10 +44,10 @@ namespace ModelFramework.Database
 
         public Index(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IIndexField> fields, bool unique, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, string fileGroupName)
         {
-            this.Fields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IIndexField>(fields);
+            this.Fields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IIndexField>(fields);
             this.Unique = unique;
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.FileGroupName = fileGroupName;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }

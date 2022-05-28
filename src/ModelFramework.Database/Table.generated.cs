@@ -69,16 +69,16 @@ namespace ModelFramework.Database
 
         public Table(System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IPrimaryKeyConstraint> primaryKeyConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IUniqueConstraint> uniqueConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IDefaultValueConstraint> defaultValueConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IForeignKeyConstraint> foreignKeyConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.IIndex> indexes, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ITableField> fields, string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, string fileGroupName, System.Collections.Generic.IEnumerable<ModelFramework.Database.Contracts.ICheckConstraint> checkConstraints)
         {
-            this.PrimaryKeyConstraints = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IPrimaryKeyConstraint>(primaryKeyConstraints);
-            this.UniqueConstraints = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IUniqueConstraint>(uniqueConstraints);
-            this.DefaultValueConstraints = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IDefaultValueConstraint>(defaultValueConstraints);
-            this.ForeignKeyConstraints = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraint>(foreignKeyConstraints);
-            this.Indexes = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.IIndex>(indexes);
-            this.Fields = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ITableField>(fields);
+            this.PrimaryKeyConstraints = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IPrimaryKeyConstraint>(primaryKeyConstraints);
+            this.UniqueConstraints = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IUniqueConstraint>(uniqueConstraints);
+            this.DefaultValueConstraints = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IDefaultValueConstraint>(defaultValueConstraints);
+            this.ForeignKeyConstraints = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IForeignKeyConstraint>(foreignKeyConstraints);
+            this.Indexes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.IIndex>(indexes);
+            this.Fields = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.ITableField>(fields);
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.FileGroupName = fileGroupName;
-            this.CheckConstraints = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ICheckConstraint>(checkConstraints);
+            this.CheckConstraints = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.ICheckConstraint>(checkConstraints);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

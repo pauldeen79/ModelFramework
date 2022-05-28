@@ -83,8 +83,8 @@ namespace ModelFramework.Database
             this.StringCollation = stringCollation;
             this.IsStringMaxLength = isStringMaxLength;
             this.Name = name;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
-            this.CheckConstraints = new CrossCutting.Common.ValueCollection<ModelFramework.Database.Contracts.ICheckConstraint>(checkConstraints);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.CheckConstraints = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Database.Contracts.ICheckConstraint>(checkConstraints);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

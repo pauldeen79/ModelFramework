@@ -97,7 +97,7 @@ namespace ModelFramework.Objects
             this.ReadOnly = readOnly;
             this.Constant = constant;
             this.Event = @event;
-            this.Metadata = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.Static = @static;
             this.Virtual = @virtual;
             this.Abstract = @abstract;
@@ -105,7 +105,7 @@ namespace ModelFramework.Objects
             this.Override = @override;
             this.Visibility = visibility;
             this.Name = name;
-            this.Attributes = new CrossCutting.Common.ValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
+            this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
             this.TypeName = typeName;
             this.IsNullable = isNullable;
             this.DefaultValue = defaultValue;

@@ -108,16 +108,16 @@ public class CSharpClassGenerator_DefaultClassTemplateTests
     {
         var typeBaseMock = new Mock<IClass>();
         typeBaseMock.SetupGet(x => x.Name).Returns("Test");
-        typeBaseMock.SetupGet(x => x.Methods).Returns(new ValueCollection<IClassMethod>());
-        typeBaseMock.SetupGet(x => x.Properties).Returns(new ValueCollection<IClassProperty>());
-        typeBaseMock.SetupGet(x => x.Constructors).Returns(new ValueCollection<IClassConstructor>());
-        typeBaseMock.SetupGet(x => x.Fields).Returns(new ValueCollection<IClassField>());
-        typeBaseMock.SetupGet(x => x.Enums).Returns(new ValueCollection<IEnum>());
-        typeBaseMock.SetupGet(x => x.Attributes).Returns(new ValueCollection<IAttribute>());
-        typeBaseMock.SetupGet(x => x.Interfaces).Returns(new ValueCollection<string>());
-        typeBaseMock.SetupGet(x => x.Metadata).Returns(new ValueCollection<IMetadata>());
-        typeBaseMock.SetupGet(x => x.GenericTypeArguments).Returns(new ValueCollection<string>());
-        typeBaseMock.SetupGet(x => x.GenericTypeArgumentConstraints).Returns(new ValueCollection<string>());
+        typeBaseMock.SetupGet(x => x.Methods).Returns(new ReadOnlyValueCollection<IClassMethod>());
+        typeBaseMock.SetupGet(x => x.Properties).Returns(new ReadOnlyValueCollection<IClassProperty>());
+        typeBaseMock.SetupGet(x => x.Constructors).Returns(new ReadOnlyValueCollection<IClassConstructor>());
+        typeBaseMock.SetupGet(x => x.Fields).Returns(new ReadOnlyValueCollection<IClassField>());
+        typeBaseMock.SetupGet(x => x.Enums).Returns(new ReadOnlyValueCollection<IEnum>());
+        typeBaseMock.SetupGet(x => x.Attributes).Returns(new ReadOnlyValueCollection<IAttribute>());
+        typeBaseMock.SetupGet(x => x.Interfaces).Returns(new ReadOnlyValueCollection<string>());
+        typeBaseMock.SetupGet(x => x.Metadata).Returns(new ReadOnlyValueCollection<IMetadata>());
+        typeBaseMock.SetupGet(x => x.GenericTypeArguments).Returns(new ReadOnlyValueCollection<string>());
+        typeBaseMock.SetupGet(x => x.GenericTypeArgumentConstraints).Returns(new ReadOnlyValueCollection<string>());
         return typeBaseMock;
     }
 }

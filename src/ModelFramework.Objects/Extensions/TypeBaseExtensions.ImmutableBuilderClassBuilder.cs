@@ -182,7 +182,7 @@ public static partial class TypeBaseEtensions
             return instance.Properties;
         }
 
-        var ctors = cls?.Constructors ?? new ValueCollection<IClassConstructor>();
+        var ctors = cls?.Constructors ?? new ReadOnlyValueCollection<IClassConstructor>();
         var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
         if (ctor == null)
         {
