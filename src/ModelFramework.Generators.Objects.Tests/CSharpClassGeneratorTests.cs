@@ -2628,6 +2628,76 @@ namespace MyNamespace
 ");
     }
 
+    [Fact]
+    public void Can_Generate_ImmutableClass_From_Interface_Without_Coupling()
+    {
+        // Arrange
+        var settings = new ImmutableClassSettings("CrossCutting.ReadOnlyValueCollection", validateArgumentsInConstructor: true, addNullChecks: true);
+        var model = new[]
+        {
+            new InterfaceBuilder()
+                .WithName("IMyClass")
+                .WithNamespace("MyNamespace")
+                .AddProperties
+                (
+                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                    new ClassPropertyBuilder().WithName("Property2").WithTypeName("MyNamespace.IClass")
+                )
+                .Build()
+        }
+        // Custom code for GetImmutableClasses method
+        .Select
+        (
+            x => new ClassBuilder(x.ToClass())
+                .WithName(x.Name.Substring(1))
+                .WithNamespace("EntitiesNamespace")
+                // here is where we normally .Chain(y => FixImmutableBuilderProperties(y))
+                .Build()
+                .ToImmutableClassBuilder(settings)
+                .WithRecord()
+                .WithPartial()
+                // here is where we normally .AddInterfaces($"{x.Namespace}.{x.Name}")
+                .Build()
+        )
+        .ToArray();
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace EntitiesNamespace
+{
+    public partial record MyClass
+    {
+        public string Property1
+        {
+            get;
+        }
+
+        public MyNamespace.IClass Property2
+        {
+            get;
+        }
+
+        public MyClass(string property1, MyNamespace.IClass property2)
+        {
+            if (property1 == null) throw new System.ArgumentNullException(""property1"");
+            if (property2 == null) throw new System.ArgumentNullException(""property2"");
+            this.Property1 = property1;
+            this.Property2 = property2;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+}
+");
+    }
+
     private static IEnumerable<ClassBuilder> GetSubClasses()
     {
         yield return new ClassBuilder()

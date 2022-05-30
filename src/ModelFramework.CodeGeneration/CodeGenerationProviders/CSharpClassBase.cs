@@ -74,15 +74,15 @@ public abstract class CSharpClassBase : ClassBase
         => models.Select
         (
             x => new ClassBuilder(x.ToClass())
-                  .WithName(x.Name.Substring(1))
-                  .WithNamespace(entitiesNamespace)
-                  .Chain(y => FixImmutableBuilderProperties(y))
-                  .Build()
-                  .ToImmutableClassBuilder(CreateImmutableClassSettings())
-                  .WithRecord()
-                  .WithPartial()
-                  .AddInterfaces($"{x.Namespace}.{x.Name}")
-                  .Build()
+                .WithName(x is IInterface && x.Name.StartsWith("I") ? x.Name.Substring(1) : x.Name)
+                .WithNamespace(entitiesNamespace)
+                .Chain(y => FixImmutableBuilderProperties(y))
+                .Build()
+                .ToImmutableClassBuilder(CreateImmutableClassSettings())
+                .WithRecord()
+                .WithPartial()
+                .AddInterfaces($"{x.Namespace}.{x.Name}")
+                .Build()
         ).ToArray();
 
     protected IClass[] GetClassesFromSameNamespace(Type type)
