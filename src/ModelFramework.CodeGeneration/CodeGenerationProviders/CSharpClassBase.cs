@@ -13,6 +13,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool UseTargetTypeNewExpressions => true;
     protected virtual bool ValidateArgumentsInConstructor => true;
     protected virtual bool InheritFromInterfaces => true;
+    protected virtual bool AddPrivateSetters => false;
 
     protected abstract Type RecordCollectionType { get; }
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
@@ -77,11 +78,6 @@ public abstract class CSharpClassBase : ClassBase
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
         => models.Select
         (
-            //x => x is IClass cls
-            //    ? CreateClass(cls, entitiesNamespace)
-            //    : x is IInterface iinterface
-            //        ? CreateInterface(iinterface, entitiesNamespace)
-            //        : throw new NotSupportedException("Type of class should be IClass or IInterface")
             x => x switch
             {
                 IClass cls => CreateClass(cls, entitiesNamespace),
@@ -163,7 +159,8 @@ public abstract class CSharpClassBase : ClassBase
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                                       validateArgumentsInConstructor: ValidateArgumentsInConstructor,
-                                      addNullChecks: AddNullChecks);
+                                      addNullChecks: AddNullChecks,
+                                      addPrivateSetters: AddPrivateSetters);
 
     private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
         => new ClassBuilder(x.ToClass())

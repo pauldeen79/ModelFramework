@@ -33,11 +33,13 @@ public static partial class TypeBaseExtensions
                             .WithOverride(p.Override)
                             .WithHasGetter(p.HasGetter)
                             .WithHasInitializer(p.HasInitializer)
-                            .AsReadOnly()
+                            .WithHasSetter(settings.AddPrivateSetters)
                             .WithIsNullable(p.IsNullable)
                             .WithVisibility(p.Visibility)
                             .WithGetterVisibility(p.GetterVisibility)
-                            .WithSetterVisibility(p.SetterVisibility)
+                            .WithSetterVisibility(settings.AddPrivateSetters
+                                ? Visibility.Private
+                                : p.SetterVisibility)
                             .WithInitializerVisibility(p.InitializerVisibility)
                             .WithExplicitInterfaceName(p.ExplicitInterfaceName)
                             .AddMetadata

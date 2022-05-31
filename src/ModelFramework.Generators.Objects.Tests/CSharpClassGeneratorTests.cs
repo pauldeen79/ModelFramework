@@ -2698,6 +2698,58 @@ namespace EntitiesNamespace
 ");
     }
 
+    [Fact]
+    public void Can_Generate_ImmutableClass_With_Private_Property_Setters()
+    {
+        // Arrange
+        var properties = new[]
+        {
+            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
+        };
+        var cls = new ClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .AddProperties(properties)
+            .Build()
+            .ToImmutableClassBuilder(new ImmutableClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true))
+            .WithRecord()
+            .Build();
+        var model = new[]
+        {
+            cls
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+#nullable enable
+    public record MyRecord
+    {
+        public string? Property1
+        {
+            get;
+            private set;
+        }
+
+        public MyRecord(string? property1)
+        {
+            this.Property1 = property1;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
     private static IEnumerable<ClassBuilder> GetSubClasses()
     {
         yield return new ClassBuilder()
