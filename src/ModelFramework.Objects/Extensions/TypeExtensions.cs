@@ -27,6 +27,20 @@ public static class TypeExtensions
             .AddAttributes(GetAttributes(instance.GetCustomAttributes(false)))
             .AddSubClasses(GetSubClasses(instance, settings.Partial));
 
+    public static IInterface ToInterface(this Type instance)
+        => instance.ToInterfaceBuilder().Build();
+
+    public static InterfaceBuilder ToInterfaceBuilder(this Type instance)
+        => new InterfaceBuilder()
+            .WithName(instance.Name)
+            .WithNamespace(instance.FullName.GetNamespaceWithDefault())
+            .WithVisibility(instance.IsPublic
+                ? Visibility.Public
+                : Visibility.Private)
+            .AddInterfaces(GetInterfaces(instance))
+            .AddProperties(GetProperties(instance))
+            .AddMethods(GetMethods(instance));
+
     public static IClass ToWrapperClass(this Type instance, WrapperClassSettings settings)
         => instance.ToWrapperClassBuilder(settings).Build();
 

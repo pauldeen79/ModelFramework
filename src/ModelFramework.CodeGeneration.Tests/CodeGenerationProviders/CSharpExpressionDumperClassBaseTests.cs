@@ -23,7 +23,7 @@ namespace MyNamespace
         {
             return new[]
             {
-                new ModelFramework.Objects.Builders.ClassBuilder()
+                new ModelFramework.Objects.Builders.InterfaceBuilder()
                     .WithNamespace(@""ModelFramework.Common.Contracts"")
                     .AddInterfaces(
                         @""ModelFramework.Common.Contracts.INameContainer"")
@@ -58,7 +58,7 @@ namespace MyNamespace
         // Assert
         code.Should().Be(@"new[]
 {
-    new ModelFramework.Objects.Builders.ClassBuilder()
+    new ModelFramework.Objects.Builders.InterfaceBuilder()
         .WithNamespace(@""ModelFramework.Common.Contracts"")
         .AddInterfaces(
             @""ModelFramework.Common.Contracts.INameContainer"")

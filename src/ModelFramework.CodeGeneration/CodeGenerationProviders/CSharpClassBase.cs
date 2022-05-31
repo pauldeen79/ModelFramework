@@ -17,6 +17,7 @@ public abstract class CSharpClassBase : ClassBase
     protected abstract Type RecordCollectionType { get; }
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
     protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
+    protected abstract void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder);
 
     protected IClass[] GetImmutableBuilderClasses(Type[] types,
                                                   string entitiesNamespace,
@@ -68,23 +69,48 @@ public abstract class CSharpClassBase : ClassBase
         )
         .ToArray();
 
-    protected IClass[] GetImmutableClasses(Type[] types, string entitiesNamespace)
-        => GetImmutableClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace);
+    protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
+        => GetImmutableClasses(types.Select(x => x.IsInterface
+            ? (ITypeBase)x.ToInterface()
+            : x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace);
 
-    protected IClass[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
+    protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
         => models.Select
         (
-            x => new ClassBuilder(x.ToClass())
-                .WithName(x is IInterface && x.Name.StartsWith("I") ? x.Name.Substring(1) : x.Name)
-                .WithNamespace(entitiesNamespace)
-                .Chain(y => FixImmutableBuilderProperties(y))
-                .Build()
-                .ToImmutableClassBuilder(CreateImmutableClassSettings())
-                .WithRecord()
-                .WithPartial()
-                .AddInterfaces(new[] { $"{x.Namespace}.{x.Name}" }.Where(_ => x is IInterface && InheritFromInterfaces))
-                .Build()
+            //x => x is IClass cls
+            //    ? CreateClass(cls, entitiesNamespace)
+            //    : x is IInterface iinterface
+            //        ? CreateInterface(iinterface, entitiesNamespace)
+            //        : throw new NotSupportedException("Type of class should be IClass or IInterface")
+            x => x switch
+            {
+                IClass cls => CreateClass(cls, entitiesNamespace),
+                IInterface iinterface => CreateInterface(iinterface, entitiesNamespace),
+                _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
+            }
         ).ToArray();
+
+    private ITypeBase CreateClass(IClass cls, string entitiesNamespace)
+        => new ClassBuilder(cls)
+            .WithNamespace(entitiesNamespace)
+            .Chain(y => FixImmutableBuilderProperties(y))
+            .Build()
+            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .WithRecord()
+            .WithPartial()
+            .Build();
+
+    private ITypeBase CreateInterface(IInterface iinterface, string entitiesNamespace)
+        => new InterfaceBuilder(iinterface)
+            .WithName(iinterface.Name.StartsWith("I") ? iinterface.Name.Substring(1) : iinterface.Name)
+            .WithNamespace(entitiesNamespace)
+            .Chain(y => FixImmutableBuilderProperties(y))
+            .Build()
+            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .WithRecord()
+            .WithPartial()
+            .AddInterfaces(new[] { $"{iinterface.Namespace}.{iinterface.Name}" }.Where(_ => InheritFromInterfaces))
+            .Build();
 
     protected IClass[] GetClassesFromSameNamespace(Type type)
     {

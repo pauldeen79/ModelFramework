@@ -33,7 +33,9 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
 
     public string CreateCode()
     {
-        var models = Models.Select(x => x.ToClassBuilder(new ClassSettings())).ToArray();
+        object models = Models.All(x => x.IsInterface)
+            ? Models.Select(x => x.ToInterfaceBuilder()).ToArray()
+            : Models.Select(x => x.ToClassBuilder(new ClassSettings())).ToArray();
         var serviceCollection = new ServiceCollection();
         using var serviceProvider = serviceCollection
             .AddCsharpExpressionDumper
