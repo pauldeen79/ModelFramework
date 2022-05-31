@@ -12,6 +12,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool UseLazyInitialization => true;
     protected virtual bool UseTargetTypeNewExpressions => true;
     protected virtual bool ValidateArgumentsInConstructor => true;
+    protected virtual bool InheritFromInterfaces => true;
 
     protected abstract Type RecordCollectionType { get; }
     protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
@@ -81,7 +82,7 @@ public abstract class CSharpClassBase : ClassBase
                 .ToImmutableClassBuilder(CreateImmutableClassSettings())
                 .WithRecord()
                 .WithPartial()
-                .AddInterfaces($"{x.Namespace}.{x.Name}")
+                .AddInterfaces(new[] { $"{x.Namespace}.{x.Name}" }.Where(_ => x is IInterface && InheritFromInterfaces))
                 .Build()
         ).ToArray();
 
