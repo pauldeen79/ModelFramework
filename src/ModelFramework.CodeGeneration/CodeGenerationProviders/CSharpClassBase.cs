@@ -16,23 +16,25 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddPrivateSetters => false;
 
     protected abstract Type RecordCollectionType { get; }
-    protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
-    protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
-    protected abstract void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder);
+    protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
+    protected virtual void FixImmutableBuilderProperties(ClassBuilder classBuilder) { }
+    protected virtual void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) { }
+    protected virtual void FixImmutableClassProperties(ClassBuilder classBuilder) { }
+    protected virtual void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) { }
 
-    protected IClass[] GetImmutableBuilderClasses(Type[] types,
-                                                  string entitiesNamespace,
-                                                  string buildersNamespace,
-                                                  params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(),
-                                                                  entitiesNamespace,
-                                                                  buildersNamespace,
-                                                                  interfacesToAdd);
+    protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
+                                                     string entitiesNamespace,
+                                                     string buildersNamespace,
+                                                     params string[] interfacesToAdd)
+        => GetImmutableBuilderClasses(types.Select(x => x.IsInterface ? (ITypeBase)x.ToInterface() : x.ToClass(new ClassSettings())).ToArray(),
+                                      entitiesNamespace,
+                                      buildersNamespace,
+                                      interfacesToAdd);
 
-    protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models,
-                                                  string entitiesNamespace,
-                                                  string buildersNamespace,
-                                                  params string[] interfacesToAdd)
+    protected ITypeBase[] GetImmutableBuilderClasses(ITypeBase[] models,
+                                                     string entitiesNamespace,
+                                                     string buildersNamespace,
+                                                     params string[] interfacesToAdd)
         => models.Select
         (
             x => CreateBuilder(CreateImmutableEntities(entitiesNamespace, x), buildersNamespace)
@@ -72,35 +74,35 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
         => GetImmutableClasses(types.Select(x => x.IsInterface
-            ? (ITypeBase)x.ToInterface()
-            : x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace);
+            ? (ITypeBase)x.ToInterfaceBuilder().Chain(x => FixImmutableClassProperties(x)).Build()
+            : x.ToClassBuilder(new ClassSettings()).Chain(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
         => models.Select
         (
             x => x switch
             {
-                IClass cls => CreateClass(cls, entitiesNamespace),
-                IInterface iinterface => CreateInterface(iinterface, entitiesNamespace),
+                IClass cls => CreateImmutableClassFromClass(cls, entitiesNamespace),
+                IInterface iinterface => CreateImmutableClassFromInterface(iinterface, entitiesNamespace),
                 _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
             }
         ).ToArray();
 
-    private ITypeBase CreateClass(IClass cls, string entitiesNamespace)
+    private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
-            .Chain(y => FixImmutableBuilderProperties(y))
+            .Chain(y => FixImmutableClassProperties(y))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
             .Build();
 
-    private ITypeBase CreateInterface(IInterface iinterface, string entitiesNamespace)
+    private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
         => new InterfaceBuilder(iinterface)
             .WithName(iinterface.Name.StartsWith("I") ? iinterface.Name.Substring(1) : iinterface.Name)
             .WithNamespace(entitiesNamespace)
-            .Chain(y => FixImmutableBuilderProperties(y))
+            .Chain(y => FixImmutableClassProperties(y))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
@@ -164,7 +166,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
         => new ClassBuilder(x.ToClass())
-            .WithName(x.Name.Substring(1))
+            .WithName(x is IInterface && x.Name.StartsWith("I") ? x.Name.Substring(1) : x.Name)
             .WithNamespace(entitiesNamespace)
             .Chain(y => FixImmutableBuilderProperties(y))
             .Build()

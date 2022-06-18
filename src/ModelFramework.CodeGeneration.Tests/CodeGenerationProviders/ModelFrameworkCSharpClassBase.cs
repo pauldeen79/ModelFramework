@@ -79,6 +79,12 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
     }
 
+    protected override void FixImmutableClassProperties(ClassBuilder classBuilder)
+        => FixImmutableBuilderProperties(classBuilder);
+
+    protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder)
+        => FixImmutableBuilderProperties(interfaceBuilder);
+
     private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
         var typeName = property.TypeName.FixTypeName();
@@ -91,7 +97,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
             );
         }
-        else if (typeName.Contains("Collection<ModelFramework."))
+        else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
             var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement")
                 || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
@@ -107,7 +113,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                     : null
             );
         }
-        else if (typeName.Contains("Collection<System.String"))
+        else if (typeName.Contains("Collection<System.String", StringComparison.InvariantCulture))
         {
             property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
         }
