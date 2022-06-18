@@ -42,7 +42,7 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
         var typeName = property.TypeName.FixTypeName();
         if (typeName.StartsWith("ModelFramework.Common.Contracts.Test.I", StringComparison.InvariantCulture))
         {
-            property.TypeName = typeName.Replace("Contracts.Test.I", "Test.");
+            property.TypeName = typeName.Replace("Contracts.Test.I", "Test.", StringComparison.InvariantCulture);
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
