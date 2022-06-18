@@ -14,7 +14,7 @@ public class CodeGenerationTests
     public void Can_Generate_Model_For_Abstractions()
     {
         // Act & Assert
-        //Verify(GenerateCode.For<TestInterfacesModels>(Settings));
+        ///Verify(GenerateCode.For<TestInterfacesModels>(Settings));
         Verify(GenerateCode.For<ObjectsInterfacesModels>(Settings));
     }
 

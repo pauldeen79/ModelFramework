@@ -16,11 +16,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddPrivateSetters => false;
 
     protected abstract Type RecordCollectionType { get; }
-    protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
-    protected virtual void FixImmutableBuilderProperties(ClassBuilder classBuilder) { }
-    protected virtual void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) { }
-    protected virtual void FixImmutableClassProperties(ClassBuilder classBuilder) { }
-    protected virtual void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) { }
+    protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
+    protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
+    protected abstract void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder);
+    protected abstract void FixImmutableClassProperties(ClassBuilder classBuilder);
+    protected abstract void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder);
 
     protected IClass[] GetImmutableBuilderClasses(Type[] types,
                                                   string entitiesNamespace,
