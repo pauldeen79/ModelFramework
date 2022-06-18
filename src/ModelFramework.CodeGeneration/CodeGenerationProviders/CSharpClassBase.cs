@@ -22,19 +22,19 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual void FixImmutableClassProperties(ClassBuilder classBuilder) { }
     protected virtual void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) { }
 
-    protected IClass[] GetImmutableBuilderClasses(Type[] types,
-                                                  string entitiesNamespace,
-                                                  string buildersNamespace,
-                                                  params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(),
-                                                                  entitiesNamespace,
-                                                                  buildersNamespace,
-                                                                  interfacesToAdd);
+    protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
+                                                     string entitiesNamespace,
+                                                     string buildersNamespace,
+                                                     params string[] interfacesToAdd)
+        => GetImmutableBuilderClasses(types.Select(x => x.IsInterface ? (ITypeBase)x.ToInterface() : x.ToClass(new ClassSettings())).ToArray(),
+                                      entitiesNamespace,
+                                      buildersNamespace,
+                                      interfacesToAdd);
 
-    protected IClass[] GetImmutableBuilderClasses(ITypeBase[] models,
-                                                  string entitiesNamespace,
-                                                  string buildersNamespace,
-                                                  params string[] interfacesToAdd)
+    protected ITypeBase[] GetImmutableBuilderClasses(ITypeBase[] models,
+                                                     string entitiesNamespace,
+                                                     string buildersNamespace,
+                                                     params string[] interfacesToAdd)
         => models.Select
         (
             x => CreateBuilder(CreateImmutableEntities(entitiesNamespace, x), buildersNamespace)
