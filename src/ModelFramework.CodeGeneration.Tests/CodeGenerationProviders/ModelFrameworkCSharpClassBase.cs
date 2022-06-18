@@ -79,6 +79,12 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
     }
 
+    protected override void FixImmutableClassProperties(ClassBuilder classBuilder)
+        => FixImmutableBuilderProperties(classBuilder);
+
+    protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder)
+        => FixImmutableBuilderProperties(interfaceBuilder);
+
     private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
         var typeName = property.TypeName.FixTypeName();
