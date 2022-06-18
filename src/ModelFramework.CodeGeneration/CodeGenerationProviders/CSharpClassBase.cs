@@ -82,13 +82,13 @@ public abstract class CSharpClassBase : ClassBase
         (
             x => x switch
             {
-                IClass cls => CreateClass(cls, entitiesNamespace),
-                IInterface iinterface => CreateInterface(iinterface, entitiesNamespace),
+                IClass cls => CreateImmutableClassFromClass(cls, entitiesNamespace),
+                IInterface iinterface => CreateImmutableClassFromInterface(iinterface, entitiesNamespace),
                 _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
             }
         ).ToArray();
 
-    private ITypeBase CreateClass(IClass cls, string entitiesNamespace)
+    private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
             .Chain(y => FixImmutableBuilderProperties(y))
@@ -98,7 +98,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithPartial()
             .Build();
 
-    private ITypeBase CreateInterface(IInterface iinterface, string entitiesNamespace)
+    private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
         => new InterfaceBuilder(iinterface)
             .WithName(iinterface.Name.StartsWith("I") ? iinterface.Name.Substring(1) : iinterface.Name)
             .WithNamespace(entitiesNamespace)
