@@ -16,9 +16,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddPrivateSetters => false;
 
     protected abstract Type RecordCollectionType { get; }
-    protected abstract string FormatInstanceTypeName(ITypeBase instance, bool forCreate);
-    protected abstract void FixImmutableBuilderProperties(ClassBuilder classBuilder);
-    protected abstract void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder);
+    protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
+    protected virtual void FixImmutableBuilderProperties(ClassBuilder classBuilder) { }
+    protected virtual void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) { }
+    protected virtual void FixImmutableClassProperties(ClassBuilder classBuilder) { }
+    protected virtual void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) { }
 
     protected IClass[] GetImmutableBuilderClasses(Type[] types,
                                                   string entitiesNamespace,
@@ -72,8 +74,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
         => GetImmutableClasses(types.Select(x => x.IsInterface
-            ? (ITypeBase)x.ToInterface()
-            : x.ToClass(new ClassSettings())).ToArray(), entitiesNamespace);
+            ? (ITypeBase)x.ToInterfaceBuilder().Chain(x => FixImmutableClassProperties(x)).Build()
+            : x.ToClassBuilder(new ClassSettings()).Chain(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
         => models.Select

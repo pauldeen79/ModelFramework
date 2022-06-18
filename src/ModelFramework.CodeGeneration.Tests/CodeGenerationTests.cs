@@ -25,17 +25,40 @@ public class CodeGenerationTests
         
         // Act
         GenerateCode.For<CommonBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseCodeStatements>(Settings, multipleContentBuilder);
         GenerateCode.For<CommonRecords>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
+
+        GenerateCode.For<DatabaseBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<DatabaseRecords>(Settings, multipleContentBuilder);
+
+        GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
+
+        GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseCodeStatements>(Settings, multipleContentBuilder);
 
         // Assert
         Verify(multipleContentBuilder);
     }
+
+    ///[Fact]
+    ///public void Can_Generate_Test_Classes_For_ModelFramework()
+    ///{
+    ///    // Arrange
+    ///    var settings =  new CodeGenerationSettings
+    ///    (
+    ///        basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
+    ///        generateMultipleFiles: true,
+    ///        dryRun: false
+    ///    );
+    ///    var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
+    ///
+    ///    // Act
+    ///    GenerateCode.For<TestBuilders>(settings, multipleContentBuilder);
+    ///    GenerateCode.For<TestRecords>(settings, multipleContentBuilder);
+    ///
+    ///    // Assert
+    ///    Verify(multipleContentBuilder);
+    ///}
 
     // Example how to generate builder extensions
     [Fact]
