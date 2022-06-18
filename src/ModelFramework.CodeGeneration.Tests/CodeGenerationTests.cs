@@ -14,6 +14,7 @@ public class CodeGenerationTests
     public void Can_Generate_Model_For_Abstractions()
     {
         // Act & Assert
+        //Verify(GenerateCode.For<TestInterfacesModels>(Settings));
         Verify(GenerateCode.For<ObjectsInterfacesModels>(Settings));
     }
 
@@ -40,25 +41,25 @@ public class CodeGenerationTests
         Verify(multipleContentBuilder);
     }
 
-    ///[Fact]
-    ///public void Can_Generate_Test_Classes_For_ModelFramework()
-    ///{
-    ///    // Arrange
-    ///    var settings =  new CodeGenerationSettings
-    ///    (
-    ///        basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
-    ///        generateMultipleFiles: true,
-    ///        dryRun: false
-    ///    );
-    ///    var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
-    ///
-    ///    // Act
-    ///    GenerateCode.For<TestBuilders>(settings, multipleContentBuilder);
-    ///    GenerateCode.For<TestRecords>(settings, multipleContentBuilder);
-    ///
-    ///    // Assert
-    ///    Verify(multipleContentBuilder);
-    ///}
+    [Fact]
+    public void Can_Generate_Test_Classes_For_ModelFramework()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
+            generateMultipleFiles: true,
+            dryRun: true
+        );
+        var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
+
+        // Act
+        GenerateCode.For<TestBuilders>(settings, multipleContentBuilder);
+        GenerateCode.For<TestRecords>(settings, multipleContentBuilder);
+
+        // Assert
+        Verify(multipleContentBuilder);
+    }
 
     // Example how to generate builder extensions
     [Fact]
