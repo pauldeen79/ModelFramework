@@ -54,7 +54,7 @@ public class CodeGenerationTests
         var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
 
         // Act
-        GenerateCode.For<TestBuilders>(settings, multipleContentBuilder);
+        GenerateCode.For<PlainBuilders>(settings, multipleContentBuilder);
         GenerateCode.For<CodeGenerationProviders.TestRecords>(settings, multipleContentBuilder);
 
         // Assert
@@ -93,7 +93,7 @@ public class CodeGenerationTests
         );
 
         // Act
-        var generatedCode = GenerateCode.For<TestRecords>(settings);
+        var generatedCode = GenerateCode.For<PlainRecords>(settings);
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
@@ -135,7 +135,7 @@ namespace Test
         );
 
         // Act
-        var generatedCode = GenerateCode.For<TestBuilders>(settings);
+        var generatedCode = GenerateCode.For<PlainBuilders>(settings);
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
@@ -147,7 +147,7 @@ using System.Text;
 namespace Test.Builders
 {
 #nullable enable
-    public partial class estClassBuilder
+    public partial class TestClassBuilder
     {
         public string TestProperty
         {
@@ -161,33 +161,33 @@ namespace Test.Builders
             }
         }
 
-        public Test.estClass Build()
+        public Test.TestClass Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new Test.estClass(TestProperty);
+            return new Test.TestClass(TestProperty);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public estClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
+        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
         {
             _testPropertyDelegate = new (testPropertyDelegate);
             return this;
         }
 
-        public estClassBuilder WithTestProperty(string testProperty)
+        public TestClassBuilder WithTestProperty(string testProperty)
         {
             TestProperty = testProperty;
             return this;
         }
 
-        public estClassBuilder()
+        public TestClassBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => string.Empty);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public estClassBuilder(Test.estClass source)
+        public TestClassBuilder(Test.TestClass source)
         {
             _testPropertyDelegate = new (() => source.TestProperty);
         }
@@ -219,7 +219,7 @@ namespace Test.Builders
         actual.NormalizeLineEndings().Should().NotBeNullOrEmpty();
     }
 
-    private abstract class TestBase : CSharpClassBase
+    private abstract class PlainBase : CSharpClassBase
     {
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
@@ -239,12 +239,12 @@ namespace Test.Builders
         };
     }
 
-    private sealed class TestRecords : TestBase
+    private sealed class PlainRecords : PlainBase
     {
         public override object CreateModel() => GetImmutableClasses(GetModels(), "Test");
     }
 
-    private sealed class TestBuilders : TestBase
+    private sealed class PlainBuilders : PlainBase
     {
         public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
     }

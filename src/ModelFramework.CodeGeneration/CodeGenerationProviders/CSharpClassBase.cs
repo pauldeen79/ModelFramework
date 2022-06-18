@@ -166,7 +166,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
         => new ClassBuilder(x.ToClass())
-            .WithName(x.Name.Substring(1))
+            .WithName(x is IInterface && x.Name.StartsWith("I") ? x.Name.Substring(1) : x.Name)
             .WithNamespace(entitiesNamespace)
             .Chain(y => FixImmutableBuilderProperties(y))
             .Build()
