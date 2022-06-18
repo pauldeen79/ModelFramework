@@ -4,12 +4,6 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
 {
     protected override bool InheritFromInterfaces => false;
 
-    // note that this override is not needed on CSharpClassBase
-    protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
-    {
-        return string.Empty;
-    }
-
     protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) => FixInterface(interfaceBuilder);
     protected override void FixImmutableClassProperties(ClassBuilder classBuilder) => FixClass(classBuilder);
     protected override void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) => FixInterface(interfaceBuilder);
