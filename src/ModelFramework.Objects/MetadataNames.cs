@@ -93,6 +93,11 @@ public static class MetadataNames
     public const string CustomBuilderConstructorInitializeExpression = "ModelFramework.Objects.Builder.ConstructorInitializeExpression";
 
     /// <summary>
+    /// Metadata name for defining an additional parameter (of type IParameter) in the copy constructor of the builder.
+    /// </summary>
+    public const string AdditionalBuilderCopyConstructorAdditionalParameter = "ModelFramework.Objects.Builder.AdditionalCopyConstructorAdditionalParameter";
+
+    /// <summary>
     /// Metadata name for defining a custom typename for a With/Add overload in a builder.
     /// </summary>
     public const string CustomBuilderWithOverloadArgumentType = "ModelFramework.Objects.Builder.WithOverload.ArgumentType";

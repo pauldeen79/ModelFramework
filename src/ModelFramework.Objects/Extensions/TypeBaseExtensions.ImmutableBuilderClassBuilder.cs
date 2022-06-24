@@ -103,6 +103,10 @@ public static partial class TypeBaseEtensions
                         .WithName("source")
                         .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
                 )
+                .AddParameters
+                (
+                    instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter).Select(x => new ParameterBuilder(x))
+                )
                 .AddLiteralCodeStatements
                 (
                     instance.Properties

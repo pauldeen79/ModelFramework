@@ -2030,6 +2030,90 @@ namespace MyNamespace
     }
 
     [Fact]
+    public void GeneratesImmutableBuilderClassWithAdditionalConstructorParameter()
+    {
+        // Arrange
+        var properties = new[]
+        {
+            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
+        };
+        var cls = new ClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .AddProperties(properties)
+            .Build()
+            .ToImmutableClassBuilder(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"))
+            .AddBuilderCopyConstructorAdditionalArguments(new ParameterBuilder().WithType(typeof(string)).WithName("additionalArgument"))
+            .Build();
+        var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true));
+        var model = new[]
+        {
+            cls,
+            cls.ToImmutableBuilderClass(settings)
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+#nullable enable
+    public class MyRecord
+    {
+        public string? Property1
+        {
+            get;
+        }
+
+        public MyRecord(string? property1)
+        {
+            this.Property1 = property1;
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public class MyRecordBuilder
+    {
+        public string? Property1
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord(Property1);
+        }
+
+        public MyRecordBuilder WithProperty1(string? property1)
+        {
+            Property1 = property1;
+            return this;
+        }
+
+        public MyRecordBuilder()
+        {
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source, string additionalArgument)
+        {
+            Property1 = source.Property1;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
     public void GeneratesImmutableClassWithInjectedTemplates_Model_With_Method_Using_ExtensionMethod()
     {
         // Arrange
