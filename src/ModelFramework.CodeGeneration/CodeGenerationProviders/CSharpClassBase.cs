@@ -21,6 +21,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) { }
     protected virtual void FixImmutableClassProperties(ClassBuilder classBuilder) { }
     protected virtual void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) { }
+    protected virtual void PostProcessImmutableBuilderClass(ClassBuilder classBuilder) { }
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
                                                      string entitiesNamespace,
@@ -91,7 +92,7 @@ public abstract class CSharpClassBase : ClassBase
     private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
-            .Chain(y => FixImmutableClassProperties(y))
+            .Chain(x => FixImmutableClassProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
@@ -100,9 +101,11 @@ public abstract class CSharpClassBase : ClassBase
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
         => new InterfaceBuilder(iinterface)
-            .WithName(iinterface.Name.StartsWith("I") ? iinterface.Name.Substring(1) : iinterface.Name)
+            .WithName(iinterface.Name.StartsWith("I")
+                ? iinterface.Name.Substring(1)
+                : iinterface.Name)
             .WithNamespace(entitiesNamespace)
-            .Chain(y => FixImmutableClassProperties(y))
+            .Chain(x => FixImmutableClassProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
@@ -139,7 +142,8 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(@namespace)
             .WithPartial()
             .AddMethods(CreateExtraOverloads(c))
-            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
+            .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
+            .Chain(x => PostProcessImmutableBuilderClass(x));
 
     protected ClassBuilder CreateBuilderExtensions(IClass c, string @namespace)
         => c.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
