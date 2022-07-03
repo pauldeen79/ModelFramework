@@ -655,7 +655,7 @@ public static partial class TypeBaseEtensions
         {
             yield return new LiteralCodeStatementBuilder($"return _{property.Name.ToPascalCase()}Delegate.Value;");
         }
-        else
+        else if (settings.CopyPropertyCode)
         {
             foreach (var statement in property.GetterCodeStatements.Select(x => x.CreateBuilder()))
             {
@@ -671,7 +671,7 @@ public static partial class TypeBaseEtensions
         {
             yield return new LiteralCodeStatementBuilder($"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => value);");
         }
-        else
+        else if (settings.CopyPropertyCode)
         {
             foreach (var statement in property.SetterCodeStatements.Select(x => x.CreateBuilder()))
             {

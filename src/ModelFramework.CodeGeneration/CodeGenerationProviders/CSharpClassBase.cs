@@ -14,6 +14,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool ValidateArgumentsInConstructor => true;
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
+    protected virtual bool CopyPropertyCode => true;
 
     protected abstract Type RecordCollectionType { get; }
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
@@ -160,7 +161,8 @@ public abstract class CSharpClassBase : ClassBase
                                              constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
                                              nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: SetMethodNameFormatString, addMethodNameFormatString: AddMethodNameFormatString),
                                              enableNullableReferenceTypes: EnableNullableContext,
-                                             useLazyInitialization: UseLazyInitialization);
+                                             useLazyInitialization: UseLazyInitialization,
+                                             copyPropertyCode: CopyPropertyCode);
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
