@@ -166,15 +166,18 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
         => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-                                      validateArgumentsInConstructor: ValidateArgumentsInConstructor,
-                                      addNullChecks: AddNullChecks,
+                                      constructorSettings: new ImmutableClassConstructorSettings(
+                                          validateArguments: ValidateArgumentsInConstructor,
+                                          addNullChecks: AddNullChecks),
                                       addPrivateSetters: AddPrivateSetters);
 
-    private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
-        => new ClassBuilder(x.ToClass())
-            .WithName(x is IInterface && x.Name.StartsWith("I") ? x.Name.Substring(1) : x.Name)
+    private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase typeBase)
+        => new ClassBuilder(typeBase.ToClass())
+            .WithName(typeBase is IInterface && typeBase.Name.StartsWith("I")
+                ? typeBase.Name.Substring(1)
+                : typeBase.Name)
             .WithNamespace(entitiesNamespace)
-            .Chain(y => FixImmutableBuilderProperties(y))
+            .Chain(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClass(CreateImmutableClassSettings());
 }

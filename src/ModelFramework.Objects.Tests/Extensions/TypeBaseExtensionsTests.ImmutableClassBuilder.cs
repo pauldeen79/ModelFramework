@@ -24,7 +24,7 @@ public partial class TypeBaseExtensionsTests
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)))
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)))
             .Build();
-        var settings = new ImmutableClassSettings(addNullChecks: false);
+        var settings = new ImmutableClassSettings(constructorSettings: new ImmutableClassConstructorSettings(addNullChecks: false));
 
         // Act
         var actual = input.ToImmutableClass(settings);
@@ -45,7 +45,7 @@ this.Property2 = property2;");
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)))
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)))
             .Build();
-        var settings = new ImmutableClassSettings(addNullChecks: true);
+        var settings = new ImmutableClassSettings(constructorSettings: new ImmutableClassConstructorSettings(addNullChecks: true));
 
         // Act
         var actual = input.ToImmutableClass(settings);
@@ -67,7 +67,7 @@ this.Property2 = property2;");
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithTypeName("MyNullableType").WithConstructorNullCheck(false))
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithTypeName("MyNonNullableType").WithConstructorNullCheck(true))
             .Build();
-        var settings = new ImmutableClassSettings(addNullChecks: true);
+        var settings = new ImmutableClassSettings(constructorSettings: new ImmutableClassConstructorSettings(addNullChecks: true));
 
         // Act
         var actual = input.ToImmutableClass(settings);

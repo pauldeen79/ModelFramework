@@ -75,7 +75,7 @@ public static partial class TypeBaseExtensions
                     )
                     .AddLiteralCodeStatements
                     (
-                        instance.Properties.Where(p => settings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true)).Select
+                        instance.Properties.Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true)).Select
                         (
                             p => @$"if ({p.Name.ToPascalCase()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
                         )
@@ -94,7 +94,7 @@ public static partial class TypeBaseExtensions
                     )
                     .AddLiteralCodeStatements
                     (
-                        settings.ValidateArgumentsInConstructor
+                        settings.ConstructorSettings.ValidateArguments
                             ? new[]
                             {
                                 "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"

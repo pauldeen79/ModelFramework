@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Generators.Objects.Tests;
+﻿using ModelFramework.Generators.Objects.Tests.POC;
+
+namespace ModelFramework.Generators.Objects.Tests;
 
 public class CSharpClassGeneratorTests
 {
@@ -2716,7 +2718,7 @@ namespace MyNamespace
     public void Can_Generate_ImmutableClass_From_Interface_Without_Coupling()
     {
         // Arrange
-        var settings = new ImmutableClassSettings("CrossCutting.ReadOnlyValueCollection", validateArgumentsInConstructor: true, addNullChecks: true);
+        var settings = new ImmutableClassSettings("CrossCutting.ReadOnlyValueCollection", constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true));
         var model = new[]
         {
             new InterfaceBuilder()
