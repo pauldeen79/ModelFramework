@@ -94,6 +94,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                             .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
+                            .WithName(@"Abstract")
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
                             .WithName(@"SubClasses")
                             .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
                             .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),

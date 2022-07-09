@@ -1009,6 +1009,34 @@ namespace MyNamespace
     }
 
     [Fact]
+    public void GeneratesAbstractClass()
+    {
+        // Arrange
+        var model = new[]
+        {
+            new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").WithAbstract().Build()
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public abstract class MyClass
+    {
+    }
+}
+");
+    }
+
+    [Fact]
     public void GeneratesClassWithCustomAttributeTemplate()
     {
         // Arrange

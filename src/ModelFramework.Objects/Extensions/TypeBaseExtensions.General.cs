@@ -54,6 +54,7 @@ public static partial class TypeBaseExtensions
                     Enumerable.Empty<IClassField>(),
                     false,
                     false,
+                    false,
                     Enumerable.Empty<IClass>(),
                     Enumerable.Empty<IClassConstructor>(),
                     string.Empty,

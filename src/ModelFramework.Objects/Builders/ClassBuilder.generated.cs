@@ -47,6 +47,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool Abstract
+        {
+            get
+            {
+                return _abstractDelegate.Value;
+            }
+            set
+            {
+                _abstractDelegate = new (() => value);
+            }
+        }
+
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder> SubClasses
         {
             get;
@@ -314,8 +326,20 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClass Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, Abstract, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public ClassBuilder WithAbstract(bool @abstract = true)
+        {
+            Abstract = @abstract;
+            return this;
+        }
+
+        public ClassBuilder WithAbstract(System.Func<bool> abstractDelegate)
+        {
+            _abstractDelegate = new (@abstractDelegate);
+            return this;
         }
 
         public ClassBuilder WithBaseClass(System.Func<string> baseClassDelegate)
@@ -430,6 +454,7 @@ namespace ModelFramework.Objects.Builders
             #pragma warning disable CS8603 // Possible null reference return.
             _staticDelegate = new (() => default);
             _sealedDelegate = new (() => default);
+            _abstractDelegate = new (() => default);
             _baseClassDelegate = new (() => string.Empty);
             _recordDelegate = new (() => default);
             _namespaceDelegate = new (() => string.Empty);
@@ -455,6 +480,7 @@ namespace ModelFramework.Objects.Builders
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Objects.Builders.ClassFieldBuilder(x)));
             _staticDelegate = new (() => source.Static);
             _sealedDelegate = new (() => source.Sealed);
+            _abstractDelegate = new (() => source.Abstract);
             SubClasses.AddRange(source.SubClasses.Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)));
             Constructors.AddRange(source.Constructors.Select(x => new ModelFramework.Objects.Builders.ClassConstructorBuilder(x)));
             _baseClassDelegate = new (() => source.BaseClass);
@@ -476,6 +502,8 @@ namespace ModelFramework.Objects.Builders
         private System.Lazy<bool> _staticDelegate;
 
         private System.Lazy<bool> _sealedDelegate;
+
+        private System.Lazy<bool> _abstractDelegate;
 
         private System.Lazy<string> _baseClassDelegate;
 
