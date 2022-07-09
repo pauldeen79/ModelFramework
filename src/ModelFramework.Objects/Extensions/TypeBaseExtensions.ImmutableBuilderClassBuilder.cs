@@ -15,12 +15,34 @@ public static partial class TypeBaseEtensions
         return new ClassBuilder()
             .WithName(instance.Name + "Builder")
             .WithNamespace(instance.Namespace)
+            .WithBaseClass(GetImmutableBuilderClassBaseClass(instance, settings))
             .WithPartial(instance.Partial)
             .AddConstructors(GetImmutableBuilderClassConstructors(instance, settings))
             .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
             .AddFields(GetImmutableBuilderClassFields(instance, settings));
+    }
+
+    private static string GetImmutableBuilderClassBaseClass(ITypeBase instance, ImmutableBuilderClassSettings settings)
+    {
+        if (!settings.InheritanceSettings.EnableInheritance)
+        {
+            return string.Empty;
+        }
+
+        var cls = instance as IClass;
+        if (cls == null)
+        {
+            return string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(cls.BaseClass))
+        {
+            return string.Empty;
+        }
+
+        return $"{cls.BaseClass.GetClassName()}Builder<{instance.Name}Builder, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}>";
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -68,6 +90,7 @@ public static partial class TypeBaseEtensions
                                                                                              ImmutableBuilderClassSettings settings)
     {
         yield return new ClassConstructorBuilder()
+            .WithChainCall(CreateImmutableBuilderClassConstructorChainCall(instance, settings))
             .AddLiteralCodeStatements
             (
                 instance.Properties
@@ -90,6 +113,7 @@ public static partial class TypeBaseEtensions
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
             yield return new ClassConstructorBuilder()
+                .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(instance, settings))
                 .Chain(x =>
                 {
                     if (settings.ConstructorSettings.AddNullChecks)
@@ -167,6 +191,48 @@ public static partial class TypeBaseEtensions
         }
     }
 
+    private static string CreateImmutableBuilderClassConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)
+    {
+        if (!settings.InheritanceSettings.EnableInheritance)
+        {
+            return string.Empty;
+        }
+
+        var cls = instance as IClass;
+        if (cls == null)
+        {
+            return string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(cls.BaseClass))
+        {
+            return string.Empty;
+        }
+
+        return "base()";
+    }
+
+    private static string CreateImmutableBuilderClassCopyConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)
+    {
+        if (!settings.InheritanceSettings.EnableInheritance)
+        {
+            return string.Empty;
+        }
+
+        var cls = instance as IClass;
+        if (cls == null)
+        {
+            return string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(cls.BaseClass))
+        {
+            return string.Empty;
+        }
+
+        return "base(source)";
+    }
+
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.UseLazyInitialization
             ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {property.GetDefaultValue()});"
@@ -188,26 +254,37 @@ public static partial class TypeBaseEtensions
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(property, settings.EnableNullableReferenceTypes);
 
-    private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance, ImmutableBuilderClassSettings settings, bool poco)
+    private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance,
+                                                                                        ImmutableBuilderClassSettings settings,
+                                                                                        bool poco)
     {
         var cls = instance as IClass;
         if (poco)
         {
-            return instance.Properties.Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings));
+            return instance.Properties;
         }
 
         var ctors = cls?.Constructors ?? new ReadOnlyValueCollection<IClassConstructor>();
         var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
         if (ctor == null)
         {
-            return instance.Properties.Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings));
+            return instance.Properties;
         }
-        return ctor
+
+        var props = ctor
             .Parameters
-            .Select(x => instance.Properties
-                .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
-                .FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+            .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
             .Where(x => x != null);
+
+        if (settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null)
+        {
+            props = props.Concat(ctor
+                .Parameters
+                .Select(x => settings.InheritanceSettings.BaseClass.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                .Where(x => x != null));
+        }
+
+        return props;
     }
 
     private static string GetConstructorInitializeExpressionForCollection(ImmutableBuilderClassSettings settings, IClassProperty p)

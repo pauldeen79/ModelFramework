@@ -2116,6 +2116,99 @@ namespace MyNamespace
     }
 
     [Fact]
+    public void GeneratesImmutableBuilderClassWithInheritance()
+    {
+        // Arrange
+        var immutableClassSettings = new ImmutableClassSettings(
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
+            addPrivateSetters: true
+        );
+        var cls = typeof(InheritedClass)
+            .ToClass(new ClassSettings())
+            .ToImmutableClass(immutableClassSettings);
+        var settings = new ImmutableBuilderClassSettings(
+            constructorSettings: new ImmutableBuilderClassConstructorSettings(
+                addCopyConstructor: true,
+                addNullChecks: true),
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableInheritance: true, baseClass: typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(immutableClassSettings))
+            );
+        var model = new[]
+        {
+            cls,
+            cls.ToImmutableBuilderClass(settings)
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ModelFramework.Generators.Objects.Tests.POC
+{
+#nullable enable
+    public class InheritedClass : ModelFramework.Generators.Objects.Tests.POC.BaseClass
+    {
+        public string AdditionalProperty
+        {
+            get;
+            private set;
+        }
+
+        public InheritedClass(string additionalProperty, string baseProperty) : base(baseProperty)
+        {
+            if (additionalProperty == null) throw new System.ArgumentNullException(""additionalProperty"");
+            this.AdditionalProperty = additionalProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, ModelFramework.Generators.Objects.Tests.POC.InheritedClass>
+    {
+        public string AdditionalProperty
+        {
+            get;
+            set;
+        }
+
+        public ModelFramework.Generators.Objects.Tests.POC.InheritedClass Build()
+        {
+            return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
+        }
+
+        public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
+        {
+            AdditionalProperty = additionalProperty;
+            return this;
+        }
+
+        public InheritedClassBuilder() : base()
+        {
+            AdditionalProperty = string.Empty;
+        }
+
+        public InheritedClassBuilder(ModelFramework.Generators.Objects.Tests.POC.InheritedClass source) : base(source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            AdditionalProperty = source.AdditionalProperty;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
     public void GeneratesImmutableClassWithInjectedTemplates_Model_With_Method_Using_ExtensionMethod()
     {
         // Arrange
