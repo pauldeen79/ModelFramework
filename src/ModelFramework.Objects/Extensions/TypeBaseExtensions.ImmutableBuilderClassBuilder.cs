@@ -329,6 +329,8 @@ public static partial class TypeBaseEtensions
         var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
         yield return new ClassMethodBuilder()
             .WithName("Build")
+            .WithAbstract(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass == null)
+            .WithOverride(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null)
             .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
             .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};")

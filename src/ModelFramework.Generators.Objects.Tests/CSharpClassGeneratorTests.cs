@@ -2178,7 +2178,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
-        public ModelFramework.Generators.Objects.Tests.POC.InheritedClass Build()
+        public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass Build()
         {
             return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
         }
