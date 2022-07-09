@@ -2829,7 +2829,7 @@ namespace ModelFramework.Generators.Objects
         : Model.IsInterfaceMethod()
             ? Model.Name.RemoveInterfacePrefix().Sanitize().GetCsharpFriendlyName()
             : Model.Name.Sanitize().GetCsharpFriendlyName();
-    public bool OmitCode => TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface;
+    public bool OmitCode => TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface || Model.Abstract;
     public bool ShouldRenderCodeStatements => Model.CodeStatements.Any();
 
         public TemplateInstanceContext TemplateContext { get; set; }
