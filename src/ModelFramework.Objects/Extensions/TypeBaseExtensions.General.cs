@@ -35,6 +35,14 @@ public static partial class TypeBaseExtensions
                             string.Join(string.Concat(Environment.NewLine, "        "), instance.GenericTypeArgumentConstraints))
             : string.Empty;
 
+    public static string GetFullName(this ITypeBase instance)
+        => instance.GetNamespacePrefix() + instance.Name;
+
+    public static string GetNamespacePrefix(this ITypeBase instance)
+        => string.IsNullOrEmpty(instance.Namespace)
+            ? string.Empty
+            : instance.Namespace + ".";
+
     public static IEnumerable<IClassField> GetFields(this ITypeBase instance)
         => (instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>();
 
@@ -68,8 +76,8 @@ public static partial class TypeBaseExtensions
         => instance.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate);
 
     public static bool IsPoco(this ITypeBase instance)
-    => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
-        && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
+        => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
+            && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
 
     private static string GetInheritedClassesForClass(IClass cls)
     {

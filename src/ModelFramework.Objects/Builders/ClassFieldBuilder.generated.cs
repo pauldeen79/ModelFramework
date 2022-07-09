@@ -185,6 +185,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public string ParentTypeFullName
+        {
+            get
+            {
+                return _parentTypeFullNameDelegate.Value;
+            }
+            set
+            {
+                _parentTypeFullNameDelegate = new (() => value);
+            }
+        }
+
         public ClassFieldBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
@@ -216,7 +228,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClassField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue);
+            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue, ParentTypeFullName);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -301,6 +313,18 @@ namespace ModelFramework.Objects.Builders
         public ClassFieldBuilder WithOverride(System.Func<bool> overrideDelegate)
         {
             _overrideDelegate = new (@overrideDelegate);
+            return this;
+        }
+
+        public ClassFieldBuilder WithParentTypeFullName(System.Func<string> parentTypeFullNameDelegate)
+        {
+            _parentTypeFullNameDelegate = new (parentTypeFullNameDelegate);
+            return this;
+        }
+
+        public ClassFieldBuilder WithParentTypeFullName(string parentTypeFullName)
+        {
+            ParentTypeFullName = parentTypeFullName;
             return this;
         }
 
@@ -400,6 +424,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
             _defaultValueDelegate = new (() => default);
+            _parentTypeFullNameDelegate = new (() => string.Empty);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -422,6 +447,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
             _defaultValueDelegate = new (() => source.DefaultValue);
+            _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
 
         private System.Lazy<bool> _readOnlyDelegate;
@@ -449,6 +475,8 @@ namespace ModelFramework.Objects.Builders
         private System.Lazy<bool> _isNullableDelegate;
 
         private System.Lazy<object?> _defaultValueDelegate;
+
+        private System.Lazy<string> _parentTypeFullNameDelegate;
     }
 #nullable restore
 }

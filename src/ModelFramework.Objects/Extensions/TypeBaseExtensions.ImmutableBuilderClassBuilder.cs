@@ -7,7 +7,7 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!instance.Properties.Any())
+        if (!instance.Properties.Any(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings)))
         {
             throw new InvalidOperationException("To create an immutable builder class, there must be at least one property");
         }
@@ -28,7 +28,7 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToBuilderExtensionsClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!instance.Properties.Any())
+        if (!instance.Properties.Any(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings)))
         {
             throw new InvalidOperationException("To create a builder extensions class, there must be at least one property");
         }
@@ -43,14 +43,18 @@ public static partial class TypeBaseEtensions
 
     private static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        foreach (var field in instance.GetFields().Select(x => new ClassFieldBuilder(x)))
+        foreach (var field in instance.GetFields()
+            .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+            .Select(x => new ClassFieldBuilder(x)))
         {
             yield return field;
         }
 
         if (settings.UseLazyInitialization)
         {
-            foreach (var property in instance.Properties.Where(x => !x.TypeName.IsCollectionTypeName()))
+            foreach (var property in instance.Properties
+                .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                .Where(x => !x.TypeName.IsCollectionTypeName()))
             {
 
                 yield return new ClassFieldBuilder()
@@ -67,17 +71,19 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(p => p.TypeName.IsCollectionTypeName())
-                    .Select(p => $"{p.Name} = new {GetImmutableBuilderClassConstructorInitializer(settings, p)}();")
+                    .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                    .Where(x => x.TypeName.IsCollectionTypeName())
+                    .Select(x => $"{x.Name} = new {GetImmutableBuilderClassConstructorInitializer(settings, x)}();")
             )
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8603 // Possible null reference return." } : Array.Empty<string>())
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(p => settings.ConstructorSettings.SetDefaultValues
-                        && !p.TypeName.IsCollectionTypeName()
-                        && (!p.IsNullable || settings.UseLazyInitialization))
-                    .Select(p => GenerateDefaultValueStatement(p, settings))
+                    .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                    .Where(x => settings.ConstructorSettings.SetDefaultValues
+                        && !x.TypeName.IsCollectionTypeName()
+                        && (!x.IsNullable || settings.UseLazyInitialization))
+                    .Select(x => GenerateDefaultValueStatement(x, settings))
             )
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8603 // Possible null reference return." } : Array.Empty<string>());
 
@@ -110,18 +116,21 @@ public static partial class TypeBaseEtensions
                 .AddLiteralCodeStatements
                 (
                     instance.Properties
-                        .Where(p => p.TypeName.IsCollectionTypeName())
-                        .Select(p => $"{p.Name} = new {GetCopyConstructorInitializeExpression(settings, p)}();")
+                        .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                        .Where(x => x.TypeName.IsCollectionTypeName())
+                        .Select(x => $"{x.Name} = new {GetCopyConstructorInitializeExpression(settings, x)}();")
                 )
                 .AddLiteralCodeStatements
                 (
-                    instance.Properties.Select(p => p.CreateImmutableBuilderInitializationCode(settings) + ";")
+                    instance.Properties
+                        .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                        .Select(x => x.CreateImmutableBuilderInitializationCode(settings) + ";")
                 );
         }
 
         if (settings.ConstructorSettings.AddConstructorWithAllProperties)
         {
-            var properties = GetImmutableBuilderConstructorProperties(instance, true);
+            var properties = GetImmutableBuilderConstructorProperties(instance, settings, true);
 
             yield return new ClassConstructorBuilder()
                 .AddParameters(properties.Select(p => new ParameterBuilder()
@@ -146,12 +155,13 @@ public static partial class TypeBaseEtensions
                 .AddLiteralCodeStatements
                 (
                     instance.Properties
-                        .Where(p => !settings.UseLazyInitialization || p.TypeName.IsCollectionTypeName())
+                        .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                        .Where(x => !settings.UseLazyInitialization || x.TypeName.IsCollectionTypeName())
                         .Select
                         (
-                            p => p.TypeName.IsCollectionTypeName()
-                                ? CreateConstructorStatementForCollection(p, settings)
-                                : $"{p.Name} = {p.Name.ToPascalCase().GetCsharpFriendlyName()};"
+                            x => x.TypeName.IsCollectionTypeName()
+                                ? CreateConstructorStatementForCollection(x, settings)
+                                : $"{x.Name} = {x.Name.ToPascalCase().GetCsharpFriendlyName()};"
                         )
                 );
         }
@@ -178,23 +188,25 @@ public static partial class TypeBaseEtensions
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(property, settings.EnableNullableReferenceTypes);
 
-    private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance, bool poco)
+    private static IEnumerable<IClassProperty> GetImmutableBuilderConstructorProperties(ITypeBase instance, ImmutableBuilderClassSettings settings, bool poco)
     {
         var cls = instance as IClass;
         if (poco)
         {
-            return instance.Properties;
+            return instance.Properties.Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings));
         }
 
         var ctors = cls?.Constructors ?? new ReadOnlyValueCollection<IClassConstructor>();
         var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
         if (ctor == null)
         {
-            return instance.Properties;
+            return instance.Properties.Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings));
         }
         return ctor
             .Parameters
-            .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+            .Select(x => instance.Properties
+                .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+                .FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
             .Where(x => x != null);
     }
 
@@ -242,7 +254,7 @@ public static partial class TypeBaseEtensions
             .WithName("Build")
             .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
-            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance)}{closeSign};")
+            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};")
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." } : Array.Empty<string>());
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
@@ -261,7 +273,7 @@ public static partial class TypeBaseEtensions
             yield break;
         }
 
-        foreach (var property in instance.Properties)
+        foreach (var property in instance.Properties.Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings)))
         {
             var overloads = GetOverloads(property);
             if (ShouldCreateCollectionProperty(settings, property))
@@ -288,6 +300,19 @@ public static partial class TypeBaseEtensions
                 }
             }
         }
+    }
+
+    private static bool IsPropertyValidForImmutableBuilerClass(ITypeBase parent,
+                                                               IParentTypeContainer parentTypeContainer,
+                                                               ImmutableBuilderClassInheritanceSettings inheritanceSettings)
+    {
+        if (!inheritanceSettings.EnableInheritance)
+        {
+            // If inheritance is not enabled, then simply include all members
+            return true;
+        }
+        // If inheritance is enabled, then include the members if it's defined on the parent class
+        return parentTypeContainer.IsDefinedOn(parent);
     }
 
     private static bool ShouldCreateSingleProperty(ImmutableBuilderClassSettings settings)
@@ -621,32 +646,30 @@ public static partial class TypeBaseEtensions
             }
         }
 
-        var ns = string.IsNullOrEmpty(instance.Namespace)
-            ? string.Empty
-            : instance.Namespace + ".";
-
-        return (ns + instance.Name).GetCsharpFriendlyTypeName();
+        return instance.GetFullName().GetCsharpFriendlyTypeName();
     }
 
     private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance,
                                                                                         ImmutableBuilderClassSettings settings)
-        => instance.Properties.Select(property => new ClassPropertyBuilder()
-            .WithName(property.Name)
-            .WithTypeName
-            (
-                string.Format
+        => instance.Properties
+            .Where(x => IsPropertyValidForImmutableBuilerClass(instance, x, settings.InheritanceSettings))
+            .Select(property => new ClassPropertyBuilder()
+                .WithName(property.Name)
+                .WithTypeName
                 (
-                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                    property.TypeName,
-                    property.TypeName.GetGenericArguments()
-                ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
-            )
-            .WithIsNullable(property.IsNullable)
-            .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))
-            .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
-            .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))
-            .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, settings))
-        );
+                    string.Format
+                    (
+                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                        property.TypeName,
+                        property.TypeName.GetGenericArguments()
+                    ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
+                )
+                .WithIsNullable(property.IsNullable)
+                .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))
+                .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
+                .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))
+                .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, settings))
+            );
 
     private static IEnumerable<ICodeStatementBuilder> CreateImmutableBuilderPropertyGetterStatements(IClassProperty property,
                                                                                                      ImmutableBuilderClassSettings settings)
@@ -680,10 +703,10 @@ public static partial class TypeBaseEtensions
         }
     }
 
-    private static string GetConstructionMethodParameters(ITypeBase instance)
+    private static string GetConstructionMethodParameters(ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
         var poco = instance.IsPoco();
-        var properties = GetImmutableBuilderConstructorProperties(instance, poco);
+        var properties = GetImmutableBuilderConstructorProperties(instance, settings, poco);
 
         var defaultValueDelegate = poco
             ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
@@ -696,6 +719,5 @@ public static partial class TypeBaseEtensions
                                                  p.Name,
                                                  p.Name.ToPascalCase()))
         );
-
     }
 }

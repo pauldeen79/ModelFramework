@@ -212,7 +212,8 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Common.Contracts.IDefaultValueContainer")
+                        @"ModelFramework.Common.Contracts.IDefaultValueContainer",
+                        @"ModelFramework.Objects.Contracts.IParentTypeContainer")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
@@ -274,7 +275,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                             .WithHasSetter(false)
                             .WithName(@"DefaultValue")
                             .WithTypeName(@"System.Object")
-                            .WithIsNullable(true))
+                            .WithIsNullable(true),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ParentTypeFullName")
+                            .WithTypeName(@"System.String"))
                     .WithName(@"IClassField"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -287,7 +292,8 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Objects.Contracts.ICodeStatementsContainer",
                         @"ModelFramework.Objects.Contracts.IParametersContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer")
+                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer",
+                        @"ModelFramework.Objects.Contracts.IParentTypeContainer")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
@@ -364,6 +370,10 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ExplicitInterfaceName")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ParentTypeFullName")
                             .WithTypeName(@"System.String"))
                     .WithName(@"IClassMethod"),
                 new InterfaceBuilder()
@@ -375,7 +385,8 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer")
+                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer",
+                        @"ModelFramework.Objects.Contracts.IParentTypeContainer")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
@@ -463,6 +474,10 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ExplicitInterfaceName")
+                            .WithTypeName(@"System.String"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ParentTypeFullName")
                             .WithTypeName(@"System.String"))
                     .WithName(@"IClassProperty"),
                 new InterfaceBuilder()

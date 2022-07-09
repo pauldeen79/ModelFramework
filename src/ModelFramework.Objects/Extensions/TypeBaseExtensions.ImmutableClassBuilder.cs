@@ -9,7 +9,7 @@ public static partial class TypeBaseExtensions
 
     public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
     {
-        if (!instance.Properties.Any())
+        if (!instance.Properties.Any(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings)))
         {
             throw new InvalidOperationException("To create an immutable class, there must be at least one property");
         }
@@ -21,6 +21,7 @@ public static partial class TypeBaseExtensions
             (
                 instance
                     .Properties
+                    .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
                     .Select
                     (
                         p => new ClassPropertyBuilder()
@@ -59,38 +60,45 @@ public static partial class TypeBaseExtensions
                 new ClassConstructorBuilder()
                     .AddParameters
                     (
-                        instance.Properties.Select
-                        (
-                            p => new ParameterBuilder()
-                                .WithName(p.Name.ToPascalCase())
-                                .WithTypeName(string.Format
+                        instance.Properties
+                            .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
+                            .Select
+                            (
+                                p => new ParameterBuilder()
+                                    .WithName(p.Name.ToPascalCase())
+                                    .WithTypeName(string.Format
+                                    (
+                                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
+                                                           .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
+                                        p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                                        p.TypeName.GetGenericArguments()
+                                    ))
+                                    .WithIsNullable(p.IsNullable)
+                            )
+                    )
+                    .AddLiteralCodeStatements
+                    (
+                        instance.Properties
+                            .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
+                            .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true))
+                            .Select
+                            (
+                                p => @$"if ({p.Name.ToPascalCase()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
+                            )
+                    )
+                    .AddLiteralCodeStatements
+                    (
+                        instance.Properties
+                            .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
+                            .Select
+                            (
+                                p => string.Format
                                 (
-                                    p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                       .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
+                                    $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName())};",
                                     p.Name.ToPascalCase().GetCsharpFriendlyName(),
                                     p.TypeName.GetGenericArguments()
-                                ))
-                                .WithIsNullable(p.IsNullable)
-                        )
-                    )
-                    .AddLiteralCodeStatements
-                    (
-                        instance.Properties.Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true)).Select
-                        (
-                            p => @$"if ({p.Name.ToPascalCase()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
-                        )
-                    )
-                    .AddLiteralCodeStatements
-                    (
-                        instance.Properties.Select
-                        (
-                            p => string.Format
-                            (
-                                $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName())};",
-                                p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                p.TypeName.GetGenericArguments()
+                                )
                             )
-                        )
                     )
                     .AddLiteralCodeStatements
                     (
@@ -105,9 +113,7 @@ public static partial class TypeBaseExtensions
             .AddMethods
             (
                 GetImmutableClassMethods(instance,
-                                         settings.NewCollectionTypeName,
-                                         settings.CreateWithMethod,
-                                         settings.ImplementIEquatable,
+                                         settings,
                                          false)
             )
             .AddInterfaces
@@ -119,10 +125,24 @@ public static partial class TypeBaseExtensions
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
     }
 
+    private static bool IsPropertyValidForImmutableClass(ITypeBase parent,
+                                                         IClassProperty property,
+                                                         ImmutableClassInheritanceSettings inheritanceSettings)
+    {
+        if (!inheritanceSettings.EnableInheritance)
+        {
+            // If inheritance is not enabled, then simply include all properties
+            return true;
+        }
+        // If inheritance is enabled, then include the property if it's defined on the parent class
+        return property.IsDefinedOn(parent);
+    }
+
     public static IClass ToImmutableExtensionClass(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
         => instance.ToImmutableExtensionClassBuilder(settings).Build();
 
-    public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
+    public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance,
+                                                                ImmutableClassExtensionsSettings settings)
     {
         if (!instance.Properties.Any())
         {
@@ -135,22 +155,22 @@ public static partial class TypeBaseExtensions
             .AddMethods(GetImmutableClassMethods
             (
                 instance,
-                settings.NewCollectionTypeName,
-                createWithMethod: true,
-                implementIEquatable: false,
+                settings: new ImmutableClassSettings(
+                    settings.NewCollectionTypeName,
+                    createWithMethod: true,
+                    implementIEquatable: false),
                 extensionMethod: true
             ))
             .WithStatic();
     }
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableClassMethods(ITypeBase instance,
-                                                                            string newCollectionTypeName,
-                                                                            bool createWithMethod,
-                                                                            bool implementIEquatable,
+                                                                            ImmutableClassSettings settings,
                                                                             bool extensionMethod)
     {
-        if (createWithMethod)
+        if (settings.CreateWithMethod)
         {
+            // note that we don't use a filter for inherited types here... Just generate a full with statement
             yield return
                 new ClassMethodBuilder()
                     .WithName("With")
@@ -167,9 +187,9 @@ public static partial class TypeBaseExtensions
                             (p => new
                             {
                                 p.Name,
-                                TypeName = p.TypeName.FixCollectionTypeName(newCollectionTypeName),
+                                TypeName = p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName),
                                 OriginalMetadata = p.Metadata,
-                                Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)),
+                                Metadata = p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)),
                                 Suffix = p.Name != instance.Properties.Last().Name
                                     ? ","
                                     : string.Empty
@@ -194,19 +214,20 @@ public static partial class TypeBaseExtensions
                                     .WithName(p.Name.ToPascalCase().GetCsharpFriendlyName())
                                     .WithTypeName(string.Format
                                     (
-                                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(newCollectionTypeName)).GetStringValue
+                                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue
                                         (
                                             MetadataNames.CustomImmutableArgumentType,
-                                            p.TypeName.FixCollectionTypeName(newCollectionTypeName)
-                                        ), p.TypeName.FixCollectionTypeName(newCollectionTypeName)
+                                            p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)
+                                        ), p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)
                                     ).GetCsharpFriendlyTypeName())
-                                    .WithDefaultValue(new Literal($"default({p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(newCollectionTypeName)).GetCsharpFriendlyTypeName()})"))
+                                    .WithDefaultValue(new Literal($"default({p.Metadata.GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)).GetCsharpFriendlyTypeName()})"))
                             )
                     );
         }
 
-        if (implementIEquatable)
+        if (settings.ImplementIEquatable)
         {
+            // note that we don't use a filter for inherited types here... Just generate a full IEquatable method
             yield return new ClassMethodBuilder()
                 .WithName("Equals")
                 .WithType(typeof(bool))

@@ -82,6 +82,7 @@ public static class TypeExtensions
                     .WithTypeName(f.FieldType.FullName)
                     .WithStatic(f.IsStatic)
                     .WithConstant(f.IsLiteral)
+                    .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object" ? string.Empty : f.DeclaringType.FullName)
                     .WithIsNullable(f.IsNullable())
                     .WithVisibility(f.IsPublic
                         ? Visibility.Public
@@ -98,6 +99,7 @@ public static class TypeExtensions
                 .WithHasGetter(p.GetGetMethod() != null)
                 .WithHasSetter(p.GetSetMethod() != null)
                 .WithHasInitializer(p.IsInitOnly())
+                .WithParentTypeFullName(p.DeclaringType.FullName == "System.Object" ? string.Empty : p.DeclaringType.FullName)
                 .WithIsNullable(p.IsNullable())
                 .WithVisibility(p.GetAccessors().Any(m => m.IsPublic)
                     ? Visibility.Public
@@ -128,6 +130,7 @@ public static class TypeExtensions
                         .WithStatic(m.IsStatic)
                         .WithVirtual(m.IsVirtual)
                         .WithAbstract(m.IsAbstract)
+                        .WithParentTypeFullName(m.DeclaringType.FullName == "System.Object" ? string.Empty : m.DeclaringType.FullName)
                         .WithIsNullable(m.ReturnTypeIsNullable())
                         .AddParameters(m.GetParameters().Select
                         (

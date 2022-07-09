@@ -92,7 +92,12 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public ClassField(bool readOnly, bool constant, bool @event, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, string typeName, bool isNullable, object? defaultValue)
+        public string ParentTypeFullName
+        {
+            get;
+        }
+
+        public ClassField(bool readOnly, bool constant, bool @event, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, string typeName, bool isNullable, object? defaultValue, string parentTypeFullName)
         {
             this.ReadOnly = readOnly;
             this.Constant = constant;
@@ -109,6 +114,7 @@ namespace ModelFramework.Objects
             this.TypeName = typeName;
             this.IsNullable = isNullable;
             this.DefaultValue = defaultValue;
+            this.ParentTypeFullName = parentTypeFullName;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
