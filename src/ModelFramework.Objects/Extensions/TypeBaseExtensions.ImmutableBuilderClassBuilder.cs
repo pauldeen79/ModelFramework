@@ -29,25 +29,7 @@ public static partial class TypeBaseEtensions
     }
 
     private static string GetImmutableBuilderClassBaseClass(ITypeBase instance, ImmutableBuilderClassSettings settings)
-    {
-        if (!settings.InheritanceSettings.EnableInheritance)
-        {
-            return string.Empty;
-        }
-
-        var cls = instance as IClass;
-        if (cls == null)
-        {
-            return string.Empty;
-        }
-
-        if (string.IsNullOrEmpty(cls.BaseClass))
-        {
-            return string.Empty;
-        }
-
-        return $"{cls.BaseClass.GetClassName()}Builder<{instance.Name}Builder, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}>";
-    }
+        => instance.GetCustomValueForInheritedClass(settings, cls => $"{cls.BaseClass.GetClassName()}Builder<{instance.Name}Builder, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}>");
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
         => instance.ToBuilderExtensionsClassBuilder(settings).Build();
@@ -199,46 +181,10 @@ public static partial class TypeBaseEtensions
     }
 
     private static string CreateImmutableBuilderClassConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)
-    {
-        if (!settings.InheritanceSettings.EnableInheritance)
-        {
-            return string.Empty;
-        }
-
-        var cls = instance as IClass;
-        if (cls == null)
-        {
-            return string.Empty;
-        }
-
-        if (string.IsNullOrEmpty(cls.BaseClass))
-        {
-            return string.Empty;
-        }
-
-        return "base()";
-    }
+        => instance.GetCustomValueForInheritedClass(settings, _ => "base()");
 
     private static string CreateImmutableBuilderClassCopyConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)
-    {
-        if (!settings.InheritanceSettings.EnableInheritance)
-        {
-            return string.Empty;
-        }
-
-        var cls = instance as IClass;
-        if (cls == null)
-        {
-            return string.Empty;
-        }
-
-        if (string.IsNullOrEmpty(cls.BaseClass))
-        {
-            return string.Empty;
-        }
-
-        return "base(source)";
-    }
+        => instance.GetCustomValueForInheritedClass(settings, _ => "base(source)");
 
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.UseLazyInitialization

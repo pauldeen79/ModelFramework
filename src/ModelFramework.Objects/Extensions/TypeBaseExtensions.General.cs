@@ -80,6 +80,37 @@ public static partial class TypeBaseExtensions
         => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
             && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
 
+    public static string GetCustomValueForInheritedClass(this ITypeBase instance, ImmutableBuilderClassSettings settings, Func<IClass, string> customValue)
+        => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
+
+    public static string GetCustomValueForInheritedClass(this ITypeBase instance, ImmutableClassSettings settings, Func<IClass, string> customValue)
+        => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
+
+    public static string GetCustomValueForInheritedClass(this ITypeBase instance, bool enableInheritance, Func<IClass, string> customValue)
+    {
+        if (!enableInheritance)
+        {
+            // Inheritance is not enabled
+            return string.Empty;
+        }
+
+        var cls = instance as IClass;
+
+        if (cls == null)
+        {
+            // Type is an interface
+            return string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(cls.BaseClass))
+        {
+            // Class is not inherited
+            return string.Empty;
+        }
+
+        return customValue(cls);
+    }
+
     private static string GetInheritedClassesForClass(IClass cls)
     {
         var lst = new List<string>();

@@ -129,55 +129,14 @@ public static partial class TypeBaseExtensions
     }
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
-    {
-        if (!settings.InheritanceSettings.EnableInheritance)
-        {
-            // Always generate full constructor
-            return string.Empty;
-        }
-
-        var cls = instance as IClass;
-
-        if (cls == null)
-        {
-            // Type is an interface (shouldn't be able to get to this point, but anyway...)
-            return string.Empty;
-        }
-
-        if (string.IsNullOrEmpty(cls.BaseClass))
-        {
-            // Class is not inherited
-            return string.Empty;
-        }
-
-        return cls.BaseClass;
-    }
+        => instance.GetCustomValueForInheritedClass(settings, cls => cls.BaseClass);
 
     private static string GenerateImmutableClassChainCall(ITypeBase instance, ImmutableClassSettings settings)
-    {
-        if (!settings.InheritanceSettings.EnableInheritance)
+        => instance.GetCustomValueForInheritedClass(settings, cls =>
         {
-            // Always generate full constructor
-            return string.Empty;
-        }
-
-        var cls = instance as IClass;
-
-        if (cls == null)
-        {
-            // Type is an interface (shouldn't be able to get to this point, but anyway...)
-            return string.Empty;
-        }
-
-        if (string.IsNullOrEmpty(cls.BaseClass))
-        {
-            // Class is not inherited
-            return string.Empty;
-        }
-
-        var props = string.Join(", ", instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass).Select(x => x.Name.ToPascalCase()));
-        return $"base({props})";
-    }
+            var props = string.Join(", ", instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass).Select(x => x.Name.ToPascalCase()));
+            return $"base({props})";
+        });
 
     private static bool IsPropertyValidForImmutableClass(ITypeBase parent,
                                                          IClassProperty property,
