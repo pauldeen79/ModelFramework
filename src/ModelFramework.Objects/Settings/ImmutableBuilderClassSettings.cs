@@ -10,6 +10,9 @@ public record ImmutableBuilderClassSettings
     public bool EnableNullableReferenceTypes { get; }
     public bool CopyPropertyCode { get; }
 
+    public bool IsAbstractBuilder => InheritanceSettings.EnableInheritance && InheritanceSettings.BaseClass == null;
+    public bool IsOverrideBuilder => InheritanceSettings.EnableInheritance && InheritanceSettings.BaseClass != null;
+
     public ImmutableBuilderClassSettings(ImmutableBuilderClassTypeSettings? typeSettings = null,
                                          ImmutableBuilderClassConstructorSettings? constructorSettings = null,
                                          ImmutableBuilderClassNameSettings? nameSettings = null,

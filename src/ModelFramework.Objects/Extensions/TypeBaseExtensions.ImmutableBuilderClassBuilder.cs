@@ -14,8 +14,12 @@ public static partial class TypeBaseEtensions
 
         return new ClassBuilder()
             .WithName(instance.Name + "Builder")
+            .AddGenericTypeArguments(new[] { "TBuilder", "TEntity" }.Where(_ => settings.IsAbstractBuilder))
+            .AddGenericTypeArgumentConstraints(new[] { $"where TEntity : {instance.GetFullName()}" }.Where(_ => settings.IsAbstractBuilder))
+            .AddGenericTypeArgumentConstraints(new[] { $"where TBuilder : {instance.Name}Builder<TBuilder, TEntity>" }.Where(_ => settings.IsAbstractBuilder))
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableBuilderClassBaseClass(instance, settings))
+            .WithAbstract(settings.IsAbstractBuilder)
             .WithPartial(instance.Partial)
             .AddConstructors(GetImmutableBuilderClassConstructors(instance, settings))
             .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
@@ -91,6 +95,7 @@ public static partial class TypeBaseEtensions
     {
         yield return new ClassConstructorBuilder()
             .WithChainCall(CreateImmutableBuilderClassConstructorChainCall(instance, settings))
+            .WithProtected(settings.IsAbstractBuilder)
             .AddLiteralCodeStatements
             (
                 instance.Properties
@@ -114,7 +119,8 @@ public static partial class TypeBaseEtensions
         {
             yield return new ClassConstructorBuilder()
                 .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(instance, settings))
-                .Chain(x =>
+                .WithProtected(settings.IsAbstractBuilder)
+                .With(x =>
                 {
                     if (settings.ConstructorSettings.AddNullChecks)
                     {
@@ -135,7 +141,8 @@ public static partial class TypeBaseEtensions
                 )
                 .AddParameters
                 (
-                    instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter).Select(x => new ParameterBuilder(x))
+                    instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
+                        .Select(x => new ParameterBuilder(x))
                 )
                 .AddLiteralCodeStatements
                 (
@@ -276,11 +283,12 @@ public static partial class TypeBaseEtensions
             .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
             .Where(x => x != null);
 
-        if (settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null)
+        if (settings.IsOverrideBuilder)
         {
+            // Try to get property from base class c'tor
             props = props.Concat(ctor
                 .Parameters
-                .Select(x => settings.InheritanceSettings.BaseClass.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                .Select(x => settings.InheritanceSettings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
                 .Where(x => x != null));
         }
 
@@ -329,12 +337,12 @@ public static partial class TypeBaseEtensions
         var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
         yield return new ClassMethodBuilder()
             .WithName("Build")
-            .WithAbstract(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass == null)
-            .WithOverride(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null)
+            .WithAbstract(settings.IsAbstractBuilder)
+            .WithOverride(settings.IsOverrideBuilder)
             .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
-            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
-            .AddLiteralCodeStatements($"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};")
-            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." } : Array.Empty<string>());
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
+            .AddLiteralCodeStatements(!(settings.IsAbstractBuilder) ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" } : Array.Empty<string>())
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." } : Array.Empty<string>());
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
@@ -408,7 +416,7 @@ public static partial class TypeBaseEtensions
                                                                                          Overload overload)
         => new ClassMethodBuilder()
             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
-            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
                 new ParameterBuilder()
@@ -431,7 +439,7 @@ public static partial class TypeBaseEtensions
                                                                                               Overload overload)
         => new ClassMethodBuilder()
             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
-            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
                 new ParameterBuilder()
@@ -449,7 +457,7 @@ public static partial class TypeBaseEtensions
                                                                                       IClassProperty property)
         => new ClassMethodBuilder()
             .WithName(string.Format(settings.NameSettings.AddMethodNameFormatString, property.Name))
-            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
                 new ParameterBuilder()
@@ -473,7 +481,7 @@ public static partial class TypeBaseEtensions
                                                                                  IClassProperty property)
         => new ClassMethodBuilder()
             .WithName(string.Format(settings.NameSettings.AddMethodNameFormatString, property.Name))
-            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
                 new ParameterBuilder()
@@ -506,7 +514,7 @@ public static partial class TypeBaseEtensions
         );
         return new ClassMethodBuilder()
             .WithName(string.Format(settings.NameSettings.SetMethodNameFormatString, property.Name))
-            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
                 new ParameterBuilder()
@@ -539,7 +547,7 @@ public static partial class TypeBaseEtensions
                     "{",
                     "}"
                 ),
-                $"return {GetReturnValue(extensionMethod)};"
+                $"return {GetReturnValue(settings, extensionMethod)};"
             );
     }
 
@@ -551,7 +559,7 @@ public static partial class TypeBaseEtensions
         => new ClassMethodBuilder()
             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.SetMethodNameFormatString),
                                     property.Name))
-            .ConfigureForExtensionMethod(instance, extensionMethod)
+            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
                 new ParameterBuilder()
@@ -565,13 +573,14 @@ public static partial class TypeBaseEtensions
                               property.Name.ToPascalCase(),
                               property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
                               property.Name),
-                $"return {GetReturnValue(extensionMethod)};"
+                $"return {GetReturnValue(settings, extensionMethod)};"
             );
 
     private static ClassMethodBuilder ConfigureForExtensionMethod(this ClassMethodBuilder builder,
                                                                   ITypeBase instance,
+                                                                  ImmutableBuilderClassSettings settings,
                                                                   bool extensionMethod)
-        => builder.WithTypeName($"{instance.Name}Builder")
+        => builder.WithTypeName(settings.IsAbstractBuilder ? "TBuilder" : $"{instance.Name}Builder")
                   .WithStatic(extensionMethod)
                   .WithExtensionMethod(extensionMethod)
                   .AddParameters(new[]
@@ -648,7 +657,7 @@ public static partial class TypeBaseEtensions
                         property.TypeName.GetGenericArguments()
                     ),
                     "}",
-                    $"return {GetReturnValue(extensionMethod)};"
+                    $"return {GetReturnValue(settings, extensionMethod)};"
                 }.ToList()
             : new[]
                 {
@@ -659,13 +668,23 @@ public static partial class TypeBaseEtensions
                         property.TypeName,
                         property.TypeName.GetGenericArguments()
                     ),
-                    $"return {GetReturnValue(extensionMethod)};"
+                    $"return {GetReturnValue(settings, extensionMethod)};"
                 }.ToList();
 
-    private static string GetReturnValue(bool extensionMethod)
-        => extensionMethod
-            ? "instance"
-            : "this";
+    private static string GetReturnValue(ImmutableBuilderClassSettings settings, bool extensionMethod)
+    {
+        if (extensionMethod)
+        {
+            return "instance";
+        }
+
+        if (settings.IsAbstractBuilder)
+        {
+            return "(TBuilder)this";
+        }
+
+        return "this";
+    }
 
     private static List<string> GetImmutableBuilderAddOverloadMethodStatements(ImmutableBuilderClassSettings settings,
                                                                                IClassProperty property,
@@ -684,7 +703,7 @@ public static partial class TypeBaseEtensions
                                   property.Name),
                     "    }",
                     "}",
-                    $"return {GetReturnValue(extensionMethod)};"
+                    $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList()
             : (new[]
             {
@@ -694,7 +713,7 @@ public static partial class TypeBaseEtensions
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
                               property.Name),
-                $"return {GetReturnValue(extensionMethod)};"
+                $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList();
 
     private static string CreateIndentForImmutableBuilderAddOverloadMethodStatement(ImmutableBuilderClassSettings settings)

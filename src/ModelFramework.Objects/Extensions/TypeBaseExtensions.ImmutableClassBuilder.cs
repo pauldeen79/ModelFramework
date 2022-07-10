@@ -18,6 +18,7 @@ public static partial class TypeBaseExtensions
             .WithName(instance.Name)
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableClassBaseClass(instance, settings))
+            .WithAbstract(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass == null)
             .AddProperties
             (
                 instance
@@ -59,6 +60,7 @@ public static partial class TypeBaseExtensions
             .AddConstructors
             (
                 new ClassConstructorBuilder()
+                    .WithProtected(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass == null)
                     .AddParameters
                     (
                         instance.Properties
