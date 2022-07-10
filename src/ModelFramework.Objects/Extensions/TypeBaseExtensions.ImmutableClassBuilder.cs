@@ -9,7 +9,7 @@ public static partial class TypeBaseExtensions
 
     public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
     {
-        if (!instance.Properties.Any(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings)))
+        if (!instance.Properties.Any(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings)))
         {
             throw new InvalidOperationException("To create an immutable class, there must be at least one property");
         }
@@ -23,7 +23,7 @@ public static partial class TypeBaseExtensions
             (
                 instance
                     .Properties
-                    .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
                     .Select
                     (
                         p => new ClassPropertyBuilder()
@@ -81,7 +81,7 @@ public static partial class TypeBaseExtensions
                     .AddLiteralCodeStatements
                     (
                         instance.Properties
-                            .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
+                            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
                             .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true))
                             .Select
                             (
@@ -91,7 +91,7 @@ public static partial class TypeBaseExtensions
                     .AddLiteralCodeStatements
                     (
                         instance.Properties
-                            .Where(x => IsPropertyValidForImmutableClass(instance, x, settings.InheritanceSettings))
+                            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
                             .Select
                             (
                                 p => string.Format
@@ -137,19 +137,6 @@ public static partial class TypeBaseExtensions
             var props = string.Join(", ", instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass).Select(x => x.Name.ToPascalCase()));
             return $"base({props})";
         });
-
-    private static bool IsPropertyValidForImmutableClass(ITypeBase parent,
-                                                         IClassProperty property,
-                                                         ImmutableClassInheritanceSettings inheritanceSettings)
-    {
-        if (!inheritanceSettings.EnableInheritance)
-        {
-            // If inheritance is not enabled, then simply include all properties
-            return true;
-        }
-        // If inheritance is enabled, then include the property if it's defined on the parent class
-        return property.IsDefinedOn(parent);
-    }
 
     public static IClass ToImmutableExtensionClass(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
         => instance.ToImmutableExtensionClassBuilder(settings).Build();
