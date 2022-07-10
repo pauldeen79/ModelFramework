@@ -32,15 +32,18 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Parameters")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttributeParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttributeParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttribute"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"))
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"))
                     .WithName(@"IAttribute"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -51,15 +54,18 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Value")
-                            .WithTypeName(@"System.Object"),
+                            .WithTypeName(@"System.Object")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributeParameter"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"))
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"))
                     .WithName(@"IAttributeParameter"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -74,79 +80,103 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Fields")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassField, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassField, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Sealed")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"Abstract")
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"SubClasses")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClass, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Constructors")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassConstructor, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassConstructor, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"BaseClass")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Record")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClass"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Namespace")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Partial")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Interfaces")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Properties")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Methods")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArguments")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArgumentConstraints")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Enums")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IEnum, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IEnum, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IEnumsContainer"))
                     .WithName(@"IClass"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -161,47 +191,58 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ChainCall")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassConstructor"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Virtual")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Abstract")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Protected")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Override")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"CodeStatements")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ICodeStatementsContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Parameters")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParametersContainer"))
                     .WithName(@"IClassConstructor"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -212,69 +253,90 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Common.Contracts.IDefaultValueContainer")
+                        @"ModelFramework.Common.Contracts.IDefaultValueContainer",
+                        @"ModelFramework.Objects.Contracts.IParentTypeContainer")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ReadOnly")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassField"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Constant")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassField"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Event")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassField"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Virtual")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Abstract")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Protected")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Override")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsNullable")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"DefaultValue")
                             .WithTypeName(@"System.Object")
-                            .WithIsNullable(true))
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IDefaultValueContainer"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ParentTypeFullName")
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParentTypeContainer"))
                     .WithName(@"IClassField"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -287,84 +349,109 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Objects.Contracts.ICodeStatementsContainer",
                         @"ModelFramework.Objects.Contracts.IParametersContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer")
+                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer",
+                        @"ModelFramework.Objects.Contracts.IParentTypeContainer")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Partial")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassMethod"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ExtensionMethod")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassMethod"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Operator")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassMethod"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArguments")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassMethod"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArgumentConstraints")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassMethod"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Virtual")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Abstract")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Protected")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Override")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"CodeStatements")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ICodeStatementsContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Parameters")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IParameter, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParametersContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsNullable")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ExplicitInterfaceName")
-                            .WithTypeName(@"System.String"))
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ParentTypeFullName")
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParentTypeContainer"))
                     .WithName(@"IClassMethod"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -375,95 +462,122 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         @"ModelFramework.Common.Contracts.INameContainer",
                         @"ModelFramework.Objects.Contracts.IAttributesContainer",
                         @"ModelFramework.Objects.Contracts.ITypeContainer",
-                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer")
+                        @"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer",
+                        @"ModelFramework.Objects.Contracts.IParentTypeContainer")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"HasGetter")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"HasSetter")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"HasInitializer")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GetterVisibility")
                             .WithTypeName(@"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
-                            .WithIsNullable(true),
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"SetterVisibility")
                             .WithTypeName(@"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
-                            .WithIsNullable(true),
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"InitializerVisibility")
                             .WithTypeName(@"System.Nullable`1[[ModelFramework.Objects.Contracts.Visibility, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
-                            .WithIsNullable(true),
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GetterCodeStatements")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"SetterCodeStatements")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"InitializerCodeStatements")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.ICodeStatement, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IClassProperty"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Static")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Virtual")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Abstract")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Protected")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Override")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExtendedVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsNullable")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ExplicitInterfaceName")
-                            .WithTypeName(@"System.String"))
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IExplicitInterfaceNameContainer"),
+                        new ClassPropertyBuilder()
+                            .WithHasSetter(false)
+                            .WithName(@"ParentTypeFullName")
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParentTypeContainer"))
                     .WithName(@"IClassProperty"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -476,23 +590,28 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Members")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IEnumMember, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IEnumMember, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IEnum"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"))
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"))
                     .WithName(@"IEnum"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -505,19 +624,23 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                             .WithHasSetter(false)
                             .WithName(@"Value")
                             .WithTypeName(@"System.Object")
-                            .WithIsNullable(true),
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IEnumMember"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"))
                     .WithName(@"IEnumMember"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -531,47 +654,58 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Namespace")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Partial")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Interfaces")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Properties")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassProperty, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Methods")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IClassMethod, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArguments")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"GenericTypeArgumentConstraints")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeBase"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Visibility")
-                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility"),
+                            .WithTypeName(@"ModelFramework.Objects.Contracts.Visibility")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IVisibilityContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"))
                     .WithName(@"IInterface"),
                 new InterfaceBuilder()
                     .WithNamespace(@"ModelFramework.Objects.Contracts")
@@ -585,40 +719,49 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsParamArray")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParameter"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsOut")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParameter"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsRef")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IParameter"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"TypeName")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"IsNullable")
-                            .WithTypeName(@"System.Boolean"),
+                            .WithTypeName(@"System.Boolean")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.ITypeContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Attributes")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Objects.Contracts.IAttribute, ModelFramework.Objects, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Objects.Contracts.IAttributesContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Metadata")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"),
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.IMetadata, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IMetadataContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Name")
-                            .WithTypeName(@"System.String"),
+                            .WithTypeName(@"System.String")
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.INameContainer"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"DefaultValue")
                             .WithTypeName(@"System.Object")
-                            .WithIsNullable(true))
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@"ModelFramework.Common.Contracts.IDefaultValueContainer"))
                     .WithName(@"IParameter"),
             }.Select(x => x.Build()).ToArray();
         }

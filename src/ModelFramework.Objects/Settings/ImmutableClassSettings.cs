@@ -5,22 +5,22 @@ public record ImmutableClassSettings
     public string NewCollectionTypeName { get; }
     public bool CreateWithMethod { get; }
     public bool ImplementIEquatable { get; }
-    public bool ValidateArgumentsInConstructor { get; }
-    public bool AddNullChecks { get; }
     public bool AddPrivateSetters { get; }
+    public ImmutableClassConstructorSettings ConstructorSettings { get; }
+    public ImmutableClassInheritanceSettings InheritanceSettings { get; }
 
     public ImmutableClassSettings(string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
                                   bool createWithMethod = false,
                                   bool implementIEquatable = false,
-                                  bool validateArgumentsInConstructor = false,
-                                  bool addNullChecks = false,
-                                  bool addPrivateSetters = false)
+                                  bool addPrivateSetters = false,
+                                  ImmutableClassConstructorSettings? constructorSettings = null,
+                                  ImmutableClassInheritanceSettings? inheritanceSettings = null)
     {
         NewCollectionTypeName = newCollectionTypeName;
         CreateWithMethod = createWithMethod;
         ImplementIEquatable = implementIEquatable;
-        ValidateArgumentsInConstructor = validateArgumentsInConstructor;
-        AddNullChecks = addNullChecks;
         AddPrivateSetters = addPrivateSetters;
+        ConstructorSettings = constructorSettings ?? new ImmutableClassConstructorSettings();
+        InheritanceSettings = inheritanceSettings ?? new ImmutableClassInheritanceSettings();
     }
 }

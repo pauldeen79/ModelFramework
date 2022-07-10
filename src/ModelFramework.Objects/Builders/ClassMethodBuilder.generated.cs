@@ -209,6 +209,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public string ParentTypeFullName
+        {
+            get
+            {
+                return _parentTypeFullNameDelegate.Value;
+            }
+            set
+            {
+                _parentTypeFullNameDelegate = new (() => value);
+            }
+        }
+
         public ClassMethodBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
@@ -304,7 +316,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName);
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName, ParentTypeFullName);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -389,6 +401,18 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder WithOverride(System.Func<bool> overrideDelegate)
         {
             _overrideDelegate = new (@overrideDelegate);
+            return this;
+        }
+
+        public ClassMethodBuilder WithParentTypeFullName(System.Func<string> parentTypeFullNameDelegate)
+        {
+            _parentTypeFullNameDelegate = new (parentTypeFullNameDelegate);
+            return this;
+        }
+
+        public ClassMethodBuilder WithParentTypeFullName(string parentTypeFullName)
+        {
+            ParentTypeFullName = parentTypeFullName;
             return this;
         }
 
@@ -492,6 +516,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
             _explicitInterfaceNameDelegate = new (() => string.Empty);
+            _parentTypeFullNameDelegate = new (() => string.Empty);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -522,6 +547,7 @@ namespace ModelFramework.Objects.Builders
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
             _explicitInterfaceNameDelegate = new (() => source.ExplicitInterfaceName);
+            _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
 
         private System.Lazy<bool> _partialDelegate;
@@ -549,6 +575,8 @@ namespace ModelFramework.Objects.Builders
         private System.Lazy<bool> _isNullableDelegate;
 
         private System.Lazy<string> _explicitInterfaceNameDelegate;
+
+        private System.Lazy<string> _parentTypeFullNameDelegate;
     }
 #nullable restore
 }

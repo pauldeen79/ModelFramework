@@ -3,7 +3,7 @@
 <#@ model type="IClassConstructor" #>
 <#@ viewModel name="CSharpClassGenerator.DefaultCtorViewModel" model="Model" #>
 <#@ renderChildTemplate name="CSharpClassGenerator.DefaultAttributeTemplate" model="Model.Attributes" customResolverDelegate="ResolveFromMetadata" #>
-        <#= Model.GetModifiers() #><#= ViewModel.Name #>(<#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<# if (ViewModel.ShouldRenderChainCall) { #>: <#= Model.ChainCall #><# } #><# if (ViewModel.OmitCode) { #>;<# } else { #>
+        <#= Model.GetModifiers() #><#= ViewModel.Name #>(<#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<# if (ViewModel.ShouldRenderChainCall) { #> : <#= Model.ChainCall #><# } #><# if (ViewModel.OmitCode) { #>;<# } else { #>
 
         {<# WriteLine(""); if (ViewModel.ShouldRenderCodeStatements) { #><# RootTemplate.PushIndent("            "); #><#@ renderChildTemplate model="Model.CodeStatements" customResolverDelegate="ResolveFromMetadata" customRenderChildTemplateDelegate="RenderModel" #><# RootTemplate.PopIndent(); #>
 <# } #>        }<# } #>

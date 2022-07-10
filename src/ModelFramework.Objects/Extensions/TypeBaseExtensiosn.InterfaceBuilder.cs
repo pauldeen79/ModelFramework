@@ -80,7 +80,8 @@ public static partial class TypeBaseExtensiosn
                 property.Attributes,
                 ReplaceGenericType(property.TypeName, applyGenericTypes),
                 property.IsNullable,
-                property.ExplicitInterfaceName
+                property.ExplicitInterfaceName,
+                property.ParentTypeFullName
             );
 
     private static IClassMethod ChangeArgumentsAndReturnType(IClassMethod method, IDictionary<string, string>? applyGenericTypes)
@@ -110,7 +111,8 @@ public static partial class TypeBaseExtensiosn
             method.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
             ReplaceGenericType(method.TypeName, applyGenericTypes),
             method.IsNullable,
-            method.ExplicitInterfaceName
+            method.ExplicitInterfaceName,
+            method.ParentTypeFullName
         );
     }
 

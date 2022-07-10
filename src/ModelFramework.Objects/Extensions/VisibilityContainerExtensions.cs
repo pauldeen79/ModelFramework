@@ -35,6 +35,7 @@ public static class VisibilityContainerExtensions
             if (instance is IClass cls)
             {
                 builder.AddWithCondition("sealed", cls.Sealed);
+                builder.AddWithCondition("abstract", cls.Abstract);
                 builder.AddWithCondition("static", cls.Static);
             }
             if (instance is ITypeBase typeBase)

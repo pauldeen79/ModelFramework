@@ -15,6 +15,8 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => true;
+    protected virtual bool EnableInheritance => false;
+    protected virtual IClass? BaseClass => null;
 
     protected abstract Type RecordCollectionType { get; }
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
@@ -138,43 +140,65 @@ public abstract class CSharpClassBase : ClassBase
             .ToArray();
     }
 
-    protected ClassBuilder CreateBuilder(IClass c, string @namespace)
-        => c.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+    protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
+        => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
-            .AddMethods(CreateExtraOverloads(c))
+            .AddMethods(CreateExtraOverloads(cls))
             .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
             .Chain(x => PostProcessImmutableBuilderClass(x));
 
-    protected ClassBuilder CreateBuilderExtensions(IClass c, string @namespace)
-        => c.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
+    protected ClassBuilder CreateBuilderExtensions(IClass cls, string @namespace)
+        => cls.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
-            .AddMethods(CreateExtraOverloads(c))
+            .AddMethods(CreateExtraOverloads(cls))
             .Chain(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
 
-    private static string CreateSortString(ClassMethodBuilder x)
-        => $"{x.Name}({string.Join(", ", x.Parameters.Select(x => x.TypeName))})";
+    private static string CreateSortString(ClassMethodBuilder methodBuilder)
+        => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
-        => new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings(newCollectionTypeName: NewCollectionTypeName, formatInstanceTypeNameDelegate: FormatInstanceTypeName, useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
-                                             constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: AddCopyConstructor, addNullChecks: AddNullChecks),
-                                             nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: SetMethodNameFormatString, addMethodNameFormatString: AddMethodNameFormatString),
-                                             enableNullableReferenceTypes: EnableNullableContext,
-                                             useLazyInitialization: UseLazyInitialization,
-                                             copyPropertyCode: CopyPropertyCode);
+        => new ImmutableBuilderClassSettings
+        (
+            typeSettings: new ImmutableBuilderClassTypeSettings(
+                newCollectionTypeName: NewCollectionTypeName,
+                formatInstanceTypeNameDelegate: FormatInstanceTypeName,
+                useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
+            constructorSettings: new ImmutableBuilderClassConstructorSettings(
+                addCopyConstructor: AddCopyConstructor,
+                addNullChecks: AddNullChecks),
+            nameSettings: new ImmutableBuilderClassNameSettings(
+                setMethodNameFormatString: SetMethodNameFormatString,
+                addMethodNameFormatString: AddMethodNameFormatString),
+            enableNullableReferenceTypes: EnableNullableContext,
+            useLazyInitialization: UseLazyInitialization,
+            copyPropertyCode: CopyPropertyCode,
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(
+                enableInheritance: EnableInheritance,
+                baseClass: BaseClass)
+        );
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
-        => new ImmutableClassSettings(newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-                                      validateArgumentsInConstructor: ValidateArgumentsInConstructor,
-                                      addNullChecks: AddNullChecks,
-                                      addPrivateSetters: AddPrivateSetters);
+        => new ImmutableClassSettings
+        (
+            newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+            constructorSettings: new ImmutableClassConstructorSettings(
+                validateArguments: ValidateArgumentsInConstructor,
+                addNullChecks: AddNullChecks),
+            addPrivateSetters: AddPrivateSetters,
+            inheritanceSettings: new ImmutableClassInheritanceSettings(
+                enableInheritance: EnableInheritance,
+                baseClass: BaseClass)
+        );
 
-    private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase x)
-        => new ClassBuilder(x.ToClass())
-            .WithName(x is IInterface && x.Name.StartsWith("I") ? x.Name.Substring(1) : x.Name)
+    private IClass CreateImmutableEntities(string entitiesNamespace, ITypeBase typeBase)
+        => new ClassBuilder(typeBase.ToClass())
+            .WithName(typeBase is IInterface && typeBase.Name.StartsWith("I")
+                ? typeBase.Name.Substring(1)
+                : typeBase.Name)
             .WithNamespace(entitiesNamespace)
-            .Chain(y => FixImmutableBuilderProperties(y))
+            .Chain(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClass(CreateImmutableClassSettings());
 }

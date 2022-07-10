@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Objects.Contracts;
 
-public interface IClassProperty : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ITypeContainer, IExplicitInterfaceNameContainer
+public interface IClassProperty : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ITypeContainer, IExplicitInterfaceNameContainer, IParentTypeContainer
 {
     bool HasGetter { get; }
     bool HasSetter { get; }

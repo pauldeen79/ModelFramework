@@ -32,11 +32,13 @@ namespace MyNamespace
                             .WithHasSetter(false)
                             .WithName(@""Value"")
                             .WithTypeName(@""System.Object"")
-                            .WithIsNullable(true),
+                            .WithIsNullable(true)
+                            .WithParentTypeFullName(@""ModelFramework.Common.Contracts.IMetadata""),
                         new ModelFramework.Objects.Builders.ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@""Name"")
-                            .WithTypeName(@""System.String""))
+                            .WithTypeName(@""System.String"")
+                            .WithParentTypeFullName(@""ModelFramework.Common.Contracts.INameContainer""))
                     .WithName(@""IMetadata""),
             }.Select(x => x.Build()).ToArray();
         }
@@ -67,11 +69,13 @@ namespace MyNamespace
                 .WithHasSetter(false)
                 .WithName(@""Value"")
                 .WithTypeName(@""System.Object"")
-                .WithIsNullable(true),
+                .WithIsNullable(true)
+                .WithParentTypeFullName(@""ModelFramework.Common.Contracts.IMetadata""),
             new ModelFramework.Objects.Builders.ClassPropertyBuilder()
                 .WithHasSetter(false)
                 .WithName(@""Name"")
-                .WithTypeName(@""System.String""))
+                .WithTypeName(@""System.String"")
+                .WithParentTypeFullName(@""ModelFramework.Common.Contracts.INameContainer""))
         .WithName(@""IMetadata""),
 }");
     }
