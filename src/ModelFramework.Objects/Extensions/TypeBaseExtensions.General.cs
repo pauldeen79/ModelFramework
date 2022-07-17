@@ -120,16 +120,23 @@ public static partial class TypeBaseExtensions
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
                                                              ImmutableClassInheritanceSettings inheritanceSettings)
-        => parent.IsMemberValidForImmutableBuilderClass(parentTypeContainer, inheritanceSettings.EnableInheritance);
+        => parent.IsMemberValidForImmutableBuilderClass(
+            parentTypeContainer,
+            inheritanceSettings.EnableInheritance,
+            inheritanceSettings.InheritanceComparisonFunction);
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
                                                              ImmutableBuilderClassInheritanceSettings inheritanceSettings)
-        => parent.IsMemberValidForImmutableBuilderClass(parentTypeContainer, inheritanceSettings.EnableInheritance);
+        => parent.IsMemberValidForImmutableBuilderClass(
+            parentTypeContainer,
+            inheritanceSettings.EnableInheritance,
+            inheritanceSettings.InheritanceComparisonFunction);
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
-                                                             bool enableInheritance)
+                                                             bool enableInheritance,
+                                                             Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
     {
         if (!enableInheritance)
         {
@@ -137,7 +144,7 @@ public static partial class TypeBaseExtensions
             return true;
         }
         // If inheritance is enabled, then include the members if it's defined on the parent class
-        return parentTypeContainer.IsDefinedOn(parent);
+        return parentTypeContainer.IsDefinedOn(parent, comparisonFunction);
     }
 
     private static string GetInheritedClassesForClass(IClass cls)

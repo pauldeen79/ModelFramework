@@ -224,21 +224,20 @@ public static partial class TypeBaseEtensions
             return instance.Properties;
         }
 
-        var props = ctor
+        if (settings.IsOverrideBuilder && settings.InheritanceSettings.BaseClass != null)
+        {
+            // Try to get property from either the base class c'tor or the class c'tor itself
+            return ctor
+                .Parameters
+                .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
+                    ?? settings.InheritanceSettings.BaseClass.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                .Where(x => x != null);
+        }
+
+        return ctor
             .Parameters
             .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
             .Where(x => x != null);
-
-        if (settings.IsOverrideBuilder)
-        {
-            // Try to get property from base class c'tor
-            props = props.Concat(ctor
-                .Parameters
-                .Select(x => settings.InheritanceSettings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
-                .Where(x => x != null));
-        }
-
-        return props;
     }
 
     private static string GetConstructorInitializeExpressionForCollection(ImmutableBuilderClassSettings settings, IClassProperty p)
@@ -287,7 +286,9 @@ public static partial class TypeBaseEtensions
             .WithOverride(settings.IsOverrideBuilder)
             .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
-            .AddLiteralCodeStatements(!(settings.IsAbstractBuilder) ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" } : Array.Empty<string>())
+            .AddLiteralCodeStatements(!settings.IsAbstractBuilder
+                ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
+                : Array.Empty<string>())
             .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." } : Array.Empty<string>());
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))

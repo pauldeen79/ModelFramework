@@ -9,7 +9,7 @@ public static partial class TypeBaseExtensions
 
     public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
     {
-        if (!instance.Properties.Any(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings)))
+        if (!instance.Properties.Any())
         {
             throw new InvalidOperationException("To create an immutable class, there must be at least one property");
         }
