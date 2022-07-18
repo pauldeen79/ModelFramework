@@ -15,7 +15,7 @@ public static partial class TypeBaseEtensions
         return new ClassBuilder()
             .WithName(instance.Name + "Builder")
             .AddGenericTypeArguments(new[] { "TBuilder", "TEntity" }.Where(_ => settings.IsAbstractBuilder))
-            .AddGenericTypeArgumentConstraints(new[] { $"where TEntity : {instance.GetFullName()}" }.Where(_ => settings.IsAbstractBuilder))
+            .AddGenericTypeArgumentConstraints(new[] { $"where TEntity : {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}" }.Where(_ => settings.IsAbstractBuilder))
             .AddGenericTypeArgumentConstraints(new[] { $"where TBuilder : {instance.Name}Builder<TBuilder, TEntity>" }.Where(_ => settings.IsAbstractBuilder))
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableBuilderClassBaseClass(instance, settings))
@@ -284,18 +284,27 @@ public static partial class TypeBaseEtensions
             .WithName("Build")
             .WithAbstract(settings.IsAbstractBuilder)
             .WithOverride(settings.IsOverrideBuilder)
-            .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
-            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." } : Array.Empty<string>())
+            .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings))
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder
+                ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
+                : Array.Empty<string>())
             .AddLiteralCodeStatements(!settings.IsAbstractBuilder
                 ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
                 : Array.Empty<string>())
-            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." } : Array.Empty<string>());
+            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder
+                ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
+                : Array.Empty<string>());
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
             yield return classMethodBuilder;
         }
     }
+
+    private static string GetImmutableBuilderBuildMethodReturnType(ITypeBase instance, ImmutableBuilderClassSettings settings)
+        => settings.IsAbstractBuilder
+            ? "TEntity"
+            : FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate);
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassPropertyMethods(ITypeBase instance,
                                                                                            ImmutableBuilderClassSettings settings,
@@ -749,7 +758,8 @@ public static partial class TypeBaseEtensions
             ", ",
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
                                                  p.Name,
-                                                 p.Name.ToPascalCase()))
+                                                 p.Name.ToPascalCase(),
+                                                 p.IsNullable ? "?" : ""))
         );
     }
 }

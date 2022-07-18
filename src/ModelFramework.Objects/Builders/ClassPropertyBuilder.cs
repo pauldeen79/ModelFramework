@@ -13,11 +13,12 @@ public partial class ClassPropertyBuilder
 
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                         string? customBuilderConstructorInitializeExpression = null,
+                                                                        string? customBuilderMethodParameterExpression = null,
                                                                         bool addNullableCheck = true)
         => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType ?? "{0}Builder")
-          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, IsNullable || addNullableCheck
+          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression ?? (IsNullable || addNullableCheck
                 ? "{0}?.Build()"
-                : "{0}.Build()")
+                : "{0}.Build()"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0})" : "{0} = new " + argumentType + "(source.{0})"));
 
     public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(bool addNullChecks,
