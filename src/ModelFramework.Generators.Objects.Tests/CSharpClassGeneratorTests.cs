@@ -2302,7 +2302,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
-        public abstract ModelFramework.Generators.Objects.Tests.POC.BaseClass Build();
+        public abstract TEntity Build();
 
         public TBuilder WithBaseProperty(string baseProperty)
         {

@@ -80,13 +80,19 @@ public static partial class TypeBaseExtensions
         => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
             && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
 
-    public static string GetCustomValueForInheritedClass(this ITypeBase instance, ImmutableBuilderClassSettings settings, Func<IClass, string> customValue)
+    public static string GetCustomValueForInheritedClass(this ITypeBase instance,
+                                                         ImmutableBuilderClassSettings settings,
+                                                         Func<IClass, string> customValue)
         => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
 
-    public static string GetCustomValueForInheritedClass(this ITypeBase instance, ImmutableClassSettings settings, Func<IClass, string> customValue)
+    public static string GetCustomValueForInheritedClass(this ITypeBase instance,
+                                                         ImmutableClassSettings settings,
+                                                         Func<IClass, string> customValue)
         => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
 
-    public static string GetCustomValueForInheritedClass(this ITypeBase instance, bool enableInheritance, Func<IClass, string> customValue)
+    public static string GetCustomValueForInheritedClass(this ITypeBase instance,
+                                                         bool enableInheritance,
+                                                         Func<IClass, string> customValue)
     {
         if (!enableInheritance)
         {
@@ -109,6 +115,36 @@ public static partial class TypeBaseExtensions
         }
 
         return customValue(cls);
+    }
+
+    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
+                                                             IParentTypeContainer parentTypeContainer,
+                                                             ImmutableClassInheritanceSettings inheritanceSettings)
+        => parent.IsMemberValidForImmutableBuilderClass(
+            parentTypeContainer,
+            inheritanceSettings.EnableInheritance,
+            inheritanceSettings.InheritanceComparisonFunction);
+
+    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
+                                                             IParentTypeContainer parentTypeContainer,
+                                                             ImmutableBuilderClassInheritanceSettings inheritanceSettings)
+        => parent.IsMemberValidForImmutableBuilderClass(
+            parentTypeContainer,
+            inheritanceSettings.EnableInheritance,
+            inheritanceSettings.InheritanceComparisonFunction);
+
+    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
+                                                             IParentTypeContainer parentTypeContainer,
+                                                             bool enableInheritance,
+                                                             Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
+    {
+        if (!enableInheritance)
+        {
+            // If inheritance is not enabled, then simply include all members
+            return true;
+        }
+        // If inheritance is enabled, then include the members if it's defined on the parent class
+        return parentTypeContainer.IsDefinedOn(parent, comparisonFunction);
     }
 
     private static string GetInheritedClassesForClass(IClass cls)
