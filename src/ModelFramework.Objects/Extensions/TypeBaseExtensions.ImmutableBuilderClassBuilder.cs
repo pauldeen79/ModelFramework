@@ -278,22 +278,26 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                    ImmutableBuilderClassSettings settings)
     {
-        var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
-        var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
-        yield return new ClassMethodBuilder()
-            .WithName("Build")
-            .WithAbstract(settings.IsAbstractBuilder)
-            .WithOverride(settings.IsOverrideBuilder)
-            .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings))
-            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder
-                ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
-                : Array.Empty<string>())
-            .AddLiteralCodeStatements(!settings.IsAbstractBuilder
-                ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
-                : Array.Empty<string>())
-            .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder
-                ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
-                : Array.Empty<string>());
+        if (!(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.IsAbstract))
+        {
+            var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
+            var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
+            yield return new ClassMethodBuilder()
+                .WithName("Build")
+                .WithAbstract(settings.IsAbstractBuilder)
+                .WithOverride(settings.IsOverrideBuilder)
+                .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings))
+                .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder
+                    ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
+                    : Array.Empty<string>())
+                .AddLiteralCodeStatements(!settings.IsAbstractBuilder
+                    ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
+                    : Array.Empty<string>())
+                .AddLiteralCodeStatements(settings.EnableNullableReferenceTypes && !settings.IsAbstractBuilder
+                    ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
+                    : Array.Empty<string>());
+
+        }
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {

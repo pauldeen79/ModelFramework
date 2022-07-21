@@ -8,6 +8,38 @@ public record ImmutableClassSettings
     public bool AddPrivateSetters { get; }
     public ImmutableClassConstructorSettings ConstructorSettings { get; }
     public ImmutableClassInheritanceSettings InheritanceSettings { get; }
+    public bool AddValidationCode
+    {
+        get
+        {
+            if (!ConstructorSettings.ValidateArguments)
+            {
+                // Do not validate arguments
+                return false;
+            }
+
+            if (!InheritanceSettings.EnableInheritance)
+            {
+                // In case inheritance is enabled, then we want to add validation
+                return true;
+            }
+
+            if (InheritanceSettings.IsAbstract)
+            {
+                // Abstract class with base class
+                return false;
+            }
+
+            if (InheritanceSettings.BaseClass == null)
+            {
+                // Abstract base class
+                return false;
+            }
+
+            // In other situations, add it
+            return true;
+        }
+    }
 
     public ImmutableClassSettings(string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
                                   bool createWithMethod = false,

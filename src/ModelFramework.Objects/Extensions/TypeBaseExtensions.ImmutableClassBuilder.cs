@@ -18,7 +18,7 @@ public static partial class TypeBaseExtensions
             .WithName(instance.Name)
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableClassBaseClass(instance, settings))
-            .WithAbstract(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass == null)
+            .WithAbstract(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
             .AddProperties
             (
                 instance
@@ -60,7 +60,7 @@ public static partial class TypeBaseExtensions
             .AddConstructors
             (
                 new ClassConstructorBuilder()
-                    .WithProtected(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass == null)
+                    .WithProtected(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
                     .AddParameters
                     (
                         instance.Properties
@@ -104,7 +104,7 @@ public static partial class TypeBaseExtensions
                     )
                     .AddLiteralCodeStatements
                     (
-                        settings.ConstructorSettings.ValidateArguments
+                        settings.AddValidationCode
                             ? new[]
                             {
                                 "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"

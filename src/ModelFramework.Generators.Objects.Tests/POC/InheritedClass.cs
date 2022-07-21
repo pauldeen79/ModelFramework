@@ -60,3 +60,31 @@ internal abstract class BaseClassBuilder<TBuilder, T>
         BaseProperty = string.Empty;
     }
 }
+
+internal abstract class MiddleClass : BaseClass
+{
+    protected MiddleClass(string middleProperty, string baseProperty) : base(baseProperty)
+    {
+        MiddleProperty = middleProperty;
+    }
+
+    public string MiddleProperty { get; }
+}
+
+internal abstract class MiddleClassBuilder<TBuilder, T> : BaseClassBuilder<TBuilder, T>
+    where T : MiddleClass
+    where TBuilder : MiddleClassBuilder<TBuilder, T>
+{
+    public string MiddleProperty { get; set; }
+
+    public TBuilder WithMiddleProperty(string middleProperty)
+    {
+        MiddleProperty = middleProperty;
+        return (TBuilder)this;
+    }
+
+    protected MiddleClassBuilder() : base()
+    {
+        MiddleProperty = string.Empty;
+    }
+}
