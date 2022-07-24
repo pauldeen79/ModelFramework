@@ -98,32 +98,6 @@ public abstract class CSharpClassBase : ClassBase
             }
         ).ToArray();
 
-    private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
-        => new ClassBuilder(cls)
-            .WithNamespace(entitiesNamespace)
-            .With(x => FixImmutableClassProperties(x))
-            .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
-            .WithRecord()
-            .WithPartial()
-            .With(x => PostProcessImmutableEntityClass(x))
-            .Build();
-
-    private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
-        => new InterfaceBuilder(iinterface)
-            .WithName(iinterface.Name.StartsWith("I")
-                ? iinterface.Name.Substring(1)
-                : iinterface.Name)
-            .WithNamespace(entitiesNamespace)
-            .With(x => FixImmutableClassProperties(x))
-            .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
-            .WithRecord()
-            .WithPartial()
-            .AddInterfaces(new[] { $"{iinterface.Namespace}.{iinterface.Name}" }.Where(_ => InheritFromInterfaces))
-            .With(x => PostProcessImmutableEntityClass(x))
-            .Build();
-
     protected IClass[] GetClassesFromSameNamespace(Type type)
     {
         if (type.FullName == null)
@@ -163,9 +137,6 @@ public abstract class CSharpClassBase : ClassBase
             .WithPartial()
             .AddMethods(CreateExtraOverloads(cls))
             .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
-
-    private static string CreateSortString(ClassMethodBuilder methodBuilder)
-        => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
         => new ImmutableBuilderClassSettings
@@ -214,4 +185,33 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
+
+    private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
+        => new InterfaceBuilder(iinterface)
+            .WithName(iinterface.Name.StartsWith("I")
+                ? iinterface.Name.Substring(1)
+                : iinterface.Name)
+            .WithNamespace(entitiesNamespace)
+            .With(x => FixImmutableClassProperties(x))
+            .Build()
+            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .WithRecord()
+            .WithPartial()
+            .AddInterfaces(new[] { $"{iinterface.Namespace}.{iinterface.Name}" }.Where(_ => InheritFromInterfaces))
+            .With(x => PostProcessImmutableEntityClass(x))
+            .Build();
+
+    private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
+        => new ClassBuilder(cls)
+            .WithNamespace(entitiesNamespace)
+            .With(x => FixImmutableClassProperties(x))
+            .Build()
+            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .WithRecord()
+            .WithPartial()
+            .With(x => PostProcessImmutableEntityClass(x))
+            .Build();
+
+    private static string CreateSortString(ClassMethodBuilder methodBuilder)
+        => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
 }
