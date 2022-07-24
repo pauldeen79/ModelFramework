@@ -3,9 +3,7 @@
 public class DatabaseCodeStatements : ModelFrameworkCSharpClassBase
 {
     public override string Path => "ModelFramework.Database/SqlStatements/Builders";
-
     public override string DefaultFileName => "Builders.Generated.cs";
-
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
     public override object CreateModel()

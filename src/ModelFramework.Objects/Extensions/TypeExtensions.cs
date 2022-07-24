@@ -69,6 +69,11 @@ public static class TypeExtensions
             : instance.FullName.Substring(0, index);
     }
 
+    public static string GetEntityClassName(this Type instance)
+        => instance.IsInterface && instance.Name.StartsWith("I")
+            ? instance.Name.Substring(1)
+            : instance.Name;
+
     private static IEnumerable<string> GetInterfaces(Type instance)
         => instance.GetInterfaces()
                    .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))

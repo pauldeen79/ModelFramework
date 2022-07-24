@@ -6,7 +6,6 @@ public static class ParentTypeContainerExtensions
                                    ITypeBase typeBase,
                                    Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
         => comparisonFunction == null
-            ?   string.IsNullOrEmpty(instance.ParentTypeFullName)
-                || instance.ParentTypeFullName == typeBase.GetFullName()
+            ? string.IsNullOrEmpty(instance.ParentTypeFullName) || instance.ParentTypeFullName == typeBase.GetFullName()
             : comparisonFunction.Invoke(instance, typeBase);
 }
