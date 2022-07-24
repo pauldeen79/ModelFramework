@@ -4,34 +4,18 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
 {
     protected override bool InheritFromInterfaces => false;
 
-    protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) => FixInterface(interfaceBuilder);
-    protected override void FixImmutableClassProperties(ClassBuilder classBuilder) => FixClass(classBuilder);
-    protected override void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) => FixInterface(interfaceBuilder);
-    protected override void FixImmutableBuilderProperties(ClassBuilder classBuilder) => FixClass(classBuilder);
+    protected override void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        => FixImmutableBuilderProperties(typeBaseBuilder);
 
-    private static void FixInterface(InterfaceBuilder interfaceBuilder)
+    protected override void FixImmutableBuilderProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
     {
-        if (interfaceBuilder == null)
+        if (typeBaseBuilder == null)
         {
             // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
             return;
         }
 
-        foreach (var property in interfaceBuilder.Properties)
-        {
-            FixImmutableBuilderProperty(property);
-        }
-    }
-
-    private static void FixClass(ClassBuilder classBuilder)
-    {
-        if (classBuilder == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            return;
-        }
-
-        foreach (var property in classBuilder.Properties)
+        foreach (var property in typeBaseBuilder.Properties)
         {
             FixImmutableBuilderProperty(property);
         }

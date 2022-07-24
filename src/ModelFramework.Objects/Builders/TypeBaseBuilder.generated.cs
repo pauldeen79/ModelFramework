@@ -153,11 +153,6 @@ namespace ModelFramework.Objects.Builders
             return (TBuilder)this;
         }
 
-        public TBuilder AddInterfaces(params System.Type[] types)
-        {
-            return AddInterfaces(types.Select(x => x.FullName));
-        }
-
         public TBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);

@@ -470,34 +470,23 @@ namespace Test.Builders
         protected override bool EnableNullableContext => true;
         protected override bool CreateCodeGenerationHeader => false;
 
-        protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) => FixInterface(interfaceBuilder, false);
-        protected override void FixImmutableClassProperties(ClassBuilder classBuilder) => FixClass(classBuilder, false);
-        protected override void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) => FixInterface(interfaceBuilder, true);
-        protected override void FixImmutableBuilderProperties(ClassBuilder classBuilder) => FixClass(classBuilder, true);
+        protected override void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+            => FixStuff(typeBaseBuilder, false);
 
-        private static void FixInterface(InterfaceBuilder interfaceBuilder, bool forBuilder)
+        protected override void FixImmutableBuilderProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+            => FixStuff(typeBaseBuilder, true);
+
+        private static void FixStuff<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder, bool forBuilder)
+            where TEntity : ITypeBase
+            where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
         {
-            if (interfaceBuilder == null)
+            if (typeBaseBuilder == null)
             {
                 // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
                 return;
             }
 
-            foreach (var property in interfaceBuilder.Properties)
-            {
-                FixImmutableBuilderProperty(property, forBuilder);
-            }
-        }
-
-        private static void FixClass(ClassBuilder classBuilder, bool forBuilder)
-        {
-            if (classBuilder == null)
-            {
-                // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-                return;
-            }
-
-            foreach (var property in classBuilder.Properties)
+            foreach (var property in typeBaseBuilder.Properties)
             {
                 FixImmutableBuilderProperty(property, forBuilder);
             }

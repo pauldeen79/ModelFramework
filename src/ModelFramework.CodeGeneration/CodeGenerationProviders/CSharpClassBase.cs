@@ -21,10 +21,14 @@ public abstract class CSharpClassBase : ClassBase
 
     protected abstract Type RecordCollectionType { get; }
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
-    protected virtual void FixImmutableBuilderProperties(ClassBuilder classBuilder) { }
-    protected virtual void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder) { }
-    protected virtual void FixImmutableClassProperties(ClassBuilder classBuilder) { }
-    protected virtual void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder) { }
+    protected virtual void FixImmutableBuilderProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TEntity : ITypeBase
+        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+    { }
+    protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TEntity : ITypeBase
+        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+    { }
     protected virtual void PostProcessImmutableBuilderClass(ClassBuilder classBuilder) { }
     protected virtual void PostProcessImmutableEntityClass(ClassBuilder classBuilder) { }
 
@@ -136,8 +140,9 @@ public abstract class CSharpClassBase : ClassBase
             )
             .Select
             (
-                t => t.ToClassBuilder(new ClassSettings(createConstructors: true)).WithName(t.Name)
-                                                                                  .WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty)
+                t => t.ToClassBuilder(new ClassSettings(createConstructors: true))
+                    .WithName(t.Name)
+                    .WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty)
                 .With(x => FixImmutableBuilderProperties(x))
                 .Build()
             )

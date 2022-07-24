@@ -10,8 +10,8 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         && typeBase != null
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)
             || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
-            || parent.ParentTypeFullName.GetClassName() == "IEnumsContainer"
-            || typeBase.Name == "TypeBase");
+            || parent.ParentTypeFullName.GetClassName() == nameof(IEnumsContainer)
+            || $"I{typeBase.Name}" == nameof(ITypeBase));
 
     protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType,
                                                       Type codeStatementInterfaceType,
@@ -58,39 +58,19 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         return string.Empty;
     }
 
-    protected override void FixImmutableBuilderProperties(ClassBuilder classBuilder)
+    protected override void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        => FixImmutableBuilderProperties(typeBaseBuilder);
+
+    protected override void FixImmutableBuilderProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
     {
-        if (classBuilder == null)
+        if (typeBaseBuilder == null)
         {
             // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
             return;
         }
 
-        foreach (var property in classBuilder.Properties)
-        {
-            FixImmutableBuilderProperty(classBuilder.Name, property);
-        }
+        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name, x));
     }
-
-    protected override void FixImmutableBuilderProperties(InterfaceBuilder interfaceBuilder)
-    {
-        if (interfaceBuilder == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            return;
-        }
-
-        foreach (var property in interfaceBuilder.Properties)
-        {
-            FixImmutableBuilderProperty(interfaceBuilder.Name, property);
-        }
-    }
-
-    protected override void FixImmutableClassProperties(ClassBuilder classBuilder)
-        => FixImmutableBuilderProperties(classBuilder);
-
-    protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder)
-        => FixImmutableBuilderProperties(interfaceBuilder);
 
     protected override void PostProcessImmutableBuilderClass(ClassBuilder classBuilder)
     {
@@ -100,17 +80,18 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
-        if (new[] { "TypeBaseBuilder", "ClassBuilder", "InterfaceBuilder" }.Contains(classBuilder.Name))
+        if (new[] { $"{nameof(ITypeBase)}Builder", $"{nameof(IClass)}Builder", $"{nameof(IInterface)}Builder" }.Contains($"I{classBuilder.Name}"))
         {
-            if (classBuilder.Name == "TypeBaseBuilder")
+            if ($"I{classBuilder.Name}" == $"{nameof(ITypeBase)}Builder")
             {
                 // HACK
-                classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = "ModelFramework.Objects.Contracts.ITypeBase";
-                classBuilder.GenericTypeArgumentConstraints[0] = "where TEntity : ModelFramework.Objects.Contracts.ITypeBase";
+                classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = typeof(ITypeBase).FullName!;
+                classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
             }
             else
             {
-                classBuilder.BaseClass = $"TypeBaseBuilder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
+                // HACK
+                classBuilder.BaseClass = $"{typeof(ITypeBase).Name.Substring(1)}Builder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
             }
         }
     }
@@ -123,11 +104,12 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
-        if (new[] { "Class", "Interface" }.Contains(classBuilder.Name))
+        if (new[] { nameof(IClass), nameof(IInterface) }.Contains($"I{classBuilder.Name}"))
         {
             // HACK
-            classBuilder.Constructors.Single().WithChainCall("base(@namespace, partial, interfaces, properties, methods, genericTypeArguments, genericTypeArgumentConstraints, metadata, visibility, name, attributes)");
-            classBuilder.BaseClass = "TypeBase";
+            var props = string.Join(", ", typeof(ITypeBase).ToClass(new ClassSettings()).Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
+            classBuilder.Constructors.Single().WithChainCall($"base({props})");
+            classBuilder.BaseClass = typeof(ITypeBase).Name.Substring(1);
         }
     }
 
@@ -145,8 +127,8 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
-            var isCodeStatement = typeName.Contains("ModelFramework.Objects.Contracts.ICodeStatement")
-                || typeName.Contains("ModelFramework.Database.Contracts.ISqlStatement");
+            var isCodeStatement = typeName.Contains(typeof(ICodeStatement).FullName!)
+                || typeName.Contains(typeof(ISqlStatement).FullName!);
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 false,
@@ -159,14 +141,14 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                     : null
             );
         }
-        else if (typeName.Contains("Collection<System.String", StringComparison.InvariantCulture))
+        else if (typeName.Contains($"Collection<{typeof(string).FullName}", StringComparison.InvariantCulture))
         {
             property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
         }
         else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
         {
             property.SetDefaultArgumentValueForWithMethod(true);
-            if (property.Name == nameof(ClassProperty.HasGetter) || property.Name == nameof(ClassProperty.HasSetter))
+            if (property.Name == nameof(IClassProperty.HasGetter) || property.Name == nameof(IClassProperty.HasSetter))
             {
                 property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
             }
@@ -182,14 +164,14 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             (
                 new Literal
                 (
-                    name == nameof(ClassField)
+                    $"I{name}" == nameof(IClassField)
                         ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
                         : $"{typeof(Visibility).FullName}.{Visibility.Public}"
                 )
             );
         }
 
-        if (property.Name == nameof(ClassProperty.HasSetter))
+        if (property.Name == nameof(IClassProperty.HasSetter))
         {
             property.SetBuilderWithExpression(@"{0} = {2};
 if ({2})
@@ -198,7 +180,7 @@ if ({2})
 {6}");
         }
 
-        if (property.Name == nameof(ClassProperty.HasInitializer))
+        if (property.Name == nameof(IClassProperty.HasInitializer))
         {
             property.SetBuilderWithExpression(@"{0} = {2};
 if ({2})
@@ -220,11 +202,11 @@ if ({2})
         {
             yield return new ClassMethodBuilder()
                 .WithName("AddMetadata")
-                .WithTypeName(c.Name == "TypeBase" ? "TBuilder" : $"{c.Name}Builder")
+                .WithTypeName($"I{c.Name}" == nameof(ITypeBase) ? "TBuilder" : $"{c.Name}Builder")
                 .AddParameter("name", typeof(string))
                 .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
                 .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
-                                           c.Name == "TypeBase" ? "return (TBuilder)this;" : "return this;");
+                                          $"I{c.Name}" == nameof(ITypeBase) ? "return (TBuilder)this;" : "return this;");
         }
 
         if (c.Properties.Any(p => p.Name == nameof(IParametersContainer.Parameters) && p.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter)))
@@ -255,15 +237,6 @@ if ({2})
                 .WithTypeName($"{c.Name}Builder")
                 .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(IEnumerable<string>)))
                 .AddLiteralCodeStatements("return AddLiteralCodeStatements(statements.ToArray());");
-        }
-
-        if (c.Properties.Any(p => p.Name == nameof(ITypeBase.Interfaces)))
-        {
-            yield return new ClassMethodBuilder()
-                .WithName("AddInterfaces")
-                .WithTypeName(c.Name == "TypeBase" ? "TBuilder" : $"{c.Name}Builder")
-                .AddParameters(new ParameterBuilder().WithName("types").WithType(typeof(Type[])).WithIsParamArray())
-                .AddLiteralCodeStatements("return AddInterfaces(types.Select(x => x.FullName));");
         }
     }
 
