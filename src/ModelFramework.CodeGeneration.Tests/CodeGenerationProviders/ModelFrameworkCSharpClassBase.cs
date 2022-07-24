@@ -96,7 +96,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             // HACK
             var props = string.Join(", ", typeof(ITypeBase).ToClass(new ClassSettings()).Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
             classBuilder.Constructors.Single().WithChainCall($"base({props})");
-            classBuilder.BaseClass = typeof(ITypeBase).Name.Substring(1);
+            classBuilder.BaseClass = typeof(ITypeBase).GetEntityClassName();
         }
     }
 

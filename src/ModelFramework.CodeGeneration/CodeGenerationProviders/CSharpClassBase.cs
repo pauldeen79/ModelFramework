@@ -116,7 +116,7 @@ public abstract class CSharpClassBase : ClassBase
             (
                 t => t.ToClassBuilder(new ClassSettings(createConstructors: true))
                     .WithName(t.Name)
-                    .WithNamespace(t.FullName?.GetNamespaceWithDefault() ?? string.Empty)
+                    .WithNamespace(t.FullName.GetNamespaceWithDefault())
                 .With(x => FixImmutableBuilderProperties(x))
                 .Build()
             )
@@ -176,9 +176,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
-            .WithName(typeBase is IInterface && typeBase.Name.StartsWith("I")
-                ? typeBase.Name.Substring(1)
-                : typeBase.Name)
+            .WithName(typeBase.GetEntityClassName())
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
@@ -188,9 +186,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
         => new InterfaceBuilder(iinterface)
-            .WithName(iinterface.Name.StartsWith("I")
-                ? iinterface.Name.Substring(1)
-                : iinterface.Name)
+            .WithName(iinterface.GetEntityClassName())
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
             .Build()
