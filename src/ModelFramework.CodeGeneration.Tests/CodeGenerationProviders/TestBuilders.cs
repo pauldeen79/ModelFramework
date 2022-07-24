@@ -10,4 +10,6 @@ public class TestBuilders : TestCSharpClassBase
         => GetImmutableBuilderClasses(GetTestModels(),
                                       "ModelFramework.Common.Test",
                                       "ModelFramework.Common.Test.Builders");
+
+    public string GetNewCollectionTypeName() => NewCollectionTypeName;
 }

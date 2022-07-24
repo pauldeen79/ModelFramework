@@ -4,7 +4,7 @@ public abstract class CSharpClassBase : ClassBase
 {
     protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
         => Enumerable.Empty<ClassMethodBuilder>();
-    protected virtual string NewCollectionTypeName => "System.Collections.Generic.List";
+    protected virtual string NewCollectionTypeName => typeof(List<>).WithoutGenerics();
     protected virtual string SetMethodNameFormatString => "With{0}";
     protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual bool AddNullChecks => false;

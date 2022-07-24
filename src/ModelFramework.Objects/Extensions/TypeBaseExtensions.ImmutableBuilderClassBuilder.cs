@@ -393,7 +393,7 @@ public static partial class TypeBaseEtensions
                     .WithName(property.Name.ToPascalCase())
                     .WithTypeName(string.Format(overload.ArgumentType,
                                                 property.TypeName,
-                                                property.TypeName.GetGenericArguments()).FixCollectionTypeName("System.Collections.Generic.IEnumerable"))
+                                                property.TypeName.GetGenericArguments()).FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
                     .WithIsNullable(property.IsNullable)
             )
             .AddLiteralCodeStatements($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());");
@@ -416,7 +416,7 @@ public static partial class TypeBaseEtensions
                             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                             property.TypeName,
                             property.TypeName.GetGenericArguments()
-                        ).FixCollectionTypeName("System.Collections.Generic.IEnumerable")
+                        ).FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())
                     )
                     .WithIsNullable(property.IsNullable)
             )

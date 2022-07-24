@@ -397,6 +397,19 @@ namespace Test.Builders
 ");
     }
 
+    [Fact]
+    public void NewCollectionTypeName_Is_Set_To_GenericList()
+    {
+        // Arrange
+        var sut = new TestBuilders();
+
+        // Act
+        var actual = sut.GetNewCollectionTypeName();
+
+        // Assert
+        actual.Should().Be("System.Collections.Generic.List");
+    }
+
     private void Verify(GenerateCode generatedCode)
     {
         if (Settings.DryRun)
