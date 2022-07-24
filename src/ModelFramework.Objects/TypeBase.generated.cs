@@ -15,7 +15,7 @@ using System.Text;
 namespace ModelFramework.Objects
 {
 #nullable enable
-    public partial record Interface : ModelFramework.Objects.Contracts.IInterface
+    public abstract partial record TypeBase : ModelFramework.Objects.Contracts.ITypeBase
     {
         public string Namespace
         {
@@ -72,7 +72,7 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public Interface(string @namespace, bool partial, System.Collections.Generic.IReadOnlyCollection<string> interfaces, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassProperty> properties, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassMethod> methods, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes)
+        protected TypeBase(string @namespace, bool partial, System.Collections.Generic.IReadOnlyCollection<string> interfaces, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassProperty> properties, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IClassMethod> methods, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes)
         {
             this.Namespace = @namespace;
             this.Partial = partial;
@@ -85,7 +85,6 @@ namespace ModelFramework.Objects
             this.Visibility = visibility;
             this.Name = name;
             this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
 #nullable restore

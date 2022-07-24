@@ -15,7 +15,9 @@ using System.Text;
 namespace ModelFramework.Objects.Builders
 {
 #nullable enable
-    public partial class InterfaceBuilder
+    public abstract partial class TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
         public string Namespace
         {
@@ -107,150 +109,145 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public InterfaceBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        public TBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        public TBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
             return AddAttributes(attributes.ToArray());
         }
 
-        public InterfaceBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        public TBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
         {
             return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
         }
 
-        public InterfaceBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
+        public TBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
         {
             GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        public TBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
         {
             return AddGenericTypeArguments(genericTypeArguments.ToArray());
         }
 
-        public InterfaceBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        public TBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
         {
             GenericTypeArguments.AddRange(genericTypeArguments);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        public TBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
         {
             return AddInterfaces(interfaces.ToArray());
         }
 
-        public InterfaceBuilder AddInterfaces(params string[] interfaces)
+        public TBuilder AddInterfaces(params string[] interfaces)
         {
             Interfaces.AddRange(interfaces);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddInterfaces(params System.Type[] types)
+        public TBuilder AddInterfaces(params System.Type[] types)
         {
             return AddInterfaces(types.Select(x => x.FullName));
         }
 
-        public InterfaceBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        public TBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
             Metadata.AddRange(metadata);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public TBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
         }
 
-        public InterfaceBuilder AddMetadata(string name, object? value)
+        public TBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
+        public TBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
         {
             Methods.AddRange(methods);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
+        public TBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
         {
             return AddMethods(methods.ToArray());
         }
 
-        public InterfaceBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
+        public TBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
         {
             Properties.AddRange(properties);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        public TBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
         {
             return AddProperties(properties.ToArray());
         }
 
-        public ModelFramework.Objects.Contracts.IInterface Build()
-        {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
-            #pragma warning restore CS8604 // Possible null reference argument.
-        }
+        public abstract TEntity Build();
 
-        public InterfaceBuilder WithName(System.Func<string> nameDelegate)
+        public TBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithName(string name)
+        public TBuilder WithName(string name)
         {
             Name = name;
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithNamespace(System.Func<string> namespaceDelegate)
+        public TBuilder WithNamespace(System.Func<string> namespaceDelegate)
         {
             _namespaceDelegate = new (@namespaceDelegate);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithNamespace(string @namespace)
+        public TBuilder WithNamespace(string @namespace)
         {
             Namespace = @namespace;
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithPartial(bool partial = true)
+        public TBuilder WithPartial(bool partial = true)
         {
             Partial = partial;
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithPartial(System.Func<bool> partialDelegate)
+        public TBuilder WithPartial(System.Func<bool> partialDelegate)
         {
             _partialDelegate = new (partialDelegate);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
+        public TBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
+        public TBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
         {
             _visibilityDelegate = new (visibilityDelegate);
-            return this;
+            return (TBuilder)this;
         }
 
-        public InterfaceBuilder()
+        protected TypeBaseBuilder()
         {
             Interfaces = new System.Collections.Generic.List<string>();
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
@@ -267,7 +264,7 @@ namespace ModelFramework.Objects.Builders
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public InterfaceBuilder(ModelFramework.Objects.Contracts.IInterface source)
+        protected TypeBaseBuilder(ModelFramework.Objects.Contracts.ITypeBase source)
         {
             Interfaces = new System.Collections.Generic.List<string>();
             Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();

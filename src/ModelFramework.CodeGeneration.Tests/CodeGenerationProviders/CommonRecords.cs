@@ -3,9 +3,7 @@
 public class CommonRecords : ModelFrameworkCSharpClassBase
 {
     public override string Path => "ModelFramework.Common";
-
     public override string DefaultFileName => "Entities.generated.cs";
-
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
     public override object CreateModel()

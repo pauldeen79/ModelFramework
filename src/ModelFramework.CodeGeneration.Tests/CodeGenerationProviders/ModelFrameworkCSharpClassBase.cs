@@ -174,11 +174,11 @@ if ({2})
         {
             yield return new ClassMethodBuilder()
                 .WithName("AddMetadata")
-                .WithTypeName($"{c.Name}Builder")
+                .WithTypeName(c.Name == "TypeBase" ? "TBuilder" : $"{c.Name}Builder")
                 .AddParameter("name", typeof(string))
                 .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
                 .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
-                                           "return this;");
+                                           c.Name == "TypeBase" ? "return (TBuilder)this;" : "return this;");
         }
 
         if (c.Properties.Any(p => p.Name == nameof(IParametersContainer.Parameters) && p.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter)))
@@ -215,7 +215,7 @@ if ({2})
         {
             yield return new ClassMethodBuilder()
                 .WithName("AddInterfaces")
-                .WithTypeName($"{c.Name}Builder")
+                .WithTypeName(c.Name == "TypeBase" ? "TBuilder" : $"{c.Name}Builder")
                 .AddParameters(new ParameterBuilder().WithName("types").WithType(typeof(Type[])).WithIsParamArray())
                 .AddLiteralCodeStatements("return AddInterfaces(types.Select(x => x.FullName));");
         }
@@ -241,6 +241,12 @@ if ({2})
             typeof(IEnumMember),
             typeof(IInterface),
             typeof(IParameter)
+        };
+
+    protected static Type[] GetObjectsModelBaseTypes()
+        => new[]
+        {
+            typeof(ITypeBase)
         };
 
     protected static Type[] GetDatabaseModelTypes()
