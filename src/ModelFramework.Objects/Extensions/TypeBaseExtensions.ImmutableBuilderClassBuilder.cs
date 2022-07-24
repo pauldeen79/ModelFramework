@@ -7,7 +7,7 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!instance.Properties.Any(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings)))
+        if (!instance.Properties.Any() && !settings.InheritanceSettings.EnableInheritance)
         {
             throw new InvalidOperationException("To create an immutable builder class, there must be at least one property");
         }
@@ -36,7 +36,7 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToBuilderExtensionsClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!instance.Properties.Any(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings)))
+        if (!instance.Properties.Any() && !settings.InheritanceSettings.EnableInheritance)
         {
             throw new InvalidOperationException("To create a builder extensions class, there must be at least one property");
         }

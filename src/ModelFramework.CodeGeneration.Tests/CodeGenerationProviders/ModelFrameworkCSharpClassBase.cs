@@ -5,6 +5,13 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+    protected override bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
+        => parent != null
+        && typeBase != null
+        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
+            || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
+            || parent.ParentTypeFullName.GetClassName() == "IEnumsContainer"
+            || typeBase.Name == "TypeBase");
 
     protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType,
                                                       Type codeStatementInterfaceType,
@@ -84,6 +91,45 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 
     protected override void FixImmutableClassProperties(InterfaceBuilder interfaceBuilder)
         => FixImmutableBuilderProperties(interfaceBuilder);
+
+    protected override void PostProcessImmutableBuilderClass(ClassBuilder classBuilder)
+    {
+        if (classBuilder == null)
+        {
+            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
+            return;
+        }
+
+        if (new[] { "TypeBaseBuilder", "ClassBuilder", "InterfaceBuilder" }.Contains(classBuilder.Name))
+        {
+            if (classBuilder.Name == "TypeBaseBuilder")
+            {
+                // HACK
+                classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = "ModelFramework.Objects.Contracts.ITypeBase";
+                classBuilder.GenericTypeArgumentConstraints[0] = "where TEntity : ModelFramework.Objects.Contracts.ITypeBase";
+            }
+            else
+            {
+                classBuilder.BaseClass = $"TypeBaseBuilder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
+            }
+        }
+    }
+
+    protected override void PostProcessImmutableEntityClass(ClassBuilder classBuilder)
+    {
+        if (classBuilder == null)
+        {
+            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
+            return;
+        }
+
+        if (new[] { "Class", "Interface" }.Contains(classBuilder.Name))
+        {
+            // HACK
+            classBuilder.Constructors.Single().WithChainCall("base(@namespace, partial, interfaces, properties, methods, genericTypeArguments, genericTypeArgumentConstraints, metadata, visibility, name, attributes)");
+            classBuilder.BaseClass = "TypeBase";
+        }
+    }
 
     private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
@@ -232,14 +278,12 @@ if ({2})
         {
             typeof(IAttribute),
             typeof(IAttributeParameter),
-            typeof(IClass),
             typeof(IClassConstructor),
             typeof(IClassField),
             typeof(IClassMethod),
             typeof(IClassProperty),
             typeof(IEnum),
             typeof(IEnumMember),
-            typeof(IInterface),
             typeof(IParameter)
         };
 
@@ -247,6 +291,13 @@ if ({2})
         => new[]
         {
             typeof(ITypeBase)
+        };
+
+    protected static Type[] GetObjectsModelOverrideTypes()
+        => new[]
+        {
+            typeof(IClass),
+            typeof(IInterface),
         };
 
     protected static Type[] GetDatabaseModelTypes()
@@ -273,4 +324,16 @@ if ({2})
             typeof(IViewOrderByField),
             typeof(IViewSource)
         };
+
+    protected IClass GetTypeBaseModel()
+        => typeof(ITypeBase).ToClass(new ClassSettings()).ToImmutableClassBuilder(new ImmutableClassSettings
+        (
+            newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+            constructorSettings: new ImmutableClassConstructorSettings(
+                validateArguments: ValidateArgumentsInConstructor,
+                addNullChecks: AddNullChecks),
+            addPrivateSetters: AddPrivateSetters)
+        )
+        .With(x => FixImmutableClassProperties(x))
+        .Build();
 }

@@ -143,6 +143,7 @@ public static partial class TypeBaseExtensions
             // If inheritance is not enabled, then simply include all members
             return true;
         }
+
         // If inheritance is enabled, then include the members if it's defined on the parent class
         return parentTypeContainer.IsDefinedOn(parent, comparisonFunction);
     }

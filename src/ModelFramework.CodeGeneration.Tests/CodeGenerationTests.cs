@@ -23,7 +23,7 @@ public class CodeGenerationTests
     {
         // Arrange
         var multipleContentBuilder = new MultipleContentBuilder(Settings.BasePath);
-        
+
         // Act
         GenerateCode.For<CommonBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<CommonRecords>(Settings, multipleContentBuilder);
@@ -35,6 +35,8 @@ public class CodeGenerationTests
         GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseRecords>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsOverrideBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
 
         GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
         GenerateCode.For<DatabaseCodeStatements>(Settings, multipleContentBuilder);
