@@ -13,19 +13,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             || parent.ParentTypeFullName.GetClassName() == nameof(IEnumsContainer)
             || $"I{typeBase.Name}" == nameof(ITypeBase));
 
-    protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType,
-                                                      Type codeStatementInterfaceType,
-                                                      Type codeStatementBuilderInterfaceType,
-                                                      string buildersNamespace)
-        => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
-            .Select
-            (
-                c => CreateBuilder(c, buildersNamespace)
-                    .AddInterfaces(codeStatementBuilderInterfaceType)
-                    .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(codeStatementInterfaceType))
-                    .Build()
-            ).ToArray();
-
     protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
     {
         if (instance == null)
@@ -110,83 +97,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             var props = string.Join(", ", typeof(ITypeBase).ToClass(new ClassSettings()).Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
             classBuilder.Constructors.Single().WithChainCall($"base({props})");
             classBuilder.BaseClass = typeof(ITypeBase).Name.Substring(1);
-        }
-    }
-
-    private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
-    {
-        var typeName = property.TypeName.FixTypeName();
-        if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
-                                                                      "ModelFramework.Database.Contracts.I",
-                                                                      "ModelFramework.Common.Contracts.I"))
-        {
-            property.ConvertSinglePropertyToBuilderOnBuilder
-            (
-                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
-            );
-        }
-        else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
-        {
-            var isCodeStatement = typeName.Contains(typeof(ICodeStatement).FullName!)
-                || typeName.Contains(typeof(ISqlStatement).FullName!);
-            property.ConvertCollectionPropertyToBuilderOnBuilder
-            (
-                false,
-                typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
-                isCodeStatement
-                    ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
-                    : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
-                isCodeStatement
-                    ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()))"
-                    : null
-            );
-        }
-        else if (typeName.Contains($"Collection<{typeof(string).FullName}", StringComparison.InvariantCulture))
-        {
-            property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
-        }
-        else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
-        {
-            property.SetDefaultArgumentValueForWithMethod(true);
-            if (property.Name == nameof(IClassProperty.HasGetter) || property.Name == nameof(IClassProperty.HasSetter))
-            {
-                property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
-            }
-        }
-        else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
-        {
-            property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
-        }
-
-        if (property.Name == nameof(IVisibilityContainer.Visibility))
-        {
-            property.SetDefaultValueForBuilderClassConstructor
-            (
-                new Literal
-                (
-                    $"I{name}" == nameof(IClassField)
-                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
-                        : $"{typeof(Visibility).FullName}.{Visibility.Public}"
-                )
-            );
-        }
-
-        if (property.Name == nameof(IClassProperty.HasSetter))
-        {
-            property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasInitializer = false;
-{6}");
-        }
-
-        if (property.Name == nameof(IClassProperty.HasInitializer))
-        {
-            property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasSetter = false;
-{6}");
         }
     }
 
@@ -309,4 +219,94 @@ if ({2})
         )
         .With(x => FixImmutableClassProperties(x))
         .Build();
+
+    protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType,
+                                                      Type codeStatementInterfaceType,
+                                                      Type codeStatementBuilderInterfaceType,
+                                                      string buildersNamespace)
+        => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
+            .Select
+            (
+                c => CreateBuilder(c, buildersNamespace)
+                    .AddInterfaces(codeStatementBuilderInterfaceType)
+                    .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(codeStatementInterfaceType))
+                    .Build()
+            ).ToArray();
+
+    private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
+    {
+        var typeName = property.TypeName.FixTypeName();
+        if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
+                                                                      "ModelFramework.Database.Contracts.I",
+                                                                      "ModelFramework.Common.Contracts.I"))
+        {
+            property.ConvertSinglePropertyToBuilderOnBuilder
+            (
+                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
+            );
+        }
+        else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
+        {
+            var isCodeStatement = typeName.Contains(typeof(ICodeStatement).FullName!)
+                || typeName.Contains(typeof(ISqlStatement).FullName!);
+            property.ConvertCollectionPropertyToBuilderOnBuilder
+            (
+                false,
+                typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                isCodeStatement
+                    ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
+                    : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
+                isCodeStatement
+                    ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()))"
+                    : null
+            );
+        }
+        else if (typeName.Contains($"Collection<{typeof(string).FullName}", StringComparison.InvariantCulture))
+        {
+            property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
+        }
+        else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
+        {
+            property.SetDefaultArgumentValueForWithMethod(true);
+            if (property.Name == nameof(IClassProperty.HasGetter) || property.Name == nameof(IClassProperty.HasSetter))
+            {
+                property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
+            }
+        }
+        else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
+        {
+            property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
+        }
+
+        if (property.Name == nameof(IVisibilityContainer.Visibility))
+        {
+            property.SetDefaultValueForBuilderClassConstructor
+            (
+                new Literal
+                (
+                    $"I{name}" == nameof(IClassField)
+                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
+                        : $"{typeof(Visibility).FullName}.{Visibility.Public}"
+                )
+            );
+        }
+
+        if (property.Name == nameof(IClassProperty.HasSetter))
+        {
+            property.SetBuilderWithExpression(@"{0} = {2};
+if ({2})
+{5}
+    HasInitializer = false;
+{6}");
+        }
+
+        if (property.Name == nameof(IClassProperty.HasInitializer))
+        {
+            property.SetBuilderWithExpression(@"{0} = {2};
+if ({2})
+{5}
+    HasSetter = false;
+{6}");
+        }
+    }
 }
