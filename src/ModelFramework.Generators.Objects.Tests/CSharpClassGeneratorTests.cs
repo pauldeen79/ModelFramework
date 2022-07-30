@@ -1,6 +1,4 @@
-﻿using ModelFramework.Generators.Objects.Tests.POC;
-
-namespace ModelFramework.Generators.Objects.Tests;
+﻿namespace ModelFramework.Generators.Objects.Tests;
 
 public class CSharpClassGeneratorTests
 {
@@ -2144,7 +2142,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public void GeneratesImmutableBuilderClassWithInheritance()
+    public void GeneratesImmutableBuilderClassWithEntityInheritance()
     {
         // Arrange
         var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
@@ -2160,7 +2158,7 @@ namespace MyNamespace
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
                 addCopyConstructor: true,
                 addNullChecks: true),
-            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableInheritance: true, baseClass: baseClass)
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableEntityInheritance: true, baseClass: baseClass)
         );
         var model = new[]
         {
@@ -2238,6 +2236,106 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     }
 
     [Fact]
+    public void GeneratesImmutableBuilderClassWithEntityAndBuilderInheritance()
+    {
+        // Arrange
+        var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
+        var immutableClassSettings = new ImmutableClassSettings(
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass),
+            addPrivateSetters: true
+        );
+        var cls = typeof(InheritedClass)
+            .ToClass(new ClassSettings())
+            .ToImmutableClass(immutableClassSettings);
+        var settings = new ImmutableBuilderClassSettings(
+            constructorSettings: new ImmutableBuilderClassConstructorSettings(
+                addCopyConstructor: true,
+                addNullChecks: true),
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableEntityInheritance: true, enableBuilderInheritance: true, baseClass: baseClass)
+        );
+        var model = new[]
+        {
+            cls,
+            cls.ToImmutableBuilderClass(settings)
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ModelFramework.Generators.Objects.Tests.POC
+{
+#nullable enable
+    public class InheritedClass : ModelFramework.Generators.Objects.Tests.POC.BaseClass
+    {
+        public string AdditionalProperty
+        {
+            get;
+            private set;
+        }
+
+        public InheritedClass(string additionalProperty, string baseProperty) : base(baseProperty)
+        {
+            if (additionalProperty == null) throw new System.ArgumentNullException(""additionalProperty"");
+            this.AdditionalProperty = additionalProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public class InheritedClassBuilder : BaseClassBuilder
+    {
+        public string AdditionalProperty
+        {
+            get;
+            set;
+        }
+
+        public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass Build()
+        {
+            return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
+        }
+
+        public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
+        {
+            AdditionalProperty = additionalProperty;
+            return this;
+        }
+
+        public InheritedClassBuilder WithBaseProperty(string baseProperty)
+        {
+            BaseProperty = baseProperty;
+            return this;
+        }
+
+        public InheritedClassBuilder() : base()
+        {
+            AdditionalProperty = string.Empty;
+        }
+
+        public InheritedClassBuilder(ModelFramework.Generators.Objects.Tests.POC.InheritedClass source) : base(source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            AdditionalProperty = source.AdditionalProperty;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
     public void GeneratesImmutableBuilderClassFromAbstractType()
     {
         // Arrange
@@ -2253,7 +2351,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
                 addCopyConstructor: true,
                 addNullChecks: true),
-            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableInheritance: true, baseClass: null)
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableEntityInheritance: true, baseClass: null)
         );
         var model = new[]
         {
@@ -2345,7 +2443,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
                 addCopyConstructor: true,
                 addNullChecks: true),
-            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableInheritance: true, baseClass: baseClass, isAbstract: true)
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableEntityInheritance: true, baseClass: baseClass, isAbstract: true)
         );
         var model = new[]
         {
@@ -2411,6 +2509,205 @@ namespace ModelFramework.Generators.Objects.Tests.POC
                 throw new System.ArgumentNullException(""source"");
             }
             MiddleProperty = source.MiddleProperty;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void GeneratesImmutableBuilderClassFromAbstractTypeWithBuilderInheritance()
+    {
+        // Arrange
+        var immutableClassSettings = new ImmutableClassSettings(
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
+            addPrivateSetters: true
+        );
+        var cls = typeof(BaseClass)
+            .ToClass(new ClassSettings())
+            .ToImmutableClass(immutableClassSettings);
+        var settings = new ImmutableBuilderClassSettings(
+            constructorSettings: new ImmutableBuilderClassConstructorSettings(
+                addCopyConstructor: true,
+                addNullChecks: true),
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableEntityInheritance: true, enableBuilderInheritance: true, baseClass: null)
+        );
+        var model = new[]
+        {
+            cls,
+            cls.ToNonGenericImmutableBuilderClass(settings),
+            cls.ToImmutableBuilderClass(settings)
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ModelFramework.Generators.Objects.Tests.POC
+{
+#nullable enable
+    public abstract class BaseClass
+    {
+        public string BaseProperty
+        {
+            get;
+            private set;
+        }
+
+        protected BaseClass(string baseProperty)
+        {
+            if (baseProperty == null) throw new System.ArgumentNullException(""baseProperty"");
+            this.BaseProperty = baseProperty;
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public abstract class BaseClassBuilder
+    {
+        public string BaseProperty
+        {
+            get;
+            set;
+        }
+
+        protected BaseClassBuilder()
+        {
+            BaseProperty = string.Empty;
+        }
+
+        protected BaseClassBuilder(ModelFramework.Generators.Objects.Tests.POC.BaseClass source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            BaseProperty = source.BaseProperty;
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public abstract class BaseClassBuilder<TBuilder, TEntity> : BaseClassBuilder
+        where TEntity : ModelFramework.Generators.Objects.Tests.POC.BaseClass
+        where TBuilder : BaseClassBuilder<TBuilder, TEntity>
+    {
+        public abstract TEntity Build();
+
+        public TBuilder WithBaseProperty(string baseProperty)
+        {
+            BaseProperty = baseProperty;
+            return (TBuilder)this;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void GeneratesImmutableBuilderClassFromAbstractTypeWithBaseClassAndBuilderInheritance()
+    {
+        // Arrange
+        var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
+        var immutableClassSettings = new ImmutableClassSettings(
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass, isAbstract: true),
+            addPrivateSetters: true
+        );
+        var cls = typeof(MiddleClass)
+            .ToClass(new ClassSettings())
+            .ToImmutableClass(immutableClassSettings);
+        var settings = new ImmutableBuilderClassSettings(
+            constructorSettings: new ImmutableBuilderClassConstructorSettings(
+                addCopyConstructor: true,
+                addNullChecks: true),
+            inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(enableEntityInheritance: true, enableBuilderInheritance: true, baseClass: baseClass, isAbstract: true)
+        );
+        var model = new[]
+        {
+            cls,
+            cls.ToNonGenericImmutableBuilderClass(settings),
+            cls.ToImmutableBuilderClass(settings)
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace ModelFramework.Generators.Objects.Tests.POC
+{
+#nullable enable
+    public abstract class MiddleClass : ModelFramework.Generators.Objects.Tests.POC.BaseClass
+    {
+        public string MiddleProperty
+        {
+            get;
+            private set;
+        }
+
+        protected MiddleClass(string middleProperty, string baseProperty) : base(baseProperty)
+        {
+            if (middleProperty == null) throw new System.ArgumentNullException(""middleProperty"");
+            this.MiddleProperty = middleProperty;
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public abstract class MiddleClassBuilder : BaseClassBuilder
+    {
+        public string MiddleProperty
+        {
+            get;
+            set;
+        }
+
+        protected MiddleClassBuilder() : base()
+        {
+            MiddleProperty = string.Empty;
+        }
+
+        protected MiddleClassBuilder(ModelFramework.Generators.Objects.Tests.POC.MiddleClass source) : base(source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            MiddleProperty = source.MiddleProperty;
+        }
+    }
+#nullable restore
+
+#nullable enable
+    public abstract class MiddleClassBuilder<TBuilder, TEntity> : MiddleClassBuilder
+        where TEntity : ModelFramework.Generators.Objects.Tests.POC.MiddleClass
+        where TBuilder : MiddleClassBuilder<TBuilder, TEntity>
+    {
+        public TBuilder WithMiddleProperty(string middleProperty)
+        {
+            MiddleProperty = middleProperty;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithBaseProperty(string baseProperty)
+        {
+            BaseProperty = baseProperty;
+            return (TBuilder)this;
         }
     }
 #nullable restore

@@ -6,7 +6,7 @@ public class ObjectsBaseRecords : ModelFrameworkCSharpClassBase
     public override string DefaultFileName => "Entities.generated.cs";
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
-    protected override bool EnableInheritance => true;
+    protected override bool EnableEntityInheritance => true;
 
     public override object CreateModel()
         => GetImmutableClasses(GetObjectsModelBaseTypes(), "ModelFramework.Objects");

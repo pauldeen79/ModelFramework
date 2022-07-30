@@ -6,7 +6,7 @@ public class ObjectsBaseBuilders : ModelFrameworkCSharpClassBase
     public override string DefaultFileName => "Builders.generated.cs";
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
-    protected override bool EnableInheritance => true;
+    protected override bool EnableEntityInheritance => true;
 
     public override object CreateModel()
         => GetImmutableBuilderClasses(GetObjectsModelBaseTypes(),

@@ -83,7 +83,7 @@ public static partial class TypeBaseExtensions
     public static string GetCustomValueForInheritedClass(this ITypeBase instance,
                                                          ImmutableBuilderClassSettings settings,
                                                          Func<IClass, string> customValue)
-        => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
+        => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableEntityInheritance, customValue);
 
     public static string GetCustomValueForInheritedClass(this ITypeBase instance,
                                                          ImmutableClassSettings settings,
@@ -123,24 +123,37 @@ public static partial class TypeBaseExtensions
         => parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
             inheritanceSettings.EnableInheritance,
+            false,
+            false,
             inheritanceSettings.InheritanceComparisonFunction);
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
-                                                             ImmutableBuilderClassInheritanceSettings inheritanceSettings)
+                                                             ImmutableBuilderClassInheritanceSettings inheritanceSettings,
+                                                             bool isForWithStatement)
         => parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
-            inheritanceSettings.EnableInheritance,
+            inheritanceSettings.EnableEntityInheritance,
+            inheritanceSettings.EnableBuilderInheritance,
+            isForWithStatement,
             inheritanceSettings.InheritanceComparisonFunction);
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
-                                                             bool enableInheritance,
+                                                             bool enableEntityInheritance,
+                                                             bool enableBuilderInhericance,
+                                                             bool isForWithStatement,
                                                              Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
     {
-        if (!enableInheritance)
+        if (!enableEntityInheritance)
         {
-            // If inheritance is not enabled, then simply include all members
+            // If entity inheritance is not enabled, then simply include all members
+            return true;
+        }
+
+        if (enableBuilderInhericance && isForWithStatement)
+        {
+            // If builder inheritance is enabled, then we have to duplicate the property for With statements
             return true;
         }
 

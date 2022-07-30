@@ -12,6 +12,7 @@ global using FluentAssertions;
 global using ModelFramework.Common.Builders;
 global using ModelFramework.Common.Contracts;
 global using ModelFramework.Generators.Objects.Tests.Mocks;
+global using ModelFramework.Generators.Objects.Tests.POC;
 global using ModelFramework.Generators.Shared;
 global using ModelFramework.Generators.Tests.POC;
 global using ModelFramework.Objects.Builders;

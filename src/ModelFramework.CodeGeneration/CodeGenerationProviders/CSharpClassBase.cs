@@ -15,7 +15,8 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => true;
-    protected virtual bool EnableInheritance => false;
+    protected virtual bool EnableEntityInheritance => false;
+    protected virtual bool EnableBuilderInhericance => false;
     protected virtual IClass? BaseClass => null;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
 
@@ -144,18 +145,19 @@ public abstract class CSharpClassBase : ClassBase
             typeSettings: new ImmutableBuilderClassTypeSettings(
                 newCollectionTypeName: NewCollectionTypeName,
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
-                useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
+                useTargetTypeNewExpressions: UseTargetTypeNewExpressions,
+                enableNullableReferenceTypes: EnableNullableContext),
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
                 addCopyConstructor: AddCopyConstructor,
                 addNullChecks: AddNullChecks),
             nameSettings: new ImmutableBuilderClassNameSettings(
                 setMethodNameFormatString: SetMethodNameFormatString,
                 addMethodNameFormatString: AddMethodNameFormatString),
-            enableNullableReferenceTypes: EnableNullableContext,
             useLazyInitialization: UseLazyInitialization,
             copyPropertyCode: CopyPropertyCode,
             inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(
-                enableInheritance: EnableInheritance,
+                enableEntityInheritance: EnableEntityInheritance,
+                enableBuilderInheritance: EnableBuilderInhericance,
                 baseClass: BaseClass,
                 inheritanceComparisonFunction: IsMemberValid)
         );
@@ -165,11 +167,11 @@ public abstract class CSharpClassBase : ClassBase
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             constructorSettings: new ImmutableClassConstructorSettings(
-                validateArguments: ValidateArgumentsInConstructor && !(EnableInheritance && BaseClass == null),
+                validateArguments: ValidateArgumentsInConstructor && !(EnableEntityInheritance && BaseClass == null),
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new ImmutableClassInheritanceSettings(
-                enableInheritance: EnableInheritance,
+                enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
                 inheritanceComparisonFunction: IsMemberValid)
         );

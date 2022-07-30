@@ -21,41 +21,6 @@ public static class ClassPropertyExtensions
                 : ""
         );
 
-    private static string CreateSingleInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.UseLazyInitialization
-            ? $"_{property.Name.ToPascalCase()}Delegate = new {property.GetNewExpression(settings)}(() => source.{property.Name})"
-            : $"{property.Name} = source.{property.Name}";
-
-    private static string CreateCollectionInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.ConstructorSettings.AddNullChecks
-            ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name})"
-            : $"{property.Name}.AddRange(source.{property.Name})";
-
-    internal static string GetDefaultValue(this IClassProperty property)
-    {
-        var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomImmutableBuilderDefaultValue);
-        if (md != null && md.Value != null)
-        {
-            if (md.Value is Literal literal && literal.Value != null)
-            {
-                return literal.Value;
-            }
-            return md.Value.CsharpFormat();
-        }
-
-        if (property.TypeName.IsStringTypeName() && !property.IsNullable)
-        {
-            return "string.Empty";
-        }
-
-        if (property.TypeName.IsObjectTypeName() && !property.IsNullable)
-        {
-            return "new object()";
-        }
-
-        return "default";
-    }
-
     public static IEnumerable<IMetadata> GetImmutableCollectionMetadata(this IClassProperty property, string newCollectionTypeName)
         => property.TypeName.IsCollectionTypeName()
             ? new[]
@@ -98,6 +63,46 @@ public static class ClassPropertyExtensions
 
     public static string GetInitializerModifiers(this IClassProperty property)
         => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitializerModifiers);
+
+    internal static string GetDefaultValue(this IClassProperty property)
+    {
+        var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomImmutableBuilderDefaultValue);
+        if (md != null && md.Value != null)
+        {
+            if (md.Value is Literal literal && literal.Value != null)
+            {
+                return literal.Value;
+            }
+            return md.Value.CsharpFormat();
+        }
+
+        if (property.TypeName.IsStringTypeName() && !property.IsNullable)
+        {
+            return "string.Empty";
+        }
+
+        if (property.TypeName.IsObjectTypeName() && !property.IsNullable)
+        {
+            return "new object()";
+        }
+
+        return "default";
+    }
+
+    internal static IClassProperty EnsureParentTypeFullName(this IClassProperty property, IClass parentClass)
+        => new ClassPropertyBuilder(property)
+            .WithParentTypeFullName(property.ParentTypeFullName.WhenNullOrEmpty(() => parentClass.GetFullName()))
+            .Build();
+
+    private static string CreateSingleInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
+        => settings.UseLazyInitialization
+            ? $"_{property.Name.ToPascalCase()}Delegate = new {property.GetNewExpression(settings)}(() => source.{property.Name})"
+            : $"{property.Name} = source.{property.Name}";
+
+    private static string CreateCollectionInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
+        => settings.ConstructorSettings.AddNullChecks
+            ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name})"
+            : $"{property.Name}.AddRange(source.{property.Name})";
 
     private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
     {
