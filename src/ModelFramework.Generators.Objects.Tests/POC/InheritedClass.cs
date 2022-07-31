@@ -30,7 +30,9 @@ internal class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, I
         return this;
     }
 
-    public override InheritedClass Build()
+    public override BaseClass Build() => BuildTyped();
+
+    public override InheritedClass BuildTyped()
     {
         return new InheritedClass(BaseProperty, AdditionalProperty);
     }
@@ -49,6 +51,8 @@ internal abstract class BaseClassBuilder
     {
         BaseProperty = string.Empty;
     }
+
+    public abstract BaseClass Build();
 }
 
 internal abstract class BaseClassBuilder<TBuilder, T> : BaseClassBuilder
@@ -61,7 +65,7 @@ internal abstract class BaseClassBuilder<TBuilder, T> : BaseClassBuilder
         return (TBuilder)this;
     }
 
-    public abstract T Build();
+    public abstract T BuildTyped();
 }
 
 internal abstract class MiddleClass : BaseClass
