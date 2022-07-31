@@ -53,6 +53,26 @@ public abstract class CSharpClassBase : ClassBase
                 .Build()
         ).ToArray();
 
+    protected ITypeBase[] GetImmutableNonGenericBuilderClasses(Type[] types,
+                                                               string entitiesNamespace,
+                                                               string buildersNamespace,
+                                                               params string[] interfacesToAdd)
+        => GetImmutableNonGenericBuilderClasses(types.Select(x => x.IsInterface ? (ITypeBase)x.ToInterface() : x.ToClass(new ClassSettings())).ToArray(),
+                                                entitiesNamespace,
+                                                buildersNamespace,
+                                                interfacesToAdd);
+
+    protected ITypeBase[] GetImmutableNonGenericBuilderClasses(ITypeBase[] models,
+                                                               string entitiesNamespace,
+                                                               string buildersNamespace,
+                                                               params string[] interfacesToAdd)
+        => models.Select
+        (
+            x => CreateNonGenericBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
+                .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
+                .Build()
+        ).ToArray();
+
     protected IClass[] GetImmutableBuilderExtensionClasses(Type[] types,
                                                            string entitiesNamespace,
                                                            string buildersNamespace,
@@ -131,6 +151,11 @@ public abstract class CSharpClassBase : ClassBase
             .AddMethods(CreateExtraOverloads(cls))
             .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
             .With(x => PostProcessImmutableBuilderClass(x));
+
+    protected ClassBuilder CreateNonGenericBuilder(IClass cls, string @namespace)
+        => cls.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+            .WithNamespace(@namespace)
+            .WithPartial();
 
     protected ClassBuilder CreateBuilderExtensions(IClass cls, string @namespace)
         => cls.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
