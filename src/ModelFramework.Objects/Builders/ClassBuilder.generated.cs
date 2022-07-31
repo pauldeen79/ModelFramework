@@ -147,9 +147,9 @@ namespace ModelFramework.Objects.Builders
 
         public override ModelFramework.Objects.Contracts.IClass Build()
         {
-#pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, Abstract, SubClasses.Select(x => x.Build()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
-#pragma warning restore CS8604 // Possible null reference argument.
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public ClassBuilder WithAbstract(bool @abstract = true)
