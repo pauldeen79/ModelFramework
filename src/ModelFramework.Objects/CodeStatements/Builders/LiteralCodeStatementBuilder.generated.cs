@@ -86,7 +86,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             _statementDelegate = new (() => source.Statement);
         }
 
-        private System.Lazy<string> _statementDelegate;
+        protected System.Lazy<string> _statementDelegate;
     }
 #nullable restore
 }

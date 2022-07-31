@@ -450,33 +450,33 @@ namespace ModelFramework.Objects.Builders
             _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
 
-        private System.Lazy<bool> _readOnlyDelegate;
+        protected System.Lazy<bool> _readOnlyDelegate;
 
-        private System.Lazy<bool> _constantDelegate;
+        protected System.Lazy<bool> _constantDelegate;
 
-        private System.Lazy<bool> _eventDelegate;
+        protected System.Lazy<bool> _eventDelegate;
 
-        private System.Lazy<bool> _staticDelegate;
+        protected System.Lazy<bool> _staticDelegate;
 
-        private System.Lazy<bool> _virtualDelegate;
+        protected System.Lazy<bool> _virtualDelegate;
 
-        private System.Lazy<bool> _abstractDelegate;
+        protected System.Lazy<bool> _abstractDelegate;
 
-        private System.Lazy<bool> _protectedDelegate;
+        protected System.Lazy<bool> _protectedDelegate;
 
-        private System.Lazy<bool> _overrideDelegate;
+        protected System.Lazy<bool> _overrideDelegate;
 
-        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
 
-        private System.Lazy<string> _typeNameDelegate;
+        protected System.Lazy<string> _typeNameDelegate;
 
-        private System.Lazy<bool> _isNullableDelegate;
+        protected System.Lazy<bool> _isNullableDelegate;
 
-        private System.Lazy<object?> _defaultValueDelegate;
+        protected System.Lazy<object?> _defaultValueDelegate;
 
-        private System.Lazy<string> _parentTypeFullNameDelegate;
+        protected System.Lazy<string> _parentTypeFullNameDelegate;
     }
 #nullable restore
 }

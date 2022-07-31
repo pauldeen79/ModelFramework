@@ -204,13 +204,13 @@ namespace ModelFramework.Database.Builders
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
 
-        private System.Lazy<string> _foreignTableNameDelegate;
+        protected System.Lazy<string> _foreignTableNameDelegate;
 
-        private System.Lazy<ModelFramework.Database.Contracts.CascadeAction> _cascadeUpdateDelegate;
+        protected System.Lazy<ModelFramework.Database.Contracts.CascadeAction> _cascadeUpdateDelegate;
 
-        private System.Lazy<ModelFramework.Database.Contracts.CascadeAction> _cascadeDeleteDelegate;
+        protected System.Lazy<ModelFramework.Database.Contracts.CascadeAction> _cascadeDeleteDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

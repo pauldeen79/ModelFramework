@@ -121,8 +121,35 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
                                                                                              ImmutableBuilderClassSettings settings)
     {
-        if (settings.IsAbstractBuilder)
+        if (settings.IsAbstractBuilder && !settings.InheritanceSettings.EnableBuilderInheritance)
         {
+            yield break;
+        }
+
+        if (settings.InheritanceSettings.EnableBuilderInheritance && settings.IsAbstractBuilder && !settings.IsForAbstractBuilder)
+        {
+            yield return new ClassConstructorBuilder()
+                .WithChainCall("base()")
+                .WithProtected(settings.IsBuilderForAbstractEntity);
+
+            if (settings.ConstructorSettings.AddCopyConstructor)
+            {
+                yield return new ClassConstructorBuilder()
+                    .WithChainCall("base(source)")
+                    .WithProtected(settings.IsBuilderForAbstractEntity)
+                    .AddParameters
+                    (
+                        new ParameterBuilder()
+                            .WithName("source")
+                            .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+                    )
+                    .AddParameters
+                    (
+                        instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
+                            .Select(x => new ParameterBuilder(x))
+                    );
+            }
+
             yield break;
         }
 
@@ -329,7 +356,7 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                    ImmutableBuilderClassSettings settings)
     {
-        if (!(settings.InheritanceSettings.EnableEntityInheritance && settings.InheritanceSettings.IsAbstract))
+        if (!(settings.InheritanceSettings.EnableEntityInheritance && settings.InheritanceSettings.IsAbstract && !settings.InheritanceSettings.EnableBuilderInheritance))
         {
             var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
             var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());

@@ -152,9 +152,9 @@ namespace ModelFramework.Objects.Builders
             _visibilityDelegate = new (() => source.Visibility);
         }
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
 
-        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
     }
 #nullable restore
 }

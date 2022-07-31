@@ -7,6 +7,7 @@ public class ObjectsBaseRecords : ModelFrameworkCSharpClassBase
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
     protected override bool EnableEntityInheritance => true;
+    protected override bool EnableBuilderInhericance => true;
 
     public override object CreateModel()
         => GetImmutableClasses(GetObjectsModelBaseTypes(), "ModelFramework.Objects");

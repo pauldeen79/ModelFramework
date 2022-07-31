@@ -290,15 +290,15 @@ namespace ModelFramework.Database.Builders
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
 
-        private System.Lazy<System.Nullable<int>> _topDelegate;
+        protected System.Lazy<System.Nullable<int>> _topDelegate;
 
-        private System.Lazy<bool> _topPercentDelegate;
+        protected System.Lazy<bool> _topPercentDelegate;
 
-        private System.Lazy<bool> _distinctDelegate;
+        protected System.Lazy<bool> _distinctDelegate;
 
-        private System.Lazy<string> _definitionDelegate;
+        protected System.Lazy<string> _definitionDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

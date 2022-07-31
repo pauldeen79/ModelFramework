@@ -72,13 +72,17 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             if ($"I{classBuilder.Name}" == $"{nameof(ITypeBase)}Builder")
             {
                 // HACK
-                classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = typeof(ITypeBase).FullName!;
-                classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
+                if (classBuilder.Constructors.Any())
+                {
+                    classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = typeof(ITypeBase).FullName!;
+                    classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
+                }
             }
             else
             {
                 // HACK
                 classBuilder.BaseClass = $"{typeof(ITypeBase).Name.Substring(1)}Builder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
+                classBuilder.Methods.RemoveAll(x => !classBuilder.Properties.Any(y => x.Name == $"With{y.Name}" || x.Name == $"Add{y.Name}"));
             }
         }
     }

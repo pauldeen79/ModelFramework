@@ -86,7 +86,7 @@ namespace ModelFramework.Database.Builders
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

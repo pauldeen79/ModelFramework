@@ -2607,6 +2607,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             BaseProperty = baseProperty;
             return (TBuilder)this;
         }
+
+        protected BaseClassBuilder() : base()
+        {
+        }
+
+        protected BaseClassBuilder(ModelFramework.Generators.Objects.Tests.POC.BaseClass source) : base(source)
+        {
+        }
     }
 #nullable restore
 }
@@ -2698,6 +2706,8 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.MiddleClass
         where TBuilder : MiddleClassBuilder<TBuilder, TEntity>
     {
+        public abstract override TEntity Build();
+
         public TBuilder WithMiddleProperty(string middleProperty)
         {
             MiddleProperty = middleProperty;
@@ -2708,6 +2718,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         {
             BaseProperty = baseProperty;
             return (TBuilder)this;
+        }
+
+        protected MiddleClassBuilder() : base()
+        {
+        }
+
+        protected MiddleClassBuilder(ModelFramework.Generators.Objects.Tests.POC.MiddleClass source) : base(source)
+        {
         }
     }
 #nullable restore

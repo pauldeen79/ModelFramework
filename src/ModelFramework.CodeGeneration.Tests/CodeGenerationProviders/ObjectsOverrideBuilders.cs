@@ -7,6 +7,7 @@ public class ObjectsOverrideBuilders : ModelFrameworkCSharpClassBase
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
     protected override bool EnableEntityInheritance => true;
+    protected override bool EnableBuilderInhericance => true;
     protected override IClass? BaseClass => GetTypeBaseModel();
 
     public override object CreateModel()

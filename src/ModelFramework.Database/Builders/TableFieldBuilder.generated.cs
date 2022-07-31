@@ -314,23 +314,23 @@ namespace ModelFramework.Database.Builders
             CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
 
-        private System.Lazy<string> _typeDelegate;
+        protected System.Lazy<string> _typeDelegate;
 
-        private System.Lazy<bool> _isIdentityDelegate;
+        protected System.Lazy<bool> _isIdentityDelegate;
 
-        private System.Lazy<bool> _isRequiredDelegate;
+        protected System.Lazy<bool> _isRequiredDelegate;
 
-        private System.Lazy<System.Nullable<byte>> _numericPrecisionDelegate;
+        protected System.Lazy<System.Nullable<byte>> _numericPrecisionDelegate;
 
-        private System.Lazy<System.Nullable<byte>> _numericScaleDelegate;
+        protected System.Lazy<System.Nullable<byte>> _numericScaleDelegate;
 
-        private System.Lazy<System.Nullable<int>> _stringLengthDelegate;
+        protected System.Lazy<System.Nullable<int>> _stringLengthDelegate;
 
-        private System.Lazy<string> _stringCollationDelegate;
+        protected System.Lazy<string> _stringCollationDelegate;
 
-        private System.Lazy<bool> _isStringMaxLengthDelegate;
+        protected System.Lazy<bool> _isStringMaxLengthDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

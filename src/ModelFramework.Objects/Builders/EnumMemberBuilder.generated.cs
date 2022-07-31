@@ -132,9 +132,9 @@ namespace ModelFramework.Objects.Builders
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
 
-        private System.Lazy<object?> _valueDelegate;
+        protected System.Lazy<object?> _valueDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

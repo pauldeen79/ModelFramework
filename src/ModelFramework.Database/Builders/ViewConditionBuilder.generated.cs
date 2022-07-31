@@ -138,11 +138,11 @@ namespace ModelFramework.Database.Builders
             _fileGroupNameDelegate = new (() => source.FileGroupName);
         }
 
-        private System.Lazy<string> _expressionDelegate;
+        protected System.Lazy<string> _expressionDelegate;
 
-        private System.Lazy<string> _combinationDelegate;
+        protected System.Lazy<string> _combinationDelegate;
 
-        private System.Lazy<string> _fileGroupNameDelegate;
+        protected System.Lazy<string> _fileGroupNameDelegate;
     }
 #nullable restore
 }

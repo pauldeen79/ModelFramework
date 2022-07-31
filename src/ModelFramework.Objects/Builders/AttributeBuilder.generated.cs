@@ -106,7 +106,7 @@ namespace ModelFramework.Objects.Builders
             _nameDelegate = new (() => source.Name);
         }
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

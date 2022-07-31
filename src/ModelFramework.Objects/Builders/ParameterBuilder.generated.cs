@@ -268,19 +268,19 @@ namespace ModelFramework.Objects.Builders
             _defaultValueDelegate = new (() => source.DefaultValue);
         }
 
-        private System.Lazy<bool> _isParamArrayDelegate;
+        protected System.Lazy<bool> _isParamArrayDelegate;
 
-        private System.Lazy<bool> _isOutDelegate;
+        protected System.Lazy<bool> _isOutDelegate;
 
-        private System.Lazy<bool> _isRefDelegate;
+        protected System.Lazy<bool> _isRefDelegate;
 
-        private System.Lazy<string> _typeNameDelegate;
+        protected System.Lazy<string> _typeNameDelegate;
 
-        private System.Lazy<bool> _isNullableDelegate;
+        protected System.Lazy<bool> _isNullableDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
 
-        private System.Lazy<object?> _defaultValueDelegate;
+        protected System.Lazy<object?> _defaultValueDelegate;
     }
 #nullable restore
 }

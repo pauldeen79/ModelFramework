@@ -252,9 +252,9 @@ namespace ModelFramework.Database.Builders
             CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
 
-        private System.Lazy<string> _fileGroupNameDelegate;
+        protected System.Lazy<string> _fileGroupNameDelegate;
     }
 #nullable restore
 }

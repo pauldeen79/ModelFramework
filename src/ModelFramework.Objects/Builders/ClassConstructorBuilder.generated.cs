@@ -322,19 +322,19 @@ namespace ModelFramework.Objects.Builders
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
         }
 
-        private System.Lazy<string> _chainCallDelegate;
+        protected System.Lazy<string> _chainCallDelegate;
 
-        private System.Lazy<bool> _staticDelegate;
+        protected System.Lazy<bool> _staticDelegate;
 
-        private System.Lazy<bool> _virtualDelegate;
+        protected System.Lazy<bool> _virtualDelegate;
 
-        private System.Lazy<bool> _abstractDelegate;
+        protected System.Lazy<bool> _abstractDelegate;
 
-        private System.Lazy<bool> _protectedDelegate;
+        protected System.Lazy<bool> _protectedDelegate;
 
-        private System.Lazy<bool> _overrideDelegate;
+        protected System.Lazy<bool> _overrideDelegate;
 
-        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
     }
 #nullable restore
 }

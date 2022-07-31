@@ -101,7 +101,6 @@ public static partial class TypeBaseExtensions
         }
 
         var cls = instance as IClass;
-
         if (cls == null)
         {
             // Type is an interface

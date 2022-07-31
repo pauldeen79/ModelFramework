@@ -15,100 +15,10 @@ using System.Text;
 namespace ModelFramework.Objects.Builders
 {
 #nullable enable
-    public abstract partial class TypeBaseBuilder<TBuilder, TEntity>
+    public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder
         where TEntity : ModelFramework.Objects.Contracts.ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
-        public string Namespace
-        {
-            get
-            {
-                return _namespaceDelegate.Value;
-            }
-            set
-            {
-                _namespaceDelegate = new (() => value);
-            }
-        }
-
-        public bool Partial
-        {
-            get
-            {
-                return _partialDelegate.Value;
-            }
-            set
-            {
-                _partialDelegate = new (() => value);
-            }
-        }
-
-        public System.Collections.Generic.List<string> Interfaces
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder> Properties
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder> Methods
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<string> GenericTypeArguments
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<string> GenericTypeArgumentConstraints
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
-        {
-            get;
-            set;
-        }
-
-        public ModelFramework.Objects.Contracts.Visibility Visibility
-        {
-            get
-            {
-                return _visibilityDelegate.Value;
-            }
-            set
-            {
-                _visibilityDelegate = new (() => value);
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
-        }
-
-        public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
-        {
-            get;
-            set;
-        }
-
         public TBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
             Attributes.AddRange(attributes);
@@ -242,52 +152,13 @@ namespace ModelFramework.Objects.Builders
             return (TBuilder)this;
         }
 
-        protected TypeBaseBuilder()
+        protected TypeBaseBuilder() : base()
         {
-            Interfaces = new System.Collections.Generic.List<string>();
-            Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
-            Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
-            GenericTypeArguments = new System.Collections.Generic.List<string>();
-            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            _namespaceDelegate = new (() => string.Empty);
-            _partialDelegate = new (() => default);
-            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
-            _nameDelegate = new (() => string.Empty);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
-        protected TypeBaseBuilder(ModelFramework.Objects.Contracts.ITypeBase source)
+        protected TypeBaseBuilder(ModelFramework.Objects.Contracts.ITypeBase source) : base(source)
         {
-            Interfaces = new System.Collections.Generic.List<string>();
-            Properties = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassPropertyBuilder>();
-            Methods = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassMethodBuilder>();
-            GenericTypeArguments = new System.Collections.Generic.List<string>();
-            GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
-            Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            _namespaceDelegate = new (() => source.Namespace);
-            _partialDelegate = new (() => source.Partial);
-            Interfaces.AddRange(source.Interfaces);
-            Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
-            Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
-            GenericTypeArguments.AddRange(source.GenericTypeArguments);
-            GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
-            Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _visibilityDelegate = new (() => source.Visibility);
-            _nameDelegate = new (() => source.Name);
-            Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
         }
-
-        private System.Lazy<string> _namespaceDelegate;
-
-        private System.Lazy<bool> _partialDelegate;
-
-        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
-
-        private System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

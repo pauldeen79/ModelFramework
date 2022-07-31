@@ -604,39 +604,39 @@ namespace ModelFramework.Objects.Builders
             _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
 
-        private System.Lazy<bool> _hasGetterDelegate;
+        protected System.Lazy<bool> _hasGetterDelegate;
 
-        private System.Lazy<bool> _hasSetterDelegate;
+        protected System.Lazy<bool> _hasSetterDelegate;
 
-        private System.Lazy<bool> _hasInitializerDelegate;
+        protected System.Lazy<bool> _hasInitializerDelegate;
 
-        private System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _getterVisibilityDelegate;
+        protected System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _getterVisibilityDelegate;
 
-        private System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _setterVisibilityDelegate;
+        protected System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _setterVisibilityDelegate;
 
-        private System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _initializerVisibilityDelegate;
+        protected System.Lazy<System.Nullable<ModelFramework.Objects.Contracts.Visibility>> _initializerVisibilityDelegate;
 
-        private System.Lazy<bool> _staticDelegate;
+        protected System.Lazy<bool> _staticDelegate;
 
-        private System.Lazy<bool> _virtualDelegate;
+        protected System.Lazy<bool> _virtualDelegate;
 
-        private System.Lazy<bool> _abstractDelegate;
+        protected System.Lazy<bool> _abstractDelegate;
 
-        private System.Lazy<bool> _protectedDelegate;
+        protected System.Lazy<bool> _protectedDelegate;
 
-        private System.Lazy<bool> _overrideDelegate;
+        protected System.Lazy<bool> _overrideDelegate;
 
-        private System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
+        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
 
-        private System.Lazy<string> _typeNameDelegate;
+        protected System.Lazy<string> _typeNameDelegate;
 
-        private System.Lazy<bool> _isNullableDelegate;
+        protected System.Lazy<bool> _isNullableDelegate;
 
-        private System.Lazy<string> _explicitInterfaceNameDelegate;
+        protected System.Lazy<string> _explicitInterfaceNameDelegate;
 
-        private System.Lazy<string> _parentTypeFullNameDelegate;
+        protected System.Lazy<string> _parentTypeFullNameDelegate;
     }
 #nullable restore
 }

@@ -216,17 +216,17 @@ namespace ModelFramework.Database.Builders
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
 
-        private System.Lazy<bool> _isDescendingDelegate;
+        protected System.Lazy<bool> _isDescendingDelegate;
 
-        private System.Lazy<string> _sourceSchemaNameDelegate;
+        protected System.Lazy<string> _sourceSchemaNameDelegate;
 
-        private System.Lazy<string> _sourceObjectNameDelegate;
+        protected System.Lazy<string> _sourceObjectNameDelegate;
 
-        private System.Lazy<string> _expressionDelegate;
+        protected System.Lazy<string> _expressionDelegate;
 
-        private System.Lazy<string> _aliasDelegate;
+        protected System.Lazy<string> _aliasDelegate;
 
-        private System.Lazy<string> _nameDelegate;
+        protected System.Lazy<string> _nameDelegate;
     }
 #nullable restore
 }

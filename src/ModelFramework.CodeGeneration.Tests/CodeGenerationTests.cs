@@ -34,6 +34,7 @@ public class CodeGenerationTests
         GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsNonGenericBaseBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
