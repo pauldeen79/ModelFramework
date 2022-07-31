@@ -103,7 +103,7 @@ public static partial class TypeBaseEtensions
 
         foreach (var field in instance.GetFields()
             .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement))
-            .Select(x => new ClassFieldBuilder(x)))
+            .Select(x => new ClassFieldBuilder(x).WithProtected()))
         {
             yield return field;
         }
@@ -117,7 +117,8 @@ public static partial class TypeBaseEtensions
 
                 yield return new ClassFieldBuilder()
                     .WithName($"_{property.Name.ToPascalCase()}Delegate")
-                    .WithTypeName($"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>");
+                    .WithTypeName($"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>")
+                    .WithProtected();
             }
         }
     }

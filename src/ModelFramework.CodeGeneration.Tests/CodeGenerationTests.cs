@@ -196,7 +196,7 @@ namespace Test.Builders
             _testPropertyDelegate = new (() => source.TestProperty);
         }
 
-        private System.Lazy<string> _testPropertyDelegate;
+        protected System.Lazy<string> _testPropertyDelegate;
     }
 #nullable restore
 }
@@ -314,7 +314,7 @@ namespace Test.Builders
             TestProperty = new TestClassBuilder(source.TestProperty);
         }
 
-        private System.Lazy<TestClassBuilder> _testPropertyDelegate;
+        protected System.Lazy<TestClassBuilder> _testPropertyDelegate;
     }
 #nullable restore
 }
@@ -390,7 +390,7 @@ namespace Test.Builders
             _testPropertyDelegate = new (() => source.TestProperty);
         }
 
-        private System.Lazy<string> _testPropertyDelegate;
+        protected System.Lazy<string> _testPropertyDelegate;
     }
 #nullable restore
 }

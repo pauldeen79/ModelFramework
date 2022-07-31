@@ -2051,7 +2051,7 @@ namespace MyNamespace
             Property1 = string.Empty;
         }
 
-        private string _property1;
+        protected string _property1;
     }
 }
 ");
