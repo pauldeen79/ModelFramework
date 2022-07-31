@@ -51,11 +51,6 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToNonGenericImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!settings.IsAbstractBuilder)
-        {
-            throw new InvalidOperationException("Not possible to generate a non-generic immutable builder class for this type");
-        }
-
         settings = settings.ForAbstractBuilder();
 
         return new ClassBuilder()
