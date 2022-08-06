@@ -8,7 +8,7 @@ public class ObjectsOverrideRecords : ModelFrameworkCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
-    protected override IClass? BaseClass => GetTypeBaseModel();
+    protected override IClass? BaseClass => CreateBaseclass(typeof(ITypeBase));
 
     public override object CreateModel()
         => GetImmutableClasses(GetObjectsModelOverrideTypes(), "ModelFramework.Objects");

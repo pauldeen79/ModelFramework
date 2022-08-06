@@ -145,6 +145,18 @@ public abstract class CSharpClassBase : ClassBase
             .ToArray();
     }
 
+    protected IClass CreateBaseclass(Type type)
+        => type.ToClass(new ClassSettings()).ToImmutableClassBuilder(new ImmutableClassSettings
+            (
+                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+                constructorSettings: new ImmutableClassConstructorSettings(
+                    validateArguments: ValidateArgumentsInConstructor,
+                    addNullChecks: AddNullChecks),
+                addPrivateSetters: AddPrivateSetters)
+            )
+            .With(x => FixImmutableClassProperties(x))
+            .Build();
+
     protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
         => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
