@@ -90,9 +90,9 @@ public static partial class TypeBaseExtensions
                                                          Func<IClass, string> customValue)
         => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
 
-    public static string GetCustomValueForInheritedClass(this ITypeBase instance,
-                                                         bool enableInheritance,
-                                                         Func<IClass, string> customValue)
+    private static string GetCustomValueForInheritedClass(this ITypeBase instance,
+                                                          bool enableInheritance,
+                                                          Func<IClass, string> customValue)
     {
         if (!enableInheritance)
         {
@@ -137,12 +137,12 @@ public static partial class TypeBaseExtensions
             isForWithStatement,
             inheritanceSettings.InheritanceComparisonFunction);
 
-    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
-                                                             IParentTypeContainer parentTypeContainer,
-                                                             bool enableEntityInheritance,
-                                                             bool enableBuilderInhericance,
-                                                             bool isForWithStatement,
-                                                             Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
+    private static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
+                                                              IParentTypeContainer parentTypeContainer,
+                                                              bool enableEntityInheritance,
+                                                              bool enableBuilderInhericance,
+                                                              bool isForWithStatement,
+                                                              Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
     {
         if (!enableEntityInheritance)
         {
