@@ -12,7 +12,7 @@ public class ImmutableBuilderClassInheritanceSettings
     public ImmutableBuilderClassInheritanceSettings(bool enableEntityInheritance = false,
                                                     bool enableBuilderInheritance = false,
                                                     bool isAbstract = false,
-                                                    bool removeDuplicateWithMethods = true,
+                                                    bool removeDuplicateWithMethods = false,
                                                     IClass? baseClass = null,
                                                     Func<IParentTypeContainer, ITypeBase, bool>? inheritanceComparisonFunction = null)
     {
