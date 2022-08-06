@@ -72,11 +72,8 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             if ($"I{classBuilder.Name}" == $"{nameof(ITypeBase)}Builder")
             {
                 // HACK
-                if (classBuilder.Constructors.Any())
-                {
-                    classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = typeof(ITypeBase).FullName!;
-                    classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
-                }
+                classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = typeof(ITypeBase).FullName!;
+                classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
             }
             else
             {
