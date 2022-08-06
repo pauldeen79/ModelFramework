@@ -82,23 +82,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
     }
 
-    protected override void PostProcessImmutableEntityClass(ClassBuilder classBuilder)
-    {
-        if (classBuilder == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            return;
-        }
-
-        if (new[] { nameof(IClass), nameof(IInterface) }.Contains($"I{classBuilder.Name}"))
-        {
-            // HACK
-            var props = string.Join(", ", typeof(ITypeBase).ToClass(new ClassSettings()).Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
-            classBuilder.Constructors.Single().WithChainCall($"base({props})");
-            classBuilder.BaseClass = typeof(ITypeBase).GetEntityClassName();
-        }
-    }
-
     protected override IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
     {
         if (c == null)

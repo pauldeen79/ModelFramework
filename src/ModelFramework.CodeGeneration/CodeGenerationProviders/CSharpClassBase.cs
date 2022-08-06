@@ -222,6 +222,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .With(x => FixImmutableClassBaseClass(x))
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
@@ -234,7 +235,8 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .AddInterfaces(new[] { $"{iinterface.Namespace}.{iinterface.Name}" }.Where(_ => InheritFromInterfaces))
+            .AddInterfaces((new[] { $"{iinterface.Namespace}.{iinterface.Name}" }).Where(_ => InheritFromInterfaces))
+            .With(x => FixImmutableClassBaseClass(x))
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
@@ -246,8 +248,19 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
+            .With(x => FixImmutableClassBaseClass(x))
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
+
+    private void FixImmutableClassBaseClass(ClassBuilder x)
+    {
+        if (BaseClass != null)
+        {
+            var props = string.Join(", ", BaseClass.Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
+            x.Constructors.Single().WithChainCall($"base({props})");
+            x.BaseClass = typeof(ITypeBase).GetEntityClassName();
+        }
+    }
 
     private static string CreateSortString(ClassMethodBuilder methodBuilder)
         => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
