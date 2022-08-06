@@ -17,6 +17,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool CopyPropertyCode => true;
     protected virtual bool EnableEntityInheritance => false;
     protected virtual bool EnableBuilderInhericance => false;
+    protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual IClass? BaseClass => null;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
 
@@ -183,6 +184,7 @@ public abstract class CSharpClassBase : ClassBase
             inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(
                 enableEntityInheritance: EnableEntityInheritance,
                 enableBuilderInheritance: EnableBuilderInhericance,
+                removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
                 inheritanceComparisonFunction: IsMemberValid)
         );

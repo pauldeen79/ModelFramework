@@ -79,7 +79,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             {
                 // HACK
                 classBuilder.BaseClass = $"{typeof(ITypeBase).Name.Substring(1)}Builder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
-                classBuilder.Methods.RemoveAll(x => x.Name != "Build" && !classBuilder.Properties.Any(y => x.Name == $"With{y.Name}" || x.Name == $"Add{y.Name}"));
             }
         }
     }

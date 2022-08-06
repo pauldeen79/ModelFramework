@@ -134,7 +134,7 @@ public static partial class TypeBaseExtensions
             parentTypeContainer,
             inheritanceSettings.EnableEntityInheritance,
             inheritanceSettings.EnableBuilderInheritance,
-            isForWithStatement,
+            isForWithStatement && !inheritanceSettings.RemoveDuplicateWithMethods, // only when duplicate methods need to be removed...
             inheritanceSettings.InheritanceComparisonFunction);
 
     private static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
