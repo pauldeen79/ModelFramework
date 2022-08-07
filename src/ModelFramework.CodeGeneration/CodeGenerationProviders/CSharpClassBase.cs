@@ -39,7 +39,7 @@ public abstract class CSharpClassBase : ClassBase
                                                      string entitiesNamespace,
                                                      string buildersNamespace,
                                                      params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.IsInterface ? (ITypeBase)x.ToInterface() : x.ToClass(new ClassSettings())).ToArray(),
+        => GetImmutableBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
                                       entitiesNamespace,
                                       buildersNamespace,
                                       interfacesToAdd);
@@ -59,7 +59,7 @@ public abstract class CSharpClassBase : ClassBase
                                                                string entitiesNamespace,
                                                                string buildersNamespace,
                                                                params string[] interfacesToAdd)
-        => GetImmutableNonGenericBuilderClasses(types.Select(x => x.IsInterface ? (ITypeBase)x.ToInterface() : x.ToClass(new ClassSettings())).ToArray(),
+        => GetImmutableNonGenericBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
                                                 entitiesNamespace,
                                                 buildersNamespace,
                                                 interfacesToAdd);
