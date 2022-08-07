@@ -269,18 +269,15 @@ public abstract class CSharpClassBase : ClassBase
     private void FixImmutableBuilderClassBaseClass(ClassBuilder classBuilder, ITypeBase sourceClass)
     {
         var settings = CreateImmutableBuilderClassSettings();
-        if (settings.InheritanceSettings.EnableBuilderInheritance)
+        if (settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null)
         {
-            if (settings.InheritanceSettings.BaseClass != null)
-            {
-                var @interface = InheritFromInterfaces
-                    ? $", {sourceClass.GetFullName()}"
-                    : string.Empty;
-                var ns = string.IsNullOrEmpty(BaseClassBuilderNameSpace)
-                    ? string.Empty
-                    : $"{BaseClassBuilderNameSpace}.";
-                classBuilder.BaseClass = $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{classBuilder.Name}{@interface}>";
-            }
+            var @interface = InheritFromInterfaces
+                ? $", {sourceClass.GetFullName()}"
+                : string.Empty;
+            var ns = string.IsNullOrEmpty(BaseClassBuilderNameSpace)
+                ? string.Empty
+                : $"{BaseClassBuilderNameSpace}.";
+            classBuilder.BaseClass = $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{classBuilder.Name}{@interface}>";
         }
     }
 
