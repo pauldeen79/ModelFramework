@@ -59,29 +59,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name, x));
     }
 
-    protected override void PostProcessImmutableBuilderClass(ClassBuilder classBuilder)
-    {
-        if (classBuilder == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            return;
-        }
-
-        if (new[] { $"{nameof(ITypeBase)}Builder", $"{nameof(IClass)}Builder", $"{nameof(IInterface)}Builder" }.Contains($"I{classBuilder.Name}"))
-        {
-            if ($"I{classBuilder.Name}" == $"{nameof(ITypeBase)}Builder")
-            {
-                // HACK
-                classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
-            }
-            else
-            {
-                // HACK
-                classBuilder.BaseClass = $"{typeof(ITypeBase).Name.Substring(1)}Builder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
-            }
-        }
-    }
-
     protected override IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
     {
         if (c == null)
@@ -197,7 +174,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
             .Select
             (
-                c => CreateBuilder(c, buildersNamespace)
+                c => CreateBuilder(c, buildersNamespace, c)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
                     .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(codeStatementInterfaceType))
                     .Build()

@@ -19,6 +19,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool EnableBuilderInhericance => false;
     protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual IClass? BaseClass => null;
+    protected virtual string BaseClassBuilderNameSpace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
 
     protected abstract Type RecordCollectionType { get; }
@@ -49,7 +50,7 @@ public abstract class CSharpClassBase : ClassBase
                                                      params string[] interfacesToAdd)
         => models.Select
         (
-            x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
+            x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace, x)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
                 .Build()
         ).ToArray();
@@ -145,7 +146,7 @@ public abstract class CSharpClassBase : ClassBase
             .ToArray();
     }
 
-    protected IClass CreateBaseclass(Type type)
+    protected IClass CreateBaseclass(Type type, string @namespace)
         => type.ToClass(new ClassSettings()).ToImmutableClassBuilder(new ImmutableClassSettings
             (
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
@@ -154,15 +155,18 @@ public abstract class CSharpClassBase : ClassBase
                     addNullChecks: AddNullChecks),
                 addPrivateSetters: AddPrivateSetters)
             )
+            .WithNamespace(@namespace)
+            .WithName(type.GetEntityClassName())
             .With(x => FixImmutableClassProperties(x))
             .Build();
 
-    protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
+    protected ClassBuilder CreateBuilder(IClass cls, string @namespace, ITypeBase sourceClass)
         => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
             .AddMethods(CreateExtraOverloads(cls))
             .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
+            .With(x => FixImmutableBuilderClassBaseClass(x, sourceClass))
             .With(x => PostProcessImmutableBuilderClass(x));
 
     protected ClassBuilder CreateNonGenericBuilder(IClass cls, string @namespace)
@@ -252,13 +256,31 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
-    private void FixImmutableClassBaseClass(ClassBuilder x)
+    private void FixImmutableClassBaseClass(ClassBuilder classBuilder)
     {
         if (BaseClass != null)
         {
             var props = string.Join(", ", BaseClass.Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
-            x.Constructors.Single().WithChainCall($"base({props})");
-            x.BaseClass = typeof(ITypeBase).GetEntityClassName();
+            classBuilder.Constructors.Single().WithChainCall($"base({props})");
+            classBuilder.BaseClass = BaseClass.GetEntityClassName();
+        }
+    }
+
+    private void FixImmutableBuilderClassBaseClass(ClassBuilder classBuilder, ITypeBase sourceClass)
+    {
+        var settings = CreateImmutableBuilderClassSettings();
+        if (settings.InheritanceSettings.EnableBuilderInheritance)
+        {
+            if (settings.InheritanceSettings.BaseClass != null)
+            {
+                var @interface = InheritFromInterfaces
+                    ? $", {sourceClass.GetFullName()}"
+                    : string.Empty;
+                var ns = string.IsNullOrEmpty(BaseClassBuilderNameSpace)
+                    ? string.Empty
+                    : $"{BaseClassBuilderNameSpace}.";
+                classBuilder.BaseClass = $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{classBuilder.Name}{@interface}>";
+            }
         }
     }
 

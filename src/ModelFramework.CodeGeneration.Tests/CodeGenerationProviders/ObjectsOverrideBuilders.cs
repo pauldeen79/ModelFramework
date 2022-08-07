@@ -8,7 +8,7 @@ public class ObjectsOverrideBuilders : ModelFrameworkCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
-    protected override IClass? BaseClass => CreateBaseclass(typeof(ITypeBase));
+    protected override IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), "ModelFramework.Objects");
 
     public override object CreateModel()
         => GetImmutableBuilderClasses(GetObjectsModelOverrideTypes(),

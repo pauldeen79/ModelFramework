@@ -36,12 +36,7 @@ public static partial class TypeBaseExtensions
             : string.Empty;
 
     public static string GetFullName(this ITypeBase instance)
-        => instance.GetNamespacePrefix() + instance.Name;
-
-    public static string GetNamespacePrefix(this ITypeBase instance)
-        => string.IsNullOrEmpty(instance.Namespace)
-            ? string.Empty
-            : instance.Namespace + ".";
+        => instance.Namespace.GetNamespacePrefix() + instance.Name;
 
     public static IEnumerable<IClassField> GetFields(this ITypeBase instance)
         => (instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>();
