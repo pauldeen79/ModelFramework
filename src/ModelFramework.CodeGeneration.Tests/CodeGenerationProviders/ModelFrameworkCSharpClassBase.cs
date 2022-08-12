@@ -174,7 +174,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
             .Select
             (
-                c => CreateBuilder(c, buildersNamespace, c)
+                c => CreateBuilder(c, buildersNamespace)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
                     .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(codeStatementInterfaceType))
                     .Build()

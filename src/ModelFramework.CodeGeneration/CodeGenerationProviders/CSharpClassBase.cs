@@ -50,7 +50,7 @@ public abstract class CSharpClassBase : ClassBase
                                                      params string[] interfacesToAdd)
         => models.Select
         (
-            x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace, x)
+            x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
                 .Build()
         ).ToArray();
@@ -160,7 +160,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .Build();
 
-    protected ClassBuilder CreateBuilder(IClass cls, string @namespace, ITypeBase sourceClass)
+    protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
         => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial()
