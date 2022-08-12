@@ -21,25 +21,25 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return string.Empty;
         }
 
+        if (forCreate)
+        {
+            // For creation, the typename doesn't have to be altered/formatted.
+            return string.Empty;
+        }
+
         if (instance.Namespace == "ModelFramework.Common")
         {
-            return forCreate
-                ? "ModelFramework.Common." + instance.Name
-                : "ModelFramework.Common.Contracts.I" + instance.Name;
+            return "ModelFramework.Common.Contracts.I" + instance.Name;
         }
 
         if (instance.Namespace == "ModelFramework.Objects")
         {
-            return forCreate
-                ? "ModelFramework.Objects." + instance.Name
-                : "ModelFramework.Objects.Contracts.I" + instance.Name;
+            return "ModelFramework.Objects.Contracts.I" + instance.Name;
         }
 
         if (instance.Namespace == "ModelFramework.Database")
         {
-            return forCreate
-                ? "ModelFramework.Database." + instance.Name
-                : "ModelFramework.Database.Contracts.I" + instance.Name;
+            return "ModelFramework.Database.Contracts.I" + instance.Name;
         }
 
         return string.Empty;
@@ -171,7 +171,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                                                       Type codeStatementInterfaceType,
                                                       Type codeStatementBuilderInterfaceType,
                                                       string buildersNamespace)
-        => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
+        => GetClassesFromSameNamespace(codeStatementType)
             .Select
             (
                 c => CreateBuilder(c, buildersNamespace)
