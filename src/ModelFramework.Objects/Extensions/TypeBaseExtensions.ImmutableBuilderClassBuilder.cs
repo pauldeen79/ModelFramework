@@ -1,7 +1,4 @@
-﻿using ModelFramework.Objects.Builders;
-using ModelFramework.Objects.Contracts;
-
-namespace ModelFramework.Objects.Extensions;
+﻿namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseEtensions
 {
@@ -192,86 +189,99 @@ public static partial class TypeBaseEtensions
 
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
-            yield return new ClassConstructorBuilder()
-                .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(instance, settings))
-                .WithProtected(settings.IsBuilderForAbstractEntity)
-                .With(x =>
-                {
-                    if (settings.ConstructorSettings.AddNullChecks)
-                    {
-                        x.AddLiteralCodeStatements
-                        (
-                            "if (source == null)",
-                            "{",
-                            @"    throw new System.ArgumentNullException(""source"");",
-                            "}"
-                        );
-                    }
-                })
-                .AddParameters
-                (
-                    new ParameterBuilder()
-                        .WithName("source")
-                        .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
-                )
-                .AddParameters
-                (
-                    instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
-                        .Select(x => new ParameterBuilder(x))
-                )
-                .AddLiteralCodeStatements
-                (
-                    instance.Properties
-                        .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
-                        .Where(x => x.TypeName.IsCollectionTypeName())
-                        .Select(x => $"{x.Name} = new {GetCopyConstructorInitializeExpression(settings, x)}();")
-                )
-                .AddLiteralCodeStatements
-                (
-                    instance.Properties
-                        .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
-                        .Select(x => x.CreateImmutableBuilderInitializationCode(settings) + ";")
-                );
+            yield return CreateCopyConstructor(instance, settings);
         }
 
         if (settings.ConstructorSettings.AddConstructorWithAllProperties)
         {
-            var properties = GetImmutableBuilderConstructorProperties(instance, settings, true);
 
-            yield return new ClassConstructorBuilder()
-                .AddParameters(properties.Select(p => new ParameterBuilder()
-                    .WithName(p.Name.ToPascalCase())
-                    .WithTypeName
-                    (
-                        string.Format
-                        (
-                            p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.TypeSettings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)),
-                            p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                            p.TypeName.GetGenericArguments()
-                        )
-                    )
-                    .WithIsNullable(p.IsNullable)
-                ))
-                .AddLiteralCodeStatements
-                (
-                    properties
-                        .Where(p => p.TypeName.IsCollectionTypeName())
-                        .Select(p => $"{p.Name} = new {GetConstructorInitializeExpressionForCollection(settings, p)}();")
-                )
-                .AddLiteralCodeStatements
-                (
-                    instance.Properties
-                        .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
-                        .Where(x => !settings.UseLazyInitialization || x.TypeName.IsCollectionTypeName())
-                        .Select
-                        (
-                            x => x.TypeName.IsCollectionTypeName()
-                                ? CreateConstructorStatementForCollection(x, settings)
-                                : $"{x.Name} = {x.Name.ToPascalCase().GetCsharpFriendlyName()};"
-                        )
-                );
+            yield return CreateConstructorWithAllProperties(instance, settings);
         }
     }
+
+    private static ClassConstructorBuilder CreateConstructorWithAllProperties(ITypeBase instance, ImmutableBuilderClassSettings settings)
+    {
+        var properties = GetImmutableBuilderConstructorProperties(instance, settings, true);
+        return new ClassConstructorBuilder()
+            .AddParameters
+            (
+                properties.Select(p => CreateParameterForConstructorWithAllProperties(settings, p))
+            )
+            .AddLiteralCodeStatements
+            (
+                properties
+                    .Where(p => p.TypeName.IsCollectionTypeName())
+                    .Select(p => $"{p.Name} = new {GetConstructorInitializeExpressionForCollection(settings, p)}();")
+            )
+            .AddLiteralCodeStatements
+            (
+                instance.Properties
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => !settings.UseLazyInitialization || x.TypeName.IsCollectionTypeName())
+                    .Select
+                    (
+                        x => x.TypeName.IsCollectionTypeName()
+                            ? CreateConstructorStatementForCollection(x, settings)
+                            : $"{x.Name} = {x.Name.ToPascalCase().GetCsharpFriendlyName()};"
+                    )
+            );
+    }
+
+    private static ParameterBuilder CreateParameterForConstructorWithAllProperties(ImmutableBuilderClassSettings settings, IClassProperty p)
+        => new ParameterBuilder()
+            .WithName(p.Name.ToPascalCase())
+            .WithTypeName
+            (
+                string.Format
+                (
+                    p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.TypeSettings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)),
+                    p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                    p.TypeName.GetGenericArguments()
+                )
+            )
+            .WithIsNullable(p.IsNullable);
+
+    private static ClassConstructorBuilder CreateCopyConstructor(ITypeBase instance, ImmutableBuilderClassSettings settings)
+        => new ClassConstructorBuilder()
+            .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(instance, settings))
+            .WithProtected(settings.IsBuilderForAbstractEntity)
+            .With(x =>
+            {
+                if (settings.ConstructorSettings.AddNullChecks)
+                {
+                    x.AddLiteralCodeStatements
+                    (
+                        "if (source == null)",
+                        "{",
+                        @"    throw new System.ArgumentNullException(""source"");",
+                        "}"
+                    );
+                }
+            })
+            .AddParameters
+            (
+                new ParameterBuilder()
+                    .WithName("source")
+                    .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+            )
+            .AddParameters
+            (
+                instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
+                    .Select(x => new ParameterBuilder(x))
+            )
+            .AddLiteralCodeStatements
+            (
+                instance.Properties
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => x.TypeName.IsCollectionTypeName())
+                    .Select(x => $"{x.Name} = new {GetCopyConstructorInitializeExpression(settings, x)}();")
+            )
+            .AddLiteralCodeStatements
+            (
+                instance.Properties
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
+                    .Select(x => x.CreateImmutableBuilderInitializationCode(settings) + ";")
+            );
 
     private static string CreateImmutableBuilderClassConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)
         => instance.GetCustomValueForInheritedClass(settings, _ => "base()");

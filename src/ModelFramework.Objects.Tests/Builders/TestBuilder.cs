@@ -57,6 +57,12 @@ namespace ModelFramework.Objects.Tests.Builders
             return this;
         }
 
+        public TestBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
         public TestBuilder WithName(string name)
         {
             _nameDelegate = new Lazy<string>(() => name);
@@ -66,12 +72,6 @@ namespace ModelFramework.Objects.Tests.Builders
         public TestBuilder WithName(Func<string> nameDelegate)
         {
             _nameDelegate = new Lazy<string>(nameDelegate);
-            return this;
-        }
-
-        public TestBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
