@@ -226,7 +226,6 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
-            .With(x => FixImmutableClassBaseClass(x))
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
@@ -240,7 +239,6 @@ public abstract class CSharpClassBase : ClassBase
             .WithRecord()
             .WithPartial()
             .AddInterfaces((new[] { $"{iinterface.Namespace}.{iinterface.Name}" }).Where(_ => InheritFromInterfaces))
-            .With(x => FixImmutableClassBaseClass(x))
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
@@ -252,19 +250,8 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .With(x => FixImmutableClassBaseClass(x))
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
-
-    private void FixImmutableClassBaseClass(ClassBuilder classBuilder)
-    {
-        if (BaseClass != null)
-        {
-            var props = string.Join(", ", BaseClass.Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
-            classBuilder.Constructors.Single().WithChainCall($"base({props})");
-            classBuilder.BaseClass = BaseClass.GetEntityClassName();
-        }
-    }
 
     private void FixImmutableBuilderClassBaseClass(ClassBuilder classBuilder, ITypeBase sourceClass)
     {
