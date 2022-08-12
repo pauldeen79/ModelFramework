@@ -1,4 +1,7 @@
-﻿namespace ModelFramework.Objects.Extensions;
+﻿using ModelFramework.Objects.Builders;
+using ModelFramework.Objects.Contracts;
+
+namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseEtensions
 {
@@ -82,6 +85,18 @@ public static partial class TypeBaseEtensions
             && settings.InheritanceSettings.IsAbstract)
         {
             return instance.Name + "Builder";
+        }
+
+        if (settings.InheritanceSettings.EnableEntityInheritance
+            && settings.InheritanceSettings.EnableBuilderInheritance
+            && settings.InheritanceSettings.BaseClass != null
+            && !settings.IsForAbstractBuilder
+            && settings.InheritanceSettings.RemoveDuplicateWithMethods)
+        {
+            var ns = string.IsNullOrEmpty(settings.InheritanceSettings.BaseClassBuilderNameSpace)
+                ? string.Empty
+                : $"{settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
+            return $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{instance.Name}Builder, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}>";
         }
 
         return instance.GetCustomValueForInheritedClass(settings, cls => settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null

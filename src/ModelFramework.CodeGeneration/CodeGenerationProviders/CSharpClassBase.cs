@@ -166,7 +166,6 @@ public abstract class CSharpClassBase : ClassBase
             .WithPartial()
             .AddMethods(CreateExtraOverloads(cls))
             .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
-            .With(x => FixImmutableBuilderClassBaseClass(x, sourceClass))
             .With(x => PostProcessImmutableBuilderClass(x));
 
     protected ClassBuilder CreateNonGenericBuilder(IClass cls, string @namespace)
@@ -202,6 +201,7 @@ public abstract class CSharpClassBase : ClassBase
                 enableBuilderInheritance: EnableBuilderInhericance,
                 removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
+                baseClassBuilderNameSpace: BaseClassBuilderNameSpace,
                 inheritanceComparisonFunction: IsMemberValid)
         );
 
@@ -252,21 +252,6 @@ public abstract class CSharpClassBase : ClassBase
             .WithPartial()
             .With(x => PostProcessImmutableEntityClass(x))
             .Build();
-
-    private void FixImmutableBuilderClassBaseClass(ClassBuilder classBuilder, ITypeBase sourceClass)
-    {
-        var settings = CreateImmutableBuilderClassSettings();
-        if (settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null)
-        {
-            var @interface = InheritFromInterfaces
-                ? $", {sourceClass.GetFullName()}"
-                : string.Empty;
-            var ns = string.IsNullOrEmpty(BaseClassBuilderNameSpace)
-                ? string.Empty
-                : $"{BaseClassBuilderNameSpace}.";
-            classBuilder.BaseClass = $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{classBuilder.Name}{@interface}>";
-        }
-    }
 
     private static string CreateSortString(ClassMethodBuilder methodBuilder)
         => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
