@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ModelFramework.Objects.Extensions;
 
@@ -678,13 +679,10 @@ public static partial class TypeBaseEtensions
             throw new InvalidOperationException("Metadata for immutable builder overload method is incorrect. Metadata needs to be available in the same amount for all metadata types");
         }
 
-        return
-            from argumentTypes in argumentTypeArrays
-            from initializeExpression in initializeExpressions
-            from methodName in methodNames
-            from argumentNames in argumentNameArrays
-            from argumentTypeNullables in argumentTypeNullablesArray
-            select new Overload(argumentTypes, initializeExpression, methodName, argumentNames, argumentTypeNullables);
+        for (int i = 0; i < argumentTypeArrays.Length; i++)
+        {
+            yield return new Overload(argumentTypeArrays[i], initializeExpressions[i], methodNames[i], argumentNameArrays[i], argumentTypeNullablesArray[i]);
+        }
     }
 
     private static List<string> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
