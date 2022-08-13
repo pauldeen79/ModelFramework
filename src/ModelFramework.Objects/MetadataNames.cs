@@ -98,14 +98,19 @@ public static class MetadataNames
     public const string AdditionalBuilderCopyConstructorAdditionalParameter = "ModelFramework.Objects.Builder.AdditionalCopyConstructorAdditionalParameter";
 
     /// <summary>
-    /// Metadata name for defining a custom typename for a With/Add overload in a builder.
+    /// Metadata name for defining custom typenames for a With/Add overload in a builder. (type: string[])
     /// </summary>
-    public const string CustomBuilderWithOverloadArgumentType = "ModelFramework.Objects.Builder.WithOverload.ArgumentType";
+    public const string CustomBuilderWithOverloadArgumentTypes = "ModelFramework.Objects.Builder.WithOverload.ArgumentTypes";
 
     /// <summary>
-    /// Metadata name for defining a custom argument name for a With/Add overload in a builder.
+    /// Metadata name for defining nullable indicator for custom typenames for a With/Add overload in a builder. (type: bool[])
     /// </summary>
-    public const string CustomBuilderWithOverloadArgumentName = "ModelFramework.Objects.Builder.WithOverload.ArgumentName";
+    public const string CustomBuilderWithOverloadArgumentTypeNullables = "ModelFramework.Objects.Builder.WithOverload.ArgumentTypeNullables";
+
+    /// <summary>
+    /// Metadata name for defining custom argument names for a With/Add overload in a builder. (type: string[])
+    /// </summary>
+    public const string CustomBuilderWithOverloadArgumentNames = "ModelFramework.Objects.Builder.WithOverload.ArgumentNames";
 
     /// <summary>
     /// Metadata name for defining a custom method name for a With/Add overload in a builder.

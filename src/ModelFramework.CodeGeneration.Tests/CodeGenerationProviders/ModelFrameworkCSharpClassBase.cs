@@ -67,17 +67,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             yield break;
         }
 
-        if (c.Properties.Any(p => p.Name == nameof(IMetadataContainer.Metadata)))
-        {
-            yield return new ClassMethodBuilder()
-                .WithName("AddMetadata")
-                .WithTypeName($"I{c.Name}" == nameof(ITypeBase) ? "TBuilder" : $"{c.Name}Builder")
-                .AddParameter("name", typeof(string))
-                .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
-                .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
-                                          $"I{c.Name}" == nameof(ITypeBase) ? "return (TBuilder)this;" : "return this;");
-        }
-
         if (c.Properties.Any(p => p.Name == nameof(IParametersContainer.Parameters) && p.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter)))
         {
             yield return new ClassMethodBuilder()
@@ -220,9 +209,15 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
             }
         }
-        else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
+
+        if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
         {
             property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
+        }
+
+        if (property.Name == nameof(IMetadataContainer.Metadata))
+        {
+            property.AddBuilderOverload("AddMetadata", new[] { typeof(string), typeof(object) }, new[] { "name", "value" }, new[] { false, true }, "AddMetadata(new Common.Builders.MetadataBuilder().WithName(name).WithValue(value));");
         }
 
         if (property.Name == nameof(IVisibilityContainer.Visibility))

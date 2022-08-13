@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Objects.Extensions;
+﻿using System.Security.Cryptography.X509Certificates;
+
+namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseEtensions
 {
@@ -433,8 +435,7 @@ public static partial class TypeBaseEtensions
 
                 foreach (var overload in overloads)
                 {
-                    yield return CreateCollectionPropertyOverloadWithEnumerableParameter(instance, settings, extensionMethod, property, overload);
-                    yield return CreateCollectionPropertyOverloadWithArrayParameter(instance, settings, extensionMethod, property, overload);
+                    yield return CreateCollectionPropertyOverload(instance, settings, extensionMethod, property, overload);
                 }
             }
             else if (ShouldCreateSingleProperty(settings))
@@ -467,47 +468,28 @@ public static partial class TypeBaseEtensions
         => property.TypeName.IsCollectionTypeName()
             && !string.IsNullOrEmpty(settings.NameSettings.AddMethodNameFormatString);
 
-    private static ClassMethodBuilder CreateCollectionPropertyOverloadWithArrayParameter(ITypeBase instance,
-                                                                                         ImmutableBuilderClassSettings settings,
-                                                                                         bool extensionMethod,
-                                                                                         IClassProperty property,
-                                                                                         Overload overload)
+    private static ClassMethodBuilder CreateCollectionPropertyOverload(ITypeBase instance,
+                                                                       ImmutableBuilderClassSettings settings,
+                                                                       bool extensionMethod,
+                                                                       IClassProperty property,
+                                                                       Overload overload)
         => new ClassMethodBuilder()
             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
             .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
-                new ParameterBuilder()
-                    .WithName(property.Name.ToPascalCase())
-                    .WithIsParamArray()
-                    .WithTypeName(string.Format(overload.ArgumentType,
-                                                property.TypeName,
-                                                property.TypeName.GetGenericArguments()).ConvertTypeNameToArray())
-                    .WithIsNullable(property.IsNullable)
+                overload.GetArguments()
+                .Select(x =>  
+                    new ParameterBuilder()
+                        .WithName(x.Name.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
+                        .WithTypeName(x.TypeName)
+                        .WithIsNullable(x.IsNullable)
+                )
             )
             .AddLiteralCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
                                                                                      property,
                                                                                      overload.InitializeExpression,
                                                                                      extensionMethod));
-
-    private static ClassMethodBuilder CreateCollectionPropertyOverloadWithEnumerableParameter(ITypeBase instance,
-                                                                                              ImmutableBuilderClassSettings settings,
-                                                                                              bool extensionMethod,
-                                                                                              IClassProperty property,
-                                                                                              Overload overload)
-        => new ClassMethodBuilder()
-            .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
-            .ConfigureForExtensionMethod(instance, settings, extensionMethod)
-            .AddParameters
-            (
-                new ParameterBuilder()
-                    .WithName(property.Name.ToPascalCase())
-                    .WithTypeName(string.Format(overload.ArgumentType,
-                                                property.TypeName,
-                                                property.TypeName.GetGenericArguments()).FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
-                    .WithIsNullable(property.IsNullable)
-            )
-            .AddLiteralCodeStatements($"return {string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name)}({property.Name.ToPascalCase()}.ToArray());");
 
     private static ClassMethodBuilder CreateCollectionPropertyWithEnumerableParameter(ITypeBase instance,
                                                                                       ImmutableBuilderClassSettings settings,
@@ -620,10 +602,13 @@ public static partial class TypeBaseEtensions
             .ConfigureForExtensionMethod(instance, settings, extensionMethod)
             .AddParameters
             (
-                new ParameterBuilder()
-                    .WithName(overload.ArgumentName.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
-                    .WithTypeName(string.Format(overload.ArgumentType, property.TypeName))
-                    .WithIsNullable(property.IsNullable)
+                overload.GetArguments()
+                .Select(x =>
+                    new ParameterBuilder()
+                        .WithName(x.Name.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
+                        .WithTypeName(x.TypeName)
+                        .WithIsNullable(x.IsNullable)
+                )
             )
             .AddLiteralCodeStatements
             (
@@ -643,8 +628,8 @@ public static partial class TypeBaseEtensions
                   .WithExtensionMethod(extensionMethod)
                   .AddParameters(new[]
                   {
-                              new ParameterBuilder().WithName("instance")
-                                                    .WithTypeName($"{instance.Name}Builder")
+                      new ParameterBuilder().WithName("instance")
+                                            .WithTypeName($"{instance.Name}Builder")
                   }.Where(_ => extensionMethod));
 
     private static string GetCallPrefix(bool extensionMethod, bool lazyInitialization)
@@ -679,24 +664,27 @@ public static partial class TypeBaseEtensions
 
     private static IEnumerable<Overload> GetOverloads(IClassProperty property)
     {
-        var argumentTypes = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadArgumentType).ToArray();
+        var argumentTypeArrays = property.Metadata.GetValues<string[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypes).ToArray();
         var initializeExpressions = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadInitializeExpression).ToArray();
         var methodNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadMethodName).ToArray();
-        var argumentNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadArgumentName).ToArray();
+        var argumentNameArrays = property.Metadata.GetValues<string[]>(MetadataNames.CustomBuilderWithOverloadArgumentNames).ToArray();
+        var argumentTypeNullablesArray = property.Metadata.GetValues<bool[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypeNullables).ToArray();
 
-        if (argumentTypes.Length != initializeExpressions.Length
-            || argumentTypes.Length != methodNames.Length
-            || argumentTypes.Length != argumentNames.Length)
+        if (argumentTypeArrays.Length != initializeExpressions.Length
+            || argumentTypeArrays.Length != methodNames.Length
+            || argumentTypeArrays.Length != argumentNameArrays.Length
+            || argumentTypeArrays.Length != argumentTypeNullablesArray.Length)
         {
             throw new InvalidOperationException("Metadata for immutable builder overload method is incorrect. Metadata needs to be available in the same amount for all metadata types");
         }
 
         return
-            from argumentType in argumentTypes
+            from argumentTypes in argumentTypeArrays
             from initializeExpression in initializeExpressions
             from methodName in methodNames
-            from argumentName in argumentNames
-            select new Overload(argumentType, initializeExpression, methodName, argumentName);
+            from argumentNames in argumentNameArrays
+            from argumentTypeNullables in argumentTypeNullablesArray
+            select new Overload(argumentTypes, initializeExpression, methodName, argumentNames, argumentTypeNullables);
     }
 
     private static List<string> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
