@@ -108,6 +108,11 @@ public static class MetadataNames
     public const string CustomBuilderWithOverloadArgumentTypeNullables = "ModelFramework.Objects.Builder.WithOverload.ArgumentTypeNullables";
 
     /// <summary>
+    /// Metadata name for defining param array indicator for custom typenames for a With/Add overload in a builder. (type: bool[])
+    /// </summary>
+    public const string CustomBuilderWithOverloadArgumentTypeParamArrays = "ModelFramework.Objects.Builder.WithOverload.ArgumentTypeParamArrays";
+
+    /// <summary>
     /// Metadata name for defining custom argument names for a With/Add overload in a builder. (type: string[])
     /// </summary>
     public const string CustomBuilderWithOverloadArgumentNames = "ModelFramework.Objects.Builder.WithOverload.ArgumentNames";

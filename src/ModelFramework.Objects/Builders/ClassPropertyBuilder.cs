@@ -31,12 +31,13 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)))" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)))"));
 
     public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
-                                               Type parameterType,
-                                               string parameterNameTemplate,
-                                               string initializeExpression)
+                                                   Type parameterType,
+                                                   string parameterNameTemplate,
+                                                   string initializeExpression)
         => AddBuilderOverload(methodNameTemplate,
                               parameterType,
                               parameterNameTemplate,
+                              false,
                               false,
                               initializeExpression);
 
@@ -44,22 +45,26 @@ public partial class ClassPropertyBuilder
                                                    Type parameterType,
                                                    string parameterNameTemplate,
                                                    bool parameterTypeNullable,
+                                                   bool parameterTypeParamArray,
                                                    string initializeExpression)
         => AddBuilderOverload(methodNameTemplate,
                               new[] { parameterType.AssemblyQualifiedName },
                               new[] { parameterNameTemplate },
                               new[] { parameterTypeNullable },
+                              new[] { parameterTypeParamArray },
                               initializeExpression);
 
     public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
                                                    Type[] parameterTypes,
                                                    string[] parameterNameTemplates,
                                                    bool[] parameterTypeNullables,
+                                                   bool[] parameterTypeParamArrays,
                                                    string initializeExpression)
         => AddBuilderOverload(methodNameTemplate,
                               parameterTypes.Select(x => x.AssemblyQualifiedName).ToArray(),
                               parameterNameTemplates,
                               parameterTypeNullables,
+                              parameterTypeParamArrays,
                               initializeExpression);
 
     public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
@@ -70,17 +75,20 @@ public partial class ClassPropertyBuilder
                               parameterTypes,
                               parameterNameTemplates,
                               parameterTypes.Select(_ => false).ToArray(),
+                              parameterTypes.Select(_ => false).ToArray(),
                               initializeExpression);
 
     public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
                                                    string parameterTypeName,
                                                    string parameterNameTemplate,
                                                    bool parameterTypeNullable,
+                                                   bool parameterTypeParamArray,
                                                    string initializeExpression)
         => AddBuilderOverload(methodNameTemplate,
                               new[] { parameterTypeName },
                               new[] { parameterNameTemplate },
                               new[] { parameterTypeNullable },
+                              new[] { parameterTypeParamArray },
                               initializeExpression);
 
     public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
@@ -91,16 +99,19 @@ public partial class ClassPropertyBuilder
                               parameterTypeName,
                               parameterNameTemplate,
                               false,
+                              false,
                               initializeExpression);
 
     public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
                                                    string[] parameterTypeNames,
                                                    string[] parameterNameTemplates,
                                                    bool[] parameterTypeNullables,
+                                                   bool[] parameterTypeParamArrays,
                                                    string initializeExpression)
         => AddMetadata(MetadataNames.CustomBuilderWithOverloadMethodName, methodNameTemplate)
           .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentTypes, parameterTypeNames)
           .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentTypeNullables, parameterTypeNullables)
+          .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentTypeParamArrays, parameterTypeParamArrays)
           .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentNames, parameterNameTemplates)
           .AddMetadata(MetadataNames.CustomBuilderWithOverloadInitializeExpression, initializeExpression);
 

@@ -485,6 +485,7 @@ public static partial class TypeBaseEtensions
                         .WithName(x.Name.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
                         .WithTypeName(x.TypeName)
                         .WithIsNullable(x.IsNullable)
+                        .WithIsParamArray(x.IsParamArray)
                 )
             )
             .AddLiteralCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
@@ -609,6 +610,7 @@ public static partial class TypeBaseEtensions
                         .WithName(x.Name.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
                         .WithTypeName(x.TypeName)
                         .WithIsNullable(x.IsNullable)
+                        .WithIsParamArray(x.IsParamArray)
                 )
             )
             .AddLiteralCodeStatements
@@ -670,18 +672,25 @@ public static partial class TypeBaseEtensions
         var methodNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadMethodName).ToArray();
         var argumentNameArrays = property.Metadata.GetValues<string[]>(MetadataNames.CustomBuilderWithOverloadArgumentNames).ToArray();
         var argumentTypeNullablesArray = property.Metadata.GetValues<bool[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypeNullables).ToArray();
+        var argumentTypeParamArraysArray = property.Metadata.GetValues<bool[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypeParamArrays).ToArray();
 
         if (argumentTypeArrays.Length != initializeExpressions.Length
             || argumentTypeArrays.Length != methodNames.Length
             || argumentTypeArrays.Length != argumentNameArrays.Length
-            || argumentTypeArrays.Length != argumentTypeNullablesArray.Length)
+            || argumentTypeArrays.Length != argumentTypeNullablesArray.Length
+            || argumentTypeArrays.Length != argumentTypeParamArraysArray.Length)
         {
             throw new InvalidOperationException("Metadata for immutable builder overload method is incorrect. Metadata needs to be available in the same amount for all metadata types");
         }
 
         for (int i = 0; i < argumentTypeArrays.Length; i++)
         {
-            yield return new Overload(argumentTypeArrays[i], initializeExpressions[i], methodNames[i], argumentNameArrays[i], argumentTypeNullablesArray[i]);
+            yield return new Overload(argumentTypeArrays[i],
+                                      initializeExpressions[i],
+                                      methodNames[i],
+                                      argumentNameArrays[i],
+                                      argumentTypeNullablesArray[i],
+                                      argumentTypeParamArraysArray[i]);
         }
     }
 

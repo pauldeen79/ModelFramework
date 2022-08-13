@@ -149,12 +149,14 @@ namespace ModelFramework.Objects.Builders
 
         public ClassConstructorBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
         {
-            return AddLiteralCodeStatements(statements.ToArray());
+            AddLiteralCodeStatements(statements.ToArray());
+            return this;
         }
 
         public ClassConstructorBuilder AddLiteralCodeStatements(params string[] statements)
         {
-            return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
+            AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
+            return this;
         }
 
         public ClassConstructorBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
@@ -176,12 +178,14 @@ namespace ModelFramework.Objects.Builders
 
         public ClassConstructorBuilder AddParameter(string name, string typeName)
         {
-            return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+            AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+            return this;
         }
 
         public ClassConstructorBuilder AddParameter(string name, System.Type type)
         {
-            return AddParameters(new ParameterBuilder().WithName(name).WithType(type));
+            AddParameters(new ParameterBuilder().WithName(name).WithType(type));
+            return this;
         }
 
         public ClassConstructorBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
