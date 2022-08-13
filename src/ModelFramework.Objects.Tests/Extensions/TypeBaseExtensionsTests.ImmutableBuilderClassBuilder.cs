@@ -436,7 +436,7 @@ return this;");
         }
 
         // Added overload method
-        var withTypeMethod = actual.Methods.SingleOrDefault(x => x.Name == "AddTypes" && x.Parameters.First().TypeName == "System.Type[]");
+        var withTypeMethod = actual.Methods.SingleOrDefault(x => x.Name == "AddTypes");
         withTypeMethod.Should().NotBeNull();
         if (withTypeMethod != null)
         {
