@@ -76,6 +76,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             typeof(IClassProperty),
             typeof(IEnum),
             typeof(IEnumMember),
+            typeof(IOverload),
             typeof(IParameter)
         };
 
