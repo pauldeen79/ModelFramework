@@ -160,7 +160,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
         else if (typeName.Contains($"Collection<{typeof(string).FullName}", StringComparison.InvariantCulture))
         {
-            property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
+            property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName.FixTypeName()}({{0}})");
         }
         else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
         {
@@ -178,7 +178,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 
         if (property.Name == nameof(IMetadataContainer.Metadata) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IMetadata))
         {
-            property.AddBuilderOverload("AddMetadata", new[] { typeof(string), typeof(object) }, new[] { "name", "value" }, new[] { false, true }, new[] { false, false }, "AddMetadata(new Common.Builders.MetadataBuilder().WithName(name).WithValue(value));");
+            property.AddBuilderOverload("AddMetadata", new[] { typeof(string), typeof(object) }, new[] { "name", "value" }, new[] { false, true }, new[] { false, false }, "AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));");
         }
 
         if (property.Name == nameof(IParametersContainer.Parameters) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter))

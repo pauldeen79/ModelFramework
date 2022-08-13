@@ -60,7 +60,7 @@ namespace ModelFramework.Database.Builders
 
         public IndexFieldBuilder AddMetadata(string name, object? value)
         {
-            AddMetadata(new Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
