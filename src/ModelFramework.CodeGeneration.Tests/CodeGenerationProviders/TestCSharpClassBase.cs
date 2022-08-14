@@ -28,9 +28,10 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
 
             property.ConvertSinglePropertyToBuilderOnBuilder
             (
-                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder",
+                argumentType: null, // using builders namespace instead
                 useLazyInitialization: UseLazyInitialization,
-                useTargetTypeNewExpressions: UseTargetTypeNewExpressions
+                useTargetTypeNewExpressions: UseTargetTypeNewExpressions,
+                buildersNamespace: "ModelFramework.Common.Tests.Test.Builders"
             );
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
@@ -41,7 +42,8 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
             (
                 addNullChecks: false, // already checked in constructor by using the AddNulLChecks property, see above in this class
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
-                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
+                argumentType: null, // using builders namespace instead
+                buildersNamespace: "ModelFramework.Common.Tests.Test.Builders"
             );
         }
     }

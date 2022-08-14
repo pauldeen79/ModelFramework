@@ -2,7 +2,8 @@
 
 public static class ClassPropertyExtensions
 {
-    public static string CreateImmutableBuilderInitializationCode(this IClassProperty property, ImmutableBuilderClassSettings settings)
+    public static string CreateImmutableBuilderInitializationCode(this IClassProperty property,
+                                                                  ImmutableBuilderClassSettings settings)
         => string.Format
         (
             property.Metadata.GetStringValue
@@ -18,14 +19,16 @@ public static class ClassPropertyExtensions
             property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(), // 3
             settings.ConstructorSettings.AddNullChecks                           // 4
                 ? $"if (source.{property.Name} != null) "
-                : ""
+                : "",
+            property.TypeName.FixTypeName().GetClassName(),                      // 5
+            property.TypeName.GetGenericArguments().GetClassName()               // 6
         );
 
     public static IEnumerable<IMetadata> GetImmutableCollectionMetadata(this IClassProperty property, string newCollectionTypeName)
         => property.TypeName.IsCollectionTypeName()
             ? new[]
               {
-                    new Metadata(MetadataNames.CustomImmutableArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()),
+                  new Metadata(MetadataNames.CustomImmutableArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()),
               }
             : Array.Empty<IMetadata>();
 
@@ -33,7 +36,7 @@ public static class ClassPropertyExtensions
         => property.TypeName.IsCollectionTypeName()
             ? new[]
               {
-                    new Metadata(MetadataNames.CustomBuilderArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName))
+                  new Metadata(MetadataNames.CustomBuilderArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName))
               }
             : Array.Empty<IMetadata>();
 
@@ -41,7 +44,7 @@ public static class ClassPropertyExtensions
         => property.TypeName.IsCollectionTypeName()
             ? new[]
               {
-                    new Metadata(MetadataNames.CustomObservableArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName))
+                  new Metadata(MetadataNames.CustomObservableArgumentType, property.TypeName.FixCollectionTypeName(newCollectionTypeName))
               }
             : Array.Empty<IMetadata>();
 
