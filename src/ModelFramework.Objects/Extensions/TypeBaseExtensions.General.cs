@@ -36,12 +36,7 @@ public static partial class TypeBaseExtensions
             : string.Empty;
 
     public static string GetFullName(this ITypeBase instance)
-        => instance.GetNamespacePrefix() + instance.Name;
-
-    public static string GetNamespacePrefix(this ITypeBase instance)
-        => string.IsNullOrEmpty(instance.Namespace)
-            ? string.Empty
-            : instance.Namespace + ".";
+        => instance.Namespace.GetNamespacePrefix() + instance.Name;
 
     public static IEnumerable<IClassField> GetFields(this ITypeBase instance)
         => (instance as IClass)?.Fields ?? Enumerable.Empty<IClassField>();
@@ -83,16 +78,16 @@ public static partial class TypeBaseExtensions
     public static string GetCustomValueForInheritedClass(this ITypeBase instance,
                                                          ImmutableBuilderClassSettings settings,
                                                          Func<IClass, string> customValue)
-        => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
+        => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableEntityInheritance, customValue);
 
     public static string GetCustomValueForInheritedClass(this ITypeBase instance,
                                                          ImmutableClassSettings settings,
                                                          Func<IClass, string> customValue)
         => instance.GetCustomValueForInheritedClass(settings.InheritanceSettings.EnableInheritance, customValue);
 
-    public static string GetCustomValueForInheritedClass(this ITypeBase instance,
-                                                         bool enableInheritance,
-                                                         Func<IClass, string> customValue)
+    private static string GetCustomValueForInheritedClass(this ITypeBase instance,
+                                                          bool enableInheritance,
+                                                          Func<IClass, string> customValue)
     {
         if (!enableInheritance)
         {
@@ -101,7 +96,6 @@ public static partial class TypeBaseExtensions
         }
 
         var cls = instance as IClass;
-
         if (cls == null)
         {
             // Type is an interface
@@ -123,24 +117,37 @@ public static partial class TypeBaseExtensions
         => parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
             inheritanceSettings.EnableInheritance,
+            false,
+            false,
             inheritanceSettings.InheritanceComparisonFunction);
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
-                                                             ImmutableBuilderClassInheritanceSettings inheritanceSettings)
+                                                             ImmutableBuilderClassInheritanceSettings inheritanceSettings,
+                                                             bool isForWithStatement)
         => parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
-            inheritanceSettings.EnableInheritance,
+            inheritanceSettings.EnableEntityInheritance,
+            inheritanceSettings.EnableBuilderInheritance,
+            isForWithStatement && !inheritanceSettings.RemoveDuplicateWithMethods, // only when duplicate methods need to be removed...
             inheritanceSettings.InheritanceComparisonFunction);
 
-    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
-                                                             IParentTypeContainer parentTypeContainer,
-                                                             bool enableInheritance,
-                                                             Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
+    private static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
+                                                              IParentTypeContainer parentTypeContainer,
+                                                              bool enableEntityInheritance,
+                                                              bool enableBuilderInhericance,
+                                                              bool isForWithStatement,
+                                                              Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
     {
-        if (!enableInheritance)
+        if (!enableEntityInheritance)
         {
-            // If inheritance is not enabled, then simply include all members
+            // If entity inheritance is not enabled, then simply include all members
+            return true;
+        }
+
+        if (enableBuilderInhericance && isForWithStatement)
+        {
+            // If builder inheritance is enabled, then we have to duplicate the property for With statements
             return true;
         }
 

@@ -15,8 +15,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => true;
-    protected virtual bool EnableInheritance => false;
+    protected virtual bool EnableEntityInheritance => false;
+    protected virtual bool EnableBuilderInhericance => false;
+    protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual IClass? BaseClass => null;
+    protected virtual string BaseClassBuilderNameSpace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
 
     protected abstract Type RecordCollectionType { get; }
@@ -29,14 +32,12 @@ public abstract class CSharpClassBase : ClassBase
         where TEntity : ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     { }
-    protected virtual void PostProcessImmutableBuilderClass(ClassBuilder classBuilder) { }
-    protected virtual void PostProcessImmutableEntityClass(ClassBuilder classBuilder) { }
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
                                                      string entitiesNamespace,
                                                      string buildersNamespace,
                                                      params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.IsInterface ? (ITypeBase)x.ToInterface() : x.ToClass(new ClassSettings())).ToArray(),
+        => GetImmutableBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
                                       entitiesNamespace,
                                       buildersNamespace,
                                       interfacesToAdd);
@@ -48,6 +49,26 @@ public abstract class CSharpClassBase : ClassBase
         => models.Select
         (
             x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
+                .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
+                .Build()
+        ).ToArray();
+
+    protected ITypeBase[] GetImmutableNonGenericBuilderClasses(Type[] types,
+                                                               string entitiesNamespace,
+                                                               string buildersNamespace,
+                                                               params string[] interfacesToAdd)
+        => GetImmutableNonGenericBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
+                                                entitiesNamespace,
+                                                buildersNamespace,
+                                                interfacesToAdd);
+
+    protected ITypeBase[] GetImmutableNonGenericBuilderClasses(ITypeBase[] models,
+                                                               string entitiesNamespace,
+                                                               string buildersNamespace,
+                                                               params string[] interfacesToAdd)
+        => models.Select
+        (
+            x => CreateNonGenericBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
                 .Build()
         ).ToArray();
@@ -123,20 +144,34 @@ public abstract class CSharpClassBase : ClassBase
             .ToArray();
     }
 
+    protected IClass CreateBaseclass(Type type, string @namespace)
+        => type.ToClass(new ClassSettings()).ToImmutableClassBuilder(new ImmutableClassSettings
+            (
+                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+                constructorSettings: new ImmutableClassConstructorSettings(
+                    validateArguments: ValidateArgumentsInConstructor,
+                    addNullChecks: AddNullChecks),
+                addPrivateSetters: AddPrivateSetters)
+            )
+            .WithNamespace(@namespace)
+            .WithName(type.GetEntityClassName())
+            .With(x => FixImmutableClassProperties(x))
+            .Build();
+
     protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
         => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
-            .WithPartial()
-            .AddMethods(CreateExtraOverloads(cls))
-            .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
-            .With(x => PostProcessImmutableBuilderClass(x));
+            .WithPartial();
+
+    protected ClassBuilder CreateNonGenericBuilder(IClass cls, string @namespace)
+        => cls.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+            .WithNamespace(@namespace)
+            .WithPartial();
 
     protected ClassBuilder CreateBuilderExtensions(IClass cls, string @namespace)
         => cls.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
-            .WithPartial()
-            .AddMethods(CreateExtraOverloads(cls))
-            .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
+            .WithPartial();
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
         => new ImmutableBuilderClassSettings
@@ -144,19 +179,22 @@ public abstract class CSharpClassBase : ClassBase
             typeSettings: new ImmutableBuilderClassTypeSettings(
                 newCollectionTypeName: NewCollectionTypeName,
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
-                useTargetTypeNewExpressions: UseTargetTypeNewExpressions),
+                useTargetTypeNewExpressions: UseTargetTypeNewExpressions,
+                enableNullableReferenceTypes: EnableNullableContext),
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
                 addCopyConstructor: AddCopyConstructor,
                 addNullChecks: AddNullChecks),
             nameSettings: new ImmutableBuilderClassNameSettings(
                 setMethodNameFormatString: SetMethodNameFormatString,
                 addMethodNameFormatString: AddMethodNameFormatString),
-            enableNullableReferenceTypes: EnableNullableContext,
             useLazyInitialization: UseLazyInitialization,
             copyPropertyCode: CopyPropertyCode,
             inheritanceSettings: new ImmutableBuilderClassInheritanceSettings(
-                enableInheritance: EnableInheritance,
+                enableEntityInheritance: EnableEntityInheritance,
+                enableBuilderInheritance: EnableBuilderInhericance,
+                removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
+                baseClassBuilderNameSpace: BaseClassBuilderNameSpace,
                 inheritanceComparisonFunction: IsMemberValid)
         );
 
@@ -165,11 +203,11 @@ public abstract class CSharpClassBase : ClassBase
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             constructorSettings: new ImmutableClassConstructorSettings(
-                validateArguments: ValidateArgumentsInConstructor && !(EnableInheritance && BaseClass == null),
+                validateArguments: ValidateArgumentsInConstructor && !(EnableEntityInheritance && BaseClass == null),
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new ImmutableClassInheritanceSettings(
-                enableInheritance: EnableInheritance,
+                enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
                 inheritanceComparisonFunction: IsMemberValid)
         );
@@ -181,7 +219,6 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
-            .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
@@ -193,8 +230,7 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .AddInterfaces(new[] { $"{iinterface.Namespace}.{iinterface.Name}" }.Where(_ => InheritFromInterfaces))
-            .With(x => PostProcessImmutableEntityClass(x))
+            .AddInterfaces((new[] { $"{iinterface.Namespace}.{iinterface.Name}" }).Where(_ => InheritFromInterfaces))
             .Build();
 
     private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
@@ -205,9 +241,5 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .With(x => PostProcessImmutableEntityClass(x))
             .Build();
-
-    private static string CreateSortString(ClassMethodBuilder methodBuilder)
-        => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
 }

@@ -30,23 +30,8 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Select(x => x.Build())")
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)))" : "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)))"));
 
-    public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
-                                                   Type parameterType,
-                                                   string parameterNameTemplate,
-                                                   string initializeExpression)
-        => AddBuilderOverload(methodNameTemplate,
-                              parameterType?.AssemblyQualifiedName ?? throw new ArgumentException("Type does not have a full name"),
-                              parameterNameTemplate,
-                              initializeExpression);
-
-    public ClassPropertyBuilder AddBuilderOverload(string methodNameTemplate,
-                                                   string parameterTypeName,
-                                                   string parameterNameTemplate,
-                                                   string initializeExpression)
-        => AddMetadata(MetadataNames.CustomBuilderWithOverloadMethodName, methodNameTemplate)
-          .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentType, parameterTypeName)
-          .AddMetadata(MetadataNames.CustomBuilderWithOverloadArgumentName, parameterNameTemplate)
-          .AddMetadata(MetadataNames.CustomBuilderWithOverloadInitializeExpression, initializeExpression);
+    public ClassPropertyBuilder AddBuilderOverload(IOverload overload)
+        => AddMetadata(MetadataNames.CustomBuilderWithOverload, overload);
 
     public ClassPropertyBuilder SetDefaultArgumentValueForWithMethod(object defaultValue)
         => AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue)

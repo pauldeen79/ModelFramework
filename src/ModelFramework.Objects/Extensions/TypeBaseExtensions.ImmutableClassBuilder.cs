@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Objects.Extensions;
+﻿using System.Runtime;
+
+namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseExtensions
 {
@@ -129,14 +131,15 @@ public static partial class TypeBaseExtensions
     }
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings, cls => cls.BaseClass);
+        => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
+            ? settings.InheritanceSettings.BaseClass.GetFullName()
+            : instance.GetCustomValueForInheritedClass(settings, cls => cls.BaseClass);
 
     private static string GenerateImmutableClassChainCall(ITypeBase instance, ImmutableClassSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings, cls =>
-        {
-            var props = string.Join(", ", instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass).Select(x => x.Name.ToPascalCase()));
-            return $"base({props})";
-        });
+        => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
+            ? $"base({GetPropertyNamesConcatenated(settings.InheritanceSettings.BaseClass.Properties)})"
+            : instance.GetCustomValueForInheritedClass(settings, cls =>
+                $"base({GetPropertyNamesConcatenated(instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass))})");
 
     public static IClass ToImmutableExtensionClass(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
         => instance.ToImmutableExtensionClassBuilder(settings).Build();
@@ -296,4 +299,7 @@ public static partial class TypeBaseExtensions
     private static string GetEqualsProperties(ITypeBase instance)
         => string.Join(" &&" + Environment.NewLine + "       ",
                        instance.Properties.Select(p => $"{p.Name} == other.{p.Name}"));
+
+    private static string GetPropertyNamesConcatenated(IEnumerable<IClassProperty> properties)
+        => string.Join(", ", properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
 }

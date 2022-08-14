@@ -30,7 +30,9 @@ internal class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, I
         return this;
     }
 
-    public override InheritedClass Build()
+    public override BaseClass Build() => BuildTyped();
+
+    public override InheritedClass BuildTyped()
     {
         return new InheritedClass(BaseProperty, AdditionalProperty);
     }
@@ -41,24 +43,29 @@ internal class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, I
     }
 }
 
-internal abstract class BaseClassBuilder<TBuilder, T>
-    where T : BaseClass
-    where TBuilder : BaseClassBuilder<TBuilder, T>
+internal abstract class BaseClassBuilder
 {
     public string BaseProperty { get; set; }
 
+    protected BaseClassBuilder()
+    {
+        BaseProperty = string.Empty;
+    }
+
+    public abstract BaseClass Build();
+}
+
+internal abstract class BaseClassBuilder<TBuilder, T> : BaseClassBuilder
+    where T : BaseClass
+    where TBuilder : BaseClassBuilder<TBuilder, T>
+{
     public TBuilder WithBaseProperty(string baseProperty)
     {
         BaseProperty = baseProperty;
         return (TBuilder)this;
     }
 
-    public abstract T Build();
-
-    protected BaseClassBuilder()
-    {
-        BaseProperty = string.Empty;
-    }
+    public abstract T BuildTyped();
 }
 
 internal abstract class MiddleClass : BaseClass
@@ -71,20 +78,29 @@ internal abstract class MiddleClass : BaseClass
     public string MiddleProperty { get; }
 }
 
-internal abstract class MiddleClassBuilder<TBuilder, T> : BaseClassBuilder<TBuilder, T>
+internal abstract class MiddleClassBuilder : BaseClassBuilder
+{
+    public string MiddleProperty { get; set; }
+
+    protected MiddleClassBuilder() : base()
+    {
+        MiddleProperty = string.Empty;
+    }
+}
+
+internal abstract class MiddleClassBuilder<TBuilder, T> : MiddleClassBuilder // note that we can't inherit from the generic base class...
     where T : MiddleClass
     where TBuilder : MiddleClassBuilder<TBuilder, T>
 {
-    public string MiddleProperty { get; set; }
+    public TBuilder WithBaseProperty(string baseProperty)
+    {
+        BaseProperty = baseProperty;
+        return (TBuilder)this;
+    } // note that this is duplicated, because we can't inherit from two base classes...
 
     public TBuilder WithMiddleProperty(string middleProperty)
     {
         MiddleProperty = middleProperty;
         return (TBuilder)this;
-    }
-
-    protected MiddleClassBuilder() : base()
-    {
-        MiddleProperty = string.Empty;
     }
 }

@@ -98,27 +98,12 @@ public static class MetadataNames
     public const string AdditionalBuilderCopyConstructorAdditionalParameter = "ModelFramework.Objects.Builder.AdditionalCopyConstructorAdditionalParameter";
 
     /// <summary>
-    /// Metadata name for defining a custom typename for a With/Add overload in a builder.
+    /// Metadata name for defining custom With/Add overloads (of type IOverload) in a builder.
     /// </summary>
-    public const string CustomBuilderWithOverloadArgumentType = "ModelFramework.Objects.Builder.WithOverload.ArgumentType";
+    public const string CustomBuilderWithOverload = "ModelFramework.Objects.Builder.WithOverload";
 
     /// <summary>
-    /// Metadata name for defining a custom argument name for a With/Add overload in a builder.
-    /// </summary>
-    public const string CustomBuilderWithOverloadArgumentName = "ModelFramework.Objects.Builder.WithOverload.ArgumentName";
-
-    /// <summary>
-    /// Metadata name for defining a custom method name for a With/Add overload in a builder.
-    /// </summary>
-    public const string CustomBuilderWithOverloadMethodName = "ModelFramework.Objects.Builder.WithOverload.MethodName";
-
-    /// <summary>
-    /// Metadata name for defining a custom expression for a With/Add overload in a builder.
-    /// </summary>
-    public const string CustomBuilderWithOverloadInitializeExpression = "ModelFramework.Objects.Builder.WithOverload.InitializeExpression";
-
-    /// <summary>
-    /// Metadata name for defining default value on a With method in a builder.
+    /// Metadata name for defining default value for a property on a With method in a builder.
     /// </summary>
     public const string CustomBuilderWithDefaultPropertyValue = "ModelFramework.Objects.Builder.Property.DefaultValue";
 

@@ -6,8 +6,9 @@ public class ObjectsOverrideRecords : ModelFrameworkCSharpClassBase
     public override string DefaultFileName => "Entities.generated.cs";
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
-    protected override bool EnableInheritance => true;
-    protected override IClass? BaseClass => GetTypeBaseModel();
+    protected override bool EnableEntityInheritance => true;
+    protected override bool EnableBuilderInhericance => true;
+    protected override IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), "ModelFramework.Objects");
 
     public override object CreateModel()
         => GetImmutableClasses(GetObjectsModelOverrideTypes(), "ModelFramework.Objects");

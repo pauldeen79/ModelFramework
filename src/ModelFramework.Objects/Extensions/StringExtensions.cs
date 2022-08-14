@@ -58,4 +58,9 @@ public static class StringExtensions
 
         return instance;
     }
+
+    public static string GetNamespacePrefix(this string instance)
+        => string.IsNullOrEmpty(instance)
+            ? string.Empty
+            : $"{instance}.";
 }

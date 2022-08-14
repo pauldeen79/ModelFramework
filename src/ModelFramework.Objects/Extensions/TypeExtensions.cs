@@ -41,6 +41,22 @@ public static class TypeExtensions
             .AddProperties(GetProperties(instance))
             .AddMethods(GetMethods(instance));
 
+    public static ITypeBase ToTypeBase(this Type instance)
+        => instance.ToTypeBase(new ClassSettings());
+
+    public static ITypeBase ToTypeBase(this Type instance, ClassSettings settings)
+        => instance.IsInterface
+            ? instance.ToInterface()
+            : instance.ToClass(settings);
+
+    public static TypeBaseBuilder ToTypeBaseBuilder(this Type instance)
+        => instance.ToTypeBaseBuilder(new ClassSettings());
+
+    public static TypeBaseBuilder ToTypeBaseBuilder(this Type instance, ClassSettings settings)
+        => instance.IsInterface
+            ? instance.ToInterfaceBuilder()
+            : instance.ToClassBuilder(settings);
+
     public static IClass ToWrapperClass(this Type instance, WrapperClassSettings settings)
         => instance.ToWrapperClassBuilder(settings).Build();
 

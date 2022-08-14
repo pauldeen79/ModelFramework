@@ -34,6 +34,7 @@ public class CodeGenerationTests
         GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsNonGenericBaseBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideBuilders>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
@@ -172,15 +173,15 @@ namespace Test.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
-        {
-            _testPropertyDelegate = new (testPropertyDelegate);
-            return this;
-        }
-
         public TestClassBuilder WithTestProperty(string testProperty)
         {
             TestProperty = testProperty;
+            return this;
+        }
+
+        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
+        {
+            _testPropertyDelegate = new (testPropertyDelegate);
             return this;
         }
 
@@ -196,7 +197,7 @@ namespace Test.Builders
             _testPropertyDelegate = new (() => source.TestProperty);
         }
 
-        private System.Lazy<string> _testPropertyDelegate;
+        protected System.Lazy<string> _testPropertyDelegate;
     }
 #nullable restore
 }
@@ -290,15 +291,15 @@ namespace Test.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public TestClassBuilder WithTestProperty(System.Func<TestClassBuilder> testPropertyDelegate)
-        {
-            _testPropertyDelegate = new (testPropertyDelegate);
-            return this;
-        }
-
         public TestClassBuilder WithTestProperty(TestClassBuilder testProperty)
         {
             TestProperty = testProperty;
+            return this;
+        }
+
+        public TestClassBuilder WithTestProperty(System.Func<TestClassBuilder> testPropertyDelegate)
+        {
+            _testPropertyDelegate = new (testPropertyDelegate);
             return this;
         }
 
@@ -314,83 +315,7 @@ namespace Test.Builders
             TestProperty = new TestClassBuilder(source.TestProperty);
         }
 
-        private System.Lazy<TestClassBuilder> _testPropertyDelegate;
-    }
-#nullable restore
-}
-");
-    }
-
-    [Fact]
-    public void Can_Generate_Immutable_ClassBuilder_With_Additional_Constructor_Argument()
-    {
-        // Arrange
-        var settings = new CodeGenerationSettings
-        (
-            basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            dryRun: true
-        );
-
-        // Act
-        var generatedCode = GenerateCode.For<AdditionalConstructorArgumentBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
-
-        // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Test.Builders
-{
-#nullable enable
-    public partial class TestClassBuilder
-    {
-        public string TestProperty
-        {
-            get
-            {
-                return _testPropertyDelegate.Value;
-            }
-            set
-            {
-                _testPropertyDelegate = new (() => value);
-            }
-        }
-
-        public Test.TestClass Build()
-        {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            return new Test.TestClass(TestProperty);
-            #pragma warning restore CS8604 // Possible null reference argument.
-        }
-
-        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
-        {
-            _testPropertyDelegate = new (testPropertyDelegate);
-            return this;
-        }
-
-        public TestClassBuilder WithTestProperty(string testProperty)
-        {
-            TestProperty = testProperty;
-            return this;
-        }
-
-        public TestClassBuilder()
-        {
-            #pragma warning disable CS8603 // Possible null reference return.
-            _testPropertyDelegate = new (() => string.Empty);
-            #pragma warning restore CS8603 // Possible null reference return.
-        }
-
-        public TestClassBuilder(Test.TestClass source, string additionalArgument)
-        {
-            _testPropertyDelegate = new (() => source.TestProperty);
-        }
-
-        private System.Lazy<string> _testPropertyDelegate;
+        protected System.Lazy<TestClassBuilder> _testPropertyDelegate;
     }
 #nullable restore
 }
@@ -458,19 +383,6 @@ namespace Test.Builders
     private sealed class PlainBuilders : PlainBase
     {
         public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
-    }
-
-    private sealed class AdditionalConstructorArgumentBuilders : PlainBase
-    {
-        public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
-
-        protected override bool AddCopyConstructor => true;
-        protected override void PostProcessImmutableBuilderClass(ClassBuilder classBuilder)
-        {
-            // Note that this method is fired after creating the builder class, so it's no use to add metadata for extra metadata. You have to manipulate the constructor yourself, here...
-            classBuilder.Constructors[1].AddParameters(new ParameterBuilder().WithType(typeof(string)).WithName("additionalArgument"));
-            base.PostProcessImmutableBuilderClass(classBuilder); //note that this is actually optional, as the base implementation does nothing
-        }
     }
 
     private abstract class CustomPropertiesBase : CSharpClassBase

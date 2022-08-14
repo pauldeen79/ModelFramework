@@ -12,25 +12,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ModelFramework.Database
+namespace ModelFramework.Objects
 {
 #nullable enable
-    public partial record UniqueConstraintField : ModelFramework.Database.Contracts.IUniqueConstraintField
+    public partial record Overload : ModelFramework.Objects.Contracts.IOverload
     {
-        public string Name
+        public string MethodName
         {
             get;
         }
 
-        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata> Metadata
+        public string InitializeExpression
         {
             get;
         }
 
-        public UniqueConstraintField(string name, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata)
+        public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IParameter> Parameters
         {
-            this.Name = name;
-            this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
+            get;
+        }
+
+        public Overload(string methodName, string initializeExpression, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IParameter> parameters)
+        {
+            this.MethodName = methodName;
+            this.InitializeExpression = initializeExpression;
+            this.Parameters = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IParameter>(parameters);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

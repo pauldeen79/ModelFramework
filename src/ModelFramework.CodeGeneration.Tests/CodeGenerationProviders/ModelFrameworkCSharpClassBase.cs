@@ -21,25 +21,25 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return string.Empty;
         }
 
+        if (forCreate)
+        {
+            // For creation, the typename doesn't have to be altered/formatted.
+            return string.Empty;
+        }
+
         if (instance.Namespace == "ModelFramework.Common")
         {
-            return forCreate
-                ? "ModelFramework.Common." + instance.Name
-                : "ModelFramework.Common.Contracts.I" + instance.Name;
+            return "ModelFramework.Common.Contracts.I" + instance.Name;
         }
 
         if (instance.Namespace == "ModelFramework.Objects")
         {
-            return forCreate
-                ? "ModelFramework.Objects." + instance.Name
-                : "ModelFramework.Objects.Contracts.I" + instance.Name;
+            return "ModelFramework.Objects.Contracts.I" + instance.Name;
         }
 
         if (instance.Namespace == "ModelFramework.Database")
         {
-            return forCreate
-                ? "ModelFramework.Database." + instance.Name
-                : "ModelFramework.Database.Contracts.I" + instance.Name;
+            return "ModelFramework.Database.Contracts.I" + instance.Name;
         }
 
         return string.Empty;
@@ -59,97 +59,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name, x));
     }
 
-    protected override void PostProcessImmutableBuilderClass(ClassBuilder classBuilder)
-    {
-        if (classBuilder == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            return;
-        }
-
-        if (new[] { $"{nameof(ITypeBase)}Builder", $"{nameof(IClass)}Builder", $"{nameof(IInterface)}Builder" }.Contains($"I{classBuilder.Name}"))
-        {
-            if ($"I{classBuilder.Name}" == $"{nameof(ITypeBase)}Builder")
-            {
-                // HACK
-                classBuilder.Constructors.Single(x => x.Parameters.Count == 1).Parameters.Single().TypeName = typeof(ITypeBase).FullName!;
-                classBuilder.GenericTypeArgumentConstraints[0] = $"where TEntity : {typeof(ITypeBase).FullName}";
-            }
-            else
-            {
-                // HACK
-                classBuilder.BaseClass = $"{typeof(ITypeBase).Name.Substring(1)}Builder<{classBuilder.Name}, ModelFramework.Objects.Contracts.I{classBuilder.Name.Replace("Builder", "")}>";
-            }
-        }
-    }
-
-    protected override void PostProcessImmutableEntityClass(ClassBuilder classBuilder)
-    {
-        if (classBuilder == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            return;
-        }
-
-        if (new[] { nameof(IClass), nameof(IInterface) }.Contains($"I{classBuilder.Name}"))
-        {
-            // HACK
-            var props = string.Join(", ", typeof(ITypeBase).ToClass(new ClassSettings()).Properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
-            classBuilder.Constructors.Single().WithChainCall($"base({props})");
-            classBuilder.BaseClass = typeof(ITypeBase).GetEntityClassName();
-        }
-    }
-
-    protected override IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
-    {
-        if (c == null)
-        {
-            // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
-            yield break;
-        }
-
-        if (c.Properties.Any(p => p.Name == nameof(IMetadataContainer.Metadata)))
-        {
-            yield return new ClassMethodBuilder()
-                .WithName("AddMetadata")
-                .WithTypeName($"I{c.Name}" == nameof(ITypeBase) ? "TBuilder" : $"{c.Name}Builder")
-                .AddParameter("name", typeof(string))
-                .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
-                .AddLiteralCodeStatements($"AddMetadata(new {typeof(MetadataBuilder).FullName}().WithName(name).WithValue(value));",
-                                          $"I{c.Name}" == nameof(ITypeBase) ? "return (TBuilder)this;" : "return this;");
-        }
-
-        if (c.Properties.Any(p => p.Name == nameof(IParametersContainer.Parameters) && p.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter)))
-        {
-            yield return new ClassMethodBuilder()
-                .WithName("AddParameter")
-                .WithTypeName($"{c.Name}Builder")
-                .AddParameter("name", typeof(string))
-                .AddParameter("type", typeof(Type))
-                .AddLiteralCodeStatements("return AddParameters(new ParameterBuilder().WithName(name).WithType(type));");
-            yield return new ClassMethodBuilder()
-                .WithName("AddParameter")
-                .WithTypeName($"{c.Name}Builder")
-                .AddParameter("name", typeof(string))
-                .AddParameter("typeName", typeof(string))
-                .AddLiteralCodeStatements("return AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));");
-        }
-
-        if (c.Properties.Any(p => p.Name == nameof(ICodeStatementsContainer.CodeStatements)))
-        {
-            yield return new ClassMethodBuilder()
-                .WithName("AddLiteralCodeStatements")
-                .WithTypeName($"{c.Name}Builder")
-                .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(string[])).WithIsParamArray())
-                .AddLiteralCodeStatements("return AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));");
-            yield return new ClassMethodBuilder()
-                .WithName("AddLiteralCodeStatements")
-                .WithTypeName($"{c.Name}Builder")
-                .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(IEnumerable<string>)))
-                .AddLiteralCodeStatements("return AddLiteralCodeStatements(statements.ToArray());");
-        }
-    }
-
     protected static Type[] GetCommonModelTypes()
         => new[]
         {
@@ -167,6 +76,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             typeof(IClassProperty),
             typeof(IEnum),
             typeof(IEnumMember),
+            typeof(IOverload),
             typeof(IParameter)
         };
 
@@ -208,23 +118,11 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             typeof(IViewSource)
         };
 
-    protected IClass GetTypeBaseModel()
-        => typeof(ITypeBase).ToClass(new ClassSettings()).ToImmutableClassBuilder(new ImmutableClassSettings
-        (
-            newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-            constructorSettings: new ImmutableClassConstructorSettings(
-                validateArguments: ValidateArgumentsInConstructor,
-                addNullChecks: AddNullChecks),
-            addPrivateSetters: AddPrivateSetters)
-        )
-        .With(x => FixImmutableClassProperties(x))
-        .Build();
-
     protected IClass[] GetCodeStatementBuilderClasses(Type codeStatementType,
                                                       Type codeStatementInterfaceType,
                                                       Type codeStatementBuilderInterfaceType,
                                                       string buildersNamespace)
-        => GetClassesFromSameNamespace(codeStatementType ?? throw new ArgumentNullException(nameof(codeStatementType)))
+        => GetClassesFromSameNamespace(codeStatementType)
             .Select
             (
                 c => CreateBuilder(c, buildersNamespace)
@@ -263,7 +161,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
         else if (typeName.Contains($"Collection<{typeof(string).FullName}", StringComparison.InvariantCulture))
         {
-            property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName?.FixTypeName()}({{0}})");
+            property.AddMetadata(Objects.MetadataNames.CustomBuilderMethodParameterExpression, $"new {typeof(ValueCollection<string>).FullName.FixTypeName()}({{0}})");
         }
         else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
         {
@@ -273,9 +171,54 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
             }
         }
-        else if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
+
+        if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
         {
-            property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
+                .AddParameter("type", typeof(Type))
+                .WithInitializeExpression("{2} = type.AssemblyQualifiedName;")
+                .Build());
+        }
+
+        if (property.Name == nameof(IMetadataContainer.Metadata) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IMetadata))
+        {
+            property.AddBuilderOverload(new OverloadBuilder()
+                .AddParameter("name", typeof(string))
+                .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
+                .WithInitializeExpression("Add{4}(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));")
+                .Build());
+        }
+
+        if (property.Name == nameof(IParametersContainer.Parameters) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter))
+        {
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
+                .AddParameter("name", typeof(string))
+                .AddParameter("type", typeof(Type))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));")
+                .Build());
+
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
+                .AddParameter("name", typeof(string))
+                .AddParameter("typeName", typeof(string))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
+                .Build());
+        }
+
+        if (property.Name == nameof(ICodeStatementsContainer.CodeStatements) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(ICodeStatement))
+        {
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
+                .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(string[])).WithIsParamArray())
+                .WithInitializeExpression("Add{4}(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));")
+                .Build());
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
+                .AddParameter("statements", typeof(IEnumerable<string>))
+                .WithInitializeExpression("AddLiteralCodeStatements(statements.ToArray());")
+                .Build());
         }
 
         if (property.Name == nameof(IVisibilityContainer.Visibility))

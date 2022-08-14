@@ -348,7 +348,11 @@ Property2.AddRange(source.Property2);");
             .AddProperties(new ClassPropertyBuilder()
                 .WithName("TypeName")
                 .WithType(typeof(string))
-                .AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;"))
+                .AddBuilderOverload(new OverloadBuilder()
+                    .WithMethodName("WithType")
+                    .AddParameter("type", typeof(Type))
+                    .WithInitializeExpression("{2} = type.AssemblyQualifiedName;")
+                    .Build()))
             .Build();
 
         // Act
@@ -401,7 +405,11 @@ return this;");
             .AddProperties(new ClassPropertyBuilder()
                 .WithName("TypeNames")
                 .WithType(typeof(IEnumerable<string>))
-                .AddBuilderOverload("AddTypes", typeof(IEnumerable<Type>), "types", "{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));"))
+                .AddBuilderOverload(new OverloadBuilder()
+                    .WithMethodName("AddTypes")
+                    .AddParameter("types", typeof(IEnumerable<Type>))
+                    .WithInitializeExpression("{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));")
+                    .Build()))
             .Build();
 
         // Act
@@ -436,7 +444,7 @@ return this;");
         }
 
         // Added overload method
-        var withTypeMethod = actual.Methods.SingleOrDefault(x => x.Name == "AddTypes" && x.Parameters.First().TypeName == "System.Type[]");
+        var withTypeMethod = actual.Methods.SingleOrDefault(x => x.Name == "AddTypes");
         withTypeMethod.Should().NotBeNull();
         if (withTypeMethod != null)
         {
@@ -509,8 +517,7 @@ return this;");
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: false),
-                                                                                   enableNullableReferenceTypes: true));
+                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: false, enableNullableReferenceTypes: true)));
 
         // Assert
         actual.Fields.Should().HaveCount(2);
@@ -545,8 +552,7 @@ return new TestClass(Property1, Property2, Property3);
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true),
-                                                                                   enableNullableReferenceTypes: true));
+                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true, enableNullableReferenceTypes: true)));
 
         // Assert
         string.Join(Environment.NewLine, actual.Properties.First().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property1Delegate = new (() => value);");
@@ -566,8 +572,7 @@ _property3Delegate = new (() => default);
 
         // Act
         var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true),
-                                                                                   enableNullableReferenceTypes: true,
+                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true, enableNullableReferenceTypes: true),
                                                                                    constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true)));
 
         // Assert
