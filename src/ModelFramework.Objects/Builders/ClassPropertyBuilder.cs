@@ -14,12 +14,37 @@ public partial class ClassPropertyBuilder
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                         string? customBuilderConstructorInitializeExpression = null,
                                                                         string? customBuilderMethodParameterExpression = null,
-                                                                        bool addNullableCheck = true)
+                                                                        bool addNullableCheck = true,
+                                                                        bool useLazyInitialization = false,
+                                                                        bool useTargetTypeNewExpressions = false)
         => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType ?? "{0}Builder")
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression ?? (IsNullable || addNullableCheck
                 ? "{0}?.Build()"
                 : "{0}.Build()"))
-          .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? (argumentType == null ? "{0} = new {2}Builder(source.{0})" : "{0} = new " + argumentType + "(source.{0})"));
+          .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression ?? CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions));
+
+    private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
+                                                                                                  bool useLazyInitialization,
+                                                                                                  bool useTargetTypeNewExpressions)
+    {
+        if (useLazyInitialization)
+        {
+            if (useTargetTypeNewExpressions)
+            {
+                return argumentType == null
+                    ? "_{1}Delegate = new (() => new {2}Builder(source.{0}))"
+                    : "_{1}Delegate = new (() => new " + argumentType + "(source.{0}))";
+            }
+
+            return argumentType == null
+                ? "_{1}Delegate = new System.Lazy<{2}Builder>(() => new {2}Builder(source.{0}))"
+                : "_{1}Delegate = new System.Lazy<" + argumentType + ">(() => new " + argumentType + "(source.{0}))";
+        }
+
+        return argumentType == null
+            ? "{0} = new {2}Builder(source.{0})"
+            : "{0} = new " + argumentType + "(source.{0})";
+    }
 
     public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(bool addNullChecks,
                                                                             string collectionType = "System.Collections.Generic.List",
@@ -65,5 +90,5 @@ public partial class ClassPropertyBuilder
         => ReplaceMetadata(MetadataNames.PropertyInitializerModifiers, customModifiers);
 
     public ClassPropertyBuilder ReplaceMetadata(string name, object? newValue)
-        => this.Chain(() =>  Metadata.Replace(name, newValue));
+        => this.Chain(() => Metadata.Replace(name, newValue));
 }

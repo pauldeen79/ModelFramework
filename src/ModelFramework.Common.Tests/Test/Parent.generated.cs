@@ -32,11 +32,11 @@ namespace ModelFramework.Common.Tests.Test
             get;
         }
 
-        public Parent(string parentProperty, ModelFramework.Common.Tests.Test.Child child, System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Tests.Test.Child> children)
+        public Parent(string parentProperty, ModelFramework.Common.Tests.Test.Child child, System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Child> children)
         {
             this.ParentProperty = parentProperty;
             this.Child = child;
-            this.Children = children;
+            this.Children = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Tests.Test.Child>(children ?? Enumerable.Empty<ModelFramework.Common.Tests.Test.Child>());
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

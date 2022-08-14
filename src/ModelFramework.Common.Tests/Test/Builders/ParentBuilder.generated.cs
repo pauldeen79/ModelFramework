@@ -29,7 +29,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
             }
         }
 
-        public ModelFramework.Common.Tests.Test.Child Child
+        public ModelFramework.Common.Tests.Test.Builders.ChildBuilder Child
         {
             get
             {
@@ -41,7 +41,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
             }
         }
 
-        public System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Child> Children
+        public System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> Children
         {
             get;
             set;
@@ -50,7 +50,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ModelFramework.Common.Tests.Test.Parent Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Common.Tests.Test.Parent(ParentProperty, Child, Children);
+            return new ModelFramework.Common.Tests.Test.Parent(ParentProperty, Child?.Build(), Children.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -66,24 +66,24 @@ namespace ModelFramework.Common.Tests.Test.Builders
             return this;
         }
 
-        public ParentBuilder WithChild(ModelFramework.Common.Tests.Test.Child child)
+        public ParentBuilder WithChild(ModelFramework.Common.Tests.Test.Builders.ChildBuilder child)
         {
             Child = child;
             return this;
         }
 
-        public ParentBuilder WithChild(System.Func<ModelFramework.Common.Tests.Test.Child> childDelegate)
+        public ParentBuilder WithChild(System.Func<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> childDelegate)
         {
             _childDelegate = new (childDelegate);
             return this;
         }
 
-        public ParentBuilder AddChildren(System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Child> children)
+        public ParentBuilder AddChildren(System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> children)
         {
             return AddChildren(children.ToArray());
         }
 
-        public ParentBuilder AddChildren(params ModelFramework.Common.Tests.Test.Child[] children)
+        public ParentBuilder AddChildren(params ModelFramework.Common.Tests.Test.Builders.ChildBuilder[] children)
         {
             Children.AddRange(children);
             return this;
@@ -91,7 +91,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
 
         public ParentBuilder()
         {
-            Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Child>();
+            Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _parentPropertyDelegate = new (() => string.Empty);
             _childDelegate = new (() => default);
@@ -100,15 +100,15 @@ namespace ModelFramework.Common.Tests.Test.Builders
 
         public ParentBuilder(ModelFramework.Common.Tests.Test.Parent source)
         {
-            Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Child>();
+            Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
             _parentPropertyDelegate = new (() => source.ParentProperty);
-            _childDelegate = new (() => source.Child);
-            Children.AddRange(source.Children);
+            _childDelegate = new (() => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(source.Child));
+            Children.AddRange(source.Children.Select(x => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(x)));
         }
 
         protected System.Lazy<string> _parentPropertyDelegate;
 
-        protected System.Lazy<ModelFramework.Common.Tests.Test.Child> _childDelegate;
+        protected System.Lazy<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> _childDelegate;
     }
 #nullable restore
 }

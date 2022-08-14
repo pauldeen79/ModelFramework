@@ -1,4 +1,7 @@
-﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
+﻿using System.Runtime.CompilerServices;
+using ModelFramework.Objects.Contracts;
+
+namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
 public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBase
 {
@@ -18,17 +21,32 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
         typeBaseBuilder.Properties.ForEach(FixImmutableBuilderProperty);
     }
 
-    private static void FixImmutableBuilderProperty(ClassPropertyBuilder property)
+    private void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
         //ModelFramework.Common.Tests.Test.Contracts.IChild
         var typeName = property.TypeName.FixTypeName();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
             property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
+
+            property.ConvertSinglePropertyToBuilderOnBuilder
+            (
+                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder",
+                useLazyInitialization: UseLazyInitialization,
+                useTargetTypeNewExpressions: UseTargetTypeNewExpressions
+            );
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
             property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
+
+            property.ConvertCollectionPropertyToBuilderOnBuilder
+            (
+                addNullChecks: true,
+                typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
+            );
+
         }
     }
 }

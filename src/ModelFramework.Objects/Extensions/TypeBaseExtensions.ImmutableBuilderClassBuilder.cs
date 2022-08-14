@@ -283,7 +283,7 @@ public static partial class TypeBaseEtensions
             (
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
-                    .Select(x => x.CreateImmutableBuilderInitializationCode(settings) + ";")
+                    .Select(x => $"{x.CreateImmutableBuilderInitializationCode(settings)};")
             );
 
     private static string CreateImmutableBuilderClassConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)

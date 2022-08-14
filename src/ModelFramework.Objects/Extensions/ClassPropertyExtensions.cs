@@ -12,11 +12,11 @@ public static class ClassPropertyExtensions
                     ? CreateCollectionInitialization(property, settings)
                     : CreateSingleInitialization(property, settings)
             ),
-            property.Name,
-            property.Name.ToPascalCase(),
-            property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
-            property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(),
-            settings.ConstructorSettings.AddNullChecks
+            property.Name,                                                       // 0
+            property.Name.ToPascalCase(),                                        // 1
+            property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),         // 2
+            property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(), // 3
+            settings.ConstructorSettings.AddNullChecks                           // 4
                 ? $"if (source.{property.Name} != null) "
                 : ""
         );
