@@ -47,7 +47,7 @@ public class CodeGenerationTests
     }
 
     [Fact]
-    public void Can_Generate_Test_Classes_For_ModelFramework()
+    public void Can_Generate_Test_Classes_For_ModelFramework_WithInheritance()
     {
         // Arrange
         var settings = new CodeGenerationSettings
@@ -59,8 +59,28 @@ public class CodeGenerationTests
         var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
 
         // Act
-        GenerateCode.For<TestBuilders>(settings, multipleContentBuilder);
-        GenerateCode.For<TestRecords>(settings, multipleContentBuilder);
+        GenerateCode.For<TestBuildersWithInheritance>(settings, multipleContentBuilder);
+        GenerateCode.For<TestRecordsWithInheritance>(settings, multipleContentBuilder);
+
+        // Assert
+        Verify(multipleContentBuilder);
+    }
+
+    [Fact]
+    public void Can_Generate_Test_Classes_For_ModelFramework_WithoutInheritance()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
+            generateMultipleFiles: true,
+            dryRun: true
+        );
+        var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
+
+        // Act
+        GenerateCode.For<TestBuildersWithoutInheritance>(settings, multipleContentBuilder);
+        GenerateCode.For<TestRecordsWithoutInheritance>(settings, multipleContentBuilder);
 
         // Assert
         Verify(multipleContentBuilder);
@@ -326,7 +346,7 @@ namespace Test.Builders
     public void NewCollectionTypeName_Is_Set_To_GenericList()
     {
         // Arrange
-        var sut = new TestBuilders();
+        var sut = new TestBuildersWithInheritance();
 
         // Act
         var actual = sut.GetNewCollectionTypeName();
