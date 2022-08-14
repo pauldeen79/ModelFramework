@@ -85,7 +85,10 @@ namespace ModelFramework.Common.Tests.Test.Builders
 
         public ParentBuilder AddChildren(params ModelFramework.Common.Tests.Test.Builders.ChildBuilder[] children)
         {
-            Children.AddRange(children);
+            if (children != null)
+            {
+                Children.AddRange(children);
+            }
             return this;
         }
 
@@ -100,10 +103,14 @@ namespace ModelFramework.Common.Tests.Test.Builders
 
         public ParentBuilder(ModelFramework.Common.Tests.Test.Parent source)
         {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException("source");
+            }
             Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
             _parentPropertyDelegate = new (() => source.ParentProperty);
             _childDelegate = new (() => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(source.Child));
-            Children.AddRange(source.Children.Select(x => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(x)));
+            if (source.Children != null) Children.AddRange(source.Children.Select(x => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(x)));
         }
 
         protected System.Lazy<string> _parentPropertyDelegate;

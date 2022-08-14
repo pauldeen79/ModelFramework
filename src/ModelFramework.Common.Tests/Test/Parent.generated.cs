@@ -34,9 +34,12 @@ namespace ModelFramework.Common.Tests.Test
 
         public Parent(string parentProperty, ModelFramework.Common.Tests.Test.Child child, System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Child> children)
         {
+            if (parentProperty == null) throw new System.ArgumentNullException("parentProperty");
+            if (child == null) throw new System.ArgumentNullException("child");
+            if (children == null) throw new System.ArgumentNullException("children");
             this.ParentProperty = parentProperty;
             this.Child = child;
-            this.Children = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Tests.Test.Child>(children ?? Enumerable.Empty<ModelFramework.Common.Tests.Test.Child>());
+            this.Children = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Tests.Test.Child>(children);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

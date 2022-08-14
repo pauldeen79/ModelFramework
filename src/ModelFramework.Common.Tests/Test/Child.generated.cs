@@ -24,6 +24,7 @@ namespace ModelFramework.Common.Tests.Test
 
         public Child(string childProperty)
         {
+            if (childProperty == null) throw new System.ArgumentNullException("childProperty");
             this.ChildProperty = childProperty;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }

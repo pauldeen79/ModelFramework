@@ -1,11 +1,9 @@
-﻿using System.Runtime.CompilerServices;
-using ModelFramework.Objects.Contracts;
-
-namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
+﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
 public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBase
 {
     protected override bool InheritFromInterfaces => false;
+    protected override bool AddNullChecks => true;
 
     protected override void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         => FixImmutableBuilderProperties(typeBaseBuilder);
@@ -42,7 +40,7 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
 
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
-                addNullChecks: true,
+                addNullChecks: false, // already checked in constructor by using the AddNulLChecks property, see above in this class
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
             );

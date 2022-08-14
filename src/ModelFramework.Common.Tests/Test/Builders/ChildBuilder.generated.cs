@@ -57,6 +57,10 @@ namespace ModelFramework.Common.Tests.Test.Builders
 
         public ChildBuilder(ModelFramework.Common.Tests.Test.Child source)
         {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException("source");
+            }
             _childPropertyDelegate = new (() => source.ChildProperty);
         }
 
