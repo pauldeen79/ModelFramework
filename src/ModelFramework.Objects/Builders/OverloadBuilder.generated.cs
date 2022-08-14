@@ -49,13 +49,13 @@ namespace ModelFramework.Objects.Builders
 
         public OverloadBuilder AddParameter(string name, string typeName)
         {
-            AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));
+            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));
             return this;
         }
 
         public OverloadBuilder AddParameter(string name, System.Type type)
         {
-            AddParameters(new ParameterBuilder().WithName(name).WithType(type));
+            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));
             return this;
         }
 

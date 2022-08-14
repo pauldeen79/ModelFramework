@@ -348,7 +348,11 @@ Property2.AddRange(source.Property2);");
             .AddProperties(new ClassPropertyBuilder()
                 .WithName("TypeName")
                 .WithType(typeof(string))
-                .AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;"))
+                .AddBuilderOverload(new OverloadBuilder()
+                    .WithMethodName("WithType")
+                    .AddParameter("type", typeof(Type))
+                    .WithInitializeExpression("{2} = type.AssemblyQualifiedName;")
+                    .Build()))
             .Build();
 
         // Act
@@ -401,7 +405,11 @@ return this;");
             .AddProperties(new ClassPropertyBuilder()
                 .WithName("TypeNames")
                 .WithType(typeof(IEnumerable<string>))
-                .AddBuilderOverload("AddTypes", typeof(IEnumerable<Type>), "types", "{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));"))
+                .AddBuilderOverload(new OverloadBuilder()
+                    .WithMethodName("AddTypes")
+                    .AddParameter("types", typeof(IEnumerable<Type>))
+                    .WithInitializeExpression("{4}.AddRange(types.Select(x => x.AssemblyQualifiedName));")
+                    .Build()))
             .Build();
 
         // Act

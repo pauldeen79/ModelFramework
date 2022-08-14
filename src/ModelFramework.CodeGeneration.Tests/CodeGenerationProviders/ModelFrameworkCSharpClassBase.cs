@@ -174,24 +174,51 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 
         if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
         {
-            property.AddBuilderOverload("WithType", typeof(Type), "type", "{2} = type.AssemblyQualifiedName;");
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
+                .AddParameter("type", typeof(Type))
+                .WithInitializeExpression("{2} = type.AssemblyQualifiedName;")
+                .Build());
         }
 
         if (property.Name == nameof(IMetadataContainer.Metadata) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IMetadata))
         {
-            property.AddBuilderOverload("AddMetadata", new[] { typeof(string), typeof(object) }, new[] { "name", "value" }, new[] { false, true }, new[] { false, false }, "AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));");
+            property.AddBuilderOverload(new OverloadBuilder()
+                .AddParameter("name", typeof(string))
+                .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
+                .WithInitializeExpression("Add{4}(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));")
+                .Build());
         }
 
         if (property.Name == nameof(IParametersContainer.Parameters) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter))
         {
-            property.AddBuilderOverload("AddParameter", new[] { typeof(string), typeof(Type) }, new[] { "name", "type" }, "AddParameters(new ParameterBuilder().WithName(name).WithType(type));");
-            property.AddBuilderOverload("AddParameter", new[] { typeof(string), typeof(string) }, new[] { "name", "typeName" }, "AddParameters(new ParameterBuilder().WithName(name).WithTypeName(typeName));");
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
+                .AddParameter("name", typeof(string))
+                .AddParameter("type", typeof(Type))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));")
+                .Build());
+
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
+                .AddParameter("name", typeof(string))
+                .AddParameter("typeName", typeof(string))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
+                .Build());
         }
 
         if (property.Name == nameof(ICodeStatementsContainer.CodeStatements) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(ICodeStatement))
         {
-            property.AddBuilderOverload("AddLiteralCodeStatements", typeof(string[]), "statements", false, parameterTypeParamArray: true, "AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));");
-            property.AddBuilderOverload("AddLiteralCodeStatements", typeof(IEnumerable<string>), "statements", "AddLiteralCodeStatements(statements.ToArray());");
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
+                .AddParameters(new ParameterBuilder().WithName("statements").WithType(typeof(string[])).WithIsParamArray())
+                .WithInitializeExpression("Add{4}(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));")
+                .Build());
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
+                .AddParameter("statements", typeof(IEnumerable<string>))
+                .WithInitializeExpression("AddLiteralCodeStatements(statements.ToArray());")
+                .Build());
         }
 
         if (property.Name == nameof(IVisibilityContainer.Visibility))

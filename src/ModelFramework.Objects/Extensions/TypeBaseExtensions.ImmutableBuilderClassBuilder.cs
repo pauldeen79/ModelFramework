@@ -473,21 +473,11 @@ public static partial class TypeBaseEtensions
                                                                        ImmutableBuilderClassSettings settings,
                                                                        bool extensionMethod,
                                                                        IClassProperty property,
-                                                                       Overload overload)
+                                                                       IOverload overload)
         => new ClassMethodBuilder()
             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.AddMethodNameFormatString), property.Name))
             .ConfigureForExtensionMethod(instance, settings, extensionMethod)
-            .AddParameters
-            (
-                overload.GetArguments()
-                .Select(x =>  
-                    new ParameterBuilder()
-                        .WithName(x.Name.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
-                        .WithTypeName(x.TypeName)
-                        .WithIsNullable(x.IsNullable)
-                        .WithIsParamArray(x.IsParamArray)
-                )
-            )
+            .AddParameters(overload.Parameters.Select(x => new ParameterBuilder(x)))
             .AddLiteralCodeStatements(GetImmutableBuilderAddOverloadMethodStatements(settings,
                                                                                      property,
                                                                                      overload.InitializeExpression,
@@ -597,22 +587,12 @@ public static partial class TypeBaseEtensions
                                                                    ImmutableBuilderClassSettings settings,
                                                                    bool extensionMethod,
                                                                    IClassProperty property,
-                                                                   Overload overload)
+                                                                   IOverload overload)
         => new ClassMethodBuilder()
             .WithName(string.Format(overload.MethodName.WhenNullOrEmpty(settings.NameSettings.SetMethodNameFormatString),
                                     property.Name))
             .ConfigureForExtensionMethod(instance, settings, extensionMethod)
-            .AddParameters
-            (
-                overload.GetArguments()
-                .Select(x =>
-                    new ParameterBuilder()
-                        .WithName(x.Name.WhenNullOrEmpty(() => property.Name.ToPascalCase()))
-                        .WithTypeName(x.TypeName)
-                        .WithIsNullable(x.IsNullable)
-                        .WithIsParamArray(x.IsParamArray)
-                )
-            )
+            .AddParameters(overload.Parameters.Select(x => new ParameterBuilder(x)))
             .AddLiteralCodeStatements
             (
                 string.Format(overload.InitializeExpression,
@@ -665,34 +645,8 @@ public static partial class TypeBaseEtensions
             ? "Delegate)"
             : string.Empty;
 
-    private static IEnumerable<Overload> GetOverloads(IClassProperty property)
-    {
-        var argumentTypeArrays = property.Metadata.GetValues<string[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypes).ToArray();
-        var initializeExpressions = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadInitializeExpression).ToArray();
-        var methodNames = property.Metadata.GetStringValues(MetadataNames.CustomBuilderWithOverloadMethodName).ToArray();
-        var argumentNameArrays = property.Metadata.GetValues<string[]>(MetadataNames.CustomBuilderWithOverloadArgumentNames).ToArray();
-        var argumentTypeNullablesArray = property.Metadata.GetValues<bool[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypeNullables).ToArray();
-        var argumentTypeParamArraysArray = property.Metadata.GetValues<bool[]>(MetadataNames.CustomBuilderWithOverloadArgumentTypeParamArrays).ToArray();
-
-        if (argumentTypeArrays.Length != initializeExpressions.Length
-            || argumentTypeArrays.Length != methodNames.Length
-            || argumentTypeArrays.Length != argumentNameArrays.Length
-            || argumentTypeArrays.Length != argumentTypeNullablesArray.Length
-            || argumentTypeArrays.Length != argumentTypeParamArraysArray.Length)
-        {
-            throw new InvalidOperationException("Metadata for immutable builder overload method is incorrect. Metadata needs to be available in the same amount for all metadata types");
-        }
-
-        for (int i = 0; i < argumentTypeArrays.Length; i++)
-        {
-            yield return new Overload(argumentTypeArrays[i],
-                                      initializeExpressions[i],
-                                      methodNames[i],
-                                      argumentNameArrays[i],
-                                      argumentTypeNullablesArray[i],
-                                      argumentTypeParamArraysArray[i]);
-        }
-    }
+    private static IEnumerable<IOverload> GetOverloads(IClassProperty property)
+        => property.Metadata.GetValues<IOverload>(MetadataNames.CustomBuilderWithOverload).ToArray();
 
     private static List<string> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
                                                                        IClassProperty property,
@@ -747,16 +701,16 @@ public static partial class TypeBaseEtensions
             ? (new[]
             {
                 $"if ({property.Name.ToPascalCase()} != null)",
-                    "{",
-                    string.Format(overloadExpression,
-                                  property.Name.ToPascalCase(),
-                                  property.TypeName.FixTypeName(),
-                                  property.TypeName.GetGenericArguments(),
-                                  CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                                  property.Name),
-                    "    }",
-                    "}",
-                    $"return {GetReturnValue(settings, extensionMethod)};"
+                "{",
+                string.Format(overloadExpression,
+                              property.Name.ToPascalCase(),
+                              property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                              property.TypeName.GetGenericArguments(),
+                              CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
+                              property.Name),
+                "    }",
+                "}",
+                $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList()
             : (new[]
             {
