@@ -3,7 +3,7 @@
 public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBase
 {
     protected override bool InheritFromInterfaces => false;
-    protected override bool AddNullChecks => true;
+    protected override bool AddNullChecks => true; // this enables null checks in c'tor of both records and builders
 
     protected override void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         => FixImmutableBuilderProperties(typeBaseBuilder);
@@ -21,7 +21,6 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
 
     private void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
-        //ModelFramework.Common.Tests.Test.Contracts.IChild
         var typeName = property.TypeName.FixTypeName();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
@@ -44,7 +43,6 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
             );
-
         }
     }
 }
