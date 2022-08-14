@@ -173,15 +173,15 @@ namespace Test.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
-        {
-            _testPropertyDelegate = new (testPropertyDelegate);
-            return this;
-        }
-
         public TestClassBuilder WithTestProperty(string testProperty)
         {
             TestProperty = testProperty;
+            return this;
+        }
+
+        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
+        {
+            _testPropertyDelegate = new (testPropertyDelegate);
             return this;
         }
 
@@ -291,15 +291,15 @@ namespace Test.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public TestClassBuilder WithTestProperty(System.Func<TestClassBuilder> testPropertyDelegate)
-        {
-            _testPropertyDelegate = new (testPropertyDelegate);
-            return this;
-        }
-
         public TestClassBuilder WithTestProperty(TestClassBuilder testProperty)
         {
             TestProperty = testProperty;
+            return this;
+        }
+
+        public TestClassBuilder WithTestProperty(System.Func<TestClassBuilder> testPropertyDelegate)
+        {
+            _testPropertyDelegate = new (testPropertyDelegate);
             return this;
         }
 
