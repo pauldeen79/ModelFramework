@@ -15,22 +15,20 @@ public abstract partial class TestCSharpClassBase : ModelFrameworkCSharpClassBas
             return;
         }
 
-        foreach (var property in typeBaseBuilder.Properties)
-        {
-            FixImmutableBuilderProperty(property);
-        }
+        typeBaseBuilder.Properties.ForEach(FixImmutableBuilderProperty);
     }
 
     private static void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
+        //ModelFramework.Common.Tests.Test.Contracts.IChild
         var typeName = property.TypeName.FixTypeName();
-        if (typeName.StartsWith("ModelFramework.Common.Contracts.Test.I", StringComparison.InvariantCulture))
+        if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
-            property.TypeName = typeName.Replace("Contracts.Test.I", "Test.", StringComparison.InvariantCulture);
+            property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
-            property.TypeName = typeName.Replace("Contracts.Test.I", "Test.", StringComparison.InvariantCulture);
+            property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
             return new[]
             {
                 new InterfaceBuilder()
-                    .WithNamespace(@"ModelFramework.Common.Contracts.Test")
+                    .WithNamespace(@"ModelFramework.Common.Tests.Test.Contracts")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
@@ -32,7 +32,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                             .WithTypeName(@"System.String"))
                     .WithName(@"IChild"),
                 new InterfaceBuilder()
-                    .WithNamespace(@"ModelFramework.Common.Contracts.Test")
+                    .WithNamespace(@"ModelFramework.Common.Tests.Test.Contracts")
                     .AddProperties(
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
@@ -41,11 +41,11 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Child")
-                            .WithTypeName(@"ModelFramework.Common.Contracts.Test.IChild"),
+                            .WithTypeName(@"ModelFramework.Common.Tests.Test.Contracts.IChild"),
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Children")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Contracts.Test.IChild, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Tests.Test.Contracts.IChild, ModelFramework.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]"))
                     .WithName(@"IParent"),
             }.Select(x => x.Build()).ToArray();
         }

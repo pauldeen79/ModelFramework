@@ -59,8 +59,8 @@ public class CodeGenerationTests
         var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
 
         // Act
-        GenerateCode.For<PlainBuilders>(settings, multipleContentBuilder);
-        GenerateCode.For<CodeGenerationProviders.TestRecords>(settings, multipleContentBuilder);
+        GenerateCode.For<TestBuilders>(settings, multipleContentBuilder);
+        GenerateCode.For<TestRecords>(settings, multipleContentBuilder);
 
         // Assert
         Verify(multipleContentBuilder);
