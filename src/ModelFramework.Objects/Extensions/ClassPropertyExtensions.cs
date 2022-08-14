@@ -2,8 +2,8 @@
 
 public static class ClassPropertyExtensions
 {
-    public static string CreateImmutableBuilderInitializationCode(this IClassProperty property,
-                                                                  ImmutableBuilderClassSettings settings)
+    internal static string CreateImmutableBuilderInitializationCode(this IClassProperty property,
+                                                                    ImmutableBuilderClassSettings settings)
         => string.Format
         (
             property.Metadata.GetStringValue

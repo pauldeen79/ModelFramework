@@ -40,11 +40,21 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
 
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
-                addNullChecks: false, // already checked in constructor by using the AddNulLChecks property, see above in this class
+                addNullChecks: false, // already checked in constructor by using the AddNullChecks property, see above in this class
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 argumentType: null, // using builders namespace instead
                 buildersNamespace: "ModelFramework.Common.Tests.Test.Builders"
             );
+        }
+        else if (typeName.IsStringTypeName())
+        {
+            property.ConvertSinglePropertyToBuilderOnBuilder
+            (
+                argumentType: typeof(System.Text.StringBuilder).FullName,
+                customBuilderMethodParameterExpression: "{0}{2}.ToString()",
+                customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
+            );
+            property.SetDefaultValueForBuilderClassConstructor(new Literal("new System.Text.StringBuilder()"));
         }
     }
 }

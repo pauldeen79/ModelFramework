@@ -17,7 +17,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
 #nullable enable
     public partial class ParentBuilder
     {
-        public string ParentProperty
+        public System.Text.StringBuilder ParentProperty
         {
             get
             {
@@ -50,17 +50,17 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ModelFramework.Common.Tests.Test.Parent Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Common.Tests.Test.Parent(ParentProperty, Child?.Build(), Children.Select(x => x.Build()));
+            return new ModelFramework.Common.Tests.Test.Parent(ParentProperty.ToString(), Child?.Build(), Children.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ParentBuilder WithParentProperty(string parentProperty)
+        public ParentBuilder WithParentProperty(System.Text.StringBuilder parentProperty)
         {
             ParentProperty = parentProperty;
             return this;
         }
 
-        public ParentBuilder WithParentProperty(System.Func<string> parentPropertyDelegate)
+        public ParentBuilder WithParentProperty(System.Func<System.Text.StringBuilder> parentPropertyDelegate)
         {
             _parentPropertyDelegate = new (parentPropertyDelegate);
             return this;
@@ -96,7 +96,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
         {
             Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _parentPropertyDelegate = new (() => string.Empty);
+            _parentPropertyDelegate = new (() => new System.Text.StringBuilder());
             _childDelegate = new (() => default);
             #pragma warning restore CS8603 // Possible null reference return.
         }
@@ -108,12 +108,12 @@ namespace ModelFramework.Common.Tests.Test.Builders
                 throw new System.ArgumentNullException("source");
             }
             Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
-            _parentPropertyDelegate = new (() => source.ParentProperty);
+            _parentPropertyDelegate = new (() => new System.Text.StringBuilder(source.ParentProperty));
             _childDelegate = new (() => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(source.Child));
             if (source.Children != null) Children.AddRange(source.Children.Select(x => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(x)));
         }
 
-        protected System.Lazy<string> _parentPropertyDelegate;
+        protected System.Lazy<System.Text.StringBuilder> _parentPropertyDelegate;
 
         protected System.Lazy<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> _childDelegate;
     }

@@ -17,7 +17,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
 #nullable enable
     public partial class ChildBuilder
     {
-        public string ChildProperty
+        public System.Text.StringBuilder ChildProperty
         {
             get
             {
@@ -32,17 +32,17 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ModelFramework.Common.Tests.Test.Child Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Common.Tests.Test.Child(ChildProperty);
+            return new ModelFramework.Common.Tests.Test.Child(ChildProperty.ToString());
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ChildBuilder WithChildProperty(string childProperty)
+        public ChildBuilder WithChildProperty(System.Text.StringBuilder childProperty)
         {
             ChildProperty = childProperty;
             return this;
         }
 
-        public ChildBuilder WithChildProperty(System.Func<string> childPropertyDelegate)
+        public ChildBuilder WithChildProperty(System.Func<System.Text.StringBuilder> childPropertyDelegate)
         {
             _childPropertyDelegate = new (childPropertyDelegate);
             return this;
@@ -51,7 +51,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ChildBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _childPropertyDelegate = new (() => string.Empty);
+            _childPropertyDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -61,10 +61,10 @@ namespace ModelFramework.Common.Tests.Test.Builders
             {
                 throw new System.ArgumentNullException("source");
             }
-            _childPropertyDelegate = new (() => source.ChildProperty);
+            _childPropertyDelegate = new (() => new System.Text.StringBuilder(source.ChildProperty));
         }
 
-        protected System.Lazy<string> _childPropertyDelegate;
+        protected System.Lazy<System.Text.StringBuilder> _childPropertyDelegate;
     }
 #nullable restore
 }
