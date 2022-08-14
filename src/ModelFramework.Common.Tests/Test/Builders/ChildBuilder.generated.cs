@@ -32,7 +32,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ModelFramework.Common.Tests.Test.Child Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Common.Tests.Test.Child(ChildProperty.ToString());
+            return new ModelFramework.Common.Tests.Test.Child(ChildProperty?.ToString());
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -51,7 +51,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ChildBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _childPropertyDelegate = new (() => new System.Text.StringBuilder());
+            _childPropertyDelegate = new (() => default);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 

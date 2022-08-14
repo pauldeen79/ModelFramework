@@ -24,6 +24,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         var typeName = property.TypeName.FixTypeName();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
+            //TODO: Add new extension method for this, e.g. ReplaceNamespace(string oldNamespace, string newNamespace, bool remove interfacePrefix)
             property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
 
             property.ConvertSinglePropertyToBuilderOnBuilder
@@ -48,13 +49,15 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         }
         else if (typeName.IsStringTypeName())
         {
+            //TODO: Add new extension method for this, e.g. ConvertSingleStringPropertyToStringBuilderOnBuilder, which also includes setting the default value based on IsNullable (possibly override whether it has to be initialized or not)
             property.ConvertSinglePropertyToBuilderOnBuilder
             (
                 argumentType: typeof(System.Text.StringBuilder).FullName,
-                customBuilderMethodParameterExpression: "{0}{2}.ToString()",
+                //TODO: Get rid of these ugly {0}{1}{2} things, by using named format strings e.g. {PropertyName}, {PropertyNamePascalCased}, {Nullable} which in turn can also be added as constants for type safety
+                customBuilderMethodParameterExpression: "{0}?.ToString()",
                 customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
             );
-            property.SetDefaultValueForBuilderClassConstructor(new Literal("new System.Text.StringBuilder()"));
+            property.SetDefaultValueForBuilderClassConstructor(/*new Literal("new System.Text.StringBuilder()")*/ new Literal("default"));
         }
     }
 }
