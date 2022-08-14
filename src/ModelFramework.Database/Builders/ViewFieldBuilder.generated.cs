@@ -83,23 +83,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ViewFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ViewFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ViewFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IViewField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -107,51 +90,9 @@ namespace ModelFramework.Database.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ViewFieldBuilder WithAlias(System.Func<string> aliasDelegate)
+        public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
         {
-            _aliasDelegate = new (aliasDelegate);
-            return this;
-        }
-
-        public ViewFieldBuilder WithAlias(string alias)
-        {
-            Alias = alias;
-            return this;
-        }
-
-        public ViewFieldBuilder WithExpression(System.Func<string> expressionDelegate)
-        {
-            _expressionDelegate = new (expressionDelegate);
-            return this;
-        }
-
-        public ViewFieldBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
-        }
-
-        public ViewFieldBuilder WithName(System.Func<string> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ViewFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
-        public ViewFieldBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
-        {
-            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
-            return this;
-        }
-
-        public ViewFieldBuilder WithSourceObjectName(string sourceObjectName)
-        {
-            SourceObjectName = sourceObjectName;
+            SourceSchemaName = sourceSchemaName;
             return this;
         }
 
@@ -161,9 +102,68 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewFieldBuilder WithSourceSchemaName(string sourceSchemaName)
+        public ViewFieldBuilder WithSourceObjectName(string sourceObjectName)
         {
-            SourceSchemaName = sourceSchemaName;
+            SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewFieldBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
+        {
+            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
+            return this;
+        }
+
+        public ViewFieldBuilder WithExpression(string expression)
+        {
+            Expression = expression;
+            return this;
+        }
+
+        public ViewFieldBuilder WithExpression(System.Func<string> expressionDelegate)
+        {
+            _expressionDelegate = new (expressionDelegate);
+            return this;
+        }
+
+        public ViewFieldBuilder WithAlias(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
+
+        public ViewFieldBuilder WithAlias(System.Func<string> aliasDelegate)
+        {
+            _aliasDelegate = new (aliasDelegate);
+            return this;
+        }
+
+        public ViewFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewFieldBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ViewFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ViewFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ViewFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

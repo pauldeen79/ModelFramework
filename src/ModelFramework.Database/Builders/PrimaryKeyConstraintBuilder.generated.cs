@@ -53,34 +53,6 @@ namespace ModelFramework.Database.Builders
             }
         }
 
-        public PrimaryKeyConstraintBuilder AddFields(params ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder[] fields)
-        {
-            Fields.AddRange(fields);
-            return this;
-        }
-
-        public PrimaryKeyConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> fields)
-        {
-            return AddFields(fields.ToArray());
-        }
-
-        public PrimaryKeyConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public PrimaryKeyConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public PrimaryKeyConstraintBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IPrimaryKeyConstraint Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -88,15 +60,20 @@ namespace ModelFramework.Database.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public PrimaryKeyConstraintBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
+        public PrimaryKeyConstraintBuilder AddFields(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder> fields)
         {
-            _fileGroupNameDelegate = new (fileGroupNameDelegate);
+            return AddFields(fields.ToArray());
+        }
+
+        public PrimaryKeyConstraintBuilder AddFields(params ModelFramework.Database.Builders.PrimaryKeyConstraintFieldBuilder[] fields)
+        {
+            Fields.AddRange(fields);
             return this;
         }
 
-        public PrimaryKeyConstraintBuilder WithFileGroupName(string fileGroupName)
+        public PrimaryKeyConstraintBuilder WithName(string name)
         {
-            FileGroupName = fileGroupName;
+            Name = name;
             return this;
         }
 
@@ -106,9 +83,32 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public PrimaryKeyConstraintBuilder WithName(string name)
+        public PrimaryKeyConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Name = name;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public PrimaryKeyConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public PrimaryKeyConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public PrimaryKeyConstraintBuilder WithFileGroupName(string fileGroupName)
+        {
+            FileGroupName = fileGroupName;
+            return this;
+        }
+
+        public PrimaryKeyConstraintBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
+        {
+            _fileGroupNameDelegate = new (fileGroupNameDelegate);
             return this;
         }
 

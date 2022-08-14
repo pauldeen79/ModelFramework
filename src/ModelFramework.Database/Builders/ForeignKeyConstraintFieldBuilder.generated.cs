@@ -35,28 +35,17 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ForeignKeyConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ForeignKeyConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ForeignKeyConstraintFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IForeignKeyConstraintField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.ForeignKeyConstraintField(Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public ForeignKeyConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
         }
 
         public ForeignKeyConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
@@ -65,9 +54,20 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ForeignKeyConstraintFieldBuilder WithName(string name)
+        public ForeignKeyConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Name = name;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ForeignKeyConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ForeignKeyConstraintFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

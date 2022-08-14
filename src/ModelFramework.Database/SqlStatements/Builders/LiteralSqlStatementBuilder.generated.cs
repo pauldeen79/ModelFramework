@@ -35,28 +35,17 @@ namespace ModelFramework.Database.SqlStatements.Builders
             set;
         }
 
-        public LiteralSqlStatementBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public LiteralSqlStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public LiteralSqlStatementBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.ISqlStatement Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public LiteralSqlStatementBuilder WithStatement(string statement)
+        {
+            Statement = statement;
+            return this;
         }
 
         public LiteralSqlStatementBuilder WithStatement(System.Func<string> statementDelegate)
@@ -65,9 +54,20 @@ namespace ModelFramework.Database.SqlStatements.Builders
             return this;
         }
 
-        public LiteralSqlStatementBuilder WithStatement(string statement)
+        public LiteralSqlStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Statement = statement;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public LiteralSqlStatementBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public LiteralSqlStatementBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

@@ -35,15 +35,22 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             }
         }
 
-        public LiteralCodeStatementBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        public ModelFramework.Objects.Contracts.ICodeStatement Build()
         {
-            Metadata.AddRange(metadata);
-            return this;
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement, Metadata.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public LiteralCodeStatementBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
             return AddMetadata(metadata.ToArray());
+        }
+
+        public LiteralCodeStatementBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
         }
 
         public LiteralCodeStatementBuilder AddMetadata(string name, object? value)
@@ -52,22 +59,15 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             return this;
         }
 
-        public ModelFramework.Objects.Contracts.ICodeStatement Build()
+        public LiteralCodeStatementBuilder WithStatement(string statement)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement, Metadata.Select(x => x.Build()));
-            #pragma warning restore CS8604 // Possible null reference argument.
+            Statement = statement;
+            return this;
         }
 
         public LiteralCodeStatementBuilder WithStatement(System.Func<string> statementDelegate)
         {
             _statementDelegate = new (statementDelegate);
-            return this;
-        }
-
-        public LiteralCodeStatementBuilder WithStatement(string statement)
-        {
-            Statement = statement;
             return this;
         }
 

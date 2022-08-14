@@ -59,23 +59,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public StoredProcedureParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public StoredProcedureParameterBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IStoredProcedureParameter Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -83,27 +66,9 @@ namespace ModelFramework.Database.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public StoredProcedureParameterBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
+        public StoredProcedureParameterBuilder WithType(string type)
         {
-            _defaultValueDelegate = new (defaultValueDelegate);
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithName(System.Func<string> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public StoredProcedureParameterBuilder WithName(string name)
-        {
-            Name = name;
+            Type = type;
             return this;
         }
 
@@ -113,9 +78,44 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public StoredProcedureParameterBuilder WithType(string type)
+        public StoredProcedureParameterBuilder WithDefaultValue(string defaultValue)
         {
-            Type = type;
+            DefaultValue = defaultValue;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
+        {
+            _defaultValueDelegate = new (defaultValueDelegate);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public StoredProcedureParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public StoredProcedureParameterBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

@@ -35,28 +35,17 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public UniqueConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public UniqueConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public UniqueConstraintFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IUniqueConstraintField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.UniqueConstraintField(Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public UniqueConstraintFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
         }
 
         public UniqueConstraintFieldBuilder WithName(System.Func<string> nameDelegate)
@@ -65,9 +54,20 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public UniqueConstraintFieldBuilder WithName(string name)
+        public UniqueConstraintFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Name = name;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public UniqueConstraintFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public UniqueConstraintFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

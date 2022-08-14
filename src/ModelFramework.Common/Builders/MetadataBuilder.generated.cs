@@ -48,15 +48,9 @@ namespace ModelFramework.Common.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public MetadataBuilder WithName(System.Func<string> nameDelegate)
+        public MetadataBuilder WithValue(object? value)
         {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public MetadataBuilder WithName(string name)
-        {
-            Name = name;
+            Value = value;
             return this;
         }
 
@@ -66,9 +60,15 @@ namespace ModelFramework.Common.Builders
             return this;
         }
 
-        public MetadataBuilder WithValue(object? value)
+        public MetadataBuilder WithName(string name)
         {
-            Value = value;
+            Name = name;
+            return this;
+        }
+
+        public MetadataBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 

@@ -19,112 +19,17 @@ namespace ModelFramework.Objects.Builders
         where TEntity : ModelFramework.Objects.Contracts.ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
-        public TBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public TBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
-        {
-            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
-        }
-
-        public TBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
-        {
-            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
-        {
-            return AddGenericTypeArguments(genericTypeArguments.ToArray());
-        }
-
-        public TBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
-        {
-            GenericTypeArguments.AddRange(genericTypeArguments);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
-        {
-            return AddInterfaces(interfaces.ToArray());
-        }
-
-        public TBuilder AddInterfaces(params string[] interfaces)
-        {
-            Interfaces.AddRange(interfaces);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public TBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
-        {
-            Methods.AddRange(methods);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
-        {
-            return AddMethods(methods.ToArray());
-        }
-
-        public TBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
-        {
-            Properties.AddRange(properties);
-            return (TBuilder)this;
-        }
-
-        public TBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
-        {
-            return AddProperties(properties.ToArray());
-        }
-
         public abstract TEntity Build();
 
-        public TBuilder WithName(System.Func<string> nameDelegate)
+        public TBuilder WithNamespace(string @namespace)
         {
-            _nameDelegate = new (nameDelegate);
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithName(string name)
-        {
-            Name = name;
+            Namespace = @namespace;
             return (TBuilder)this;
         }
 
         public TBuilder WithNamespace(System.Func<string> namespaceDelegate)
         {
             _namespaceDelegate = new (@namespaceDelegate);
-            return (TBuilder)this;
-        }
-
-        public TBuilder WithNamespace(string @namespace)
-        {
-            Namespace = @namespace;
             return (TBuilder)this;
         }
 
@@ -140,6 +45,78 @@ namespace ModelFramework.Objects.Builders
             return (TBuilder)this;
         }
 
+        public TBuilder AddInterfaces(System.Collections.Generic.IEnumerable<string> interfaces)
+        {
+            return AddInterfaces(interfaces.ToArray());
+        }
+
+        public TBuilder AddInterfaces(params string[] interfaces)
+        {
+            Interfaces.AddRange(interfaces);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddProperties(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassPropertyBuilder> properties)
+        {
+            return AddProperties(properties.ToArray());
+        }
+
+        public TBuilder AddProperties(params ModelFramework.Objects.Builders.ClassPropertyBuilder[] properties)
+        {
+            Properties.AddRange(properties);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddMethods(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ClassMethodBuilder> methods)
+        {
+            return AddMethods(methods.ToArray());
+        }
+
+        public TBuilder AddMethods(params ModelFramework.Objects.Builders.ClassMethodBuilder[] methods)
+        {
+            Methods.AddRange(methods);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddGenericTypeArguments(System.Collections.Generic.IEnumerable<string> genericTypeArguments)
+        {
+            return AddGenericTypeArguments(genericTypeArguments.ToArray());
+        }
+
+        public TBuilder AddGenericTypeArguments(params string[] genericTypeArguments)
+        {
+            GenericTypeArguments.AddRange(genericTypeArguments);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddGenericTypeArgumentConstraints(System.Collections.Generic.IEnumerable<string> genericTypeArgumentConstraints)
+        {
+            return AddGenericTypeArgumentConstraints(genericTypeArgumentConstraints.ToArray());
+        }
+
+        public TBuilder AddGenericTypeArgumentConstraints(params string[] genericTypeArgumentConstraints)
+        {
+            GenericTypeArgumentConstraints.AddRange(genericTypeArgumentConstraints);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public TBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return (TBuilder)this;
+        }
+
         public TBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
@@ -149,6 +126,29 @@ namespace ModelFramework.Objects.Builders
         public TBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
         {
             _visibilityDelegate = new (visibilityDelegate);
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithName(string name)
+        {
+            Name = name;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        {
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public TBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
             return (TBuilder)this;
         }
 

@@ -59,15 +59,16 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
-        public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        public ModelFramework.Objects.Contracts.IEnum Build()
         {
-            Attributes.AddRange(attributes);
-            return this;
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
         {
-            return AddAttributes(attributes.ToArray());
+            return AddMembers(members.ToArray());
         }
 
         public EnumBuilder AddMembers(params ModelFramework.Objects.Builders.EnumMemberBuilder[] members)
@@ -76,14 +77,14 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumBuilder AddMembers(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.EnumMemberBuilder> members)
+        public EnumBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            return AddMembers(members.ToArray());
+            return AddAttributes(attributes.ToArray());
         }
 
-        public EnumBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        public EnumBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
         {
-            Metadata.AddRange(metadata);
+            Attributes.AddRange(attributes);
             return this;
         }
 
@@ -92,28 +93,27 @@ namespace ModelFramework.Objects.Builders
             return AddMetadata(metadata.ToArray());
         }
 
+        public EnumBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
         public EnumBuilder AddMetadata(string name, object? value)
         {
             AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
-        public ModelFramework.Objects.Contracts.IEnum Build()
+        public EnumBuilder WithName(string name)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
-            #pragma warning restore CS8604 // Possible null reference argument.
+            Name = name;
+            return this;
         }
 
         public EnumBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public EnumBuilder WithName(string name)
-        {
-            Name = name;
             return this;
         }
 

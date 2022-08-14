@@ -95,52 +95,11 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ViewOrderByFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ViewOrderByFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IViewOrderByField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.ViewOrderByField(IsDescending, SourceSchemaName, SourceObjectName, Expression, Alias, Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
-        }
-
-        public ViewOrderByFieldBuilder WithAlias(System.Func<string> aliasDelegate)
-        {
-            _aliasDelegate = new (aliasDelegate);
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithAlias(string alias)
-        {
-            Alias = alias;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithExpression(System.Func<string> expressionDelegate)
-        {
-            _expressionDelegate = new (expressionDelegate);
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithExpression(string expression)
-        {
-            Expression = expression;
-            return this;
         }
 
         public ViewOrderByFieldBuilder WithIsDescending(bool isDescending = true)
@@ -155,27 +114,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewOrderByFieldBuilder WithName(System.Func<string> nameDelegate)
+        public ViewOrderByFieldBuilder WithSourceSchemaName(string sourceSchemaName)
         {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithName(string name)
-        {
-            Name = name;
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
-        {
-            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
-            return this;
-        }
-
-        public ViewOrderByFieldBuilder WithSourceObjectName(string sourceObjectName)
-        {
-            SourceObjectName = sourceObjectName;
+            SourceSchemaName = sourceSchemaName;
             return this;
         }
 
@@ -185,9 +126,68 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewOrderByFieldBuilder WithSourceSchemaName(string sourceSchemaName)
+        public ViewOrderByFieldBuilder WithSourceObjectName(string sourceObjectName)
         {
-            SourceSchemaName = sourceSchemaName;
+            SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
+        {
+            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithExpression(string expression)
+        {
+            Expression = expression;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithExpression(System.Func<string> expressionDelegate)
+        {
+            _expressionDelegate = new (expressionDelegate);
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithAlias(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithAlias(System.Func<string> aliasDelegate)
+        {
+            _aliasDelegate = new (aliasDelegate);
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ViewOrderByFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ViewOrderByFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

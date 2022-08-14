@@ -47,23 +47,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public IndexFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public IndexFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public IndexFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IIndexField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -83,15 +66,32 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public IndexFieldBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
         public IndexFieldBuilder WithName(System.Func<string> nameDelegate)
         {
             _nameDelegate = new (nameDelegate);
             return this;
         }
 
-        public IndexFieldBuilder WithName(string name)
+        public IndexFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Name = name;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public IndexFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public IndexFieldBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

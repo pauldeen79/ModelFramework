@@ -59,23 +59,6 @@ namespace ModelFramework.Database.Builders
             }
         }
 
-        public ViewConditionBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ViewConditionBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ViewConditionBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IViewCondition Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -83,15 +66,9 @@ namespace ModelFramework.Database.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ViewConditionBuilder WithCombination(System.Func<string> combinationDelegate)
+        public ViewConditionBuilder WithExpression(string expression)
         {
-            _combinationDelegate = new (combinationDelegate);
-            return this;
-        }
-
-        public ViewConditionBuilder WithCombination(string combination)
-        {
-            Combination = combination;
+            Expression = expression;
             return this;
         }
 
@@ -101,21 +78,44 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewConditionBuilder WithExpression(string expression)
+        public ViewConditionBuilder WithCombination(string combination)
         {
-            Expression = expression;
+            Combination = combination;
             return this;
         }
 
-        public ViewConditionBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
+        public ViewConditionBuilder WithCombination(System.Func<string> combinationDelegate)
         {
-            _fileGroupNameDelegate = new (fileGroupNameDelegate);
+            _combinationDelegate = new (combinationDelegate);
+            return this;
+        }
+
+        public ViewConditionBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ViewConditionBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ViewConditionBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
         public ViewConditionBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
+            return this;
+        }
+
+        public ViewConditionBuilder WithFileGroupName(System.Func<string> fileGroupNameDelegate)
+        {
+            _fileGroupNameDelegate = new (fileGroupNameDelegate);
             return this;
         }
 

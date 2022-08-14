@@ -71,34 +71,11 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public ViewSourceBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ViewSourceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ViewSourceBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IViewSource Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
-        }
-
-        public ViewSourceBuilder WithAlias(System.Func<string> aliasDelegate)
-        {
-            _aliasDelegate = new (aliasDelegate);
-            return this;
         }
 
         public ViewSourceBuilder WithAlias(string alias)
@@ -107,27 +84,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewSourceBuilder WithName(System.Func<string> nameDelegate)
+        public ViewSourceBuilder WithAlias(System.Func<string> aliasDelegate)
         {
-            _nameDelegate = new (nameDelegate);
+            _aliasDelegate = new (aliasDelegate);
             return this;
         }
 
-        public ViewSourceBuilder WithName(string name)
+        public ViewSourceBuilder WithSourceSchemaName(string sourceSchemaName)
         {
-            Name = name;
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
-        {
-            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceObjectName(string sourceObjectName)
-        {
-            SourceObjectName = sourceObjectName;
+            SourceSchemaName = sourceSchemaName;
             return this;
         }
 
@@ -137,9 +102,44 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewSourceBuilder WithSourceSchemaName(string sourceSchemaName)
+        public ViewSourceBuilder WithSourceObjectName(string sourceObjectName)
         {
-            SourceSchemaName = sourceSchemaName;
+            SourceObjectName = sourceObjectName;
+            return this;
+        }
+
+        public ViewSourceBuilder WithSourceObjectName(System.Func<string> sourceObjectNameDelegate)
+        {
+            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
+            return this;
+        }
+
+        public ViewSourceBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public ViewSourceBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public ViewSourceBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ViewSourceBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public ViewSourceBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

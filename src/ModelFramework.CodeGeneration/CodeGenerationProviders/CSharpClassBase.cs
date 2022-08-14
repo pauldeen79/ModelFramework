@@ -32,8 +32,6 @@ public abstract class CSharpClassBase : ClassBase
         where TEntity : ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     { }
-    protected virtual void PostProcessImmutableBuilderClass(ClassBuilder classBuilder) { }
-    protected virtual void PostProcessImmutableEntityClass(ClassBuilder classBuilder) { }
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
                                                      string entitiesNamespace,
@@ -163,10 +161,7 @@ public abstract class CSharpClassBase : ClassBase
     protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
         => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
-            .WithPartial()
-            .AddMethods(CreateExtraOverloads(cls))
-            .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))))
-            .With(x => PostProcessImmutableBuilderClass(x));
+            .WithPartial();
 
     protected ClassBuilder CreateNonGenericBuilder(IClass cls, string @namespace)
         => cls.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
@@ -176,9 +171,7 @@ public abstract class CSharpClassBase : ClassBase
     protected ClassBuilder CreateBuilderExtensions(IClass cls, string @namespace)
         => cls.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
-            .WithPartial()
-            .AddMethods(CreateExtraOverloads(cls))
-            .With(x => x.Methods.Sort(new Comparison<ClassMethodBuilder>((x, y) => CreateSortString(x).CompareTo(CreateSortString(y)))));
+            .WithPartial();
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
         => new ImmutableBuilderClassSettings
@@ -226,7 +219,6 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
-            .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
@@ -239,7 +231,6 @@ public abstract class CSharpClassBase : ClassBase
             .WithRecord()
             .WithPartial()
             .AddInterfaces((new[] { $"{iinterface.Namespace}.{iinterface.Name}" }).Where(_ => InheritFromInterfaces))
-            .With(x => PostProcessImmutableEntityClass(x))
             .Build();
 
     private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
@@ -250,9 +241,5 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .With(x => PostProcessImmutableEntityClass(x))
             .Build();
-
-    private static string CreateSortString(ClassMethodBuilder methodBuilder)
-        => $"{methodBuilder.Name}({string.Join(", ", methodBuilder.Parameters.Select(x => x.TypeName))})";
 }

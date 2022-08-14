@@ -47,23 +47,6 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
-        public AttributeParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public AttributeParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public AttributeParameterBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -71,15 +54,9 @@ namespace ModelFramework.Objects.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public AttributeParameterBuilder WithName(System.Func<string> nameDelegate)
+        public AttributeParameterBuilder WithValue(object value)
         {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public AttributeParameterBuilder WithName(string name)
-        {
-            Name = name;
+            Value = value;
             return this;
         }
 
@@ -89,9 +66,32 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public AttributeParameterBuilder WithValue(object value)
+        public AttributeParameterBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Value = value;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public AttributeParameterBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public AttributeParameterBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
+            return this;
+        }
+
+        public AttributeParameterBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public AttributeParameterBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 

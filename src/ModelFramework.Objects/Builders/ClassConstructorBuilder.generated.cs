@@ -125,80 +125,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public ClassConstructorBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
-        {
-            CodeStatements.AddRange(codeStatements);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
-        {
-            return AddCodeStatements(codeStatements.ToArray());
-        }
-
-        public ClassConstructorBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
-        {
-            AddLiteralCodeStatements(statements.ToArray());
-            return this;
-        }
-
-        public ClassConstructorBuilder AddLiteralCodeStatements(params string[] statements)
-        {
-            AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
-            return this;
-        }
-
-        public ClassConstructorBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public ClassConstructorBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
-        public ClassConstructorBuilder AddParameter(string name, string typeName)
-        {
-            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));
-            return this;
-        }
-
-        public ClassConstructorBuilder AddParameter(string name, System.Type type)
-        {
-            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));
-            return this;
-        }
-
-        public ClassConstructorBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
-        {
-            Parameters.AddRange(parameters);
-            return this;
-        }
-
-        public ClassConstructorBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
-        {
-            return AddParameters(parameters.ToArray());
-        }
-
         public ModelFramework.Objects.Contracts.IClassConstructor Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -206,15 +132,9 @@ namespace ModelFramework.Objects.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ClassConstructorBuilder WithAbstract(bool @abstract = true)
+        public ClassConstructorBuilder WithChainCall(string chainCall)
         {
-            Abstract = @abstract;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
+            ChainCall = chainCall;
             return this;
         }
 
@@ -224,33 +144,20 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithChainCall(string chainCall)
+        public ClassConstructorBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            ChainCall = chainCall;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public ClassConstructorBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
             return this;
         }
 
-        public ClassConstructorBuilder WithOverride(bool @override = true)
+        public ClassConstructorBuilder AddMetadata(string name, object? value)
         {
-            Override = @override;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithOverride(System.Func<bool> overrideDelegate)
-        {
-            _overrideDelegate = new (@overrideDelegate);
-            return this;
-        }
-
-        public ClassConstructorBuilder WithProtected(bool @protected = true)
-        {
-            Protected = @protected;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithProtected(System.Func<bool> protectedDelegate)
-        {
-            _protectedDelegate = new (@protectedDelegate);
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
@@ -278,6 +185,42 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassConstructorBuilder WithAbstract(bool @abstract = true)
+        {
+            Abstract = @abstract;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithAbstract(System.Func<bool> abstractDelegate)
+        {
+            _abstractDelegate = new (@abstractDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder WithProtected(bool @protected = true)
+        {
+            Protected = @protected;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithProtected(System.Func<bool> protectedDelegate)
+        {
+            _protectedDelegate = new (@protectedDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder WithOverride(bool @override = true)
+        {
+            Override = @override;
+            return this;
+        }
+
+        public ClassConstructorBuilder WithOverride(System.Func<bool> overrideDelegate)
+        {
+            _overrideDelegate = new (@overrideDelegate);
+            return this;
+        }
+
         public ClassConstructorBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
@@ -287,6 +230,63 @@ namespace ModelFramework.Objects.Builders
         public ClassConstructorBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
         {
             _visibilityDelegate = new (visibilityDelegate);
+            return this;
+        }
+
+        public ClassConstructorBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
+        {
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public ClassConstructorBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
+            return this;
+        }
+
+        public ClassConstructorBuilder AddCodeStatements(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatementBuilder> codeStatements)
+        {
+            return AddCodeStatements(codeStatements.ToArray());
+        }
+
+        public ClassConstructorBuilder AddCodeStatements(params ModelFramework.Objects.Contracts.ICodeStatementBuilder[] codeStatements)
+        {
+            CodeStatements.AddRange(codeStatements);
+            return this;
+        }
+
+        public ClassConstructorBuilder AddLiteralCodeStatements(params string[] statements)
+        {
+            AddCodeStatements(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));
+            return this;
+        }
+
+        public ClassConstructorBuilder AddLiteralCodeStatements(System.Collections.Generic.IEnumerable<string> statements)
+        {
+            AddLiteralCodeStatements(statements.ToArray());
+            return this;
+        }
+
+        public ClassConstructorBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
+        {
+            return AddParameters(parameters.ToArray());
+        }
+
+        public ClassConstructorBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
+        {
+            Parameters.AddRange(parameters);
+            return this;
+        }
+
+        public ClassConstructorBuilder AddParameter(string name, System.Type type)
+        {
+            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));
+            return this;
+        }
+
+        public ClassConstructorBuilder AddParameter(string name, string typeName)
+        {
+            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));
             return this;
         }
 

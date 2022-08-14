@@ -59,23 +59,6 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public DefaultValueConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public DefaultValueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public DefaultValueConstraintBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.IDefaultValueConstraint Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -83,15 +66,9 @@ namespace ModelFramework.Database.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public DefaultValueConstraintBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
+        public DefaultValueConstraintBuilder WithFieldName(string fieldName)
         {
-            _defaultValueDelegate = new (defaultValueDelegate);
-            return this;
-        }
-
-        public DefaultValueConstraintBuilder WithDefaultValue(string defaultValue)
-        {
-            DefaultValue = defaultValue;
+            FieldName = fieldName;
             return this;
         }
 
@@ -101,9 +78,21 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public DefaultValueConstraintBuilder WithFieldName(string fieldName)
+        public DefaultValueConstraintBuilder WithDefaultValue(string defaultValue)
         {
-            FieldName = fieldName;
+            DefaultValue = defaultValue;
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithDefaultValue(System.Func<string> defaultValueDelegate)
+        {
+            _defaultValueDelegate = new (defaultValueDelegate);
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder WithName(string name)
+        {
+            Name = name;
             return this;
         }
 
@@ -113,9 +102,20 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public DefaultValueConstraintBuilder WithName(string name)
+        public DefaultValueConstraintBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            Name = name;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public DefaultValueConstraintBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public DefaultValueConstraintBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 

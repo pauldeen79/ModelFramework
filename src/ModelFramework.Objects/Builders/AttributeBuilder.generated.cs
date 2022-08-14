@@ -41,21 +41,16 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
-        public AttributeBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        public ModelFramework.Objects.Contracts.IAttribute Build()
         {
-            Metadata.AddRange(metadata);
-            return this;
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
+            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
         {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public AttributeBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
+            return AddParameters(parameters.ToArray());
         }
 
         public AttributeBuilder AddParameters(params ModelFramework.Objects.Builders.AttributeParameterBuilder[] parameters)
@@ -64,27 +59,32 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public AttributeBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeParameterBuilder> parameters)
+        public AttributeBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            return AddParameters(parameters.ToArray());
+            return AddMetadata(metadata.ToArray());
         }
 
-        public ModelFramework.Objects.Contracts.IAttribute Build()
+        public AttributeBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
-            #pragma warning restore CS8604 // Possible null reference argument.
+            Metadata.AddRange(metadata);
+            return this;
         }
 
-        public AttributeBuilder WithName(System.Func<string> nameDelegate)
+        public AttributeBuilder AddMetadata(string name, object? value)
         {
-            _nameDelegate = new (nameDelegate);
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
         public AttributeBuilder WithName(string name)
         {
             Name = name;
+            return this;
+        }
+
+        public AttributeBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 

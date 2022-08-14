@@ -137,39 +137,23 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
-        {
-            CheckConstraints.AddRange(checkConstraints);
-            return this;
-        }
-
-        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
-        {
-            return AddCheckConstraints(checkConstraints.ToArray());
-        }
-
-        public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public TableFieldBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Database.Contracts.ITableField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Database.TableField(Type, IsIdentity, IsRequired, NumericPrecision, NumericScale, StringLength, StringCollation, IsStringMaxLength, Name, Metadata.Select(x => x.Build()), CheckConstraints.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public TableFieldBuilder WithType(string type)
+        {
+            Type = type;
+            return this;
+        }
+
+        public TableFieldBuilder WithType(System.Func<string> typeDelegate)
+        {
+            _typeDelegate = new (typeDelegate);
+            return this;
         }
 
         public TableFieldBuilder WithIsIdentity(bool isIdentity = true)
@@ -196,6 +180,54 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
+        public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
+        {
+            NumericPrecision = numericPrecision;
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericPrecision(System.Func<System.Nullable<byte>> numericPrecisionDelegate)
+        {
+            _numericPrecisionDelegate = new (numericPrecisionDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
+        {
+            NumericScale = numericScale;
+            return this;
+        }
+
+        public TableFieldBuilder WithNumericScale(System.Func<System.Nullable<byte>> numericScaleDelegate)
+        {
+            _numericScaleDelegate = new (numericScaleDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithStringLength(System.Nullable<int> stringLength)
+        {
+            StringLength = stringLength;
+            return this;
+        }
+
+        public TableFieldBuilder WithStringLength(System.Func<System.Nullable<int>> stringLengthDelegate)
+        {
+            _stringLengthDelegate = new (stringLengthDelegate);
+            return this;
+        }
+
+        public TableFieldBuilder WithStringCollation(string stringCollation)
+        {
+            StringCollation = stringCollation;
+            return this;
+        }
+
+        public TableFieldBuilder WithStringCollation(System.Func<string> stringCollationDelegate)
+        {
+            _stringCollationDelegate = new (stringCollationDelegate);
+            return this;
+        }
+
         public TableFieldBuilder WithIsStringMaxLength(bool isStringMaxLength = true)
         {
             IsStringMaxLength = isStringMaxLength;
@@ -208,75 +240,43 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableFieldBuilder WithName(System.Func<string> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
         public TableFieldBuilder WithName(string name)
         {
             Name = name;
             return this;
         }
 
-        public TableFieldBuilder WithNumericPrecision(System.Func<System.Nullable<byte>> numericPrecisionDelegate)
+        public TableFieldBuilder WithName(System.Func<string> nameDelegate)
         {
-            _numericPrecisionDelegate = new (numericPrecisionDelegate);
+            _nameDelegate = new (nameDelegate);
             return this;
         }
 
-        public TableFieldBuilder WithNumericPrecision(System.Nullable<byte> numericPrecision)
+        public TableFieldBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
         {
-            NumericPrecision = numericPrecision;
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public TableFieldBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
             return this;
         }
 
-        public TableFieldBuilder WithNumericScale(System.Func<System.Nullable<byte>> numericScaleDelegate)
+        public TableFieldBuilder AddMetadata(string name, object? value)
         {
-            _numericScaleDelegate = new (numericScaleDelegate);
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
-        public TableFieldBuilder WithNumericScale(System.Nullable<byte> numericScale)
+        public TableFieldBuilder AddCheckConstraints(System.Collections.Generic.IEnumerable<ModelFramework.Database.Builders.CheckConstraintBuilder> checkConstraints)
         {
-            NumericScale = numericScale;
-            return this;
+            return AddCheckConstraints(checkConstraints.ToArray());
         }
 
-        public TableFieldBuilder WithStringCollation(System.Func<string> stringCollationDelegate)
+        public TableFieldBuilder AddCheckConstraints(params ModelFramework.Database.Builders.CheckConstraintBuilder[] checkConstraints)
         {
-            _stringCollationDelegate = new (stringCollationDelegate);
-            return this;
-        }
-
-        public TableFieldBuilder WithStringCollation(string stringCollation)
-        {
-            StringCollation = stringCollation;
-            return this;
-        }
-
-        public TableFieldBuilder WithStringLength(System.Func<System.Nullable<int>> stringLengthDelegate)
-        {
-            _stringLengthDelegate = new (stringLengthDelegate);
-            return this;
-        }
-
-        public TableFieldBuilder WithStringLength(System.Nullable<int> stringLength)
-        {
-            StringLength = stringLength;
-            return this;
-        }
-
-        public TableFieldBuilder WithType(System.Func<string> typeDelegate)
-        {
-            _typeDelegate = new (typeDelegate);
-            return this;
-        }
-
-        public TableFieldBuilder WithType(string type)
-        {
-            Type = type;
+            CheckConstraints.AddRange(checkConstraints);
             return this;
         }
 

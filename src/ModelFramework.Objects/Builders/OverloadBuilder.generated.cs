@@ -47,29 +47,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public OverloadBuilder AddParameter(string name, string typeName)
-        {
-            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));
-            return this;
-        }
-
-        public OverloadBuilder AddParameter(string name, System.Type type)
-        {
-            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));
-            return this;
-        }
-
-        public OverloadBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
-        {
-            Parameters.AddRange(parameters);
-            return this;
-        }
-
-        public OverloadBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
-        {
-            return AddParameters(parameters.ToArray());
-        }
-
         public ModelFramework.Objects.Contracts.IOverload Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -77,15 +54,9 @@ namespace ModelFramework.Objects.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public OverloadBuilder WithInitializeExpression(System.Func<string> initializeExpressionDelegate)
+        public OverloadBuilder WithMethodName(string methodName)
         {
-            _initializeExpressionDelegate = new (initializeExpressionDelegate);
-            return this;
-        }
-
-        public OverloadBuilder WithInitializeExpression(string initializeExpression)
-        {
-            InitializeExpression = initializeExpression;
+            MethodName = methodName;
             return this;
         }
 
@@ -95,9 +66,38 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public OverloadBuilder WithMethodName(string methodName)
+        public OverloadBuilder WithInitializeExpression(string initializeExpression)
         {
-            MethodName = methodName;
+            InitializeExpression = initializeExpression;
+            return this;
+        }
+
+        public OverloadBuilder WithInitializeExpression(System.Func<string> initializeExpressionDelegate)
+        {
+            _initializeExpressionDelegate = new (initializeExpressionDelegate);
+            return this;
+        }
+
+        public OverloadBuilder AddParameters(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.ParameterBuilder> parameters)
+        {
+            return AddParameters(parameters.ToArray());
+        }
+
+        public OverloadBuilder AddParameters(params ModelFramework.Objects.Builders.ParameterBuilder[] parameters)
+        {
+            Parameters.AddRange(parameters);
+            return this;
+        }
+
+        public OverloadBuilder AddParameter(string name, System.Type type)
+        {
+            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));
+            return this;
+        }
+
+        public OverloadBuilder AddParameter(string name, string typeName)
+        {
+            AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));
             return this;
         }
 

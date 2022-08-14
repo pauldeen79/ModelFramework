@@ -53,34 +53,6 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public EnumMemberBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
-        {
-            Attributes.AddRange(attributes);
-            return this;
-        }
-
-        public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
-        {
-            return AddAttributes(attributes.ToArray());
-        }
-
-        public EnumMemberBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
-        {
-            Metadata.AddRange(metadata);
-            return this;
-        }
-
-        public EnumMemberBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
-        {
-            return AddMetadata(metadata.ToArray());
-        }
-
-        public EnumMemberBuilder AddMetadata(string name, object? value)
-        {
-            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
-            return this;
-        }
-
         public ModelFramework.Objects.Contracts.IEnumMember Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
@@ -88,15 +60,9 @@ namespace ModelFramework.Objects.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public EnumMemberBuilder WithName(System.Func<string> nameDelegate)
+        public EnumMemberBuilder WithValue(object? value)
         {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public EnumMemberBuilder WithName(string name)
-        {
-            Name = name;
+            Value = value;
             return this;
         }
 
@@ -106,9 +72,43 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumMemberBuilder WithValue(object? value)
+        public EnumMemberBuilder AddAttributes(System.Collections.Generic.IEnumerable<ModelFramework.Objects.Builders.AttributeBuilder> attributes)
         {
-            Value = value;
+            return AddAttributes(attributes.ToArray());
+        }
+
+        public EnumMemberBuilder AddAttributes(params ModelFramework.Objects.Builders.AttributeBuilder[] attributes)
+        {
+            Attributes.AddRange(attributes);
+            return this;
+        }
+
+        public EnumMemberBuilder WithName(string name)
+        {
+            Name = name;
+            return this;
+        }
+
+        public EnumMemberBuilder WithName(System.Func<string> nameDelegate)
+        {
+            _nameDelegate = new (nameDelegate);
+            return this;
+        }
+
+        public EnumMemberBuilder AddMetadata(System.Collections.Generic.IEnumerable<ModelFramework.Common.Builders.MetadataBuilder> metadata)
+        {
+            return AddMetadata(metadata.ToArray());
+        }
+
+        public EnumMemberBuilder AddMetadata(params ModelFramework.Common.Builders.MetadataBuilder[] metadata)
+        {
+            Metadata.AddRange(metadata);
+            return this;
+        }
+
+        public EnumMemberBuilder AddMetadata(string name, object? value)
+        {
+            AddMetadata(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));
             return this;
         }
 
