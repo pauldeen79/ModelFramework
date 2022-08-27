@@ -1,7 +1,4 @@
-﻿using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-
-namespace ModelFramework.Objects.Extensions;
+﻿namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseEtensions
 {
@@ -283,7 +280,7 @@ public static partial class TypeBaseEtensions
             (
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
-                    .Select(x => x.CreateImmutableBuilderInitializationCode(settings) + ";")
+                    .Select(x => $"{x.CreateImmutableBuilderInitializationCode(settings)};")
             );
 
     private static string CreateImmutableBuilderClassConstructorChainCall(ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -307,7 +304,9 @@ public static partial class TypeBaseEtensions
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                 property.TypeName,
-                property.TypeName.GetGenericArguments()
+                property.TypeName.GetGenericArguments(),
+                property.TypeName.GetClassName(),
+                property.TypeName.GetGenericArguments().GetClassName()
             )
             .FixTypeName()
             .GetCsharpFriendlyTypeName()
@@ -351,7 +350,9 @@ public static partial class TypeBaseEtensions
         (
             p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
             p.TypeName,
-            p.TypeName.GetGenericArguments()
+            p.TypeName.GetGenericArguments(),
+            p.TypeName.GetClassName(),
+            p.TypeName.GetGenericArguments().GetClassName()
         )
         .FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
         .GetCsharpFriendlyTypeName();
@@ -361,7 +362,9 @@ public static partial class TypeBaseEtensions
         (
             p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
             p.TypeName,
-            p.TypeName.GetGenericArguments()
+            p.TypeName.GetGenericArguments(),
+            p.TypeName.GetClassName(),
+            p.TypeName.GetGenericArguments().GetClassName()
         )
         .FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
         .GetCsharpFriendlyTypeName();
@@ -371,7 +374,9 @@ public static partial class TypeBaseEtensions
         (
             p.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, p.TypeName),
             p.TypeName,
-            p.TypeName.GetGenericArguments()
+            p.TypeName.GetGenericArguments(),
+            p.TypeName.GetClassName(),
+            p.TypeName.GetGenericArguments().GetClassName()
         )
         .FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
         .GetCsharpFriendlyTypeName();
@@ -500,7 +505,9 @@ public static partial class TypeBaseEtensions
                         (
                             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                             property.TypeName,
-                            property.TypeName.GetGenericArguments()
+                            property.TypeName.GetGenericArguments(),
+                            property.TypeName.GetClassName(),
+                            property.TypeName.GetGenericArguments().GetClassName()
                         ).FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())
                     )
                     .WithIsNullable(property.IsNullable)
@@ -525,7 +532,9 @@ public static partial class TypeBaseEtensions
                         (
                             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                             property.TypeName,
-                            property.TypeName.GetGenericArguments()
+                            property.TypeName.GetGenericArguments(),
+                            property.TypeName.GetClassName(),
+                            property.TypeName.GetGenericArguments().GetClassName()
                         )
                         .FixTypeName()
                         .ConvertTypeNameToArray()
@@ -542,7 +551,9 @@ public static partial class TypeBaseEtensions
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
             property.TypeName,
-            property.TypeName.GetGenericArguments()
+            property.TypeName.GetGenericArguments(),
+            property.TypeName.GetClassName(),
+            property.TypeName.GetGenericArguments().GetClassName()
         );
         return new ClassMethodBuilder()
             .WithName(string.Format(settings.NameSettings.SetMethodNameFormatString, property.Name))
@@ -769,7 +780,9 @@ public static partial class TypeBaseEtensions
                     (
                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                         property.TypeName,
-                        property.TypeName.GetGenericArguments()
+                        property.TypeName.GetGenericArguments(),
+                        property.TypeName.GetClassName(),
+                        property.TypeName.GetGenericArguments().GetClassName()
                     ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
                 )
                 .WithIsNullable(property.IsNullable)

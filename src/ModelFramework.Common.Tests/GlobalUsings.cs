@@ -6,5 +6,6 @@ global using CrossCutting.Common;
 global using FluentAssertions;
 global using ModelFramework.Common.Contracts;
 global using ModelFramework.Common.Extensions;
+global using ModelFramework.Common.Tests.Test.Builders;
 global using ModelFramework.Common.Tests.TestFixtures;
 global using Xunit;
