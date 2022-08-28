@@ -623,7 +623,7 @@ public static partial class TypeBaseEtensions
                   .AddParameters(new[]
                   {
                       new ParameterBuilder().WithName("instance")
-                                            .WithTypeName($"{instance.Name}Builder")
+                                            .WithTypeName(settings.IsBuilderForAbstractEntity ? "TBuilder" :$"{instance.Name}Builder")
                   }.Where(_ => extensionMethod));
 
     private static string GetCallPrefix(bool extensionMethod, bool lazyInitialization)
