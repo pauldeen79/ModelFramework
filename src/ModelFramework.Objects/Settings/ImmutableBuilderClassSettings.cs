@@ -6,8 +6,7 @@ public record ImmutableBuilderClassSettings
     public ImmutableBuilderClassTypeSettings TypeSettings { get; }
     public ImmutableBuilderClassNameSettings NameSettings { get; }
     public ImmutableBuilderClassInheritanceSettings InheritanceSettings { get; }
-    public bool UseLazyInitialization { get; }
-    public bool CopyPropertyCode { get; }
+    public ImmutableBuilderClassGenerationSettings GenerationSettings { get; }
 
     public bool IsBuilderForAbstractEntity => InheritanceSettings.EnableEntityInheritance && (InheritanceSettings.BaseClass == null || InheritanceSettings.IsAbstract);
     public bool IsBuilderForOverrideEntity => InheritanceSettings.EnableEntityInheritance && InheritanceSettings.BaseClass != null;
@@ -19,16 +18,15 @@ public record ImmutableBuilderClassSettings
                                           ImmutableBuilderClassConstructorSettings? constructorSettings,
                                           ImmutableBuilderClassNameSettings? nameSettings,
                                           ImmutableBuilderClassInheritanceSettings? inheritanceSettings,
-                                          bool useLazyInitialization,
-                                          bool copyPropertyCode,
+                                          ImmutableBuilderClassGenerationSettings? generationSettings,
                                           bool isForAbstractBuilder)
     {
         TypeSettings = typeSettings ?? new();
         ConstructorSettings = constructorSettings ?? new();
         NameSettings = nameSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
-        UseLazyInitialization = useLazyInitialization;
-        CopyPropertyCode = copyPropertyCode;
+        GenerationSettings = generationSettings ?? new();
+
         IsForAbstractBuilder = isForAbstractBuilder;
     }
 
@@ -36,12 +34,11 @@ public record ImmutableBuilderClassSettings
                                          ImmutableBuilderClassConstructorSettings? constructorSettings = null,
                                          ImmutableBuilderClassNameSettings? nameSettings = null,
                                          ImmutableBuilderClassInheritanceSettings? inheritanceSettings = null,
-                                         bool useLazyInitialization = false,
-                                         bool copyPropertyCode = true)
-        : this(typeSettings, constructorSettings, nameSettings, inheritanceSettings, useLazyInitialization, copyPropertyCode, false)
+                                         ImmutableBuilderClassGenerationSettings? generationSettings = null)
+        : this(typeSettings, constructorSettings, nameSettings, inheritanceSettings, generationSettings, false)
     {
     }
 
     public ImmutableBuilderClassSettings ForAbstractBuilder()
-        => new(TypeSettings, ConstructorSettings, NameSettings, InheritanceSettings, UseLazyInitialization, CopyPropertyCode, true);
+        => new(TypeSettings, ConstructorSettings, NameSettings, InheritanceSettings, GenerationSettings, true);
 }

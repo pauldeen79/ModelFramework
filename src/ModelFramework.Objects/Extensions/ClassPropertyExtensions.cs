@@ -98,7 +98,7 @@ public static class ClassPropertyExtensions
             .Build();
 
     private static string CreateSingleInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.UseLazyInitialization
+        => settings.GenerationSettings.UseLazyInitialization
             ? $"_{property.Name.ToPascalCase()}Delegate = new {property.GetNewExpression(settings)}(() => source.{property.Name})"
             : $"{property.Name} = source.{property.Name}";
 

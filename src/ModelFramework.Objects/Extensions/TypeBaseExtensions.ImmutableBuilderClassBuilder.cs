@@ -7,7 +7,7 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!instance.Properties.Any() && !settings.InheritanceSettings.EnableEntityInheritance)
+        if (!settings.GenerationSettings.AllowGenerationWithoutProperties && !instance.Properties.Any() && !settings.InheritanceSettings.EnableEntityInheritance)
         {
             throw new InvalidOperationException("To create an immutable builder class, there must be at least one property");
         }
@@ -33,7 +33,7 @@ public static partial class TypeBaseEtensions
 
     public static ClassBuilder ToBuilderExtensionsClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
-        if (!instance.Properties.Any() && !settings.InheritanceSettings.EnableEntityInheritance)
+        if (!settings.GenerationSettings.AllowGenerationWithoutProperties && !instance.Properties.Any() && !settings.InheritanceSettings.EnableEntityInheritance)
         {
             throw new InvalidOperationException("To create a builder extensions class, there must be at least one property");
         }
@@ -115,7 +115,7 @@ public static partial class TypeBaseEtensions
             yield return field;
         }
 
-        if (settings.UseLazyInitialization)
+        if (settings.GenerationSettings.UseLazyInitialization)
         {
             foreach (var property in instance.Properties
                 .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement))
@@ -138,7 +138,9 @@ public static partial class TypeBaseEtensions
             yield break;
         }
 
-        if (settings.InheritanceSettings.EnableBuilderInheritance && settings.IsAbstractBuilder && !settings.IsForAbstractBuilder)
+        if (settings.InheritanceSettings.EnableBuilderInheritance
+            && settings.IsAbstractBuilder
+            && !settings.IsForAbstractBuilder)
         {
             yield return new ClassConstructorBuilder()
                 .WithChainCall("base()")
@@ -182,7 +184,7 @@ public static partial class TypeBaseEtensions
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.IsCollectionTypeName()
-                        && (!x.IsNullable || settings.UseLazyInitialization))
+                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization))
                     .Select(x => GenerateDefaultValueStatement(x, settings))
             )
             .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8603 // Possible null reference return." } : Array.Empty<string>());
@@ -217,7 +219,7 @@ public static partial class TypeBaseEtensions
             (
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
-                    .Where(x => !settings.UseLazyInitialization || x.TypeName.IsCollectionTypeName())
+                    .Where(x => !settings.GenerationSettings.UseLazyInitialization || x.TypeName.IsCollectionTypeName())
                     .Select
                     (
                         x => x.TypeName.IsCollectionTypeName()
@@ -290,7 +292,7 @@ public static partial class TypeBaseEtensions
         => instance.GetCustomValueForInheritedClass(settings, _ => "base(source)");
 
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.UseLazyInitialization
+        => settings.GenerationSettings.UseLazyInitialization
             ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {property.GetDefaultValue()});"
             : $"{property.Name} = {property.GetDefaultValue()};";
 
@@ -447,7 +449,7 @@ public static partial class TypeBaseEtensions
             else if (ShouldCreateSingleProperty(settings))
             {
                 yield return CreateSingleProperty(instance, settings, extensionMethod, false, property);
-                if (settings.UseLazyInitialization)
+                if (settings.GenerationSettings.UseLazyInitialization)
                 {
                     yield return CreateSingleProperty(instance, settings, extensionMethod, true, property);
                 }
@@ -795,11 +797,11 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ICodeStatementBuilder> CreateImmutableBuilderPropertyGetterStatements(IClassProperty property,
                                                                                                      ImmutableBuilderClassSettings settings)
     {
-        if (settings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
+        if (settings.GenerationSettings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
         {
             yield return new LiteralCodeStatementBuilder($"return _{property.Name.ToPascalCase()}Delegate.Value;");
         }
-        else if (settings.CopyPropertyCode)
+        else if (settings.GenerationSettings.CopyPropertyCode)
         {
             foreach (var statement in property.GetterCodeStatements.Select(x => x.CreateBuilder()))
             {
@@ -811,11 +813,11 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ICodeStatementBuilder> CreateImmutableBuilderPropertySetterStatements(IClassProperty property,
                                                                                                      ImmutableBuilderClassSettings settings)
     {
-        if (settings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
+        if (settings.GenerationSettings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
         {
             yield return new LiteralCodeStatementBuilder($"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => value);");
         }
-        else if (settings.CopyPropertyCode)
+        else if (settings.GenerationSettings.CopyPropertyCode)
         {
             foreach (var statement in property.SetterCodeStatements.Select(x => x.CreateBuilder()))
             {

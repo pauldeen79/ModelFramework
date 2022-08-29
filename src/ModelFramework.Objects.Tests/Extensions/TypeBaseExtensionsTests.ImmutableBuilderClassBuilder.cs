@@ -136,7 +136,7 @@ Property1 = string.Empty;");
             .Build();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addNullChecks: true)));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new(addNullChecks: true)));
 
         // Assert
         // By default, only a public parameterless constructor should be defined
@@ -223,7 +223,7 @@ Property1 = string.Empty;");
             .Build();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(typeSettings: new ImmutableBuilderClassTypeSettings( formatInstanceTypeNameDelegate: (type, forCreate) =>
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(typeSettings: new( formatInstanceTypeNameDelegate: (type, forCreate) =>
         {
             if (type.Name == "ITestClass" && forCreate)
             {
@@ -273,7 +273,7 @@ Property1 = string.Empty;");
             .Build();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true)));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new(addCopyConstructor: true)));
 
         // Assert
         actual.Name.Should().Be("TestClassBuilder");
@@ -319,7 +319,7 @@ Property2.AddRange(source.Property2);");
             .Build();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addConstructorWithAllProperties: true)));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(constructorSettings: new(addConstructorWithAllProperties: true)));
 
         // Assert
         actual.Name.Should().Be("TestClassBuilder");
@@ -489,7 +489,7 @@ return this;");
     {
         // Arrange
         var properties = CreateProperties();
-        var settings = new ImmutableBuilderClassSettings(nameSettings: new ImmutableBuilderClassNameSettings(setMethodNameFormatString: string.Empty, addMethodNameFormatString: string.Empty));
+        var settings = new ImmutableBuilderClassSettings(nameSettings: new(setMethodNameFormatString: string.Empty, addMethodNameFormatString: string.Empty));
         var cls = new ClassBuilder()
             .WithName("MyRecord")
             .WithNamespace("MyNamespace")
@@ -516,8 +516,8 @@ return this;");
         var sut = CreateImmutableBuilderClass();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: false, enableNullableReferenceTypes: true)));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(generationSettings: new(useLazyInitialization: true),
+                                                                                   typeSettings: new(useTargetTypeNewExpressions: false, enableNullableReferenceTypes: true)));
 
         // Assert
         actual.Fields.Should().HaveCount(2);
@@ -551,8 +551,8 @@ return new TestClass(Property1, Property2, Property3);
         var sut = CreateImmutableBuilderClass();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true, enableNullableReferenceTypes: true)));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(generationSettings: new(useLazyInitialization: true),
+                                                                                   typeSettings: new(useTargetTypeNewExpressions: true, enableNullableReferenceTypes: true)));
 
         // Assert
         string.Join(Environment.NewLine, actual.Properties.First().SetterCodeStatements.Select(y => y.ToString())).Should().Be(@"_property1Delegate = new (() => value);");
@@ -571,9 +571,9 @@ _property3Delegate = new (() => default);
         var sut = CreateImmutableBuilderClass();
 
         // Act
-        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(useLazyInitialization: true,
-                                                                                   typeSettings: new ImmutableBuilderClassTypeSettings(useTargetTypeNewExpressions: true, enableNullableReferenceTypes: true),
-                                                                                   constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true)));
+        var actual = sut.ToImmutableBuilderClass(new ImmutableBuilderClassSettings(generationSettings: new(useLazyInitialization: true),
+                                                                                   typeSettings: new(useTargetTypeNewExpressions: true, enableNullableReferenceTypes: true),
+                                                                                   constructorSettings: new(addCopyConstructor: true)));
 
         // Assert
         actual.Constructors.Should().HaveCount(2);

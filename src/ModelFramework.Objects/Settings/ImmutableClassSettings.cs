@@ -6,6 +6,7 @@ public record ImmutableClassSettings
     public bool CreateWithMethod { get; }
     public bool ImplementIEquatable { get; }
     public bool AddPrivateSetters { get; }
+    public bool AllowGenerationWithoutProperties { get; }
     public ImmutableClassConstructorSettings ConstructorSettings { get; }
     public ImmutableClassInheritanceSettings InheritanceSettings { get; }
     public bool AddValidationCode
@@ -45,6 +46,7 @@ public record ImmutableClassSettings
                                   bool createWithMethod = false,
                                   bool implementIEquatable = false,
                                   bool addPrivateSetters = false,
+                                  bool allowGenerationWithoutProperties = false,
                                   ImmutableClassConstructorSettings? constructorSettings = null,
                                   ImmutableClassInheritanceSettings? inheritanceSettings = null)
     {
@@ -52,6 +54,7 @@ public record ImmutableClassSettings
         CreateWithMethod = createWithMethod;
         ImplementIEquatable = implementIEquatable;
         AddPrivateSetters = addPrivateSetters;
+        AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
         ConstructorSettings = constructorSettings ?? new ImmutableClassConstructorSettings();
         InheritanceSettings = inheritanceSettings ?? new ImmutableClassInheritanceSettings();
     }

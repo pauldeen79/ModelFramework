@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ModelFramework.Objects.Extensions;
+﻿namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseExtensions
 {
@@ -11,7 +9,7 @@ public static partial class TypeBaseExtensions
 
     public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
     {
-        if (!instance.Properties.Any() && !settings.InheritanceSettings.EnableInheritance)
+        if (!settings.AllowGenerationWithoutProperties && !instance.Properties.Any() && !settings.InheritanceSettings.EnableInheritance)
         {
             throw new InvalidOperationException("To create an immutable class, there must be at least one property");
         }
@@ -147,7 +145,7 @@ public static partial class TypeBaseExtensions
     public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance,
                                                                 ImmutableClassExtensionsSettings settings)
     {
-        if (!instance.Properties.Any())
+        if (!settings.AllowGenerationWithoutProperties && !instance.Properties.Any())
         {
             throw new InvalidOperationException("To create an immutable extensions class, there must be at least one property");
         }
