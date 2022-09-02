@@ -38,6 +38,7 @@ public static partial class TypeBaseExtensions
                             .WithName("_" + p.Name.ToPascalCase())
                             .WithTypeName(p.TypeName)
                             .WithIsNullable(p.IsNullable)
+                            .WithIsValueType(p.IsValueType)
                     )
             )
             .AddConstructors

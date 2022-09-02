@@ -16,6 +16,7 @@ public static class ClassPropertyBuilderExtensions
             .WithHasSetter()
             .WithHasInitializer(false)
             .WithIsNullable(p.IsNullable)
+            .WithIsValueType(p.IsValueType)
             .WithVisibility(p.Visibility)
             .WithGetterVisibility(p.GetterVisibility)
             .WithSetterVisibility(p.SetterVisibility)

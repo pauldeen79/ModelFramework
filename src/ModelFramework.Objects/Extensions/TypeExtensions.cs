@@ -105,6 +105,7 @@ public static class TypeExtensions
                     .WithConstant(f.IsLiteral)
                     .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object" ? string.Empty : f.DeclaringType.FullName)
                     .WithIsNullable(f.IsNullable())
+                    .WithIsValueType(f.FieldType.IsValueType || f.FieldType.IsEnum)
                     .WithVisibility(f.IsPublic
                         ? Visibility.Public
                         : Visibility.Private)
@@ -122,6 +123,7 @@ public static class TypeExtensions
                 .WithHasInitializer(p.IsInitOnly())
                 .WithParentTypeFullName(p.DeclaringType.FullName == "System.Object" ? string.Empty : p.DeclaringType.FullName)
                 .WithIsNullable(p.IsNullable())
+                .WithIsValueType(p.PropertyType.IsValueType || p.PropertyType.IsEnum)
                 .WithVisibility(p.GetAccessors().Any(m => m.IsPublic)
                     ? Visibility.Public
                     : Visibility.Private)
@@ -153,12 +155,14 @@ public static class TypeExtensions
                         .WithAbstract(m.IsAbstract)
                         .WithParentTypeFullName(m.DeclaringType.FullName == "System.Object" ? string.Empty : m.DeclaringType.FullName)
                         .WithIsNullable(m.ReturnTypeIsNullable())
+                        .WithIsValueType(m.ReturnType.IsValueType || m.ReturnType.IsEnum)
                         .AddParameters(m.GetParameters().Select
                         (
                             p => new ParameterBuilder()
                                 .WithName(p.Name)
                                 .WithTypeName(p.ParameterType.FullName.FixTypeName())
                                 .WithIsNullable(p.IsNullable())
+                                .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                                 .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
                         ))
                         .AddAttributes(GetAttributes(m.GetCustomAttributes(false)))
@@ -177,6 +181,7 @@ public static class TypeExtensions
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
                             .WithIsNullable(p.IsNullable())
+                            .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                             .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
                     )
                 )

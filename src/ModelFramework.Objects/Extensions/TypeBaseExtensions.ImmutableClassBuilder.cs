@@ -38,6 +38,7 @@ public static partial class TypeBaseExtensions
                             .WithHasInitializer(p.HasInitializer)
                             .WithHasSetter(settings.AddPrivateSetters)
                             .WithIsNullable(p.IsNullable)
+                            .WithIsValueType(p.IsValueType)
                             .WithVisibility(p.Visibility)
                             .WithGetterVisibility(p.GetterVisibility)
                             .WithSetterVisibility(settings.AddPrivateSetters
@@ -76,6 +77,7 @@ public static partial class TypeBaseExtensions
                                         p.TypeName.GetGenericArguments()
                                     ))
                                     .WithIsNullable(p.IsNullable)
+                                    .WithIsValueType(p.IsValueType)
                             )
                     )
                     .AddLiteralCodeStatements
