@@ -470,7 +470,7 @@ namespace ModelFramework.Objects.Builders
 
         public ClassMethodBuilder WithType(System.Type type)
         {
-            TypeName = type.AssemblyQualifiedName;
+            TypeName = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 

@@ -177,7 +177,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
                 .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2} = type.AssemblyQualifiedName;")
+                .WithInitializeExpression("{2} = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;")
                 .Build());
         }
 

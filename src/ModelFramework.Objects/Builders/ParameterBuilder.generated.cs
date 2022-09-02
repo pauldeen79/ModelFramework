@@ -182,7 +182,7 @@ namespace ModelFramework.Objects.Builders
 
         public ParameterBuilder WithType(System.Type type)
         {
-            TypeName = type.AssemblyQualifiedName;
+            TypeName = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 
