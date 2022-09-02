@@ -227,6 +227,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool IsValueType
+        {
+            get
+            {
+                return _isValueTypeDelegate.Value;
+            }
+            set
+            {
+                _isValueTypeDelegate = new (() => value);
+            }
+        }
+
         public string ExplicitInterfaceName
         {
             get
@@ -254,7 +266,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClassProperty Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName, ParentTypeFullName);
+            return new ModelFramework.Objects.ClassProperty(HasGetter, HasSetter, HasInitializer, GetterVisibility, SetterVisibility, InitializerVisibility, GetterCodeStatements.Select(x => x.Build()), SetterCodeStatements.Select(x => x.Build()), InitializerCodeStatements.Select(x => x.Build()), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, IsValueType, ExplicitInterfaceName, ParentTypeFullName);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -505,7 +517,7 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder WithType(System.Type type)
         {
-            TypeName = type.AssemblyQualifiedName;
+            TypeName = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 
@@ -518,6 +530,18 @@ namespace ModelFramework.Objects.Builders
         public ClassPropertyBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
         {
             _isNullableDelegate = new (isNullableDelegate);
+            return this;
+        }
+
+        public ClassPropertyBuilder WithIsValueType(bool isValueType = true)
+        {
+            IsValueType = isValueType;
+            return this;
+        }
+
+        public ClassPropertyBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
+        {
+            _isValueTypeDelegate = new (isValueTypeDelegate);
             return this;
         }
 
@@ -568,6 +592,7 @@ namespace ModelFramework.Objects.Builders
             _nameDelegate = new (() => string.Empty);
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
+            _isValueTypeDelegate = new (() => default);
             _explicitInterfaceNameDelegate = new (() => string.Empty);
             _parentTypeFullNameDelegate = new (() => string.Empty);
             #pragma warning restore CS8603 // Possible null reference return.
@@ -600,6 +625,7 @@ namespace ModelFramework.Objects.Builders
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
+            _isValueTypeDelegate = new (() => source.IsValueType);
             _explicitInterfaceNameDelegate = new (() => source.ExplicitInterfaceName);
             _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
@@ -633,6 +659,8 @@ namespace ModelFramework.Objects.Builders
         protected System.Lazy<string> _typeNameDelegate;
 
         protected System.Lazy<bool> _isNullableDelegate;
+
+        protected System.Lazy<bool> _isValueTypeDelegate;
 
         protected System.Lazy<string> _explicitInterfaceNameDelegate;
 

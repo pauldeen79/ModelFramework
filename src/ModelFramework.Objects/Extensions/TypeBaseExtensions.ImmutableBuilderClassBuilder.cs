@@ -241,7 +241,8 @@ public static partial class TypeBaseEtensions
                     p.TypeName.GetGenericArguments()
                 )
             )
-            .WithIsNullable(p.IsNullable);
+            .WithIsNullable(p.IsNullable)
+            .WithIsValueType(p.IsValueType);
 
     private static ClassConstructorBuilder CreateCopyConstructor(ITypeBase instance, ImmutableBuilderClassSettings settings)
         => new ClassConstructorBuilder()
@@ -385,7 +386,7 @@ public static partial class TypeBaseEtensions
 
     private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
         => settings.ConstructorSettings.AddNullChecks
-            ? $"if ({p.Name.ToPascalCase()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
+            ? $"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
             : $"{p.Name}.AddRange({p.Name.ToPascalCase()});";
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
@@ -513,6 +514,7 @@ public static partial class TypeBaseEtensions
                         ).FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics())
                     )
                     .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType)
             )
             .AddLiteralCodeStatements($"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
 
@@ -540,7 +542,7 @@ public static partial class TypeBaseEtensions
                         )
                         .FixTypeName()
                         .ConvertTypeNameToArray()
-                    ).WithIsNullable(property.IsNullable)
+                    ).WithIsNullable(property.IsNullable).WithIsValueType(property.IsValueType)
             ).AddLiteralCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property, extensionMethod));
 
     private static ClassMethodBuilder CreateSingleProperty(ITypeBase instance,
@@ -573,6 +575,7 @@ public static partial class TypeBaseEtensions
                             : typeName
                     )
                     .WithIsNullable(!useLazyInitialization && property.IsNullable)
+                    .WithIsValueType(property.IsValueType)
                     .WithDefaultValue(useLazyInitialization
                         ? null
                         : property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
@@ -667,7 +670,7 @@ public static partial class TypeBaseEtensions
         => settings.ConstructorSettings.AddNullChecks
             ? new[]
                 {
-                    $"if ({property.Name.ToPascalCase()} != null)",
+                    $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
                     "{",
                     string.Format
                     (
@@ -713,7 +716,7 @@ public static partial class TypeBaseEtensions
         => settings.ConstructorSettings.AddNullChecks
             ? (new[]
             {
-                $"if ({property.Name.ToPascalCase()} != null)",
+                $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
                 "{",
                 string.Format(overloadExpression,
                               property.Name.ToPascalCase(),
@@ -788,6 +791,7 @@ public static partial class TypeBaseEtensions
                     ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
                 )
                 .WithIsNullable(property.IsNullable)
+                .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))

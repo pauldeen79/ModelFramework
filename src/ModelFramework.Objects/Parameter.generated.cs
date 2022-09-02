@@ -42,6 +42,11 @@ namespace ModelFramework.Objects
             get;
         }
 
+        public bool IsValueType
+        {
+            get;
+        }
+
         public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IAttribute> Attributes
         {
             get;
@@ -62,13 +67,14 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public Parameter(bool isParamArray, bool isOut, bool isRef, string typeName, bool isNullable, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, string name, object? defaultValue)
+        public Parameter(bool isParamArray, bool isOut, bool isRef, string typeName, bool isNullable, bool isValueType, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, string name, object? defaultValue)
         {
             this.IsParamArray = isParamArray;
             this.IsOut = isOut;
             this.IsRef = isRef;
             this.TypeName = typeName;
             this.IsNullable = isNullable;
+            this.IsValueType = isValueType;
             this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
             this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);
             this.Name = name;

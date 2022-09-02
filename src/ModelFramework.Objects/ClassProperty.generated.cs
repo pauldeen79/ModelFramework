@@ -117,6 +117,11 @@ namespace ModelFramework.Objects
             get;
         }
 
+        public bool IsValueType
+        {
+            get;
+        }
+
         public string ExplicitInterfaceName
         {
             get;
@@ -127,7 +132,7 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public ClassProperty(bool hasGetter, bool hasSetter, bool hasInitializer, System.Nullable<ModelFramework.Objects.Contracts.Visibility> getterVisibility, System.Nullable<ModelFramework.Objects.Contracts.Visibility> setterVisibility, System.Nullable<ModelFramework.Objects.Contracts.Visibility> initializerVisibility, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> getterCodeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> setterCodeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> initializerCodeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, string typeName, bool isNullable, string explicitInterfaceName, string parentTypeFullName)
+        public ClassProperty(bool hasGetter, bool hasSetter, bool hasInitializer, System.Nullable<ModelFramework.Objects.Contracts.Visibility> getterVisibility, System.Nullable<ModelFramework.Objects.Contracts.Visibility> setterVisibility, System.Nullable<ModelFramework.Objects.Contracts.Visibility> initializerVisibility, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> getterCodeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> setterCodeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> initializerCodeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, string typeName, bool isNullable, bool isValueType, string explicitInterfaceName, string parentTypeFullName)
         {
             this.HasGetter = hasGetter;
             this.HasSetter = hasSetter;
@@ -149,6 +154,7 @@ namespace ModelFramework.Objects
             this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
             this.TypeName = typeName;
             this.IsNullable = isNullable;
+            this.IsValueType = isValueType;
             this.ExplicitInterfaceName = explicitInterfaceName;
             this.ParentTypeFullName = parentTypeFullName;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

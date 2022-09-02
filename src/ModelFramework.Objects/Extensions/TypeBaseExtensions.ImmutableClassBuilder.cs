@@ -38,6 +38,7 @@ public static partial class TypeBaseExtensions
                             .WithHasInitializer(p.HasInitializer)
                             .WithHasSetter(settings.AddPrivateSetters)
                             .WithIsNullable(p.IsNullable)
+                            .WithIsValueType(p.IsValueType)
                             .WithVisibility(p.Visibility)
                             .WithGetterVisibility(p.GetterVisibility)
                             .WithSetterVisibility(settings.AddPrivateSetters
@@ -76,16 +77,17 @@ public static partial class TypeBaseExtensions
                                         p.TypeName.GetGenericArguments()
                                     ))
                                     .WithIsNullable(p.IsNullable)
+                                    .WithIsValueType(p.IsValueType)
                             )
                     )
                     .AddLiteralCodeStatements
                     (
                         instance.Properties
                             .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
-                            .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true))
+                            .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
                             .Select
                             (
-                                p => @$"if ({p.Name.ToPascalCase()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
+                                p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
                             )
                     )
                     .AddLiteralCodeStatements
@@ -259,7 +261,7 @@ public static partial class TypeBaseExtensions
                 .AddLiteralCodeStatements("int hashCode = 235838129;")
                 .AddLiteralCodeStatements
                 (
-                    instance.Properties.Select(p => Type.GetType(p.TypeName.FixTypeName())?.IsValueType == true
+                    instance.Properties.Select(p => p.IsValueType
                         ? $"hashCode = hashCode * -1521134295 + {p.Name}.GetHashCode();"
                         : $"hashCode = hashCode * -1521134295 + EqualityComparer<{p.TypeName.FixTypeName()}>.Default.GetHashCode({p.Name});")
                 )

@@ -77,6 +77,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool IsValueType
+        {
+            get
+            {
+                return _isValueTypeDelegate.Value;
+            }
+            set
+            {
+                _isValueTypeDelegate = new (() => value);
+            }
+        }
+
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
         {
             get;
@@ -116,7 +128,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
+            return new ModelFramework.Objects.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, IsValueType, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -170,7 +182,7 @@ namespace ModelFramework.Objects.Builders
 
         public ParameterBuilder WithType(System.Type type)
         {
-            TypeName = type.AssemblyQualifiedName;
+            TypeName = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 
@@ -183,6 +195,18 @@ namespace ModelFramework.Objects.Builders
         public ParameterBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
         {
             _isNullableDelegate = new (isNullableDelegate);
+            return this;
+        }
+
+        public ParameterBuilder WithIsValueType(bool isValueType = true)
+        {
+            IsValueType = isValueType;
+            return this;
+        }
+
+        public ParameterBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
+        {
+            _isValueTypeDelegate = new (isValueTypeDelegate);
             return this;
         }
 
@@ -248,6 +272,7 @@ namespace ModelFramework.Objects.Builders
             _isRefDelegate = new (() => default);
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
+            _isValueTypeDelegate = new (() => default);
             _nameDelegate = new (() => string.Empty);
             _defaultValueDelegate = new (() => default);
             #pragma warning restore CS8603 // Possible null reference return.
@@ -262,6 +287,7 @@ namespace ModelFramework.Objects.Builders
             _isRefDelegate = new (() => source.IsRef);
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
+            _isValueTypeDelegate = new (() => source.IsValueType);
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             _nameDelegate = new (() => source.Name);
@@ -277,6 +303,8 @@ namespace ModelFramework.Objects.Builders
         protected System.Lazy<string> _typeNameDelegate;
 
         protected System.Lazy<bool> _isNullableDelegate;
+
+        protected System.Lazy<bool> _isValueTypeDelegate;
 
         protected System.Lazy<string> _nameDelegate;
 

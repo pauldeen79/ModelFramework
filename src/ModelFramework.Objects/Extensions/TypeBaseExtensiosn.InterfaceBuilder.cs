@@ -80,6 +80,7 @@ public static partial class TypeBaseExtensiosn
                 property.Attributes,
                 ReplaceGenericType(property.TypeName, applyGenericTypes),
                 property.IsNullable,
+                property.IsValueType,
                 property.ExplicitInterfaceName,
                 property.ParentTypeFullName
             );
@@ -111,6 +112,7 @@ public static partial class TypeBaseExtensiosn
             method.Parameters.Select(p => ChangeParameter(p, applyGenericTypes)),
             ReplaceGenericType(method.TypeName, applyGenericTypes),
             method.IsNullable,
+            method.IsValueType,
             method.ExplicitInterfaceName,
             method.ParentTypeFullName
         );
@@ -130,6 +132,7 @@ public static partial class TypeBaseExtensiosn
             parameter.IsRef,
             ReplaceGenericType(parameter.TypeName, applyGenericTypes),
             parameter.IsNullable,
+            parameter.IsValueType,
             parameter.Attributes,
             parameter.Metadata,
             parameter.Name,
