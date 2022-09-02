@@ -843,9 +843,11 @@ public static partial class TypeBaseEtensions
         (
             ", ",
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
-                                                 p.Name,
-                                                 p.Name.ToPascalCase(),
-                                                 p.IsNullable ? "?" : ""))
+                                                 p.Name,                            // 0
+                                                 p.Name.ToPascalCase(),             // 1
+                                                 p.IsNullable ? "?" : string.Empty, // 2
+                                                 p.TypeName.FixTypeName(),          // 3
+                                                 p.TypeName.GetGenericArguments())) // 4
         );
     }
 }
