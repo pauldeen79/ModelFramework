@@ -1492,7 +1492,7 @@ namespace Namespace2
         var properties = new[]
         {
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-            new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
+            new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool)).WithIsValueType() //TODO: Check if we can fill IsNullable automatically when calling WithType
         };
 
         var model = new[]

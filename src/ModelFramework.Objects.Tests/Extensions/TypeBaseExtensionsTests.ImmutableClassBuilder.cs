@@ -43,7 +43,7 @@ this.Property2 = property2;");
             .WithName("MyClass")
             .WithNamespace("MyNamespace")
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable()) //TODO: Check if we can fill IsNullable automatically when calling WithType
             .Build();
         var settings = new ImmutableClassSettings(constructorSettings: new ImmutableClassConstructorSettings(addNullChecks: true));
 
