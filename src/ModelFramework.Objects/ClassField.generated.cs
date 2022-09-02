@@ -87,6 +87,11 @@ namespace ModelFramework.Objects
             get;
         }
 
+        public bool IsValueType
+        {
+            get;
+        }
+
         public object? DefaultValue
         {
             get;
@@ -97,7 +102,7 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public ClassField(bool readOnly, bool constant, bool @event, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, string typeName, bool isNullable, object? defaultValue, string parentTypeFullName)
+        public ClassField(bool readOnly, bool constant, bool @event, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, string typeName, bool isNullable, bool isValueType, object? defaultValue, string parentTypeFullName)
         {
             this.ReadOnly = readOnly;
             this.Constant = constant;
@@ -113,6 +118,7 @@ namespace ModelFramework.Objects
             this.Attributes = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Objects.Contracts.IAttribute>(attributes);
             this.TypeName = typeName;
             this.IsNullable = isNullable;
+            this.IsValueType = isValueType;
             this.DefaultValue = defaultValue;
             this.ParentTypeFullName = parentTypeFullName;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);

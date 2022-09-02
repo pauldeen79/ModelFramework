@@ -173,6 +173,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool IsValueType
+        {
+            get
+            {
+                return _isValueTypeDelegate.Value;
+            }
+            set
+            {
+                _isValueTypeDelegate = new (() => value);
+            }
+        }
+
         public object? DefaultValue
         {
             get
@@ -200,7 +212,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClassField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, DefaultValue, ParentTypeFullName);
+            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, IsValueType, DefaultValue, ParentTypeFullName);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -382,6 +394,18 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassFieldBuilder WithIsValueType(bool isValueType = true)
+        {
+            IsValueType = isValueType;
+            return this;
+        }
+
+        public ClassFieldBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
+        {
+            _isValueTypeDelegate = new (isValueTypeDelegate);
+            return this;
+        }
+
         public ClassFieldBuilder WithDefaultValue(object? defaultValue)
         {
             DefaultValue = defaultValue;
@@ -423,6 +447,7 @@ namespace ModelFramework.Objects.Builders
             _nameDelegate = new (() => string.Empty);
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
+            _isValueTypeDelegate = new (() => default);
             _defaultValueDelegate = new (() => default);
             _parentTypeFullNameDelegate = new (() => string.Empty);
             #pragma warning restore CS8603 // Possible null reference return.
@@ -446,6 +471,7 @@ namespace ModelFramework.Objects.Builders
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
+            _isValueTypeDelegate = new (() => source.IsValueType);
             _defaultValueDelegate = new (() => source.DefaultValue);
             _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
@@ -473,6 +499,8 @@ namespace ModelFramework.Objects.Builders
         protected System.Lazy<string> _typeNameDelegate;
 
         protected System.Lazy<bool> _isNullableDelegate;
+
+        protected System.Lazy<bool> _isValueTypeDelegate;
 
         protected System.Lazy<object?> _defaultValueDelegate;
 

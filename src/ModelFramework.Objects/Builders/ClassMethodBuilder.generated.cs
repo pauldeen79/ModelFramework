@@ -197,6 +197,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool IsValueType
+        {
+            get
+            {
+                return _isValueTypeDelegate.Value;
+            }
+            set
+            {
+                _isValueTypeDelegate = new (() => value);
+            }
+        }
+
         public string ExplicitInterfaceName
         {
             get
@@ -224,7 +236,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, ExplicitInterfaceName, ParentTypeFullName);
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, IsValueType, ExplicitInterfaceName, ParentTypeFullName);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -474,6 +486,18 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
+        public ClassMethodBuilder WithIsValueType(bool isValueType = true)
+        {
+            IsValueType = isValueType;
+            return this;
+        }
+
+        public ClassMethodBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
+        {
+            _isValueTypeDelegate = new (isValueTypeDelegate);
+            return this;
+        }
+
         public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
         {
             ExplicitInterfaceName = explicitInterfaceName;
@@ -519,6 +543,7 @@ namespace ModelFramework.Objects.Builders
             _nameDelegate = new (() => string.Empty);
             _typeNameDelegate = new (() => string.Empty);
             _isNullableDelegate = new (() => default);
+            _isValueTypeDelegate = new (() => default);
             _explicitInterfaceNameDelegate = new (() => string.Empty);
             _parentTypeFullNameDelegate = new (() => string.Empty);
             #pragma warning restore CS8603 // Possible null reference return.
@@ -550,6 +575,7 @@ namespace ModelFramework.Objects.Builders
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
             _typeNameDelegate = new (() => source.TypeName);
             _isNullableDelegate = new (() => source.IsNullable);
+            _isValueTypeDelegate = new (() => source.IsValueType);
             _explicitInterfaceNameDelegate = new (() => source.ExplicitInterfaceName);
             _parentTypeFullNameDelegate = new (() => source.ParentTypeFullName);
         }
@@ -577,6 +603,8 @@ namespace ModelFramework.Objects.Builders
         protected System.Lazy<string> _typeNameDelegate;
 
         protected System.Lazy<bool> _isNullableDelegate;
+
+        protected System.Lazy<bool> _isValueTypeDelegate;
 
         protected System.Lazy<string> _explicitInterfaceNameDelegate;
 
