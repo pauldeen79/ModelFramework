@@ -385,7 +385,7 @@ public static partial class TypeBaseEtensions
 
     private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
         => settings.ConstructorSettings.AddNullChecks
-            ? $"if ({p.Name.ToPascalCase()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
+            ? $"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
             : $"{p.Name}.AddRange({p.Name.ToPascalCase()});";
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
@@ -667,7 +667,7 @@ public static partial class TypeBaseEtensions
         => settings.ConstructorSettings.AddNullChecks
             ? new[]
                 {
-                    $"if ({property.Name.ToPascalCase()} != null)",
+                    $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
                     "{",
                     string.Format
                     (
@@ -713,7 +713,7 @@ public static partial class TypeBaseEtensions
         => settings.ConstructorSettings.AddNullChecks
             ? (new[]
             {
-                $"if ({property.Name.ToPascalCase()} != null)",
+                $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
                 "{",
                 string.Format(overloadExpression,
                               property.Name.ToPascalCase(),

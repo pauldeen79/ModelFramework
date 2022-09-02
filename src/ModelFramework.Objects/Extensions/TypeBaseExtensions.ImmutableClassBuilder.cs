@@ -85,7 +85,7 @@ public static partial class TypeBaseExtensions
                             .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && Type.GetType(p.TypeName.FixTypeName())?.IsValueType != true))
                             .Select
                             (
-                                p => @$"if ({p.Name.ToPascalCase()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
+                                p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
                             )
                     )
                     .AddLiteralCodeStatements
