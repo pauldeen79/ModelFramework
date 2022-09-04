@@ -17,11 +17,16 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class InterfaceBuilder : TypeBaseBuilder<InterfaceBuilder, ModelFramework.Objects.Contracts.IInterface>
     {
-        public override ModelFramework.Objects.Contracts.IInterface Build()
+        public override ModelFramework.Objects.Contracts.IInterface BuildTyped()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             return new ModelFramework.Objects.Interface(Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public override ModelFramework.Objects.Contracts.ITypeBase Build()
+        {
+            return BuildTyped();
         }
 
         public InterfaceBuilder() : base()

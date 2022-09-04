@@ -128,7 +128,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 c => CreateBuilder(c, buildersNamespace)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
                     .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(codeStatementInterfaceType))
-                    .Build()
+                    .BuildTyped()
             ).ToArray();
 
     private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
@@ -138,15 +138,18 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                                                                       "ModelFramework.Database.Contracts.I",
                                                                       "ModelFramework.Common.Contracts.I"))
         {
+            var isClass = typeName == typeof(IClass).FullName!;
             property.ConvertSinglePropertyToBuilderOnBuilder
             (
-                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder"
+                typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder",
+                isClass ? "{0}{2}.BuildTyped()" : null
             );
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
             var isCodeStatement = typeName.Contains(typeof(ICodeStatement).FullName!)
                 || typeName.Contains(typeof(ISqlStatement).FullName!);
+            var isClass = typeName == "System.Collections.Generic.IReadOnlyCollection<ModelFramework.Objects.Contracts.IClass>";
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 false,
@@ -156,7 +159,8 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                     : typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture),
                 isCodeStatement
                     ? "{4}{0}.AddRange(source.{0}.Select(x => x.CreateBuilder()))"
-                    : null
+                    : null,
+                customBuilderMethodParameterExpression: isClass ? "{0}.Select(x => x.BuildTyped())" : null
             );
         }
         else if (typeName.Contains($"Collection<{typeof(string).FullName}", StringComparison.InvariantCulture))

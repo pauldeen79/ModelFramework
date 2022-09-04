@@ -100,13 +100,13 @@ public abstract class CSharpClassBase : ClassBase
                     x => x.Methods.ForEach(y => y.WithTypeName("T")
                                                  .With(z => z.Parameters.First().WithTypeName(z.TypeName)))
                 )
-                .Build()
+                .BuildTyped()
         )
         .ToArray();
 
     protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
         => GetImmutableClasses(types.Select(x => x.IsInterface
-            ? (ITypeBase)x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).Build()
+            ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).Build()
             : x.ToClassBuilder(new ClassSettings()).With(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
@@ -140,7 +140,7 @@ public abstract class CSharpClassBase : ClassBase
                     .WithName(t.Name)
                     .WithNamespace(t.FullName.GetNamespaceWithDefault())
                 .With(x => FixImmutableBuilderProperties(x))
-                .Build()
+                .BuildTyped()
             )
             .ToArray();
     }
@@ -158,7 +158,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(@namespace)
             .WithName(type.GetEntityClassName())
             .With(x => FixImmutableClassProperties(x))
-            .Build();
+            .BuildTyped();
 
     protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
         => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
@@ -224,7 +224,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
-            .Build();
+            .BuildTyped();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
         => new InterfaceBuilder(iinterface)

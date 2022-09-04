@@ -5,7 +5,7 @@ public static partial class TypeBaseExtensions
     public const string NullCheckMetadataValue = "ImmutableClass.Constructor.NullCheck";
 
     public static IClass ToImmutableClass(this ITypeBase instance, ImmutableClassSettings settings)
-        => instance.ToImmutableClassBuilder(settings).Build();
+        => instance.ToImmutableClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToImmutableClassBuilder(this ITypeBase instance, ImmutableClassSettings settings)
     {
@@ -142,7 +142,7 @@ public static partial class TypeBaseExtensions
                 $"base({GetPropertyNamesConcatenated(instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass))})");
 
     public static IClass ToImmutableExtensionClass(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
-        => instance.ToImmutableExtensionClassBuilder(settings).Build();
+        => instance.ToImmutableExtensionClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToImmutableExtensionClassBuilder(this ITypeBase instance,
                                                                 ImmutableClassExtensionsSettings settings)
