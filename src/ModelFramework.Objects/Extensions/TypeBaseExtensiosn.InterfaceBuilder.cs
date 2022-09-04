@@ -3,7 +3,7 @@
 public static partial class TypeBaseExtensiosn
 {
     public static IInterface ToInterfaceClass(this ITypeBase instance, InterfaceSettings settings)
-        => instance.ToInterfaceBuilder(settings).Build();
+        => instance.ToInterfaceBuilder(settings).BuildTyped();
 
     public static InterfaceBuilder ToInterfaceBuilder(this ITypeBase instance, InterfaceSettings settings)
         => new InterfaceBuilder()

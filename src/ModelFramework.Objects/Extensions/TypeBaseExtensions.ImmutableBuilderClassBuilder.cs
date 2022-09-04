@@ -1,9 +1,11 @@
-﻿namespace ModelFramework.Objects.Extensions;
+﻿using System.Runtime;
+
+namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseEtensions
 {
     public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
-        => instance.ToImmutableBuilderClassBuilder(settings).Build();
+        => instance.ToImmutableBuilderClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
@@ -29,7 +31,7 @@ public static partial class TypeBaseEtensions
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
-        => instance.ToBuilderExtensionsClassBuilder(settings).Build();
+        => instance.ToBuilderExtensionsClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToBuilderExtensionsClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
@@ -47,7 +49,7 @@ public static partial class TypeBaseEtensions
     }
 
     public static IClass ToNonGenericImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
-        => instance.ToNonGenericImmutableBuilderClassBuilder(settings).Build();
+        => instance.ToNonGenericImmutableBuilderClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToNonGenericImmutableBuilderClassBuilder(this ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
@@ -62,7 +64,11 @@ public static partial class TypeBaseEtensions
             .AddConstructors(GetImmutableBuilderClassConstructors(instance, settings))
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
-            .AddFields(GetImmutableBuilderClassFields(instance, settings, false));
+            .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
+            .AddMethods(new ClassMethodBuilder()
+                .WithName("Build")
+                .WithAbstract()
+                .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)));
     }
 
     private static string GetImmutableBuilderClassBaseClass(ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -392,31 +398,53 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                    ImmutableBuilderClassSettings settings)
     {
-        if (!(settings.InheritanceSettings.EnableEntityInheritance && settings.InheritanceSettings.IsAbstract && !settings.InheritanceSettings.EnableBuilderInheritance))
+        if (!(settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.IsAbstract))
         {
-            var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
-            var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
-            yield return new ClassMethodBuilder()
-                .WithName("Build")
+            yield return AddMethods(instance, new ClassMethodBuilder()
+                .WithName(settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity ? "BuildTyped" : "Build")
                 .WithAbstract(settings.IsBuilderForAbstractEntity)
                 .WithOverride(settings.IsBuilderForOverrideEntity)
-                .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings))
-                .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-                    ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
-                    : Array.Empty<string>())
-                .AddLiteralCodeStatements(!settings.IsBuilderForAbstractEntity
-                    ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
-                    : Array.Empty<string>())
-                .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-                    ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
-                    : Array.Empty<string>());
+                .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings)), settings);
 
+            if (settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity)
+            {
+                yield return new ClassMethodBuilder()
+                    .WithName("Build")
+                    .WithOverride()
+                    .WithTypeName(FormatInstanceName(settings.InheritanceSettings.BaseClass ?? instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+                    .AddLiteralCodeStatements("return BuildTyped();");
+            }
         }
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
             yield return classMethodBuilder;
         }
+    }
+
+    private static ClassMethodBuilder AddMethods(ITypeBase instance, ClassMethodBuilder classMethodBuilder, ImmutableBuilderClassSettings settings)
+    {
+        var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
+        var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
+        return classMethodBuilder
+            .AddLiteralCodeStatements
+            (
+                settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+                    ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
+                    : Array.Empty<string>()
+            )
+            .AddLiteralCodeStatements
+            (
+                !settings.IsBuilderForAbstractEntity
+                    ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
+                    : Array.Empty<string>()
+            )
+            .AddLiteralCodeStatements
+            (
+                settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+                    ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
+                    : Array.Empty<string>()
+            );
     }
 
     private static string GetImmutableBuilderBuildMethodReturnType(ITypeBase instance, ImmutableBuilderClassSettings settings)

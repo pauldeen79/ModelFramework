@@ -55,5 +55,5 @@ public partial class TypeBaseExtensionsTests
             .AddAttributes(new AttributeBuilder().AddNameAndParameter("ReadOnly", true))
             .WithPartial(true)
             .WithVisibility(Visibility.Internal)
-            .Build();
+            .BuildTyped();
 }

@@ -21,7 +21,7 @@ public partial class ClassPropertyBuilder
         => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}Builder" : buildersNamespace + ".{2}Builder"))
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
                 ? "{0}?.Build()"
-                : "{0}.Build()"))
+                : "{0}{2}.Build()"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
     private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
@@ -67,10 +67,11 @@ public partial class ClassPropertyBuilder
                                                                             string collectionType = "System.Collections.Generic.List",
                                                                             string? argumentType = null,
                                                                             string? customBuilderConstructorInitializeExpression = null,
-                                                                            string? buildersNamespace = null)
+                                                                            string? buildersNamespace = null,
+                                                                            string? customBuilderMethodParameterExpression = null)
         => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
           .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "System.Collections.Generic.IEnumerable<{1}Builder>" : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}Builder>"))
-          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, "{0}.Select(x => x.Build())")
+          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x.Build())"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace)));
 
     private static string CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(string? argumentType,

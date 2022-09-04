@@ -19,7 +19,12 @@ namespace ModelFramework.Objects.Builders
         where TEntity : ModelFramework.Objects.Contracts.ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
-        public abstract TEntity Build();
+        public abstract TEntity BuildTyped();
+
+        public override ModelFramework.Objects.Contracts.ITypeBase Build()
+        {
+            return BuildTyped();
+        }
 
         public TBuilder WithNamespace(string @namespace)
         {

@@ -12,7 +12,7 @@ public class ClassExtensionsTests
                                                                                .AsReadOnly())
                                       .AddConstructors(new ClassConstructorBuilder().AddParameter("name", typeof(string))
                                                                                     .AddLiteralCodeStatements("Name = name;"))
-                                      .Build();
+                                      .BuildTyped();
 
         // Act
         var actual = input.HasPublicParameterlessConstructor();
@@ -28,7 +28,7 @@ public class ClassExtensionsTests
         var input = new ClassBuilder().WithName("Test")
                                       .AddProperties(new ClassPropertyBuilder().WithName("Name")
                                                                                .WithTypeName("System.String"))
-                                      .Build();
+                                      .BuildTyped();
 
         // Act
         var actual = input.HasPublicParameterlessConstructor();

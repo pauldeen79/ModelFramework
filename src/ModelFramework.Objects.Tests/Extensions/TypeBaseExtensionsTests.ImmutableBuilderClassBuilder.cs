@@ -616,7 +616,7 @@ return this;");
                 .WithType(typeof(string))
                 .WithIsNullable())
             .AsReadOnly()
-            .Build();
+            .BuildTyped();
 
     private static ClassPropertyBuilder[] CreateProperties()
         => new[]

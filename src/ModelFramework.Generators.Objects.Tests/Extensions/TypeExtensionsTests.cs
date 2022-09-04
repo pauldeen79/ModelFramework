@@ -83,7 +83,7 @@ namespace MyNamespace
         var cls = new ClassBuilder(typeof(TestClass).ToClassBuilder(new ClassSettings())
             .WithName("GeneratedTestClass")
             .WithNamespace("MyNamespace")
-            .Build());
+            .BuildTyped());
         cls.Methods.ForEach(x => x.AddCodeStatements(new LiteralCodeStatementBuilder("Hello world!")));
         var model = new[]
         {

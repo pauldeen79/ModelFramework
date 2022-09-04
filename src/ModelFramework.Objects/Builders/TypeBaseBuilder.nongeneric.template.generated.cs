@@ -107,6 +107,8 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
+        public abstract ModelFramework.Objects.Contracts.ITypeBase Build();
+
         protected TypeBaseBuilder()
         {
             Interfaces = new System.Collections.Generic.List<string>();

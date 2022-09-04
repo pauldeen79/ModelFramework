@@ -3,7 +3,7 @@
 public static class ClassExtensions
 {
     public static IClass ToImmutableBuilderClass(this IClass instance, ImmutableBuilderClassSettings settings)
-        => instance.ToImmutableBuilderClassBuilder(settings).Build();
+        => instance.ToImmutableBuilderClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToImmutableBuilderClassBuilder(this IClass instance, ImmutableBuilderClassSettings settings)
         => ((ITypeBase)instance).ToImmutableBuilderClassBuilder(settings);

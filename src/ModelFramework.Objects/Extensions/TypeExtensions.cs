@@ -3,7 +3,7 @@
 public static class TypeExtensions
 {
     public static IClass ToClass(this Type instance, ClassSettings settings)
-        => instance.ToClassBuilder(settings).Build();
+        => instance.ToClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToClassBuilder(this Type instance, ClassSettings settings)
         => new ClassBuilder()
@@ -28,7 +28,7 @@ public static class TypeExtensions
             .AddSubClasses(GetSubClasses(instance, settings.Partial));
 
     public static IInterface ToInterface(this Type instance)
-        => instance.ToInterfaceBuilder().Build();
+        => instance.ToInterfaceBuilder().BuildTyped();
 
     public static InterfaceBuilder ToInterfaceBuilder(this Type instance)
         => new InterfaceBuilder()
@@ -58,7 +58,7 @@ public static class TypeExtensions
             : instance.ToClassBuilder(settings);
 
     public static IClass ToWrapperClass(this Type instance, WrapperClassSettings settings)
-        => instance.ToWrapperClassBuilder(settings).Build();
+        => instance.ToWrapperClassBuilder(settings).BuildTyped();
 
     public static ClassBuilder ToWrapperClassBuilder(this Type instance, WrapperClassSettings settings)
         => new ClassBuilder()

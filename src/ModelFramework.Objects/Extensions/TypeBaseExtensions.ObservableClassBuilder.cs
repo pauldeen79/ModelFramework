@@ -4,7 +4,7 @@ public static partial class TypeBaseExtensions
 {
     public static IClass ToObservableClass(this ITypeBase instance,
                                            string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")
-        => instance.ToObservableClassBuilder(newCollectionTypeName).Build();
+        => instance.ToObservableClassBuilder(newCollectionTypeName).BuildTyped();
 
     public static ClassBuilder ToObservableClassBuilder(this ITypeBase instance,
                                                         string newCollectionTypeName = "System.Collections.ObjectModel.ObservableCollection")

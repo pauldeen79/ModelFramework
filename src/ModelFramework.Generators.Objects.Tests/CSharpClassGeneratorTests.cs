@@ -2205,9 +2205,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
-        public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass Build()
+        public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
         {
             return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
+        }
+
+        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
+        {
+            return BuildTyped();
         }
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
@@ -2299,9 +2304,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
-        public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass Build()
+        public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
         {
             return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
+        }
+
+        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
+        {
+            return BuildTyped();
         }
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
@@ -2399,7 +2409,12 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
-        public abstract TEntity Build();
+        public abstract TEntity BuildTyped();
+
+        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
+        {
+            return BuildTyped();
+        }
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
@@ -2491,6 +2506,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
+        public abstract override TEntity BuildTyped();
+
+        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
+        {
+            return BuildTyped();
+        }
+
         public TBuilder WithMiddleProperty(string middleProperty)
         {
             MiddleProperty = middleProperty;
@@ -2579,6 +2601,8 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
+        public abstract ModelFramework.Generators.Objects.Tests.POC.BaseClass Build();
+
         protected BaseClassBuilder()
         {
             BaseProperty = string.Empty;
@@ -2600,7 +2624,12 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.BaseClass
         where TBuilder : BaseClassBuilder<TBuilder, TEntity>
     {
-        public abstract TEntity Build();
+        public abstract TEntity BuildTyped();
+
+        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
+        {
+            return BuildTyped();
+        }
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
@@ -2685,6 +2714,8 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             set;
         }
 
+        public abstract ModelFramework.Generators.Objects.Tests.POC.MiddleClass Build();
+
         protected MiddleClassBuilder() : base()
         {
             MiddleProperty = string.Empty;
@@ -2706,8 +2737,6 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.MiddleClass
         where TBuilder : MiddleClassBuilder<TBuilder, TEntity>
     {
-        public abstract override TEntity Build();
-
         public TBuilder WithMiddleProperty(string middleProperty)
         {
             MiddleProperty = middleProperty;

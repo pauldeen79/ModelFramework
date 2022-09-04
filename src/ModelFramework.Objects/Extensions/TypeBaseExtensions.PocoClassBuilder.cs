@@ -4,7 +4,7 @@ public static partial class TypeBaseExtensions
 {
     public static IClass ToPocoClass(this ITypeBase instance,
                                      string newCollectionTypeName = "System.Collections.Generic.ICollection")
-        => instance.ToPocoClassBuilder(newCollectionTypeName).Build();
+        => instance.ToPocoClassBuilder(newCollectionTypeName).BuildTyped();
 
     public static ClassBuilder ToPocoClassBuilder(this ITypeBase instance,
                                                   string newCollectionTypeName = "System.Collections.Generic.ICollection")
