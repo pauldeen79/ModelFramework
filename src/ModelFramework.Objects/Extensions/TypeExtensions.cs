@@ -100,7 +100,7 @@ public static class TypeExtensions
             (
                 f => new ClassFieldBuilder()
                     .WithName(f.Name)
-                    .WithTypeName(f.FieldType.FullName)
+                    .WithTypeName(GetTypeName(f.FieldType))
                     .WithStatic(f.IsStatic)
                     .WithConstant(f.IsLiteral)
                     .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object" ? string.Empty : f.DeclaringType.FullName)
@@ -117,7 +117,7 @@ public static class TypeExtensions
         (
             p => new ClassPropertyBuilder()
                 .WithName(p.Name)
-                .WithTypeName(p.PropertyType.FullName)
+                .WithTypeName(GetTypeName(p.PropertyType))
                 .WithHasGetter(p.GetGetMethod() != null)
                 .WithHasSetter(p.GetSetMethod() != null)
                 .WithHasInitializer(p.IsInitOnly())
@@ -146,7 +146,7 @@ public static class TypeExtensions
                 (
                     m => new ClassMethodBuilder()
                         .WithName(m.Name)
-                        .WithTypeName(m.ReturnType.FullName.FixTypeName())
+                        .WithTypeName(GetTypeName(m.ReturnType))
                         .WithVisibility(m.IsPublic
                             ? Visibility.Public
                             : Visibility.Private)
@@ -160,7 +160,7 @@ public static class TypeExtensions
                         (
                             p => new ParameterBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(p.ParameterType.FullName.FixTypeName())
+                                .WithTypeName(GetTypeName(p.ParameterType))
                                 .WithIsNullable(p.IsNullable())
                                 .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                                 .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
@@ -352,4 +352,36 @@ public static class TypeExtensions
 
     private static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") != null;
+
+    private static string GetTypeName(Type type)
+    {
+        if (!type.IsGenericType)
+        {
+            return type.FullName;
+        }
+
+        var builder = new StringBuilder();
+        builder.Append(type.WithoutGenerics());
+        builder.Append("<");
+        var first = true;
+        foreach (var arg in type.GetGenericArguments())
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                builder.Append(",");
+            }
+
+            builder.Append(GetTypeName(arg));
+            if (NullableHelper.IsNullable(arg, arg, arg.CustomAttributes))
+            {
+                builder.Append("?");
+            }
+        }
+        builder.Append(">");
+        return builder.ToString();
+    }
 }

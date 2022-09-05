@@ -1,8 +1,8 @@
 ﻿namespace ModelFramework.Objects;
 
-internal static class NullableHelper
+public static class NullableHelper
 {
-    internal static bool IsNullable(Type memberType, MemberInfo declaringType, IEnumerable<CustomAttributeData> customAttributes)
+    public static bool IsNullable(Type memberType, MemberInfo declaringType, IEnumerable<CustomAttributeData> customAttributes)
     {
         if (memberType.IsValueType)
         {
