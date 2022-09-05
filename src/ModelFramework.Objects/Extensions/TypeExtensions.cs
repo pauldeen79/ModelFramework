@@ -100,7 +100,7 @@ public static class TypeExtensions
             (
                 f => new ClassFieldBuilder()
                     .WithName(f.Name)
-                    .WithTypeName(f.FieldType.FullName)
+                    .WithTypeName(f.FieldType.FullName) // TODO: Fix nullability using custom format method
                     .WithStatic(f.IsStatic)
                     .WithConstant(f.IsLiteral)
                     .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object" ? string.Empty : f.DeclaringType.FullName)
@@ -117,7 +117,7 @@ public static class TypeExtensions
         (
             p => new ClassPropertyBuilder()
                 .WithName(p.Name)
-                .WithTypeName(p.PropertyType.FullName)
+                .WithTypeName(p.PropertyType.FullName) // TODO: Fix nullability using custom format method
                 .WithHasGetter(p.GetGetMethod() != null)
                 .WithHasSetter(p.GetSetMethod() != null)
                 .WithHasInitializer(p.IsInitOnly())
@@ -146,7 +146,7 @@ public static class TypeExtensions
                 (
                     m => new ClassMethodBuilder()
                         .WithName(m.Name)
-                        .WithTypeName(m.ReturnType.FullName.FixTypeName())
+                        .WithTypeName(m.ReturnType.FullName) // TODO: Fix nullability using custom format method
                         .WithVisibility(m.IsPublic
                             ? Visibility.Public
                             : Visibility.Private)
@@ -160,7 +160,7 @@ public static class TypeExtensions
                         (
                             p => new ParameterBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(p.ParameterType.FullName.FixTypeName())
+                                .WithTypeName(p.ParameterType.FullName) // TODO: Fix nullability using custom format method
                                 .WithIsNullable(p.IsNullable())
                                 .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                                 .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
