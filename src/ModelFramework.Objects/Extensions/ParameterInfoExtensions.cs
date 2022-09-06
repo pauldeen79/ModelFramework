@@ -3,5 +3,5 @@
 public static class ParameterInfoExtensions
 {
     public static bool IsNullable(this ParameterInfo parameter)
-        => NullableHelper.IsNullable(parameter.ParameterType, parameter.Member, parameter.CustomAttributes);
+        => NullableHelper.IsNullable(parameter.ParameterType, parameter.Member, parameter.CustomAttributes, 0);
 }

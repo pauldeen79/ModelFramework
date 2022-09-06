@@ -19,5 +19,5 @@ public static class PropertyInfoExtensions
     }
 
     public static bool IsNullable(this PropertyInfo property)
-        => NullableHelper.IsNullable(property.PropertyType, property.DeclaringType, property.CustomAttributes);
+        => NullableHelper.IsNullable(property.PropertyType, property.DeclaringType, property.CustomAttributes, 0);
 }

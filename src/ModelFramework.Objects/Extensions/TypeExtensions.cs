@@ -112,7 +112,7 @@ public static class TypeExtensions
             (
                 f => new ClassFieldBuilder()
                     .WithName(f.Name)
-                    .WithTypeName(GetTypeName(f.FieldType))
+                    .WithTypeName(GetTypeName(f.FieldType, f))
                     .WithStatic(f.IsStatic)
                     .WithConstant(f.IsLiteral)
                     .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object" ? string.Empty : f.DeclaringType.FullName)
@@ -129,7 +129,7 @@ public static class TypeExtensions
         (
             p => new ClassPropertyBuilder()
                 .WithName(p.Name)
-                .WithTypeName(GetTypeName(p.PropertyType))
+                .WithTypeName(GetTypeName(p.PropertyType, p))
                 .WithHasGetter(p.GetGetMethod() != null)
                 .WithHasSetter(p.GetSetMethod() != null)
                 .WithHasInitializer(p.IsInitOnly())
@@ -158,7 +158,7 @@ public static class TypeExtensions
                 (
                     m => new ClassMethodBuilder()
                         .WithName(m.Name)
-                        .WithTypeName(GetTypeName(m.ReturnType))
+                        .WithTypeName(GetTypeName(m.ReturnType, m))
                         .WithVisibility(m.IsPublic
                             ? Visibility.Public
                             : Visibility.Private)
@@ -172,7 +172,7 @@ public static class TypeExtensions
                         (
                             p => new ParameterBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(GetTypeName(p.ParameterType))
+                                .WithTypeName(GetTypeName(p.ParameterType, m))
                                 .WithIsNullable(p.IsNullable())
                                 .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                                 .AddAttributes(GetAttributes(p.GetCustomAttributes(true), attributeInitializeDelegate))
@@ -365,7 +365,7 @@ public static class TypeExtensions
     private static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") != null;
 
-    private static string GetTypeName(Type type)
+    private static string GetTypeName(Type type, MemberInfo declaringType)
     {
         if (!type.IsGenericType)
         {
@@ -376,6 +376,7 @@ public static class TypeExtensions
         builder.Append(type.WithoutGenerics());
         builder.Append("<");
         var first = true;
+        var index = 0;
         foreach (var arg in type.GetGenericArguments())
         {
             if (first)
@@ -387,8 +388,9 @@ public static class TypeExtensions
                 builder.Append(",");
             }
 
-            builder.Append(GetTypeName(arg));
-            if (NullableHelper.IsNullable(arg, arg, arg.CustomAttributes))
+            index++;
+            builder.Append(GetTypeName(arg, declaringType));
+            if (NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }

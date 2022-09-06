@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace ModelFramework.Objects.Tests.Extensions;
+﻿namespace ModelFramework.Objects.Tests.Extensions;
 
 public class TypeExtensionsTests
 {
@@ -63,6 +61,18 @@ public class TypeExtensionsTests
         actual.Fields.Should().ContainSingle();
         actual.Fields.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object?,System.Object?>");
         actual.Fields.Single().IsNullable.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ToClass_Maps_Property_Type_With_NonNullable_Generic_Argument_Correctly()
+    {
+        // Act
+        var actual = typeof(IMyNonNullableGenericPropertyInterface).ToClass();
+
+        // Assert
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object,System.Object?>");
+        actual.Properties.Single().IsNullable.Should().BeFalse();
     }
 
     [Fact]
@@ -145,4 +155,9 @@ public class MyClass
 #pragma warning disable CA1051 // Do not declare visible instance fields
     public Func<object?, object?>? Field;
 #pragma warning restore CA1051 // Do not declare visible instance fields
+}
+
+public interface IMyNonNullableGenericPropertyInterface
+{
+    Func<object, object?> Property { get; }
 }
