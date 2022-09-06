@@ -57,7 +57,7 @@ public class TypeExtensionsTests
     public void ToClass_Maps_Field_Type_With_Nullable_Generic_Argument_Correctly()
     {
         // Act
-        var actual = typeof(MyClass).ToClass(new ClassSettings());
+        var actual = typeof(MyClass).ToClass();
 
         // Assert
         actual.Fields.Should().ContainSingle();
@@ -69,7 +69,7 @@ public class TypeExtensionsTests
     public void ToClass_Maps_Property_Type_Without_Generic_Arguments_Correctly()
     {
         // Act
-        var actual = typeof(MyClass).ToClass(new ClassSettings());
+        var actual = typeof(MyClass).ToClass();
 
         // Assert
         actual.Properties.Should().ContainSingle();
@@ -101,6 +101,34 @@ public class TypeExtensionsTests
         actual.Methods.Single().Parameters.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object?,System.Object?>");
         actual.Methods.Single().Parameters.Single().IsNullable.Should().BeTrue();
     }
+
+    [Fact]
+    public void ToClass_Can_Map_CustomAttributes_Correctly()
+    {
+        // Arrange
+        var settings = new ClassSettings(attributeInitializeDelegate: new Func<System.Attribute, AttributeBuilder>(a =>
+        {
+            var result = new AttributeBuilder().WithName(a.GetType().FullName!);
+            if (a is StringLengthAttribute sla)
+            {
+                result.AddParameters(new AttributeParameterBuilder().WithValue(sla.MaximumLength));
+                if (sla.MinimumLength > 0)
+                {
+                    result.AddParameters(new AttributeParameterBuilder().WithName(nameof(sla.MinimumLength)).WithValue(sla.MaximumLength));
+                }
+            }
+
+            return result;
+        }));
+
+        // Act
+        var actual = typeof(MyClass).ToClass(settings);
+
+        // Arrange
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().Attributes.Should().ContainSingle();
+        actual.Properties.Single().Attributes.Single().Parameters.Should().HaveCount(2);
+    }
 }
 
 public interface IMyInterface
@@ -112,6 +140,7 @@ public interface IMyInterface
 [ExcludeFromCodeCoverage]
 public class MyClass
 {
+    [StringLength(10, MinimumLength = 1)]
     public string MyProperty { get; } = "";
 #pragma warning disable CA1051 // Do not declare visible instance fields
     public Func<object?, object?>? Field;

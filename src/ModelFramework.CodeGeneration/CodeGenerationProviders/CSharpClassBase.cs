@@ -78,7 +78,7 @@ public abstract class CSharpClassBase : ClassBase
                                                            string entitiesNamespace,
                                                            string buildersNamespace,
                                                            string builderInterfacesNamespace)
-        => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass(new ClassSettings())).ToArray(),
+        => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass()).ToArray(),
                                                                            entitiesNamespace,
                                                                            buildersNamespace,
                                                                            builderInterfacesNamespace);
@@ -107,7 +107,7 @@ public abstract class CSharpClassBase : ClassBase
     protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
         => GetImmutableClasses(types.Select(x => x.IsInterface
             ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).Build()
-            : x.ToClassBuilder(new ClassSettings()).With(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
+            : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
         => models.Select
@@ -146,7 +146,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     protected IClass CreateBaseclass(Type type, string @namespace)
-        => type.ToClass(new ClassSettings()).ToImmutableClassBuilder(new ImmutableClassSettings
+        => type.ToClass().ToImmutableClassBuilder(new ImmutableClassSettings
             (
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties,

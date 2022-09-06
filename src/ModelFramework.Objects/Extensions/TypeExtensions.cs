@@ -2,8 +2,14 @@
 
 public static class TypeExtensions
 {
+    public static IClass ToClass(this Type instance)
+        => instance.ToClass(new ClassSettings());
+
     public static IClass ToClass(this Type instance, ClassSettings settings)
         => instance.ToClassBuilder(settings).BuildTyped();
+
+    public static ClassBuilder ToClassBuilder(this Type instance)
+        => instance.ToClassBuilder(new ClassSettings());
 
     public static ClassBuilder ToClassBuilder(this Type instance, ClassSettings settings)
         => new ClassBuilder()
@@ -20,17 +26,23 @@ public static class TypeExtensions
             .WithPartial(settings.Partial)
             .WithRecord(instance.IsRecord())
             .AddInterfaces(GetInterfaces(instance))
-            .AddFields(GetFields(instance).ToList())
-            .AddProperties(GetProperties(instance))
-            .AddMethods(GetMethods(instance))
-            .AddConstructors(GetConstructors(instance, settings.CreateConstructors))
-            .AddAttributes(GetAttributes(instance.GetCustomAttributes(false)))
+            .AddFields(GetFields(instance, settings.AttributeInitializeDelegate).ToList())
+            .AddProperties(GetProperties(instance, settings.AttributeInitializeDelegate))
+            .AddMethods(GetMethods(instance, settings.AttributeInitializeDelegate))
+            .AddConstructors(GetConstructors(instance, settings.AttributeInitializeDelegate, settings.CreateConstructors))
+            .AddAttributes(GetAttributes(instance.GetCustomAttributes(false), settings.AttributeInitializeDelegate))
             .AddSubClasses(GetSubClasses(instance, settings.Partial));
 
     public static IInterface ToInterface(this Type instance)
-        => instance.ToInterfaceBuilder().BuildTyped();
+        => instance.ToInterface(new InterfaceSettings());
+
+    public static IInterface ToInterface(this Type instance, InterfaceSettings settings)
+        => instance.ToInterfaceBuilder(settings).BuildTyped();
 
     public static InterfaceBuilder ToInterfaceBuilder(this Type instance)
+        => instance.ToInterfaceBuilder(new InterfaceSettings());
+
+    public static InterfaceBuilder ToInterfaceBuilder(this Type instance, InterfaceSettings settings)
         => new InterfaceBuilder()
             .WithName(instance.Name)
             .WithNamespace(instance.FullName.GetNamespaceWithDefault())
@@ -38,15 +50,15 @@ public static class TypeExtensions
                 ? Visibility.Public
                 : Visibility.Private)
             .AddInterfaces(GetInterfaces(instance))
-            .AddProperties(GetProperties(instance))
-            .AddMethods(GetMethods(instance));
+            .AddProperties(GetProperties(instance, settings.AttributeInitializeDelegate))
+            .AddMethods(GetMethods(instance, settings.AttributeInitializeDelegate));
 
     public static ITypeBase ToTypeBase(this Type instance)
         => instance.ToTypeBase(new ClassSettings());
 
     public static ITypeBase ToTypeBase(this Type instance, ClassSettings settings)
         => instance.IsInterface
-            ? instance.ToInterface()
+            ? instance.ToInterface(new InterfaceSettings(attributeInitializeDelegate: settings.AttributeInitializeDelegate))
             : instance.ToClass(settings);
 
     public static TypeBaseBuilder ToTypeBaseBuilder(this Type instance)
@@ -54,7 +66,7 @@ public static class TypeExtensions
 
     public static TypeBaseBuilder ToTypeBaseBuilder(this Type instance, ClassSettings settings)
         => instance.IsInterface
-            ? instance.ToInterfaceBuilder()
+            ? instance.ToInterfaceBuilder(new InterfaceSettings(attributeInitializeDelegate: settings.AttributeInitializeDelegate))
             : instance.ToClassBuilder(settings);
 
     public static IClass ToWrapperClass(this Type instance, WrapperClassSettings settings)
@@ -95,7 +107,7 @@ public static class TypeExtensions
                    .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))
                    .Select(t => t.FullName);
 
-    private static IEnumerable<ClassFieldBuilder> GetFields(Type instance)
+    private static IEnumerable<ClassFieldBuilder> GetFields(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate)
         => instance.GetFieldsRecursively().Select
             (
                 f => new ClassFieldBuilder()
@@ -109,10 +121,10 @@ public static class TypeExtensions
                     .WithVisibility(f.IsPublic
                         ? Visibility.Public
                         : Visibility.Private)
-                    .AddAttributes(GetAttributes(f.GetCustomAttributes(false)))
+                    .AddAttributes(GetAttributes(f.GetCustomAttributes(false), attributeInitializeDelegate))
             );
 
-    private static IEnumerable<ClassPropertyBuilder> GetProperties(Type instance) =>
+    private static IEnumerable<ClassPropertyBuilder> GetProperties(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate) =>
         instance.GetPropertiesRecursively().Select
         (
             p => new ClassPropertyBuilder()
@@ -136,10 +148,10 @@ public static class TypeExtensions
                 .WithInitializerVisibility(p.GetSetMethod()?.IsPublic ?? false
                     ? Visibility.Public
                     : Visibility.Private)
-                .AddAttributes(GetAttributes(p.GetCustomAttributes(false)))
+                .AddAttributes(GetAttributes(p.GetCustomAttributes(false), attributeInitializeDelegate))
         );
 
-    private static IEnumerable<ClassMethodBuilder> GetMethods(Type instance)
+    private static IEnumerable<ClassMethodBuilder> GetMethods(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate)
         => instance.GetMethodsRecursively()
                 .Where(m => !instance.IsRecord() && !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
                 .Select
@@ -163,12 +175,12 @@ public static class TypeExtensions
                                 .WithTypeName(GetTypeName(p.ParameterType))
                                 .WithIsNullable(p.IsNullable())
                                 .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
-                                .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
+                                .AddAttributes(GetAttributes(p.GetCustomAttributes(true), attributeInitializeDelegate))
                         ))
-                        .AddAttributes(GetAttributes(m.GetCustomAttributes(false)))
+                        .AddAttributes(GetAttributes(m.GetCustomAttributes(false), attributeInitializeDelegate))
                 );
 
-    private static IEnumerable<ClassConstructorBuilder> GetConstructors(Type instance, bool createConstructors)
+    private static IEnumerable<ClassConstructorBuilder> GetConstructors(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate, bool createConstructors)
         => instance.GetConstructors()
             .Where(_ => createConstructors)
             .Select(x => new ClassConstructorBuilder()
@@ -182,15 +194,15 @@ public static class TypeExtensions
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
-                            .AddAttributes(GetAttributes(p.GetCustomAttributes(true)))
+                            .AddAttributes(GetAttributes(p.GetCustomAttributes(true), attributeInitializeDelegate))
                     )
                 )
         );
 
-    private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes)
+    private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes, Func<System.Attribute, AttributeBuilder>? initializeDelegate)
         => attributes.OfType<System.Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                                                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                     .Select(x => new AttributeBuilder().WithName(x.GetType().FullName));
+                     .Select(x => initializeDelegate != null ? initializeDelegate.Invoke(x) : new AttributeBuilder().WithName(x.GetType().FullName));
 
     private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
         => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));
