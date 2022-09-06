@@ -235,7 +235,7 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .AddInterfaces((new[] { $"{iinterface.Namespace}.{iinterface.Name}" }).Where(_ => InheritFromInterfaces))
+            .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
             .Build();
 
     private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
