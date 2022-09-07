@@ -142,7 +142,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             property.ConvertSinglePropertyToBuilderOnBuilder
             (
                 typeName.Replace("Contracts.I", "Builders.", StringComparison.InvariantCulture) + "Builder",
-                isClass ? "{0}{2}.BuildTyped()" : null
+                customBuilderMethodParameterExpression: isClass ? "{0}{2}.BuildTyped()" : null
             );
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
