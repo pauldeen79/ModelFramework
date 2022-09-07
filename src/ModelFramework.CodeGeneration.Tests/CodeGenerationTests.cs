@@ -427,7 +427,7 @@ namespace Test.Builders
         {
             if (typeBaseBuilder == null)
             {
-                // Not possible, but needs to be added because TTTF.Runtime doesn't support nullable reference types
+                // Not possible, but needs to be added because of .net standard 2.0
                 return;
             }
 

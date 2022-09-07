@@ -755,7 +755,7 @@ namespace MyNamespace
         var input = typeof(Person);
 
         // Act
-        var actual = input.ToClass(new ClassSettings());
+        var actual = input.ToClass();
         var sut = new CSharpClassGenerator();
         var code = TemplateRenderHelper.GetTemplateOutput(sut, new[] { actual });
 
@@ -2145,14 +2145,14 @@ namespace MyNamespace
     public void GeneratesImmutableBuilderClassWithEntityInheritance()
     {
         // Arrange
-        var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
+        var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass),
             addPrivateSetters: true
         );
         var cls = typeof(InheritedClass)
-            .ToClass(new ClassSettings())
+            .ToClass()
             .ToImmutableClass(immutableClassSettings);
         var settings = new ImmutableBuilderClassSettings(
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
@@ -2244,14 +2244,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     public void GeneratesImmutableBuilderClassWithEntityAndBuilderInheritance()
     {
         // Arrange
-        var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
+        var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass),
             addPrivateSetters: true
         );
         var cls = typeof(InheritedClass)
-            .ToClass(new ClassSettings())
+            .ToClass()
             .ToImmutableClass(immutableClassSettings);
         var settings = new ImmutableBuilderClassSettings(
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
@@ -2355,7 +2355,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             addPrivateSetters: true
         );
         var cls = typeof(BaseClass)
-            .ToClass(new ClassSettings())
+            .ToClass()
             .ToImmutableClass(immutableClassSettings);
         var settings = new ImmutableBuilderClassSettings(
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
@@ -2445,14 +2445,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     public void GeneratesImmutableBuilderClassFromAbstractTypeWithBaseClass()
     {
         // Arrange
-        var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
+        var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass, isAbstract: true),
             addPrivateSetters: true
         );
         var cls = typeof(MiddleClass)
-            .ToClass(new ClassSettings())
+            .ToClass()
             .ToImmutableClass(immutableClassSettings);
         var settings = new ImmutableBuilderClassSettings(
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
@@ -2548,7 +2548,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             addPrivateSetters: true
         );
         var cls = typeof(BaseClass)
-            .ToClass(new ClassSettings())
+            .ToClass()
             .ToImmutableClass(immutableClassSettings);
         var settings = new ImmutableBuilderClassSettings(
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
@@ -2654,14 +2654,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     public void GeneratesImmutableBuilderClassFromAbstractTypeWithBaseClassAndBuilderInheritance()
     {
         // Arrange
-        var baseClass = typeof(BaseClass).ToClass(new ClassSettings()).ToImmutableClass(new ImmutableClassSettings());
+        var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass, isAbstract: true),
             addPrivateSetters: true
         );
         var cls = typeof(MiddleClass)
-            .ToClass(new ClassSettings())
+            .ToClass()
             .ToImmutableClass(immutableClassSettings);
         var settings = new ImmutableBuilderClassSettings(
             constructorSettings: new ImmutableBuilderClassConstructorSettings(
@@ -3240,7 +3240,7 @@ namespace MyNamespace
             {
                 Property1 = "Hello",
                 Property2 = false
-            }.GetType().ToClassBuilder(new ClassSettings())
+            }.GetType().ToClassBuilder()
                 .WithName("MyRecord")
                 .WithNamespace("MyNamespace")
                 .Build()

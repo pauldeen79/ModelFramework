@@ -80,7 +80,7 @@ namespace MyNamespace
     public void Can_Use_ToClass_And_Then_Add_Data()
     {
         // Act
-        var cls = new ClassBuilder(typeof(TestClass).ToClassBuilder(new ClassSettings())
+        var cls = new ClassBuilder(typeof(TestClass).ToClassBuilder()
             .WithName("GeneratedTestClass")
             .WithNamespace("MyNamespace")
             .BuildTyped());

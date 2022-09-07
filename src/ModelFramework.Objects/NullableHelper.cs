@@ -2,7 +2,7 @@
 
 public static class NullableHelper
 {
-    public static bool IsNullable(Type memberType, MemberInfo declaringType, IEnumerable<CustomAttributeData> customAttributes)
+    public static bool IsNullable(Type memberType, MemberInfo declaringType, IEnumerable<CustomAttributeData> customAttributes, int index)
     {
         if (memberType.IsValueType)
         {
@@ -17,9 +17,9 @@ public static class NullableHelper
             if (attributeArgument.ArgumentType == typeof(byte[]))
             {
                 var args = (ReadOnlyCollection<CustomAttributeTypedArgument>)attributeArgument.Value!;
-                if (args.Count > 0 && args[0].ArgumentType == typeof(byte))
+                if (args.Count > index && args[index].ArgumentType == typeof(byte))
                 {
-                    return (byte)args[0].Value! == 2;
+                    return (byte)args[index].Value! == 2;
                 }
             }
             else if (attributeArgument.ArgumentType == typeof(byte))
