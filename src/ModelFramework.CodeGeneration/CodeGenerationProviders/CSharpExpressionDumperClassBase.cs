@@ -12,6 +12,9 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
 
     protected virtual string MethodName => "GetModels";
 
+    protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
+        => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
+
     public override object CreateModel()
         => new[]
         {
@@ -33,7 +36,7 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
 
     public string CreateCode()
     {
-        object models = Models.Select(x => x.ToTypeBaseBuilder()).ToArray();
+        object models = Models.Select(x => x.ToTypeBaseBuilder(CreateClassSettings())).ToArray();
         var serviceCollection = new ServiceCollection();
         using var serviceProvider = serviceCollection
             .AddCsharpExpressionDumper
@@ -48,4 +51,7 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
 
         return dumper.Dump(models);
     }
+
+    private ClassSettings CreateClassSettings()
+        => new(attributeInitializeDelegate: AttributeInitializeDelegate);
 }

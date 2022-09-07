@@ -17,6 +17,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
 #nullable enable
     public partial class ParentBuilder
     {
+        [System.ComponentModel.DataAnnotations.StringLengthAttribute(10, MinimumLength = 1)]
         public System.Text.StringBuilder ParentProperty
         {
             get

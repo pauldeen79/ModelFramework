@@ -17,6 +17,7 @@ namespace ModelFramework.Common.Tests.Test
 #nullable enable
     public partial record Parent
     {
+        [System.ComponentModel.DataAnnotations.StringLengthAttribute(10, MinimumLength = 1)]
         public string ParentProperty
         {
             get;

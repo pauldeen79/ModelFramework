@@ -38,6 +38,15 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"ParentProperty")
+                            .AddAttributes(
+                                new AttributeBuilder()
+                                    .AddParameters(
+                                        new AttributeParameterBuilder()
+                                            .WithValue(10),
+                                        new AttributeParameterBuilder()
+                                            .WithValue(1)
+                                            .WithName(@"MinimumLength"))
+                                    .WithName(@"System.ComponentModel.DataAnnotations.StringLengthAttribute"))
                             .WithTypeName(@"System.String")
                             .WithParentTypeFullName(@"ModelFramework.Common.Tests.Test.Contracts.IParent"),
                         new ClassPropertyBuilder()
@@ -48,7 +57,7 @@ namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders
                         new ClassPropertyBuilder()
                             .WithHasSetter(false)
                             .WithName(@"Children")
-                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection`1[[ModelFramework.Common.Tests.Test.Contracts.IChild, ModelFramework.CodeGeneration.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]")
+                            .WithTypeName(@"System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Tests.Test.Contracts.IChild>")
                             .WithParentTypeFullName(@"ModelFramework.Common.Tests.Test.Contracts.IParent"))
                     .WithName(@"IParent"),
             }.Select(x => x.Build()).ToArray();

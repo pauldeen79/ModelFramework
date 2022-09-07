@@ -12,6 +12,7 @@ public class TestModelTests
         sut.ParentProperty = new System.Text.StringBuilder(); //necessary because the property gets initialized to default with the current code (unless you change the default value in code generation)
 
         // Act
+        sut.ParentProperty.Append("Hello"); //needs to be within 1 and 10 positions ;-)
         sut.Child.ChildProperty.Append("Hello world!");
         var result = sut.Build();
 

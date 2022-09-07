@@ -124,7 +124,7 @@ public class TypeExtensionsTests
                 result.AddParameters(new AttributeParameterBuilder().WithValue(sla.MaximumLength));
                 if (sla.MinimumLength > 0)
                 {
-                    result.AddParameters(new AttributeParameterBuilder().WithName(nameof(sla.MinimumLength)).WithValue(sla.MaximumLength));
+                    result.AddParameters(new AttributeParameterBuilder().WithName(nameof(sla.MinimumLength)).WithValue(sla.MinimumLength));
                 }
             }
 

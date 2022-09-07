@@ -22,6 +22,8 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual IClass? BaseClass => null;
     protected virtual string BaseClassBuilderNameSpace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
+    protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
+        => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
 
     protected abstract Type RecordCollectionType { get; }
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
@@ -38,7 +40,7 @@ public abstract class CSharpClassBase : ClassBase
                                                      string entitiesNamespace,
                                                      string buildersNamespace,
                                                      params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
+        => GetImmutableBuilderClasses(types.Select(x => x.ToTypeBase(CreateClassSettings())).ToArray(),
                                       entitiesNamespace,
                                       buildersNamespace,
                                       interfacesToAdd);
@@ -136,7 +138,7 @@ public abstract class CSharpClassBase : ClassBase
             )
             .Select
             (
-                t => t.ToClassBuilder(new ClassSettings(createConstructors: true))
+                t => t.ToClassBuilder(CreateClassSettings())
                     .WithName(t.Name)
                     .WithNamespace(t.FullName.GetNamespaceWithDefault())
                 .With(x => FixImmutableBuilderProperties(x))
@@ -176,7 +178,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithPartial();
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
-        => new ImmutableBuilderClassSettings
+        => new
         (
             typeSettings: new(
                 newCollectionTypeName: NewCollectionTypeName,
@@ -203,7 +205,7 @@ public abstract class CSharpClassBase : ClassBase
         );
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
-        => new ImmutableClassSettings
+        => new
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
@@ -215,6 +217,13 @@ public abstract class CSharpClassBase : ClassBase
                 enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
                 inheritanceComparisonFunction: IsMemberValid)
+        );
+
+    protected ClassSettings CreateClassSettings()
+        => new
+        (
+            createConstructors: true,
+            attributeInitializeDelegate: AttributeInitializeDelegate
         );
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
