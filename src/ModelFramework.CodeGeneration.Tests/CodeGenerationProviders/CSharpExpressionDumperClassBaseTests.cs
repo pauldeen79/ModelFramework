@@ -6,7 +6,7 @@ public class CsharpExpressionDumperClassBaseTests
     public void Can_Generate_Code_To_CsharpClass()
     {
         // Act
-        var actual = GenerateCode.For<Sut>(new CodeGenerationSettings("Sut", false, true)).TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        var actual = GenerateCode.For<Sut>(new CodeGenerationSettings("Sut", false, false, true)).TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
         actual.NormalizeLineEndings().Should().Be(@"using System;

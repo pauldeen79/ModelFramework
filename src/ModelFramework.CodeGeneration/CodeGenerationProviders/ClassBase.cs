@@ -3,6 +3,7 @@
 public abstract class ClassBase : ICodeGenerationProvider
 {
     public bool GenerateMultipleFiles { get; private set; }
+    public bool SkipWhenFileExists { get; private set; }
     public string BasePath { get; private set; } = string.Empty;
 
     public abstract string Path { get; }
@@ -17,9 +18,10 @@ public abstract class ClassBase : ICodeGenerationProvider
     protected abstract bool CreateCodeGenerationHeader { get; }
     protected virtual string FileNameSuffix => ".generated";
 
-    public void Initialize(bool generateMultipleFiles, string basePath)
+    public void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath)
     {
         GenerateMultipleFiles = generateMultipleFiles;
+        SkipWhenFileExists = skipWhenFileExists;
         BasePath = basePath;
     }
 
@@ -29,6 +31,7 @@ public abstract class ClassBase : ICodeGenerationProvider
             { nameof(CSharpClassGenerator.EnableNullableContext), EnableNullableContext },
             { nameof(CSharpClassGenerator.CreateCodeGenerationHeader), CreateCodeGenerationHeader },
             { nameof(CSharpClassGenerator.GenerateMultipleFiles), GenerateMultipleFiles },
+            { nameof(CSharpClassGenerator.SkipWhenFileExists), SkipWhenFileExists },
             { nameof(CSharpClassGenerator.FileNamePrefix), FileNamePrefix },
             { nameof(CSharpClassGenerator.FileNameSuffix), FileNameSuffix }
         };

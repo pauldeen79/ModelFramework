@@ -10,6 +10,7 @@
 <#@ import namespace="ModelFramework.Objects.Settings" #>
 <#@ model type="System.Collections.Generic.IEnumerable`1" genericTypeParameter="ModelFramework.Objects.Contracts.ITypeBase" #>
 <#@ property name="GenerateMultipleFiles" type="System.Boolean" #>
+<#@ property name="SkipWhenFileExists" type="System.Boolean" #>
 <#@ property name="EnvironmentVersion" type="System.String" browsable="false" #>
 <#@ property name="BasePath" type="System.String" #>
 <#@ property name="FileNamePrefix" type="System.String" #>

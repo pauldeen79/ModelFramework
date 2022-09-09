@@ -6,6 +6,7 @@ public class CodeGenerationTests
     (
         basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
         generateMultipleFiles: true,
+        skipWhenFileExists: false,
         dryRun: true
     );
 
@@ -54,6 +55,7 @@ public class CodeGenerationTests
         (
             basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
             generateMultipleFiles: true,
+            skipWhenFileExists: false,
             dryRun: true
         );
         var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
@@ -74,6 +76,7 @@ public class CodeGenerationTests
         (
             basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
             generateMultipleFiles: true,
+            skipWhenFileExists: false,
             dryRun: true
         );
         var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
@@ -95,6 +98,7 @@ public class CodeGenerationTests
         (
             basePath: @"C:\Temp\ModelFramework",
             generateMultipleFiles: false,
+            skipWhenFileExists: false,
             dryRun: true
         );
 
@@ -114,6 +118,7 @@ public class CodeGenerationTests
         (
             basePath: @"C:\Temp\ModelFramework",
             generateMultipleFiles: false,
+            skipWhenFileExists: false,
             dryRun: true
         );
 
@@ -156,6 +161,7 @@ namespace Test
         (
             basePath: @"C:\Temp\ModelFramework",
             generateMultipleFiles: false,
+            skipWhenFileExists: false,
             dryRun: true
         );
 
@@ -232,6 +238,7 @@ namespace Test.Builders
         (
             basePath: @"C:\Temp\ModelFramework",
             generateMultipleFiles: false,
+            skipWhenFileExists: false,
             dryRun: true
         );
 
@@ -274,6 +281,7 @@ namespace Test
         (
             basePath: @"C:\Temp\ModelFramework",
             generateMultipleFiles: false,
+            skipWhenFileExists: false,
             dryRun: true
         );
 

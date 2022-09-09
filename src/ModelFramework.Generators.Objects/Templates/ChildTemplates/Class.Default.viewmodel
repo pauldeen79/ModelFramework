@@ -6,6 +6,7 @@
 <#+
     public CSharpClassGenerator Root => TemplateContext.GetContextByType<CSharpClassGenerator>();
     public bool GenerateMultipleFiles => Root.GenerateMultipleFiles;
+    public bool SkipWhenFileExists => Root.SkipWhenFileExists;
     public IClass Class => Model as IClass;
     public bool EnableNullableContext => Root.EnableNullableContext;
     public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
@@ -28,7 +29,7 @@
         }
     }
     public StringBuilder StartNewFile()
-        => Root.ViewModel.TemplateFileManager.StartNewFile((Root.FileNamePrefix ?? string.Empty) + Model.Name + (Root.FileNameSuffix ?? string.Empty) + ".cs");
+        => Root.ViewModel.TemplateFileManager.StartNewFile((Root.FileNamePrefix ?? string.Empty) + Model.Name + (Root.FileNameSuffix ?? string.Empty) + ".cs", SkipWhenFileExists);
     public CSharpClassGenerator CreateChildGenerator(CSharpClassGeneratorBase rootTemplate)
     {
         if (!HasSubclasses)
