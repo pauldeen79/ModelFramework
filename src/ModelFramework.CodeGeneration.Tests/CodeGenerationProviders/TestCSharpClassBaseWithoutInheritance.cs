@@ -42,7 +42,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
 
     private void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
-        var typeName = property.TypeName.FixTypeName();
+        var typeName = property.TypeName;
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
             //TODO: Add new extension method for this, e.g. ReplaceNamespace(string oldNamespace, string newNamespace, bool remove interfacePrefix)

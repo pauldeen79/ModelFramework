@@ -447,7 +447,7 @@ namespace Test.Builders
 
         private static void FixImmutableBuilderProperty(ClassPropertyBuilder property, bool forBuilder)
         {
-            var typeName = property.TypeName.FixTypeName();
+            var typeName = property.TypeName;
             if (typeName.StartsWith("Test.Contracts.", StringComparison.InvariantCulture))
             {
                 if (forBuilder)

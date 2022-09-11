@@ -47,7 +47,7 @@ public class TypeExtensionsTests
 
         // Assert
         actual.Properties.Should().ContainSingle();
-        actual.Properties.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object?,System.Object?>");
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.Object?,System.Object?>");
         actual.Properties.Single().IsNullable.Should().BeTrue();
     }
 
@@ -59,7 +59,7 @@ public class TypeExtensionsTests
 
         // Assert
         actual.Fields.Should().ContainSingle();
-        actual.Fields.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object?,System.Object?>");
+        actual.Fields.Single().TypeName.Should().Be("System.Func<System.Object?,System.Object?>");
         actual.Fields.Single().IsNullable.Should().BeTrue();
     }
 
@@ -71,7 +71,7 @@ public class TypeExtensionsTests
 
         // Assert
         actual.Properties.Should().ContainSingle();
-        actual.Properties.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object,System.Object?>");
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.Object,System.Object?>");
         actual.Properties.Single().IsNullable.Should().BeFalse();
     }
 
@@ -83,7 +83,7 @@ public class TypeExtensionsTests
 
         // Assert
         actual.Properties.Should().ContainSingle();
-        actual.Properties.Single().TypeName.FixTypeName().Should().Be("System.String");
+        actual.Properties.Single().TypeName.Should().Be("System.String");
         actual.Properties.Single().IsNullable.Should().BeFalse();
     }
 
@@ -95,7 +95,7 @@ public class TypeExtensionsTests
 
         // Assert
         actual.Methods.Should().ContainSingle();
-        actual.Methods.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object?,System.Object?>");
+        actual.Methods.Single().TypeName.Should().Be("System.Func<System.Object?,System.Object?>");
         actual.Methods.Single().IsNullable.Should().BeTrue();
     }
 
@@ -108,7 +108,7 @@ public class TypeExtensionsTests
         // Assert
         actual.Methods.Should().ContainSingle();
         actual.Methods.Single().Parameters.Should().ContainSingle();
-        actual.Methods.Single().Parameters.Single().TypeName.FixTypeName().Should().Be("System.Func<System.Object?,System.Object?>");
+        actual.Methods.Single().Parameters.Single().TypeName.Should().Be("System.Func<System.Object?,System.Object?>");
         actual.Methods.Single().Parameters.Single().IsNullable.Should().BeTrue();
     }
 

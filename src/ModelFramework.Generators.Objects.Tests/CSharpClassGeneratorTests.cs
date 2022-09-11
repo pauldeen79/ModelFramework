@@ -1606,7 +1606,7 @@ namespace MyNamespace
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
             new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(true),
             new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
-            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
+            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName().Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
         };
         var cls = new ClassBuilder()
             .WithName("MyRecord")
@@ -1636,9 +1636,9 @@ namespace MyNamespace
         var properties = new[]
         {
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-            new ClassPropertyBuilder { Name = "Property2", TypeName = typeof(ICollection<string>).FullName! }.ConvertCollectionOnBuilderToEnumerable(true),
-            new ClassPropertyBuilder { Name = "Property3", TypeName = "MyCustomType" }.ConvertSinglePropertyToBuilderOnBuilder(),
-            new ClassPropertyBuilder { Name = "Property4", TypeName = typeof(ICollection<string>).FullName!.Replace("System.String","MyCustomType") }.ConvertCollectionPropertyToBuilderOnBuilder(true)
+            new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName()).ConvertCollectionOnBuilderToEnumerable(true),
+            new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
+            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName().Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
         };
         var cls = new ClassBuilder()
             .WithName("MyRecord")

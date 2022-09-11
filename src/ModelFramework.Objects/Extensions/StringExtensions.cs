@@ -6,23 +6,26 @@ public static class StringExtensions
         => verbs.Any(instance.Contains);
 
     public static string ConvertTypeNameToArray(this string typeName)
-        => $"{typeName.FixTypeName().GetGenericArguments()}[]";
+        => $"{typeName.GetGenericArguments()}[]";
 
     public static string FixCollectionTypeName(this string typeName, string newCollectionTypeName)
-        => typeName.IsCollectionTypeName()
-            && !string.IsNullOrEmpty(newCollectionTypeName)
-            && !string.IsNullOrEmpty(typeName.FixTypeName().GetGenericArguments())
-                ? $"{newCollectionTypeName}<{typeName.FixTypeName().GetGenericArguments()}>"
-                : typeName.FixTypeName();
+    {
+        var fixedTypeName = typeName.FixTypeName();
+        return fixedTypeName.IsCollectionTypeName()
+                && !string.IsNullOrEmpty(newCollectionTypeName)
+                && !string.IsNullOrEmpty(fixedTypeName.GetGenericArguments())
+                    ? $"{newCollectionTypeName}<{fixedTypeName.GetGenericArguments()}>"
+                    : fixedTypeName;
+    }
 
     public static bool IsCollectionTypeName(this string typeName)
-        => typeName.FixTypeName().ContainsAny
+        => typeName.ContainsAny
         (
             "Enumerable<",
             "List<",
             "Collection<",
             "Array<"
-        );
+        ) || typeName.EndsWith("[]");
 
     public static string RemoveInterfacePrefix(this string name)
     {

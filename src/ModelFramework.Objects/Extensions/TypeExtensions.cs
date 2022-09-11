@@ -93,8 +93,8 @@ public static class TypeExtensions
 
         var index = instance.FullName.IndexOf('`');
         return index == -1
-            ? instance.FullName
-            : instance.FullName.Substring(0, index);
+            ? instance.FullName.FixTypeName()
+            : instance.FullName.Substring(0, index).FixTypeName();
     }
 
     public static string GetEntityClassName(this Type instance)
@@ -369,7 +369,7 @@ public static class TypeExtensions
     {
         if (!type.IsGenericType)
         {
-            return type.FullName;
+            return type.FullName.FixTypeName();
         }
 
         var builder = new StringBuilder();
