@@ -53,6 +53,18 @@ namespace ModelFramework.Objects.Builders
             }
         }
 
+        public bool Async
+        {
+            get
+            {
+                return _asyncDelegate.Value;
+            }
+            set
+            {
+                _asyncDelegate = new (() => value);
+            }
+        }
+
         public System.Collections.Generic.List<string> GenericTypeArguments
         {
             get;
@@ -236,7 +248,7 @@ namespace ModelFramework.Objects.Builders
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, IsValueType, ExplicitInterfaceName, ParentTypeFullName);
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, Async, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, IsValueType, ExplicitInterfaceName, ParentTypeFullName);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -273,6 +285,18 @@ namespace ModelFramework.Objects.Builders
         public ClassMethodBuilder WithOperator(System.Func<bool> operatorDelegate)
         {
             _operatorDelegate = new (@operatorDelegate);
+            return this;
+        }
+
+        public ClassMethodBuilder WithAsync(bool async = true)
+        {
+            Async = async;
+            return this;
+        }
+
+        public ClassMethodBuilder WithAsync(System.Func<bool> asyncDelegate)
+        {
+            _asyncDelegate = new (asyncDelegate);
             return this;
         }
 
@@ -534,6 +558,7 @@ namespace ModelFramework.Objects.Builders
             _partialDelegate = new (() => default);
             _extensionMethodDelegate = new (() => default);
             _operatorDelegate = new (() => default);
+            _asyncDelegate = new (() => default);
             _staticDelegate = new (() => default);
             _virtualDelegate = new (() => default);
             _abstractDelegate = new (() => default);
@@ -560,6 +585,7 @@ namespace ModelFramework.Objects.Builders
             _partialDelegate = new (() => source.Partial);
             _extensionMethodDelegate = new (() => source.ExtensionMethod);
             _operatorDelegate = new (() => source.Operator);
+            _asyncDelegate = new (() => source.Async);
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
             GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
@@ -585,6 +611,8 @@ namespace ModelFramework.Objects.Builders
         protected System.Lazy<bool> _extensionMethodDelegate;
 
         protected System.Lazy<bool> _operatorDelegate;
+
+        protected System.Lazy<bool> _asyncDelegate;
 
         protected System.Lazy<bool> _staticDelegate;
 

@@ -32,6 +32,11 @@ namespace ModelFramework.Objects
             get;
         }
 
+        public bool Async
+        {
+            get;
+        }
+
         public System.Collections.Generic.IReadOnlyCollection<string> GenericTypeArguments
         {
             get;
@@ -122,11 +127,12 @@ namespace ModelFramework.Objects
             get;
         }
 
-        public ClassMethod(bool partial, bool extensionMethod, bool @operator, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> codeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IParameter> parameters, string typeName, bool isNullable, bool isValueType, string explicitInterfaceName, string parentTypeFullName)
+        public ClassMethod(bool partial, bool extensionMethod, bool @operator, bool async, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArguments, System.Collections.Generic.IReadOnlyCollection<string> genericTypeArgumentConstraints, System.Collections.Generic.IEnumerable<ModelFramework.Common.Contracts.IMetadata> metadata, bool @static, bool @virtual, bool @abstract, bool @protected, bool @override, ModelFramework.Objects.Contracts.Visibility visibility, string name, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IAttribute> attributes, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.ICodeStatement> codeStatements, System.Collections.Generic.IEnumerable<ModelFramework.Objects.Contracts.IParameter> parameters, string typeName, bool isNullable, bool isValueType, string explicitInterfaceName, string parentTypeFullName)
         {
             this.Partial = partial;
             this.ExtensionMethod = extensionMethod;
             this.Operator = @operator;
+            this.Async = async;
             this.GenericTypeArguments = genericTypeArguments;
             this.GenericTypeArgumentConstraints = genericTypeArgumentConstraints;
             this.Metadata = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Contracts.IMetadata>(metadata);

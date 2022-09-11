@@ -97,6 +97,7 @@ public static partial class TypeBaseExtensiosn
             method.Partial,
             method.ExtensionMethod,
             method.Operator,
+            method.Async,
             method.GenericTypeArguments,
             method.GenericTypeArgumentConstraints,
             method.Metadata,
