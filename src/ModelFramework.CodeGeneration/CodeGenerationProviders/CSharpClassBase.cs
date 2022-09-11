@@ -162,18 +162,18 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .BuildTyped();
 
-    protected ClassBuilder CreateBuilder(IClass cls, string @namespace)
-        => cls.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+    protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
+        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial();
 
-    protected ClassBuilder CreateNonGenericBuilder(IClass cls, string @namespace)
-        => cls.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+    protected ClassBuilder CreateNonGenericBuilder(ITypeBase typeBase, string @namespace)
+        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial();
 
-    protected ClassBuilder CreateBuilderExtensions(IClass cls, string @namespace)
-        => cls.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
+    protected ClassBuilder CreateBuilderExtensions(ITypeBase typeBase, string @namespace)
+        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial();
 

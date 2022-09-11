@@ -363,6 +363,103 @@ namespace Test.Builders
         actual.Should().Be("System.Collections.Generic.List");
     }
 
+    [Fact]
+    public void Can_Generate_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseBuildersWithModelTransformation>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Builders
+{
+#nullable enable
+    public partial class MyClassBuilder
+    {
+        public System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder> SubTypes
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.Domain.Builders.MyClassBuilder? ParentType
+        {
+            get
+            {
+                return _parentTypeDelegate.Value;
+            }
+            set
+            {
+                _parentTypeDelegate = new (() => value);
+            }
+        }
+
+        public MyNamespace.Domain.MyClass Build()
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new MyNamespace.Domain.MyClass(SubTypes.Select(x => x.Build()), ParentType?.Build());
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public MyClassBuilder AddSubTypes(System.Collections.Generic.IEnumerable<MyNamespace.Domain.Builders.MyClassBuilder> subTypes)
+        {
+            return AddSubTypes(subTypes.ToArray());
+        }
+
+        public MyClassBuilder AddSubTypes(params MyNamespace.Domain.Builders.MyClassBuilder[] subTypes)
+        {
+            SubTypes.AddRange(subTypes);
+            return this;
+        }
+
+        public MyClassBuilder WithParentType(MyNamespace.Domain.Builders.MyClassBuilder? parentType)
+        {
+            ParentType = parentType;
+            return this;
+        }
+
+        public MyClassBuilder WithParentType(System.Func<MyNamespace.Domain.Builders.MyClassBuilder?> parentTypeDelegate)
+        {
+            _parentTypeDelegate = new (parentTypeDelegate);
+            return this;
+        }
+
+        public MyClassBuilder()
+        {
+            SubTypes = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
+            _parentTypeDelegate = new (() => default);
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public MyClassBuilder(MyNamespace.Domain.MyClass source)
+        {
+            SubTypes = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder>();
+            SubTypes.AddRange(source.SubTypes.Select(x => new MyNamespace.Domain.Builders.MyClassBuilder(x)));
+            _parentTypeDelegate = new (() => source.ParentType == null ? null : new MyNamespace.Domain.Builders.MyClassBuilder(source.ParentType));
+        }
+
+        protected System.Lazy<MyNamespace.Domain.Builders.MyClassBuilder?> _parentTypeDelegate;
+    }
+#nullable restore
+}
+");
+    }
+
     private void Verify(GenerateCode generatedCode)
     {
         if (Settings.DryRun)
@@ -383,7 +480,7 @@ namespace Test.Builders
         actual.NormalizeLineEndings().Should().NotBeNullOrEmpty();
     }
 
-    private abstract class PlainBase : CSharpClassBase
+    private abstract class PlainBase : CodeGeneration.CodeGenerationProviders.CSharpClassBase
     {
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
@@ -416,7 +513,7 @@ namespace Test.Builders
         public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
     }
 
-    private abstract class CustomPropertiesBase : CSharpClassBase
+    private abstract class CustomPropertiesBase : CodeGeneration.CodeGenerationProviders.CSharpClassBase
     {
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
