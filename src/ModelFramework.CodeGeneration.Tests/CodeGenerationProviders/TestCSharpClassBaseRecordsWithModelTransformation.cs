@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class TestCSharpClassBaseBuildersWithModelTransformation : CSharpClassBase
+public class TestCSharpClassBaseRecordsWithModelTransformation : CSharpClassBase
 {
     public override string Path => @"NotUsed";
     public override string DefaultFileName => "NotUsed";
@@ -13,10 +13,9 @@ public class TestCSharpClassBaseBuildersWithModelTransformation : CSharpClassBas
     protected override bool CreateCodeGenerationHeader => false;
 
     public override object CreateModel()
-        => GetImmutableBuilderClasses(
+        => GetImmutableClasses(
             MapCodeGenerationModelsToDomain(new[] { typeof(IMyClass) }),
-            "MyNamespace.Domain",
-            "MyNamespace.Domain.Builders");
+            "MyNamespace.Domain");
 
     protected override Dictionary<string, string> GetBuilderNamespaceMappings() => new()
     {
@@ -32,10 +31,4 @@ public class TestCSharpClassBaseBuildersWithModelTransformation : CSharpClassBas
     {
         { "ModelFramework.CodeGeneration.Tests.CodeGenerationProviders.I", "MyNamespace.Domain." }
     };
-}
-
-public interface IMyClass
-{
-    IReadOnlyCollection<IMyClass> SubTypes { get; }
-    IMyClass? ParentType { get; }
 }

@@ -5,6 +5,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+    protected override Type RecordConcreteCollectionType => typeof(List<>);
     protected override string RootNamespace => "ModelFramework";
 
     protected override string GetFullBasePath()

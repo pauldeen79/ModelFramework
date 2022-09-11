@@ -460,6 +460,55 @@ namespace MyNamespace.Domain.Builders
 ");
     }
 
+    [Fact]
+    public void Can_Generate_Record_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseRecordsWithModelTransformation>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain
+{
+#nullable enable
+    public partial record MyClass
+    {
+        public System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyClass> SubTypes
+        {
+            get;
+        }
+
+        public MyNamespace.Domain.MyClass? ParentType
+        {
+            get;
+        }
+
+        public MyClass(System.Collections.Generic.IEnumerable<MyNamespace.Domain.MyClass> subTypes, MyNamespace.Domain.MyClass? parentType)
+        {
+            this.SubTypes = new System.Collections.ObjectModel.ReadOnlyCollection<MyNamespace.Domain.MyClass>(subTypes);
+            this.ParentType = parentType;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+#nullable restore
+}
+");
+    }
+
     private void Verify(GenerateCode generatedCode)
     {
         if (Settings.DryRun)
@@ -490,6 +539,7 @@ namespace MyNamespace.Domain.Builders
         protected override string GetFullBasePath() => string.Empty;
 
         protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
         protected override bool EnableNullableContext => true;
         protected override bool CreateCodeGenerationHeader => false;
 
@@ -523,6 +573,7 @@ namespace MyNamespace.Domain.Builders
         protected override string GetFullBasePath() => string.Empty;
 
         protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
         protected override bool EnableNullableContext => true;
         protected override bool CreateCodeGenerationHeader => false;
 

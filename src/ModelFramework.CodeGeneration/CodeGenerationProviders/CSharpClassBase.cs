@@ -4,7 +4,7 @@ public abstract class CSharpClassBase : ClassBase
 {
     protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
         => Enumerable.Empty<ClassMethodBuilder>();
-    protected virtual string NewCollectionTypeName => typeof(List<>).WithoutGenerics();
+    protected virtual Type BuilderClassCollectionType => typeof(List<>);
     protected virtual string SetMethodNameFormatString => "With{0}";
     protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual bool AddNullChecks => false;
@@ -34,6 +34,7 @@ public abstract class CSharpClassBase : ClassBase
     protected abstract string RootNamespace { get; }
 
     protected abstract Type RecordCollectionType { get; }
+    protected abstract Type RecordConcreteCollectionType { get; }
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
@@ -215,7 +216,7 @@ public abstract class CSharpClassBase : ClassBase
                     property.ConvertCollectionPropertyToBuilderOnBuilder
                     (
                         false,
-                        typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                        RecordConcreteCollectionType.WithoutGenerics(),
                         GetCustomCollectionArgumentType(typeName),
                         GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName)
                     );
@@ -225,7 +226,7 @@ public abstract class CSharpClassBase : ClassBase
                     property.ConvertCollectionPropertyToBuilderOnBuilder
                     (
                         false,
-                        typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                        RecordConcreteCollectionType.WithoutGenerics(),
                         GetCustomCollectionArgumentType(typeName)
                     );
                 }
@@ -293,7 +294,7 @@ public abstract class CSharpClassBase : ClassBase
         => new
         (
             typeSettings: new(
-                newCollectionTypeName: NewCollectionTypeName,
+                newCollectionTypeName: BuilderClassCollectionType.WithoutGenerics(),
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                 useTargetTypeNewExpressions: UseTargetTypeNewExpressions,
                 enableNullableReferenceTypes: EnableNullableContext),
