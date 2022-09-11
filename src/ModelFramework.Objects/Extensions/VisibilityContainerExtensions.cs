@@ -28,6 +28,11 @@ public static class VisibilityContainerExtensions
                 builder.AddWithCondition("readonly", classField.ReadOnly);
                 builder.AddWithCondition("const", classField.Constant);
             }
+
+            if (instance is IClassMethod classMethod)
+            {
+                builder.AddWithCondition("async", classMethod.Async);
+            }
         }
         else
         {

@@ -33,4 +33,21 @@ public class VisibilityContainerExtensionsTests
         // Assert
         actual.Should().Be("private const ");
     }
+
+    [Fact]
+    public void Can_Specify_Async_On_Method()
+    {
+        // Arrange
+        var sut = new ClassMethodBuilder()
+            .WithName("Test")
+            .WithType(typeof(string))
+            .WithAsync()
+            .Build();
+
+        // Act
+        var actual = sut.GetModifiers();
+
+        // Assert
+        actual.Should().Be("public async ");
+    }
 }
