@@ -388,6 +388,9 @@ namespace Test.Builders
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
         public override bool RecurseOnDeleteGeneratedFiles => false;
+        protected override string RootNamespace => "ModelFramework";
+
+        protected override string GetFullBasePath() => string.Empty;
 
         protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
         protected override bool EnableNullableContext => true;
@@ -418,6 +421,9 @@ namespace Test.Builders
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
         public override bool RecurseOnDeleteGeneratedFiles => false;
+        protected override string RootNamespace => "ModelFramework";
+
+        protected override string GetFullBasePath() => string.Empty;
 
         protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
         protected override bool EnableNullableContext => true;

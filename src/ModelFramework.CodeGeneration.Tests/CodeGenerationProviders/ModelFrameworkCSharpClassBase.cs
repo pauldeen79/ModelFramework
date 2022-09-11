@@ -5,6 +5,13 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+    protected override string RootNamespace => "ModelFramework";
+
+    protected override string GetFullBasePath()
+        => Directory.GetCurrentDirectory().EndsWith("ModelFramework")
+            ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
+            : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
+
     protected override bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
         => parent != null
         && typeBase != null
