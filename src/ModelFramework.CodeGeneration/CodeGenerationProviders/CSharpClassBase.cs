@@ -20,7 +20,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual bool AllowGenerationWithoutProperties => true;
     protected virtual IClass? BaseClass => null;
-    protected virtual string BaseClassBuilderNameSpace => string.Empty;
+    protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
     protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
         => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
@@ -313,7 +313,7 @@ public abstract class CSharpClassBase : ClassBase
                 enableBuilderInheritance: EnableBuilderInhericance,
                 removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
-                baseClassBuilderNameSpace: BaseClassBuilderNameSpace,
+                baseClassBuilderNameSpace: BaseClassBuilderNamespace,
                 inheritanceComparisonFunction: IsMemberValid)
         );
 
