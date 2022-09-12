@@ -378,7 +378,7 @@ namespace ModelFramework.Objects.Builders
 
         public ClassFieldBuilder WithType(System.Type type)
         {
-            TypeName = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;
+            TypeName = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 

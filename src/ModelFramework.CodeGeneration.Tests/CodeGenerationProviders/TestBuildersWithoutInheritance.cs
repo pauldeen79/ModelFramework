@@ -11,5 +11,5 @@ public class TestBuildersWithoutInheritance : TestCSharpClassBaseWithoutInherita
                                       "ModelFramework.Common.Tests.Test",
                                       "ModelFramework.Common.Tests.Test.Builders");
 
-    public string GetNewCollectionTypeName() => NewCollectionTypeName;
+    public string GetNewCollectionTypeName() => BuilderClassCollectionType.WithoutGenerics();
 }

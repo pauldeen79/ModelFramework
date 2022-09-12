@@ -5,6 +5,14 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+    protected override Type RecordConcreteCollectionType => typeof(List<>);
+    protected override string RootNamespace => "ModelFramework";
+
+    protected override string GetFullBasePath()
+        => Directory.GetCurrentDirectory().EndsWith("ModelFramework")
+            ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
+            : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
+
     protected override bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
         => parent != null
         && typeBase != null
@@ -133,7 +141,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 
     private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
-        var typeName = property.TypeName.FixTypeName();
+        var typeName = property.TypeName;
         if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
                                                                       "ModelFramework.Database.Contracts.I",
                                                                       "ModelFramework.Common.Contracts.I"))
@@ -181,11 +189,11 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
                 .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2} = type.AssemblyQualifiedName; IsValueType = type.IsValueType || type.IsEnum;")
+                .WithInitializeExpression("{2} = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;")
                 .Build());
         }
 
-        if (property.Name == nameof(IMetadataContainer.Metadata) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IMetadata))
+        if (property.Name == nameof(IMetadataContainer.Metadata) && property.TypeName.GetGenericArguments().GetClassName() == nameof(IMetadata))
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .AddParameter("name", typeof(string))
@@ -194,7 +202,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .Build());
         }
 
-        if (property.Name == nameof(IParametersContainer.Parameters) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(IParameter))
+        if (property.Name == nameof(IParametersContainer.Parameters) && property.TypeName.GetGenericArguments().GetClassName() == nameof(IParameter))
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
@@ -211,7 +219,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .Build());
         }
 
-        if (property.Name == nameof(ICodeStatementsContainer.CodeStatements) && property.TypeName.FixTypeName().GetGenericArguments().GetClassName() == nameof(ICodeStatement))
+        if (property.Name == nameof(ICodeStatementsContainer.CodeStatements) && property.TypeName.GetGenericArguments().GetClassName() == nameof(ICodeStatement))
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements

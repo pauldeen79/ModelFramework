@@ -317,7 +317,6 @@ public static partial class TypeBaseEtensions
                 property.TypeName.GetClassName(),
                 property.TypeName.GetGenericArguments().GetClassName()
             )
-            .FixTypeName()
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(property, settings.TypeSettings.EnableNullableReferenceTypes);
 
@@ -568,7 +567,6 @@ public static partial class TypeBaseEtensions
                             property.TypeName.GetClassName(),
                             property.TypeName.GetGenericArguments().GetClassName()
                         )
-                        .FixTypeName()
                         .ConvertTypeNameToArray()
                     ).WithIsNullable(property.IsNullable).WithIsValueType(property.IsValueType)
             ).AddLiteralCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property, extensionMethod));
@@ -599,7 +597,7 @@ public static partial class TypeBaseEtensions
                     .WithTypeName
                     (
                         useLazyInitialization
-                            ? $"System.Func<{typeName.FixTypeName().AppendNullableAnnotation(property, settings.TypeSettings.EnableNullableReferenceTypes)}>"
+                            ? $"System.Func<{typeName.AppendNullableAnnotation(property, settings.TypeSettings.EnableNullableReferenceTypes)}>"
                             : typeName
                     )
                     .WithIsNullable(!useLazyInitialization && property.IsNullable)
@@ -641,7 +639,7 @@ public static partial class TypeBaseEtensions
             (
                 string.Format(overload.InitializeExpression,
                               property.Name.ToPascalCase(),
-                              property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                              property.TypeName.GetCsharpFriendlyTypeName(),
                               property.Name),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
@@ -748,7 +746,7 @@ public static partial class TypeBaseEtensions
                 "{",
                 string.Format(overloadExpression,
                               property.Name.ToPascalCase(),
-                              property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),
+                              property.TypeName.GetCsharpFriendlyTypeName(),
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
                               property.Name),
@@ -760,7 +758,7 @@ public static partial class TypeBaseEtensions
             {
                 string.Format(overloadExpression,
                               property.Name.ToPascalCase(),
-                              property.TypeName.FixTypeName(),
+                              property.TypeName,
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
                               property.Name),
@@ -874,7 +872,7 @@ public static partial class TypeBaseEtensions
                                                  p.Name,                            // 0
                                                  p.Name.ToPascalCase(),             // 1
                                                  p.IsNullable ? "?" : string.Empty, // 2
-                                                 p.TypeName.FixTypeName(),          // 3
+                                                 p.TypeName,                        // 3
                                                  p.TypeName.GetGenericArguments())) // 4
         );
     }

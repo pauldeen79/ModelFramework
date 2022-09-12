@@ -11,6 +11,7 @@ global using CrossCutting.Common.Extensions;
 global using FluentAssertions;
 global using ModelFramework.Common.Builders;
 global using ModelFramework.Common.Contracts;
+global using ModelFramework.Common.Extensions;
 global using ModelFramework.Generators.Objects.Tests.Mocks;
 global using ModelFramework.Generators.Objects.Tests.POC;
 global using ModelFramework.Generators.Shared;

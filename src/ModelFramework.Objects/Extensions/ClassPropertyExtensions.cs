@@ -15,12 +15,12 @@ public static class ClassPropertyExtensions
             ),
             property.Name,                                                       // 0
             property.Name.ToPascalCase(),                                        // 1
-            property.TypeName.FixTypeName().GetCsharpFriendlyTypeName(),         // 2
+            property.TypeName.GetCsharpFriendlyTypeName(),                       // 2
             property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(), // 3
             settings.ConstructorSettings.AddNullChecks                           // 4
                 ? $"if (source.{property.Name} != null) "
                 : "",
-            property.TypeName.FixTypeName().GetClassName(),                      // 5
+            property.TypeName.GetClassName(),                                    // 5
             property.TypeName.GetGenericArguments().GetClassName()               // 6
         );
 

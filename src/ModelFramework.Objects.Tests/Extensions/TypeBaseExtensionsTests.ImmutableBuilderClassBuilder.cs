@@ -596,9 +596,9 @@ _property3Delegate = new (() => source.Property3);");
 return this;");
         string.Join(Environment.NewLine, actual.Methods.ElementAt(2).CodeStatements.Select(x => x.ToString())).Should().Be(@"_property1Delegate = new (property1Delegate);
 return this;");
-        actual.Methods.ElementAt(5).Parameters.First().TypeName.FixTypeName().Should().Be("System.String");
+        actual.Methods.ElementAt(5).Parameters.First().TypeName.Should().Be("System.String");
         actual.Methods.ElementAt(5).Parameters.First().IsNullable.Should().BeTrue();
-        actual.Methods.ElementAt(6).Parameters.First().TypeName.FixTypeName().Should().Be("System.Func<System.String?>");
+        actual.Methods.ElementAt(6).Parameters.First().TypeName.Should().Be("System.Func<System.String?>");
         actual.Methods.ElementAt(6).Parameters.First().IsNullable.Should().BeFalse();
     }
 

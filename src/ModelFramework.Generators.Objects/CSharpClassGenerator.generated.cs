@@ -2785,8 +2785,7 @@ namespace ModelFramework.Generators.Objects
                  this._viewModelField = value;
             }
         }
-        public string TypeName => Model.TypeName.FixTypeName()
-                                            .GetCsharpFriendlyTypeName()
+        public string TypeName => Model.TypeName.GetCsharpFriendlyTypeName()
                                             .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
                                             .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
     public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
@@ -2955,7 +2954,7 @@ namespace ModelFramework.Generators.Objects
             }
         }
         public bool ShouldRenderModifiers => string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
-    public string ReturnTypeName => Model.TypeName.FixTypeName().GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate()).WhenNullOrEmpty("void");
+    public string ReturnTypeName => Model.TypeName.GetCsharpFriendlyTypeName().AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext).AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate()).WhenNullOrEmpty("void");
     public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
     public string Name => Model.Operator
         ? "operator " + Model.Name
@@ -3126,8 +3125,7 @@ namespace ModelFramework.Generators.Objects
                  this._viewModelField = value;
             }
         }
-        public string TypeName => Model.TypeName.FixTypeName()
-                                            .GetCsharpFriendlyTypeName()
+        public string TypeName => Model.TypeName.GetCsharpFriendlyTypeName()
                                             .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
                                             .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
     public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();
@@ -3297,8 +3295,7 @@ namespace ModelFramework.Generators.Objects
         }
         public bool ShouldRenderModifiers => !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
     public bool ShouldRenderExplicitInterfaceName => !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface);
-    public string TypeName => Model.TypeName.FixTypeName()
-                                            .GetCsharpFriendlyTypeName()
+    public string TypeName => Model.TypeName.GetCsharpFriendlyTypeName()
                                             .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
                                             .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
     public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();

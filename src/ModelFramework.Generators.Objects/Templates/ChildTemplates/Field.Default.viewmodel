@@ -3,8 +3,7 @@
 <#@ model type="IClassField" #>
 <#@ templateContext #>
 <#+
-    public string TypeName => Model.TypeName.FixTypeName()
-                                            .GetCsharpFriendlyTypeName()
+    public string TypeName => Model.TypeName.GetCsharpFriendlyTypeName()
                                             .AppendNullableAnnotation(Model, TemplateContext.GetContextByType<CSharpClassGenerator>().EnableNullableContext)
                                             .AbbreviateNamespaces(TemplateContext.GetModelFromContextByType<ITypeBase>().GetNamespacesToAbbreviate());
     public string Name => Model.Name.Sanitize().GetCsharpFriendlyName();

@@ -263,7 +263,7 @@ public static partial class TypeBaseExtensions
                 (
                     instance.Properties.Select(p => p.IsValueType
                         ? $"hashCode = hashCode * -1521134295 + {p.Name}.GetHashCode();"
-                        : $"hashCode = hashCode * -1521134295 + EqualityComparer<{p.TypeName.FixTypeName()}>.Default.GetHashCode({p.Name});")
+                        : $"hashCode = hashCode * -1521134295 + EqualityComparer<{p.TypeName}>.Default.GetHashCode({p.Name});")
                 )
                 .AddLiteralCodeStatements("return hashCode;");
             yield return new ClassMethodBuilder()

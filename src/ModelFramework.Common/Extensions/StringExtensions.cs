@@ -114,23 +114,22 @@ public static class StringExtensions
 
     public static string GetGenericArguments(this string value)
     {
-        var fixedTypeName = value.FixTypeName();
-        if (string.IsNullOrEmpty(fixedTypeName))
+        if (string.IsNullOrEmpty(value))
         {
             return string.Empty;
         }
         //Bla<GenericArg1,...>
 
-        var open = fixedTypeName.IndexOf("<");
+        var open = value.IndexOf("<");
         if (open == -1)
         {
             return string.Empty;
         }
 
-        var comma = fixedTypeName.IndexOf(",", open);
+        var comma = value.IndexOf(",", open);
         if (comma == -1)
         {
-            comma = fixedTypeName.IndexOf(">", open);
+            comma = value.IndexOf(">", open);
         }
 
         if (comma == -1)
@@ -138,7 +137,7 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        return fixedTypeName.Substring(open + 1, comma - open - 1);
+        return value.Substring(open + 1, comma - open - 1);
     }
 
     public static string Sanitize(this string token)
