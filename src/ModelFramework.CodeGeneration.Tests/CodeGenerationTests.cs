@@ -906,6 +906,45 @@ namespace MyNamespace.Domain
 ");
     }
 
+    [Fact]
+    public void Can_Generate_ServiceCollectionExtensions_For_OverrideTypes()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtensions>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Extensions
+{
+#nullable enable
+    public static partial class ServiceCollectionExtensions
+    {
+        private static Microsoft.Extensions.DependencyInjection.IServiceCollection AddHandlers(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection)
+        {
+            return serviceCollection
+            .AddSingleton<IHandler, MyDerivedClassHandler>()
+            ;
+        }
+    }
+#nullable restore
+}
+");
+    }
+
     private void Verify(GenerateCode generatedCode)
     {
         if (Settings.DryRun)
@@ -926,7 +965,7 @@ namespace MyNamespace.Domain
         actual.NormalizeLineEndings().Should().NotBeNullOrEmpty();
     }
 
-    private abstract class PlainBase : CodeGeneration.CodeGenerationProviders.CSharpClassBase
+    private abstract class PlainBase : CSharpClassBase
     {
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
@@ -960,7 +999,7 @@ namespace MyNamespace.Domain
         public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
     }
 
-    private abstract class CustomPropertiesBase : CodeGeneration.CodeGenerationProviders.CSharpClassBase
+    private abstract class CustomPropertiesBase : CSharpClassBase
     {
         public override string Path => @"C:\Temp";
         public override string DefaultFileName => "GeneratedCode.cs";
