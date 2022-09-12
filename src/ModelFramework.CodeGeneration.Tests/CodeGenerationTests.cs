@@ -526,7 +526,59 @@ namespace MyNamespace.Domain
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
-        actual.NormalizeLineEndings().Should().NotBeEmpty();
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Builders
+{
+#nullable enable
+    public abstract partial class MyBaseClassBuilder<TBuilder, TEntity> : MyBaseClassBuilder
+        where TEntity : MyNamespace.Domain.MyBaseClass
+        where TBuilder : MyBaseClassBuilder<TBuilder, TEntity>
+    {
+        public abstract TEntity BuildTyped();
+
+        public override MyNamespace.Domain.MyBaseClass Build()
+        {
+            return BuildTyped();
+        }
+
+        public TBuilder WithBaseProperty(string baseProperty)
+        {
+            BaseProperty = baseProperty;
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithBaseProperty(System.Func<string> basePropertyDelegate)
+        {
+            _basePropertyDelegate = new (basePropertyDelegate);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AddChildren(System.Collections.Generic.IEnumerable<MyNamespace.Domain.Builders.MyBaseClassBuilder> children)
+        {
+            return AddChildren(children.ToArray());
+        }
+
+        public TBuilder AddChildren(params MyNamespace.Domain.Builders.MyBaseClassBuilder[] children)
+        {
+            Children.AddRange(children);
+            return (TBuilder)this;
+        }
+
+        protected MyBaseClassBuilder() : base()
+        {
+        }
+
+        protected MyBaseClassBuilder(MyNamespace.Domain.MyBaseClass source) : base(source)
+        {
+        }
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -546,7 +598,56 @@ namespace MyNamespace.Domain
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
-        actual.NormalizeLineEndings().Should().NotBeEmpty();
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Builders
+{
+#nullable enable
+    public abstract partial class MyBaseClassBuilder
+    {
+        public string BaseProperty
+        {
+            get
+            {
+                return _basePropertyDelegate.Value;
+            }
+            set
+            {
+                _basePropertyDelegate = new (() => value);
+            }
+        }
+
+        public System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder> Children
+        {
+            get;
+            set;
+        }
+
+        public abstract MyNamespace.Domain.MyBaseClass Build();
+
+        protected MyBaseClassBuilder()
+        {
+            Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
+            _basePropertyDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        protected MyBaseClassBuilder(MyNamespace.Domain.MyBaseClass source)
+        {
+            Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
+            _basePropertyDelegate = new (() => source.BaseProperty);
+            Children = source.Children.Select(x => .MyBaseClassBuilderFactory.Create(x)).ToList();
+        }
+
+        protected System.Lazy<string> _basePropertyDelegate;
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -566,7 +667,35 @@ namespace MyNamespace.Domain
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
-        actual.NormalizeLineEndings().Should().NotBeEmpty();
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain
+{
+#nullable enable
+    public abstract partial record MyBaseClass
+    {
+        public string BaseProperty
+        {
+            get;
+        }
+
+        public System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyBaseClass> Children
+        {
+            get;
+        }
+
+        protected MyBaseClass(string baseProperty, System.Collections.Generic.IEnumerable<MyNamespace.Domain.MyBaseClass> children)
+        {
+            this.BaseProperty = baseProperty;
+            this.Children = new System.Collections.ObjectModel.ReadOnlyCollection<MyNamespace.Domain.MyBaseClass>(children);
+        }
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -586,7 +715,140 @@ namespace MyNamespace.Domain
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
-        actual.NormalizeLineEndings().Should().NotBeEmpty();
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Builders
+{
+#nullable enable
+    public partial class MyDerivedClassBuilder : MyBaseClassBuilder<MyDerivedClassBuilder, MyNamespace.Domain.MyDerivedClass>
+    {
+        public MyNamespace.Domain.Builders.MyClassBuilder RequiredDomainProperty
+        {
+            get
+            {
+                return _requiredDomainPropertyDelegate.Value;
+            }
+            set
+            {
+                _requiredDomainPropertyDelegate = new (() => value);
+            }
+        }
+
+        public string BaseProperty
+        {
+            get
+            {
+                return _basePropertyDelegate.Value;
+            }
+            set
+            {
+                _basePropertyDelegate = new (() => value);
+            }
+        }
+
+        public System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder> Children
+        {
+            get;
+            set;
+        }
+
+        public override MyNamespace.Domain.MyDerivedClass BuildTyped()
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty, Children.Select(x => x.Build()));
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public override MyNamespace.Domain.MyBaseClass Build()
+        {
+            return BuildTyped();
+        }
+
+        public MyDerivedClassBuilder WithRequiredDomainProperty(MyNamespace.Domain.Builders.MyClassBuilder requiredDomainProperty)
+        {
+            RequiredDomainProperty = requiredDomainProperty;
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithRequiredDomainProperty(System.Func<MyNamespace.Domain.Builders.MyClassBuilder> requiredDomainPropertyDelegate)
+        {
+            _requiredDomainPropertyDelegate = new (requiredDomainPropertyDelegate);
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithBaseProperty(string baseProperty)
+        {
+            BaseProperty = baseProperty;
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithBaseProperty(System.Func<string> basePropertyDelegate)
+        {
+            _basePropertyDelegate = new (basePropertyDelegate);
+            return this;
+        }
+
+        public MyDerivedClassBuilder AddChildren(System.Collections.Generic.IEnumerable<MyNamespace.Domain.Builders.MyBaseClassBuilder> children)
+        {
+            return AddChildren(children.ToArray());
+        }
+
+        public MyDerivedClassBuilder AddChildren(params MyNamespace.Domain.Builders.MyBaseClassBuilder[] children)
+        {
+            Children.AddRange(children);
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithBaseProperty(string baseProperty)
+        {
+            BaseProperty = baseProperty;
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithBaseProperty(System.Func<string> basePropertyDelegate)
+        {
+            _basePropertyDelegate = new (basePropertyDelegate);
+            return this;
+        }
+
+        public MyDerivedClassBuilder AddChildren(System.Collections.Generic.IEnumerable<ModelFramework.CodeGeneration.Tests.CodeGenerationProviders.IMyBaseClass> children)
+        {
+            return AddChildren(children.ToArray());
+        }
+
+        public MyDerivedClassBuilder AddChildren(params ModelFramework.CodeGeneration.Tests.CodeGenerationProviders.IMyBaseClass[] children)
+        {
+            Children.AddRange(children);
+            return this;
+        }
+
+        public MyDerivedClassBuilder() : base()
+        {
+            Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
+            #pragma warning disable CS8603 // Possible null reference return.
+            _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder());
+            _basePropertyDelegate = new (() => string.Empty);
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public MyDerivedClassBuilder(MyNamespace.Domain.MyDerivedClass source) : base(source)
+        {
+            Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
+            _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder(source.RequiredDomainProperty));
+            _basePropertyDelegate = new (() => source.BaseProperty);
+            Children = source.Children.Select(x => .MyBaseClassBuilderFactory.Create(x)).ToList();
+        }
+
+        protected System.Lazy<MyNamespace.Domain.Builders.MyClassBuilder> _requiredDomainPropertyDelegate;
+
+        protected System.Lazy<string> _basePropertyDelegate;
+    }
+#nullable restore
+}
+");
     }
 
     [Fact]
@@ -606,7 +868,42 @@ namespace MyNamespace.Domain
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
-        actual.NormalizeLineEndings().Should().NotBeEmpty();
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain
+{
+#nullable enable
+    public partial record MyDerivedClass : MyNamespace.Domain.MyBaseClass
+    {
+        public MyNamespace.Domain.MyClass RequiredDomainProperty
+        {
+            get;
+        }
+
+        public string BaseProperty
+        {
+            get;
+        }
+
+        public System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyBaseClass> Children
+        {
+            get;
+        }
+
+        public MyDerivedClass(MyNamespace.Domain.MyClass requiredDomainProperty, string baseProperty, System.Collections.Generic.IEnumerable<MyNamespace.Domain.MyBaseClass> children) : base(baseProperty, children)
+        {
+            this.RequiredDomainProperty = requiredDomainProperty;
+            this.BaseProperty = baseProperty;
+            this.Children = new System.Collections.ObjectModel.ReadOnlyCollection<MyNamespace.Domain.MyBaseClass>(children);
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+#nullable restore
+}
+");
     }
 
     private void Verify(GenerateCode generatedCode)
