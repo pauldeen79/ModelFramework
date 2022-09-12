@@ -919,7 +919,7 @@ namespace MyNamespace.Domain
         );
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtensions>(settings);
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension>(settings);
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
@@ -939,6 +939,54 @@ namespace MyNamespace.Domain.Extensions
             .AddSingleton<IHandler, MyDerivedClassHandler>()
             ;
         }
+    }
+#nullable restore
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_BuilderFactory_For_Inherited_Builders()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideBuilderFactory>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Builders
+{
+#nullable enable
+    public static class MyClassBuilderFactory
+    {
+        public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
+        {
+            return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(""Unknown instance type: "" + instance.GetType().FullName);
+        }
+
+        public static void Register(System.Type type, Func<MyNamespace.Domain.MyClass,MyClassBuilder> createDelegate)
+        {
+            registeredTypes.Add(type, createDelegate);
+        }
+
+        private static Dictionary<Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
+{
+    {typeof(MyDerivedClass),x => new MyNamespace.Domain.Builders.MyClasss.MyDerivedClassBuilder((MyDerivedClass)x)},
+}
+;
     }
 #nullable restore
 }

@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtensions : TestCSharpClassBaseModelTransformationBase
+public class TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension : TestCSharpClassBaseModelTransformationBase
 {
     public override object CreateModel()
         => CreateServiceCollectionExtensions(
