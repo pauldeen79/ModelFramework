@@ -364,7 +364,7 @@ namespace Test.Builders
     }
 
     [Fact]
-    public void Can_Generate_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    public void Can_Generate_Core_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
     {
         // Arrange
         var settings = new CodeGenerationSettings
@@ -376,7 +376,7 @@ namespace Test.Builders
         );
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseBuildersWithModelTransformation>(settings);
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreBuilders>(settings);
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
@@ -461,7 +461,7 @@ namespace MyNamespace.Domain.Builders
     }
 
     [Fact]
-    public void Can_Generate_Record_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    public void Can_Generate_Core_Record_Using_ModelTransformation_And_Automatic_Builder_Properties()
     {
         // Arrange
         var settings = new CodeGenerationSettings
@@ -473,7 +473,7 @@ namespace MyNamespace.Domain.Builders
         );
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseRecordsWithModelTransformation>(settings);
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreRecords>(settings);
         var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
@@ -507,6 +507,106 @@ namespace MyNamespace.Domain
 #nullable restore
 }
 ");
+    }
+
+    [Fact]
+    public void Can_Generate_Base_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationBaseBuilders>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void Can_Generate_NonGeneric_Base_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationNonGenericBaseBuilders>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void Can_Generate_Base_Record_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationBaseRecords>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void Can_Generate_Override_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideBuilders>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().NotBeEmpty();
+    }
+
+    [Fact]
+    public void Can_Generate_Override_Record_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideRecords>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().NotBeEmpty();
     }
 
     private void Verify(GenerateCode generatedCode)
