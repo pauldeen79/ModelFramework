@@ -82,9 +82,9 @@ public abstract class CSharpClassBase : ClassBase
                                                            string buildersNamespace,
                                                            string builderInterfacesNamespace)
         => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass()).ToArray(),
-                                                                           entitiesNamespace,
-                                                                           buildersNamespace,
-                                                                           builderInterfacesNamespace);
+                                               entitiesNamespace,
+                                               buildersNamespace,
+                                               builderInterfacesNamespace);
 
     protected IClass[] GetImmutableBuilderExtensionClasses(ITypeBase[] models,
                                                            string entitiesNamespace,
@@ -427,7 +427,7 @@ public abstract class CSharpClassBase : ClassBase
             .Build();
 
     private bool TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(string typeName)
-    => GetCustomBuilderTypes().Any(x => GetBuilderNamespaceMappings().Any(y => typeName == $"{y.Key}.{x}"));
+        => GetCustomBuilderTypes().Any(x => GetBuilderNamespaceMappings().Any(y => typeName == $"{y.Key}.{x}"));
 
     private string GetCustomCollectionArgumentType(string typeName)
         => ReplaceWithBuilderNamespaces(typeName).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture);
@@ -440,8 +440,8 @@ public abstract class CSharpClassBase : ClassBase
         if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
         {
             return property.IsNullable
-                ? "_{1}Delegate = new (() => source.{0} == null ? null : ExpressionFramework.Domain.Tests.Support.Builders." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0}))"
-                : "_{1}Delegate = new (() => ExpressionFramework.Domain.Tests.Support.Builders." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0}))";
+                ? "_{1}Delegate = new (() => source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0}))"
+                : "_{1}Delegate = new (() => " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0}))";
         }
 
         return property.IsNullable
@@ -450,7 +450,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
-        => "{0} = source.{0}.Select(x => ExpressionFramework.Domain.Tests.Support.Builders." + GetEntityClassName(typeName.GetGenericArguments()) + "BuilderFactory.Create(x)).ToList()";
+        => "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName.GetGenericArguments()) + "BuilderFactory.Create(x)).ToList()";
 
     private Literal GetDefaultValueForBuilderClassConstructor(string typeName)
     {
