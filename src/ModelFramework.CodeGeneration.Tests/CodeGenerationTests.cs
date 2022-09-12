@@ -640,7 +640,7 @@ namespace MyNamespace.Domain.Builders
         {
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             _basePropertyDelegate = new (() => source.BaseProperty);
-            Children = source.Children.Select(x => .MyBaseClassBuilderFactory.Create(x)).ToList();
+            Children = source.Children.Select(x => MyNamespace.Domain.Builders.MyBaseClassBuilderFactory.Create(x)).ToList();
         }
 
         protected System.Lazy<string> _basePropertyDelegate;
@@ -839,7 +839,7 @@ namespace MyNamespace.Domain.Builders
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder(source.RequiredDomainProperty));
             _basePropertyDelegate = new (() => source.BaseProperty);
-            Children = source.Children.Select(x => .MyBaseClassBuilderFactory.Create(x)).ToList();
+            Children = source.Children.Select(x => MyNamespace.Domain.Builders.MyBaseClassBuilderFactory.Create(x)).ToList();
         }
 
         protected System.Lazy<MyNamespace.Domain.Builders.MyClassBuilder> _requiredDomainPropertyDelegate;

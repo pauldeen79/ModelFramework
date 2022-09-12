@@ -450,7 +450,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
-        => "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName.GetGenericArguments()) + "BuilderFactory.Create(x)).ToList()";
+        => "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName.GetGenericArguments()) + "." + GetEntityClassName(typeName.GetGenericArguments()) + "BuilderFactory.Create(x)).ToList()";
 
     private Literal GetDefaultValueForBuilderClassConstructor(string typeName)
     {
