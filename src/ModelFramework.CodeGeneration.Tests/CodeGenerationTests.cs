@@ -984,7 +984,7 @@ namespace MyNamespace.Domain.Builders
 
         private static Dictionary<Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
 {
-    {typeof(MyNamespace.MyDerivedClass),x => new MyNamespace.Domain.Builders.MyClasss.MyDerivedClassBuilder((MyNamespace.MyDerivedClass)x)},
+    {typeof(MyNamespace.Domain.MyDerivedClass),x => new MyNamespace.Domain.Builders.MyClass.MyDerivedClassBuilder((MyNamespace.Domain.MyDerivedClass)x)},
 }
 ;
     }

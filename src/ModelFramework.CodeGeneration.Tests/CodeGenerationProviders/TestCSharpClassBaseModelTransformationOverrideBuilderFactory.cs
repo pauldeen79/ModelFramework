@@ -8,6 +8,7 @@ public class TestCSharpClassBaseModelTransformationOverrideBuilderFactory : Test
             "MyNamespace.Domain.Builders",
             "MyClassBuilderFactory",
             "MyNamespace.Domain.MyClass",
-            "MyNamespace.Domain.Builders.MyClasss",
-            "MyClassBuilder");
+            "MyNamespace.Domain.Builders.MyClass",
+            "MyClassBuilder",
+            "MyNamespace.Domain");
 }

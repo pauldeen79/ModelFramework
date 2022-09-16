@@ -375,7 +375,8 @@ public abstract class CSharpClassBase : ClassBase
         string className,
         string classTypeName,
         string builderNamespace,
-        string builderTypeName)
+        string builderTypeName,
+        string overrideClassNamespace)
         => new[] { new ClassBuilder()
         .WithName(className)
         .WithNamespace(classNamespace)
@@ -384,7 +385,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithName("registeredTypes")
             .WithStatic()
             .WithTypeName($"Dictionary<Type,Func<{classTypeName},{builderTypeName}>>")
-            .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, builderNamespace,classTypeName, builderTypeName))
+            .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, builderNamespace, classTypeName, builderTypeName, overrideClassNamespace))
         )
         .AddMethods(new ClassMethodBuilder()
             .WithName("Create")
@@ -472,14 +473,15 @@ public abstract class CSharpClassBase : ClassBase
         ITypeBase[] models,
         string builderNamespace,
         string classTypeName,
-        string builderTypeName)
+        string builderTypeName,
+        string overrideClassNamespace)
     {
         var builder = new StringBuilder();
         builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("{");
-        foreach (var model in models)
+        foreach (var modelName in models.Select(x => x.Name))
         {
-            builder.AppendLine("    {typeof(" + model.GetFullName() + "),x => new " + builderNamespace + "." + model.Name + "Builder((" + model.GetFullName() + ")x)},");
+            builder.AppendLine("    {typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x)},");
         }
         builder.AppendLine("}");
         return new Literal(builder.ToString());
