@@ -227,7 +227,8 @@ public abstract class CSharpClassBase : ClassBase
                     (
                         false,
                         RecordConcreteCollectionType.WithoutGenerics(),
-                        GetCustomCollectionArgumentType(typeName)
+                        GetCustomCollectionArgumentType(typeName),
+                        customBuilderMethodParameterExpression: !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) ? "{0}.Select(x => x.BuildTyped())" : null
                     );
                 }
             }

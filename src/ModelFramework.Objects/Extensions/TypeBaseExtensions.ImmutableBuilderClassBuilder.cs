@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ModelFramework.Objects.Extensions;
+﻿namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseEtensions
 {
