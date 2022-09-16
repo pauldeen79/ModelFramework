@@ -472,12 +472,11 @@ public abstract class CSharpClassBase : ClassBase
         var builder = new StringBuilder();
         builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("{");
-        foreach (var name in models.Select(x => x.Name))
+        foreach (var model in models)
         {
-            builder.AppendLine("    {typeof(" + name + "),x => new " + builderNamespace + "." + name + "Builder((" + name + ")x)},");
+            builder.AppendLine("    {typeof(" + model.GetFullName() + "),x => new " + builderNamespace + "." + model.Name + "Builder((" + model.GetFullName() + ")x)},");
         }
         builder.AppendLine("}");
         return new Literal(builder.ToString());
     }
-
 }
