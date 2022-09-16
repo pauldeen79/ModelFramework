@@ -98,7 +98,7 @@ public class Method_DefaultClassTests
     public void GeneratesNoCodeBodyOnInterface()
     {
         // Arrange
-        var rootModel = new[] { new InterfaceBuilder().WithName("IMyInterface").WithNamespace("MyNamespace").Build() }.Cast<ITypeBase>();
+        var rootModel = new[] { new InterfaceBuilder().WithName("IMyInterface").WithNamespace("MyNamespace").Build() };
         var model = new ClassMethodBuilder()
             .WithName("Name")
             .WithType(typeof(string))

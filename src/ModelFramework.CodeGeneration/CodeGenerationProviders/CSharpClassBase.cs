@@ -228,7 +228,7 @@ public abstract class CSharpClassBase : ClassBase
                         false,
                         RecordConcreteCollectionType.WithoutGenerics(),
                         GetCustomCollectionArgumentType(typeName),
-                        customBuilderMethodParameterExpression: !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) ? "{0}.Select(x => x.BuildTyped())" : null
+                        customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName)
                     );
                 }
             }
@@ -238,6 +238,11 @@ public abstract class CSharpClassBase : ClassBase
             }
         }
     }
+
+    private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
+        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments()))
+            ? "{0}.Select(x => x.BuildTyped())"
+        : null;
 
     protected ITypeBase[] MapCodeGenerationModelsToDomain(IEnumerable<Type> types)
         => types
