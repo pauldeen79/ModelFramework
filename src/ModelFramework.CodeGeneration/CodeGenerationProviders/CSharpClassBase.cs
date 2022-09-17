@@ -153,7 +153,7 @@ public abstract class CSharpClassBase : ClassBase
             (
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
-                constructorSettings: new ImmutableClassConstructorSettings(
+                constructorSettings: new(
                     validateArguments: ValidateArgumentsInConstructor,
                     addNullChecks: AddNullChecks),
                 addPrivateSetters: AddPrivateSetters)

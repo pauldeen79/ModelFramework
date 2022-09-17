@@ -123,7 +123,7 @@ namespace MyNamespace
             );
         }
 
-        public MyRecord(string property1, bool property2, System.Collections.Immutable.IImmutableList<string> property3)
+        public MyRecord(string property1, bool property2, System.Collections.Generic.IEnumerable<string> property3)
         {
             this.Property1 = property1;
             this.Property2 = property2;
@@ -166,7 +166,7 @@ namespace MyNamespace
             );
         }
 
-        public MyRecord(string property1, bool property2, System.Collections.Immutable.IImmutableList<string> property3)
+        public MyRecord(string property1, bool property2, System.Collections.Generic.IEnumerable<string> property3)
         {
             this.Property1 = property1;
             this.Property2 = property2;

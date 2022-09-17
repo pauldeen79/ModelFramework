@@ -103,9 +103,18 @@ public static class ClassPropertyExtensions
             : $"{property.Name} = source.{property.Name}";
 
     private static string CreateCollectionInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.ConstructorSettings.AddNullChecks
-            ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name})"
-            : $"{property.Name}.AddRange(source.{property.Name})";
+    {
+        if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
+        {
+            return settings.ConstructorSettings.AddNullChecks
+                    ? $"if (source.{property.Name} != null) {property.Name} = source.{property.Name}"
+                    : $"{property.Name} = source.{property.Name}";
+        }
+
+        return settings.ConstructorSettings.AddNullChecks
+                ? $"if (source.{property.Name} != null) {property.Name}.AddRange(source.{property.Name})"
+                : $"{property.Name}.AddRange(source.{property.Name})";
+    }
 
     private static string GetSubModifiers(this IClassProperty property, Visibility? subVisibility, string customModifiersMetadatName)
     {

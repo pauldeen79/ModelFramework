@@ -5,6 +5,7 @@ public class TestBuildersWithoutInheritance : TestCSharpClassBaseWithoutInherita
     public override string Path => "ModelFramework.Common.Tests/Test/Builders";
     public override string DefaultFileName => "Builders.generated.cs";
     public override bool RecurseOnDeleteGeneratedFiles => false;
+    protected override Type BuilderClassCollectionType => typeof(IEnumerable<>);
 
     public override object CreateModel()
         => GetImmutableBuilderClasses(TestCSharpClassBase.CreateTestModels(),

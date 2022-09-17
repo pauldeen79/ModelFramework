@@ -42,7 +42,13 @@ namespace ModelFramework.Common.Tests.Test.Builders
             }
         }
 
-        public System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> Children
+        public System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Builders.ChildBuilder> Children
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.IEnumerable<string> Strings
         {
             get;
             set;
@@ -51,7 +57,7 @@ namespace ModelFramework.Common.Tests.Test.Builders
         public ModelFramework.Common.Tests.Test.Parent Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new ModelFramework.Common.Tests.Test.Parent(ParentProperty?.ToString(), Child?.Build(), Children.Select(x => x.Build()));
+            return new ModelFramework.Common.Tests.Test.Parent(ParentProperty?.ToString(), Child?.Build(), Children.Select(x => x.Build()), Strings);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -106,14 +112,29 @@ namespace ModelFramework.Common.Tests.Test.Builders
         {
             if (children != null)
             {
-                Children.AddRange(children);
+                Children = Children.Concat(children);
+            }
+            return this;
+        }
+
+        public ParentBuilder AddStrings(System.Collections.Generic.IEnumerable<string> strings)
+        {
+            return AddStrings(strings.ToArray());
+        }
+
+        public ParentBuilder AddStrings(params string[] strings)
+        {
+            if (strings != null)
+            {
+                Strings = Strings.Concat(strings);
             }
             return this;
         }
 
         public ParentBuilder()
         {
-            Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
+            Children = Enumerable.Empty<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
+            Strings = Enumerable.Empty<string>();
             #pragma warning disable CS8603 // Possible null reference return.
             _parentPropertyDelegate = new (() => new System.Text.StringBuilder());
             _childDelegate = new (() => default);
@@ -126,10 +147,12 @@ namespace ModelFramework.Common.Tests.Test.Builders
             {
                 throw new System.ArgumentNullException("source");
             }
-            Children = new System.Collections.Generic.List<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
+            Children = Enumerable.Empty<ModelFramework.Common.Tests.Test.Builders.ChildBuilder>();
+            Strings = Enumerable.Empty<string>();
             _parentPropertyDelegate = new (() => new System.Text.StringBuilder(source.ParentProperty));
             _childDelegate = new (() => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(source.Child));
-            if (source.Children != null) Children.AddRange(source.Children.Select(x => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(x)));
+            if (source.Children != null) Children = source.Children.Select(x => new ModelFramework.Common.Tests.Test.Builders.ChildBuilder(x));
+            if (source.Strings != null) Strings = source.Strings;
         }
 
         protected System.Lazy<System.Text.StringBuilder> _parentPropertyDelegate;

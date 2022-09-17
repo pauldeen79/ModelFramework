@@ -33,14 +33,21 @@ namespace ModelFramework.Common.Tests.Test
             get;
         }
 
-        public Parent(string parentProperty, ModelFramework.Common.Tests.Test.Child child, System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Child> children)
+        public System.Collections.Generic.IReadOnlyCollection<string> Strings
+        {
+            get;
+        }
+
+        public Parent(string parentProperty, ModelFramework.Common.Tests.Test.Child child, System.Collections.Generic.IEnumerable<ModelFramework.Common.Tests.Test.Child> children, System.Collections.Generic.IEnumerable<string> strings)
         {
             if (parentProperty == null) throw new System.ArgumentNullException("parentProperty");
             if (child == null) throw new System.ArgumentNullException("child");
             if (children == null) throw new System.ArgumentNullException("children");
+            if (strings == null) throw new System.ArgumentNullException("strings");
             this.ParentProperty = parentProperty;
             this.Child = child;
             this.Children = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Tests.Test.Child>(children);
+            this.Strings = new List<System.String>(strings);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
