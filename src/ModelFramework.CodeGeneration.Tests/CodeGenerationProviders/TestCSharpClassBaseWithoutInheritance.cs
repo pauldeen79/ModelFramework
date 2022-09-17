@@ -45,7 +45,6 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         var typeName = property.TypeName.ToString();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
-            //TODO: Add new extension method for this, e.g. ReplaceNamespace(string oldNamespace, string newNamespace, bool remove interfacePrefix)
             property.WithTypeName(typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture));
 
             property.ConvertSinglePropertyToBuilderOnBuilder
