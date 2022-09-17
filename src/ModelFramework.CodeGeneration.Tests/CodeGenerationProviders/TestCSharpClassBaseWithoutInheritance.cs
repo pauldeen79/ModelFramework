@@ -74,6 +74,9 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
             property.SetDefaultValueForBuilderClassConstructor(!property.IsNullable
                 ? new Literal("new System.Text.StringBuilder()")
                 : new Literal("default"));
+            property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
+            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
+            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
         }
     }
 }
