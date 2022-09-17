@@ -2850,7 +2850,7 @@ namespace MyNamespace
         {
             cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
                 .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings())
-                .Chain(x => x.Methods.RemoveAll(x => x.Name != "Build"))
+                .Chain(x => x.Methods.RemoveAll(x => x.Name.ToString() != "Build"))
                 .Build(),
             cls.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings())
         };

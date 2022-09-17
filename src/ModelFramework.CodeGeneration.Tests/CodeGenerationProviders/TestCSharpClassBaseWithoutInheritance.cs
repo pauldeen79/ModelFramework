@@ -42,11 +42,11 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
 
     private void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
-        var typeName = property.TypeName;
+        var typeName = property.TypeName.ToString();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
             //TODO: Add new extension method for this, e.g. ReplaceNamespace(string oldNamespace, string newNamespace, bool remove interfacePrefix)
-            property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
+            property.WithTypeName(typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture));
 
             property.ConvertSinglePropertyToBuilderOnBuilder
             (
@@ -58,8 +58,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
-            property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
-
+            property.WithTypeName(typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture));
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 addNullChecks: false, // already checked in constructor by using the AddNullChecks property, see above in this class
@@ -71,9 +70,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         else if (typeName.IsStringTypeName())
         {
             property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
-            property.SetDefaultValueForBuilderClassConstructor(!property.IsNullable
-                ? new Literal("new System.Text.StringBuilder()")
-                : new Literal("default"));
+            property.SetDefaultValueForStringPropertyOnBuilderClassConstructor();
             property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
             property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
             property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());

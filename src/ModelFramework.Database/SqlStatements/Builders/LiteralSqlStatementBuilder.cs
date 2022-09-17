@@ -4,8 +4,8 @@ public partial class LiteralSqlStatementBuilder
 {
     public LiteralSqlStatementBuilder(string statement)
     {
-        _statementDelegate = new Lazy<string>();
+        _statementDelegate = new Lazy<StringBuilder>();
         Metadata = new List<Common.Builders.MetadataBuilder>();
-        Statement = statement;
+        Statement.Append(statement);
     }
 }

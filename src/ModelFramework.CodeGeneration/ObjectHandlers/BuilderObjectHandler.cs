@@ -50,6 +50,7 @@ public class BuilderObjectHandler : IObjectHandler
             first = false;
         }
         var propertyValue = property.GetValue(command.Instance);
+        if (propertyValue is StringBuilder sb) propertyValue = sb.ToString();
 
         var addedSomething = false;
         if (methodPrefix == "Add"

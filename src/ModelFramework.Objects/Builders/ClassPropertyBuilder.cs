@@ -109,6 +109,11 @@ public partial class ClassPropertyBuilder
     public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
         => AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, defaultValue);
 
+    public ClassPropertyBuilder SetDefaultValueForStringPropertyOnBuilderClassConstructor()
+        => SetDefaultValueForBuilderClassConstructor(!IsNullable
+            ? new Literal("new System.Text.StringBuilder()")
+            : new Literal("default"));
+
     public ClassPropertyBuilder SetBuilderWithExpression(string expression)
         => AddMetadata(MetadataNames.CustomBuilderWithExpression, expression);
 

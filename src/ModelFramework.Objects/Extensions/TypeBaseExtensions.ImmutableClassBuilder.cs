@@ -273,8 +273,8 @@ public static partial class TypeBaseExtensions
                 .WithOperator()
                 .AddParameters
                 (
-                    new ParameterBuilder { Name = "left", TypeName = instance.Name },
-                    new ParameterBuilder { Name = "right", TypeName = instance.Name }
+                    new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
+                    new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
                 )
                 .AddLiteralCodeStatements($"return EqualityComparer<{instance.Name}>.Default.Equals(left, right);");
             yield return new ClassMethodBuilder()

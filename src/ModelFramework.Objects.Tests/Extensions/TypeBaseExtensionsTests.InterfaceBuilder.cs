@@ -33,8 +33,8 @@ public partial class TypeBaseExtensionsTests
         var actual = input.ToInterfaceBuilder().WithName($"I{input.Name}");
 
         // Assert
-        actual.Name.Should().Be($"I{input.Name}");
-        actual.Namespace.Should().Be(input.Namespace);
+        actual.Name.ToString().Should().Be($"I{input.Name}");
+        actual.Namespace.ToString().Should().Be(input.Namespace);
         actual.Properties.Select(x => x.Build()).Should().BeEquivalentTo(input.Properties);
         actual.Methods.Select(x => x.Build()).Should().BeEquivalentTo(input.Methods);
         actual.Interfaces.Should().BeEquivalentTo(input.Interfaces);

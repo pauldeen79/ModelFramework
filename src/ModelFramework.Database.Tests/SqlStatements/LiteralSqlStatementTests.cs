@@ -25,9 +25,9 @@ public class LiteralSqlStatementTests
         actual.Should().NotBeNull();
         if (actual != null)
         {
-            actual.Statement.Should().Be(sut.Statement);
+            actual.Statement.ToString().Should().Be(sut.Statement);
             actual.Metadata.Should().ContainSingle();
-            actual.Metadata.First().Name.Should().Be(sut.Metadata.First().Name);
+            actual.Metadata.First().Name.ToString().Should().Be(sut.Metadata.First().Name);
             actual.Metadata.First().Value.Should().Be(sut.Metadata.First().Value);
         }
     }
