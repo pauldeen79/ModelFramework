@@ -24,6 +24,15 @@ public partial class ClassPropertyBuilder
                 : "{0}{2}.Build()"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
+    public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder()
+        => ConvertSinglePropertyToBuilderOnBuilder
+        (
+            argumentType: typeof(StringBuilder).FullName,
+            //TODO: Get rid of these ugly {0}{1}{2} things, by using named format strings e.g. {PropertyName}, {PropertyNamePascalCased}, {Nullable} which in turn can also be added as constants for type safety
+            customBuilderMethodParameterExpression: "{0}?.ToString()",
+            customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
+        );
+
     private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
                                                                                                   bool useLazyInitialization,
                                                                                                   bool useTargetTypeNewExpressions,
