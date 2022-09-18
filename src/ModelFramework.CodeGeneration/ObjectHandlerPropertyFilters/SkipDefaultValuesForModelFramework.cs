@@ -33,6 +33,12 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
             return false;
         }
 
+        if (typeof(StringBuilder).IsAssignableFrom(propertyInfo.PropertyType) && actualValue is StringBuilder sb && sb.Length == 0)
+        {
+            // Skip empty stringbuilders
+            return false;
+        }
+
         if (defaultValue == null && actualValue == null)
         {
             return false;
@@ -55,6 +61,11 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
         else if (propertyInfo.PropertyType == typeof(string) && !propertyInfo.IsNullable())
         {
             // For non-nullable strings, string.Empty is the default value
+            return string.Empty;
+        }
+        else if (propertyInfo.PropertyType == typeof(StringBuilder) && !propertyInfo.IsNullable())
+        {
+            // For non-nullable string builders, string.Empty is the default value
             return string.Empty;
         }
         else if (propertyInfo.Name == nameof(IVisibilityContainer.Visibility) && command.Instance is IVisibilityContainer)

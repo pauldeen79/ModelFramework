@@ -66,4 +66,14 @@ public static class StringExtensions
         => string.IsNullOrEmpty(instance)
             ? string.Empty
             : $"{instance}.";
+
+    public static string GetCollectionInitializeStatement(this string instance)
+    {
+        if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))
+        {
+            return $"Enumerable.Empty<{instance.GetGenericArguments()}>()";
+        }
+
+        return $"new {instance}()";
+    }
 }

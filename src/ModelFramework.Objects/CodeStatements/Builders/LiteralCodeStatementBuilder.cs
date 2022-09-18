@@ -4,8 +4,8 @@ public partial class LiteralCodeStatementBuilder
 {
     public LiteralCodeStatementBuilder(string statement)
     {
-        _statementDelegate = new Lazy<string>();
+        _statementDelegate = new Lazy<StringBuilder>();
         Metadata = new List<MetadataBuilder>();
-        Statement = statement;
+        Statement.Append(statement);
     }
 }

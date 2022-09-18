@@ -42,11 +42,10 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
 
     private void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
-        var typeName = property.TypeName;
+        var typeName = property.TypeName.ToString();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
-            //TODO: Add new extension method for this, e.g. ReplaceNamespace(string oldNamespace, string newNamespace, bool remove interfacePrefix)
-            property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
+            property.WithTypeName(typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture));
 
             property.ConvertSinglePropertyToBuilderOnBuilder
             (
@@ -58,27 +57,24 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
-            property.TypeName = typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture);
-
+            property.WithTypeName(typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture));
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 addNullChecks: false, // already checked in constructor by using the AddNullChecks property, see above in this class
-                typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                collectionType: typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 argumentType: null, // using builders namespace instead
-                buildersNamespace: "ModelFramework.Common.Tests.Test.Builders"
+                buildersNamespace: "ModelFramework.Common.Tests.Test.Builders",
+                builderCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics()
+
             );
         }
         else if (typeName.IsStringTypeName())
         {
-            //TODO: Add new extension method for this, e.g. ConvertSingleStringPropertyToStringBuilderOnBuilder, which also includes setting the default value based on IsNullable (possibly override whether it has to be initialized or not)
-            property.ConvertSinglePropertyToBuilderOnBuilder
-            (
-                argumentType: typeof(System.Text.StringBuilder).FullName,
-                //TODO: Get rid of these ugly {0}{1}{2} things, by using named format strings e.g. {PropertyName}, {PropertyNamePascalCased}, {Nullable} which in turn can also be added as constants for type safety
-                customBuilderMethodParameterExpression: "{0}?.ToString()",
-                customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
-            );
-            property.SetDefaultValueForBuilderClassConstructor(/*new Literal("new System.Text.StringBuilder()")*/ new Literal("default"));
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
+            property.SetDefaultValueForStringPropertyOnBuilderClassConstructor();
+            property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
+            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
+            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
         }
     }
 }

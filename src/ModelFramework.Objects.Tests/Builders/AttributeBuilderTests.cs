@@ -12,7 +12,7 @@ public class AttributeBuilderTests
         var actual = sut.WithName(typeof(MinLengthAttribute)).AddParameters(new AttributeParameterBuilder().WithValue(1));
 
         // Assert
-        actual.Name.Should().Be("System.ComponentModel.DataAnnotations.MinLengthAttribute");
+        actual.Name.ToString().Should().Be("System.ComponentModel.DataAnnotations.MinLengthAttribute");
         actual.Parameters.Should().ContainSingle();
         actual.Parameters.First().Value.Should().Be(1);
     }
@@ -27,7 +27,7 @@ public class AttributeBuilderTests
         var actual = sut.AddNameAndParameter("System.ComponentModel.ReadOnly", true);
 
         // Assert
-        actual.Name.Should().Be("System.ComponentModel.ReadOnly");
+        actual.Name.ToString().Should().Be("System.ComponentModel.ReadOnly");
         actual.Parameters.Should().ContainSingle();
         actual.Parameters.First().Value.Should().Be(true);
     }

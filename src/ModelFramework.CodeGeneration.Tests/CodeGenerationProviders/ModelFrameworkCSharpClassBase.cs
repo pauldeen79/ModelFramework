@@ -64,7 +64,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
-        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name, x));
+        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name.ToString(), x));
     }
 
     protected static Type[] GetCommonModelTypes()
@@ -135,13 +135,14 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             (
                 c => CreateBuilder(c, buildersNamespace)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
-                    .Chain(x => x.Methods.First(x => x.Name == "Build").WithType(codeStatementInterfaceType))
+                    .Chain(x => x.Methods.First(x => x.Name.ToString() == "Build").WithType(codeStatementInterfaceType))
                     .BuildTyped()
             ).ToArray();
 
     private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
-        var typeName = property.TypeName;
+        var typeName = property.TypeName.ToString();
+        var propertyName = property.Name.ToString();
         if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
                                                                       "ModelFramework.Database.Contracts.I",
                                                                       "ModelFramework.Common.Contracts.I"))
@@ -178,22 +179,30 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
         {
             property.SetDefaultArgumentValueForWithMethod(true);
-            if (property.Name == nameof(IClassProperty.HasGetter) || property.Name == nameof(IClassProperty.HasSetter))
+            if (propertyName.In(nameof(IClassProperty.HasGetter), nameof(IClassProperty.HasSetter)))
             {
                 property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
             }
         }
+        else if (typeName.IsStringTypeName())
+        {
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
+            property.SetDefaultValueForStringPropertyOnBuilderClassConstructor();
+            property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
+            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
+            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
+        }
 
-        if (property.Name == nameof(ITypeContainer.TypeName) && property.TypeName.IsStringTypeName())
+        if (propertyName == nameof(ITypeContainer.TypeName) && typeName.IsStringTypeName())
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
                 .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2} = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;")
+                .WithInitializeExpression("{2}.Clear().Append(type.AssemblyQualifiedName.FixTypeName()); IsValueType = type.IsValueType || type.IsEnum;")
                 .Build());
         }
 
-        if (property.Name == nameof(IMetadataContainer.Metadata) && property.TypeName.GetGenericArguments().GetClassName() == nameof(IMetadata))
+        if (propertyName == nameof(IMetadataContainer.Metadata) && typeName.GetGenericArguments().GetClassName() == nameof(IMetadata))
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .AddParameter("name", typeof(string))
@@ -202,7 +211,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .Build());
         }
 
-        if (property.Name == nameof(IParametersContainer.Parameters) && property.TypeName.GetGenericArguments().GetClassName() == nameof(IParameter))
+        if (propertyName == nameof(IParametersContainer.Parameters) && typeName.GetGenericArguments().GetClassName() == nameof(IParameter))
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
@@ -219,7 +228,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .Build());
         }
 
-        if (property.Name == nameof(ICodeStatementsContainer.CodeStatements) && property.TypeName.GetGenericArguments().GetClassName() == nameof(ICodeStatement))
+        if (propertyName == nameof(ICodeStatementsContainer.CodeStatements) && typeName.GetGenericArguments().GetClassName() == nameof(ICodeStatement))
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
@@ -233,7 +242,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .Build());
         }
 
-        if (property.Name == nameof(IVisibilityContainer.Visibility))
+        if (propertyName == nameof(IVisibilityContainer.Visibility))
         {
             property.SetDefaultValueForBuilderClassConstructor
             (
@@ -246,7 +255,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             );
         }
 
-        if (property.Name == nameof(IClassProperty.HasSetter))
+        if (propertyName == nameof(IClassProperty.HasSetter))
         {
             property.SetBuilderWithExpression(@"{0} = {2};
 if ({2})
@@ -255,7 +264,7 @@ if ({2})
 {6}");
         }
 
-        if (property.Name == nameof(IClassProperty.HasInitializer))
+        if (propertyName == nameof(IClassProperty.HasInitializer))
         {
             property.SetBuilderWithExpression(@"{0} = {2};
 if ({2})

@@ -72,7 +72,7 @@ public static partial class TypeBaseExtensions
                                     .WithTypeName(string.Format
                                     (
                                         p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                                           .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName)),
+                                            .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))),
                                         p.Name.ToPascalCase().GetCsharpFriendlyName(),
                                         p.TypeName.GetGenericArguments()
                                     ))
@@ -98,7 +98,7 @@ public static partial class TypeBaseExtensions
                             (
                                 p => string.Format
                                 (
-                                    $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, p.Name.ToPascalCase().GetCsharpFriendlyName())};",
+                                    GetFormatStringForInitialization(p, settings),
                                     p.Name.ToPascalCase().GetCsharpFriendlyName(),
                                     p.TypeName.GetGenericArguments()
                                 )
@@ -129,6 +129,9 @@ public static partial class TypeBaseExtensions
             )
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
     }
+
+    private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
+        => $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, () => p.TypeName.IsCollectionTypeName() && settings.ConstructorSettings.CollectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty) && settings.NewCollectionTypeName != "System.Collections.Immutable.IImmutableList" ? $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})" : p.Name.ToPascalCase().GetCsharpFriendlyName())};";
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
         => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
@@ -273,8 +276,8 @@ public static partial class TypeBaseExtensions
                 .WithOperator()
                 .AddParameters
                 (
-                    new ParameterBuilder { Name = "left", TypeName = instance.Name },
-                    new ParameterBuilder { Name = "right", TypeName = instance.Name }
+                    new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
+                    new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
                 )
                 .AddLiteralCodeStatements($"return EqualityComparer<{instance.Name}>.Default.Equals(left, right);");
             yield return new ClassMethodBuilder()

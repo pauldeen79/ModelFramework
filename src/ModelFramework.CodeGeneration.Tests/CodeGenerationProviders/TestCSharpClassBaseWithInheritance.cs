@@ -42,7 +42,7 @@ public abstract partial class TestCSharpClassBaseWithInheritance : ModelFramewor
 
     private void FixImmutableBuilderProperty(ClassPropertyBuilder property)
     {
-        var typeName = property.TypeName;
+        var typeName = property.TypeName.ToString();
         if (typeName.StartsWith("ModelFramework.Common.Tests.Test.Contracts.I", StringComparison.InvariantCulture))
         {
             property.ConvertSinglePropertyToBuilderOnBuilder

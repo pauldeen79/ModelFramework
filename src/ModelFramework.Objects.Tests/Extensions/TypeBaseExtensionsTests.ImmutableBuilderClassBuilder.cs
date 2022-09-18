@@ -351,7 +351,7 @@ Property2.AddRange(source.Property2);");
                 .AddBuilderOverload(new OverloadBuilder()
                     .WithMethodName("WithType")
                     .AddParameter("type", typeof(Type))
-                    .WithInitializeExpression("{2} = type.AssemblyQualifiedName;")
+                    .WithInitializeExpression("{2}.Clear().Append(type.AssemblyQualifiedName);")
                     .Build()))
             .Build();
 
@@ -391,7 +391,7 @@ return this;");
         withTypeMethod.Should().NotBeNull();
         if (withTypeMethod != null)
         {
-            string.Join(Environment.NewLine, withTypeMethod.CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeName = type.AssemblyQualifiedName;
+            string.Join(Environment.NewLine, withTypeMethod.CodeStatements.Select(x => x.ToString())).Should().Be(@"TypeName.Clear().Append(type.AssemblyQualifiedName);
 return this;");
         }
     }

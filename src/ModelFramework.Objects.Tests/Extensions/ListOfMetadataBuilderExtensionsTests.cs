@@ -16,7 +16,7 @@ public class ListOfMetadataBuilderExtensionsTests
 
         // Assert
         actual.Should().ContainSingle();
-        actual.First().Name.Should().Be("Test");
+        actual.First().Name.ToString().Should().Be("Test");
         actual.First().Value.Should().Be("New value");
     }
 
@@ -34,9 +34,9 @@ public class ListOfMetadataBuilderExtensionsTests
 
         // Assert
         actual.Should().HaveCount(2);
-        actual.First().Name.Should().Be("Test1");
+        actual.First().Name.ToString().Should().Be("Test1");
         actual.First().Value.Should().Be("Old value");
-        actual.Last().Name.Should().Be("Test2");
+        actual.Last().Name.ToString().Should().Be("Test2");
         actual.Last().Value.Should().Be("New value");
     }
 }

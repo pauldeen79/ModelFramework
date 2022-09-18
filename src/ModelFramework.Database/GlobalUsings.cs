@@ -2,6 +2,7 @@
 global using System.Collections.Generic;
 global using System.ComponentModel.DataAnnotations;
 global using System.Linq;
+global using System.Text;
 global using CrossCutting.Common;
 global using ModelFramework.Common.Contracts;
 global using ModelFramework.Database.Contracts;

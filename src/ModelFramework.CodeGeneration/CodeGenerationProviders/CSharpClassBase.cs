@@ -153,7 +153,7 @@ public abstract class CSharpClassBase : ClassBase
             (
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
-                constructorSettings: new ImmutableClassConstructorSettings(
+                constructorSettings: new(
                     validateArguments: ValidateArgumentsInConstructor,
                     addNullChecks: AddNullChecks),
                 addPrivateSetters: AddPrivateSetters)
@@ -192,10 +192,10 @@ public abstract class CSharpClassBase : ClassBase
     {
         foreach (var property in typeBaseBuilder.Properties)
         {
-            var typeName = property.TypeName.FixTypeName();
+            var typeName = property.TypeName.ToString().FixTypeName();
             if (!property.IsValueType
                 && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
-                && !GetNonDomainTypes().Contains(property.TypeName))
+                && !GetNonDomainTypes().Contains(typeName))
             {
                 property.ConvertSinglePropertyToBuilderOnBuilder
                 (
@@ -218,7 +218,8 @@ public abstract class CSharpClassBase : ClassBase
                         false,
                         RecordConcreteCollectionType.WithoutGenerics(),
                         GetCustomCollectionArgumentType(typeName),
-                        GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName)
+                        GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
+                        builderCollectionTypeName: GetBuilderClassCollectionTypeName()
                     );
                 }
                 else
@@ -228,7 +229,8 @@ public abstract class CSharpClassBase : ClassBase
                         false,
                         RecordConcreteCollectionType.WithoutGenerics(),
                         GetCustomCollectionArgumentType(typeName),
-                        customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName)
+                        customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
+                        builderCollectionTypeName: GetBuilderClassCollectionTypeName()
                     );
                 }
             }
@@ -236,13 +238,26 @@ public abstract class CSharpClassBase : ClassBase
             {
                 property.SetDefaultArgumentValueForWithMethod(true);
             }
+            else if (typeName.IsStringTypeName())
+            {
+                property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
+                property.SetDefaultValueForStringPropertyOnBuilderClassConstructor();
+                property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
+                property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
+                property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
+            }
         }
     }
+
+    private string? GetBuilderClassCollectionTypeName()
+        => BuilderClassCollectionType == null
+            ? null
+            : BuilderClassCollectionType.WithoutGenerics();
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
         => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments()))
             ? "{0}.Select(x => x.BuildTyped())"
-        : null;
+            : null;
 
     protected ITypeBase[] MapCodeGenerationModelsToDomain(IEnumerable<Type> types)
         => types

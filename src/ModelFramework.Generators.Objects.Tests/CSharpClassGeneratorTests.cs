@@ -123,7 +123,7 @@ namespace MyNamespace
             );
         }
 
-        public MyRecord(string property1, bool property2, System.Collections.Immutable.IImmutableList<string> property3)
+        public MyRecord(string property1, bool property2, System.Collections.Generic.IEnumerable<string> property3)
         {
             this.Property1 = property1;
             this.Property2 = property2;
@@ -166,7 +166,7 @@ namespace MyNamespace
             );
         }
 
-        public MyRecord(string property1, bool property2, System.Collections.Immutable.IImmutableList<string> property3)
+        public MyRecord(string property1, bool property2, System.Collections.Generic.IEnumerable<string> property3)
         {
             this.Property1 = property1;
             this.Property2 = property2;
@@ -2850,7 +2850,7 @@ namespace MyNamespace
         {
             cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
                 .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings())
-                .Chain(x => x.Methods.RemoveAll(x => x.Name != "Build"))
+                .Chain(x => x.Methods.RemoveAll(x => x.Name.ToString() != "Build"))
                 .Build(),
             cls.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings())
         };

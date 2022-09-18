@@ -12,7 +12,7 @@ public class ClassBuilderTests
         var actual = sut.WithBaseClass(GetType());
 
         // Assert
-        actual.BaseClass.Should().Be(GetType().FullName);
+        actual.BaseClass.ToString().Should().Be(GetType().FullName);
     }
 
     [Fact]

@@ -2,14 +2,29 @@
 
 public partial class ClassPropertyBuilder
 {
-    public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable(bool addNullChecks, string collectionType = "System.Collections.Generic.List")
+    public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable(bool addNullChecks,
+                                                                       string collectionType = "System.Collections.Generic.List")
         => AddMetadata(MetadataNames.CustomImmutableArgumentType, "System.Collections.Generic.IEnumerable<{1}>")
-          .AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, addNullChecks
-            ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
-            : "new " + collectionType + "<{1}>({0})")
-          .AddMetadata(MetadataNames.CustomImmutableDefaultValue, addNullChecks
-            ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
-            : "new " + collectionType + "<{1}>({0})");
+          .AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, CreateImmutableBuilderDefaultValue(addNullChecks, collectionType))
+          .AddMetadata(MetadataNames.CustomImmutableDefaultValue, CreateImmutableDefaultValue(addNullChecks, collectionType));
+
+    private static string CreateImmutableDefaultValue(bool addNullChecks, string collectionType)
+        => collectionType switch
+        {
+            "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
+            _ => addNullChecks
+                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+                : "new " + collectionType + "<{1}>({0})"
+        };
+
+    private static string CreateImmutableBuilderDefaultValue(bool addNullChecks, string collectionType)
+        => collectionType switch
+        {
+            "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
+            _ => addNullChecks
+                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+                : "new " + collectionType + "<{1}>({0})"
+        };
 
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                         string? customBuilderConstructorInitializeExpression = null,
@@ -23,6 +38,14 @@ public partial class ClassPropertyBuilder
                 ? "{0}?.Build()"
                 : "{0}{2}.Build()"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
+
+    public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder()
+        => ConvertSinglePropertyToBuilderOnBuilder
+        (
+            argumentType: typeof(StringBuilder).FullName,
+            customBuilderMethodParameterExpression: "{0}?.ToString()",
+            customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
+        );
 
     private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
                                                                                                   bool useLazyInitialization,
@@ -68,15 +91,32 @@ public partial class ClassPropertyBuilder
                                                                             string? argumentType = null,
                                                                             string? customBuilderConstructorInitializeExpression = null,
                                                                             string? buildersNamespace = null,
-                                                                            string? customBuilderMethodParameterExpression = null)
+                                                                            string? customBuilderMethodParameterExpression = null,
+                                                                            string? builderCollectionTypeName = null)
         => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
           .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "System.Collections.Generic.IEnumerable<{1}Builder>" : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}Builder>"))
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x.Build())"))
-          .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace)));
+          .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace, builderCollectionTypeName)));
 
     private static string CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(string? argumentType,
-                                                                                                      string? buildersNamespace)
+                                                                                                      string? buildersNamespace,
+                                                                                                      string? builderCollectionTypeName)
     {
+        if (builderCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
+        {
+            if (buildersNamespace != null && buildersNamespace.Length > 0)
+            {
+                return "{4}{0} = source.{0}.Select(x => new " + buildersNamespace + ".{6}Builder(x))";
+            }
+
+            if (argumentType != null && argumentType.Length > 0)
+            {
+                return "{4}{0} = source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x))";
+            }
+
+            return "{4}{0} = source.{0}.Select(x => new {3}Builder(x))";
+        }
+
         if (buildersNamespace != null && buildersNamespace.Length > 0)
         {
             return "{4}{0}.AddRange(source.{0}.Select(x => new " + buildersNamespace + ".{6}Builder(x)))";
@@ -86,7 +126,7 @@ public partial class ClassPropertyBuilder
         {
             return "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)))";
         }
-        
+
         return "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)))";
     }
 
@@ -99,6 +139,11 @@ public partial class ClassPropertyBuilder
 
     public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
         => AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, defaultValue);
+
+    public ClassPropertyBuilder SetDefaultValueForStringPropertyOnBuilderClassConstructor()
+        => SetDefaultValueForBuilderClassConstructor(!IsNullable
+            ? new Literal("new System.Text.StringBuilder()")
+            : new Literal("default"));
 
     public ClassPropertyBuilder SetBuilderWithExpression(string expression)
         => AddMetadata(MetadataNames.CustomBuilderWithExpression, expression);

@@ -180,7 +180,7 @@ namespace Test.Builders
 #nullable enable
     public partial class TestClassBuilder
     {
-        public string TestProperty
+        public System.Text.StringBuilder TestProperty
         {
             get
             {
@@ -195,35 +195,53 @@ namespace Test.Builders
         public Test.TestClass Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new Test.TestClass(TestProperty);
+            return new Test.TestClass(TestProperty?.ToString());
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public TestClassBuilder WithTestProperty(string testProperty)
+        public TestClassBuilder WithTestProperty(System.Text.StringBuilder testProperty)
         {
             TestProperty = testProperty;
             return this;
         }
 
-        public TestClassBuilder WithTestProperty(System.Func<string> testPropertyDelegate)
+        public TestClassBuilder WithTestProperty(System.Func<System.Text.StringBuilder> testPropertyDelegate)
         {
             _testPropertyDelegate = new (testPropertyDelegate);
+            return this;
+        }
+
+        public TestClassBuilder WithTestProperty(string value)
+        {
+            TestProperty.Clear().Append(value);
+            return this;
+        }
+
+        public TestClassBuilder AppendToTestProperty(string value)
+        {
+            TestProperty.Append(value);
+            return this;
+        }
+
+        public TestClassBuilder AppendLineToTestProperty(string value)
+        {
+            TestProperty.AppendLine(value);
             return this;
         }
 
         public TestClassBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _testPropertyDelegate = new (() => string.Empty);
+            _testPropertyDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass source)
         {
-            _testPropertyDelegate = new (() => source.TestProperty);
+            _testPropertyDelegate = new (() => new System.Text.StringBuilder(source.TestProperty));
         }
 
-        protected System.Lazy<string> _testPropertyDelegate;
+        protected System.Lazy<System.Text.StringBuilder> _testPropertyDelegate;
     }
 #nullable restore
 }
@@ -545,15 +563,33 @@ namespace MyNamespace.Domain.Builders
             return BuildTyped();
         }
 
-        public TBuilder WithBaseProperty(string baseProperty)
+        public TBuilder WithBaseProperty(System.Text.StringBuilder baseProperty)
         {
             BaseProperty = baseProperty;
             return (TBuilder)this;
         }
 
-        public TBuilder WithBaseProperty(System.Func<string> basePropertyDelegate)
+        public TBuilder WithBaseProperty(System.Func<System.Text.StringBuilder> basePropertyDelegate)
         {
             _basePropertyDelegate = new (basePropertyDelegate);
+            return (TBuilder)this;
+        }
+
+        public TBuilder WithBaseProperty(string value)
+        {
+            BaseProperty.Clear().Append(value);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AppendToBaseProperty(string value)
+        {
+            BaseProperty.Append(value);
+            return (TBuilder)this;
+        }
+
+        public TBuilder AppendLineToBaseProperty(string value)
+        {
+            BaseProperty.AppendLine(value);
             return (TBuilder)this;
         }
 
@@ -608,7 +644,7 @@ namespace MyNamespace.Domain.Builders
 #nullable enable
     public abstract partial class MyBaseClassBuilder
     {
-        public string BaseProperty
+        public System.Text.StringBuilder BaseProperty
         {
             get
             {
@@ -632,18 +668,18 @@ namespace MyNamespace.Domain.Builders
         {
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _basePropertyDelegate = new (() => string.Empty);
+            _basePropertyDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         protected MyBaseClassBuilder(MyNamespace.Domain.MyBaseClass source)
         {
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
-            _basePropertyDelegate = new (() => source.BaseProperty);
+            _basePropertyDelegate = new (() => new System.Text.StringBuilder(source.BaseProperty));
             Children = source.Children.Select(x => MyNamespace.Domain.Builders.MyBaseClassBuilderFactory.Create(x)).ToList();
         }
 
-        protected System.Lazy<string> _basePropertyDelegate;
+        protected System.Lazy<System.Text.StringBuilder> _basePropertyDelegate;
     }
 #nullable restore
 }
@@ -737,7 +773,7 @@ namespace MyNamespace.Domain.Builders
             }
         }
 
-        public string BaseProperty
+        public System.Text.StringBuilder BaseProperty
         {
             get
             {
@@ -758,7 +794,7 @@ namespace MyNamespace.Domain.Builders
         public override MyNamespace.Domain.MyDerivedClass BuildTyped()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty, Children.Select(x => x.Build()));
+            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children.Select(x => x.Build()));
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -779,15 +815,33 @@ namespace MyNamespace.Domain.Builders
             return this;
         }
 
-        public MyDerivedClassBuilder WithBaseProperty(string baseProperty)
+        public MyDerivedClassBuilder WithBaseProperty(System.Text.StringBuilder baseProperty)
         {
             BaseProperty = baseProperty;
             return this;
         }
 
-        public MyDerivedClassBuilder WithBaseProperty(System.Func<string> basePropertyDelegate)
+        public MyDerivedClassBuilder WithBaseProperty(System.Func<System.Text.StringBuilder> basePropertyDelegate)
         {
             _basePropertyDelegate = new (basePropertyDelegate);
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithBaseProperty(string value)
+        {
+            BaseProperty.Clear().Append(value);
+            return this;
+        }
+
+        public MyDerivedClassBuilder AppendToBaseProperty(string value)
+        {
+            BaseProperty.Append(value);
+            return this;
+        }
+
+        public MyDerivedClassBuilder AppendLineToBaseProperty(string value)
+        {
+            BaseProperty.AppendLine(value);
             return this;
         }
 
@@ -802,15 +856,33 @@ namespace MyNamespace.Domain.Builders
             return this;
         }
 
-        public MyDerivedClassBuilder WithBaseProperty(string baseProperty)
+        public MyDerivedClassBuilder WithBaseProperty(System.Text.StringBuilder baseProperty)
         {
             BaseProperty = baseProperty;
             return this;
         }
 
-        public MyDerivedClassBuilder WithBaseProperty(System.Func<string> basePropertyDelegate)
+        public MyDerivedClassBuilder WithBaseProperty(System.Func<System.Text.StringBuilder> basePropertyDelegate)
         {
             _basePropertyDelegate = new (basePropertyDelegate);
+            return this;
+        }
+
+        public MyDerivedClassBuilder WithBaseProperty(string value)
+        {
+            BaseProperty.Clear().Append(value);
+            return this;
+        }
+
+        public MyDerivedClassBuilder AppendToBaseProperty(string value)
+        {
+            BaseProperty.Append(value);
+            return this;
+        }
+
+        public MyDerivedClassBuilder AppendLineToBaseProperty(string value)
+        {
+            BaseProperty.AppendLine(value);
             return this;
         }
 
@@ -830,7 +902,7 @@ namespace MyNamespace.Domain.Builders
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder());
-            _basePropertyDelegate = new (() => string.Empty);
+            _basePropertyDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -838,13 +910,13 @@ namespace MyNamespace.Domain.Builders
         {
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder(source.RequiredDomainProperty));
-            _basePropertyDelegate = new (() => source.BaseProperty);
+            _basePropertyDelegate = new (() => new System.Text.StringBuilder(source.BaseProperty));
             Children = source.Children.Select(x => MyNamespace.Domain.Builders.MyBaseClassBuilderFactory.Create(x)).ToList();
         }
 
         protected System.Lazy<MyNamespace.Domain.Builders.MyClassBuilder> _requiredDomainPropertyDelegate;
 
-        protected System.Lazy<string> _basePropertyDelegate;
+        protected System.Lazy<System.Text.StringBuilder> _basePropertyDelegate;
     }
 #nullable restore
 }
@@ -1085,7 +1157,7 @@ namespace MyNamespace.Domain.Builders
 
         private static void FixImmutableBuilderProperty(ClassPropertyBuilder property, bool forBuilder)
         {
-            var typeName = property.TypeName;
+            var typeName = property.TypeName.ToString();
             if (typeName.StartsWith("Test.Contracts.", StringComparison.InvariantCulture))
             {
                 if (forBuilder)
@@ -1094,7 +1166,7 @@ namespace MyNamespace.Domain.Builders
                 }
                 else
                 {
-                    property.TypeName = typeName.Replace("Test.Contracts.", string.Empty);
+                    property.WithTypeName(typeName.Replace("Test.Contracts.", string.Empty));
                 }
             }
             else if (typeName.Contains("Collection<Test.Contracts.", StringComparison.InvariantCulture))
@@ -1105,7 +1177,7 @@ namespace MyNamespace.Domain.Builders
                 }
                 else
                 {
-                    property.TypeName = typeName.Replace("Test.Contracts.", string.Empty, StringComparison.InvariantCulture);
+                    property.WithTypeName(typeName.Replace("Test.Contracts.", string.Empty, StringComparison.InvariantCulture));
                 }
             }
         }

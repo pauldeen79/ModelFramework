@@ -8,12 +8,10 @@ public class TestModelTests
         // Arrange
         var sut = new ParentBuilder();
         sut.WithChild(new ChildBuilder()); //necessary because the property gets initialized with Child set to null
-        sut.Child.ChildProperty = new System.Text.StringBuilder(); //necessary because the property gets initialized to default with the current code (unless you change the default value in code generation)
-        sut.ParentProperty = new System.Text.StringBuilder(); //necessary because the property gets initialized to default with the current code (unless you change the default value in code generation)
 
         // Act
-        sut.ParentProperty.Append("Hello"); //needs to be within 1 and 10 positions ;-)
-        sut.Child.ChildProperty.Append("Hello world!");
+        sut.AppendToParentProperty("Hello"); //needs to be within 1 and 10 positions ;-)
+        sut.Child.AppendToChildProperty("Hello world!");
         var result = sut.Build();
 
         // Assert
@@ -25,10 +23,9 @@ public class TestModelTests
     {
         // Arrange
         var sut = new ChildBuilder();
-        sut.ChildProperty = new System.Text.StringBuilder(); //necessary because the property gets initialized to default with the current code (unless you change the default value in code generation)
 
         // Act
-        sut.ChildProperty.Append("Hello world!");
+        sut.AppendToChildProperty("Hello world!");
         var result = sut.Build();
 
         // Assert
