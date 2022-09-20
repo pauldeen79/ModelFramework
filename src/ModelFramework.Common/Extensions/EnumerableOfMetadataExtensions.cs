@@ -36,16 +36,6 @@ public static class EnumerableOfMetadataExtensions
             .Select(md => md.Value)
             .OfType<T>();
 
-    public static IEnumerable<T> WhenEmpty<T>(this IEnumerable<T> instance, IEnumerable<T> whenEmpty)
-        => instance.Any()
-            ? instance
-            : whenEmpty;
-
-    public static IEnumerable<T> WhenEmpty<T>(this IEnumerable<T> instance, Func<IEnumerable<T>> whenEmpty)
-        => instance.Any()
-            ? instance
-            : whenEmpty();
-
     private static T CreateMetadata<T>(IMetadata metadataItem, Func<T> defaultValueDelegate)
     {
         if (metadataItem.Value is T t)
