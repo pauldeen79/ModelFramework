@@ -40,12 +40,20 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
     public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder()
-        => ConvertSinglePropertyToBuilderOnBuilder
+    {
+        ConvertSinglePropertyToBuilderOnBuilder
         (
             argumentType: typeof(StringBuilder).FullName,
             customBuilderMethodParameterExpression: "{0}?.ToString()",
             customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
         );
+        SetDefaultValueForStringPropertyOnBuilderClassConstructor();
+        AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
+        AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
+        AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
+
+        return this;
+    }
 
     private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
                                                                                                   bool useLazyInitialization,

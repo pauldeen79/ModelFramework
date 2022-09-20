@@ -187,10 +187,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         else if (typeName.IsStringTypeName())
         {
             property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
-            property.SetDefaultValueForStringPropertyOnBuilderClassConstructor();
-            property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
-            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
-            property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
         }
 
         if (propertyName == nameof(ITypeContainer.TypeName) && typeName.IsStringTypeName())

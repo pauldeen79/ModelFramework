@@ -14,12 +14,13 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool ValidateArgumentsInConstructor => true;
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
-    protected virtual bool CopyPropertyCode => true;
-    protected virtual bool CopyFields => true;
+    protected virtual bool CopyPropertyCode => false;
+    protected virtual bool CopyFields => false;
     protected virtual bool EnableEntityInheritance => false;
     protected virtual bool EnableBuilderInhericance => false;
     protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual bool AllowGenerationWithoutProperties => true;
+    protected virtual bool AddBackingFieldsForCollectionProperties => false;
     protected virtual IClass? BaseClass => null;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
@@ -198,42 +199,11 @@ public abstract class CSharpClassBase : ClassBase
                 && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
                 && !GetNonDomainTypes().Contains(typeName))
             {
-                property.ConvertSinglePropertyToBuilderOnBuilder
-                (
-                    $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}Builder",
-                    GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName),
-                    GetCustomBuilderMethodParameterExpression(typeName)
-                );
-
-                if (!property.IsNullable)
-                {
-                    property.SetDefaultValueForBuilderClassConstructor(GetDefaultValueForBuilderClassConstructor(typeName));
-                }
+                FixSingleDomainProperty(property, typeName);
             }
             else if (typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{RecordCollectionType.WithoutGenerics()}<{x}.")))
             {
-                if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
-                {
-                    property.ConvertCollectionPropertyToBuilderOnBuilder
-                    (
-                        false,
-                        RecordConcreteCollectionType.WithoutGenerics(),
-                        GetCustomCollectionArgumentType(typeName),
-                        GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
-                        builderCollectionTypeName: GetBuilderClassCollectionTypeName()
-                    );
-                }
-                else
-                {
-                    property.ConvertCollectionPropertyToBuilderOnBuilder
-                    (
-                        false,
-                        RecordConcreteCollectionType.WithoutGenerics(),
-                        GetCustomCollectionArgumentType(typeName),
-                        customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
-                        builderCollectionTypeName: GetBuilderClassCollectionTypeName()
-                    );
-                }
+                FixCollectionDomainProperty(property, typeName);
             }
             else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
             {
@@ -242,11 +212,54 @@ public abstract class CSharpClassBase : ClassBase
             else if (typeName.IsStringTypeName())
             {
                 property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
-                property.SetDefaultValueForStringPropertyOnBuilderClassConstructor();
-                property.AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Clear().Append(value);").Build());
-                property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.Append(value);").Build());
-                property.AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("{2}.AppendLine(value);").Build());
             }
+
+            if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
+                && AddBackingFieldsForCollectionProperties)
+            {
+                property.AddCollectionBackingFieldOnImmutableClass(typeof(ValueCollection<>));
+            }
+        }
+    }
+
+    private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
+    {
+        if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
+        {
+            property.ConvertCollectionPropertyToBuilderOnBuilder
+            (
+                false,
+                RecordConcreteCollectionType.WithoutGenerics(),
+                GetCustomCollectionArgumentType(typeName),
+                GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
+                builderCollectionTypeName: GetBuilderClassCollectionTypeName()
+            );
+        }
+        else
+        {
+            property.ConvertCollectionPropertyToBuilderOnBuilder
+            (
+                false,
+                RecordConcreteCollectionType.WithoutGenerics(),
+                GetCustomCollectionArgumentType(typeName),
+                customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
+                builderCollectionTypeName: GetBuilderClassCollectionTypeName()
+            );
+        }
+    }
+
+    private void FixSingleDomainProperty(ClassPropertyBuilder property, string typeName)
+    {
+        property.ConvertSinglePropertyToBuilderOnBuilder
+        (
+            $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}Builder",
+            GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName),
+            GetCustomBuilderMethodParameterExpression(typeName)
+        );
+
+        if (!property.IsNullable)
+        {
+            property.SetDefaultValueForBuilderClassConstructor(GetDefaultValueForBuilderClassConstructor(typeName));
         }
     }
 
