@@ -53,8 +53,8 @@ public static partial class TypeBaseExtensions
                                     .Select(x => new MetadataBuilder(x))
                             )
                             .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
-                            .AddGetterCodeStatements(p.GetterCodeStatements.Select(x => x.CreateBuilder()))
-                            .AddSetterCodeStatements(p.SetterCodeStatements.Select(x => x.CreateBuilder()))
+                            .AddGetterCodeStatements(p.Metadata.GetValues<ICodeStatement>(MetadataNames.CustomImmutablePropertyGetterStatement).Select(x => x.CreateBuilder()).WhenEmpty(() => p.GetterCodeStatements.Select(x => x.CreateBuilder())))
+                            .AddSetterCodeStatements(p.Metadata.GetValues<ICodeStatement>(MetadataNames.CustomImmutablePropertySetterStatement).Select(x => x.CreateBuilder()).WhenEmpty(() => p.SetterCodeStatements.Select(x => x.CreateBuilder())))
                             .AddInitializerCodeStatements(p.InitializerCodeStatements.Select(x => x.CreateBuilder()))
                     )
             )
@@ -115,23 +115,19 @@ public static partial class TypeBaseExtensions
                     )
                     .WithChainCall(GenerateImmutableClassChainCall(instance, settings))
             )
-            .AddMethods
-            (
-                GetImmutableClassMethods(instance,
-                                         settings,
-                                         false)
-            )
+            .AddMethods(GetImmutableClassMethods(instance, settings, false))
             .AddInterfaces
             (
                 settings.ImplementIEquatable
                     ? new[] { $"IEquatable<{instance.Name}>" }
                     : Enumerable.Empty<string>()
             )
-            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
+            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
+            .AddFields(instance.Properties.SelectMany(x => x.Metadata.GetValues<IClassField>(MetadataNames.CustomImmutableBackingField).Select(x => new ClassFieldBuilder(x))));
     }
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
-        => $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, () => p.TypeName.IsCollectionTypeName() && settings.ConstructorSettings.CollectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty) && settings.NewCollectionTypeName != "System.Collections.Immutable.IImmutableList" ? $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})" : p.Name.ToPascalCase().GetCsharpFriendlyName())};";
+        => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization, () => $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, () => p.TypeName.IsCollectionTypeName() && settings.ConstructorSettings.CollectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty) && settings.NewCollectionTypeName != "System.Collections.Immutable.IImmutableList" ? $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})" : p.Name.ToPascalCase().GetCsharpFriendlyName())};");
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
         => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null

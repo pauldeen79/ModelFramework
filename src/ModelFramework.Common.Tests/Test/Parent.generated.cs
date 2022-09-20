@@ -30,7 +30,10 @@ namespace ModelFramework.Common.Tests.Test
 
         public System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Tests.Test.Child> Children
         {
-            get;
+            get
+            {
+                return _children;
+            }
         }
 
         public System.Collections.Generic.IReadOnlyCollection<string> Strings
@@ -46,10 +49,12 @@ namespace ModelFramework.Common.Tests.Test
             if (strings == null) throw new System.ArgumentNullException("strings");
             this.ParentProperty = parentProperty;
             this.Child = child;
-            this.Children = new CrossCutting.Common.ReadOnlyValueCollection<ModelFramework.Common.Tests.Test.Child>(children);
-            this.Strings = new List<System.String>(strings);
+            _children = new CrossCutting.Common.ValueCollection<ModelFramework.Common.Tests.Test.Child>(children);
+            this.Strings = new System.Collections.Generic.List<System.String>(strings);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
+
+        private CrossCutting.Common.ValueCollection<ModelFramework.Common.Tests.Test.Child> _children;
     }
 #nullable restore
 }

@@ -98,6 +98,15 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x.Build())"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace, builderCollectionTypeName)));
 
+    public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType)
+    {
+        AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement($"return _{Name.ToString().ToPascalCase()};", Enumerable.Empty<IMetadata>()));
+        AddMetadata(MetadataNames.CustomImmutableConstructorInitialization, $"_{Name.ToString().ToPascalCase()} = new {typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});");
+        AddMetadata(MetadataNames.CustomImmutableBackingField, new ClassFieldBuilder().WithName($"_{Name.ToString().ToPascalCase()}").WithTypeName($"{typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>").Build());
+
+        return this;
+    }
+
     private static string CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(string? argumentType,
                                                                                                       string? buildersNamespace,
                                                                                                       string? builderCollectionTypeName)

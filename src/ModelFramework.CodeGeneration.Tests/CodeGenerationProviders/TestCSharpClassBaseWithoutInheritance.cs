@@ -1,9 +1,13 @@
-﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
+﻿using ModelFramework.Common.Builders;
+
+namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
 public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrameworkCSharpClassBase
 {
     protected override bool InheritFromInterfaces => false;
     protected override bool AddNullChecks => true; // this enables null checks in c'tor of both records and builders
+    protected override bool CopyPropertyCode => false; // this skips property code on the immutable builders
+    protected override bool CopyFields => false; // this skips fields on the immutable builders
 
     protected override AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
     {
@@ -58,14 +62,14 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
             property.WithTypeName(typeName.Replace("Test.Contracts.I", "Test.", StringComparison.InvariantCulture));
+            property.AddCollectionBackingFieldOnImmutableClass(typeof(ValueCollection<>));
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 addNullChecks: false, // already checked in constructor by using the AddNullChecks property, see above in this class
-                collectionType: typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
+                collectionType: typeof(ValueCollection<>).WithoutGenerics(),
                 argumentType: null, // using builders namespace instead
                 buildersNamespace: "ModelFramework.Common.Tests.Test.Builders",
                 builderCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics()
-
             );
         }
         else if (typeName.IsStringTypeName())

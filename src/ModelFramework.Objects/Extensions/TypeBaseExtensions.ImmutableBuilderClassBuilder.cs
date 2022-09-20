@@ -112,11 +112,14 @@ public static partial class TypeBaseEtensions
             yield break;
         }
 
-        foreach (var field in instance.GetFields()
+        if (settings.GenerationSettings.CopyFields)
+        {
+            foreach (var field in instance.GetFields()
             .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement))
             .Select(x => new ClassFieldBuilder(x).WithProtected()))
-        {
-            yield return field;
+            {
+                yield return field;
+            }
         }
 
         if (settings.GenerationSettings.UseLazyInitialization)
