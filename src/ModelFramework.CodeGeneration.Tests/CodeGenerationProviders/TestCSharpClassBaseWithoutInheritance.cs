@@ -4,9 +4,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
 {
     protected override bool InheritFromInterfaces => false;
     protected override bool AddNullChecks => true; // this enables null checks in c'tor of both records and builders
-    protected override bool CopyPropertyCode => false; // this skips property code on the immutable builders
-    protected override bool CopyFields => false; // this skips fields on the immutable builders
-
+    
     protected override AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
     {
         if (sourceAttribute == null)
