@@ -78,14 +78,19 @@ public static class MetadataNames
     public const string CustomImmutablePropertySetterStatement = "ModelFramework.Objects.Immutable.Property.SetterStatements";
 
     /// <summary>
-    /// Metadata name for definins custom property initialization in the c'tor (of type string) on immutable classes.
+    /// Metadata name for defining custom property initialization in the c'tor (of type string) on immutable classes.
     /// </summary>
     public const string CustomImmutableConstructorInitialization = "ModelFramework.Objects.Immutable.ConstructorInitialization";
 
     /// <summary>
-    /// Metadata name for definins custom backing fields (of type IClassField) on immutable classes.
+    /// Metadata name for defining custom backing fields (of type IClassField) on immutable classes.
     /// </summary>
     public const string CustomImmutableBackingField = "ModelFramework.Objects.Immutable.BackingFields";
+
+    /// <summary>
+    /// Metadata name for defining whether properties should have private getters on immutable classes. Type is boolean.
+    /// </summary>
+    public const string CustomImmutableHasSetter = "ModelFramework.Objects.Immutable.HasSetter";
 
     /// <summary>
     /// Metadata name for defining a custom type for argument in immutable builder.

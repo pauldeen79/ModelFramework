@@ -36,12 +36,12 @@ public static partial class TypeBaseExtensions
                             .WithOverride(p.Override)
                             .WithHasGetter(p.HasGetter)
                             .WithHasInitializer(p.HasInitializer)
-                            .WithHasSetter(settings.AddPrivateSetters)
+                            .WithHasSetter(p.Metadata.GetBooleanValue(MetadataNames.CustomImmutableHasSetter, settings.AddPrivateSetters))
                             .WithIsNullable(p.IsNullable)
                             .WithIsValueType(p.IsValueType)
                             .WithVisibility(p.Visibility)
                             .WithGetterVisibility(p.GetterVisibility)
-                            .WithSetterVisibility(settings.AddPrivateSetters
+                            .WithSetterVisibility(p.Metadata.GetBooleanValue(MetadataNames.CustomImmutableHasSetter, settings.AddPrivateSetters)
                                 ? Visibility.Private
                                 : p.SetterVisibility)
                             .WithInitializerVisibility(p.InitializerVisibility)
