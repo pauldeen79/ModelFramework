@@ -6,7 +6,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override bool EnableNullableContext => true;
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
-    protected override Type RecordBackingFieldCollectionType => typeof(ReadOnlyValueCollection<>);
     protected override string RootNamespace => "ModelFramework";
 
     protected override string GetFullBasePath()
