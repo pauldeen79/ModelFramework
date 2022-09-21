@@ -5,6 +5,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
         => Enumerable.Empty<ClassMethodBuilder>();
     protected virtual Type BuilderClassCollectionType => typeof(List<>);
+    protected virtual Type RecordBackingFieldCollectionType => typeof(List<>);
     protected virtual string SetMethodNameFormatString => "With{0}";
     protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual bool AddNullChecks => false;
@@ -217,7 +218,7 @@ public abstract class CSharpClassBase : ClassBase
             if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
                 && AddBackingFieldsForCollectionProperties)
             {
-                property.AddCollectionBackingFieldOnImmutableClass(typeof(ValueCollection<>));
+                property.AddCollectionBackingFieldOnImmutableClass(RecordBackingFieldCollectionType);
             }
         }
     }
