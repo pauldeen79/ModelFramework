@@ -213,18 +213,24 @@ namespace Test.Builders
 
         public TestClassBuilder WithTestProperty(string value)
         {
+            if (TestProperty == null)
+                TestProperty = new System.Text.StringBuilder();
             TestProperty.Clear().Append(value);
             return this;
         }
 
         public TestClassBuilder AppendToTestProperty(string value)
         {
+            if (TestProperty == null)
+                TestProperty = new System.Text.StringBuilder();
             TestProperty.Append(value);
             return this;
         }
 
         public TestClassBuilder AppendLineToTestProperty(string value)
         {
+            if (TestProperty == null)
+                TestProperty = new System.Text.StringBuilder();
             TestProperty.AppendLine(value);
             return this;
         }
@@ -577,18 +583,24 @@ namespace MyNamespace.Domain.Builders
 
         public TBuilder WithBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.Clear().Append(value);
             return (TBuilder)this;
         }
 
         public TBuilder AppendToBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.Append(value);
             return (TBuilder)this;
         }
 
         public TBuilder AppendLineToBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.AppendLine(value);
             return (TBuilder)this;
         }
@@ -829,18 +841,24 @@ namespace MyNamespace.Domain.Builders
 
         public MyDerivedClassBuilder WithBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.Clear().Append(value);
             return this;
         }
 
         public MyDerivedClassBuilder AppendToBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.Append(value);
             return this;
         }
 
         public MyDerivedClassBuilder AppendLineToBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.AppendLine(value);
             return this;
         }
@@ -870,18 +888,24 @@ namespace MyNamespace.Domain.Builders
 
         public MyDerivedClassBuilder WithBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.Clear().Append(value);
             return this;
         }
 
         public MyDerivedClassBuilder AppendToBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.Append(value);
             return this;
         }
 
         public MyDerivedClassBuilder AppendLineToBaseProperty(string value)
         {
+            if (BaseProperty == null)
+                BaseProperty = new System.Text.StringBuilder();
             BaseProperty.AppendLine(value);
             return this;
         }
