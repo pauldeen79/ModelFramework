@@ -7,7 +7,7 @@ public class CSharpClassGenerator_DefaultClassTemplateTests
     {
         // Arrange
         var typeBaseMock = CreateTypeBaseMock();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true });
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut);
@@ -94,7 +94,7 @@ public class CSharpClassGenerator_DefaultClassTemplateTests
         var sut = new CSharpClassGenerator_DefaultClassViewModel
         {
             Model = typeBaseMock.Object,
-            TemplateContext = TemplateRenderHelper.CreateNestedTemplateContext<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate, TemplateInstanceContext>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true })
+            TemplateContext = TemplateRenderHelper.CreateNestedTemplateContext<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate, TemplateInstanceContext>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true })
         };
 
         // Act

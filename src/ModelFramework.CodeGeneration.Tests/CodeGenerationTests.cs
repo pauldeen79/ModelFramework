@@ -134,7 +134,6 @@ using System.Text;
 
 namespace Test
 {
-#nullable enable
     public partial record TestClass
     {
         public string TestProperty
@@ -148,7 +147,6 @@ namespace Test
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
-#nullable restore
 }
 ");
     }
@@ -177,7 +175,6 @@ using System.Text;
 
 namespace Test.Builders
 {
-#nullable enable
     public partial class TestClassBuilder
     {
         public System.Text.StringBuilder TestProperty
@@ -249,7 +246,6 @@ namespace Test.Builders
 
         protected System.Lazy<System.Text.StringBuilder> _testPropertyDelegate;
     }
-#nullable restore
 }
 ");
     }
@@ -278,7 +274,6 @@ using System.Text;
 
 namespace Test
 {
-#nullable enable
     public partial record TestClass
     {
         public TestClass TestProperty
@@ -292,7 +287,6 @@ namespace Test
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
-#nullable restore
 }
 ");
     }
@@ -321,7 +315,6 @@ using System.Text;
 
 namespace Test.Builders
 {
-#nullable enable
     public partial class TestClassBuilder
     {
         public TestClassBuilder TestProperty
@@ -369,7 +362,6 @@ namespace Test.Builders
 
         protected System.Lazy<TestClassBuilder> _testPropertyDelegate;
     }
-#nullable restore
 }
 ");
     }
@@ -411,7 +403,6 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-#nullable enable
     public partial class MyClassBuilder
     {
         public System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder> SubTypes
@@ -479,7 +470,6 @@ namespace MyNamespace.Domain.Builders
 
         protected System.Lazy<MyNamespace.Domain.Builders.MyClassBuilder?> _parentTypeDelegate;
     }
-#nullable restore
 }
 ");
     }
@@ -508,7 +498,6 @@ using System.Text;
 
 namespace MyNamespace.Domain
 {
-#nullable enable
     public partial record MyClass
     {
         public System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyClass> SubTypes
@@ -528,7 +517,6 @@ namespace MyNamespace.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
-#nullable restore
 }
 ");
     }
@@ -557,7 +545,6 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-#nullable enable
     public abstract partial class MyBaseClassBuilder<TBuilder, TEntity> : MyBaseClassBuilder
         where TEntity : MyNamespace.Domain.MyBaseClass
         where TBuilder : MyBaseClassBuilder<TBuilder, TEntity>
@@ -624,7 +611,6 @@ namespace MyNamespace.Domain.Builders
         {
         }
     }
-#nullable restore
 }
 ");
     }
@@ -653,7 +639,6 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-#nullable enable
     public abstract partial class MyBaseClassBuilder
     {
         public System.Text.StringBuilder BaseProperty
@@ -693,7 +678,6 @@ namespace MyNamespace.Domain.Builders
 
         protected System.Lazy<System.Text.StringBuilder> _basePropertyDelegate;
     }
-#nullable restore
 }
 ");
     }
@@ -722,7 +706,6 @@ using System.Text;
 
 namespace MyNamespace.Domain
 {
-#nullable enable
     public abstract partial record MyBaseClass
     {
         public string BaseProperty
@@ -741,7 +724,6 @@ namespace MyNamespace.Domain
             this.Children = new System.Collections.ObjectModel.ReadOnlyCollection<MyNamespace.Domain.MyBaseClass>(children);
         }
     }
-#nullable restore
 }
 ");
     }
@@ -770,7 +752,6 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-#nullable enable
     public partial class MyDerivedClassBuilder : MyBaseClassBuilder<MyDerivedClassBuilder, MyNamespace.Domain.MyDerivedClass>
     {
         public MyNamespace.Domain.Builders.MyClassBuilder RequiredDomainProperty
@@ -942,7 +923,6 @@ namespace MyNamespace.Domain.Builders
 
         protected System.Lazy<System.Text.StringBuilder> _basePropertyDelegate;
     }
-#nullable restore
 }
 ");
     }
@@ -971,7 +951,6 @@ using System.Text;
 
 namespace MyNamespace.Domain
 {
-#nullable enable
     public partial record MyDerivedClass : MyNamespace.Domain.MyBaseClass
     {
         public MyNamespace.Domain.MyClass RequiredDomainProperty
@@ -997,7 +976,6 @@ namespace MyNamespace.Domain
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
-#nullable restore
 }
 ");
     }
@@ -1026,7 +1004,6 @@ using System.Text;
 
 namespace MyNamespace.Domain.Extensions
 {
-#nullable enable
     public static partial class ServiceCollectionExtensions
     {
         private static Microsoft.Extensions.DependencyInjection.IServiceCollection AddHandlers(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection)
@@ -1036,7 +1013,6 @@ namespace MyNamespace.Domain.Extensions
             ;
         }
     }
-#nullable restore
 }
 ");
     }
@@ -1065,7 +1041,6 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-#nullable enable
     public static class MyClassBuilderFactory
     {
         public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
@@ -1084,7 +1059,6 @@ namespace MyNamespace.Domain.Builders
 }
 ;
     }
-#nullable restore
 }
 ");
     }

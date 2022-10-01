@@ -16,7 +16,6 @@ using System.Text;
 
 namespace MyNamespace
 {
-#nullable enable
     public partial class MyCSharpClassBase
     {
         protected static ModelFramework.Objects.Contracts.ITypeBase[] GetModels()
@@ -43,7 +42,6 @@ namespace MyNamespace
             }.Select(x => x.Build()).ToArray();
         }
     }
-#nullable restore
 }
 ");
     }
