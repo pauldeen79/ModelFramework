@@ -73,18 +73,24 @@ namespace ModelFramework.Objects.CodeStatements.Builders
 
         public LiteralCodeStatementBuilder WithStatement(string value)
         {
+            if (Statement == null)
+                Statement = new System.Text.StringBuilder();
             Statement.Clear().Append(value);
             return this;
         }
 
         public LiteralCodeStatementBuilder AppendToStatement(string value)
         {
+            if (Statement == null)
+                Statement = new System.Text.StringBuilder();
             Statement.Append(value);
             return this;
         }
 
         public LiteralCodeStatementBuilder AppendLineToStatement(string value)
         {
+            if (Statement == null)
+                Statement = new System.Text.StringBuilder();
             Statement.AppendLine(value);
             return this;
         }

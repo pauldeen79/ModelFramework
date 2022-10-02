@@ -128,18 +128,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewOrderByFieldBuilder WithSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.Clear().Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendToSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendLineToSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.AppendLine(value);
             return this;
         }
@@ -158,18 +164,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewOrderByFieldBuilder WithSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.Clear().Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendToSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendLineToSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.AppendLine(value);
             return this;
         }
@@ -188,18 +200,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewOrderByFieldBuilder WithExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Clear().Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendLineToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.AppendLine(value);
             return this;
         }
@@ -218,18 +236,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewOrderByFieldBuilder WithAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.Clear().Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendToAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendLineToAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.AppendLine(value);
             return this;
         }
@@ -248,18 +272,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewOrderByFieldBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ViewOrderByFieldBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

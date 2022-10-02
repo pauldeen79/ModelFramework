@@ -158,18 +158,24 @@ namespace ModelFramework.Database.Builders
 
         public TableFieldBuilder WithType(string value)
         {
+            if (Type == null)
+                Type = new System.Text.StringBuilder();
             Type.Clear().Append(value);
             return this;
         }
 
         public TableFieldBuilder AppendToType(string value)
         {
+            if (Type == null)
+                Type = new System.Text.StringBuilder();
             Type.Append(value);
             return this;
         }
 
         public TableFieldBuilder AppendLineToType(string value)
         {
+            if (Type == null)
+                Type = new System.Text.StringBuilder();
             Type.AppendLine(value);
             return this;
         }
@@ -248,18 +254,24 @@ namespace ModelFramework.Database.Builders
 
         public TableFieldBuilder WithStringCollation(string value)
         {
+            if (StringCollation == null)
+                StringCollation = new System.Text.StringBuilder();
             StringCollation.Clear().Append(value);
             return this;
         }
 
         public TableFieldBuilder AppendToStringCollation(string value)
         {
+            if (StringCollation == null)
+                StringCollation = new System.Text.StringBuilder();
             StringCollation.Append(value);
             return this;
         }
 
         public TableFieldBuilder AppendLineToStringCollation(string value)
         {
+            if (StringCollation == null)
+                StringCollation = new System.Text.StringBuilder();
             StringCollation.AppendLine(value);
             return this;
         }
@@ -290,18 +302,24 @@ namespace ModelFramework.Database.Builders
 
         public TableFieldBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public TableFieldBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public TableFieldBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

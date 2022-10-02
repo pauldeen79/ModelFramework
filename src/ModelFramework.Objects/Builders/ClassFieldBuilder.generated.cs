@@ -355,18 +355,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassFieldBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ClassFieldBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ClassFieldBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }
@@ -396,18 +402,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassFieldBuilder WithTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.Clear().Append(value);
             return this;
         }
 
         public ClassFieldBuilder AppendToTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.Append(value);
             return this;
         }
 
         public ClassFieldBuilder AppendLineToTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.AppendLine(value);
             return this;
         }
@@ -468,18 +480,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassFieldBuilder WithParentTypeFullName(string value)
         {
+            if (ParentTypeFullName == null)
+                ParentTypeFullName = new System.Text.StringBuilder();
             ParentTypeFullName.Clear().Append(value);
             return this;
         }
 
         public ClassFieldBuilder AppendToParentTypeFullName(string value)
         {
+            if (ParentTypeFullName == null)
+                ParentTypeFullName = new System.Text.StringBuilder();
             ParentTypeFullName.Append(value);
             return this;
         }
 
         public ClassFieldBuilder AppendLineToParentTypeFullName(string value)
         {
+            if (ParentTypeFullName == null)
+                ParentTypeFullName = new System.Text.StringBuilder();
             ParentTypeFullName.AppendLine(value);
             return this;
         }

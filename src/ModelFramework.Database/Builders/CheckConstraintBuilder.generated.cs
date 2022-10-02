@@ -68,18 +68,24 @@ namespace ModelFramework.Database.Builders
 
         public CheckConstraintBuilder WithExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Clear().Append(value);
             return this;
         }
 
         public CheckConstraintBuilder AppendToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Append(value);
             return this;
         }
 
         public CheckConstraintBuilder AppendLineToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.AppendLine(value);
             return this;
         }
@@ -98,18 +104,24 @@ namespace ModelFramework.Database.Builders
 
         public CheckConstraintBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public CheckConstraintBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public CheckConstraintBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

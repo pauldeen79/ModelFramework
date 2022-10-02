@@ -80,18 +80,24 @@ namespace ModelFramework.Database.Builders
 
         public DefaultValueConstraintBuilder WithFieldName(string value)
         {
+            if (FieldName == null)
+                FieldName = new System.Text.StringBuilder();
             FieldName.Clear().Append(value);
             return this;
         }
 
         public DefaultValueConstraintBuilder AppendToFieldName(string value)
         {
+            if (FieldName == null)
+                FieldName = new System.Text.StringBuilder();
             FieldName.Append(value);
             return this;
         }
 
         public DefaultValueConstraintBuilder AppendLineToFieldName(string value)
         {
+            if (FieldName == null)
+                FieldName = new System.Text.StringBuilder();
             FieldName.AppendLine(value);
             return this;
         }
@@ -110,18 +116,24 @@ namespace ModelFramework.Database.Builders
 
         public DefaultValueConstraintBuilder WithDefaultValue(string value)
         {
+            if (DefaultValue == null)
+                DefaultValue = new System.Text.StringBuilder();
             DefaultValue.Clear().Append(value);
             return this;
         }
 
         public DefaultValueConstraintBuilder AppendToDefaultValue(string value)
         {
+            if (DefaultValue == null)
+                DefaultValue = new System.Text.StringBuilder();
             DefaultValue.Append(value);
             return this;
         }
 
         public DefaultValueConstraintBuilder AppendLineToDefaultValue(string value)
         {
+            if (DefaultValue == null)
+                DefaultValue = new System.Text.StringBuilder();
             DefaultValue.AppendLine(value);
             return this;
         }
@@ -140,18 +152,24 @@ namespace ModelFramework.Database.Builders
 
         public DefaultValueConstraintBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public DefaultValueConstraintBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public DefaultValueConstraintBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

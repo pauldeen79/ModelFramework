@@ -80,18 +80,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewConditionBuilder WithExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Clear().Append(value);
             return this;
         }
 
         public ViewConditionBuilder AppendToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Append(value);
             return this;
         }
 
         public ViewConditionBuilder AppendLineToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.AppendLine(value);
             return this;
         }
@@ -110,18 +116,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewConditionBuilder WithCombination(string value)
         {
+            if (Combination == null)
+                Combination = new System.Text.StringBuilder();
             Combination.Clear().Append(value);
             return this;
         }
 
         public ViewConditionBuilder AppendToCombination(string value)
         {
+            if (Combination == null)
+                Combination = new System.Text.StringBuilder();
             Combination.Append(value);
             return this;
         }
 
         public ViewConditionBuilder AppendLineToCombination(string value)
         {
+            if (Combination == null)
+                Combination = new System.Text.StringBuilder();
             Combination.AppendLine(value);
             return this;
         }
@@ -157,18 +169,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewConditionBuilder WithFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Clear().Append(value);
             return this;
         }
 
         public ViewConditionBuilder AppendToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Append(value);
             return this;
         }
 
         public ViewConditionBuilder AppendLineToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.AppendLine(value);
             return this;
         }

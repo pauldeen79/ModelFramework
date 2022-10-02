@@ -494,18 +494,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }
@@ -535,18 +541,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder WithTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.Clear().Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendToTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendLineToTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.AppendLine(value);
             return this;
         }
@@ -595,18 +607,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder WithExplicitInterfaceName(string value)
         {
+            if (ExplicitInterfaceName == null)
+                ExplicitInterfaceName = new System.Text.StringBuilder();
             ExplicitInterfaceName.Clear().Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendToExplicitInterfaceName(string value)
         {
+            if (ExplicitInterfaceName == null)
+                ExplicitInterfaceName = new System.Text.StringBuilder();
             ExplicitInterfaceName.Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendLineToExplicitInterfaceName(string value)
         {
+            if (ExplicitInterfaceName == null)
+                ExplicitInterfaceName = new System.Text.StringBuilder();
             ExplicitInterfaceName.AppendLine(value);
             return this;
         }
@@ -625,18 +643,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassPropertyBuilder WithParentTypeFullName(string value)
         {
+            if (ParentTypeFullName == null)
+                ParentTypeFullName = new System.Text.StringBuilder();
             ParentTypeFullName.Clear().Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendToParentTypeFullName(string value)
         {
+            if (ParentTypeFullName == null)
+                ParentTypeFullName = new System.Text.StringBuilder();
             ParentTypeFullName.Append(value);
             return this;
         }
 
         public ClassPropertyBuilder AppendLineToParentTypeFullName(string value)
         {
+            if (ParentTypeFullName == null)
+                ParentTypeFullName = new System.Text.StringBuilder();
             ParentTypeFullName.AppendLine(value);
             return this;
         }

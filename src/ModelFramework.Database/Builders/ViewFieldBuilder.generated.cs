@@ -104,18 +104,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewFieldBuilder WithSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.Clear().Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendToSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendLineToSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.AppendLine(value);
             return this;
         }
@@ -134,18 +140,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewFieldBuilder WithSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.Clear().Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendToSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendLineToSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.AppendLine(value);
             return this;
         }
@@ -164,18 +176,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewFieldBuilder WithExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Clear().Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendLineToExpression(string value)
         {
+            if (Expression == null)
+                Expression = new System.Text.StringBuilder();
             Expression.AppendLine(value);
             return this;
         }
@@ -194,18 +212,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewFieldBuilder WithAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.Clear().Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendToAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendLineToAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.AppendLine(value);
             return this;
         }
@@ -224,18 +248,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewFieldBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ViewFieldBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

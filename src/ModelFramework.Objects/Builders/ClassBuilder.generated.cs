@@ -196,18 +196,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassBuilder WithBaseClass(string value)
         {
+            if (BaseClass == null)
+                BaseClass = new System.Text.StringBuilder();
             BaseClass.Clear().Append(value);
             return this;
         }
 
         public ClassBuilder AppendToBaseClass(string value)
         {
+            if (BaseClass == null)
+                BaseClass = new System.Text.StringBuilder();
             BaseClass.Append(value);
             return this;
         }
 
         public ClassBuilder AppendLineToBaseClass(string value)
         {
+            if (BaseClass == null)
+                BaseClass = new System.Text.StringBuilder();
             BaseClass.AppendLine(value);
             return this;
         }

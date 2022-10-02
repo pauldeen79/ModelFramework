@@ -80,18 +80,24 @@ namespace ModelFramework.Database.Builders
 
         public StoredProcedureParameterBuilder WithType(string value)
         {
+            if (Type == null)
+                Type = new System.Text.StringBuilder();
             Type.Clear().Append(value);
             return this;
         }
 
         public StoredProcedureParameterBuilder AppendToType(string value)
         {
+            if (Type == null)
+                Type = new System.Text.StringBuilder();
             Type.Append(value);
             return this;
         }
 
         public StoredProcedureParameterBuilder AppendLineToType(string value)
         {
+            if (Type == null)
+                Type = new System.Text.StringBuilder();
             Type.AppendLine(value);
             return this;
         }
@@ -110,18 +116,24 @@ namespace ModelFramework.Database.Builders
 
         public StoredProcedureParameterBuilder WithDefaultValue(string value)
         {
+            if (DefaultValue == null)
+                DefaultValue = new System.Text.StringBuilder();
             DefaultValue.Clear().Append(value);
             return this;
         }
 
         public StoredProcedureParameterBuilder AppendToDefaultValue(string value)
         {
+            if (DefaultValue == null)
+                DefaultValue = new System.Text.StringBuilder();
             DefaultValue.Append(value);
             return this;
         }
 
         public StoredProcedureParameterBuilder AppendLineToDefaultValue(string value)
         {
+            if (DefaultValue == null)
+                DefaultValue = new System.Text.StringBuilder();
             DefaultValue.AppendLine(value);
             return this;
         }
@@ -140,18 +152,24 @@ namespace ModelFramework.Database.Builders
 
         public StoredProcedureParameterBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public StoredProcedureParameterBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public StoredProcedureParameterBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

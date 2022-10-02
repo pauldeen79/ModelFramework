@@ -40,18 +40,24 @@ namespace ModelFramework.Objects.Builders
 
         public TBuilder WithNamespace(string value)
         {
+            if (Namespace == null)
+                Namespace = new System.Text.StringBuilder();
             Namespace.Clear().Append(value);
             return (TBuilder)this;
         }
 
         public TBuilder AppendToNamespace(string value)
         {
+            if (Namespace == null)
+                Namespace = new System.Text.StringBuilder();
             Namespace.Append(value);
             return (TBuilder)this;
         }
 
         public TBuilder AppendLineToNamespace(string value)
         {
+            if (Namespace == null)
+                Namespace = new System.Text.StringBuilder();
             Namespace.AppendLine(value);
             return (TBuilder)this;
         }
@@ -166,18 +172,24 @@ namespace ModelFramework.Objects.Builders
 
         public TBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return (TBuilder)this;
         }
 
         public TBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return (TBuilder)this;
         }
 
         public TBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return (TBuilder)this;
         }

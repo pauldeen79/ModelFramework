@@ -182,18 +182,24 @@ namespace ModelFramework.Objects.Builders
 
         public ParameterBuilder WithTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.Clear().Append(value);
             return this;
         }
 
         public ParameterBuilder AppendToTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.Append(value);
             return this;
         }
 
         public ParameterBuilder AppendLineToTypeName(string value)
         {
+            if (TypeName == null)
+                TypeName = new System.Text.StringBuilder();
             TypeName.AppendLine(value);
             return this;
         }
@@ -270,18 +276,24 @@ namespace ModelFramework.Objects.Builders
 
         public ParameterBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ParameterBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ParameterBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

@@ -109,18 +109,24 @@ namespace ModelFramework.Database.Builders
 
         public IndexBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public IndexBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public IndexBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }
@@ -156,18 +162,24 @@ namespace ModelFramework.Database.Builders
 
         public IndexBuilder WithFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Clear().Append(value);
             return this;
         }
 
         public IndexBuilder AppendToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Append(value);
             return this;
         }
 
         public IndexBuilder AppendLineToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.AppendLine(value);
             return this;
         }

@@ -176,18 +176,24 @@ namespace ModelFramework.Database.Builders
 
         public TableBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public TableBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public TableBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }
@@ -223,18 +229,24 @@ namespace ModelFramework.Database.Builders
 
         public TableBuilder WithFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Clear().Append(value);
             return this;
         }
 
         public TableBuilder AppendToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Append(value);
             return this;
         }
 
         public TableBuilder AppendLineToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.AppendLine(value);
             return this;
         }

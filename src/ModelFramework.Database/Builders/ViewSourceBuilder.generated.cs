@@ -92,18 +92,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewSourceBuilder WithAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.Clear().Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendToAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendLineToAlias(string value)
         {
+            if (Alias == null)
+                Alias = new System.Text.StringBuilder();
             Alias.AppendLine(value);
             return this;
         }
@@ -122,18 +128,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewSourceBuilder WithSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.Clear().Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendToSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendLineToSourceSchemaName(string value)
         {
+            if (SourceSchemaName == null)
+                SourceSchemaName = new System.Text.StringBuilder();
             SourceSchemaName.AppendLine(value);
             return this;
         }
@@ -152,18 +164,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewSourceBuilder WithSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.Clear().Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendToSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendLineToSourceObjectName(string value)
         {
+            if (SourceObjectName == null)
+                SourceObjectName = new System.Text.StringBuilder();
             SourceObjectName.AppendLine(value);
             return this;
         }
@@ -182,18 +200,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewSourceBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ViewSourceBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

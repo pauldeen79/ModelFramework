@@ -225,18 +225,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewBuilder WithDefinition(string value)
         {
+            if (Definition == null)
+                Definition = new System.Text.StringBuilder();
             Definition.Clear().Append(value);
             return this;
         }
 
         public ViewBuilder AppendToDefinition(string value)
         {
+            if (Definition == null)
+                Definition = new System.Text.StringBuilder();
             Definition.Append(value);
             return this;
         }
 
         public ViewBuilder AppendLineToDefinition(string value)
         {
+            if (Definition == null)
+                Definition = new System.Text.StringBuilder();
             Definition.AppendLine(value);
             return this;
         }
@@ -255,18 +261,24 @@ namespace ModelFramework.Database.Builders
 
         public ViewBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ViewBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ViewBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

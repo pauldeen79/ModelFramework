@@ -146,18 +146,24 @@ namespace ModelFramework.Objects.Builders
 
         public ClassConstructorBuilder WithChainCall(string value)
         {
+            if (ChainCall == null)
+                ChainCall = new System.Text.StringBuilder();
             ChainCall.Clear().Append(value);
             return this;
         }
 
         public ClassConstructorBuilder AppendToChainCall(string value)
         {
+            if (ChainCall == null)
+                ChainCall = new System.Text.StringBuilder();
             ChainCall.Append(value);
             return this;
         }
 
         public ClassConstructorBuilder AppendLineToChainCall(string value)
         {
+            if (ChainCall == null)
+                ChainCall = new System.Text.StringBuilder();
             ChainCall.AppendLine(value);
             return this;
         }

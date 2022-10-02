@@ -56,18 +56,24 @@ namespace ModelFramework.Database.SqlStatements.Builders
 
         public LiteralSqlStatementBuilder WithStatement(string value)
         {
+            if (Statement == null)
+                Statement = new System.Text.StringBuilder();
             Statement.Clear().Append(value);
             return this;
         }
 
         public LiteralSqlStatementBuilder AppendToStatement(string value)
         {
+            if (Statement == null)
+                Statement = new System.Text.StringBuilder();
             Statement.Append(value);
             return this;
         }
 
         public LiteralSqlStatementBuilder AppendLineToStatement(string value)
         {
+            if (Statement == null)
+                Statement = new System.Text.StringBuilder();
             Statement.AppendLine(value);
             return this;
         }

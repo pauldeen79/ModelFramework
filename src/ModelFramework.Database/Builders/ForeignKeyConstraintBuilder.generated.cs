@@ -126,18 +126,24 @@ namespace ModelFramework.Database.Builders
 
         public ForeignKeyConstraintBuilder WithForeignTableName(string value)
         {
+            if (ForeignTableName == null)
+                ForeignTableName = new System.Text.StringBuilder();
             ForeignTableName.Clear().Append(value);
             return this;
         }
 
         public ForeignKeyConstraintBuilder AppendToForeignTableName(string value)
         {
+            if (ForeignTableName == null)
+                ForeignTableName = new System.Text.StringBuilder();
             ForeignTableName.Append(value);
             return this;
         }
 
         public ForeignKeyConstraintBuilder AppendLineToForeignTableName(string value)
         {
+            if (ForeignTableName == null)
+                ForeignTableName = new System.Text.StringBuilder();
             ForeignTableName.AppendLine(value);
             return this;
         }
@@ -180,18 +186,24 @@ namespace ModelFramework.Database.Builders
 
         public ForeignKeyConstraintBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public ForeignKeyConstraintBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public ForeignKeyConstraintBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }

@@ -85,18 +85,24 @@ namespace ModelFramework.Database.Builders
 
         public UniqueConstraintBuilder WithName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Clear().Append(value);
             return this;
         }
 
         public UniqueConstraintBuilder AppendToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.Append(value);
             return this;
         }
 
         public UniqueConstraintBuilder AppendLineToName(string value)
         {
+            if (Name == null)
+                Name = new System.Text.StringBuilder();
             Name.AppendLine(value);
             return this;
         }
@@ -132,18 +138,24 @@ namespace ModelFramework.Database.Builders
 
         public UniqueConstraintBuilder WithFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Clear().Append(value);
             return this;
         }
 
         public UniqueConstraintBuilder AppendToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.Append(value);
             return this;
         }
 
         public UniqueConstraintBuilder AppendLineToFileGroupName(string value)
         {
+            if (FileGroupName == null)
+                FileGroupName = new System.Text.StringBuilder();
             FileGroupName.AppendLine(value);
             return this;
         }

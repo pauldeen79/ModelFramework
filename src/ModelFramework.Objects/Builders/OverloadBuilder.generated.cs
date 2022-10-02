@@ -68,18 +68,24 @@ namespace ModelFramework.Objects.Builders
 
         public OverloadBuilder WithMethodName(string value)
         {
+            if (MethodName == null)
+                MethodName = new System.Text.StringBuilder();
             MethodName.Clear().Append(value);
             return this;
         }
 
         public OverloadBuilder AppendToMethodName(string value)
         {
+            if (MethodName == null)
+                MethodName = new System.Text.StringBuilder();
             MethodName.Append(value);
             return this;
         }
 
         public OverloadBuilder AppendLineToMethodName(string value)
         {
+            if (MethodName == null)
+                MethodName = new System.Text.StringBuilder();
             MethodName.AppendLine(value);
             return this;
         }
@@ -98,18 +104,24 @@ namespace ModelFramework.Objects.Builders
 
         public OverloadBuilder WithInitializeExpression(string value)
         {
+            if (InitializeExpression == null)
+                InitializeExpression = new System.Text.StringBuilder();
             InitializeExpression.Clear().Append(value);
             return this;
         }
 
         public OverloadBuilder AppendToInitializeExpression(string value)
         {
+            if (InitializeExpression == null)
+                InitializeExpression = new System.Text.StringBuilder();
             InitializeExpression.Append(value);
             return this;
         }
 
         public OverloadBuilder AppendLineToInitializeExpression(string value)
         {
+            if (InitializeExpression == null)
+                InitializeExpression = new System.Text.StringBuilder();
             InitializeExpression.AppendLine(value);
             return this;
         }
