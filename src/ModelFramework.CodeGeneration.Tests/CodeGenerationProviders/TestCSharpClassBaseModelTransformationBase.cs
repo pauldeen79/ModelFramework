@@ -7,6 +7,7 @@ public abstract class TestCSharpClassBaseModelTransformationBase : CSharpClassBa
     public override bool RecurseOnDeleteGeneratedFiles => false;
 
     protected override string RootNamespace => "MyNamespace";
+    protected override string ProjectName => "MyProject";
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
     protected override bool EnableNullableContext => true;

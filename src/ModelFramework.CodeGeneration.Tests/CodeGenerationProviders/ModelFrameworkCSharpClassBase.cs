@@ -7,6 +7,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
     protected override string RootNamespace => "ModelFramework";
+    protected override string ProjectName => "ModelFramework";
 
     protected override string GetFullBasePath()
         => Directory.GetCurrentDirectory().EndsWith("ModelFramework")

@@ -26,18 +26,69 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
     protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
         => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
-    protected virtual string[] GetCustomBuilderTypes() => Array.Empty<string>();
-    protected virtual string[] GetNonDomainTypes() => Array.Empty<string>();
-    protected virtual Dictionary<string, string> GetCustomDefaultValueForBuilderClassConstructorValues() => new();
-    protected virtual Dictionary<string, string> GetBuilderNamespaceMappings() => new();
-    protected virtual Dictionary<string, string> GetModelMappings() => new();
-
-    protected abstract string GetFullBasePath();
-    protected abstract string RootNamespace { get; }
-
+    protected abstract string ProjectName { get; }
+    protected virtual string RootNamespace => $"{ProjectName}.Domain";
+    protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected abstract Type RecordCollectionType { get; }
     protected abstract Type RecordConcreteCollectionType { get; }
+
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
+    protected virtual string GetFullBasePath()
+        => Directory.GetCurrentDirectory().EndsWith(ProjectName)
+            ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
+            : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
+
+    protected virtual string[] GetCustomBuilderTypes()
+        => GetAbstractModels().Select(x => x.GetEntityClassName()).ToArray();
+
+    protected virtual Dictionary<string, string> GetCustomDefaultValueForBuilderClassConstructorValues()
+    {
+        var result = new Dictionary<string, string>();
+        result.AddRange(GetAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", "null")));
+        return result;
+    }
+
+    protected virtual Dictionary<string, string> GetBuilderNamespaceMappings()
+    {
+        var result = new Dictionary<string, string>();
+        result.AddRange(GetCustomBuilderTypes()
+                .Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x}s", $"{RootNamespace}.Builders.{x}s"))
+                .Concat(new[] { new KeyValuePair<string, string>(RootNamespace, $"{RootNamespace}.Builders") }));
+        return result;
+    }
+
+    protected virtual Dictionary<string, string> GetModelMappings()
+    {
+        var result = new Dictionary<string, string>();
+        result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.");
+        result.AddRange(GetAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.Name}s.I", $"{RootNamespace}.{x.Name}s.")));
+        result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
+        result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");
+        return result;
+    }
+
+    protected virtual string[] GetNonDomainTypes()
+        => GetType().Assembly.GetExportedTypes()
+            .Where(x => x.IsInterface && x.Namespace == CodeGenerationRootNamespace)
+            .Select(x => $"{RootNamespace}.{x.Name}")
+            .ToArray();
+
+    protected ITypeBase[] GetCoreModels()
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetExportedTypes()
+                .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
+
+    protected ITypeBase[] GetAbstractModels()
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetExportedTypes()
+                .Where(x => x.IsInterface && x.GetInterfaces().Length == 1)
+                .Select(x => x.GetInterfaces()[0])
+                .Distinct());
+
+    protected ITypeBase[] GetOverrideModels(Type abstractType)
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetExportedTypes()
+                .Where(x => x.IsInterface && x.GetInterfaces().FirstOrDefault() == abstractType));
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
                                                      string entitiesNamespace,

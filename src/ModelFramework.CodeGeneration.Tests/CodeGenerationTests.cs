@@ -1089,6 +1089,7 @@ namespace MyNamespace.Domain.Builders
         public override string DefaultFileName => "GeneratedCode.cs";
         public override bool RecurseOnDeleteGeneratedFiles => false;
         protected override string RootNamespace => "ModelFramework";
+        protected override string ProjectName => "ModelFramework";
 
         protected override string GetFullBasePath() => string.Empty;
 
@@ -1123,6 +1124,7 @@ namespace MyNamespace.Domain.Builders
         public override string DefaultFileName => "GeneratedCode.cs";
         public override bool RecurseOnDeleteGeneratedFiles => false;
         protected override string RootNamespace => "ModelFramework";
+        protected override string ProjectName => "MyProject";
 
         protected override string GetFullBasePath() => string.Empty;
 
