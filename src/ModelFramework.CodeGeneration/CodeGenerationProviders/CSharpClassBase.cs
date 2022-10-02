@@ -39,12 +39,12 @@ public abstract class CSharpClassBase : ClassBase
             : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
 
     protected virtual string[] GetCustomBuilderTypes()
-        => GetUnmappedAbstractModels().Select(x => x.GetEntityClassName()).ToArray();
+        => GetPureAbstractModels().Select(x => x.GetEntityClassName()).ToArray();
 
     protected virtual Dictionary<string, string> GetCustomDefaultValueForBuilderClassConstructorValues()
     {
         var result = new Dictionary<string, string>();
-        result.AddRange(GetUnmappedAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", "null")));
+        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", "null")));
         return result;
     }
 
@@ -61,7 +61,7 @@ public abstract class CSharpClassBase : ClassBase
     {
         var result = new Dictionary<string, string>();
         result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.");
-        result.AddRange(GetUnmappedAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.Name}s.I", $"{RootNamespace}.{x.Name}s.")));
+        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName()}s.I", $"{RootNamespace}.{x.GetEntityClassName()}s.")));
         result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
         result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");
         return result;
@@ -79,13 +79,7 @@ public abstract class CSharpClassBase : ClassBase
                 .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
 
     protected ITypeBase[] GetAbstractModels()
-        => MapCodeGenerationModelsToDomain(GetUnmappedAbstractModels());
-
-    private IEnumerable<Type> GetUnmappedAbstractModels()
-        => GetType().Assembly.GetExportedTypes()
-            .Where(x => x.IsInterface && x.GetInterfaces().Length == 1)
-            .Select(x => x.GetInterfaces()[0])
-            .Distinct();
+        => MapCodeGenerationModelsToDomain(GetPureAbstractModels());
 
     protected ITypeBase[] GetOverrideModels(Type abstractType)
         => MapCodeGenerationModelsToDomain(
@@ -551,6 +545,12 @@ public abstract class CSharpClassBase : ClassBase
 
         return new("new " + ReplaceWithBuilderNamespaces(typeName) + "Builder()");
     }
+
+    private IEnumerable<Type> GetPureAbstractModels()
+        => GetType().Assembly.GetExportedTypes()
+            .Where(x => x.IsInterface && x.GetInterfaces().Length == 1)
+            .Select(x => x.GetInterfaces()[0])
+            .Distinct();
 
     private static object GetBuilderFactoryModelDefaultValue(
         ITypeBase[] models,
