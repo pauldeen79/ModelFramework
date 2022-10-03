@@ -127,7 +127,20 @@ public static partial class TypeBaseExtensions
     }
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
-        => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization, () => $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, () => p.TypeName.IsCollectionTypeName() && settings.ConstructorSettings.CollectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty) && settings.NewCollectionTypeName != "System.Collections.Immutable.IImmutableList" ? $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})" : p.Name.ToPascalCase().GetCsharpFriendlyName())};");
+        => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization,
+            () => $"this.{p.Name.GetCsharpFriendlyName()} = {p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName)).GetStringValue(MetadataNames.CustomImmutableDefaultValue, () => GetDefaultFormatStringForInitialization(p, settings))};");
+
+    private static string GetDefaultFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
+        => p.TypeName.IsCollectionTypeName()
+        && settings.ConstructorSettings.CollectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty)
+        && settings.NewCollectionTypeName != "System.Collections.Immutable.IImmutableList"
+            ? GetCollectionFormatStringForInitialization(p)
+            : p.Name.ToPascalCase().GetCsharpFriendlyName();
+
+    private static string GetCollectionFormatStringForInitialization(IClassProperty p)
+        => p.IsNullable
+            ? $"{p.Name.ToPascalCase()} == null ? null : new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})"
+            : $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})";
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
         => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
