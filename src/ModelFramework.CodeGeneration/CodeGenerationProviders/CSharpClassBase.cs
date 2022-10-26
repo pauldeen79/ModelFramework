@@ -565,7 +565,7 @@ public abstract class CSharpClassBase : ClassBase
         var builder = new StringBuilder();
         builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("{");
-        //TODO: add support for generic types here :(
+        // note that generic types are skipped here. you're on your own for these...
         foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
         {
             builder.AppendLine("    {typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x)},");
