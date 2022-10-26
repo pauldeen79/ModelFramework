@@ -367,6 +367,122 @@ namespace Test.Builders
     }
 
     [Fact]
+    public void Can_Generate_Generics_Immutable_Class()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<GenericsRecords>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test
+{
+    public partial record TestClass<T>
+    {
+        public T TestProperty
+        {
+            get;
+        }
+
+        public TestClass(T testProperty)
+        {
+            this.TestProperty = testProperty;
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Generics_Immutable_ClassBuilder()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<GenericsBuilders>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Builders
+{
+    public partial class TestClassBuilder<T>
+    {
+        public T TestProperty
+        {
+            get
+            {
+                return _testPropertyDelegate.Value;
+            }
+            set
+            {
+                _testPropertyDelegate = new (() => value);
+            }
+        }
+
+        public Test.TestClass<T> Build()
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new Test.TestClass<T>(TestProperty);
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public TestClassBuilder<T> WithTestProperty(T testProperty)
+        {
+            TestProperty = testProperty;
+            return this;
+        }
+
+        public TestClassBuilder<T> WithTestProperty(System.Func<T> testPropertyDelegate)
+        {
+            _testPropertyDelegate = new (testPropertyDelegate);
+            return this;
+        }
+
+        public TestClassBuilder()
+        {
+            #pragma warning disable CS8603 // Possible null reference return.
+            _testPropertyDelegate = new (() => default);
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public TestClassBuilder(Test.TestClass<T> source)
+        {
+            _testPropertyDelegate = new (() => source.TestProperty);
+        }
+
+        protected System.Lazy<T> _testPropertyDelegate;
+    }
+}
+");
+    }
+
+    [Fact]
     public void NewCollectionTypeName_Is_Set_To_GenericList()
     {
         // Arrange
@@ -1198,6 +1314,42 @@ namespace MyNamespace.Domain.Builders
     }
 
     private sealed class CustomPropertiesBuilders : CustomPropertiesBase
+    {
+        public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
+    }
+
+    private abstract class GenericsBase : CSharpClassBase
+    {
+        public override string Path => @"C:\Temp";
+        public override string DefaultFileName => "GeneratedCode.cs";
+        public override bool RecurseOnDeleteGeneratedFiles => false;
+        protected override string RootNamespace => "ModelFramework";
+        protected override string ProjectName => "ModelFramework";
+
+        protected override string GetFullBasePath() => string.Empty;
+
+        protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+        protected override bool EnableNullableContext => true;
+        protected override bool CreateCodeGenerationHeader => false;
+
+        protected ITypeBase[] GetModels() => new[]
+        {
+            new ClassBuilder()
+                .WithName("TestClass")
+                .WithNamespace("Test")
+                .AddGenericTypeArguments("T")
+                .AddProperties(new ClassPropertyBuilder().WithName("TestProperty").WithTypeName("T"))
+                .Build()
+        };
+    }
+
+    private sealed class GenericsRecords : GenericsBase
+    {
+        public override object CreateModel() => GetImmutableClasses(GetModels(), "Test");
+    }
+
+    private sealed class GenericsBuilders : GenericsBase
     {
         public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
     }

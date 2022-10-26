@@ -15,5 +15,7 @@ public static partial class TypeBaseExtensions
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
             .AddMetadata(instance.Metadata.Select(x => new MetadataBuilder(x)))
             .AddMethods(instance.Methods.Select(x => new ClassMethodBuilder(x)))
-            .AddProperties(instance.Properties.Select(x => new ClassPropertyBuilder(x)));
+            .AddProperties(instance.Properties.Select(x => new ClassPropertyBuilder(x)))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
 }

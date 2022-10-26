@@ -25,7 +25,9 @@ public static partial class TypeBaseEtensions
             .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
-            .AddFields(GetImmutableBuilderClassFields(instance, settings, false));
+            .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -66,17 +68,21 @@ public static partial class TypeBaseEtensions
             .AddMethods(new ClassMethodBuilder()
                 .WithName("Build")
                 .WithAbstract()
-                .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)));
+                .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
     }
 
     private static string GetImmutableBuilderClassBaseClass(ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
+        var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
+
         if (settings.InheritanceSettings.EnableEntityInheritance
             && settings.InheritanceSettings.EnableBuilderInheritance
             && settings.InheritanceSettings.BaseClass == null
             && !settings.IsForAbstractBuilder)
         {
-            return instance.Name + "Builder";
+            return instance.Name + "Builder" + genericTypeArgumentsString;
         }
 
         if (settings.InheritanceSettings.EnableEntityInheritance
@@ -85,7 +91,7 @@ public static partial class TypeBaseEtensions
             && !settings.IsForAbstractBuilder
             && settings.InheritanceSettings.IsAbstract)
         {
-            return instance.Name + "Builder";
+            return instance.Name + "Builder" + genericTypeArgumentsString;
         }
 
         if (settings.InheritanceSettings.EnableEntityInheritance
@@ -97,12 +103,12 @@ public static partial class TypeBaseEtensions
             var ns = string.IsNullOrEmpty(settings.InheritanceSettings.BaseClassBuilderNameSpace)
                 ? string.Empty
                 : $"{settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
-            return $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{instance.Name}Builder, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}>";
+            return $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{instance.Name}Builder{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
         return instance.GetCustomValueForInheritedClass(settings, cls => settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null
-            ? $"{cls.BaseClass.GetClassName()}Builder"
-            : $"{cls.BaseClass.GetClassName()}Builder<{instance.Name}Builder, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}>");
+            ? $"{cls.BaseClass.GetClassName()}Builder{genericTypeArgumentsString}"
+            : $"{cls.BaseClass.GetClassName()}Builder<{instance.Name}Builder{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
     }
 
     private static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(ITypeBase instance, ImmutableBuilderClassSettings settings, bool isForWithStatement)
@@ -162,7 +168,7 @@ public static partial class TypeBaseEtensions
                     (
                         new ParameterBuilder()
                             .WithName("source")
-                            .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+                            .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate) + instance.GetGenericTypeArgumentsString())
                     )
                     .AddParameters
                     (
@@ -272,7 +278,7 @@ public static partial class TypeBaseEtensions
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+                    .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate) + instance.GetGenericTypeArgumentsString())
             )
             .AddParameters
             (
@@ -403,18 +409,18 @@ public static partial class TypeBaseEtensions
     {
         if (!(settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.IsAbstract))
         {
-            yield return AddMethods(instance, new ClassMethodBuilder()
+            yield return FillMethod(instance, new ClassMethodBuilder()
                 .WithName(settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity ? "BuildTyped" : "Build")
                 .WithAbstract(settings.IsBuilderForAbstractEntity)
                 .WithOverride(settings.IsBuilderForOverrideEntity)
-                .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings)), settings);
+                .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings) + instance.GetGenericTypeArgumentsString()), settings);
 
             if (settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity)
             {
                 yield return new ClassMethodBuilder()
                     .WithName("Build")
                     .WithOverride()
-                    .WithTypeName(FormatInstanceName(settings.InheritanceSettings.BaseClass ?? instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+                    .WithTypeName(FormatInstanceName(settings.InheritanceSettings.BaseClass ?? instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate) + (settings.InheritanceSettings.BaseClass ?? instance).GetGenericTypeArgumentsString())
                     .AddLiteralCodeStatements("return BuildTyped();");
             }
         }
@@ -425,7 +431,7 @@ public static partial class TypeBaseEtensions
         }
     }
 
-    private static ClassMethodBuilder AddMethods(ITypeBase instance, ClassMethodBuilder classMethodBuilder, ImmutableBuilderClassSettings settings)
+    private static ClassMethodBuilder FillMethod(ITypeBase instance, ClassMethodBuilder classMethodBuilder, ImmutableBuilderClassSettings settings)
     {
         var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
         var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
@@ -439,7 +445,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 !settings.IsBuilderForAbstractEntity
-                    ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
+                    ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{instance.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
                     : Array.Empty<string>()
             )
             .AddLiteralCodeStatements
@@ -651,13 +657,17 @@ public static partial class TypeBaseEtensions
                                                                   ITypeBase instance,
                                                                   ImmutableBuilderClassSettings settings,
                                                                   bool extensionMethod)
-        => builder.WithTypeName(settings.IsBuilderForAbstractEntity ? "TBuilder" : $"{instance.Name}Builder")
+        => builder.WithTypeName(settings.IsBuilderForAbstractEntity
+                      ? "TBuilder" + instance.GetGenericTypeArgumentsString()
+                      : $"{instance.Name}Builder" + instance.GetGenericTypeArgumentsString())
                   .WithStatic(extensionMethod)
                   .WithExtensionMethod(extensionMethod)
                   .AddParameters(new[]
                   {
                       new ParameterBuilder().WithName("instance")
-                                            .WithTypeName(settings.IsBuilderForAbstractEntity ? "TBuilder" :$"{instance.Name}Builder")
+                                            .WithTypeName(settings.IsBuilderForAbstractEntity
+                                                ? "TBuilder" + instance.GetGenericTypeArgumentsString()
+                                                : $"{instance.Name}Builder" + instance.GetGenericTypeArgumentsString())
                   }.Where(_ => extensionMethod));
 
     private static string GetCallPrefix(bool extensionMethod, bool lazyInitialization)

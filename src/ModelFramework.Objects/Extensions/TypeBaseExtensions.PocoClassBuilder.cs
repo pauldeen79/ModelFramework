@@ -31,5 +31,7 @@ public static partial class TypeBaseExtensions
                             .AddSetterCodeStatements(p.SetterCodeStatements.Select(x => x.CreateBuilder()))
                     )
             )
-            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
+            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
 }

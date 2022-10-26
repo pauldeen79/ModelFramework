@@ -13,7 +13,7 @@ public static class TypeExtensions
 
     public static ClassBuilder ToClassBuilder(this Type instance, ClassSettings settings)
         => new ClassBuilder()
-            .WithName(instance.Name)
+            .WithName(RemoveGenerics(instance.Name))
             .WithNamespace(instance.FullName.GetNamespaceWithDefault())
             .WithVisibility(instance.IsPublic
                 ? Visibility.Public
@@ -31,7 +31,8 @@ public static class TypeExtensions
             .AddMethods(GetMethods(instance, settings.AttributeInitializeDelegate))
             .AddConstructors(GetConstructors(instance, settings.AttributeInitializeDelegate, settings.CreateConstructors))
             .AddAttributes(GetAttributes(instance.GetCustomAttributes(false), settings.AttributeInitializeDelegate))
-            .AddSubClasses(GetSubClasses(instance, settings.Partial));
+            .AddSubClasses(GetSubClasses(instance, settings.Partial))
+            .AddGenericTypeArguments(GetGenericTypeArguments(instance));
 
     public static IInterface ToInterface(this Type instance)
         => instance.ToInterface(new InterfaceSettings());
@@ -44,14 +45,15 @@ public static class TypeExtensions
 
     public static InterfaceBuilder ToInterfaceBuilder(this Type instance, InterfaceSettings settings)
         => new InterfaceBuilder()
-            .WithName(instance.Name)
+            .WithName(RemoveGenerics(instance.Name))
             .WithNamespace(instance.FullName.GetNamespaceWithDefault())
             .WithVisibility(instance.IsPublic
                 ? Visibility.Public
                 : Visibility.Private)
             .AddInterfaces(GetInterfaces(instance))
             .AddProperties(GetProperties(instance, settings.AttributeInitializeDelegate))
-            .AddMethods(GetMethods(instance, settings.AttributeInitializeDelegate));
+            .AddMethods(GetMethods(instance, settings.AttributeInitializeDelegate))
+            .AddGenericTypeArguments(GetGenericTypeArguments(instance));
 
     public static ITypeBase ToTypeBase(this Type instance)
         => instance.ToTypeBase(new ClassSettings());
@@ -98,9 +100,9 @@ public static class TypeExtensions
     }
 
     public static string GetEntityClassName(this Type instance)
-        => instance.IsInterface && instance.Name.StartsWith("I")
+        => RemoveGenerics(instance.IsInterface && instance.Name.StartsWith("I")
             ? instance.Name.Substring(1)
-            : instance.Name;
+            : instance.Name);
 
     private static IEnumerable<string> GetInterfaces(Type instance)
         => instance.GetInterfaces()
@@ -362,6 +364,16 @@ public static class TypeExtensions
         return results;
     }
 
+    private static IEnumerable<string> GetGenericTypeArguments(Type instance)
+    {
+        if (!instance.IsGenericTypeDefinition || instance is not TypeInfo typeInfo)
+        {
+            return Enumerable.Empty<string>();
+        }
+
+        return typeInfo.GenericTypeParameters.Select(x => x.Name);
+    }
+
     private static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") != null;
 
@@ -369,7 +381,7 @@ public static class TypeExtensions
     {
         if (!type.IsGenericType)
         {
-            return type.FullName.FixTypeName();
+            return type.FullName.FixTypeName().WhenNullOrEmpty(() => type.Name);
         }
 
         var builder = new StringBuilder();
@@ -397,5 +409,21 @@ public static class TypeExtensions
         }
         builder.Append(">");
         return builder.ToString();
+    }
+
+    private static string RemoveGenerics(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+        {
+            return name;
+        }
+
+        var index = name.IndexOf("`");
+        if (index == -1)
+        {
+            return name;
+        }
+
+        return name.Substring(0, index);
     }
 }
