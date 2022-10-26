@@ -51,5 +51,7 @@ public static partial class TypeBaseExtensions
                             .Select(p => $"this.{p.Name} = new {p.TypeName.FixCollectionTypeName(newCollectionTypeName).GetCsharpFriendlyTypeName()}();")
                     )
             )
-            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)));
+            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
 }

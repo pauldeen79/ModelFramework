@@ -123,7 +123,9 @@ public static partial class TypeBaseExtensions
                     : Enumerable.Empty<string>()
             )
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
-            .AddFields(instance.Properties.SelectMany(x => x.Metadata.GetValues<IClassField>(MetadataNames.CustomImmutableBackingField).Select(x => new ClassFieldBuilder(x))));
+            .AddFields(instance.Properties.SelectMany(x => x.Metadata.GetValues<IClassField>(MetadataNames.CustomImmutableBackingField).Select(x => new ClassFieldBuilder(x))))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
     }
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)

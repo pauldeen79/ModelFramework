@@ -51,7 +51,9 @@ public static partial class TypeBaseExtensiosn
                     : instance.Attributes.Where(settings.AttributeFilter)
                                          .Select(x => new AttributeBuilder(x))
             )
-            .AddGenericTypeArguments(GenerateGenericTypeArguments(settings.ApplyGenericTypes));
+            .AddGenericTypeArguments(GenerateGenericTypeArguments(settings.ApplyGenericTypes))
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
 
     private static IClassProperty ChangeProperty(IClassProperty property,
                                                  IDictionary<string, string>? applyGenericTypes,

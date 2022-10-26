@@ -454,30 +454,33 @@ public abstract class CSharpClassBase : ClassBase
         string builderNamespace,
         string builderTypeName,
         string overrideClassNamespace)
-        => new[] { new ClassBuilder()
-        .WithName(className)
-        .WithNamespace(classNamespace)
-        .WithStatic()
-        .AddFields(new ClassFieldBuilder()
-            .WithName("registeredTypes")
-            .WithStatic()
-            .WithTypeName($"Dictionary<Type,Func<{classTypeName},{builderTypeName}>>")
-            .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, builderNamespace, classTypeName, builderTypeName, overrideClassNamespace))
-        )
-        .AddMethods(new ClassMethodBuilder()
-            .WithName("Create")
-            .WithTypeName($"{classNamespace}.{builderTypeName}")
-            .WithStatic()
-            .AddParameter("instance", classTypeName)
-            .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(\"Unknown instance type: \" + instance.GetType().FullName);"),
-            new ClassMethodBuilder()
-            .WithStatic()
-            .WithName("Register")
-            .AddParameter("type", typeof(Type))
-            .AddParameter("createDelegate", $"Func<{classTypeName},{builderTypeName}>")
-            .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
-        )
-        .Build() };
+        => new[]
+        {
+            new ClassBuilder()
+                .WithName(className)
+                .WithNamespace(classNamespace)
+                .WithStatic()
+                .AddFields(new ClassFieldBuilder()
+                    .WithName("registeredTypes")
+                    .WithStatic()
+                    .WithTypeName($"Dictionary<Type,Func<{classTypeName},{builderTypeName}>>")
+                    .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, builderNamespace, classTypeName, builderTypeName, overrideClassNamespace))
+                )
+                .AddMethods(new ClassMethodBuilder()
+                    .WithName("Create")
+                    .WithTypeName($"{classNamespace}.{builderTypeName}")
+                    .WithStatic()
+                    .AddParameter("instance", classTypeName)
+                    .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(\"Unknown instance type: \" + instance.GetType().FullName);"),
+                    new ClassMethodBuilder()
+                    .WithStatic()
+                    .WithName("Register")
+                    .AddParameter("type", typeof(Type))
+                    .AddParameter("createDelegate", $"Func<{classTypeName},{builderTypeName}>")
+                    .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
+                )
+                .Build()
+        };
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
@@ -562,7 +565,8 @@ public abstract class CSharpClassBase : ClassBase
         var builder = new StringBuilder();
         builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("{");
-        foreach (var modelName in models.Select(x => x.Name))
+        //TODO: add support for generic types here :(
+        foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
         {
             builder.AppendLine("    {typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x)},");
         }
