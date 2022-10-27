@@ -5,7 +5,6 @@ global using System.IO;
 global using System.Linq;
 global using System.Reflection;
 global using System.Text;
-global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using CsharpExpressionDumper.Abstractions.Requests;
