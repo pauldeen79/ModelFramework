@@ -2,13 +2,9 @@
 
 public static class StringBuilderExtensions
 {
-    public static StringBuilder AddWithCondition(this StringBuilder builder, object? value, bool condition)
+    public static StringBuilder AddWithCondition(this StringBuilder builder, string value, bool condition)
     {
         if (!condition)
-        {
-            return builder;
-        }
-        if (value == null || string.IsNullOrEmpty(value.ToString()))
         {
             return builder;
         }
