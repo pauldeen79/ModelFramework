@@ -88,15 +88,16 @@ public static class TypeExtensions
     /// <returns>Typename without generics (`1)</returns>
     public static string WithoutGenerics(this Type instance)
     {
-        if (instance.FullName == null)
+        var name = instance.FullName.WhenNullOrEmpty(instance.Name);
+        if (name == null)
         {
             throw new ArgumentException("Can't get typename without generics when the FullName of this type is null. Could not determine typename.");
         }
 
-        var index = instance.FullName.IndexOf('`');
+        var index = name.IndexOf('`');
         return index == -1
-            ? instance.FullName.FixTypeName()
-            : instance.FullName.Substring(0, index).FixTypeName();
+            ? name.FixTypeName()
+            : name.Substring(0, index).FixTypeName();
     }
 
     public static string GetEntityClassName(this Type instance)
