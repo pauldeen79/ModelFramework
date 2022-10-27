@@ -89,11 +89,6 @@ public static class TypeExtensions
     public static string WithoutGenerics(this Type instance)
     {
         var name = instance.FullName.WhenNullOrEmpty(instance.Name);
-        if (name == null)
-        {
-            throw new ArgumentException("Can't get typename without generics when the FullName of this type is null. Could not determine typename.");
-        }
-
         var index = name.IndexOf('`');
         return index == -1
             ? name.FixTypeName()
@@ -101,9 +96,9 @@ public static class TypeExtensions
     }
 
     public static string GetEntityClassName(this Type instance)
-        => RemoveGenerics(instance.IsInterface && instance.Name.StartsWith("I")
+        => instance.IsInterface && instance.Name.StartsWith("I")
             ? instance.Name.Substring(1)
-            : instance.Name);
+            : instance.Name;
 
     private static IEnumerable<string> GetInterfaces(Type instance)
         => instance.GetInterfaces()
