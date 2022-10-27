@@ -1179,6 +1179,53 @@ namespace MyNamespace.Domain.Builders
 ");
     }
 
+    [Fact]
+    public void Can_Generate_BuilderFactory_For_Inherited_Builders_With_Custom_Code()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideBuilderFactoryCustomCode>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace.Domain.Builders
+{
+    public static class MyClassBuilderFactory
+    {
+        public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
+        {
+            // custom code goes here
+            return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(""Unknown instance type: "" + instance.GetType().FullName);
+        }
+
+        public static void Register(System.Type type, Func<MyNamespace.Domain.MyClass,MyClassBuilder> createDelegate)
+        {
+            registeredTypes.Add(type, createDelegate);
+        }
+
+        private static Dictionary<Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
+{
+    {typeof(MyNamespace.Domain.MyDerivedClass),x => new MyNamespace.Domain.Builders.MyClass.MyDerivedClassBuilder((MyNamespace.Domain.MyDerivedClass)x)},
+}
+;
+    }
+}
+");
+    }
+
     private void Verify(GenerateCode generatedCode)
     {
         if (Settings.DryRun)

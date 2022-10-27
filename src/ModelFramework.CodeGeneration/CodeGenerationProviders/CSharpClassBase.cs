@@ -446,6 +446,7 @@ public abstract class CSharpClassBase : ClassBase
             )
             .Build() };
 
+#pragma warning disable S107 // Methods should not have too many parameters
     protected static ITypeBase[] CreateBuilderFactoryModels(
         ITypeBase[] models,
         string classNamespace,
@@ -453,7 +454,9 @@ public abstract class CSharpClassBase : ClassBase
         string classTypeName,
         string builderNamespace,
         string builderTypeName,
-        string overrideClassNamespace)
+        string overrideClassNamespace,
+        string? createLiteralCodeStatement = null)
+#pragma warning restore S107 // Methods should not have too many parameters
         => new[]
         {
             new ClassBuilder()
@@ -471,6 +474,13 @@ public abstract class CSharpClassBase : ClassBase
                     .WithTypeName($"{classNamespace}.{builderTypeName}")
                     .WithStatic()
                     .AddParameter("instance", classTypeName)
+                    .Chain(x =>
+                    {
+                        if(createLiteralCodeStatement != null && createLiteralCodeStatement.Length > 0)
+                        {
+                            x.AddLiteralCodeStatements(createLiteralCodeStatement);
+                        }
+                    })
                     .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(\"Unknown instance type: \" + instance.GetType().FullName);"),
                     new ClassMethodBuilder()
                     .WithStatic()
@@ -565,7 +575,7 @@ public abstract class CSharpClassBase : ClassBase
         var builder = new StringBuilder();
         builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("{");
-        // note that generic types are skipped here. you're on your own for these...
+        // note that generic types are skipped here. you need to fill createLiteralCodeStatement to handle these ones
         foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
         {
             builder.AppendLine("    {typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x)},");
