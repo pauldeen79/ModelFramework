@@ -96,9 +96,9 @@ public static class TypeExtensions
     }
 
     public static string GetEntityClassName(this Type instance)
-        => instance.IsInterface && instance.Name.StartsWith("I")
+        => RemoveGenerics(instance.IsInterface && instance.Name.StartsWith("I")
             ? instance.Name.Substring(1)
-            : instance.Name;
+            : instance.Name);
 
     private static IEnumerable<string> GetInterfaces(Type instance)
         => instance.GetInterfaces()
