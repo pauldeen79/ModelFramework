@@ -409,11 +409,6 @@ public static class TypeExtensions
 
     private static string RemoveGenerics(string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            return name;
-        }
-
         var index = name.IndexOf("`");
         if (index == -1)
         {
