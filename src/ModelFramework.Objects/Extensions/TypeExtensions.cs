@@ -361,14 +361,7 @@ public static class TypeExtensions
     }
 
     private static IEnumerable<string> GetGenericTypeArguments(Type instance)
-    {
-        if (!instance.IsGenericTypeDefinition || instance is not TypeInfo typeInfo)
-        {
-            return Enumerable.Empty<string>();
-        }
-
-        return typeInfo.GenericTypeParameters.Select(x => x.Name);
-    }
+        => ((TypeInfo)instance).GenericTypeParameters.Select(x => x.Name);
 
     private static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") != null;
