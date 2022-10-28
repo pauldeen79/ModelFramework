@@ -33,6 +33,7 @@ public abstract class CSharpClassBase : ClassBase
     protected abstract Type RecordConcreteCollectionType { get; }
 
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
+
     protected virtual string GetFullBasePath()
         => Directory.GetCurrentDirectory().EndsWith(ProjectName)
             ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
@@ -226,9 +227,6 @@ public abstract class CSharpClassBase : ClassBase
         => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
             .WithNamespace(@namespace)
             .WithPartial();
-
-    protected virtual bool IsNotScaffolded(ITypeBase x, string classNameSuffix)
-        => !File.Exists(System.IO.Path.Combine(GetFullBasePath(), Path, $"{x.Name}{classNameSuffix}.cs"));
 
     protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TEntity : ITypeBase
@@ -476,7 +474,7 @@ public abstract class CSharpClassBase : ClassBase
                     .AddParameter("instance", classTypeName)
                     .Chain(x =>
                     {
-                        if(createLiteralCodeStatement != null && createLiteralCodeStatement.Length > 0)
+                        if (createLiteralCodeStatement != null && createLiteralCodeStatement.Length > 0)
                         {
                             x.AddLiteralCodeStatements(createLiteralCodeStatement);
                         }
