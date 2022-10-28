@@ -444,34 +444,27 @@ public abstract class CSharpClassBase : ClassBase
             )
             .Build() };
 
-#pragma warning disable S107 // Methods should not have too many parameters
     protected static ITypeBase[] CreateBuilderFactoryModels(
         ITypeBase[] models,
-        string classNamespace,
-        string className,
-        string classTypeName,
-        string builderNamespace,
-        string builderTypeName,
-        string overrideClassNamespace,
+        BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
-#pragma warning restore S107 // Methods should not have too many parameters
         => new[]
         {
             new ClassBuilder()
-                .WithName(className)
-                .WithNamespace(classNamespace)
+                .WithName(namespaceSettings.ClassName)
+                .WithNamespace(namespaceSettings.ClassNamespace)
                 .WithStatic()
                 .AddFields(new ClassFieldBuilder()
                     .WithName("registeredTypes")
                     .WithStatic()
-                    .WithTypeName($"Dictionary<Type,Func<{classTypeName},{builderTypeName}>>")
-                    .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, builderNamespace, classTypeName, builderTypeName, overrideClassNamespace))
+                    .WithTypeName($"Dictionary<Type,Func<{namespaceSettings.ClassTypeName},{namespaceSettings.BuilderTypeName}>>")
+                    .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, namespaceSettings.BuilderNamespace, namespaceSettings.ClassTypeName, namespaceSettings.BuilderTypeName, namespaceSettings.OverrideClassNamespace))
                 )
                 .AddMethods(new ClassMethodBuilder()
                     .WithName("Create")
-                    .WithTypeName($"{classNamespace}.{builderTypeName}")
+                    .WithTypeName($"{namespaceSettings.ClassNamespace}.{namespaceSettings.BuilderTypeName}")
                     .WithStatic()
-                    .AddParameter("instance", classTypeName)
+                    .AddParameter("instance", namespaceSettings.ClassTypeName)
                     .Chain(x =>
                     {
                         if (createLiteralCodeStatement != null && createLiteralCodeStatement.Length > 0)
@@ -484,7 +477,7 @@ public abstract class CSharpClassBase : ClassBase
                     .WithStatic()
                     .WithName("Register")
                     .AddParameter("type", typeof(Type))
-                    .AddParameter("createDelegate", $"Func<{classTypeName},{builderTypeName}>")
+                    .AddParameter("createDelegate", $"Func<{namespaceSettings.ClassTypeName},{namespaceSettings.BuilderTypeName}>")
                     .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
                 )
                 .Build()

@@ -5,10 +5,10 @@ public class TestCSharpClassBaseModelTransformationOverrideBuilderFactory : Test
     public override object CreateModel()
         => CreateBuilderFactoryModels(
             GetOverrideModelTransformationTypes(),
-            "MyNamespace.Domain.Builders",
+            new("MyNamespace.Domain.Builders",
             "MyClassBuilderFactory",
             "MyNamespace.Domain.MyClass",
             "MyNamespace.Domain.Builders.MyClass",
             "MyClassBuilder",
-            "MyNamespace.Domain");
+            "MyNamespace.Domain"));
 }
