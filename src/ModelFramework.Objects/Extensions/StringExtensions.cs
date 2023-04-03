@@ -37,6 +37,19 @@ public static class StringExtensions
         return name.Substring(index + 1);
     }
 
+    /// <summary>
+    /// Removes generics from a typename. (`1)
+    /// </summary>
+    /// <param name="typeName">Typename with or without generics</param>
+    /// <returns>Typename without generics (`1)</returns>
+    public static string WithoutGenerics(this string instance)
+    {
+        var index = instance.IndexOf('`');
+        return index == -1
+            ? instance.FixTypeName()
+            : instance.Substring(0, index).FixTypeName();
+    }
+
     public static string AppendNullableAnnotation(this string instance,
                                                   ITypeContainer typeContainer,
                                                   bool enableNullableReferenceTypes)

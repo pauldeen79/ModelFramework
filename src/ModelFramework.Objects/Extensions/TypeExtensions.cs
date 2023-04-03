@@ -131,7 +131,7 @@ public static class TypeExtensions
                 .WithHasGetter(p.GetGetMethod() != null)
                 .WithHasSetter(p.GetSetMethod() != null)
                 .WithHasInitializer(p.IsInitOnly())
-                .WithParentTypeFullName(p.DeclaringType.FullName == "System.Object" ? string.Empty : p.DeclaringType.FullName)
+                .WithParentTypeFullName(p.DeclaringType.FullName == "System.Object" ? string.Empty : p.DeclaringType.FullName.WithoutGenerics())
                 .WithIsNullable(p.IsNullable())
                 .WithIsValueType(p.PropertyType.IsValueType || p.PropertyType.IsEnum)
                 .WithVisibility(p.GetAccessors().Any(m => m.IsPublic)

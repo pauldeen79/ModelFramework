@@ -94,7 +94,7 @@ public static class ClassPropertyExtensions
 
     internal static IClassProperty EnsureParentTypeFullName(this IClassProperty property, IClass parentClass)
         => new ClassPropertyBuilder(property)
-            .WithParentTypeFullName(property.ParentTypeFullName.WhenNullOrEmpty(() => parentClass.GetFullName()))
+            .WithParentTypeFullName(property.ParentTypeFullName.WhenNullOrEmpty(() => parentClass.GetFullName().WithoutGenerics()))
             .Build();
 
     private static string CreateSingleInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
