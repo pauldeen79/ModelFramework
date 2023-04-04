@@ -85,7 +85,7 @@ public abstract class CSharpClassBase : ClassBase
     protected ITypeBase[] GetOverrideModels(Type abstractType)
         => MapCodeGenerationModelsToDomain(
             GetType().Assembly.GetExportedTypes()
-                .Where(x => x.IsInterface && x.GetInterfaces().FirstOrDefault() == abstractType));
+                .Where(x => x.IsInterface && x.GetInterfaces().Any(y => y == abstractType)));
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
                                                      string entitiesNamespace,
@@ -552,7 +552,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetExportedTypes()
-            .Where(x => x.IsInterface && x.GetInterfaces().Length == 1)
+            .Where(x => x.IsInterface && x.Namespace.StartsWith($"{CodeGenerationRootNamespace}.Models.") && x.GetInterfaces().Length == 1)
             .Select(x => x.GetInterfaces()[0])
             .Distinct();
 
