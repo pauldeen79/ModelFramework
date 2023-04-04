@@ -882,28 +882,10 @@ namespace MyNamespace.Domain.Builders
             }
         }
 
-        public System.Text.StringBuilder BaseProperty
-        {
-            get
-            {
-                return _basePropertyDelegate.Value;
-            }
-            set
-            {
-                _basePropertyDelegate = new (() => value);
-            }
-        }
-
-        public System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder> Children
-        {
-            get;
-            set;
-        }
-
         public override MyNamespace.Domain.MyDerivedClass BuildTyped()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children.Select(x => x.Build()));
+            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -924,120 +906,19 @@ namespace MyNamespace.Domain.Builders
             return this;
         }
 
-        public MyDerivedClassBuilder WithBaseProperty(System.Text.StringBuilder baseProperty)
-        {
-            BaseProperty = baseProperty;
-            return this;
-        }
-
-        public MyDerivedClassBuilder WithBaseProperty(System.Func<System.Text.StringBuilder> basePropertyDelegate)
-        {
-            _basePropertyDelegate = new (basePropertyDelegate);
-            return this;
-        }
-
-        public MyDerivedClassBuilder WithBaseProperty(string value)
-        {
-            if (BaseProperty == null)
-                BaseProperty = new System.Text.StringBuilder();
-            BaseProperty.Clear().Append(value);
-            return this;
-        }
-
-        public MyDerivedClassBuilder AppendToBaseProperty(string value)
-        {
-            if (BaseProperty == null)
-                BaseProperty = new System.Text.StringBuilder();
-            BaseProperty.Append(value);
-            return this;
-        }
-
-        public MyDerivedClassBuilder AppendLineToBaseProperty(string value)
-        {
-            if (BaseProperty == null)
-                BaseProperty = new System.Text.StringBuilder();
-            BaseProperty.AppendLine(value);
-            return this;
-        }
-
-        public MyDerivedClassBuilder AddChildren(System.Collections.Generic.IEnumerable<MyNamespace.Domain.Builders.MyBaseClassBuilder> children)
-        {
-            return AddChildren(children.ToArray());
-        }
-
-        public MyDerivedClassBuilder AddChildren(params MyNamespace.Domain.Builders.MyBaseClassBuilder[] children)
-        {
-            Children.AddRange(children);
-            return this;
-        }
-
-        public MyDerivedClassBuilder WithBaseProperty(System.Text.StringBuilder baseProperty)
-        {
-            BaseProperty = baseProperty;
-            return this;
-        }
-
-        public MyDerivedClassBuilder WithBaseProperty(System.Func<System.Text.StringBuilder> basePropertyDelegate)
-        {
-            _basePropertyDelegate = new (basePropertyDelegate);
-            return this;
-        }
-
-        public MyDerivedClassBuilder WithBaseProperty(string value)
-        {
-            if (BaseProperty == null)
-                BaseProperty = new System.Text.StringBuilder();
-            BaseProperty.Clear().Append(value);
-            return this;
-        }
-
-        public MyDerivedClassBuilder AppendToBaseProperty(string value)
-        {
-            if (BaseProperty == null)
-                BaseProperty = new System.Text.StringBuilder();
-            BaseProperty.Append(value);
-            return this;
-        }
-
-        public MyDerivedClassBuilder AppendLineToBaseProperty(string value)
-        {
-            if (BaseProperty == null)
-                BaseProperty = new System.Text.StringBuilder();
-            BaseProperty.AppendLine(value);
-            return this;
-        }
-
-        public MyDerivedClassBuilder AddChildren(System.Collections.Generic.IEnumerable<ModelFramework.CodeGeneration.Tests.CodeGenerationProviders.IMyBaseClass> children)
-        {
-            return AddChildren(children.ToArray());
-        }
-
-        public MyDerivedClassBuilder AddChildren(params ModelFramework.CodeGeneration.Tests.CodeGenerationProviders.IMyBaseClass[] children)
-        {
-            Children.AddRange(children);
-            return this;
-        }
-
         public MyDerivedClassBuilder() : base()
         {
-            Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder());
-            _basePropertyDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyDerivedClassBuilder(MyNamespace.Domain.MyDerivedClass source) : base(source)
         {
-            Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder(source.RequiredDomainProperty));
-            _basePropertyDelegate = new (() => new System.Text.StringBuilder(source.BaseProperty));
-            Children = source.Children.Select(x => MyNamespace.Domain.Builders.MyBaseClassBuilderFactory.Create(x)).ToList();
         }
 
         protected System.Lazy<MyNamespace.Domain.Builders.MyClassBuilder> _requiredDomainPropertyDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _basePropertyDelegate;
     }
 }
 ");
@@ -1074,21 +955,9 @@ namespace MyNamespace.Domain
             get;
         }
 
-        public string BaseProperty
-        {
-            get;
-        }
-
-        public System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyBaseClass> Children
-        {
-            get;
-        }
-
         public MyDerivedClass(MyNamespace.Domain.MyClass requiredDomainProperty, string baseProperty, System.Collections.Generic.IEnumerable<MyNamespace.Domain.MyBaseClass> children) : base(baseProperty, children)
         {
             this.RequiredDomainProperty = requiredDomainProperty;
-            this.BaseProperty = baseProperty;
-            this.Children = new System.Collections.ObjectModel.ReadOnlyCollection<MyNamespace.Domain.MyBaseClass>(children);
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }

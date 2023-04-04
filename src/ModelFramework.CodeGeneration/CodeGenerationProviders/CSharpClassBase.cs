@@ -23,7 +23,14 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddBackingFieldsForCollectionProperties => false;
     protected virtual IClass? BaseClass => null;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
-    protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase) => true;
+    protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
+        => parent != null
+        && typeBase != null
+        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
+            || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
+            || GetModelAbstractBaseTyped().Any(x => x == parent.ParentTypeFullName.GetClassName())
+            || (BaseClass != null && $"I{typeBase.Name}" == BaseClass.Name));
+
     protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
         => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
     protected abstract string ProjectName { get; }
@@ -40,7 +47,10 @@ public abstract class CSharpClassBase : ClassBase
             : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
 
     protected virtual string[] GetCustomBuilderTypes()
-        => GetPureAbstractModels().Select(x => x.GetEntityClassName()).ToArray();
+        => GetPureAbstractModels()
+            .Select(x => x.GetEntityClassName())
+            .Concat(GetExternalCustomBuilderTypes())
+            .ToArray();
 
     protected virtual Dictionary<string, string> GetCustomDefaultValueForBuilderClassConstructorValues()
     {
@@ -52,9 +62,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual Dictionary<string, string> GetBuilderNamespaceMappings()
     {
         var result = new Dictionary<string, string>();
-        result.AddRange(GetCustomBuilderTypes()
+        result.AddRange(
+            GetCustomBuilderTypes()
                 .Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x}s", $"{RootNamespace}.Builders.{x}s"))
                 .Concat(new[] { new KeyValuePair<string, string>(RootNamespace, $"{RootNamespace}.Builders") }));
+        result.AddRange(GetCustomBuilderNamespaceMapping());
         return result;
     }
 
@@ -73,6 +85,12 @@ public abstract class CSharpClassBase : ClassBase
             .Where(x => x.IsInterface && x.Namespace == CodeGenerationRootNamespace)
             .Select(x => $"{RootNamespace}.{x.Name}")
             .ToArray();
+
+    protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
+
+    protected virtual string[] GetExternalCustomBuilderTypes() => Array.Empty<string>();
+
+    protected virtual IEnumerable<KeyValuePair<string, string>> GetCustomBuilderNamespaceMapping() => Enumerable.Empty<KeyValuePair<string, string>>();
 
     protected ITypeBase[] GetCoreModels()
         => MapCodeGenerationModelsToDomain(
@@ -395,7 +413,9 @@ public abstract class CSharpClassBase : ClassBase
                 removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
                 baseClassBuilderNameSpace: BaseClassBuilderNamespace,
-                inheritanceComparisonFunction: IsMemberValid)
+                inheritanceComparisonFunction: EnableBuilderInhericance
+                    ? IsMemberValid
+                    : (_, _) => true)
         );
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
@@ -410,7 +430,9 @@ public abstract class CSharpClassBase : ClassBase
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
-                inheritanceComparisonFunction: IsMemberValid)
+                inheritanceComparisonFunction: EnableEntityInheritance
+                    ? IsMemberValid
+                    : (_, _) => true)
         );
 
     protected ClassSettings CreateClassSettings()
