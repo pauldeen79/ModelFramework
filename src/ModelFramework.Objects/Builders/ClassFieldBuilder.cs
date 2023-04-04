@@ -7,4 +7,8 @@ public partial class ClassFieldBuilder
 
     public ClassFieldBuilder ReplaceMetadata(string name, object? newValue)
         => this.Chain(() => Metadata.Replace(name, newValue));
+
+    public override string ToString() => !string.IsNullOrEmpty(ParentTypeFullName.ToString())
+        ? $"{TypeName} {ParentTypeFullName}.{Name}"
+        : $"{TypeName} {Name}";
 }

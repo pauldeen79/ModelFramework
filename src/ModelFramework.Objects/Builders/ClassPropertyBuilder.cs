@@ -8,24 +8,6 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, CreateImmutableBuilderDefaultValue(addNullChecks, collectionType))
           .AddMetadata(MetadataNames.CustomImmutableDefaultValue, CreateImmutableDefaultValue(addNullChecks, collectionType));
 
-    private static string CreateImmutableDefaultValue(bool addNullChecks, string collectionType)
-        => collectionType switch
-        {
-            "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
-            _ => addNullChecks
-                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
-                : "new " + collectionType + "<{1}>({0})"
-        };
-
-    private static string CreateImmutableBuilderDefaultValue(bool addNullChecks, string collectionType)
-        => collectionType switch
-        {
-            "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
-            _ => addNullChecks
-                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
-                : "new " + collectionType + "<{1}>({0})"
-        };
-
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                         string? customBuilderConstructorInitializeExpression = null,
                                                                         string? customBuilderMethodParameterExpression = null,
@@ -55,45 +37,6 @@ public partial class ClassPropertyBuilder
         return this;
     }
 
-    private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
-                                                                                                  bool useLazyInitialization,
-                                                                                                  bool useTargetTypeNewExpressions,
-                                                                                                  string? buildersNamespace)
-    {
-        if (useLazyInitialization)
-        {
-            if (useTargetTypeNewExpressions)
-            {
-                if (!string.IsNullOrEmpty(buildersNamespace))
-                {
-                    return "_{1}Delegate = new (() => new " + buildersNamespace + ".{5}Builder(source.{0}))";
-                }
-
-                return string.IsNullOrEmpty(argumentType)
-                    ? "_{1}Delegate = new (() => new {2}Builder(source.{0}))"
-                    : "_{1}Delegate = new (() => new " + argumentType + "(source.{0}))";
-            }
-
-            if (!string.IsNullOrEmpty(buildersNamespace))
-            {
-                return "_{1}Delegate = new System.Lazy<" + buildersNamespace + ".{5}Builder>(() => new " + buildersNamespace + ".{5}Builder(source.{0}))";
-            }
-
-            return string.IsNullOrEmpty(argumentType)
-                ? "_{1}Delegate = new System.Lazy<{2}Builder>(() => new {2}Builder(source.{0}))"
-                : "_{1}Delegate = new System.Lazy<" + argumentType + ">(() => new " + argumentType + "(source.{0}))";
-        }
-
-        if (!string.IsNullOrEmpty(buildersNamespace))
-        {
-            return "{0} = new " + buildersNamespace + ".{5}Builder(source.{0})";
-        }
-
-        return string.IsNullOrEmpty(argumentType)
-            ? "{0} = new {2}Builder(source.{0})"
-            : "{0} = new " + argumentType + "(source.{0})";
-    }
-
     public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(bool addNullChecks,
                                                                             string collectionType = "System.Collections.Generic.List",
                                                                             string? argumentType = null,
@@ -116,38 +59,6 @@ public partial class ClassPropertyBuilder
         AddMetadata(MetadataNames.CustomImmutableHasSetter, false);
 
         return this;
-    }
-
-    private static string CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(string? argumentType,
-                                                                                                      string? buildersNamespace,
-                                                                                                      string? builderCollectionTypeName)
-    {
-        if (builderCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
-        {
-            if (buildersNamespace != null && buildersNamespace.Length > 0)
-            {
-                return "{4}{0} = source.{0}.Select(x => new " + buildersNamespace + ".{6}Builder(x))";
-            }
-
-            if (argumentType != null && argumentType.Length > 0)
-            {
-                return "{4}{0} = source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x))";
-            }
-
-            return "{4}{0} = source.{0}.Select(x => new {3}Builder(x))";
-        }
-
-        if (buildersNamespace != null && buildersNamespace.Length > 0)
-        {
-            return "{4}{0}.AddRange(source.{0}.Select(x => new " + buildersNamespace + ".{6}Builder(x)))";
-        }
-
-        if (argumentType != null && argumentType.Length > 0)
-        {
-            return "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)))";
-        }
-
-        return "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)))";
     }
 
     public ClassPropertyBuilder AddBuilderOverload(IOverload overload)
@@ -191,4 +102,97 @@ public partial class ClassPropertyBuilder
 
     public ClassPropertyBuilder ReplaceMetadata(string name, object? newValue)
         => this.Chain(() => Metadata.Replace(name, newValue));
+
+    public override string ToString() => !string.IsNullOrEmpty(ParentTypeFullName.ToString())
+        ? $"{TypeName} {ParentTypeFullName}.{Name}"
+        : $"{TypeName} {Name}";
+
+    private static string CreateImmutableDefaultValue(bool addNullChecks, string collectionType)
+        => collectionType switch
+        {
+            "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
+            _ => addNullChecks
+                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+                : "new " + collectionType + "<{1}>({0})"
+        };
+
+    private static string CreateImmutableBuilderDefaultValue(bool addNullChecks, string collectionType)
+        => collectionType switch
+        {
+            "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
+            _ => addNullChecks
+                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+                : "new " + collectionType + "<{1}>({0})"
+        };
+
+    private static string CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(string? argumentType,
+                                                                                                  bool useLazyInitialization,
+                                                                                                  bool useTargetTypeNewExpressions,
+                                                                                                  string? buildersNamespace)
+    {
+        if (useLazyInitialization)
+        {
+            if (useTargetTypeNewExpressions)
+            {
+                if (!string.IsNullOrEmpty(buildersNamespace))
+                {
+                    return "_{1}Delegate = new (() => new " + buildersNamespace + ".{5}Builder(source.{0}))";
+                }
+
+                return string.IsNullOrEmpty(argumentType)
+                    ? "_{1}Delegate = new (() => new {2}Builder(source.{0}))"
+                    : "_{1}Delegate = new (() => new " + argumentType + "(source.{0}))";
+            }
+
+            if (!string.IsNullOrEmpty(buildersNamespace))
+            {
+                return "_{1}Delegate = new System.Lazy<" + buildersNamespace + ".{5}Builder>(() => new " + buildersNamespace + ".{5}Builder(source.{0}))";
+            }
+
+            return string.IsNullOrEmpty(argumentType)
+                ? "_{1}Delegate = new System.Lazy<{2}Builder>(() => new {2}Builder(source.{0}))"
+                : "_{1}Delegate = new System.Lazy<" + argumentType + ">(() => new " + argumentType + "(source.{0}))";
+        }
+
+        if (!string.IsNullOrEmpty(buildersNamespace))
+        {
+            return "{0} = new " + buildersNamespace + ".{5}Builder(source.{0})";
+        }
+
+        return string.IsNullOrEmpty(argumentType)
+            ? "{0} = new {2}Builder(source.{0})"
+            : "{0} = new " + argumentType + "(source.{0})";
+    }
+
+    private static string CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(string? argumentType,
+                                                                                                      string? buildersNamespace,
+                                                                                                      string? builderCollectionTypeName)
+    {
+        if (builderCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
+        {
+            if (buildersNamespace != null && buildersNamespace.Length > 0)
+            {
+                return "{4}{0} = source.{0}.Select(x => new " + buildersNamespace + ".{6}Builder(x))";
+            }
+
+            if (argumentType != null && argumentType.Length > 0)
+            {
+                return "{4}{0} = source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x))";
+            }
+
+            return "{4}{0} = source.{0}.Select(x => new {3}Builder(x))";
+        }
+
+        if (buildersNamespace != null && buildersNamespace.Length > 0)
+        {
+            return "{4}{0}.AddRange(source.{0}.Select(x => new " + buildersNamespace + ".{6}Builder(x)))";
+        }
+
+        if (argumentType != null && argumentType.Length > 0)
+        {
+            return "{4}{0}.AddRange(source.{0}.Select(x => new " + argumentType.GetGenericArguments() + "(x)))";
+        }
+
+        return "{4}{0}.AddRange(source.{0}.Select(x => new {3}Builder(x)))";
+    }
 }
