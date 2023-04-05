@@ -69,7 +69,7 @@ public static class ClassPropertyExtensions
 
     internal static string GetDefaultValue(this IClassProperty property)
     {
-        var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomImmutableBuilderDefaultValue);
+        var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
         if (md != null && md.Value != null)
         {
             if (md.Value is Literal literal && literal.Value != null)

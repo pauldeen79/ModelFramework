@@ -569,6 +569,11 @@ public abstract class CSharpClassBase : ClassBase
             return new(GetCustomDefaultValueForBuilderClassConstructorValues()[typeName]);
         }
 
+        if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
+        {
+            return new("default");
+        }
+        
         return new("new " + ReplaceWithBuilderNamespaces(typeName) + "Builder()");
     }
 

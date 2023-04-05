@@ -5,7 +5,7 @@ public partial class ClassPropertyBuilder
     public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable(bool addNullChecks,
                                                                        string collectionType = "System.Collections.Generic.List")
         => AddMetadata(MetadataNames.CustomImmutableArgumentType, "System.Collections.Generic.IEnumerable<{1}>")
-          .AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, CreateImmutableBuilderDefaultValue(addNullChecks, collectionType))
+          .AddMetadata(MetadataNames.CustomBuilderDefaultValue, CreateImmutableBuilderDefaultValue(addNullChecks, collectionType))
           .AddMetadata(MetadataNames.CustomImmutableDefaultValue, CreateImmutableDefaultValue(addNullChecks, collectionType));
 
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
@@ -69,7 +69,7 @@ public partial class ClassPropertyBuilder
                                             .WithValue(defaultValue));
 
     public ClassPropertyBuilder SetDefaultValueForBuilderClassConstructor(object defaultValue)
-        => AddMetadata(MetadataNames.CustomImmutableBuilderDefaultValue, defaultValue);
+        => AddMetadata(MetadataNames.CustomBuilderDefaultValue, defaultValue);
 
     public ClassPropertyBuilder SetDefaultValueForStringPropertyOnBuilderClassConstructor()
         => SetDefaultValueForBuilderClassConstructor(!IsNullable

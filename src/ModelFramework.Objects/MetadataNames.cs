@@ -55,7 +55,12 @@ public static class MetadataNames
     /// <summary>
     /// Metadata name for defining a custom default value in immutable builder c'tor.
     /// </summary>
-    public const string CustomImmutableBuilderDefaultValue = "ModelFramework.Objects.Immutable.Builder.Ctor.CustomDefaultValue";
+    public const string CustomBuilderDefaultValue = "ModelFramework.Objects.Immutable.Builder.Ctor.CustomDefaultValue";
+
+    /// <summary>
+    /// Metadata name for skipping default value in immutable builder c'tor.
+    /// </summary>
+    public const string CustomBuilderSkipDefaultValue = "ModelFramework.objects.Immutable.Builder.Ctor.SkipDefaultValue";
 
     /// <summary>
     /// Metadata name for defining a custom default value in immutable c'tor.
