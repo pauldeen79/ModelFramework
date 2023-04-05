@@ -443,12 +443,19 @@ public abstract class CSharpClassBase : ClassBase
             attributeInitializeDelegate: AttributeInitializeDelegate
         );
 
+    protected string GetModelTypeName(Type modelType)
+        => GetCoreModels().Concat(GetAbstractModels())
+            .FirstOrDefault(x => x.Metadata.GetValue<Type?>("CSharpClassBase.ModelType", () => null) == modelType)?.GetFullName()
+                ?? throw new ArgumentOutOfRangeException(nameof(modelType), $"Unknown model type: {modelType.FullName}");
+
+    protected virtual string CurrentNamespace => Path.Replace("/", ".");
+
     protected static object CreateServiceCollectionExtensions(
-        string @namespace,
+    string @namespace,
         string className,
-        string methodName,
-        ITypeBase[] types,
-        Func<ITypeBase, string> formatDelegate)
+    string methodName,
+    ITypeBase[] types,
+    Func<ITypeBase, string> formatDelegate)
         => new[] { new ClassBuilder()
             .WithNamespace(@namespace)
             .WithName(className)
@@ -468,7 +475,7 @@ public abstract class CSharpClassBase : ClassBase
             .Build() };
 
     protected static ITypeBase[] CreateBuilderFactoryModels(
-        ITypeBase[] models,
+    ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
         => new[]
@@ -505,9 +512,6 @@ public abstract class CSharpClassBase : ClassBase
                 )
                 .Build()
         };
-
-    protected string? GetModelTypeName(Type modelType)
-        => GetCoreModels().Concat(GetAbstractModels()).FirstOrDefault(x => x.Metadata.GetValue<Type?>("CSharpClassBase.ModelType", () => null) == modelType)?.GetFullName();
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
