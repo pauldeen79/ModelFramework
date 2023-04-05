@@ -506,8 +506,8 @@ public abstract class CSharpClassBase : ClassBase
                 .Build()
         };
 
-    protected static string? GetModelTypeName(Type modelType, IEnumerable<ITypeBase> types)
-        => types.FirstOrDefault(x => x.Metadata.GetValue<Type?>("CSharpClassBase.ModelType", () => null) == modelType)?.GetFullName();
+    protected string? GetModelTypeName(Type modelType)
+        => GetCoreModels().Concat(GetAbstractModels()).FirstOrDefault(x => x.Metadata.GetValue<Type?>("CSharpClassBase.ModelType", () => null) == modelType)?.GetFullName();
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
