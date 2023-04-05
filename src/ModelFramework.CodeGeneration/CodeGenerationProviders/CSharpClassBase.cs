@@ -339,6 +339,7 @@ public abstract class CSharpClassBase : ClassBase
     protected ITypeBase[] MapCodeGenerationModelsToDomain(IEnumerable<Type> types)
         => types
             .Select(x => x.ToClassBuilder(new ClassSettings())
+                .AddMetadata("CSharpClassBase.ModelType", x)
                 .WithNamespace(RootNamespace)
                 .WithName(x.GetEntityClassName())
                 .With(y => y.Properties.ForEach(z => GetModelMappings().ToList().ForEach(m => z.TypeName = z.TypeName.Replace(m.Key, m.Value))))
@@ -504,6 +505,9 @@ public abstract class CSharpClassBase : ClassBase
                 )
                 .Build()
         };
+
+    protected static string? GetModelTypeName(Type modelType, IEnumerable<ITypeBase> types)
+        => types.FirstOrDefault(x => x.Metadata.GetValue<Type?>("CSharpClassBase.ModelType", () => null) == modelType)?.GetFullName();
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
