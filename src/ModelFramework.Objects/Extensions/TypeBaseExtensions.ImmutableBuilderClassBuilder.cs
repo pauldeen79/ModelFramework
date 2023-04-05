@@ -197,8 +197,7 @@ public static partial class TypeBaseEtensions
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.IsCollectionTypeName()
-                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization)
-                        && !x.Metadata.Any(x => x.Name == MetadataNames.CustomBuilderSkipDefaultValue && x.Value.IsTrue()))
+                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization))
                     .Select(x => GenerateDefaultValueStatement(x, settings))
             )
             .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8603 // Possible null reference return." } : Array.Empty<string>());
