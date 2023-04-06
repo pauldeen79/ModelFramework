@@ -2,8 +2,6 @@
 
 public abstract class CSharpClassBase : ClassBase
 {
-    protected virtual IEnumerable<ClassMethodBuilder> CreateExtraOverloads(IClass c)
-        => Enumerable.Empty<ClassMethodBuilder>();
     protected virtual Type BuilderClassCollectionType => typeof(List<>);
     protected virtual string SetMethodNameFormatString => "With{0}";
     protected virtual string AddMethodNameFormatString => "Add{0}";
