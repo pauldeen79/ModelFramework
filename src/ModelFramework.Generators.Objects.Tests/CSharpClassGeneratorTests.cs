@@ -3573,8 +3573,8 @@ namespace MyNamespace
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
             var instance = new MyNamespace.MyRecord(Property1, false);
-            var results = new List<ValidationResult>();
-            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);
+            var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
             return results;
         }
 
@@ -3595,6 +3595,68 @@ namespace MyNamespace
                 throw new System.ArgumentNullException(""source"");
             }
             Property1 = source.Property1;
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_ImmutableClassBuilder_With_Optional_Validation_On_Class_Without_Properties()
+    {
+        // Arrange
+        var cls = new ClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .AddConstructors(new ClassConstructorBuilder().AddParameters(new ParameterBuilder().WithName("validateInstance").WithType(typeof(bool)).WithDefaultValue(true)))
+            .Build()
+            .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(
+                generationSettings: new(allowGenerationWithoutProperties: true),
+                constructorSettings: new(addCopyConstructor: true, addNullChecks: true),
+                classSettings: new(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional))))
+            .Build();
+        var model = new[]
+        {
+            cls
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
+    {
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord(true);
+        }
+
+        public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            var instance = new MyNamespace.MyRecord(false);
+            var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            return results;
+        }
+
+        public MyRecordBuilder()
+        {
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
         }
     }
 }

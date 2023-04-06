@@ -435,8 +435,8 @@ public static partial class TypeBaseEtensions
                 .AddParameter("validationContext", typeof(ValidationContext))
                 .AddLiteralCodeStatements(
                     $"var instance = {CreateEntityInstanciation(instance, settings, false)};",
-                    "var results = new List<ValidationResult>();",
-                    $"{typeof(Validator).FullName}.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);",
+                    $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
+                    $"{typeof(Validator).FullName}.TryValidateObject(instance, new {typeof(ValidationContext).FullName}(instance, null, null), results, true);",
                     "return results;"
                 );
         }
@@ -921,7 +921,14 @@ public static partial class TypeBaseEtensions
 
         if (settings.ClassSettings.AddValidationCode == ArgumentValidationType.Optional)
         {
-            result += $", {validateInstance.CsharpFormat() }";
+            if (result.Length > 0)
+            {
+                result += $", {validateInstance.CsharpFormat()}";
+            }
+            else
+            {
+                result = validateInstance.CsharpFormat();
+            }
         }
     
         return result;
