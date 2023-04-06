@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Objects.Extensions;
+﻿using System.Runtime;
+
+namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseExtensions
 {
@@ -80,6 +82,12 @@ public static partial class TypeBaseExtensions
                                     .WithIsValueType(p.IsValueType)
                             )
                     )
+                    .AddParameters
+                    (
+                        settings.AddValidationCode == ArgumentValidationType.Optional
+                        ? new[] { new ParameterBuilder().WithName("validateInstance").WithType(typeof(bool)).WithDefaultValue(true) }
+                        : Array.Empty<ParameterBuilder>()
+                    )
                     .AddLiteralCodeStatements
                     (
                         instance.Properties
@@ -104,15 +112,7 @@ public static partial class TypeBaseExtensions
                                 )
                             )
                     )
-                    .AddLiteralCodeStatements
-                    (
-                        settings.AddValidationCode
-                            ? new[]
-                            {
-                                "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
-                            }
-                            : Enumerable.Empty<string>()
-                    )
+                    .AddLiteralCodeStatements(CreateValidationCode(settings.AddValidationCode))
                     .WithChainCall(GenerateImmutableClassChainCall(instance, settings))
             )
             .AddMethods(GetImmutableClassMethods(instance, settings, false))
@@ -127,6 +127,26 @@ public static partial class TypeBaseExtensions
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
     }
+
+    private static string[] CreateValidationCode(ArgumentValidationType addValidationCode)
+        => addValidationCode switch
+        {
+            ArgumentValidationType.Always =>
+                new[]
+                {
+                    "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
+                },
+            ArgumentValidationType.Optional =>
+                new[]
+                {
+                    "if (validateInstance)",
+                    "{",
+                    "    System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);",
+                    "}"
+                },
+            ArgumentValidationType.Never => Array.Empty<string>(),
+            _ => throw new ArgumentOutOfRangeException(nameof(addValidationCode), $"Unsupported ArgumentValidationType: {addValidationCode}")
+        };
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
         => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization,

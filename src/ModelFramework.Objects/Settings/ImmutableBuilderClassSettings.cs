@@ -7,6 +7,7 @@ public record ImmutableBuilderClassSettings
     public ImmutableBuilderClassNameSettings NameSettings { get; }
     public ImmutableBuilderClassInheritanceSettings InheritanceSettings { get; }
     public ImmutableBuilderClassGenerationSettings GenerationSettings { get; }
+    public ImmutableClassSettings ClassSettings { get; }
 
     public bool IsBuilderForAbstractEntity => InheritanceSettings.EnableEntityInheritance && (InheritanceSettings.BaseClass == null || InheritanceSettings.IsAbstract);
     public bool IsBuilderForOverrideEntity => InheritanceSettings.EnableEntityInheritance && InheritanceSettings.BaseClass != null;
@@ -19,6 +20,7 @@ public record ImmutableBuilderClassSettings
                                           ImmutableBuilderClassNameSettings? nameSettings,
                                           ImmutableBuilderClassInheritanceSettings? inheritanceSettings,
                                           ImmutableBuilderClassGenerationSettings? generationSettings,
+                                          ImmutableClassSettings? classSettings,
                                           bool isForAbstractBuilder)
     {
         TypeSettings = typeSettings ?? new();
@@ -26,6 +28,7 @@ public record ImmutableBuilderClassSettings
         NameSettings = nameSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
         GenerationSettings = generationSettings ?? new();
+        ClassSettings = classSettings ?? new();
 
         IsForAbstractBuilder = isForAbstractBuilder;
     }
@@ -34,11 +37,12 @@ public record ImmutableBuilderClassSettings
                                          ImmutableBuilderClassConstructorSettings? constructorSettings = null,
                                          ImmutableBuilderClassNameSettings? nameSettings = null,
                                          ImmutableBuilderClassInheritanceSettings? inheritanceSettings = null,
-                                         ImmutableBuilderClassGenerationSettings? generationSettings = null)
-        : this(typeSettings, constructorSettings, nameSettings, inheritanceSettings, generationSettings, false)
+                                         ImmutableBuilderClassGenerationSettings? generationSettings = null,
+                                         ImmutableClassSettings? classSettings = null)
+        : this(typeSettings, constructorSettings, nameSettings, inheritanceSettings, generationSettings, classSettings, false)
     {
     }
 
     public ImmutableBuilderClassSettings ForAbstractBuilder()
-        => new(TypeSettings, ConstructorSettings, NameSettings, InheritanceSettings, GenerationSettings, true);
+        => new(TypeSettings, ConstructorSettings, NameSettings, InheritanceSettings, GenerationSettings, ClassSettings, true);
 }

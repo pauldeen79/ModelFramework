@@ -1,12 +1,19 @@
 ﻿namespace ModelFramework.Objects.Settings;
 
+public enum ArgumentValidationType
+{
+    Never,
+    Optional,
+    Always
+}
+
 public class ImmutableClassConstructorSettings
 {
-    public bool ValidateArguments { get; }
+    public ArgumentValidationType ValidateArguments { get; }
     public bool AddNullChecks { get; }
     public string CollectionTypeName { get; }
 
-    public ImmutableClassConstructorSettings(bool validateArguments = false,
+    public ImmutableClassConstructorSettings(ArgumentValidationType validateArguments = ArgumentValidationType.Never,
                                              bool addNullChecks = false,
                                              string collectionTypeName = "")
     {

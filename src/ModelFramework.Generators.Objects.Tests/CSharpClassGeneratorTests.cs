@@ -2152,7 +2152,7 @@ namespace MyNamespace
         // Arrange
         var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
-            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass),
             addPrivateSetters: true
         );
@@ -2247,7 +2247,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
-            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass),
             addPrivateSetters: true
         );
@@ -2347,7 +2347,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         // Arrange
         var immutableClassSettings = new ImmutableClassSettings(
-            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
             addPrivateSetters: true
         );
@@ -2440,7 +2440,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
-            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass, isAbstract: true),
             addPrivateSetters: true
         );
@@ -2532,7 +2532,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         // Arrange
         var immutableClassSettings = new ImmutableClassSettings(
-            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
             addPrivateSetters: true
         );
@@ -2639,7 +2639,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var baseClass = typeof(BaseClass).ToClass().ToImmutableClass(new ImmutableClassSettings());
         var immutableClassSettings = new ImmutableClassSettings(
-            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true),
+            constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true),
             inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, baseClass: baseClass, isAbstract: true),
             addPrivateSetters: true
         );
@@ -3351,7 +3351,7 @@ namespace MyNamespace
     public void Can_Generate_ImmutableClass_From_Interface_Without_Coupling()
     {
         // Arrange
-        var settings = new ImmutableClassSettings("CrossCutting.ReadOnlyValueCollection", constructorSettings: new ImmutableClassConstructorSettings(validateArguments: true, addNullChecks: true));
+        var settings = new ImmutableClassSettings("CrossCutting.ReadOnlyValueCollection", constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.Always, addNullChecks: true));
         var model = new[]
         {
             new InterfaceBuilder()
@@ -3461,6 +3461,140 @@ namespace MyNamespace
         public MyRecord(string? property1)
         {
             this.Property1 = property1;
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_ImmutableClass_With_Optional_Validation()
+    {
+        // Arrange
+        var properties = new[]
+        {
+            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
+        };
+        var cls = new ClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .AddProperties(properties)
+            .AsReadOnly()
+            .Build()
+            .ToImmutableClassBuilder(new ImmutableClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional)))
+            .WithRecord()
+            .Build();
+        var model = new[]
+        {
+            cls
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public record MyRecord
+    {
+        public string? Property1
+        {
+            get;
+            private set;
+        }
+
+        public MyRecord(string? property1, bool validateInstance = true)
+        {
+            this.Property1 = property1;
+            if (validateInstance)
+            {
+                System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+            }
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_ImmutableClassBuilder_With_Optional_Validation()
+    {
+        // Arrange
+        var properties = new[]
+        {
+            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
+        };
+        var cls = new ClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .AddProperties(properties)
+            .AsReadOnly()
+            .Build()
+            .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(
+                constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: true),
+                classSettings: new ImmutableClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional))))
+            .Build();
+        var model = new[]
+        {
+            cls
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
+    {
+        public string? Property1
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            return new MyNamespace.MyRecord(Property1, true);
+        }
+
+        public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            var instance = new MyNamespace.MyRecord(Property1, false);
+            var results = new List<ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);
+            return results;
+        }
+
+        public MyRecordBuilder WithProperty1(string? property1)
+        {
+            Property1 = property1;
+            return this;
+        }
+
+        public MyRecordBuilder()
+        {
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            Property1 = source.Property1;
         }
     }
 }

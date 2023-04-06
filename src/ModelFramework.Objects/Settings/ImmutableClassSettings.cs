@@ -9,36 +9,36 @@ public record ImmutableClassSettings
     public bool AllowGenerationWithoutProperties { get; }
     public ImmutableClassConstructorSettings ConstructorSettings { get; }
     public ImmutableClassInheritanceSettings InheritanceSettings { get; }
-    public bool AddValidationCode
+    public ArgumentValidationType AddValidationCode
     {
         get
         {
-            if (!ConstructorSettings.ValidateArguments)
+            if (ConstructorSettings.ValidateArguments == ArgumentValidationType.Never)
             {
                 // Do not validate arguments
-                return false;
+                return ArgumentValidationType.Never;
             }
 
             if (!InheritanceSettings.EnableInheritance)
             {
                 // In case inheritance is enabled, then we want to add validation
-                return true;
+                return ConstructorSettings.ValidateArguments;
             }
 
             if (InheritanceSettings.IsAbstract)
             {
                 // Abstract class with base class
-                return false;
+                return ArgumentValidationType.Never;
             }
 
             if (InheritanceSettings.BaseClass == null)
             {
                 // Abstract base class
-                return false;
+                return ArgumentValidationType.Never;
             }
 
             // In other situations, add it
-            return true;
+            return ConstructorSettings.ValidateArguments;
         }
     }
 

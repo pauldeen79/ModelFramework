@@ -27,7 +27,8 @@ public static partial class TypeBaseEtensions
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
             .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
-            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints)
+            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.AddValidationCode == ArgumentValidationType.Optional));
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -425,6 +426,21 @@ public static partial class TypeBaseEtensions
             }
         }
 
+        if (settings.ClassSettings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Optional)
+        {
+            // Allow validation of the builder by calling the validate method on the entity
+            yield return new ClassMethodBuilder()
+                .WithName("Validate")
+                .WithType(typeof(IEnumerable<ValidationResult>))
+                .AddParameter("validationContext", typeof(ValidationContext))
+                .AddLiteralCodeStatements(
+                    $"var instance = {CreateEntityInstanciation(instance, settings, false)};",
+                    "var results = new List<ValidationResult>();",
+                    $"{typeof(Validator).FullName}.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);",
+                    "return results;"
+                );
+        }
+
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
         {
             yield return classMethodBuilder;
@@ -433,8 +449,6 @@ public static partial class TypeBaseEtensions
 
     private static ClassMethodBuilder FillMethod(ITypeBase instance, ClassMethodBuilder classMethodBuilder, ImmutableBuilderClassSettings settings)
     {
-        var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
-        var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
         return classMethodBuilder
             .AddLiteralCodeStatements
             (
@@ -445,7 +459,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 !settings.IsBuilderForAbstractEntity
-                    ? new[] { $"return new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{instance.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign};" }
+                    ? new[] { $"return {CreateEntityInstanciation(instance, settings, true)};" }
                     : Array.Empty<string>()
             )
             .AddLiteralCodeStatements
@@ -455,10 +469,16 @@ public static partial class TypeBaseEtensions
                     : Array.Empty<string>()
             );
     }
+    private static string CreateEntityInstanciation(ITypeBase instance, ImmutableBuilderClassSettings settings, bool validateInstance)
+    {
+        var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
+        var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
+        return $"new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{instance.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(instance, settings, validateInstance)}{closeSign}";
+    }
 
     private static string GetImmutableBuilderBuildMethodReturnType(ITypeBase instance, ImmutableBuilderClassSettings settings)
         => settings.IsBuilderForAbstractEntity
-            ? "TEntity"
+        ? "TEntity"
             : FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate);
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassPropertyMethods(ITypeBase instance,
@@ -879,7 +899,7 @@ public static partial class TypeBaseEtensions
         }
     }
 
-    private static string GetConstructionMethodParameters(ITypeBase instance, ImmutableBuilderClassSettings settings)
+    private static string GetConstructionMethodParameters(ITypeBase instance, ImmutableBuilderClassSettings settings, bool validateInstance)
     {
         var poco = instance.IsPoco();
         var properties = GetImmutableBuilderConstructorProperties(instance, settings, poco);
@@ -888,7 +908,7 @@ public static partial class TypeBaseEtensions
             ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
             : new Func<IClassProperty, string>(p => $"{p.Name}");
 
-        return string.Join
+        var result = string.Join
         (
             ", ",
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
@@ -898,5 +918,12 @@ public static partial class TypeBaseEtensions
                                                  p.TypeName,                        // 3
                                                  p.TypeName.GetGenericArguments())) // 4
         );
+
+        if (settings.ClassSettings.AddValidationCode == ArgumentValidationType.Optional)
+        {
+            result += $", {validateInstance.CsharpFormat() }";
+        }
+    
+        return result;
     }
 }

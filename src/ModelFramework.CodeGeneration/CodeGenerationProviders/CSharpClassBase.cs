@@ -9,7 +9,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
     protected virtual bool UseTargetTypeNewExpressions => true;
-    protected virtual bool ValidateArgumentsInConstructor => true;
+    protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Always;
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => false;
@@ -414,7 +414,8 @@ public abstract class CSharpClassBase : ClassBase
                 baseClassBuilderNameSpace: BaseClassBuilderNamespace,
                 inheritanceComparisonFunction: EnableBuilderInhericance
                     ? IsMemberValid
-                    : (_, _) => true)
+                    : (_, _) => true),
+            classSettings: CreateImmutableClassSettings()
         );
 
     protected ImmutableClassSettings CreateImmutableClassSettings()
@@ -423,7 +424,7 @@ public abstract class CSharpClassBase : ClassBase
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
             constructorSettings: new(
-                validateArguments: ValidateArgumentsInConstructor && !(EnableEntityInheritance && BaseClass == null),
+                validateArguments: CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass == null)),
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
@@ -433,6 +434,11 @@ public abstract class CSharpClassBase : ClassBase
                     ? IsMemberValid
                     : (_, _) => true)
         );
+
+    protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
+        => secondCondition
+            ? validateArgumentsInConstructor
+            : ArgumentValidationType.Never;
 
     protected ClassSettings CreateClassSettings()
         => new
