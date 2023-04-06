@@ -429,31 +429,7 @@ public static partial class TypeBaseEtensions
         if (settings.ClassSettings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Optional)
         {
             // Allow validation of the builder by calling the validate method on the entity
-            yield return new ClassMethodBuilder()
-                .WithName("Validate")
-                .WithType(typeof(IEnumerable<ValidationResult>))
-                .AddParameter("validationContext", typeof(ValidationContext))
-                .AddLiteralCodeStatements
-                (
-                    settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-                        ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
-                        : Array.Empty<string>()
-                )
-                .AddLiteralCodeStatements(
-                    $"var instance = {CreateEntityInstanciation(instance, settings, false)};"
-                )
-                .AddLiteralCodeStatements
-                (
-                    settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-                        ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
-                        : Array.Empty<string>()
-                )
-                .AddLiteralCodeStatements
-                (
-                    $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
-                    $"{typeof(Validator).FullName}.TryValidateObject(instance, new {typeof(ValidationContext).FullName}(instance, null, null), results, true);",
-                    "return results;"
-                );
+            yield return CreateValidateMethod(instance, settings);
         }
 
         foreach (var classMethodBuilder in GetImmutableBuilderClassPropertyMethods(instance, settings, false))
@@ -462,27 +438,42 @@ public static partial class TypeBaseEtensions
         }
     }
 
+    private static ClassMethodBuilder CreateValidateMethod(ITypeBase instance, ImmutableBuilderClassSettings settings)
+        => new ClassMethodBuilder()
+            .WithName("Validate")
+            .WithType(typeof(IEnumerable<ValidationResult>))
+            .AddParameter("validationContext", typeof(ValidationContext))
+            .AddLiteralCodeStatements(CreatePragmaWarningDisableStatements(settings))
+            .AddLiteralCodeStatements($"var instance = {CreateEntityInstanciation(instance, settings, false)};")
+            .AddLiteralCodeStatements(CreatePragmaWarningRestoreStatements(settings))
+            .AddLiteralCodeStatements
+            (
+                $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
+                $"{typeof(Validator).FullName}.TryValidateObject(instance, new {typeof(ValidationContext).FullName}(instance, null, null), results, true);",
+                "return results;"
+            );
+
+    private static string[] CreatePragmaWarningDisableStatements(ImmutableBuilderClassSettings settings)
+        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+            ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
+            : Array.Empty<string>();
+
+    private static string[] CreatePragmaWarningRestoreStatements(ImmutableBuilderClassSettings settings)
+        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+            ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
+            : Array.Empty<string>();
+
     private static ClassMethodBuilder FillMethod(ITypeBase instance, ClassMethodBuilder classMethodBuilder, ImmutableBuilderClassSettings settings)
     {
         return classMethodBuilder
-            .AddLiteralCodeStatements
-            (
-                settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-                    ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
-                    : Array.Empty<string>()
-            )
+            .AddLiteralCodeStatements(CreatePragmaWarningDisableStatements(settings))
             .AddLiteralCodeStatements
             (
                 !settings.IsBuilderForAbstractEntity
                     ? new[] { $"return {CreateEntityInstanciation(instance, settings, true)};" }
                     : Array.Empty<string>()
             )
-            .AddLiteralCodeStatements
-            (
-                settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-                    ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
-                    : Array.Empty<string>()
-            );
+            .AddLiteralCodeStatements(CreatePragmaWarningRestoreStatements(settings));
     }
     private static string CreateEntityInstanciation(ITypeBase instance, ImmutableBuilderClassSettings settings, bool validateInstance)
     {
@@ -945,7 +936,7 @@ public static partial class TypeBaseEtensions
                 result = validateInstance.CsharpFormat();
             }
         }
-    
+
         return result;
     }
 }
