@@ -433,8 +433,23 @@ public static partial class TypeBaseEtensions
                 .WithName("Validate")
                 .WithType(typeof(IEnumerable<ValidationResult>))
                 .AddParameter("validationContext", typeof(ValidationContext))
+                .AddLiteralCodeStatements
+                (
+                    settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+                        ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
+                        : Array.Empty<string>()
+                )
                 .AddLiteralCodeStatements(
-                    $"var instance = {CreateEntityInstanciation(instance, settings, false)};",
+                    $"var instance = {CreateEntityInstanciation(instance, settings, false)};"
+                )
+                .AddLiteralCodeStatements
+                (
+                    settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+                        ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
+                        : Array.Empty<string>()
+                )
+                .AddLiteralCodeStatements
+                (
                     $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
                     $"{typeof(Validator).FullName}.TryValidateObject(instance, new {typeof(ValidationContext).FullName}(instance, null, null), results, true);",
                     "return results;"

@@ -3536,9 +3536,9 @@ namespace MyNamespace
             .AddProperties(properties)
             .AsReadOnly()
             .Build()
-            .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(
-                constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: true),
-                classSettings: new ImmutableClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional))))
+            .ToImmutableBuilderClassBuilder(new(
+                constructorSettings: new(addCopyConstructor: true, addNullChecks: true),
+                classSettings: new(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional))))
             .Build();
         var model = new[]
         {
@@ -3610,7 +3610,7 @@ namespace MyNamespace
             .WithNamespace("MyNamespace")
             .AddConstructors(new ClassConstructorBuilder().AddParameters(new ParameterBuilder().WithName("validateInstance").WithType(typeof(bool)).WithDefaultValue(true)))
             .Build()
-            .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings(
+            .ToImmutableBuilderClassBuilder(new(
                 generationSettings: new(allowGenerationWithoutProperties: true),
                 constructorSettings: new(addCopyConstructor: true, addNullChecks: true),
                 classSettings: new(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional))))
@@ -3657,6 +3657,92 @@ namespace MyNamespace
             {
                 throw new System.ArgumentNullException(""source"");
             }
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_ImmutableClassBuilder_With_Optional_Validation_With_NullableContext()
+    {
+        // Arrange
+        var properties = new[]
+        {
+            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
+        };
+        var cls = new ClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .AddProperties(properties)
+            .AsReadOnly()
+            .Build()
+            .ToImmutableBuilderClassBuilder(new(
+                typeSettings: new(enableNullableReferenceTypes: true),
+                constructorSettings: new(addCopyConstructor: true, addNullChecks: true),
+                classSettings: new(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional))))
+            .Build();
+        var model = new[]
+        {
+            cls
+        };
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace MyNamespace
+{
+    public class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
+    {
+        public string? Property1
+        {
+            get;
+            set;
+        }
+
+        public MyNamespace.MyRecord Build()
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            return new MyNamespace.MyRecord(Property1, true);
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            var instance = new MyNamespace.MyRecord(Property1, false);
+            #pragma warning restore CS8604 // Possible null reference argument.
+            var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            return results;
+        }
+
+        public MyRecordBuilder WithProperty1(string? property1)
+        {
+            Property1 = property1;
+            return this;
+        }
+
+        public MyRecordBuilder()
+        {
+            #pragma warning disable CS8603 // Possible null reference return.
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public MyRecordBuilder(MyNamespace.MyRecord source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            Property1 = source.Property1;
         }
     }
 }
