@@ -1095,6 +1095,63 @@ namespace MyNamespace.Domain.Builders
 ");
     }
 
+    [Fact]
+    public void GetModelMappings_Returns_Correct_Result()
+    {
+        // Arrange
+        var sut = new TestCSharpClassBaseModelTransformationCoreRecords();
+
+        // Act
+        var actual = sut.GetModelMappingsEx();
+
+        // Assert
+        actual.Should().BeEquivalentTo(new[]
+        {
+            new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.I", "MyNamespace."),
+            new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Domains.", "MyNamespace.Domains."),
+            new KeyValuePair<string, string>("MyProject.CodeGeneration.I", "MyNamespace.I"),
+        });
+    }
+
+    [Fact]
+    public void GetCoreModels_Returns_Correct_Result_Without_Using_Models()
+    {
+        // Arrange
+        var sut = new TestCSharpClassBaseModelTransformationCoreRecords();
+
+        // Act
+        var actual = sut.GetCoreModelsEx();
+
+        // Assert
+        actual.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GetAbstractModels_Returns_Correct_Result_Without_Using_Models()
+    {
+        // Arrange
+        var sut = new TestCSharpClassBaseModelTransformationCoreRecords();
+
+        // Act
+        var actual = sut.GetAbstractModelsEx();
+
+        // Assert
+        actual.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void GetOverrideModels_Returns_Correct_Result_Without_Using_Models()
+    {
+        // Arrange
+        var sut = new TestCSharpClassBaseModelTransformationCoreRecords();
+
+        // Act
+        var actual = sut.GetOverrideModelsEx(typeof(int));
+
+        // Assert
+        actual.Should().BeEmpty();
+    }
+
     private void Verify(GenerateCode generatedCode)
     {
         if (Settings.DryRun)

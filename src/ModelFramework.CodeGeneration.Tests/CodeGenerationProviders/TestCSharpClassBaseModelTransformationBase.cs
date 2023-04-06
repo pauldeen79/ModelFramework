@@ -44,6 +44,12 @@ public abstract class TestCSharpClassBaseModelTransformationBase : CSharpClassBa
     /// </summary>
     protected ITypeBase[] GetOverrideModelTransformationTypes()
         => MapCodeGenerationModelsToDomain(new[] { typeof(IMyDerivedClass) });
+
+    // Test accessors
+    public Dictionary<string, string> GetModelMappingsEx() => base.GetModelMappings();
+    public ITypeBase[] GetCoreModelsEx() => GetCoreModels();
+    public ITypeBase[] GetAbstractModelsEx() => GetAbstractModels();
+    public ITypeBase[] GetOverrideModelsEx(Type abstractType) => GetOverrideModels(abstractType);
 }
 
 public interface IMyClass
