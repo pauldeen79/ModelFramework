@@ -3475,18 +3475,24 @@ namespace MyNamespace
         {
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithIsNullable()
         };
-        var cls = new ClassBuilder()
+        var x = new ClassBuilder()
             .WithName("MyRecord")
             .WithNamespace("MyNamespace")
             .AddProperties(properties)
             .AsReadOnly()
-            .Build()
+            .Build();
+        var baseClass = x
             .ToImmutableClassBuilder(new ImmutableClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional)))
+            .WithRecord()
+            .Build();
+        var inheritedClass = x
+            .ToImmutableClassValidateOverrideBuilder(new ImmutableClassSettings(newCollectionTypeName: "System.Collections.Generic.IReadOnlyCollection", addPrivateSetters: true, constructorSettings: new(ArgumentValidationType.Optional)))
             .WithRecord()
             .Build();
         var model = new[]
         {
-            cls
+            inheritedClass,
+            baseClass,
         };
         var sut = new CSharpClassGenerator();
 
@@ -3501,7 +3507,19 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public record MyRecord
+    public record MyRecord : MyRecordBase
+    {
+        public MyRecord(MyRecord original) : base(original)
+        {
+        }
+
+        public MyRecord(string? property1) : base(property1)
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+
+    public record MyRecordBase
     {
         public string? Property1
         {
@@ -3509,13 +3527,9 @@ namespace MyNamespace
             private set;
         }
 
-        public MyRecord(string? property1, bool validateInstance = true)
+        public MyRecordBase(string? property1)
         {
             this.Property1 = property1;
-            if (validateInstance)
-            {
-                System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
-            }
         }
     }
 }
@@ -3567,12 +3581,12 @@ namespace MyNamespace
 
         public MyNamespace.MyRecord Build()
         {
-            return new MyNamespace.MyRecord(Property1, true);
+            return new MyNamespace.MyRecord(Property1);
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            var instance = new MyNamespace.MyRecord(Property1, false);
+            var instance = new MyNamespace.MyRecordBase(Property1);
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
             return results;
@@ -3636,12 +3650,12 @@ namespace MyNamespace
     {
         public MyNamespace.MyRecord Build()
         {
-            return new MyNamespace.MyRecord(true);
+            return new MyNamespace.MyRecord();
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            var instance = new MyNamespace.MyRecord(false);
+            var instance = new MyNamespace.MyRecordBase();
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
             return results;
@@ -3710,14 +3724,14 @@ namespace MyNamespace
         public MyNamespace.MyRecord Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            return new MyNamespace.MyRecord(Property1, true);
+            return new MyNamespace.MyRecord(Property1);
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
             #pragma warning disable CS8604 // Possible null reference argument.
-            var instance = new MyNamespace.MyRecord(Property1, false);
+            var instance = new MyNamespace.MyRecordBase(Property1);
             #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);

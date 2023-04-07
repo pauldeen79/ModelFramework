@@ -179,7 +179,21 @@ public abstract class CSharpClassBase : ClassBase
             : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
-        => models.Select
+    {
+        if (ValidateArgumentsInConstructor == ArgumentValidationType.Optional)
+        {
+            return models.SelectMany
+            (
+                x => x switch
+                {
+                    IClass cls => new[] { CreateImmutableClassFromClass(cls, entitiesNamespace), CreateImmutableOverrideClassFromClass(cls, entitiesNamespace)  },
+                    IInterface iinterface => new[] { CreateImmutableClassFromInterface(iinterface, entitiesNamespace), CreateImmutableOverrideClassFromInterface(iinterface, entitiesNamespace) },
+                    _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
+                }
+            ).ToArray();
+        }
+
+        return models.Select
         (
             x => x switch
             {
@@ -188,6 +202,7 @@ public abstract class CSharpClassBase : ClassBase
                 _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
             }
         ).ToArray();
+    }
 
     protected IClass[] GetClassesFromSameNamespace(Type type)
     {
@@ -230,17 +245,17 @@ public abstract class CSharpClassBase : ClassBase
             .BuildTyped();
 
     protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
             .WithNamespace(@namespace)
             .WithPartial();
 
     protected ClassBuilder CreateNonGenericBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
             .WithNamespace(@namespace)
             .WithPartial();
 
     protected ClassBuilder CreateBuilderExtensions(ITypeBase typeBase, string @namespace)
-        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
+        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
             .WithNamespace(@namespace)
             .WithPartial();
 
@@ -387,7 +402,7 @@ public abstract class CSharpClassBase : ClassBase
             ? string.Empty
             : "{0}{2}.BuildTyped()";
 
-    protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
+    protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
         (
             typeSettings: new(
@@ -415,16 +430,17 @@ public abstract class CSharpClassBase : ClassBase
                 inheritanceComparisonFunction: EnableBuilderInhericance
                     ? IsMemberValid
                     : (_, _) => true),
-            classSettings: CreateImmutableClassSettings()
+            classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.Never)
         );
 
-    protected ImmutableClassSettings CreateImmutableClassSettings()
+    protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
             constructorSettings: new(
-                validateArguments: CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass == null)),
+                validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass == null)),
+                originalValidateArguments: ValidateArgumentsInConstructor,
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
@@ -523,7 +539,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(ArgumentValidationType.Never))
             .BuildTyped();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
@@ -538,12 +554,34 @@ public abstract class CSharpClassBase : ClassBase
             .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
             .Build();
 
+    private ITypeBase CreateImmutableOverrideClassFromInterface(IInterface iinterface, string entitiesNamespace)
+        => new InterfaceBuilder(iinterface)
+            .WithName(iinterface.GetEntityClassName())
+            .WithNamespace(entitiesNamespace)
+            .With(x => FixImmutableClassProperties(x))
+            .Build()
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings())
+            .WithRecord()
+            .WithPartial()
+            .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
+            .Build();
+
     private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .WithRecord()
+            .WithPartial()
+            .Build();
+
+    private ITypeBase CreateImmutableOverrideClassFromClass(IClass cls, string entitiesNamespace)
+        => new ClassBuilder(cls)
+            .WithNamespace(entitiesNamespace)
+            .With(x => FixImmutableClassProperties(x))
+            .Build()
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor))
             .WithRecord()
             .WithPartial()
             .Build();

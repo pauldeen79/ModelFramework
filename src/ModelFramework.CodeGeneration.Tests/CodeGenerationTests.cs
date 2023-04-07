@@ -134,17 +134,28 @@ using System.Text;
 
 namespace Test
 {
-    public partial record TestClass
+    public partial record TestClass : TestClassBase
+    {
+        public TestClass(TestClass original) : base(original)
+        {
+        }
+
+        public TestClass(string testProperty) : base(testProperty)
+        {
+            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+
+    public partial record TestClassBase
     {
         public string TestProperty
         {
             get;
         }
 
-        public TestClass(string testProperty)
+        public TestClassBase(string testProperty)
         {
             this.TestProperty = testProperty;
-            System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
 }
@@ -194,6 +205,16 @@ namespace Test.Builders
             #pragma warning disable CS8604 // Possible null reference argument.
             return new Test.TestClass(TestProperty?.ToString());
             #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            var instance = new Test.TestClassBase(TestProperty?.ToString());
+            #pragma warning restore CS8604 // Possible null reference argument.
+            var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            return results;
         }
 
         public TestClassBuilder WithTestProperty(System.Text.StringBuilder testProperty)
@@ -1186,6 +1207,7 @@ namespace MyNamespace.Domain.Builders
         protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
         protected override bool EnableNullableContext => true;
         protected override bool CreateCodeGenerationHeader => false;
+        protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Optional;
 
         protected ITypeBase[] GetModels() => new[]
         {
