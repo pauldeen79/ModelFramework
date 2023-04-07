@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ModelFramework.Objects.Extensions;
+﻿namespace ModelFramework.Objects.Extensions;
 
 public static partial class TypeBaseExtensions
 {
@@ -17,104 +15,14 @@ public static partial class TypeBaseExtensions
         }
 
         return new ClassBuilder()
-            .WithName(instance.Name)
+            .WithName(settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Optional
+                ? $"{instance.Name}Base"
+                : instance.Name)
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableClassBaseClass(instance, settings))
             .WithAbstract(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
-            .AddProperties
-            (
-                instance
-                    .Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
-                    .Select
-                    (
-                        p => new ClassPropertyBuilder()
-                            .WithName(p.Name)
-                            .WithTypeName(p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName))
-                            .WithStatic(p.Static)
-                            .WithVirtual(p.Virtual)
-                            .WithAbstract(p.Abstract)
-                            .WithProtected(p.Protected)
-                            .WithOverride(p.Override)
-                            .WithHasGetter(p.HasGetter)
-                            .WithHasInitializer(p.HasInitializer)
-                            .WithHasSetter(p.Metadata.GetBooleanValue(MetadataNames.CustomImmutableHasSetter, settings.AddPrivateSetters))
-                            .WithIsNullable(p.IsNullable)
-                            .WithIsValueType(p.IsValueType)
-                            .WithVisibility(p.Visibility)
-                            .WithGetterVisibility(p.GetterVisibility)
-                            .WithSetterVisibility(p.Metadata.GetBooleanValue(MetadataNames.CustomImmutableHasSetter, settings.AddPrivateSetters)
-                                ? Visibility.Private
-                                : p.SetterVisibility)
-                            .WithInitializerVisibility(p.InitializerVisibility)
-                            .WithExplicitInterfaceName(p.ExplicitInterfaceName)
-                            .AddMetadata
-                            (
-                                p.Metadata
-                                    .Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                    .Select(x => new MetadataBuilder(x))
-                            )
-                            .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
-                            .AddGetterCodeStatements(p.Metadata.GetValues<ICodeStatement>(MetadataNames.CustomImmutablePropertyGetterStatement).Select(x => x.CreateBuilder()).WhenEmpty(() => p.GetterCodeStatements.Select(x => x.CreateBuilder())))
-                            .AddSetterCodeStatements(p.Metadata.GetValues<ICodeStatement>(MetadataNames.CustomImmutablePropertySetterStatement).Select(x => x.CreateBuilder()).WhenEmpty(() => p.SetterCodeStatements.Select(x => x.CreateBuilder())))
-                            .AddInitializerCodeStatements(p.InitializerCodeStatements.Select(x => x.CreateBuilder()))
-                    )
-            )
-            .AddConstructors
-            (
-                new ClassConstructorBuilder()
-                    .WithProtected(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
-                    .AddParameters
-                    (
-                        instance.Properties
-                            .Select
-                            (
-                                p => new ParameterBuilder()
-                                    .WithName(p.Name.ToPascalCase())
-                                    .WithTypeName(string.Format
-                                    (
-                                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
-                                            .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))),
-                                        p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                        p.TypeName.GetGenericArguments()
-                                    ))
-                                    .WithIsNullable(p.IsNullable)
-                                    .WithIsValueType(p.IsValueType)
-                            )
-                    )
-                    .AddParameters
-                    (
-                        settings.AddValidationCode == ArgumentValidationType.Optional
-                        ? new[] { new ParameterBuilder().WithName("validateInstance").WithType(typeof(bool)).WithDefaultValue(true) }
-                        : Array.Empty<ParameterBuilder>()
-                    )
-                    .AddLiteralCodeStatements
-                    (
-                        instance.Properties
-                            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
-                            .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
-                            .Select
-                            (
-                                p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
-                            )
-                    )
-                    .AddLiteralCodeStatements
-                    (
-                        instance.Properties
-                            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
-                            .Select
-                            (
-                                p => string.Format
-                                (
-                                    GetFormatStringForInitialization(p, settings),
-                                    p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                                    p.TypeName.GetGenericArguments()
-                                )
-                            )
-                    )
-                    .AddLiteralCodeStatements(CreateValidationCode(settings.AddValidationCode))
-                    .WithChainCall(GenerateImmutableClassChainCall(instance, settings))
-            )
+            .AddProperties(CreateImmutableClassProperties(instance, settings))
+            .AddConstructors(CreateImmutableClassConstructor(instance, settings))
             .AddMethods(GetImmutableClassMethods(instance, settings, false))
             .AddInterfaces
             (
@@ -128,7 +36,133 @@ public static partial class TypeBaseExtensions
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
     }
 
-    private static string[] CreateValidationCode(ArgumentValidationType addValidationCode)
+    public static ClassBuilder ToImmutableClassValidateOverrideBuilder(this ITypeBase instance, ImmutableClassSettings settings)
+    {
+        if (!settings.AllowGenerationWithoutProperties && !instance.Properties.Any() && !settings.InheritanceSettings.EnableInheritance)
+        {
+            throw new InvalidOperationException("To create an immutable class, there must be at least one property");
+        }
+
+        if (settings.ConstructorSettings.ValidateArguments != ArgumentValidationType.Optional)
+        {
+            throw new InvalidOperationException("Can't create an validate override class for ArgumentValidationType other than Optional");
+        }
+
+        return new ClassBuilder()
+            .WithName(instance.Name)
+            .WithNamespace(instance.Namespace)
+            .WithBaseClass(instance.GenericTypeArguments.Any()
+                ? $"{instance.Name}Base<{string.Join(", ", instance.GenericTypeArguments)}>"
+                : $"{instance.Name}Base")
+            .AddConstructors
+            (
+                new ClassConstructorBuilder()
+                    .AddParameter("original", instance.GenericTypeArguments.Any()
+                        ? $"{instance.Name}<{string.Join(", ", instance.GenericTypeArguments)}>"
+                        : instance.Name)
+                    .WithChainCall("base(original)"),
+                new ClassConstructorBuilder()
+                    .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
+                    .AddLiteralCodeStatements(CreateValidationCode(settings.AddValidationCode, false))
+                    .WithChainCall(GenerateImmutableClassChainCall(instance, settings, true))
+            )
+            .AddGenericTypeArguments(instance.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
+    }
+
+    private static ClassConstructorBuilder CreateImmutableClassConstructor(
+        ITypeBase instance,
+        ImmutableClassSettings settings)
+        => new ClassConstructorBuilder()
+            .WithProtected(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
+            .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
+            .AddLiteralCodeStatements
+            (
+                instance.Properties
+                    .Where(p => instance.IsMemberValidForImmutableBuilderClass(p, settings.InheritanceSettings))
+                    .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
+                    .Select
+                    (
+                        p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
+                    )
+            )
+            .AddLiteralCodeStatements
+            (
+                instance.Properties
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
+                    .Select
+                    (
+                        p => string.Format
+                        (
+                            GetFormatStringForInitialization(p, settings),
+                            p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                            p.TypeName.GetGenericArguments()
+                        )
+                    )
+            )
+            .AddLiteralCodeStatements(CreateValidationCode(settings.AddValidationCode, true))
+            .WithChainCall(GenerateImmutableClassChainCall(instance, settings, false));
+
+    private static IEnumerable<ClassPropertyBuilder> CreateImmutableClassProperties(
+        ITypeBase instance,
+        ImmutableClassSettings settings)
+        => instance
+            .Properties
+            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
+            .Select
+            (
+                p => new ClassPropertyBuilder()
+                    .WithName(p.Name)
+                    .WithTypeName(p.TypeName.FixCollectionTypeName(settings.NewCollectionTypeName))
+                    .WithStatic(p.Static)
+                    .WithVirtual(p.Virtual)
+                    .WithAbstract(p.Abstract)
+                    .WithProtected(p.Protected)
+                    .WithOverride(p.Override)
+                    .WithHasGetter(p.HasGetter)
+                    .WithHasInitializer(p.HasInitializer)
+                    .WithHasSetter(p.Metadata.GetBooleanValue(MetadataNames.CustomImmutableHasSetter, settings.AddPrivateSetters))
+                    .WithIsNullable(p.IsNullable)
+                    .WithIsValueType(p.IsValueType)
+                    .WithVisibility(p.Visibility)
+                    .WithGetterVisibility(p.GetterVisibility)
+                    .WithSetterVisibility(p.Metadata.GetBooleanValue(MetadataNames.CustomImmutableHasSetter, settings.AddPrivateSetters)
+                        ? Visibility.Private
+                        : p.SetterVisibility)
+                    .WithInitializerVisibility(p.InitializerVisibility)
+                    .WithExplicitInterfaceName(p.ExplicitInterfaceName)
+                    .AddMetadata
+                    (
+                        p.Metadata
+                            .Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
+                            .Select(x => new MetadataBuilder(x))
+                    )
+                    .AddAttributes(p.Attributes.Select(x => new AttributeBuilder(x)))
+                    .AddGetterCodeStatements(p.Metadata.GetValues<ICodeStatement>(MetadataNames.CustomImmutablePropertyGetterStatement).Select(x => x.CreateBuilder()).WhenEmpty(() => p.GetterCodeStatements.Select(x => x.CreateBuilder())))
+                    .AddSetterCodeStatements(p.Metadata.GetValues<ICodeStatement>(MetadataNames.CustomImmutablePropertySetterStatement).Select(x => x.CreateBuilder()).WhenEmpty(() => p.SetterCodeStatements.Select(x => x.CreateBuilder())))
+                    .AddInitializerCodeStatements(p.InitializerCodeStatements.Select(x => x.CreateBuilder()))
+            );
+
+    private static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters(
+        ITypeBase instance,
+        ImmutableClassSettings settings)
+        => instance.Properties
+            .Select
+            (
+                p => new ParameterBuilder()
+                    .WithName(p.Name.ToPascalCase())
+                    .WithTypeName(string.Format
+                    (
+                        p.Metadata.Concat(p.GetImmutableCollectionMetadata(settings.NewCollectionTypeName))
+                            .GetStringValue(MetadataNames.CustomImmutableArgumentType, p.TypeName.FixCollectionTypeName(settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))),
+                        p.Name.ToPascalCase().GetCsharpFriendlyName(),
+                        p.TypeName.GetGenericArguments()
+                    ))
+                    .WithIsNullable(p.IsNullable)
+                    .WithIsValueType(p.IsValueType)
+            );
+
+    private static string[] CreateValidationCode(ArgumentValidationType addValidationCode, bool baseClass)
         => addValidationCode switch
         {
             ArgumentValidationType.Always =>
@@ -137,16 +171,20 @@ public static partial class TypeBaseExtensions
                     "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
                 },
             ArgumentValidationType.Optional =>
-                new[]
-                {
-                    "if (validateInstance)",
-                    "{",
-                    "    System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);",
-                    "}"
-                },
+                baseClass
+                    ? Array.Empty<string>()
+                    : new[]
+                    {
+                        "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
+                    },
             ArgumentValidationType.Never => Array.Empty<string>(),
             _ => throw new ArgumentOutOfRangeException(nameof(addValidationCode), $"Unsupported ArgumentValidationType: {addValidationCode}")
         };
+
+    private static string CreateImmutableClassCtorParameterNames(
+        ITypeBase instance,
+        ImmutableClassSettings settings)
+        => string.Join(", ", CreateImmutableClassCtorParameters(instance, settings).Select(x => x.Name.ToString().GetCsharpFriendlyName()));
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
         => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization,
@@ -169,11 +207,18 @@ public static partial class TypeBaseExtensions
             ? settings.InheritanceSettings.BaseClass.GetFullName()
             : instance.GetCustomValueForInheritedClass(settings, cls => cls.BaseClass);
 
-    private static string GenerateImmutableClassChainCall(ITypeBase instance, ImmutableClassSettings settings)
-        => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
+    private static string GenerateImmutableClassChainCall(ITypeBase instance, ImmutableClassSettings settings, bool baseClass)
+    {
+        if (baseClass && settings.AddValidationCode == ArgumentValidationType.Optional)
+        {
+            return $"base({CreateImmutableClassCtorParameterNames(instance, settings)})";
+        }
+
+        return settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
             ? $"base({GetPropertyNamesConcatenated(settings.InheritanceSettings.BaseClass.Properties)})"
             : instance.GetCustomValueForInheritedClass(settings, cls =>
                 $"base({GetPropertyNamesConcatenated(instance.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass))})");
+    }
 
     public static IClass ToImmutableExtensionClass(this ITypeBase instance, ImmutableClassExtensionsSettings settings)
         => instance.ToImmutableExtensionClassBuilder(settings).BuildTyped();

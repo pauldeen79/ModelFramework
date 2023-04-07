@@ -444,7 +444,7 @@ public static partial class TypeBaseEtensions
             .WithType(typeof(IEnumerable<ValidationResult>))
             .AddParameter("validationContext", typeof(ValidationContext))
             .AddLiteralCodeStatements(CreatePragmaWarningDisableStatements(settings))
-            .AddLiteralCodeStatements($"var instance = {CreateEntityInstanciation(instance, settings, false)};")
+            .AddLiteralCodeStatements($"var instance = {CreateEntityInstanciation(instance, settings, "Base")};")
             .AddLiteralCodeStatements(CreatePragmaWarningRestoreStatements(settings))
             .AddLiteralCodeStatements
             (
@@ -463,23 +463,28 @@ public static partial class TypeBaseEtensions
             ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
             : Array.Empty<string>();
 
-    private static ClassMethodBuilder FillMethod(ITypeBase instance, ClassMethodBuilder classMethodBuilder, ImmutableBuilderClassSettings settings)
-    {
-        return classMethodBuilder
+    private static ClassMethodBuilder FillMethod(
+        ITypeBase instance,
+        ClassMethodBuilder classMethodBuilder,
+        ImmutableBuilderClassSettings settings)
+        => classMethodBuilder
             .AddLiteralCodeStatements(CreatePragmaWarningDisableStatements(settings))
             .AddLiteralCodeStatements
             (
                 !settings.IsBuilderForAbstractEntity
-                    ? new[] { $"return {CreateEntityInstanciation(instance, settings, true)};" }
+                    ? new[] { $"return {CreateEntityInstanciation(instance, settings, string.Empty)};" }
                     : Array.Empty<string>()
             )
             .AddLiteralCodeStatements(CreatePragmaWarningRestoreStatements(settings));
-    }
-    private static string CreateEntityInstanciation(ITypeBase instance, ImmutableBuilderClassSettings settings, bool validateInstance)
+
+    private static string CreateEntityInstanciation(
+        ITypeBase instance,
+        ImmutableBuilderClassSettings settings,
+        string classNameSuffix)
     {
         var openSign = GetImmutableBuilderPocoOpenSign(instance.IsPoco());
         var closeSign = GetImmutableBuilderPocoCloseSign(instance.IsPoco());
-        return $"new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{instance.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(instance, settings, validateInstance)}{closeSign}";
+        return $"new {FormatInstanceName(instance, true, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{classNameSuffix}{instance.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(instance, settings)}{closeSign}";
     }
 
     private static string GetImmutableBuilderBuildMethodReturnType(ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -905,7 +910,7 @@ public static partial class TypeBaseEtensions
         }
     }
 
-    private static string GetConstructionMethodParameters(ITypeBase instance, ImmutableBuilderClassSettings settings, bool validateInstance)
+    private static string GetConstructionMethodParameters(ITypeBase instance, ImmutableBuilderClassSettings settings)
     {
         var poco = instance.IsPoco();
         var properties = GetImmutableBuilderConstructorProperties(instance, settings, poco);
@@ -914,7 +919,7 @@ public static partial class TypeBaseEtensions
             ? new Func<IClassProperty, string>(p => $"{p.Name} = {p.Name}")
             : new Func<IClassProperty, string>(p => $"{p.Name}");
 
-        var result = string.Join
+        return string.Join
         (
             ", ",
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
@@ -924,19 +929,5 @@ public static partial class TypeBaseEtensions
                                                  p.TypeName,                        // 3
                                                  p.TypeName.GetGenericArguments())) // 4
         );
-
-        if (settings.ClassSettings.AddValidationCode == ArgumentValidationType.Optional)
-        {
-            if (result.Length > 0)
-            {
-                result += $", {validateInstance.CsharpFormat()}";
-            }
-            else
-            {
-                result = validateInstance.CsharpFormat();
-            }
-        }
-
-        return result;
     }
 }
