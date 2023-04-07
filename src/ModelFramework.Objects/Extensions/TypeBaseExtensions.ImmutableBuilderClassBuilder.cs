@@ -426,7 +426,7 @@ public static partial class TypeBaseEtensions
             }
         }
 
-        if (settings.ClassSettings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Optional)
+        if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Optional && !settings.IsBuilderForAbstractEntity)
         {
             // Allow validation of the builder by calling the validate method on the entity
             yield return CreateValidateMethod(instance, settings);

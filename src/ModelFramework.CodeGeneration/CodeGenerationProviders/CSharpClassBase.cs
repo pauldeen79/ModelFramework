@@ -245,17 +245,17 @@ public abstract class CSharpClassBase : ClassBase
             .BuildTyped();
 
     protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
             .WithNamespace(@namespace)
             .WithPartial();
 
     protected ClassBuilder CreateNonGenericBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings())
+        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
             .WithNamespace(@namespace)
             .WithPartial();
 
     protected ClassBuilder CreateBuilderExtensions(ITypeBase typeBase, string @namespace)
-        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings())
+        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
             .WithNamespace(@namespace)
             .WithPartial();
 
@@ -402,7 +402,7 @@ public abstract class CSharpClassBase : ClassBase
             ? string.Empty
             : "{0}{2}.BuildTyped()";
 
-    protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings()
+    protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
         (
             typeSettings: new(
@@ -430,16 +430,17 @@ public abstract class CSharpClassBase : ClassBase
                 inheritanceComparisonFunction: EnableBuilderInhericance
                     ? IsMemberValid
                     : (_, _) => true),
-            classSettings: CreateImmutableClassSettings()
+            classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.Never)
         );
 
-    protected ImmutableClassSettings CreateImmutableClassSettings(bool forceSettings = false)
+    protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
             constructorSettings: new(
-                validateArguments: forceSettings ? ValidateArgumentsInConstructor : CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass == null)),
+                validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass == null)),
+                originalValidateArguments: ValidateArgumentsInConstructor,
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
@@ -538,7 +539,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(ArgumentValidationType.Never))
             .BuildTyped();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
@@ -580,7 +581,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
             .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(true))
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor))
             .WithRecord()
             .WithPartial()
             .Build();
