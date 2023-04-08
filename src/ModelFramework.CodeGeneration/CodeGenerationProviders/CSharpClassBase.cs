@@ -271,30 +271,35 @@ public abstract class CSharpClassBase : ClassBase
         foreach (var property in typeBaseBuilder.Properties)
         {
             var typeName = property.TypeName.ToString().FixTypeName();
-            if (!property.IsValueType
-                && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
-                && !GetNonDomainTypes().Contains(typeName))
-            {
-                FixSingleDomainProperty(property, typeName);
-            }
-            else if (typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{RecordCollectionType.WithoutGenerics()}<{x}.")))
-            {
-                FixCollectionDomainProperty(property, typeName);
-            }
-            else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
-            {
-                property.SetDefaultArgumentValueForWithMethod(true);
-            }
-            else if (typeName.IsStringTypeName())
-            {
-                property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
-            }
+            FixImmutableBuilderProperty(property, typeName);
 
             if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
                 && AddBackingFieldsForCollectionProperties)
             {
                 property.AddCollectionBackingFieldOnImmutableClass(BuilderClassCollectionType);
             }
+        }
+    }
+
+    protected virtual void FixImmutableBuilderProperty(ClassPropertyBuilder property, string typeName)
+    {
+        if (!property.IsValueType
+            && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
+            && !GetNonDomainTypes().Contains(typeName))
+        {
+            FixSingleDomainProperty(property, typeName);
+        }
+        else if (typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{RecordCollectionType.WithoutGenerics()}<{x}.")))
+        {
+            FixCollectionDomainProperty(property, typeName);
+        }
+        else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
+        {
+            property.SetDefaultArgumentValueForWithMethod(true);
+        }
+        else if (typeName.IsStringTypeName())
+        {
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
         }
     }
 
