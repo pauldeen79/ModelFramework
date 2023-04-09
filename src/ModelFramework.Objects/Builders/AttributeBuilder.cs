@@ -86,7 +86,7 @@ public partial class AttributeBuilder
         Name.Append(type.FullName);
     }
 
-    public AttributeBuilder(System.Attribute source) : this()
+    public AttributeBuilder(System.Attribute source, bool useCustomInitializers = true) : this()
     {
         bool found = false;
         foreach (var initializer in _customInitializers)

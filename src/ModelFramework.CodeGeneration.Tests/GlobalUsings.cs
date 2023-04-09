@@ -12,6 +12,7 @@ global using ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 global using ModelFramework.Common;
 global using ModelFramework.Common.Contracts;
 global using ModelFramework.Common.Extensions;
+global using ModelFramework.Common.Tests.Test.Contracts;
 global using ModelFramework.Database.Contracts;
 global using ModelFramework.Database.SqlStatements;
 global using ModelFramework.Objects.Builders;

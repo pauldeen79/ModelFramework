@@ -29,8 +29,6 @@ public abstract class CSharpClassBase : ClassBase
             || GetModelAbstractBaseTyped().Any(x => x == parent.ParentTypeFullName.GetClassName())
             || (BaseClass != null && $"I{typeBase.Name}" == BaseClass.Name));
 
-    protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
-        => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
     protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => $"{ProjectName}.Domain";
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
@@ -465,7 +463,8 @@ public abstract class CSharpClassBase : ClassBase
         => new
         (
             createConstructors: true,
-            attributeInitializeDelegate: AttributeInitializeDelegate
+            attributeInitializeDelegate: AttributeInitializeDelegate,
+            useCustomInitializers: UseCustomInitializersOnAttributeBuilder
         );
 
     protected string GetModelTypeName(Type modelType)
@@ -476,11 +475,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual string CurrentNamespace => Path.Replace("/", ".");
 
     protected static object CreateServiceCollectionExtensions(
-    string @namespace,
+        string @namespace,
         string className,
-    string methodName,
-    ITypeBase[] types,
-    Func<ITypeBase, string> formatDelegate)
+        string methodName,
+        ITypeBase[] types,
+        Func<ITypeBase, string> formatDelegate)
         => new[] { new ClassBuilder()
             .WithNamespace(@namespace)
             .WithName(className)
@@ -500,7 +499,7 @@ public abstract class CSharpClassBase : ClassBase
             .Build() };
 
     protected static ITypeBase[] CreateBuilderFactoryModels(
-    ITypeBase[] models,
+        ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
         => new[]
