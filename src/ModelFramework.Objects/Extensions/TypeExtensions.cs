@@ -200,7 +200,9 @@ public static class TypeExtensions
     private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes, Func<System.Attribute, AttributeBuilder>? initializeDelegate)
         => attributes.OfType<System.Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                                                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                     .Select(x => initializeDelegate != null ? initializeDelegate.Invoke(x) : new AttributeBuilder().WithName(x.GetType().FullName));
+                     .Select(x => initializeDelegate != null
+                        ? initializeDelegate.Invoke(x)
+                        : new AttributeBuilder(x));
 
     private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
         => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));
