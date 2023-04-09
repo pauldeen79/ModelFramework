@@ -136,4 +136,9 @@ public static class MetadataNames
     /// Metadata name for defining a custom type for argument in observable c'tor.
     /// </summary>
     public const string CustomObservableArgumentType = "ModelFramework.Objects.Observable.Ctor.CustomArgumentType";
+
+    /// <summary>
+    /// Metadata name for defining custom validation code in the constructor of an entity. For example, you can plug FluentValidation into here.
+    /// </summary>
+    public const string CustomValidateCode = "ModelFramework.Objects.ValidateCode";
 }

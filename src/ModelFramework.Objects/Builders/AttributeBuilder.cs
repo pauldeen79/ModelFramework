@@ -15,6 +15,7 @@ public partial class AttributeBuilder
                 GetMaxLengthInitializer(),
                 GetRegularExpressionInitializer(),
                 GetRequiredInitializer(),
+                GetUrlInitializer(),
             }
         );
 
@@ -61,6 +62,12 @@ public partial class AttributeBuilder
             ? new AttributeBuilder(x.GetType())
                 .AddParameters(CreateConditional(() => x.AllowEmptyStrings, new AttributeParameterBuilder().WithValue(x.AllowEmptyStrings).WithName(nameof(RequiredAttribute.AllowEmptyStrings))))
                 .AddParameters(CreateConditional(() => !string.IsNullOrEmpty(x.ErrorMessage), new AttributeParameterBuilder().WithValue(x.ErrorMessage).WithName(nameof(RequiredAttribute.ErrorMessage))))
+            : null);
+
+    private static Func<System.Attribute, AttributeBuilder?> GetUrlInitializer()
+        => new(a => a is UrlAttribute x
+            ? new AttributeBuilder(x.GetType())
+                .AddParameters(CreateConditional(() => !string.IsNullOrEmpty(x.ErrorMessage), new AttributeParameterBuilder().WithValue(x.ErrorMessage).WithName(nameof(UrlAttribute.ErrorMessage))))
             : null);
 
     private static IEnumerable<AttributeParameterBuilder> CreateConditional(Func<bool> condition, AttributeParameterBuilder result)
