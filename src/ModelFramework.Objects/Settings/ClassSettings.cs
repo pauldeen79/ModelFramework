@@ -14,7 +14,7 @@ public record ClassSettings
     {
         Partial = partial;
         CreateConstructors = createConstructors;
-        AttributeInitializeDelegate = attributeInitializeDelegate;
+        AttributeInitializeDelegate = attributeInitializeDelegate ?? AttributeBuilder.DefaultInitializer;
         UseCustomInitializers = useCustomInitializers;
     }
 }

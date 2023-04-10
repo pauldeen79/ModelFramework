@@ -9,7 +9,6 @@ public record InterfaceSettings
     public IDictionary<string, string>? ApplyGenericTypes { get; }
     public Func<System.Attribute, AttributeBuilder?>? AttributeInitializeDelegate { get; }
     public bool ChangePropertiesToReadOnly { get; }
-    public bool UseCustomInitializers { get; }
 
     public InterfaceSettings(Func<IClassProperty, bool>? propertyFilter = null,
                              Func<IClassMethod, bool>? methodFilter = null,
@@ -17,8 +16,7 @@ public record InterfaceSettings
                              Func<IAttribute, bool>? attributeFilter = null,
                              Func<System.Attribute, AttributeBuilder?>? attributeInitializeDelegate = null,
                              IDictionary<string, string>? applyGenericTypes = null,
-                             bool changePropertiesToReadOnly = false,
-                             bool useCustomInitializers = false)
+                             bool changePropertiesToReadOnly = false)
     {
         PropertyFilter = propertyFilter;
         MethodFilter = methodFilter;
@@ -27,6 +25,5 @@ public record InterfaceSettings
         AttributeInitializeDelegate = attributeInitializeDelegate;
         ApplyGenericTypes = applyGenericTypes;
         ChangePropertiesToReadOnly = changePropertiesToReadOnly;
-        UseCustomInitializers = useCustomInitializers;
     }
 }
