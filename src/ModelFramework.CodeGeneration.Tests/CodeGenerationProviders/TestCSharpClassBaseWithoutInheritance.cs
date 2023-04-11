@@ -5,27 +5,6 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
     protected override bool InheritFromInterfaces => false;
     protected override bool AddNullChecks => true; // this enables null checks in c'tor of both records and builders
     
-    protected override AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
-    {
-        if (sourceAttribute == null)
-        {
-            // Not possible, but needs to be added because of .net standard 2.0
-            return new();
-        }
-
-        var result = new AttributeBuilder().WithName(sourceAttribute.GetType().FullName!);
-        if (sourceAttribute is StringLengthAttribute sla)
-        {
-            result.AddParameters(new AttributeParameterBuilder().WithValue(sla.MaximumLength));
-            if (sla.MinimumLength > 0)
-            {
-                result.AddParameters(new AttributeParameterBuilder().WithName(nameof(sla.MinimumLength)).WithValue(sla.MinimumLength));
-            }
-        }
-
-        return result;
-    }
-
     protected override void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         => FixImmutableBuilderProperties(typeBaseBuilder);
 

@@ -17,6 +17,9 @@ public partial class TypeBaseBuilder<TBuilder, TEntity>
     public TBuilder AddInterfaces(IEnumerable<Type> interfaces)
         => AddInterfaces(interfaces.ToArray());
 
+    public TBuilder WithCustomValidationCode(string customValidationCode)
+        => AddMetadata(MetadataNames.CustomValidateCode, customValidationCode);
+
     public override string ToString() => string.IsNullOrEmpty(Namespace.ToString())
         ? Name.ToString()
         : $"{Namespace}.{Name}";

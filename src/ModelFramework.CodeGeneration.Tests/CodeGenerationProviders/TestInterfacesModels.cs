@@ -11,26 +11,6 @@ public class TestInterfacesModels : CSharpExpressionDumperClassBase
     protected override string MethodName => "GetTestModels";
     protected override string FileNameSuffix => ".Test.generated";
 
-    protected override AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
-    {
-        if (sourceAttribute == null)
-        {
-            return new();
-        }
-
-        var result = new AttributeBuilder().WithName(sourceAttribute.GetType().FullName!);
-        if (sourceAttribute is StringLengthAttribute sla)
-        {
-            result.AddParameters(new AttributeParameterBuilder().WithValue(sla.MaximumLength));
-            if (sla.MinimumLength > 0)
-            {
-                result.AddParameters(new AttributeParameterBuilder().WithName(nameof(sla.MinimumLength)).WithValue(sla.MinimumLength));
-            }
-        }
-
-        return result;
-    }
-
     protected override string[] NamespacesToAbbreviate => new[]
     {
         "System.Collections.Generic",

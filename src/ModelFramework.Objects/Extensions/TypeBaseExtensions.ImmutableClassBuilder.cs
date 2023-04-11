@@ -63,7 +63,7 @@ public static partial class TypeBaseExtensions
                     .WithChainCall("base(original)"),
                 new ClassConstructorBuilder()
                     .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
-                    .AddLiteralCodeStatements(CreateValidationCode(settings.AddValidationCode, false))
+                    .AddLiteralCodeStatements(CreateValidationCode(instance, settings, false))
                     .WithChainCall(GenerateImmutableClassChainCall(instance, settings, true))
             )
             .AddGenericTypeArguments(instance.GenericTypeArguments)
@@ -100,7 +100,7 @@ public static partial class TypeBaseExtensions
                         )
                     )
             )
-            .AddLiteralCodeStatements(CreateValidationCode(settings.AddValidationCode, true))
+            .AddLiteralCodeStatements(CreateValidationCode(instance, settings, true))
             .WithChainCall(GenerateImmutableClassChainCall(instance, settings, false));
 
     private static IEnumerable<ClassPropertyBuilder> CreateImmutableClassProperties(
@@ -162,23 +162,35 @@ public static partial class TypeBaseExtensions
                     .WithIsValueType(p.IsValueType)
             );
 
-    private static string[] CreateValidationCode(ArgumentValidationType addValidationCode, bool baseClass)
-        => addValidationCode switch
+    private static string[] CreateValidationCode(this ITypeBase instance, ImmutableClassSettings settings, bool baseClass)
+        => settings.AddValidationCode switch
         {
             ArgumentValidationType.Always =>
                 new[]
                 {
-                    "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
+                    string.Format
+                    (
+                        instance.Metadata.GetStringValue(MetadataNames.CustomValidateCode, "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"),
+                        instance.GetFullName(), // 0
+                        instance.Name,          // 1
+                        instance.Namespace      // 2
+                    )
                 },
             ArgumentValidationType.Optional =>
                 baseClass
                     ? Array.Empty<string>()
                     : new[]
                     {
-                        "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
+                        string.Format
+                        (
+                            instance.Metadata.GetStringValue(MetadataNames.CustomValidateCode, "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"),
+                            instance.GetFullName(), // 0
+                            instance.Name,          // 1
+                            instance.Namespace      // 2
+                        )
                     },
             ArgumentValidationType.Never => Array.Empty<string>(),
-            _ => throw new ArgumentOutOfRangeException(nameof(addValidationCode), $"Unsupported ArgumentValidationType: {addValidationCode}")
+            _ => throw new ArgumentOutOfRangeException(nameof(settings), $"Unsupported ArgumentValidationType: {settings.AddValidationCode}")
         };
 
     private static string CreateImmutableClassCtorParameterNames(

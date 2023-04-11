@@ -17,6 +17,9 @@ public abstract class ClassBase : ICodeGenerationProvider
     protected abstract bool EnableNullableContext { get; }
     protected abstract bool CreateCodeGenerationHeader { get; }
     protected virtual string FileNameSuffix => ".generated";
+    protected virtual bool UseCustomInitializersOnAttributeBuilder => false;
+
+    protected virtual AttributeBuilder? AttributeInitializeDelegate(Attribute sourceAttribute) => AttributeBuilder.DefaultInitializer(sourceAttribute);
 
     public void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath)
     {
@@ -36,10 +39,18 @@ public abstract class ClassBase : ICodeGenerationProvider
             { nameof(CSharpClassGenerator.FileNameSuffix), FileNameSuffix }
         };
 
+    public object CreateGenerator()
+        => new CSharpClassGenerator();
+
+    protected static IEnumerable<AttributeParameterBuilder> CreateConditional(Func<bool> condition, AttributeParameterBuilder result)
+    {
+        if (condition.Invoke())
+        {
+            yield return result;
+        }
+    }
+
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty
         : Path + "/";
-
-    public object CreateGenerator()
-        => new CSharpClassGenerator();
 }

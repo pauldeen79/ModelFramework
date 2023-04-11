@@ -105,7 +105,9 @@ public static class TypeExtensions
                    .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))
                    .Select(t => t.FullName);
 
-    private static IEnumerable<ClassFieldBuilder> GetFields(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate)
+    private static IEnumerable<ClassFieldBuilder> GetFields(
+        Type instance,
+        Func<System.Attribute, AttributeBuilder?>? attributeInitializeDelegate)
         => instance.GetFieldsRecursively().Select
             (
                 f => new ClassFieldBuilder()
@@ -122,8 +124,10 @@ public static class TypeExtensions
                     .AddAttributes(GetAttributes(f.GetCustomAttributes(false), attributeInitializeDelegate))
             );
 
-    private static IEnumerable<ClassPropertyBuilder> GetProperties(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate) =>
-        instance.GetPropertiesRecursively().Select
+    private static IEnumerable<ClassPropertyBuilder> GetProperties(
+        Type instance,
+        Func<System.Attribute, AttributeBuilder?>? attributeInitializeDelegate)
+        => instance.GetPropertiesRecursively().Select
         (
             p => new ClassPropertyBuilder()
                 .WithName(p.Name)
@@ -149,7 +153,9 @@ public static class TypeExtensions
                 .AddAttributes(GetAttributes(p.GetCustomAttributes(false), attributeInitializeDelegate))
         );
 
-    private static IEnumerable<ClassMethodBuilder> GetMethods(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate)
+    private static IEnumerable<ClassMethodBuilder> GetMethods(
+        Type instance,
+        Func<System.Attribute, AttributeBuilder?>? attributeInitializeDelegate)
         => instance.GetMethodsRecursively()
                 .Where(m => !instance.IsRecord() && !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
                 .Select
@@ -178,7 +184,10 @@ public static class TypeExtensions
                         .AddAttributes(GetAttributes(m.GetCustomAttributes(false), attributeInitializeDelegate))
                 );
 
-    private static IEnumerable<ClassConstructorBuilder> GetConstructors(Type instance, Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate, bool createConstructors)
+    private static IEnumerable<ClassConstructorBuilder> GetConstructors(
+        Type instance,
+        Func<System.Attribute, AttributeBuilder?>? attributeInitializeDelegate,
+        bool createConstructors)
         => instance.GetConstructors()
             .Where(_ => createConstructors)
             .Select(x => new ClassConstructorBuilder()
@@ -197,10 +206,12 @@ public static class TypeExtensions
                 )
         );
 
-    private static IEnumerable<AttributeBuilder> GetAttributes(object[] attributes, Func<System.Attribute, AttributeBuilder>? initializeDelegate)
+    private static IEnumerable<AttributeBuilder> GetAttributes(
+        object[] attributes,
+        Func<System.Attribute, AttributeBuilder?>? initializeDelegate)
         => attributes.OfType<System.Attribute>().Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                                                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                     .Select(x => initializeDelegate != null ? initializeDelegate.Invoke(x) : new AttributeBuilder().WithName(x.GetType().FullName));
+                     .Select(x => new AttributeBuilder(x, initializeDelegate));
 
     private static IEnumerable<ClassBuilder> GetSubClasses(Type instance, bool partial)
         => instance.GetNestedTypes().Select(t => t.ToClassBuilder(new ClassSettings(partial: partial)));

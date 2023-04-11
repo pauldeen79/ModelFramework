@@ -9,11 +9,9 @@ public abstract class CSharpExpressionDumperClassBase : ClassBase
     protected abstract Type[] Models { get; }
     protected abstract string Namespace { get; }
     protected abstract string ClassName { get; }
+    protected virtual bool UseCustomInitializers => false;
 
     protected virtual string MethodName => "GetModels";
-
-    protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
-        => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
 
     public override object CreateModel()
         => new[]

@@ -29,8 +29,6 @@ public abstract class CSharpClassBase : ClassBase
             || GetModelAbstractBaseTyped().Any(x => x == parent.ParentTypeFullName.GetClassName())
             || (BaseClass != null && $"I{typeBase.Name}" == BaseClass.Name));
 
-    protected virtual AttributeBuilder AttributeInitializeDelegate(Attribute sourceAttribute)
-        => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName);
     protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => $"{ProjectName}.Domain";
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
@@ -271,30 +269,35 @@ public abstract class CSharpClassBase : ClassBase
         foreach (var property in typeBaseBuilder.Properties)
         {
             var typeName = property.TypeName.ToString().FixTypeName();
-            if (!property.IsValueType
-                && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
-                && !GetNonDomainTypes().Contains(typeName))
-            {
-                FixSingleDomainProperty(property, typeName);
-            }
-            else if (typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{RecordCollectionType.WithoutGenerics()}<{x}.")))
-            {
-                FixCollectionDomainProperty(property, typeName);
-            }
-            else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
-            {
-                property.SetDefaultArgumentValueForWithMethod(true);
-            }
-            else if (typeName.IsStringTypeName())
-            {
-                property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
-            }
+            FixImmutableBuilderProperty(property, typeName);
 
             if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
                 && AddBackingFieldsForCollectionProperties)
             {
                 property.AddCollectionBackingFieldOnImmutableClass(BuilderClassCollectionType);
             }
+        }
+    }
+
+    protected virtual void FixImmutableBuilderProperty(ClassPropertyBuilder property, string typeName)
+    {
+        if (!property.IsValueType
+            && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
+            && !GetNonDomainTypes().Contains(typeName))
+        {
+            FixSingleDomainProperty(property, typeName);
+        }
+        else if (typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{RecordCollectionType.WithoutGenerics()}<{x}.")))
+        {
+            FixCollectionDomainProperty(property, typeName);
+        }
+        else if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
+        {
+            property.SetDefaultArgumentValueForWithMethod(true);
+        }
+        else if (typeName.IsStringTypeName())
+        {
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
         }
     }
 
@@ -460,7 +463,8 @@ public abstract class CSharpClassBase : ClassBase
         => new
         (
             createConstructors: true,
-            attributeInitializeDelegate: AttributeInitializeDelegate
+            attributeInitializeDelegate: AttributeInitializeDelegate,
+            useCustomInitializers: UseCustomInitializersOnAttributeBuilder
         );
 
     protected string GetModelTypeName(Type modelType)
@@ -471,11 +475,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual string CurrentNamespace => Path.Replace("/", ".");
 
     protected static object CreateServiceCollectionExtensions(
-    string @namespace,
+        string @namespace,
         string className,
-    string methodName,
-    ITypeBase[] types,
-    Func<ITypeBase, string> formatDelegate)
+        string methodName,
+        ITypeBase[] types,
+        Func<ITypeBase, string> formatDelegate)
         => new[] { new ClassBuilder()
             .WithNamespace(@namespace)
             .WithName(className)
@@ -495,7 +499,7 @@ public abstract class CSharpClassBase : ClassBase
             .Build() };
 
     protected static ITypeBase[] CreateBuilderFactoryModels(
-    ITypeBase[] models,
+        ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
         => new[]

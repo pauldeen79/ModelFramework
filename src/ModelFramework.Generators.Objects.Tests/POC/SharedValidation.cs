@@ -3,8 +3,13 @@
 public record MySharedValidationDomainEntity1Base
 {
     [Required]
+    [StringLength(10, MinimumLength = 1)]
+    [MinLength(1, ErrorMessage = "boohoo1")]
+    [MaxLength(10, ErrorMessage = "boohoo2")]
+    [RegularExpression("dog$", ErrorMessage = "boohoo3")]
+    [Url(ErrorMessage = "boohoo4")]
     public string Name { get; }
-    [Range(1, 100)]
+    [Range(1, 100, ErrorMessage = "The Age field must be between 1 and 100.")]
     public int Age { get; }
 
     public MySharedValidationDomainEntity1Base(string name, int age)
