@@ -78,7 +78,7 @@ namespace MyNamespace
 }");
     }
 
-    private class Sut : CSharpExpressionDumperClassBase
+    private sealed class Sut : CSharpExpressionDumperClassBase
     {
         public override string Path => "Sut";
         public override string DefaultFileName => "MyCSharpClassBase.generated.cs";

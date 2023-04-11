@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Generators.Objects.Tests.POC;
 
-internal class InheritedClass : BaseClass
+internal sealed class InheritedClass : BaseClass
 {
     public string AdditionalProperty { get; }
 
@@ -20,7 +20,7 @@ internal abstract class BaseClass
     }
 }
 
-internal class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, InheritedClass>
+internal sealed class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, InheritedClass>
 {
     public string AdditionalProperty { get; set; }
 
