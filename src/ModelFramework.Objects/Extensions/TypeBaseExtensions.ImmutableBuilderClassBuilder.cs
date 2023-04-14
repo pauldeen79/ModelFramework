@@ -489,7 +489,7 @@ public static partial class TypeBaseEtensions
 
     private static string GetImmutableBuilderBuildMethodReturnType(ITypeBase instance, ImmutableBuilderClassSettings settings)
         => settings.IsBuilderForAbstractEntity
-        ? "TEntity"
+            ? "TEntity"
             : FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate);
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassPropertyMethods(ITypeBase instance,
