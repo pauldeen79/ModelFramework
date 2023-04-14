@@ -680,9 +680,14 @@ public static partial class TypeBaseEtensions
                 string.Format(overload.InitializeExpression,
                               property.Name.ToPascalCase(),
                               property.TypeName.GetCsharpFriendlyTypeName(),
-                              property.Name),
+                              GetPropertyName(property.Name, extensionMethod)),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
+
+    private static string GetPropertyName(string name, bool extensionMethod)
+        => extensionMethod
+            ? $"instance.{name}"
+            : name;
 
     private static ClassMethodBuilder ConfigureForExtensionMethod(this ClassMethodBuilder builder,
                                                                   ITypeBase instance,
@@ -803,7 +808,7 @@ public static partial class TypeBaseEtensions
                               property.TypeName.GetCsharpFriendlyTypeName(),
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                              property.Name),
+                              GetPropertyName(property.Name, extensionMethod)),
                 "    }",
                 "}",
                 $"return {GetReturnValue(settings, extensionMethod)};"
@@ -815,7 +820,7 @@ public static partial class TypeBaseEtensions
                               property.TypeName,
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                              property.Name),
+                              GetPropertyName(property.Name, extensionMethod)),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList();
 
