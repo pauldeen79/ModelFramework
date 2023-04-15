@@ -70,7 +70,8 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual Dictionary<string, string> GetModelMappings()
     {
         var result = new Dictionary<string, string>();
-        result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.");
+        var suffix = InheritFromInterfaces ? "I" : string.Empty;
+        result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.{suffix}");
         result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName()}s.I", $"{RootNamespace}.{x.GetEntityClassName()}s.")));
         result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
         result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");
