@@ -24,11 +24,11 @@ public static partial class TypeBaseEtensions
             .AddConstructors(GetImmutableBuilderClassConstructors(instance, settings))
             .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
-            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
+            .AddAttributes(instance.Attributes.Where(_ => settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
             .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints)
-            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.AddValidationCode == ArgumentValidationType.Optional));
+            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.AddValidationCode == ArgumentValidationType.Shared));
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -426,7 +426,7 @@ public static partial class TypeBaseEtensions
             }
         }
 
-        if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Optional && !settings.IsBuilderForAbstractEntity)
+        if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared && !settings.IsBuilderForAbstractEntity)
         {
             // Allow validation of the builder by calling the validate method on the entity
             yield return CreateValidateMethod(instance, settings);
@@ -489,7 +489,7 @@ public static partial class TypeBaseEtensions
 
     private static string GetImmutableBuilderBuildMethodReturnType(ITypeBase instance, ImmutableBuilderClassSettings settings)
         => settings.IsBuilderForAbstractEntity
-        ? "TEntity"
+            ? "TEntity"
             : FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate);
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassPropertyMethods(ITypeBase instance,
@@ -680,9 +680,14 @@ public static partial class TypeBaseEtensions
                 string.Format(overload.InitializeExpression,
                               property.Name.ToPascalCase(),
                               property.TypeName.GetCsharpFriendlyTypeName(),
-                              property.Name),
+                              GetPropertyName(property.Name, extensionMethod)),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
+
+    private static string GetPropertyName(string name, bool extensionMethod)
+        => extensionMethod
+            ? $"instance.{name}"
+            : name;
 
     private static ClassMethodBuilder ConfigureForExtensionMethod(this ClassMethodBuilder builder,
                                                                   ITypeBase instance,
@@ -803,7 +808,7 @@ public static partial class TypeBaseEtensions
                               property.TypeName.GetCsharpFriendlyTypeName(),
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                              property.Name),
+                              GetPropertyName(property.Name, extensionMethod)),
                 "    }",
                 "}",
                 $"return {GetReturnValue(settings, extensionMethod)};"
@@ -815,7 +820,7 @@ public static partial class TypeBaseEtensions
                               property.TypeName,
                               property.TypeName.GetGenericArguments(),
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                              property.Name),
+                              GetPropertyName(property.Name, extensionMethod)),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList();
 
@@ -872,7 +877,7 @@ public static partial class TypeBaseEtensions
                 )
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .AddAttributes(property.Attributes.Select(x => new AttributeBuilder(x)))
+                .AddAttributes(property.Attributes.Where(_ => settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))
                 .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, settings))

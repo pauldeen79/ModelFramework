@@ -140,7 +140,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                     .BuildTyped()
             ).ToArray();
 
-    private static void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
+    private void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
         var typeName = property.TypeName.ToString();
         var propertyName = property.Name.ToString();
@@ -187,7 +187,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         }
         else if (typeName.IsStringTypeName())
         {
-            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder(UseLazyInitialization);
         }
 
         if (propertyName == nameof(ITypeContainer.TypeName) && typeName.IsStringTypeName())
