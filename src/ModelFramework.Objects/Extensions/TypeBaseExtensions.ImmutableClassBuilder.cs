@@ -33,7 +33,7 @@ public static partial class TypeBaseExtensions
             .AddInterfaces
             (
                 settings.InheritanceSettings.InheritFromInterfaces
-                    ? new[] { FormatInstanceName(instance /*  $"{instance.Namespace}.I{instance.Name}"*/, false, settings.InheritanceSettings.FormatInstanceTypeNameDelegate) }
+                    ? new[] { FormatInstanceName(instance, false, settings.InheritanceSettings.FormatInstanceTypeNameDelegate) }
                     : Enumerable.Empty<string>()
             )
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
