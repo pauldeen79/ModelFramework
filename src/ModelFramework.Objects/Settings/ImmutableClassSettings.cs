@@ -13,10 +13,10 @@ public record ImmutableClassSettings
     {
         get
         {
-            if (ConstructorSettings.ValidateArguments == ArgumentValidationType.Never)
+            if (ConstructorSettings.ValidateArguments == ArgumentValidationType.None)
             {
                 // Do not validate arguments
-                return ArgumentValidationType.Never;
+                return ArgumentValidationType.None;
             }
 
             if (!InheritanceSettings.EnableInheritance)
@@ -28,13 +28,13 @@ public record ImmutableClassSettings
             if (InheritanceSettings.IsAbstract)
             {
                 // Abstract class with base class
-                return ArgumentValidationType.Never;
+                return ArgumentValidationType.None;
             }
 
             if (InheritanceSettings.BaseClass == null)
             {
                 // Abstract base class
-                return ArgumentValidationType.Never;
+                return ArgumentValidationType.None;
             }
 
             // In other situations, add it

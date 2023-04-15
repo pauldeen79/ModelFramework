@@ -1227,7 +1227,7 @@ namespace MyNamespace.Domain.Builders
         protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
         protected override bool EnableNullableContext => true;
         protected override bool CreateCodeGenerationHeader => false;
-        protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Optional;
+        protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
 
         protected ITypeBase[] GetModels() => new[]
         {

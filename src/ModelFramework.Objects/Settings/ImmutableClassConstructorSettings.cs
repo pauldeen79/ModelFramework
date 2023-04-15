@@ -2,9 +2,9 @@
 
 public enum ArgumentValidationType
 {
-    Never,
-    Optional,
-    Always
+    None,
+    Shared,
+    DomainOnly
 }
 
 public class ImmutableClassConstructorSettings
@@ -14,7 +14,7 @@ public class ImmutableClassConstructorSettings
     public bool AddNullChecks { get; }
     public string CollectionTypeName { get; }
 
-    public ImmutableClassConstructorSettings(ArgumentValidationType validateArguments = ArgumentValidationType.Never,
+    public ImmutableClassConstructorSettings(ArgumentValidationType validateArguments = ArgumentValidationType.None,
                                              ArgumentValidationType? originalValidateArguments = null,
                                              bool addNullChecks = false,
                                              string collectionTypeName = "")

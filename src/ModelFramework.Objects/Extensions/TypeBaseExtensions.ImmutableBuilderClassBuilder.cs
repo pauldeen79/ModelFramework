@@ -28,7 +28,7 @@ public static partial class TypeBaseEtensions
             .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints)
-            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.AddValidationCode == ArgumentValidationType.Optional));
+            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.AddValidationCode == ArgumentValidationType.Shared));
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -426,7 +426,7 @@ public static partial class TypeBaseEtensions
             }
         }
 
-        if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Optional && !settings.IsBuilderForAbstractEntity)
+        if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared && !settings.IsBuilderForAbstractEntity)
         {
             // Allow validation of the builder by calling the validate method on the entity
             yield return CreateValidateMethod(instance, settings);

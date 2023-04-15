@@ -68,7 +68,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             typeof(MySharedValidationDomainEntity1Base).ToClassBuilder()
                 .WithCustomValidationCode("new MyNamespace.Validator<{0}>().Validate(this);")
                 .Build()
-                .ToImmutableClass(new(constructorSettings: new(validateArguments: ArgumentValidationType.Always)))
+                .ToImmutableClass(new(constructorSettings: new(validateArguments: ArgumentValidationType.DomainOnly)))
         };
         var sut = new CSharpClassGenerator();
 

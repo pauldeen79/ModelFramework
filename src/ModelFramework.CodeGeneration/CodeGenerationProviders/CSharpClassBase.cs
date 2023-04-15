@@ -9,7 +9,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
     protected virtual bool UseTargetTypeNewExpressions => true;
-    protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Always;
+    protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
     protected virtual bool InheritFromInterfaces => true;
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => false;
@@ -178,7 +178,7 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
     {
-        if (ValidateArgumentsInConstructor == ArgumentValidationType.Optional)
+        if (ValidateArgumentsInConstructor == ArgumentValidationType.Shared)
         {
             return models.SelectMany
             (
@@ -243,17 +243,17 @@ public abstract class CSharpClassBase : ClassBase
             .BuildTyped();
 
     protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
+        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.None))
             .WithNamespace(@namespace)
             .WithPartial();
 
     protected ClassBuilder CreateNonGenericBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
+        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.None))
             .WithNamespace(@namespace)
             .WithPartial();
 
     protected ClassBuilder CreateBuilderExtensions(ITypeBase typeBase, string @namespace)
-        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.Never))
+        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.None))
             .WithNamespace(@namespace)
             .WithPartial();
 
@@ -433,7 +433,7 @@ public abstract class CSharpClassBase : ClassBase
                 inheritanceComparisonFunction: EnableBuilderInhericance
                     ? IsMemberValid
                     : (_, _) => true),
-            classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.Never)
+            classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.None)
         );
 
     protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
@@ -457,7 +457,7 @@ public abstract class CSharpClassBase : ClassBase
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
             ? validateArgumentsInConstructor
-            : ArgumentValidationType.Never;
+            : ArgumentValidationType.None;
 
     protected ClassSettings CreateClassSettings()
         => new
@@ -543,7 +543,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableBuilderProperties(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings(ArgumentValidationType.Never))
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(ArgumentValidationType.None))
             .BuildTyped();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)

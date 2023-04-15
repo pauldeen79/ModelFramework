@@ -15,7 +15,7 @@ public static partial class TypeBaseExtensions
         }
 
         return new ClassBuilder()
-            .WithName(settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Optional
+            .WithName(settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Shared
                 ? $"{instance.Name}Base"
                 : instance.Name)
             .WithNamespace(instance.Namespace)
@@ -43,7 +43,7 @@ public static partial class TypeBaseExtensions
             throw new InvalidOperationException("To create an immutable class, there must be at least one property");
         }
 
-        if (settings.ConstructorSettings.ValidateArguments != ArgumentValidationType.Optional)
+        if (settings.ConstructorSettings.ValidateArguments != ArgumentValidationType.Shared)
         {
             throw new InvalidOperationException("Can't create an validate override class for ArgumentValidationType other than Optional");
         }
@@ -165,7 +165,7 @@ public static partial class TypeBaseExtensions
     private static string[] CreateValidationCode(this ITypeBase instance, ImmutableClassSettings settings, bool baseClass)
         => settings.AddValidationCode switch
         {
-            ArgumentValidationType.Always =>
+            ArgumentValidationType.DomainOnly =>
                 new[]
                 {
                     string.Format
@@ -176,7 +176,7 @@ public static partial class TypeBaseExtensions
                         instance.Namespace      // 2
                     )
                 },
-            ArgumentValidationType.Optional =>
+            ArgumentValidationType.Shared =>
                 baseClass
                     ? Array.Empty<string>()
                     : new[]
@@ -189,7 +189,7 @@ public static partial class TypeBaseExtensions
                             instance.Namespace      // 2
                         )
                     },
-            ArgumentValidationType.Never => Array.Empty<string>(),
+            ArgumentValidationType.None => Array.Empty<string>(),
             _ => throw new ArgumentOutOfRangeException(nameof(settings), $"Unsupported ArgumentValidationType: {settings.AddValidationCode}")
         };
 
@@ -221,7 +221,7 @@ public static partial class TypeBaseExtensions
 
     private static string GenerateImmutableClassChainCall(ITypeBase instance, ImmutableClassSettings settings, bool baseClass)
     {
-        if (baseClass && settings.AddValidationCode == ArgumentValidationType.Optional)
+        if (baseClass && settings.AddValidationCode == ArgumentValidationType.Shared)
         {
             return $"base({CreateImmutableClassCtorParameterNames(instance, settings)})";
         }
