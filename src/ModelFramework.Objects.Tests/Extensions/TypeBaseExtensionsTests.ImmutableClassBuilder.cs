@@ -78,4 +78,33 @@ this.Property2 = property2;");
 this.Property1 = property1;
 this.Property2 = property2;");
     }
+
+    [Fact]
+    public void Can_Build_ImmutableClass_With_Inheritance_From_Interface()
+    {
+        // Arrange
+        var input = new ClassBuilder()
+            .WithName("MyClass")
+            .WithNamespace("MyNamespace")
+            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)))
+            .Build();
+        var settings = new ImmutableClassSettings(
+            constructorSettings: new(addNullChecks: false),
+            inheritanceSettings: new(inheritFromInterfaces: true, formatInstanceTypeNameDelegate: (source, forCreate) =>
+            {
+                if (!forCreate && source.Namespace == "MyNamespace")
+                {
+                    return "MyNamespace.I" + source.Name;
+                }
+                
+                return string.Empty;
+            }));
+
+        // Act
+        var actual = input.ToImmutableClass(settings);
+
+        // Assert
+        actual.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyClass");
+    }
 }
