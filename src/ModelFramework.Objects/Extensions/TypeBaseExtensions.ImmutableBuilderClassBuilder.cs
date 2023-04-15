@@ -24,7 +24,7 @@ public static partial class TypeBaseEtensions
             .AddConstructors(GetImmutableBuilderClassConstructors(instance, settings))
             .AddMethods(GetImmutableBuilderClassMethods(instance, settings))
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
-            .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
+            .AddAttributes(instance.Attributes.Where(_ => settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
             .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints)

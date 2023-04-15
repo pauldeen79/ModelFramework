@@ -14,6 +14,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => false;
     protected virtual bool CopyFields => false;
+    protected virtual bool CopyAttributes => false;
     protected virtual bool EnableEntityInheritance => false;
     protected virtual bool EnableBuilderInhericance => false;
     protected virtual bool RemoveDuplicateWithMethods => true;
@@ -423,6 +424,7 @@ public abstract class CSharpClassBase : ClassBase
                 useLazyInitialization: UseLazyInitialization,
                 copyPropertyCode: CopyPropertyCode,
                 copyFields: CopyFields,
+                copyAttributes: CopyAttributes,
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
             inheritanceSettings: new(
                 enableEntityInheritance: EnableEntityInheritance,
