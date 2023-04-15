@@ -245,19 +245,13 @@ public abstract class CSharpClassBase : ClassBase
             .BuildTyped();
 
     protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.None))
-            .WithNamespace(@namespace)
-            .WithPartial();
+        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
 
     protected ClassBuilder CreateNonGenericBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.None))
-            .WithNamespace(@namespace)
-            .WithPartial();
+        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
 
     protected ClassBuilder CreateBuilderExtensions(ITypeBase typeBase, string @namespace)
-        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(ArgumentValidationType.None))
-            .WithNamespace(@namespace)
-            .WithPartial();
+        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
 
     protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TEntity : ITypeBase
@@ -370,7 +364,7 @@ public abstract class CSharpClassBase : ClassBase
             .Select(x => x.Value)
             .FirstOrDefault() ?? string.Empty;
 
-    protected string ReplaceWithBuilderNamespaces(string typeName)
+    protected virtual string ReplaceWithBuilderNamespaces(string typeName)
     {
         var match = GetBuilderNamespaceMappings()
             .Select(x => new { x.Key, x.Value })
@@ -407,7 +401,7 @@ public abstract class CSharpClassBase : ClassBase
             ? string.Empty
             : "{0}{2}.BuildTyped()";
 
-    protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
+    protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings(string @namespace, ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
         (
             typeSettings: new(
@@ -420,7 +414,8 @@ public abstract class CSharpClassBase : ClassBase
                 addNullChecks: AddNullChecks),
             nameSettings: new(
                 setMethodNameFormatString: SetMethodNameFormatString,
-                addMethodNameFormatString: AddMethodNameFormatString),
+                addMethodNameFormatString: AddMethodNameFormatString,
+                buildersNamespace: @namespace),
             generationSettings: new(
                 useLazyInitialization: UseLazyInitialization,
                 copyPropertyCode: CopyPropertyCode,

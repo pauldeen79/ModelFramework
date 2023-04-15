@@ -213,7 +213,7 @@ namespace MyNamespace
         }
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string Property1
         {
@@ -346,7 +346,7 @@ namespace MyNamespace
         }
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string Property1
         {
@@ -1703,7 +1703,7 @@ namespace MyNamespace
         }
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public bool Static
         {
@@ -1782,7 +1782,7 @@ namespace MyNamespace
         }
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string Property1
         {
@@ -1859,7 +1859,7 @@ namespace MyNamespace
         }
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         [MyAttribute]
         public string Property1
@@ -1946,7 +1946,7 @@ namespace MyNamespace
 #nullable restore
 
 #nullable enable
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string? Property1
         {
@@ -2029,7 +2029,7 @@ namespace MyNamespace
         private string _property1;
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string Property1
         {
@@ -2114,7 +2114,7 @@ namespace MyNamespace
         }
     }
 
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string? Property1
         {
@@ -2199,7 +2199,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, ModelFramework.Generators.Objects.Tests.POC.InheritedClass>
+    public partial class InheritedClassBuilder : BaseClassBuilder<InheritedClassBuilder, ModelFramework.Generators.Objects.Tests.POC.InheritedClass>
     {
         public string AdditionalProperty
         {
@@ -2294,7 +2294,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public class InheritedClassBuilder : BaseClassBuilder
+    public partial class InheritedClassBuilder : BaseClassBuilder
     {
         public string AdditionalProperty
         {
@@ -2393,7 +2393,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public abstract class BaseClassBuilder<TBuilder, TEntity>
+    public abstract partial class BaseClassBuilder<TBuilder, TEntity>
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.BaseClass
         where TBuilder : BaseClassBuilder<TBuilder, TEntity>
     {
@@ -2486,7 +2486,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public abstract class MiddleClassBuilder<TBuilder, TEntity> : BaseClassBuilder<MiddleClassBuilder, ModelFramework.Generators.Objects.Tests.POC.MiddleClass>
+    public abstract partial class MiddleClassBuilder<TBuilder, TEntity> : BaseClassBuilder<MiddleClassBuilder, ModelFramework.Generators.Objects.Tests.POC.MiddleClass>
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.MiddleClass
         where TBuilder : MiddleClassBuilder<TBuilder, TEntity>
     {
@@ -2579,7 +2579,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public abstract class BaseClassBuilder
+    public abstract partial class BaseClassBuilder
     {
         public string BaseProperty
         {
@@ -2604,7 +2604,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public abstract class BaseClassBuilder<TBuilder, TEntity> : BaseClassBuilder
+    public abstract partial class BaseClassBuilder<TBuilder, TEntity> : BaseClassBuilder
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.BaseClass
         where TBuilder : BaseClassBuilder<TBuilder, TEntity>
     {
@@ -2686,7 +2686,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public abstract class MiddleClassBuilder : BaseClassBuilder
+    public abstract partial class MiddleClassBuilder : BaseClassBuilder
     {
         public string MiddleProperty
         {
@@ -2711,7 +2711,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         }
     }
 
-    public abstract class MiddleClassBuilder<TBuilder, TEntity> : MiddleClassBuilder
+    public abstract partial class MiddleClassBuilder<TBuilder, TEntity> : MiddleClassBuilder
         where TEntity : ModelFramework.Generators.Objects.Tests.POC.MiddleClass
         where TBuilder : MiddleClassBuilder<TBuilder, TEntity>
     {
@@ -2844,7 +2844,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string Property1
         {
@@ -3254,7 +3254,7 @@ using System.Text;
 
 namespace ModelFramework.Generators.Objects.Tests
 {
-    public class PersonBuilder
+    public partial class PersonBuilder
     {
         public string FirstName
         {
@@ -3624,7 +3624,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
+    public partial class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
     {
         public string? Property1
         {
@@ -3703,7 +3703,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public class MyRecordBuilder
+    public partial class MyRecordBuilder
     {
         public string? Property1
         {
@@ -3770,7 +3770,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
+    public partial class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
     {
         public MyNamespace.MyRecord Build()
         {
@@ -3837,7 +3837,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
+    public partial class MyRecordBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
     {
         public string? Property1
         {

@@ -20,8 +20,11 @@ public static class ClassPropertyExtensions
             settings.ConstructorSettings.AddNullChecks                           // 4
                 ? $"if (source.{property.Name} != null) "
                 : "",
-            property.TypeName.GetClassName(),                                    // 5
-            property.TypeName.GetGenericArguments().GetClassName()               // 6
+            settings.TypeSettings.FormatInstanceTypeNameDelegate != null         // 5
+                ? settings.TypeSettings.FormatInstanceTypeNameDelegate.Invoke(new ClassBuilder().WithName(property.TypeName.GetClassName()).WithNamespace(property.TypeName.GetNamespaceWithDefault()).Build(), true).GetClassName().WhenNullOrEmpty(() => property.TypeName.GetClassName())
+                : property.TypeName.GetClassName(),
+            property.TypeName.GetGenericArguments().GetClassName(),              // 6
+            settings.NameSettings.BuildersNamespace                              // 7
         );
 
     public static IEnumerable<IMetadata> GetImmutableCollectionMetadata(this IClassProperty property, string newCollectionTypeName)
