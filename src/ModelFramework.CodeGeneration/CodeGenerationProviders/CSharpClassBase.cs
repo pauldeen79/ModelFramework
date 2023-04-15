@@ -298,7 +298,7 @@ public abstract class CSharpClassBase : ClassBase
         }
         else if (typeName.IsStringTypeName())
         {
-            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder(UseLazyInitialization);
         }
     }
 

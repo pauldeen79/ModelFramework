@@ -49,7 +49,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
         }
         else if (typeName.IsStringTypeName())
         {
-            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder();
+            property.ConvertStringPropertyToStringBuilderPropertyOnBuilder(UseLazyInitialization);
         }
     }
 }

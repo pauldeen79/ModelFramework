@@ -21,13 +21,15 @@ public partial class ClassPropertyBuilder
                 : "{0}{2}.Build()"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
-    public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder()
+    public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder(bool useLazyInitialization)
     {
         ConvertSinglePropertyToBuilderOnBuilder
         (
             argumentType: typeof(StringBuilder).FullName,
             customBuilderMethodParameterExpression: "{0}?.ToString()",
-            customBuilderConstructorInitializeExpression: "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
+            customBuilderConstructorInitializeExpression: useLazyInitialization
+                ? "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
+                : "{0} = new System.Text.StringBuilder(source.{0})"
         );
         SetDefaultValueForStringPropertyOnBuilderClassConstructor();
         AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("if ({2} == null)\r\n    {2} = new System.Text.StringBuilder();\r\n{2}.Clear().Append(value);").Build());
