@@ -55,7 +55,7 @@ public record ImmutableClassSettings
         ImplementIEquatable = implementIEquatable;
         AddPrivateSetters = addPrivateSetters;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
-        ConstructorSettings = constructorSettings ?? new ImmutableClassConstructorSettings();
-        InheritanceSettings = inheritanceSettings ?? new ImmutableClassInheritanceSettings();
+        ConstructorSettings = constructorSettings ?? new();
+        InheritanceSettings = inheritanceSettings ?? new();
     }
 }

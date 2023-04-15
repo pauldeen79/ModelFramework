@@ -30,6 +30,12 @@ public static partial class TypeBaseExtensions
                     ? new[] { $"IEquatable<{instance.Name}>" }
                     : Enumerable.Empty<string>()
             )
+            .AddInterfaces
+            (
+                settings.InheritanceSettings.InheritFromInterfaces
+                    ? new[] { FormatInstanceName(instance /*  $"{instance.Namespace}.I{instance.Name}"*/, false, settings.InheritanceSettings.FormatInstanceTypeNameDelegate) }
+                    : Enumerable.Empty<string>()
+            )
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
             .AddFields(instance.Properties.SelectMany(x => x.Metadata.GetValues<IClassField>(MetadataNames.CustomImmutableBackingField).Select(x => new ClassFieldBuilder(x))))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
@@ -393,4 +399,20 @@ public static partial class TypeBaseExtensions
 
     private static string GetPropertyNamesConcatenated(IEnumerable<IClassProperty> properties)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
+
+    private static string FormatInstanceName(ITypeBase instance,
+                                         bool forCreate,
+                                         Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
+    {
+        if (formatInstanceTypeNameDelegate != null)
+        {
+            var retVal = formatInstanceTypeNameDelegate(instance, forCreate);
+            if (!string.IsNullOrEmpty(retVal))
+            {
+                return retVal;
+            }
+        }
+
+        return instance.GetFullName().GetCsharpFriendlyTypeName();
+    }
 }

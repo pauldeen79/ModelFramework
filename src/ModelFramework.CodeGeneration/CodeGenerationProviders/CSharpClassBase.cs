@@ -10,7 +10,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool UseLazyInitialization => true;
     protected virtual bool UseTargetTypeNewExpressions => true;
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
-    protected virtual bool InheritFromInterfaces => true;
+    protected virtual bool InheritFromInterfaces => false;
     protected virtual bool AddPrivateSetters => false;
     protected virtual bool CopyPropertyCode => false;
     protected virtual bool CopyFields => false;
@@ -451,6 +451,8 @@ public abstract class CSharpClassBase : ClassBase
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
+                inheritFromInterfaces: InheritFromInterfaces,
+                formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                 inheritanceComparisonFunction: EnableEntityInheritance
                     ? IsMemberValid
                     : (_, _) => true)
