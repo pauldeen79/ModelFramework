@@ -401,8 +401,8 @@ public static partial class TypeBaseExtensions
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
 
     private static string FormatInstanceName(ITypeBase instance,
-                                         bool forCreate,
-                                         Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
+                                             bool forCreate,
+                                             Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
     {
         if (formatInstanceTypeNameDelegate != null)
         {
