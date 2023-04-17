@@ -88,7 +88,9 @@ public static class TypeExtensions
     /// <returns>Typename without generics (`1)</returns>
     public static string WithoutGenerics(this Type instance)
     {
-        var name = instance.FullName.WhenNullOrEmpty(instance.Name);
+        var name = instance.IsGenericParameter
+            ? instance.Name
+            : instance.FullName.WhenNullOrEmpty($"{instance.Namespace}.{instance.Name}");
         var index = name.IndexOf('`');
         return index == -1
             ? name.FixTypeName()
