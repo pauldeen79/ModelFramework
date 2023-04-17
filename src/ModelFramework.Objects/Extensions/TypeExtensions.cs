@@ -404,7 +404,12 @@ public static class TypeExtensions
 
             index++;
             builder.Append(GetTypeName(arg, declaringType));
-            if (NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
+            if (builder.ToString().Contains("Result<T")) System.Diagnostics.Debugger.Break();
+            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
+            {
+                builder.Append("?");
+            }
+            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, type, type.CustomAttributes, index))
             {
                 builder.Append("?");
             }
