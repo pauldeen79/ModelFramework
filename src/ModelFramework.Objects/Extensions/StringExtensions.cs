@@ -50,6 +50,19 @@ public static class StringExtensions
             : instance.Substring(0, index).FixTypeName();
     }
 
+    /// <summary>
+    /// Removes generics from a processed (fixed) typename. (<)
+    /// </summary>
+    /// <param name="typeName">Typename with or without generics</param>
+    /// <returns>Typename without generics (<)</returns>
+    public static string WithoutProcessedGenerics(this string instance)
+    {
+        var index = instance.IndexOf('<');
+        return index == -1
+            ? instance
+            : instance.Substring(0, index);
+    }
+
     public static string AppendNullableAnnotation(this string instance,
                                                   ITypeContainer typeContainer,
                                                   bool enableNullableReferenceTypes)

@@ -74,6 +74,7 @@ public abstract class CSharpClassBase : ClassBase
         result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.{suffix}");
         result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName()}s.I", $"{RootNamespace}.{x.GetEntityClassName()}s.")));
         result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
+        result.Add($"{CodeGenerationRootNamespace}.Models.Contracts.", $"{RootNamespace}.Contracts.");
         result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");
         return result;
     }
@@ -299,6 +300,12 @@ public abstract class CSharpClassBase : ClassBase
 
     private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
     {
+        if (typeName.GetGenericArguments().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
+        {
+            // Contracts need to be skipped, do not touch these!
+            return;
+        }
+
         if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
         {
             property.ConvertCollectionPropertyToBuilderOnBuilder
@@ -325,6 +332,12 @@ public abstract class CSharpClassBase : ClassBase
 
     private void FixSingleDomainProperty(ClassPropertyBuilder property, string typeName)
     {
+        if (typeName.WithoutProcessedGenerics().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
+        {
+            // Contracts need to be skipped, do not touch these!
+            return;
+        }
+
         property.ConvertSinglePropertyToBuilderOnBuilder
         (
             $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}Builder",
@@ -354,7 +367,7 @@ public abstract class CSharpClassBase : ClassBase
                 .AddMetadata("CSharpClassBase.ModelType", x)
                 .WithNamespace(RootNamespace)
                 .WithName(x.GetEntityClassName())
-                .With(y => y.Properties.ForEach(z => GetModelMappings().ToList().ForEach(m => z.TypeName = z.TypeName.Replace(m.Key, m.Value))))
+                .With(y => y.Properties.ForEach(z => GetModelMappings().Where(x => !x.Key.EndsWith(".Contracts", StringComparison.InvariantCulture)).ToList().ForEach(m => z.TypeName = z.TypeName.Replace(m.Key, m.Value))))
                 .Build())
             .ToArray();
 
