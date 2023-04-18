@@ -532,7 +532,7 @@ return this;");
         string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
 #pragma warning disable CS8603 // Possible null reference return.
 _property1Delegate = new System.Lazy<string>(() => string.Empty);
-_property3Delegate = new System.Lazy<string?>(() => default);
+_property3Delegate = new System.Lazy<string?>(() => default(string?));
 #pragma warning restore CS8603 // Possible null reference return.");
         actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
         string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"#pragma warning disable CS8604 // Possible null reference argument.
@@ -558,7 +558,7 @@ return new TestClass(Property1, Property2, Property3);
         string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
 #pragma warning disable CS8603 // Possible null reference return.
 _property1Delegate = new (() => string.Empty);
-_property3Delegate = new (() => default);
+_property3Delegate = new (() => default(string?));
 #pragma warning restore CS8603 // Possible null reference return.");
     }
 

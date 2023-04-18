@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Objects.Extensions;
+﻿using System.Net.NetworkInformation;
+
+namespace ModelFramework.Objects.Extensions;
 
 public static class StringExtensions
 {
@@ -65,18 +67,21 @@ public static class StringExtensions
 
     public static string GetDefaultValue(this string typeName, bool isNullable)
     {
-        var formattedTypeName = typeName.FixTypeName();
-        if (formattedTypeName.IsStringTypeName() && !isNullable)
+        if ((typeName.IsStringTypeName() || typeName == "string") && !isNullable)
         {
             return "string.Empty";
         }
 
-        if (formattedTypeName.IsObjectTypeName() && !isNullable)
+        if ((typeName.IsObjectTypeName() || typeName == "object") && !isNullable)
         {
             return "new System.Object()";
         }
 
-        return "default";
+        var nullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith("System.Nullable")
+            ? "?"
+            : string.Empty;
+
+        return $"default({typeName}{nullableSuffix})";
     }
 
     public static string AppendNullableAnnotation(this string instance,

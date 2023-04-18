@@ -289,7 +289,7 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = string.Empty;
-            Property3 = default;
+            Property3 = default(MyCustomType);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -416,7 +416,7 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = string.Empty;
-            Property3 = default;
+            Property3 = default(MyCustomType);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -1724,7 +1724,7 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            Static = default;
+            Static = default(System.Boolean);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -2856,7 +2856,7 @@ namespace MyNamespace
         public MyRecordBuilder()
         {
             Property1 = string.Empty;
-            Property2 = default;
+            Property2 = default(System.Boolean);
         }
     }
 

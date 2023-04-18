@@ -321,8 +321,23 @@ public static partial class TypeBaseEtensions
 
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.GenerationSettings.UseLazyInitialization
-            ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {property.GetDefaultValue()});"
+            ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {GetNewBulderExpression(property, settings)});"
             : $"{property.Name} = {property.GetDefaultValue()};";
+
+    private static string GetNewBulderExpression(IClassProperty property, ImmutableBuilderClassSettings settings)
+    {
+        var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
+        if (md != null && md.Value != null)
+        {
+            if (md.Value is Literal literal && literal.Value != null)
+            {
+                return literal.Value;
+            }
+            return md.Value.CsharpFormat();
+        }
+
+        return CreateLazyPropertyTypeName(property, settings).GetDefaultValue(property.IsNullable);
+    }
 
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.UseTargetTypeNewExpressions

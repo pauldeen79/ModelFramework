@@ -31,12 +31,18 @@ public class StringExtensionsTests
     }
 
     [Theory,
-        InlineData("System.String", true, "default"),
+        InlineData("System.String", true, "default(System.String?)"),
         InlineData("System.String", false, "string.Empty"),
-        InlineData("System.Object", true, "default"),
+        InlineData("string", true, "default(string?)"),
+        InlineData("string?", true, "default(string?)"),
+        InlineData("string", false, "string.Empty"),
+        InlineData("System.Object", true, "default(System.Object?)"),
         InlineData("System.Object", false, "new System.Object()"),
-        InlineData("System.Int32", false, "default"),
-        InlineData("System.Int32", true, "default")]
+        InlineData("object", true, "default(object?)"),
+        InlineData("object?", true, "default(object?)"),
+        InlineData("object", false, "new System.Object()"),
+        InlineData("System.Int32", false, "default(System.Int32)"),
+        InlineData("System.Int32", true, "default(System.Int32?)")]
     public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, string expected)
     {
         // Act

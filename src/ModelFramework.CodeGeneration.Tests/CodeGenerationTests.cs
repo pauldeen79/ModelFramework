@@ -398,7 +398,7 @@ namespace Test.Builders
         public TestClassBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _testPropertyDelegate = new (() => default);
+            _testPropertyDelegate = new (() => default(TestClassBuilder));
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -516,7 +516,7 @@ namespace Test.Builders
         public TestClassBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _testPropertyDelegate = new (() => default);
+            _testPropertyDelegate = new (() => default(T));
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -624,7 +624,7 @@ namespace MyNamespace.Domain.Builders
         {
             SubTypes = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _parentTypeDelegate = new (() => default);
+            _parentTypeDelegate = new (() => default(MyNamespace.Domain.Builders.MyClassBuilder?));
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
