@@ -404,7 +404,6 @@ public static class TypeExtensions
 
             index++;
             builder.Append(GetTypeName(arg, declaringType));
-            if (builder.ToString().Contains("Result<T")) System.Diagnostics.Debugger.Break();
             if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
