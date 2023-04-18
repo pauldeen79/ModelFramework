@@ -24,3 +24,8 @@ public partial class TypeBaseBuilder<TBuilder, TEntity>
         ? Name.ToString()
         : $"{Namespace}.{Name}";
 }
+
+public partial class TypeBaseBuilder
+{
+    public string GetFullName() => $"{Namespace.ToString().GetNamespacePrefix()}{Name}";
+}

@@ -72,4 +72,30 @@ public class ClassBuilderTests
         // Assert
         result.Should().Be("MyNamespace.Name");
     }
+
+    [Fact]
+    public void Can_Get_FullName_Without_Namespace()
+    {
+        // Arrange
+        var builder = new ClassBuilder().WithName("Test");
+
+        // Act
+        var fullName = builder.GetFullName();
+
+        // Assert
+        fullName.Should().Be("Test");
+    }
+
+    [Fact]
+    public void Can_Get_FullName_With_Namespace()
+    {
+        // Arrange
+        var builder = new ClassBuilder().WithNamespace("MyNamespace").WithName("Test");
+
+        // Act
+        var fullName = builder.GetFullName();
+
+        // Assert
+        fullName.Should().Be("MyNamespace.Test");
+    }
 }
