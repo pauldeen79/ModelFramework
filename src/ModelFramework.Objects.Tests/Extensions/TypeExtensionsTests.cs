@@ -54,6 +54,54 @@ public class TypeExtensionsTests
     }
 
     [Fact]
+    public void ToInterface_Maps_Property_Type_With_Double_Generic_Argument_Correctly()
+    {
+        // Act
+        var actual = typeof(IMyGenericInterface<>).ToInterface();
+
+        // Assert
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.Object,T?>");
+        actual.Properties.Single().IsNullable.Should().BeTrue();
+    }
+
+    [Fact]
+    public void ToInterface_Maps_Property_Type_With_Double_Generic_Argument_Correctly_Two()
+    {
+        // Act
+        var actual = typeof(IMyOtherGenericInterface<>).ToInterface();
+
+        // Assert
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.Object?,T?>");
+        actual.Properties.Single().IsNullable.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ToInterface_Maps_Property_Type_With_Double_Generic_Argument_Correctly_Three()
+    {
+        // Act
+        var actual = typeof(IMyOtherOtherGenericInterface<>).ToInterface();
+
+        // Assert
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.Object?,T>");
+        actual.Properties.Single().IsNullable.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ToInterface_Maps_Property_Type_With_Double_Generic_Argument_Correctly_Four()
+    {
+        // Act
+        var actual = typeof(IMyOtherOtherOtherGenericInterface<>).ToInterface();
+
+        // Assert
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.Object?,T>");
+        actual.Properties.Single().IsNullable.Should().BeTrue();
+    }
+
+    [Fact]
     public void ToClass_Maps_Field_Type_With_Nullable_Generic_Argument_Correctly()
     {
         // Act
@@ -87,6 +135,18 @@ public class TypeExtensionsTests
         actual.Properties.Should().ContainSingle();
         actual.Properties.Single().TypeName.Should().Be("System.String");
         actual.Properties.Single().IsNullable.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ToClass_Maps_Property_Type_With_Double_Generic_Arguments_Correctly()
+    {
+        // Act
+        var actual = typeof(MyDoubleGenericClass).ToClass();
+
+        // Assert
+        actual.Properties.Should().ContainSingle();
+        actual.Properties.Single().TypeName.Should().Be("System.Func<System.String,System.Collections.Generic.KeyValuePair<System.String,System.Object?>>");
+        actual.Properties.Single().IsNullable.Should().BeTrue();
     }
 
     [Fact]
@@ -159,7 +219,33 @@ public class MyClass
 #pragma warning restore CA1051 // Do not declare visible instance fields
 }
 
+[ExcludeFromCodeCoverage]
+public class MyDoubleGenericClass
+{
+    public Func<string, KeyValuePair<string, object?>>? Property { get; set; }
+}
+
 public interface IMyNonNullableGenericPropertyInterface
 {
     Func<object, object?> Property { get; }
+}
+
+public interface IMyGenericInterface<T>
+{
+    Func<object, T?>? Property { get; }
+}
+
+public interface IMyOtherGenericInterface<T>
+{
+    Func<object?, T?> Property { get; }
+}
+
+public interface IMyOtherOtherGenericInterface<T>
+{
+    Func<object?, T> Property { get; }
+}
+
+public interface IMyOtherOtherOtherGenericInterface<T>
+{
+    Func<object?, T>? Property { get; }
 }

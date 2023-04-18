@@ -403,12 +403,12 @@ public static class TypeExtensions
             }
 
             index++;
-            builder.Append(GetTypeName(arg, declaringType));
-            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
+            builder.Append(GetTypeName(arg, type));
+            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }
-            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, type, type.CustomAttributes, index))
+            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, type, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }
