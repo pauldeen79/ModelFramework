@@ -2212,11 +2212,6 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
         }
 
-        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
-        {
-            return BuildTyped();
-        }
-
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
             AdditionalProperty = additionalProperty;
@@ -2305,11 +2300,6 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
         {
             return new ModelFramework.Generators.Objects.Tests.POC.InheritedClass(AdditionalProperty, BaseProperty);
-        }
-
-        public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
-        {
-            return BuildTyped();
         }
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)

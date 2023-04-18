@@ -942,11 +942,6 @@ namespace MyNamespace.Domain.Builders
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public override MyNamespace.Domain.MyBaseClass Build()
-        {
-            return BuildTyped();
-        }
-
         public MyDerivedClassBuilder WithRequiredDomainProperty(MyNamespace.Domain.Builders.MyClassBuilder requiredDomainProperty)
         {
             RequiredDomainProperty = requiredDomainProperty;
@@ -1079,7 +1074,7 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-    public static class MyClassBuilderFactory
+    public static partial class MyClassBuilderFactory
     {
         public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
         {
@@ -1125,7 +1120,7 @@ using System.Text;
 
 namespace MyNamespace.Domain.Builders
 {
-    public static class MyClassBuilderFactory
+    public static partial class MyClassBuilderFactory
     {
         public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
         {

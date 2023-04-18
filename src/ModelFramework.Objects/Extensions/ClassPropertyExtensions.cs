@@ -82,17 +82,7 @@ public static class ClassPropertyExtensions
             return md.Value.CsharpFormat();
         }
 
-        if (property.TypeName.IsStringTypeName() && !property.IsNullable)
-        {
-            return "string.Empty";
-        }
-
-        if (property.TypeName.IsObjectTypeName() && !property.IsNullable)
-        {
-            return "new object()";
-        }
-
-        return "default";
+        return property.TypeName.GetDefaultValue(property.IsNullable);
     }
 
     internal static IClassProperty EnsureParentTypeFullName(this IClassProperty property, IClass parentClass)

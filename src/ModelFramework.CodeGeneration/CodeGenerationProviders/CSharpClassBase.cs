@@ -521,6 +521,7 @@ public abstract class CSharpClassBase : ClassBase
                 .WithName(namespaceSettings.ClassName)
                 .WithNamespace(namespaceSettings.ClassNamespace)
                 .WithStatic()
+                .WithPartial()
                 .AddFields(new ClassFieldBuilder()
                     .WithName("registeredTypes")
                     .WithStatic()

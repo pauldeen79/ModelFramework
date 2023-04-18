@@ -66,10 +66,13 @@ public static partial class TypeBaseEtensions
             .AddProperties(GetImmutableBuilderClassProperties(instance, settings))
             .AddAttributes(instance.Attributes.Select(x => new AttributeBuilder(x)))
             .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
-            .AddMethods(new ClassMethodBuilder()
-                .WithName("Build")
-                .WithAbstract()
-                .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)))
+            .AddMethods
+            (
+                new ClassMethodBuilder()
+                    .WithName("Build")
+                    .WithAbstract()
+                    .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
+            )
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
     }
@@ -426,7 +429,7 @@ public static partial class TypeBaseEtensions
                 .WithOverride(settings.IsBuilderForOverrideEntity)
                 .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings) + instance.GetGenericTypeArgumentsString()), settings);
 
-            if (settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity)
+            if (settings.IsBuilderForAbstractEntity)
             {
                 yield return new ClassMethodBuilder()
                     .WithName("Build")

@@ -63,6 +63,22 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
+    public static string GetDefaultValue(this string typeName, bool isNullable)
+    {
+        var formattedTypeName = typeName.FixTypeName();
+        if (formattedTypeName.IsStringTypeName() && !isNullable)
+        {
+            return "string.Empty";
+        }
+
+        if (formattedTypeName.IsObjectTypeName() && !isNullable)
+        {
+            return "new System.Object()";
+        }
+
+        return "default";
+    }
+
     public static string AppendNullableAnnotation(this string instance,
                                                   ITypeContainer typeContainer,
                                                   bool enableNullableReferenceTypes)

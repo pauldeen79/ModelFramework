@@ -29,4 +29,20 @@ public class StringExtensionsTests
         // Assert
         actual.Should().Be("MyClass");
     }
+
+    [Theory,
+        InlineData("System.String", true, "default"),
+        InlineData("System.String", false, "string.Empty"),
+        InlineData("System.Object", true, "default"),
+        InlineData("System.Object", false, "new System.Object()"),
+        InlineData("System.Int32", false, "default"),
+        InlineData("System.Int32", true, "default")]
+    public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, string expected)
+    {
+        // Act
+        var actual = input.GetDefaultValue(isNullable);
+
+        // Assert
+        actual.Should().Be(expected);
+    }
 }
