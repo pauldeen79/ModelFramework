@@ -191,7 +191,12 @@ public static partial class TypeBaseEtensions
                     .Where(x => x.TypeName.IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(settings, x)};")
             )
-            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes ? new[] { "#pragma warning disable CS8603 // Possible null reference return." } : Array.Empty<string>())
+            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
+                ? new[]
+                {
+                    "#pragma warning disable CS8603 // Possible null reference return."
+                }
+                : Array.Empty<string>())
             .AddLiteralCodeStatements
             (
                 instance.Properties
@@ -201,7 +206,12 @@ public static partial class TypeBaseEtensions
                         && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization))
                     .Select(x => GenerateDefaultValueStatement(x, settings))
             )
-            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes ? new[] { "#pragma warning restore CS8603 // Possible null reference return." } : Array.Empty<string>());
+            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
+                ? new[]
+                {
+                    "#pragma warning restore CS8603 // Possible null reference return."
+                }
+                : Array.Empty<string>());
 
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
@@ -320,10 +330,10 @@ public static partial class TypeBaseEtensions
         => string.Format
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                property.TypeName,
-                property.TypeName.GetGenericArguments(),
-                property.TypeName.GetClassName(),
-                property.TypeName.GetGenericArguments().GetClassName()
+                property.TypeName,                                     // 0
+                property.TypeName.GetGenericArguments(),               // 1
+                property.TypeName.GetClassName(),                      // 2
+                property.TypeName.GetGenericArguments().GetClassName() // 3
             )
             .GetCsharpFriendlyTypeName()
             .AppendNullableAnnotation(property, settings.TypeSettings.EnableNullableReferenceTypes);
@@ -455,12 +465,20 @@ public static partial class TypeBaseEtensions
 
     private static string[] CreatePragmaWarningDisableStatements(ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-            ? new[] { "#pragma warning disable CS8604 // Possible null reference argument." }
+            ? new[]
+            {
+                "#pragma warning disable CS8604 // Possible null reference argument.",
+                "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.",
+            }
             : Array.Empty<string>();
 
     private static string[] CreatePragmaWarningRestoreStatements(ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-            ? new[] { "#pragma warning restore CS8604 // Possible null reference argument." }
+            ? new[]
+            {
+                "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
+                "#pragma warning restore CS8604 // Possible null reference argument.",
+            }
             : Array.Empty<string>();
 
     private static ClassMethodBuilder FillMethod(

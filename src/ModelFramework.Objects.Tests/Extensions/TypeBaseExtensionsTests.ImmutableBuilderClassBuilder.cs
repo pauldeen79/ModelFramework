@@ -470,8 +470,7 @@ return this;");
         var actual = cls.ToImmutableBuilderClass(settings);
 
         // Assert
-        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo(new[]
-        {
+        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo(
             "Build",
             "WithProperty1",
             "AddProperty2",
@@ -479,7 +478,7 @@ return this;");
             "WithProperty3",
             "AddProperty4",
             "AddProperty4"
-        });
+        );
         actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
         string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"return new MyNamespace.MyRecord(Property1, Property2, Property3?.Build(), Property4.Select(x => x.Build()));");
     }
@@ -501,10 +500,7 @@ return this;");
         var actual = cls.ToImmutableBuilderClass(settings);
 
         // Assert
-        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo(new[]
-        {
-            "Build"
-        });
+        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo("Build");
         actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
         string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"return new MyNamespace.MyRecord(Property1, Property2, Property3?.Build(), Property4.Select(x => x.Build()));");
     }
@@ -540,7 +536,9 @@ _property3Delegate = new System.Lazy<string?>(() => default);
 #pragma warning restore CS8603 // Possible null reference return.");
         actual.Methods.Where(x => x.Name == "Build").Should().HaveCount(1);
         string.Join(Environment.NewLine, actual.Methods.First(x => x.Name == "Build").CodeStatements.Select(x => x.ToString())).Should().Be(@"#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 return new TestClass(Property1, Property2, Property3);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8604 // Possible null reference argument.");
     }
 
@@ -582,8 +580,7 @@ _property1Delegate = new (() => source.Property1);
 Property2.AddRange(source.Property2);
 _property3Delegate = new (() => source.Property3);");
         actual.Methods.Should().HaveCount(7);
-        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo(new[]
-        {
+        actual.Methods.Select(x => x.Name).Should().BeEquivalentTo(
             "Build",
             "WithProperty1",
             "WithProperty1",
@@ -591,7 +588,7 @@ _property3Delegate = new (() => source.Property3);");
             "AddProperty2",
             "WithProperty3",
             "WithProperty3"
-        });
+        );
         string.Join(Environment.NewLine, actual.Methods.ElementAt(1).CodeStatements.Select(x => x.ToString())).Should().Be(@"Property1 = property1;
 return this;");
         string.Join(Environment.NewLine, actual.Methods.ElementAt(2).CodeStatements.Select(x => x.ToString())).Should().Be(@"_property1Delegate = new (property1Delegate);

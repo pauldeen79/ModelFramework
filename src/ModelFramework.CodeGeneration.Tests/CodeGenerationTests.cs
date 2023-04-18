@@ -223,14 +223,18 @@ namespace Test.Builders
         public Test.TestClass Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new Test.TestClass(TestProperty?.ToString());
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var instance = new Test.TestClassBase(TestProperty?.ToString());
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
@@ -373,7 +377,9 @@ namespace Test.Builders
         public Test.TestClass Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new Test.TestClass(TestProperty?.Build());
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -489,7 +495,9 @@ namespace Test.Builders
         public Test.TestClass<T> Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new Test.TestClass<T>(TestProperty);
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -583,7 +591,9 @@ namespace MyNamespace.Domain.Builders
         public MyNamespace.Domain.MyClass Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new MyNamespace.Domain.MyClass(SubTypes.Select(x => x.Build()), ParentType?.Build());
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
@@ -926,7 +936,9 @@ namespace MyNamespace.Domain.Builders
         public override MyNamespace.Domain.MyDerivedClass BuildTyped()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children);
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 

@@ -51,7 +51,7 @@ public class EnumerableOfMetadataExtensionsTests
         var actual = lst.GetStringValues("name");
 
         // Assert
-        actual.Should().BeEquivalentTo(new[] { "value", "second value" });
+        actual.Should().BeEquivalentTo("value", "second value");
     }
 
     [Fact]

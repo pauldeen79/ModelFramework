@@ -12,7 +12,7 @@ public class InterfaceBuilderTests
         var actual = sut.AddInterfaces(typeof(INotifyPropertyChanged));
 
         // Assert
-        actual.Interfaces.Should().BeEquivalentTo(new[] { typeof(INotifyPropertyChanged).FullName });
+        actual.Interfaces.Should().BeEquivalentTo(typeof(INotifyPropertyChanged).FullName);
     }
 
     [Fact]
@@ -25,11 +25,10 @@ public class InterfaceBuilderTests
         var actual = sut.AddUsings("ModelFramework.Objects.Contracts", "ModelFramework.Database.Contracts");
 
         // Assert
-        actual.Metadata.Select(x => $"{x.Name} = {x.Value}").Should().BeEquivalentTo(new[]
-        {
+        actual.Metadata.Select(x => $"{x.Name} = {x.Value}").Should().BeEquivalentTo(
             $"{MetadataNames.CustomUsing} = ModelFramework.Objects.Contracts",
             $"{MetadataNames.CustomUsing} = ModelFramework.Database.Contracts"
-        });
+        );
     }
 
     [Fact]
@@ -42,10 +41,9 @@ public class InterfaceBuilderTests
         var actual = sut.AddNamespacesToAbbreviate("ModelFramework.Objects.Contracts", "ModelFramework.Database.Contracts");
 
         // Assert
-        actual.Metadata.Select(x => $"{x.Name} = {x.Value}").Should().BeEquivalentTo(new[]
-        {
+        actual.Metadata.Select(x => $"{x.Name} = {x.Value}").Should().BeEquivalentTo(
             $"{MetadataNames.NamespaceToAbbreviate} = ModelFramework.Objects.Contracts",
             $"{MetadataNames.NamespaceToAbbreviate} = ModelFramework.Database.Contracts"
-        });
+        );
     }
 }

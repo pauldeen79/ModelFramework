@@ -3848,14 +3848,18 @@ namespace MyNamespace
         public MyNamespace.MyRecord Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new MyNamespace.MyRecord(Property1);
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
             #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var instance = new MyNamespace.MyRecordBase(Property1);
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
