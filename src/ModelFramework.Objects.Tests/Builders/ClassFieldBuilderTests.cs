@@ -3,7 +3,7 @@
 public class ClassFieldBuilderTests
 {
     [Fact]
-    public void ToString_Gives_Right_Result_With_ParentTypeFullName_Filled()
+    public void ToString_Gives_Right_Result_With_ParentTypeFullName_Empty()
     {
         // Arrange
         var sut = new ClassFieldBuilder().WithName("Name").WithType(typeof(int));
@@ -16,7 +16,7 @@ public class ClassFieldBuilderTests
     }
 
     [Fact]
-    public void ToString_Gives_Right_Result_With_ParentTypeFullName_Empty()
+    public void ToString_Gives_Right_Result_With_ParentTypeFullName_Filled()
     {
         // Arrange
         var sut = new ClassFieldBuilder().WithName("Name").WithType(typeof(int)).WithParentTypeFullName("MyParent");

@@ -121,6 +121,7 @@ public abstract class CSharpClassBase : ClassBase
         (
             x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
+                .With(x => Visit(x))
                 .Build()
         ).ToArray();
 
@@ -141,6 +142,7 @@ public abstract class CSharpClassBase : ClassBase
         (
             x => CreateNonGenericBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
+                .With(x => Visit(x))
                 .Build()
         ).ToArray();
 
@@ -170,14 +172,15 @@ public abstract class CSharpClassBase : ClassBase
                     x => x.Methods.ForEach(y => y.WithTypeName("T")
                                                  .With(z => z.Parameters.First().WithTypeName(z.TypeName)))
                 )
+                .With(x => Visit(x))
                 .BuildTyped()
         )
         .ToArray();
 
     protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
         => GetImmutableClasses(types.Select(x => x.IsInterface
-            ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).Build()
-            : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).Build()).ToArray(), entitiesNamespace);
+            ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
+            : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
     {
@@ -225,6 +228,7 @@ public abstract class CSharpClassBase : ClassBase
                     .WithName(t.Name)
                     .WithNamespace(t.FullName.GetNamespaceWithDefault())
                 .With(x => FixImmutableBuilderProperties(x))
+                .With(x => Visit(x))
                 .BuildTyped()
             )
             .ToArray();
@@ -243,6 +247,7 @@ public abstract class CSharpClassBase : ClassBase
             .WithNamespace(@namespace)
             .WithName(type.GetEntityClassName())
             .With(x => FixImmutableClassProperties(x))
+            .With(x => Visit(x))
             .BuildTyped();
 
     protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
@@ -274,6 +279,18 @@ public abstract class CSharpClassBase : ClassBase
                 property.AddCollectionBackingFieldOnImmutableClass(BuilderClassCollectionType);
             }
         }
+    }
+
+    /// <summary>
+    /// Allows to modify a generated class using the Visitor pattern
+    /// </summary>
+    /// <typeparam name="TBuilder">Builder type</typeparam>
+    /// <typeparam name="TEntity">Entity type</typeparam>
+    /// <param name="typeBaseBuilder">Builder instance to visit.</param>
+    protected virtual void Visit<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+    where TEntity : ITypeBase
+    where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+    {
     }
 
     protected virtual void FixImmutableBuilderProperty(ClassPropertyBuilder property, string typeName)
@@ -556,8 +573,10 @@ public abstract class CSharpClassBase : ClassBase
             .WithName(typeBase.GetEntityClassName())
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableBuilderProperties(x))
+            .With(x => Visit(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings(ArgumentValidationType.None))
+            .With(x => Visit(x))
             .BuildTyped();
 
     private ITypeBase CreateImmutableClassFromInterface(IInterface iinterface, string entitiesNamespace)
@@ -565,11 +584,13 @@ public abstract class CSharpClassBase : ClassBase
             .WithName(iinterface.GetEntityClassName())
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
+            .With(x => Visit(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
             .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
+            .With(x => Visit(x))
             .Build();
 
     private ITypeBase CreateImmutableOverrideClassFromInterface(IInterface iinterface, string entitiesNamespace)
@@ -577,31 +598,37 @@ public abstract class CSharpClassBase : ClassBase
             .WithName(iinterface.GetEntityClassName())
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
+            .With(x => Visit(x))
             .Build()
             .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
             .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
+            .With(x => Visit(x))
             .Build();
 
     private ITypeBase CreateImmutableClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
+            .With(x => Visit(x))
             .Build()
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
+            .With(x => Visit(x))
             .Build();
 
     private ITypeBase CreateImmutableOverrideClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
+            .With(x => Visit(x))
             .Build()
             .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor))
             .WithRecord()
             .WithPartial()
+            .With(x => Visit(x))
             .Build();
 
     private bool TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(string typeName)

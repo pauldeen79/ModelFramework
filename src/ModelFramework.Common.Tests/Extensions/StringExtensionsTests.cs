@@ -288,4 +288,18 @@ public class StringExtensionsTests
         // Assert
         actual.Should().Be(expectedResult);
     }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("System.Object", "")]
+    [InlineData("ExpressionFramework.Domain.Contracts.ITypedExpression<System.Object>", "System.Object")]
+    [InlineData("ExpressionFramework.Domain.Contracts.ITypedExpression<System.Collections.Generic.IEnumerable<System.Object>>", "System.Collections.Generic.IEnumerable<System.Object>")]
+    public void GetGenericArguments_Returns_Correct_Result(string input, string expected)
+    {
+        // Act
+        var result = input.GetGenericArguments();
+
+        // Assert
+        result.Should().Be(expected);
+    }
 }

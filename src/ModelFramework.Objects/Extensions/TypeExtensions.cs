@@ -105,7 +105,7 @@ public static class TypeExtensions
     private static IEnumerable<string> GetInterfaces(Type instance)
         => instance.GetInterfaces()
                    .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))
-                   .Select(t => t.FullName);
+                   .Select(t => t.GetTypeName(instance));
 
     private static IEnumerable<ClassFieldBuilder> GetFields(
         Type instance,
@@ -114,7 +114,7 @@ public static class TypeExtensions
             (
                 f => new ClassFieldBuilder()
                     .WithName(f.Name)
-                    .WithTypeName(GetTypeName(f.FieldType, f))
+                    .WithTypeName(f.FieldType.GetTypeName(f))
                     .WithStatic(f.IsStatic)
                     .WithConstant(f.IsLiteral)
                     .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object" ? string.Empty : f.DeclaringType.FullName)
@@ -133,7 +133,7 @@ public static class TypeExtensions
         (
             p => new ClassPropertyBuilder()
                 .WithName(p.Name)
-                .WithTypeName(GetTypeName(p.PropertyType, p))
+                .WithTypeName(p.PropertyType.GetTypeName(p))
                 .WithHasGetter(p.GetGetMethod() != null)
                 .WithHasSetter(p.GetSetMethod() != null)
                 .WithHasInitializer(p.IsInitOnly())
@@ -164,7 +164,7 @@ public static class TypeExtensions
                 (
                     m => new ClassMethodBuilder()
                         .WithName(m.Name)
-                        .WithTypeName(GetTypeName(m.ReturnType, m))
+                        .WithTypeName(m.ReturnType.GetTypeName(m))
                         .WithVisibility(m.IsPublic
                             ? Visibility.Public
                             : Visibility.Private)
@@ -178,7 +178,7 @@ public static class TypeExtensions
                         (
                             p => new ParameterBuilder()
                                 .WithName(p.Name)
-                                .WithTypeName(GetTypeName(p.ParameterType, m))
+                                .WithTypeName(p.ParameterType.GetTypeName(m))
                                 .WithIsNullable(p.IsNullable())
                                 .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                                 .AddAttributes(GetAttributes(p.GetCustomAttributes(true), attributeInitializeDelegate))
@@ -379,7 +379,7 @@ public static class TypeExtensions
     private static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") != null;
 
-    private static string GetTypeName(Type type, MemberInfo declaringType)
+    public static string GetTypeName(this Type type, MemberInfo declaringType)
     {
         if (!type.IsGenericType)
         {
@@ -403,12 +403,12 @@ public static class TypeExtensions
             }
 
             index++;
-            builder.Append(GetTypeName(arg, declaringType));
-            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
+            builder.Append(arg.GetTypeName(type));
+            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }
-            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, type, type.CustomAttributes, index))
+            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, type, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }
