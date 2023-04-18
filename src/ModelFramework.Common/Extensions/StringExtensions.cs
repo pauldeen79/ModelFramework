@@ -126,10 +126,10 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        var comma = value.IndexOf(",", open);
+        var comma = value.LastIndexOf(",");
         if (comma == -1)
         {
-            comma = value.IndexOf(">", open);
+            comma = value.LastIndexOf(">");
         }
 
         if (comma == -1)
