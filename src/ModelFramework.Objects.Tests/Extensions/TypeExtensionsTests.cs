@@ -175,6 +175,20 @@ public class TypeExtensionsTests
     }
 
     [Fact]
+    public void ToInterface_Maps_Interface_Type_With_Nullable_Generic_Argument_Correctly()
+    {
+        // Act
+        var actual = typeof(IMyInheritedInterface).ToInterface();
+
+        // Assert
+        actual.Interfaces.Should().BeEquivalentTo(
+        "ModelFramework.Objects.Tests.Extensions.IMyGenericInterface<System.Object?>",
+        "ModelFramework.Objects.Tests.Extensions.IMyGenericInterface<System.Collections.Generic.KeyValuePair<System.Int32,System.Object?>>",
+        "ModelFramework.Objects.Tests.Extensions.IMyGenericInterface<System.Nullable<System.Collections.Generic.KeyValuePair<System.Int32,System.Object?>>?>"
+        );
+    }
+
+    [Fact]
     public void ToClass_Can_Map_CustomAttributes_Correctly()
     {
         // Arrange
@@ -248,4 +262,11 @@ public interface IMyOtherOtherGenericInterface<T>
 public interface IMyOtherOtherOtherGenericInterface<T>
 {
     Func<object?, T>? Property { get; }
+}
+
+public interface IMyInheritedInterface
+    : IMyGenericInterface<object?>,
+      IMyGenericInterface<KeyValuePair<int, object?>>,
+      IMyGenericInterface<KeyValuePair<int, object>?>
+{
 }

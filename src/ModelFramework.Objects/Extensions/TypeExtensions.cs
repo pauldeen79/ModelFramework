@@ -105,7 +105,7 @@ public static class TypeExtensions
     private static IEnumerable<string> GetInterfaces(Type instance)
         => instance.GetInterfaces()
                    .Where(t => !(instance.IsRecord() && t.FullName.StartsWith("System.IEquatable`1[[" + instance.FullName)))
-                   .Select(t => t.FullName);
+                   .Select(t => GetTypeName(t, instance));
 
     private static IEnumerable<ClassFieldBuilder> GetFields(
         Type instance,
