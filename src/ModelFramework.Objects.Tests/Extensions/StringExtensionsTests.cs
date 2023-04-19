@@ -42,7 +42,11 @@ public class StringExtensionsTests
         InlineData("object?", true, "default(object?)"),
         InlineData("object", false, "new System.Object()"),
         InlineData("System.Int32", false, "default(System.Int32)"),
-        InlineData("System.Int32", true, "default(System.Int32?)")]
+        InlineData("System.Int32", true, "default(System.Int32?)"),
+        InlineData("System.Collections.IEnumerable", false, "System.Linq.Enumerable.Empty<object>()"),
+        InlineData("System.Collections.IEnumerable", true, "default(System.Collections.IEnumerable?)"),
+        InlineData("System.Collections.Generic.IEnumerable<int>", false, "System.Linq.Enumerable.Empty<int>()"),
+        InlineData("System.Collections.Generic.IEnumerable<int>", true, "default(System.Collections.Generic.IEnumerable<int>?)")]
     public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, string expected)
     {
         // Act

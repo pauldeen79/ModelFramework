@@ -77,6 +77,16 @@ public static class StringExtensions
             return "new System.Object()";
         }
 
+        if (typeName == "System.Collections.IEnumerable" && !isNullable)
+        {
+            return "System.Linq.Enumerable.Empty<object>()";
+        }
+
+        if (typeName.WithoutProcessedGenerics() == "System.Collections.Generic.IEnumerable" && !isNullable)
+        {
+            return $"System.Linq.Enumerable.Empty<{typeName.GetGenericArguments()}>()";
+        }
+
         var nullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith("System.Nullable")
             ? "?"
             : string.Empty;
