@@ -189,7 +189,7 @@ public class TypeExtensionsTests
     }
 
     [Fact]
-    public void ToClass_Can_Map_CustomAttributes_Correctly()
+    public void ToClass_Maps_CustomAttributes_Correctly()
     {
         // Arrange
         var settings = new ClassSettings(attributeInitializeDelegate: new Func<System.Attribute, AttributeBuilder>(a =>
@@ -214,6 +214,16 @@ public class TypeExtensionsTests
         actual.Properties.Should().ContainSingle();
         actual.Properties.Single().Attributes.Should().ContainSingle();
         actual.Properties.Single().Attributes.Single().Parameters.Should().HaveCount(2);
+    }
+
+    [Fact]
+    public void ToClass_Maps_Interfaces_Correcly_On_Generic_Class()
+    {
+        // Act
+        var actual = typeof(MyImplementedGenericClass<>).ToClass();
+
+        // Assert
+        actual.Interfaces.Should().BeEquivalentTo("ModelFramework.Objects.Tests.Extensions.IMyGenericInterface<T>");
     }
 }
 
@@ -269,4 +279,10 @@ public interface IMyInheritedInterface
       IMyGenericInterface<KeyValuePair<int, object?>>,
       IMyGenericInterface<KeyValuePair<int, object>?>
 {
+}
+
+[ExcludeFromCodeCoverage]
+public class MyImplementedGenericClass<T> : IMyGenericInterface<T>
+{
+    public Func<object, T?>? Property => throw new NotImplementedException();
 }

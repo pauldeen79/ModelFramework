@@ -408,7 +408,7 @@ public static class TypeExtensions
             {
                 builder.Append("?");
             }
-            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, type, declaringType.CustomAttributes, index))
+            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }
