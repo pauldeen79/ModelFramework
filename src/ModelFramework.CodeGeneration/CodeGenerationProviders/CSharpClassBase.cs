@@ -550,7 +550,7 @@ public abstract class CSharpClassBase : ClassBase
                     .WithTypeName($"{namespaceSettings.ClassNamespace}.{namespaceSettings.BuilderTypeName}")
                     .WithStatic()
                     .AddParameter("instance", namespaceSettings.ClassTypeName)
-                    .Chain(x =>
+                    .With(x =>
                     {
                         if (createLiteralCodeStatement != null && createLiteralCodeStatement.Length > 0)
                         {

@@ -2817,7 +2817,7 @@ namespace MyNamespace
         {
             cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
                 .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings())
-                .Chain(x => x.Methods.RemoveAll(x => x.Name.ToString() != "Build"))
+                .With(x => x.Methods.RemoveAll(x => x.Name.ToString() != "Build"))
                 .Build(),
             cls.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings())
         };
@@ -3207,13 +3207,14 @@ namespace MyNamespace
             {
                 Property1 = "Hello",
                 Property2 = false
-            }.GetType().ToClassBuilder()
-                .WithName("MyRecord")
-                .WithNamespace("MyNamespace")
-                .Build()
-                .ToImmutableClassBuilder(new ImmutableClassSettings())
-                .Chain(x => x.Attributes.Clear()) // needed to exclude compiler generated attributes, which are not included in the expectation (shared with another test)
-                .Build()
+            }.GetType()
+            .ToClassBuilder()
+            .WithName("MyRecord")
+            .WithNamespace("MyNamespace")
+            .Build()
+            .ToImmutableClassBuilder(new ImmutableClassSettings())
+            .With(x => x.Attributes.Clear()) // needed to exclude compiler generated attributes, which are not included in the expectation (shared with another test)
+            .Build()
         };
         var sut = new CSharpClassGenerator();
 
@@ -3360,7 +3361,7 @@ namespace MyNamespace
             x => new ClassBuilder(x.ToClass())
                 .WithName(x.Name.Substring(1))
                 .WithNamespace("EntitiesNamespace")
-                // here is where we normally .Chain(y => FixImmutableBuilderProperties(y))
+                // here is where we normally .With(y => FixImmutableBuilderProperties(y))
                 .Build()
                 .ToImmutableClassBuilder(settings)
                 .WithRecord()
