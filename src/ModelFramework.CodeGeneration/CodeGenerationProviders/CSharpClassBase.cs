@@ -23,12 +23,12 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual IClass? BaseClass => null;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
-        => parent != null
-        && typeBase != null
+        => parent is not null
+        && typeBase is not null
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)
             || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
             || GetModelAbstractBaseTyped().Any(x => x == parent.ParentTypeFullName.GetClassName())
-            || (BaseClass != null && $"I{typeBase.Name}" == BaseClass.Name));
+            || (BaseClass is not null && $"I{typeBase.Name}" == BaseClass.Name));
 
     protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => $"{ProjectName}.Domain";
@@ -210,7 +210,7 @@ public abstract class CSharpClassBase : ClassBase
 
     protected IClass[] GetClassesFromSameNamespace(Type type)
     {
-        if (type.FullName == null)
+        if (type.FullName is null)
         {
             throw new ArgumentException("Can't get classes from same namespace when the FullName of this type is null. Could not determine namespace.");
         }
@@ -218,7 +218,7 @@ public abstract class CSharpClassBase : ClassBase
         return type.Assembly.GetExportedTypes()
             .Where
             (
-                t => t.FullName != null
+                t => t.FullName is not null
                     && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault()
                     && t.GetProperties().Any()
             )
@@ -369,7 +369,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     private string? GetBuilderClassCollectionTypeName()
-        => BuilderClassCollectionType == null
+        => BuilderClassCollectionType is null
             ? null
             : BuilderClassCollectionType.WithoutGenerics();
 
@@ -400,7 +400,7 @@ public abstract class CSharpClassBase : ClassBase
             .Select(x => new { x.Key, x.Value })
             .FirstOrDefault(x => typeName.Contains($"{x.Key}."));
 
-        return match == null
+        return match is null
             ? typeName
             : typeName.Replace($"{match.Key}.", $"{match.Value}.");
     }
@@ -419,7 +419,7 @@ public abstract class CSharpClassBase : ClassBase
             .Select(x => new { x.Key, x.Value })
             .FirstOrDefault(x => builderFullName.StartsWith($"{x.Value}.", StringComparison.InvariantCulture));
 
-        return match == null
+        return match is null
             ? builderFullName.ReplaceSuffix("Builder", string.Empty, StringComparison.InvariantCulture)
             : builderFullName
                 .Replace($"{match.Value}.", $"{match.Key}.")
@@ -470,7 +470,7 @@ public abstract class CSharpClassBase : ClassBase
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
             allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
             constructorSettings: new(
-                validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass == null)),
+                validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
@@ -552,9 +552,9 @@ public abstract class CSharpClassBase : ClassBase
                     .AddParameter("instance", namespaceSettings.ClassTypeName)
                     .With(x =>
                     {
-                        if (createLiteralCodeStatement != null && createLiteralCodeStatement.Length > 0)
+                        if (!string.IsNullOrEmpty(createLiteralCodeStatement))
                         {
-                            x.AddLiteralCodeStatements(createLiteralCodeStatement);
+                            x.AddLiteralCodeStatements(createLiteralCodeStatement!);
                         }
                     })
                     .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(\"Unknown instance type: \" + instance.GetType().FullName);"),

@@ -5,7 +5,7 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
     public bool IsValid(ObjectHandlerRequest command, PropertyInfo propertyInfo)
     {
         var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
-        if (classPropertyBuilder != null)
+        if (classPropertyBuilder is not null)
         {
             if (propertyInfo.Name == nameof(ClassPropertyBuilder.GetterVisibility) && (!classPropertyBuilder.HasGetter || classPropertyBuilder.GetterVisibility == classPropertyBuilder.Visibility))
             {
@@ -39,21 +39,21 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
             return false;
         }
 
-        if (defaultValue == null && actualValue == null)
+        if (defaultValue is null && actualValue is null)
         {
             return false;
         }
 
-        return defaultValue == null
-            || actualValue == null
+        return defaultValue is null
+            || actualValue is null
             || !actualValue.Equals(defaultValue);
     }
 
     private static object? GetDefaultValue(ObjectHandlerRequest command, PropertyInfo propertyInfo)
     {
         var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
-        if (classPropertyBuilder != null && propertyInfo.Name.In(nameof(ClassPropertyBuilder.HasGetter),
-                                                                 nameof(ClassPropertyBuilder.HasSetter)))
+        if (classPropertyBuilder is not null && propertyInfo.Name.In(nameof(ClassPropertyBuilder.HasGetter),
+                                                                     nameof(ClassPropertyBuilder.HasSetter)))
         {
             // HasGetter and HasSetter are true by default on ClassPropertyBuilder
             return true;
@@ -77,7 +77,7 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
         }
         else
         {
-            return propertyInfo.PropertyType.IsValueType && Nullable.GetUnderlyingType(propertyInfo.PropertyType) == null
+            return propertyInfo.PropertyType.IsValueType && Nullable.GetUnderlyingType(propertyInfo.PropertyType) is null
                 ? Activator.CreateInstance(propertyInfo.PropertyType)
                 : null;
         }
