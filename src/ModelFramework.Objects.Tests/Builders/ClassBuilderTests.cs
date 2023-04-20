@@ -98,4 +98,30 @@ public class ClassBuilderTests
         // Assert
         fullName.Should().Be("MyNamespace.Test");
     }
+
+    [Fact]
+    public void Can_Make_Poco_Class_Readonly()
+    {
+        // Arrange
+        var builder = new ClassBuilder().AddProperties(new ClassPropertyBuilder().WithName("Test").WithType(typeof(bool)).AsWritable());
+
+        // Act
+        builder = builder.AsReadOnly();
+
+        // Assert
+        builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+    }
+
+    [Fact]
+    public void Can_Make_Immutable_Class_Writable()
+    {
+        // Arrange
+        var builder = new ClassBuilder().AddProperties(new ClassPropertyBuilder().WithName("Test").WithType(typeof(bool)).AsReadOnly());
+
+        // Act
+        builder = builder.AsWritable();
+
+        // Assert
+        builder.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+    }
 }

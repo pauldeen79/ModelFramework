@@ -93,6 +93,9 @@ public partial class ClassPropertyBuilder
     public ClassPropertyBuilder AsReadOnly()
         => WithHasSetter(false);
 
+    public ClassPropertyBuilder AsWritable()
+        => WithHasSetter();
+
     public ClassPropertyBuilder WithCustomGetterModifiers(string? customModifiers)
         => ReplaceMetadata(MetadataNames.PropertyGetterModifiers, customModifiers);
 

@@ -9,7 +9,10 @@ public partial class ClassBuilder
         => AddAttributes(new AttributeBuilder().WithName(typeof(ExcludeFromCodeCoverageAttribute).FullName));
 
     public ClassBuilder AsReadOnly()
-        => this.With(x => x.Properties.ForEach(x => x.AsReadOnly()));
+        => this.WithAll(x => x.Properties, x => x.AsReadOnly());
+
+    public ClassBuilder AsWritable()
+        => this.WithAll(x => x.Properties, x => x.AsWritable());
 
     public ClassBuilder AddBuilderCopyConstructorAdditionalArguments(params ParameterBuilder[] parameters)
         => AddMetadata(parameters.Select(x => new MetadataBuilder()
