@@ -233,7 +233,7 @@ public class TypeExtensionsTests
     {
         // Arrange
         var prop = GetType().GetProperty(nameof(MyProperty));
-        var type = prop.PropertyType;
+        var type = prop!.PropertyType;
 
         // Act
         var result = type.GetTypeName(prop);
