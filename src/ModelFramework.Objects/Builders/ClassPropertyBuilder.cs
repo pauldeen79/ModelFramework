@@ -141,7 +141,7 @@ public partial class ClassPropertyBuilder
             {
                 if (!string.IsNullOrEmpty(buildersNamespace))
                 {
-                    return "_{1}Delegate = new (() => new " + buildersNamespace + ".{5}Builder(source.{0}))";
+                    return "_{1}Delegate = new (() => new " + buildersNamespace + ".{10}Builder{9}(source.{0}))";
                 }
 
                 return string.IsNullOrEmpty(argumentType)
@@ -151,7 +151,7 @@ public partial class ClassPropertyBuilder
 
             if (!string.IsNullOrEmpty(buildersNamespace))
             {
-                return "_{1}Delegate = new System.Lazy<" + buildersNamespace + ".{5}Builder>(() => new " + buildersNamespace + ".{5}Builder(source.{0}))";
+                return "_{1}Delegate = new System.Lazy<" + buildersNamespace + ".{10}Builder{9}>(() => new " + buildersNamespace + ".{10}Builder{9}(source.{0}))";
             }
 
             return string.IsNullOrEmpty(argumentType)
@@ -161,7 +161,7 @@ public partial class ClassPropertyBuilder
 
         if (!string.IsNullOrEmpty(buildersNamespace))
         {
-            return "{0} = new " + buildersNamespace + ".{5}Builder(source.{0})";
+            return "{0} = new " + buildersNamespace + ".{10}Builder{9}(source.{0})";
         }
 
         return string.IsNullOrEmpty(argumentType)

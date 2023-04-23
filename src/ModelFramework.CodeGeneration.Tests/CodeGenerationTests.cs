@@ -532,6 +532,83 @@ namespace Test.Builders
     }
 
     [Fact]
+    public void Can_Generate_GenericArgument_Immutable_ClassBuilder()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<GenericArgumentBuilders>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Test.Builders
+{
+    public partial class TestClassBuilder<T>
+    {
+        public ModelFramework.Builders.MyGenericTypeBuilder<T> TestProperty
+        {
+            get
+            {
+                return _testPropertyDelegate.Value;
+            }
+            set
+            {
+                _testPropertyDelegate = new (() => value);
+            }
+        }
+
+        public Test.TestClass<T> Build()
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            return new Test.TestClass<T>(TestProperty.BuildTyped());
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public TestClassBuilder<T> WithTestProperty(ModelFramework.Builders.MyGenericTypeBuilder<T> testProperty)
+        {
+            TestProperty = testProperty;
+            return this;
+        }
+
+        public TestClassBuilder<T> WithTestProperty(System.Func<ModelFramework.Builders.MyGenericTypeBuilder<T>> testPropertyDelegate)
+        {
+            _testPropertyDelegate = new (testPropertyDelegate);
+            return this;
+        }
+
+        public TestClassBuilder()
+        {
+            #pragma warning disable CS8603 // Possible null reference return.
+            _testPropertyDelegate = new (() => new ModelFramework.Builders.Domain.MyGenericTypeBuilder<T>());
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public TestClassBuilder(Test.TestClass<T> source)
+        {
+            _testPropertyDelegate = new (() => new ModelFramework.Builders.Domain.MyGenericTypeBuilder<T>(source.TestProperty));
+        }
+
+        protected System.Lazy<ModelFramework.Builders.MyGenericTypeBuilder<T>> _testPropertyDelegate;
+    }
+}
+");
+    }
+
+    [Fact]
     public void NewCollectionTypeName_Is_Set_To_GenericList()
     {
         // Arrange
@@ -1373,6 +1450,42 @@ namespace MyNamespace.Domain.Builders
     }
 
     private sealed class GenericsBuilders : GenericsBase
+    {
+        public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
+    }
+
+    private abstract class GenericArgumentBase : CSharpClassBase
+    {
+        public override string Path => @"C:\Temp";
+        public override string DefaultFileName => "GeneratedCode.cs";
+        public override bool RecurseOnDeleteGeneratedFiles => false;
+        protected override string RootNamespace => "ModelFramework";
+        protected override string ProjectName => "ModelFramework";
+
+        protected override string GetFullBasePath() => string.Empty;
+
+        protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+        protected override bool EnableNullableContext => true;
+        protected override bool CreateCodeGenerationHeader => false;
+
+        protected ITypeBase[] GetModels() => new[]
+        {
+            new ClassBuilder()
+                .WithName("TestClass")
+                .WithNamespace("ModelFramework.Domain")
+                .AddGenericTypeArguments("T")
+                .AddProperties(new ClassPropertyBuilder().WithName("TestProperty").WithTypeName("ModelFramework.Domain.MyGenericType<T>"))
+                .Build()
+        };
+    }
+
+    ///private sealed class GenericArgumentRecords : GenericArgumentBase
+    ///{
+    ///    public override object CreateModel() => GetImmutableClasses(GetModels(), "Test");
+    ///}
+
+    private sealed class GenericArgumentBuilders : GenericArgumentBase
     {
         public override object CreateModel() => GetImmutableBuilderClasses(GetModels(), "Test", "Test.Builders");
     }

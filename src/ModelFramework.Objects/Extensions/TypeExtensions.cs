@@ -386,6 +386,13 @@ public static class TypeExtensions
             return type.FullName.FixTypeName().WhenNullOrEmpty(() => type.Name);
         }
 
+        var typeName = type.FullName.FixTypeName();
+        if (typeName.IsCollectionTypeName())
+        {
+            // for now, we will ignore nullability of the generic argument on generic lists
+            return $"{typeName.WithoutProcessedGenerics()}<{typeName.GetGenericArguments()}>";
+        }
+
         var builder = new StringBuilder();
         builder.Append(type.WithoutGenerics());
         builder.Append("<");
