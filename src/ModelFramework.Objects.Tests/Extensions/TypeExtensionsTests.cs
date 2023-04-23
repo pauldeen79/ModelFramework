@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.Objects.Tests.Extensions;
+﻿using System.Collections.ObjectModel;
+
+namespace ModelFramework.Objects.Tests.Extensions;
 
 public class TypeExtensionsTests
 {
@@ -225,6 +227,22 @@ public class TypeExtensionsTests
         // Assert
         actual.Interfaces.Should().BeEquivalentTo("ModelFramework.Objects.Tests.Extensions.IMyGenericInterface<T>");
     }
+
+    [Fact]
+    public void GetTypeName_Works_Correctly_On_IReadOnlyCollection()
+    {
+        // Arrange
+        var prop = GetType().GetProperty(nameof(MyProperty));
+        var type = prop.PropertyType;
+
+        // Act
+        var result = type.GetTypeName(prop);
+
+        // Assert
+        result.Should().Be("System.Collections.Generic.IReadOnlyCollection<ModelFramework.Common.Contracts.IMetadata>");
+    }
+
+    public IReadOnlyCollection<IMetadata> MyProperty { get; } = new ReadOnlyCollection<IMetadata>(Array.Empty<IMetadata>());
 }
 
 public interface IMyInterface

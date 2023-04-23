@@ -404,7 +404,7 @@ public static class TypeExtensions
 
             index++;
             builder.Append(arg.GetTypeName(type));
-            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
+            if (!arg.IsGenericParameter && !builder.ToString().StartsWith("System.Collections.Generic.IReadOnlyCollection") && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
             {
                 builder.Append("?");
             }

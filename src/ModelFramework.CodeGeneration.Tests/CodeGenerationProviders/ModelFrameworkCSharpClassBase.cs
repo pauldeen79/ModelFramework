@@ -220,8 +220,17 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
                 .AddParameter("name", typeof(string))
+                .AddParameter("type", typeof(Type))
+                .AddParameter("isNullable", typeof(bool))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type).WithIsNullable(isNullable));")
+                .Build());
+
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
+                .AddParameter("name", typeof(string))
                 .AddParameter("typeName", typeof(string))
-                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
+                .AddParameter("isNullable", typeof(bool))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName).WithIsNullable(isNullable));")
                 .Build());
         }
 

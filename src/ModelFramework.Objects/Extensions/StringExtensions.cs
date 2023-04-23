@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-
-namespace ModelFramework.Objects.Extensions;
+﻿namespace ModelFramework.Objects.Extensions;
 
 public static class StringExtensions
 {
