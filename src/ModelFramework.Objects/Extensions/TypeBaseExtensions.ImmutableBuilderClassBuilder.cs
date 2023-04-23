@@ -321,10 +321,10 @@ public static partial class TypeBaseEtensions
 
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.GenerationSettings.UseLazyInitialization
-            ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {GetNewBulderExpression(property, settings)});"
+            ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {GetNewBuilderExpression(property, settings)});"
             : $"{property.Name} = {property.GetDefaultValue()};";
 
-    private static string GetNewBulderExpression(IClassProperty property, ImmutableBuilderClassSettings settings)
+    private static string GetNewBuilderExpression(IClassProperty property, ImmutableBuilderClassSettings settings)
     {
         var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
         if (md != null && md.Value != null)

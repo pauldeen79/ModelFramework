@@ -357,7 +357,9 @@ public abstract class CSharpClassBase : ClassBase
 
         property.ConvertSinglePropertyToBuilderOnBuilder
         (
-            $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}Builder",
+            !string.IsNullOrEmpty(typeName.GetGenericArguments())
+                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}Builder<{typeName.GetGenericArguments()}>"
+                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}Builder",
             GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName),
             GetCustomBuilderMethodParameterExpression(typeName)
         );
@@ -427,7 +429,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     protected string? GetCustomBuilderMethodParameterExpression(string typeName)
-        => string.IsNullOrEmpty(GetEntityClassName(typeName)) || GetCustomBuilderTypes().Contains(typeName.GetClassName())
+        => (string.IsNullOrEmpty(GetEntityClassName(typeName)) || GetCustomBuilderTypes().Contains(typeName.GetClassName())) && string.IsNullOrEmpty(typeName.GetGenericArguments())
             ? string.Empty
             : "{0}{2}.BuildTyped()";
 
@@ -659,13 +661,13 @@ public abstract class CSharpClassBase : ClassBase
         if (UseLazyInitialization)
         {
             return property.IsNullable
-                ? "_{1}Delegate = new (() => source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName).GetNamespaceWithDefault() + ".{5}Builder(source.{0}))"
-                : "_{1}Delegate = new (() => new " + ReplaceWithBuilderNamespaces(typeName).GetNamespaceWithDefault() + ".{5}Builder(source.{0}))";
+                ? "_{1}Delegate = new (() => source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0}))"
+                : "_{1}Delegate = new (() => new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0}))";
         }
 
         return property.IsNullable
-            ? "{0} = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName).GetNamespaceWithDefault() + ".{5}Builder(source.{0})"
-            : "{0} = new " + ReplaceWithBuilderNamespaces(typeName).GetNamespaceWithDefault() + ".{5}Builder(source.{0})";
+            ? "{0} = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0})"
+            : "{0} = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0})";
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
@@ -682,7 +684,12 @@ public abstract class CSharpClassBase : ClassBase
         {
             return new("default");
         }
-        
+
+        if (!string.IsNullOrEmpty(typeName.GetGenericArguments()))
+        {
+            return new($"new {ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics())}Builder<{typeName.GetGenericArguments()}>()");
+        }
+
         return new("new " + ReplaceWithBuilderNamespaces(typeName) + "Builder()");
     }
 
