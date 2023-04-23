@@ -591,7 +591,6 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
             .With(x => Visit(x))
             .Build();
 
@@ -605,7 +604,6 @@ public abstract class CSharpClassBase : ClassBase
             .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings())
             .WithRecord()
             .WithPartial()
-            .AddInterfaces((new[] { iinterface.GetFullName() }).Where(_ => InheritFromInterfaces))
             .With(x => Visit(x))
             .Build();
 

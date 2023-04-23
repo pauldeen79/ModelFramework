@@ -8,6 +8,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
     protected override string RootNamespace => "ModelFramework";
     protected override string ProjectName => "ModelFramework";
+    protected override bool InheritFromInterfaces => true;
 
     protected override string GetFullBasePath()
         => Directory.GetCurrentDirectory().EndsWith("ModelFramework")
@@ -223,6 +224,13 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .AddParameter("type", typeof(Type))
                 .AddParameter("isNullable", typeof(bool))
                 .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type).WithIsNullable(isNullable));")
+                .Build());
+
+            property.AddBuilderOverload(new OverloadBuilder()
+                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
+                .AddParameter("name", typeof(string))
+                .AddParameter("typeName", typeof(string))
+                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
                 .Build());
 
             property.AddBuilderOverload(new OverloadBuilder()
