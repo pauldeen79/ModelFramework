@@ -3500,7 +3500,7 @@ namespace MyNamespace
 {
     public record MyRecord : MyRecordBase
     {
-        public MyRecord(MyRecord original) : base(original)
+        public MyRecord(MyRecord original) : base((MyRecordBase)original)
         {
         }
 

@@ -66,7 +66,7 @@ public static partial class TypeBaseExtensions
                     .AddParameter("original", instance.GenericTypeArguments.Any()
                         ? $"{instance.Name}<{string.Join(", ", instance.GenericTypeArguments)}>"
                         : instance.Name)
-                    .WithChainCall("base(original)"),
+                    .WithChainCall($"base(({instance.Name}Base)original)"),
                 new ClassConstructorBuilder()
                     .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
                     .AddLiteralCodeStatements(CreateValidationCode(instance, settings, false))

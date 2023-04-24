@@ -156,7 +156,7 @@ namespace Test
 {
     public partial record TestClass : TestClassBase
     {
-        public TestClass(TestClass original) : base(original)
+        public TestClass(TestClass original) : base((TestClassBase)original)
         {
         }
 
