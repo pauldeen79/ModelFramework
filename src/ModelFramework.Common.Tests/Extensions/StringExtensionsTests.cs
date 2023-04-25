@@ -213,6 +213,7 @@ public class StringExtensionsTests
 
     [Theory]
     [InlineData("", "")]
+    [InlineData(null, "")]
     [InlineData("MyClass", "")]
     [InlineData("MyNamespace.MyClass", "MyNamespace")]
     [InlineData("A.B.C.D", "A.B.C")]

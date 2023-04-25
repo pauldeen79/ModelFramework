@@ -181,6 +181,11 @@ public static class StringExtensions
 
     public static string GetNamespaceWithDefault(this string fullyQualifiedClassName, string defaultValue = "")
     {
+        if (string.IsNullOrEmpty(fullyQualifiedClassName))
+        {
+            return defaultValue;
+        }
+
         var idx = fullyQualifiedClassName.LastIndexOf(".");
         return idx == -1
             ? defaultValue
