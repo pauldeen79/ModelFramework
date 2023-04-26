@@ -31,12 +31,25 @@ public abstract class CSharpClassBase : ClassBase
             || (BaseClass is not null && $"I{typeBase.Name}" == BaseClass.Name));
 
     protected abstract string ProjectName { get; }
-    protected virtual string RootNamespace => $"{ProjectName}.Domain";
+    protected virtual string RootNamespace => InheritFromInterfaces
+        ? $"{ProjectName}.Abstractions"
+        : $"{ProjectName}.Domain";
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
+    protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected abstract Type RecordCollectionType { get; }
     protected abstract Type RecordConcreteCollectionType { get; }
 
-    protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate) => string.Empty;
+    protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
+    {
+        if (InheritFromInterfaces && (instance.Namespace == RootNamespace || instance.Namespace == CoreNamespace))
+        {
+            return forCreate
+                ? $"{CoreNamespace}.{instance.Name}"
+                : $"{RootNamespace}.I{instance.Name}";
+        }
+
+        return string.Empty;
+    }
 
     protected virtual string GetFullBasePath()
         => Directory.GetCurrentDirectory().EndsWith(ProjectName)

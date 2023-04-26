@@ -16,7 +16,7 @@ public abstract class ClassBase : ICodeGenerationProvider
 
     protected abstract bool EnableNullableContext { get; }
     protected abstract bool CreateCodeGenerationHeader { get; }
-    protected virtual string FileNameSuffix => ".generated";
+    protected virtual string FileNameSuffix => ".template.generated";
     protected virtual bool UseCustomInitializersOnAttributeBuilder => false;
 
     protected virtual AttributeBuilder? AttributeInitializeDelegate(Attribute sourceAttribute) => AttributeBuilder.DefaultInitializer(sourceAttribute);
