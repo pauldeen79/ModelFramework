@@ -719,13 +719,13 @@ public abstract class CSharpClassBase : ClassBase
     {
         var builder = new StringBuilder();
         builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
-               .AppendLine("{");
+               .AppendLine("        {");
         // note that generic types are skipped here. you need to fill createLiteralCodeStatement to handle these ones
         foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
         {
-            builder.AppendLine("    {typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x)},");
+            builder.AppendLine("            { typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x) },");
         }
-        builder.AppendLine("}");
+        builder.Append("        }");
         return new Literal(builder.ToString());
     }
 }
