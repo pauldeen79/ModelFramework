@@ -303,4 +303,19 @@ public class StringExtensionsTests
         // Assert
         result.Should().Be(expected);
     }
+
+    [Theory]
+    [InlineData("System.Nullable<System.Boolean>", true)]
+    [InlineData("System.Boolean", false)]
+    [InlineData("Something else", false)]
+    [InlineData("", false)]
+    [InlineData(null, false)]
+    public void IsNullableBooleanTypeName_Returns_Correct_Result(string input, bool expected)
+    {
+        // Act
+        var result = input.IsNullableBooleanTypeName();
+
+        // Assert
+        result.Should().Be(expected);
+    }
 }

@@ -215,7 +215,7 @@ public static class StringExtensions
         => instance.FixTypeName() == typeof(bool).FullName;
 
     public static bool IsNullableBooleanTypeName(this string instance)
-        => instance.FixTypeName() == typeof(bool?).FullName;
+        => instance.FixTypeName() == typeof(bool?).FullName.FixTypeName();
 
     public static bool IsObjectTypeName(this string instance)
         => instance.FixTypeName() == typeof(object).FullName;
