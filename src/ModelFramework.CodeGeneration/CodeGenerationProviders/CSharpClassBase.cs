@@ -26,9 +26,9 @@ public abstract class CSharpClassBase : ClassBase
         => parent is not null
         && typeBase is not null
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
+            || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || GetModelAbstractBaseTyped().Any(x => x == parent.ParentTypeFullName.GetClassName())
-            || (BaseClass is not null && $"I{typeBase.Name}" == BaseClass.Name));
+            || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}") ));
 
     protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => InheritFromInterfaces

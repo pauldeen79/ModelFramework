@@ -9,6 +9,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override string RootNamespace => "ModelFramework";
     protected override string ProjectName => "ModelFramework";
     protected override bool InheritFromInterfaces => true;
+    protected override string FileNameSuffix => ".generated";
 
     protected override string GetFullBasePath()
         => Directory.GetCurrentDirectory().EndsWith("ModelFramework")
