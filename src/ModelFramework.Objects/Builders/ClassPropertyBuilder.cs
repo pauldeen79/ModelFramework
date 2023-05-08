@@ -28,13 +28,13 @@ public partial class ClassPropertyBuilder
             argumentType: typeof(StringBuilder).FullName,
             customBuilderMethodParameterExpression: "{0}?.ToString()",
             customBuilderConstructorInitializeExpression: useLazyInitialization
-                ? "_{1}Delegate = new (() => new System.Text.StringBuilder(source.{0}))"
-                : "{0} = new System.Text.StringBuilder(source.{0})"
+                ? $"_{{1}}Delegate = new (() => new {typeof(StringBuilder).FullName}(source.{{0}}))"
+                : $"{{0}} = new {typeof(StringBuilder).FullName}(source.{{0}})"
         );
         SetDefaultValueForStringPropertyOnBuilderClassConstructor();
-        AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression("if ({2} == null)\r\n    {2} = new System.Text.StringBuilder();\r\n{2}.Clear().Append(value);").Build());
-        AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("if ({2} == null)\r\n    {2} = new System.Text.StringBuilder();\r\n{2}.Append(value);").Build());
-        AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression("if ({2} == null)\r\n    {2} = new System.Text.StringBuilder();\r\n{2}.AppendLine(value);").Build());
+        AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression($"if ({{2}} == null)\r\n    {{2}} = new {typeof(StringBuilder).FullName}();\r\n{{2}}.Clear().Append(value);").Build());
+        AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression($"if ({{2}} == null)\r\n    {{2}} = new {typeof(StringBuilder).FullName}();\r\n{{2}}.Append(value);").Build());
+        AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendLineTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression($"if ({{2}} == null)\r\n    {{2}} = new {typeof(StringBuilder).FullName}();\r\n{{2}}.AppendLine(value);").Build());
 
         return this;
     }
@@ -75,7 +75,7 @@ public partial class ClassPropertyBuilder
 
     public ClassPropertyBuilder SetDefaultValueForStringPropertyOnBuilderClassConstructor()
         => SetDefaultValueForBuilderClassConstructor(!IsNullable
-            ? new Literal("new System.Text.StringBuilder()")
+            ? new Literal($"new {typeof(StringBuilder).FullName}()")
             : new Literal("default"));
 
     public ClassPropertyBuilder SetBuilderWithExpression(string expression)
