@@ -205,7 +205,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
         {
             property.AddBuilderOverload(new OverloadBuilder()
                 .AddParameter("name", typeof(string))
-                .AddParameters(new ParameterBuilder().WithName("value").WithType(typeof(object)).WithIsNullable())
+                .AddParameter("value", typeof(object), true)
                 .WithInitializeExpression("Add{4}(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));")
                 .Build());
         }
