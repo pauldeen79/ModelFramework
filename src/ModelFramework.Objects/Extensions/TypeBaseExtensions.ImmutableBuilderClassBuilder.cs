@@ -13,7 +13,7 @@ public static partial class TypeBaseEtensions
         }
 
         return new ClassBuilder()
-            .WithName(instance.Name + "Builder")
+            .WithName(string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name))
             .AddGenericTypeArguments(new[] { "TBuilder", "TEntity" }.Where(_ => settings.IsBuilderForAbstractEntity))
             .AddGenericTypeArgumentConstraints(new[] { $"where TEntity : {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}" }.Where(_ => settings.IsBuilderForAbstractEntity))
             .AddGenericTypeArgumentConstraints(new[] { $"where TBuilder : {instance.Name}Builder<TBuilder, TEntity>" }.Where(_ => settings.IsBuilderForAbstractEntity))

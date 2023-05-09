@@ -3882,6 +3882,96 @@ namespace MyNamespace
 ");
     }
 
+    [Fact]
+    public void Can_Generate_Model_Class_As_A_Sort_Of_Builder()
+    {
+        // Arrange
+        var settings = new ImmutableBuilderClassSettings(
+            new(enableNullableReferenceTypes: true),
+            new(addCopyConstructor: true, addNullChecks: true),
+            new(setMethodNameFormatString: string.Empty, addMethodNameFormatString: string.Empty, buildersNamespace: "Models", builderNameFormatString: "{0}Model"), // important to clear these, to skip Add and With methods
+            new(),
+            new(useLazyInitialization: false), // it's false by default, but for this test it's important to explicity specify that we want this. a model should have simple getters and setters, no lazy stuff
+            new(constructorSettings: new(ArgumentValidationType.Shared, addNullChecks: true))
+            );
+        var model = new[]
+        {
+            new ClassBuilder().WithName("MyClass").WithNamespace("Entities").AddProperties(
+                new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int))
+                ).Build()
+        }.Select(x => x.ToImmutableBuilderClass(settings)).ToArray();
+
+        var sut = new CSharpClassGenerator();
+
+        // Act
+        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model, additionalParameters: new { EnableNullableContext = true });
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Models
+{
+    public partial class MyClassModel : System.ComponentModel.DataAnnotations.IValidatableObject
+    {
+        public string Property1
+        {
+            get;
+            set;
+        }
+
+        public int Property2
+        {
+            get;
+            set;
+        }
+
+        public Entities.MyClass Build()
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            return new Entities.MyClass { Property1 = Property1, Property2 = Property2 };
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
+
+        public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
+        {
+            #pragma warning disable CS8604 // Possible null reference argument.
+            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            var instance = new Entities.MyClassBase { Property1 = Property1, Property2 = Property2 };
+            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            #pragma warning restore CS8604 // Possible null reference argument.
+            var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            return results;
+        }
+
+        public MyClassModel()
+        {
+            #pragma warning disable CS8603 // Possible null reference return.
+            Property1 = string.Empty;
+            Property2 = default(System.Int32);
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        public MyClassModel(Entities.MyClass source)
+        {
+            if (source == null)
+            {
+                throw new System.ArgumentNullException(""source"");
+            }
+            Property1 = source.Property1;
+            Property2 = source.Property2;
+        }
+    }
+}
+");
+    }
+
     private static IEnumerable<ClassBuilder> GetSubClasses()
     {
         yield return new ClassBuilder()
