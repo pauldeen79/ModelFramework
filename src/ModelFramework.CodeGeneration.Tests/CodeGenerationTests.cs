@@ -27,6 +27,7 @@ public class CodeGenerationTests
 
         // Act
         GenerateCode.For<CommonBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<CommonModels>(Settings, multipleContentBuilder);
         GenerateCode.For<CommonRecords>(Settings, multipleContentBuilder);
 
         GenerateCode.For<DatabaseBuilders>(Settings, multipleContentBuilder);
