@@ -28,7 +28,7 @@ public static partial class TypeBaseEtensions
             .AddFields(GetImmutableBuilderClassFields(instance, settings, false))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints)
-            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.AddValidationCode == ArgumentValidationType.Shared));
+            .AddInterfaces(new[] { typeof(IValidatableObject) }.Where(_ => settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared && !settings.IsBuilderForAbstractEntity));
     }
 
     public static IClass ToBuilderExtensionsClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)

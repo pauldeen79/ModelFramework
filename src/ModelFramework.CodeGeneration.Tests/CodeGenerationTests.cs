@@ -206,7 +206,7 @@ using System.Text;
 
 namespace Test.Builders
 {
-    public partial class TestClassBuilder
+    public partial class TestClassBuilder : System.ComponentModel.DataAnnotations.IValidatableObject
     {
         public System.Text.StringBuilder TestProperty
         {
