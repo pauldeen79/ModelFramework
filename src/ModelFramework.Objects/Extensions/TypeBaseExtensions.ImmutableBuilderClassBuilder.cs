@@ -428,10 +428,10 @@ public static partial class TypeBaseEtensions
         .GetCollectionInitializeStatement()
         .GetCsharpFriendlyTypeName();
 
-    private static string CreateConstructorStatementForCollection(IClassProperty p, ImmutableBuilderClassSettings settings)
+    private static string CreateConstructorStatementForCollection(IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.ConstructorSettings.AddNullChecks
-            ? $"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} != null) {p.Name}.AddRange({p.Name.ToPascalCase()});"
-            : $"{p.Name}.AddRange({p.Name.ToPascalCase()});";
+            ? $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null) {property.Name}.AddRange({property.Name.ToPascalCase()});"
+            : $"{property.Name}.AddRange({property.Name.ToPascalCase()});";
 
     private static IEnumerable<ClassMethodBuilder> GetImmutableBuilderClassMethods(ITypeBase instance,
                                                                                    ImmutableBuilderClassSettings settings)
@@ -439,7 +439,7 @@ public static partial class TypeBaseEtensions
         if (!(settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.IsAbstract))
         {
             yield return FillMethod(instance, new ClassMethodBuilder()
-                .WithName(settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity ? "BuildTyped" : "Build")
+                .WithName(settings.NameSettings.BuildMethodName.WhenNullOrEmpty(() => settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity ? "BuildTyped" : "Build"))
                 .WithAbstract(settings.IsBuilderForAbstractEntity)
                 .WithOverride(settings.IsBuilderForOverrideEntity)
                 .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings) + instance.GetGenericTypeArgumentsString()), settings);

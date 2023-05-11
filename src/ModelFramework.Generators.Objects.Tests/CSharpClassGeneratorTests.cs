@@ -3889,7 +3889,7 @@ namespace MyNamespace
         var settings = new ImmutableBuilderClassSettings(
             new(enableNullableReferenceTypes: true),
             new(addCopyConstructor: true, addNullChecks: true),
-            new(setMethodNameFormatString: string.Empty, addMethodNameFormatString: string.Empty, buildersNamespace: "Models", builderNameFormatString: "{0}Model"), // important to clear these, to skip Add and With methods
+            new(setMethodNameFormatString: string.Empty, addMethodNameFormatString: string.Empty, buildersNamespace: "Models", builderNameFormatString: "{0}Model", buildMethodName: "ToEntity"), // important to clear these, to skip Add and With methods
             new(),
             new(useLazyInitialization: false), // it's false by default, but for this test it's important to explicity specify that we want this. a model should have simple getters and setters, no lazy stuff
             new(constructorSettings: new(ArgumentValidationType.Shared, addNullChecks: true))
@@ -3929,7 +3929,7 @@ namespace Models
             set;
         }
 
-        public Entities.MyClass Build()
+        public Entities.MyClass ToEntity()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.

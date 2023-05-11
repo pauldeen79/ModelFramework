@@ -6,6 +6,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual string SetMethodNameFormatString => "With{0}";
     protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual string BuilderNameFormatString => "{0}Builder";
+    protected virtual string BuilderBuildMethodName => string.Empty;
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
@@ -462,7 +463,8 @@ public abstract class CSharpClassBase : ClassBase
                 setMethodNameFormatString: SetMethodNameFormatString,
                 addMethodNameFormatString: AddMethodNameFormatString,
                 builderNameFormatString: BuilderNameFormatString,
-                buildersNamespace: @namespace),
+                buildersNamespace: @namespace,
+                buildMethodName: BuilderBuildMethodName),
             generationSettings: new(
                 useLazyInitialization: UseLazyInitialization,
                 copyPropertyCode: CopyPropertyCode,
