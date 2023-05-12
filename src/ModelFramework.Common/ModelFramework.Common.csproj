@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="2.7.52" />
+    <PackageReference Include="pauldeen79.CrossCutting.Common" Version="2.7.53" />
   </ItemGroup>
 
 </Project>
