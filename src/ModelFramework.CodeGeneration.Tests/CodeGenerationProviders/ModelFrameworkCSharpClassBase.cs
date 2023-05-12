@@ -142,8 +142,14 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                     .BuildTyped()
             ).ToArray();
 
-    private void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
+    protected virtual void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
+        if (property == null)
+        {
+            // Not possible, but needs to be added because of .net standard 2.0
+            return;
+        }
+
         var typeName = property.TypeName.ToString();
         var propertyName = property.Name.ToString();
         if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
@@ -192,6 +198,42 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             property.ConvertStringPropertyToStringBuilderPropertyOnBuilder(UseLazyInitialization);
         }
 
+        AddBuilderOverloads(property, typeName, propertyName);
+
+        if (propertyName == nameof(IVisibilityContainer.Visibility))
+        {
+            property.SetDefaultValueForBuilderClassConstructor
+            (
+                new Literal
+                (
+                    $"I{name}" == nameof(IClassField)
+                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
+                        : $"{typeof(Visibility).FullName}.{Visibility.Public}"
+                )
+            );
+        }
+
+        if (propertyName == nameof(IClassProperty.HasSetter))
+        {
+            property.SetBuilderWithExpression(@"{0} = {2};
+if ({2})
+{5}
+    HasInitializer = false;
+{6}");
+        }
+
+        if (propertyName == nameof(IClassProperty.HasInitializer))
+        {
+            property.SetBuilderWithExpression(@"{0} = {2};
+if ({2})
+{5}
+    HasSetter = false;
+{6}");
+        }
+    }
+
+    private static void AddBuilderOverloads(ClassPropertyBuilder property, string typeName, string propertyName)
+    {
         if (propertyName == nameof(ITypeContainer.TypeName) && typeName.IsStringTypeName())
         {
             property.AddBuilderOverload(new OverloadBuilder()
@@ -255,37 +297,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 .AddParameter("statements", typeof(IEnumerable<string>))
                 .WithInitializeExpression("AddLiteralCodeStatements(statements.ToArray());")
                 .Build());
-        }
-
-        if (propertyName == nameof(IVisibilityContainer.Visibility))
-        {
-            property.SetDefaultValueForBuilderClassConstructor
-            (
-                new Literal
-                (
-                    $"I{name}" == nameof(IClassField)
-                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
-                        : $"{typeof(Visibility).FullName}.{Visibility.Public}"
-                )
-            );
-        }
-
-        if (propertyName == nameof(IClassProperty.HasSetter))
-        {
-            property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasInitializer = false;
-{6}");
-        }
-
-        if (propertyName == nameof(IClassProperty.HasInitializer))
-        {
-            property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasSetter = false;
-{6}");
         }
     }
 }

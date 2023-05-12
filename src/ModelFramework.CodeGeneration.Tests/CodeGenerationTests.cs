@@ -34,11 +34,15 @@ public class CodeGenerationTests
         GenerateCode.For<DatabaseRecords>(Settings, multipleContentBuilder);
 
         GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsBaseModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsNonGenericBaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsNonGenericBaseModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsOverrideModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
 
         GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
