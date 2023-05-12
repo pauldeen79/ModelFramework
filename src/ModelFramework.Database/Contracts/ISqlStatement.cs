@@ -3,5 +3,6 @@
     public interface ISqlStatement : IMetadataContainer
     {
         ISqlStatementBuilder CreateBuilder();
+        ISqlStatementModel CreateModel();
     }
 }

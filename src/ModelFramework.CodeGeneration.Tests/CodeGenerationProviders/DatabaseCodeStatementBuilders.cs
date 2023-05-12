@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.Tests.CodeGenerationProviders;
 
-public class DatabaseCodeStatements : ModelFrameworkCSharpClassBase
+public class DatabaseCodeStatementBuilders : ModelFrameworkCSharpClassBase
 {
     public override string Path => "ModelFramework.Database/SqlStatements/Builders";
     public override string DefaultFileName => "Builders.Generated.cs";
