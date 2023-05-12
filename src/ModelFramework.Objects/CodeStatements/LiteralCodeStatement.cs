@@ -20,4 +20,6 @@ public record LiteralCodeStatement : ICodeStatement
         => new LiteralCodeStatementBuilder(this);
 
     public override string ToString() => Statement;
+
+    public ICodeStatementModel CreateModel() => new LiteralCodeStatementModel(this);
 }

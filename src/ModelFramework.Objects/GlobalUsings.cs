@@ -17,6 +17,7 @@ global using ModelFramework.Common.Extensions;
 global using ModelFramework.Objects.Builders;
 global using ModelFramework.Objects.CodeStatements;
 global using ModelFramework.Objects.CodeStatements.Builders;
+global using ModelFramework.Objects.CodeStatements.Models;
 global using ModelFramework.Objects.Contracts;
 global using ModelFramework.Objects.Extensions;
 global using ModelFramework.Objects.Settings;

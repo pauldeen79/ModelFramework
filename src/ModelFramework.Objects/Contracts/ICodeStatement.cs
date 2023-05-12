@@ -3,5 +3,6 @@
     public interface ICodeStatement : IMetadataContainer
     {
         ICodeStatementBuilder CreateBuilder();
+        ICodeStatementModel CreateModel();
     }
 }

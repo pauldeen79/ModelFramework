@@ -6,7 +6,10 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual string SetMethodNameFormatString => "With{0}";
     protected virtual string AddMethodNameFormatString => "Add{0}";
     protected virtual string BuilderNameFormatString => "{0}Builder";
-    protected virtual string BuilderBuildMethodName => string.Empty;
+    protected virtual string BuilderBuildMethodName => "Build";
+    protected virtual string BuilderBuildTypedMethodName => "BuildTyped";
+    protected virtual string BuilderName => "Builder";
+    protected virtual string BuildersName => "Builders";
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
@@ -76,8 +79,8 @@ public abstract class CSharpClassBase : ClassBase
         var result = new Dictionary<string, string>();
         result.AddRange(
             GetCustomBuilderTypes()
-                .Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x}s", $"{RootNamespace}.Builders.{x}s"))
-                .Concat(new[] { new KeyValuePair<string, string>(RootNamespace, $"{RootNamespace}.Builders") }));
+                .Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x}s", $"{RootNamespace}.{BuildersName}.{x}s"))
+                .Concat(new[] { new KeyValuePair<string, string>(RootNamespace, $"{RootNamespace}.{BuildersName}") }));
         result.AddRange(GetCustomBuilderNamespaceMapping());
         return result;
     }
@@ -373,8 +376,8 @@ public abstract class CSharpClassBase : ClassBase
         property.ConvertSinglePropertyToBuilderOnBuilder
         (
             !string.IsNullOrEmpty(typeName.GetGenericArguments())
-                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}Builder<{typeName.GetGenericArguments()}>"
-                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}Builder",
+                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
+                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}",
             GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName),
             GetCustomBuilderMethodParameterExpression(typeName)
         );
@@ -392,7 +395,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
         => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments()))
-            ? "{0}.Select(x => x.BuildTyped())"
+            ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
             : null;
 
     protected ITypeBase[] MapCodeGenerationModelsToDomain(IEnumerable<Type> types)
@@ -437,16 +440,16 @@ public abstract class CSharpClassBase : ClassBase
             .FirstOrDefault(x => builderFullName.StartsWith($"{x.Value}.", StringComparison.InvariantCulture));
 
         return match is null
-            ? builderFullName.ReplaceSuffix("Builder", string.Empty, StringComparison.InvariantCulture)
+            ? builderFullName.ReplaceSuffix(BuilderName, string.Empty, StringComparison.InvariantCulture)
             : builderFullName
                 .Replace($"{match.Value}.", $"{match.Key}.")
-                .ReplaceSuffix("Builder", string.Empty, StringComparison.InvariantCulture);
+                .ReplaceSuffix(BuilderName, string.Empty, StringComparison.InvariantCulture);
     }
 
     protected string? GetCustomBuilderMethodParameterExpression(string typeName)
         => (string.IsNullOrEmpty(GetEntityClassName(typeName)) || GetCustomBuilderTypes().Contains(typeName.GetClassName())) && string.IsNullOrEmpty(typeName.GetGenericArguments())
             ? string.Empty
-            : "{0}{2}.BuildTyped()";
+            : "{0}{2}." + BuilderBuildTypedMethodName + "()";
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings(string @namespace, ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
@@ -464,7 +467,8 @@ public abstract class CSharpClassBase : ClassBase
                 addMethodNameFormatString: AddMethodNameFormatString,
                 builderNameFormatString: BuilderNameFormatString,
                 buildersNamespace: @namespace,
-                buildMethodName: BuilderBuildMethodName),
+                buildMethodName: BuilderBuildMethodName,
+                buildTypedMethodName: BuilderBuildTypedMethodName),
             generationSettings: new(
                 useLazyInitialization: UseLazyInitialization,
                 copyPropertyCode: CopyPropertyCode,
@@ -652,7 +656,7 @@ public abstract class CSharpClassBase : ClassBase
         => GetCustomBuilderTypes().Any(x => GetBuilderNamespaceMappings().Any(y => typeName == $"{y.Key}.{x}"));
 
     private string GetCustomCollectionArgumentType(string typeName)
-        => ReplaceWithBuilderNamespaces(typeName).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture);
+        => ReplaceWithBuilderNamespaces(typeName).ReplaceSuffix(">", $"{BuilderName}> ", StringComparison.InvariantCulture);
 
     private bool TypeNameNeedsSpecialTreatmentForBuilderInCollection(string typeName)
         => GetCustomBuilderTypes().Any(x => GetBuilderNamespaceMappings().Any(y => typeName == $"{RecordCollectionType.WithoutGenerics()}<{y.Key}.{x}>"));
@@ -676,13 +680,13 @@ public abstract class CSharpClassBase : ClassBase
         if (UseLazyInitialization)
         {
             return property.IsNullable
-                ? "_{1}Delegate = new (() => source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0}))"
-                : "_{1}Delegate = new (() => new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0}))";
+                ? "_{1}Delegate = new (() => source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0}))"
+                : "_{1}Delegate = new (() => new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0}))";
         }
 
         return property.IsNullable
-            ? "{0} = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0})"
-            : "{0} = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}Builder{9}(source.{0})";
+            ? "{0} = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})"
+            : "{0} = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})";
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
@@ -702,10 +706,10 @@ public abstract class CSharpClassBase : ClassBase
 
         if (!string.IsNullOrEmpty(typeName.GetGenericArguments()))
         {
-            return new($"new {ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics())}Builder<{typeName.GetGenericArguments()}>()");
+            return new($"new {ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics())}{BuilderName}<{typeName.GetGenericArguments()}>()");
         }
 
-        return new("new " + ReplaceWithBuilderNamespaces(typeName) + "Builder()");
+        return new("new " + ReplaceWithBuilderNamespaces(typeName) + $"{BuilderName}()");
     }
 
     private IEnumerable<Type> GetPureAbstractModels()

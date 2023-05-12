@@ -7,3 +7,4 @@ global using CrossCutting.Common;
 global using ModelFramework.Common.Contracts;
 global using ModelFramework.Database.Contracts;
 global using ModelFramework.Database.SqlStatements.Builders;
+global using ModelFramework.Database.SqlStatements.Models;

@@ -27,21 +27,29 @@ public class CodeGenerationTests
 
         // Act
         GenerateCode.For<CommonBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<CommonModels>(Settings, multipleContentBuilder);
         GenerateCode.For<CommonRecords>(Settings, multipleContentBuilder);
 
         GenerateCode.For<DatabaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseModels>(Settings, multipleContentBuilder);
         GenerateCode.For<DatabaseRecords>(Settings, multipleContentBuilder);
 
         GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsBaseModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsNonGenericBaseBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsNonGenericBaseModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsBaseRecords>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsOverrideModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
 
-        GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseCodeStatements>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsCodeStatementBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsCodeStatementModels>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseCodeStatementBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<DatabaseCodeStatementModels>(Settings, multipleContentBuilder);
 
         // Assert
         Verify(multipleContentBuilder);

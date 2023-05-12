@@ -16,8 +16,9 @@ public record LiteralSqlStatement : ISqlStatement
         Metadata = new ReadOnlyValueCollection<IMetadata>(metadata);
     }
 
-    public ISqlStatementBuilder CreateBuilder()
-        => new LiteralSqlStatementBuilder(this);
+    public ISqlStatementBuilder CreateBuilder() => new LiteralSqlStatementBuilder(this);
+
+    public ISqlStatementModel CreateModel() => new LiteralSqlStatementModel(this);
 
     public override string ToString() => Statement;
 }

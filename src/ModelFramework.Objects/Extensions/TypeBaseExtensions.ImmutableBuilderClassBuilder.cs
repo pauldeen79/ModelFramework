@@ -16,7 +16,7 @@ public static partial class TypeBaseEtensions
             .WithName(string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name))
             .AddGenericTypeArguments(new[] { "TBuilder", "TEntity" }.Where(_ => settings.IsBuilderForAbstractEntity))
             .AddGenericTypeArgumentConstraints(new[] { $"where TEntity : {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}" }.Where(_ => settings.IsBuilderForAbstractEntity))
-            .AddGenericTypeArgumentConstraints(new[] { $"where TBuilder : {instance.Name}Builder<TBuilder, TEntity>" }.Where(_ => settings.IsBuilderForAbstractEntity))
+            .AddGenericTypeArgumentConstraints(new[] { $"where TBuilder : {string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name)}<TBuilder, TEntity>" }.Where(_ => settings.IsBuilderForAbstractEntity))
             .WithNamespace(settings.NameSettings.BuildersNamespace.WhenNullOrEmpty(instance.Namespace))
             .WithBaseClass(GetImmutableBuilderClassBaseClass(instance, settings))
             .WithAbstract(settings.IsBuilderForAbstractEntity)
@@ -57,7 +57,7 @@ public static partial class TypeBaseEtensions
         settings = settings.ForAbstractBuilder();
 
         return new ClassBuilder()
-            .WithName(instance.Name + "Builder")
+            .WithName(string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name))
             .WithNamespace(settings.NameSettings.BuildersNamespace.WhenNullOrEmpty(instance.Namespace))
             .WithBaseClass(GetImmutableBuilderClassBaseClass(instance, settings))
             .WithAbstract(settings.IsBuilderForAbstractEntity)
@@ -69,7 +69,7 @@ public static partial class TypeBaseEtensions
             .AddMethods
             (
                 new ClassMethodBuilder()
-                    .WithName("Build")
+                    .WithName(settings.NameSettings.BuildMethodName)
                     .WithAbstract()
                     .WithTypeName(FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate))
             )
@@ -86,7 +86,7 @@ public static partial class TypeBaseEtensions
             && settings.InheritanceSettings.BaseClass == null
             && !settings.IsForAbstractBuilder)
         {
-            return instance.Name + "Builder" + genericTypeArgumentsString;
+            return string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + genericTypeArgumentsString;
         }
 
         if (settings.InheritanceSettings.EnableEntityInheritance
@@ -95,7 +95,7 @@ public static partial class TypeBaseEtensions
             && !settings.IsForAbstractBuilder
             && settings.InheritanceSettings.IsAbstract)
         {
-            return instance.Name + "Builder" + genericTypeArgumentsString;
+            return string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + genericTypeArgumentsString;
         }
 
         if (settings.InheritanceSettings.EnableEntityInheritance
@@ -107,12 +107,13 @@ public static partial class TypeBaseEtensions
             var ns = string.IsNullOrEmpty(settings.InheritanceSettings.BaseClassBuilderNameSpace)
                 ? string.Empty
                 : $"{settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
-            return $"{ns}{settings.InheritanceSettings.BaseClass.Name}Builder<{instance.Name}Builder{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
+            return $"{ns}{string.Format(settings.NameSettings.BuilderNameFormatString, settings.InheritanceSettings.BaseClass.Name)}<{string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name)}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
+        var instanceNameBuilder = string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name);
         return instance.GetCustomValueForInheritedClass(settings, cls => settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null
-            ? $"{cls.BaseClass.GetClassName()}Builder{genericTypeArgumentsString}"
-            : $"{cls.BaseClass.GetClassName()}Builder<{instance.Name}Builder{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
+            ? $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}{genericTypeArgumentsString}"
+            : $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}<{instanceNameBuilder}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
     }
 
     private static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(ITypeBase instance, ImmutableBuilderClassSettings settings, bool isForWithStatement)
@@ -141,7 +142,7 @@ public static partial class TypeBaseEtensions
 
                 yield return new ClassFieldBuilder()
                     .WithName($"_{property.Name.ToPascalCase()}Delegate")
-                    .WithTypeName($"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>")
+                    .WithTypeName($"{typeof(Lazy<>).WithoutGenerics()}<{CreateLazyPropertyTypeName(property, settings)}>")
                     .WithProtected();
             }
         }
@@ -176,7 +177,8 @@ public static partial class TypeBaseEtensions
                     )
                     .AddParameters
                     (
-                        instance.Metadata.GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
+                        instance.Metadata
+                            .GetValues<IParameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
                             .Select(x => new ParameterBuilder(x))
                     );
             }
@@ -283,7 +285,7 @@ public static partial class TypeBaseEtensions
                     (
                         "if (source == null)",
                         "{",
-                        @"    throw new System.ArgumentNullException(""source"");",
+                        $@"    throw new {typeof(ArgumentNullException).FullName}(""source"");",
                         "}"
                     );
                 }
@@ -342,7 +344,7 @@ public static partial class TypeBaseEtensions
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.UseTargetTypeNewExpressions
             ? string.Empty
-            : $"System.Lazy<{CreateLazyPropertyTypeName(property, settings)}>";
+            : $"{typeof(Lazy<>).WithoutGenerics()}<{CreateLazyPropertyTypeName(property, settings)}>";
 
     private static string CreateLazyPropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
         => string.Format
@@ -439,7 +441,9 @@ public static partial class TypeBaseEtensions
         if (!(settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.IsAbstract))
         {
             yield return FillMethod(instance, new ClassMethodBuilder()
-                .WithName(settings.NameSettings.BuildMethodName.WhenNullOrEmpty(() => settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity ? "BuildTyped" : "Build"))
+                .WithName(settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity
+                    ? settings.NameSettings.BuildTypedMethodName
+                    : settings.NameSettings.BuildMethodName)
                 .WithAbstract(settings.IsBuilderForAbstractEntity)
                 .WithOverride(settings.IsBuilderForOverrideEntity)
                 .WithTypeName(GetImmutableBuilderBuildMethodReturnType(instance, settings) + instance.GetGenericTypeArgumentsString()), settings);
@@ -447,10 +451,10 @@ public static partial class TypeBaseEtensions
             if (settings.IsBuilderForAbstractEntity)
             {
                 yield return new ClassMethodBuilder()
-                    .WithName("Build")
+                    .WithName(settings.NameSettings.BuildMethodName)
                     .WithOverride()
                     .WithTypeName(FormatInstanceName(settings.InheritanceSettings.BaseClass ?? instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate) + (settings.InheritanceSettings.BaseClass ?? instance).GetGenericTypeArgumentsString())
-                    .AddLiteralCodeStatements("return BuildTyped();");
+                    .AddLiteralCodeStatements($"return {settings.NameSettings.BuildTypedMethodName}();");
             }
         }
 
@@ -468,7 +472,7 @@ public static partial class TypeBaseEtensions
 
     private static ClassMethodBuilder CreateValidateMethod(ITypeBase instance, ImmutableBuilderClassSettings settings)
         => new ClassMethodBuilder()
-            .WithName("Validate")
+            .WithName(nameof(IValidatableObject.Validate))
             .WithType(typeof(IEnumerable<ValidationResult>))
             .AddParameter("validationContext", typeof(ValidationContext))
             .AddLiteralCodeStatements(CreatePragmaWarningDisableStatements(settings))
@@ -477,7 +481,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
-                $"{typeof(Validator).FullName}.TryValidateObject(instance, new {typeof(ValidationContext).FullName}(instance, null, null), results, true);",
+                $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance, null, null), results, true);",
                 "return results;"
             );
 
@@ -639,10 +643,10 @@ public static partial class TypeBaseEtensions
                         string.Format
                         (
                             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                            property.TypeName,
-                            property.TypeName.GetGenericArguments(),
-                            property.TypeName.GetClassName(),
-                            property.TypeName.GetGenericArguments().GetClassName()
+                            property.TypeName,                                     // 0
+                            property.TypeName.GetGenericArguments(),               // 1
+                            property.TypeName.GetClassName(),                      // 2
+                            property.TypeName.GetGenericArguments().GetClassName() // 3
                         ).ConvertTypeNameToArray()
                     ).WithIsNullable(property.IsNullable).WithIsValueType(property.IsValueType)
             ).AddLiteralCodeStatements(GetImmutableBuilderAddMethodStatements(settings, property, extensionMethod));
@@ -656,10 +660,10 @@ public static partial class TypeBaseEtensions
         var typeName = string.Format
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-            property.TypeName,
-            property.TypeName.GetGenericArguments(),
-            property.TypeName.GetClassName(),
-            property.TypeName.GetGenericArguments().GetClassName()
+            property.TypeName,                                     // 0
+            property.TypeName.GetGenericArguments(),               // 1
+            property.TypeName.GetClassName(),                      // 2
+            property.TypeName.GetGenericArguments().GetClassName() // 3
         );
         return new ClassMethodBuilder()
             .WithName(string.Format(settings.NameSettings.SetMethodNameFormatString, property.Name))
@@ -687,15 +691,15 @@ public static partial class TypeBaseEtensions
                 string.Format
                 (
                     property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod, useLazyInitialization)}{GetCallPropertyName(property.Name, useLazyInitialization)}{GetCallSuffix(useLazyInitialization)} = {GetExpressionPrefix(property, settings, useLazyInitialization)}{property.Name.ToPascalCase().GetCsharpFriendlyName()}{GetExpressionSuffix(useLazyInitialization)};"),
-                    property.Name,
-                    property.Name.ToPascalCase(),
-                    useLazyInitialization
+                    property.Name,                                                                   // 0
+                    property.Name.ToPascalCase(),                                                    // 1
+                    useLazyInitialization                                                            // 2
                         ? $"{property.Name.ToPascalCase().GetCsharpFriendlyName()}Delegate.Invoke()"
                         : property.Name.ToPascalCase().GetCsharpFriendlyName(),
-                    property.TypeName,
-                    property.TypeName.GetGenericArguments(),
-                    "{",
-                    "}"
+                    property.TypeName,                                                               // 3
+                    property.TypeName.GetGenericArguments(),                                         // 4
+                    "{",                                                                             // 5
+                    "}"                                                                              // 6
                 ),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
@@ -714,9 +718,9 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 string.Format(overload.InitializeExpression,
-                              property.Name.ToPascalCase(),
-                              property.TypeName.GetCsharpFriendlyTypeName(),
-                              GetPropertyName(property.Name, extensionMethod)),
+                              property.Name.ToPascalCase(),                     // 0
+                              property.TypeName.GetCsharpFriendlyTypeName(),    // 1
+                              GetPropertyName(property.Name, extensionMethod)), // 2
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
 
@@ -731,7 +735,7 @@ public static partial class TypeBaseEtensions
                                                                   bool extensionMethod)
         => builder.WithTypeName(settings.IsBuilderForAbstractEntity
                       ? "TBuilder" + instance.GetGenericTypeArgumentsString()
-                      : $"{instance.Name}Builder" + instance.GetGenericTypeArgumentsString())
+                      : string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString())
                   .WithStatic(extensionMethod)
                   .WithExtensionMethod(extensionMethod)
                   .AddParameters(new[]
@@ -739,7 +743,7 @@ public static partial class TypeBaseEtensions
                       new ParameterBuilder().WithName("instance")
                                             .WithTypeName(settings.IsBuilderForAbstractEntity
                                                 ? "TBuilder" + instance.GetGenericTypeArgumentsString()
-                                                : $"{instance.Name}Builder" + instance.GetGenericTypeArgumentsString())
+                                                : string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString())
                   }.Where(_ => extensionMethod));
 
     private static string GetCallPrefix(bool extensionMethod, bool lazyInitialization)
@@ -786,9 +790,9 @@ public static partial class TypeBaseEtensions
                     string.Format
                     (
                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"    {CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)}"),
-                        property.Name.ToPascalCase(),
-                        property.TypeName,
-                        property.TypeName.GetGenericArguments()
+                        property.Name.ToPascalCase(),           // 0
+                        property.TypeName,                      // 1
+                        property.TypeName.GetGenericArguments() // 2
                     ),
                     "}",
                     $"return {GetReturnValue(settings, extensionMethod)};"
@@ -798,9 +802,9 @@ public static partial class TypeBaseEtensions
                     string.Format
                     (
                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
-                        property.Name.ToPascalCase(),
-                        property.TypeName,
-                        property.TypeName.GetGenericArguments()
+                        property.Name.ToPascalCase(),           // 0
+                        property.TypeName,                      // 1
+                        property.TypeName.GetGenericArguments() // 2
                     ),
                     $"return {GetReturnValue(settings, extensionMethod)};"
                 }).ToList();
@@ -840,11 +844,11 @@ public static partial class TypeBaseEtensions
                 $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
                 "{",
                 string.Format(overloadExpression,
-                              property.Name.ToPascalCase(),
-                              property.TypeName.GetCsharpFriendlyTypeName(),
-                              property.TypeName.GetGenericArguments(),
-                              CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                              GetPropertyName(property.Name, extensionMethod)),
+                              property.Name.ToPascalCase(),                                        // 0
+                              property.TypeName.GetCsharpFriendlyTypeName(),                       // 1
+                              property.TypeName.GetGenericArguments(),                             // 2
+                              CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings), // 3
+                              GetPropertyName(property.Name, extensionMethod)),                    // 4
                 "    }",
                 "}",
                 $"return {GetReturnValue(settings, extensionMethod)};"
@@ -852,11 +856,11 @@ public static partial class TypeBaseEtensions
             : (new[]
             {
                 string.Format(overloadExpression,
-                              property.Name.ToPascalCase(),
-                              property.TypeName,
-                              property.TypeName.GetGenericArguments(),
-                              CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings),
-                              GetPropertyName(property.Name, extensionMethod)),
+                              property.Name.ToPascalCase(),                                        // 0
+                              property.TypeName,                                                   // 1
+                              property.TypeName.GetGenericArguments(),                             // 2
+                              CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings), // 3
+                              GetPropertyName(property.Name, extensionMethod)),                    // 4
                 $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList();
 
@@ -905,10 +909,10 @@ public static partial class TypeBaseEtensions
                     string.Format
                     (
                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                        property.TypeName,
-                        property.TypeName.GetGenericArguments(),
-                        property.TypeName.GetClassName(),
-                        property.TypeName.GetGenericArguments().GetClassName()
+                        property.TypeName,                                     // 0
+                        property.TypeName.GetGenericArguments(),               // 1
+                        property.TypeName.GetClassName(),                      // 2
+                        property.TypeName.GetGenericArguments().GetClassName() // 3
                     ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
                 )
                 .WithIsNullable(property.IsNullable)
