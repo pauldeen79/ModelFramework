@@ -45,7 +45,8 @@ public class CodeGenerationTests
         GenerateCode.For<ObjectsOverrideModels>(Settings, multipleContentBuilder);
         GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
 
-        GenerateCode.For<ObjectsCodeStatements>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsCodeStatementBuilders>(Settings, multipleContentBuilder);
+        GenerateCode.For<ObjectsCodeStatementModels>(Settings, multipleContentBuilder);
         GenerateCode.For<DatabaseCodeStatements>(Settings, multipleContentBuilder);
 
         // Assert

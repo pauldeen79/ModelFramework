@@ -21,5 +21,5 @@ public record LiteralCodeStatement : ICodeStatement
 
     public override string ToString() => Statement;
 
-    public ICodeStatementModel CreateModel() => throw new NotImplementedException(); // new LiteralCodeStatementModel(this);
+    public ICodeStatementModel CreateModel() => new LiteralCodeStatementModel(this);
 }

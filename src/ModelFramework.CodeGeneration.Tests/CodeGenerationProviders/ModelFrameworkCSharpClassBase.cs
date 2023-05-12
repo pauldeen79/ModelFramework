@@ -138,7 +138,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             (
                 c => CreateBuilder(c, buildersNamespace)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
-                    .With(x => x.Methods.First(x => x.Name.ToString() == "Build").WithType(codeStatementInterfaceType))
+                    .With(x => x.Methods.First(x => x.Name.ToString().In("Build", "ToEntity")).WithType(codeStatementInterfaceType))
                     .BuildTyped()
             ).ToArray();
 
