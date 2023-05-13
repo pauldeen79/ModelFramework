@@ -63,7 +63,7 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
-    public static string GetDefaultValue(this string typeName, bool isNullable)
+    public static string GetDefaultValue(this string typeName, bool isNullable, bool enableNullableReferenceTypes)
     {
         if ((typeName.IsStringTypeName() || typeName == "string") && !isNullable)
         {
@@ -85,11 +85,15 @@ public static class StringExtensions
             return $"System.Linq.Enumerable.Empty<{typeName.GetGenericArguments()}>()";
         }
 
-        var nullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith("System.Nullable")
+        var preNullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith("System.Nullable")
             ? "?"
             : string.Empty;
 
-        return $"default({typeName}{nullableSuffix})";
+        var postNullableSuffix = preNullableSuffix == string.Empty && !isNullable && enableNullableReferenceTypes
+            ? "!"
+            : string.Empty;
+
+        return $"default({typeName}{preNullableSuffix}){postNullableSuffix}";
     }
 
     public static string AppendNullableAnnotation(this string instance,

@@ -31,26 +31,27 @@ public class StringExtensionsTests
     }
 
     [Theory,
-        InlineData("System.String", true, "default(System.String?)"),
-        InlineData("System.String", false, "string.Empty"),
-        InlineData("string", true, "default(string?)"),
-        InlineData("string?", true, "default(string?)"),
-        InlineData("string", false, "string.Empty"),
-        InlineData("System.Object", true, "default(System.Object?)"),
-        InlineData("System.Object", false, "new System.Object()"),
-        InlineData("object", true, "default(object?)"),
-        InlineData("object?", true, "default(object?)"),
-        InlineData("object", false, "new System.Object()"),
-        InlineData("System.Int32", false, "default(System.Int32)"),
-        InlineData("System.Int32", true, "default(System.Int32?)"),
-        InlineData("System.Collections.IEnumerable", false, "System.Linq.Enumerable.Empty<object>()"),
-        InlineData("System.Collections.IEnumerable", true, "default(System.Collections.IEnumerable?)"),
-        InlineData("System.Collections.Generic.IEnumerable<int>", false, "System.Linq.Enumerable.Empty<int>()"),
-        InlineData("System.Collections.Generic.IEnumerable<int>", true, "default(System.Collections.Generic.IEnumerable<int>?)")]
-    public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, string expected)
+        InlineData("System.String", true, false, "default(System.String?)"),
+        InlineData("System.String", false, false, "string.Empty"),
+        InlineData("string", true, false, "default(string?)"),
+        InlineData("string?", true, false, "default(string?)"),
+        InlineData("string", false, false, "string.Empty"),
+        InlineData("System.Object", true, false, "default(System.Object?)"),
+        InlineData("System.Object", false, false, "new System.Object()"),
+        InlineData("object", true, false, "default(object?)"),
+        InlineData("object?", true, false, "default(object?)"),
+        InlineData("object", false, false, "new System.Object()"),
+        InlineData("System.Int32", false, false, "default(System.Int32)"),
+        InlineData("System.Int32", true, false, "default(System.Int32?)"),
+        InlineData("System.Collections.IEnumerable", false, false, "System.Linq.Enumerable.Empty<object>()"),
+        InlineData("System.Collections.IEnumerable", true, false, "default(System.Collections.IEnumerable?)"),
+        InlineData("System.Collections.Generic.IEnumerable<int>", false, false, "System.Linq.Enumerable.Empty<int>()"),
+        InlineData("System.Collections.Generic.IEnumerable<int>", true, false, "default(System.Collections.Generic.IEnumerable<int>?)"),
+        InlineData("SomeType", false, true, "default(SomeType)!")]
+    public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, bool enableNullableReferenceTypes, string expected)
     {
         // Act
-        var actual = input.GetDefaultValue(isNullable);
+        var actual = input.GetDefaultValue(isNullable, enableNullableReferenceTypes);
 
         // Assert
         actual.Should().Be(expected);

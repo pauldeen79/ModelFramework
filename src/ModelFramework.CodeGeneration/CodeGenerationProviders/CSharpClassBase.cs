@@ -10,6 +10,8 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual string BuilderBuildTypedMethodName => "BuildTyped";
     protected virtual string BuilderName => "Builder";
     protected virtual string BuildersName => "Builders";
+    protected virtual string BuilderFactoryName => "BuilderFactory";
+    protected virtual bool ConvertStringToStringBuilderOnBuilders => true;
     protected virtual bool AddNullChecks => false;
     protected virtual bool AddCopyConstructor => true;
     protected virtual bool UseLazyInitialization => true;
@@ -70,7 +72,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual Dictionary<string, string> GetCustomDefaultValueForBuilderClassConstructorValues()
     {
         var result = new Dictionary<string, string>();
-        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", "null")));
+        var nullableSuffix = EnableNullableContext
+            ? "!"
+            : string.Empty;
+
+        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", $"default{nullableSuffix}")));
         return result;
     }
 
@@ -327,7 +333,7 @@ public abstract class CSharpClassBase : ClassBase
         {
             property.SetDefaultArgumentValueForWithMethod(true);
         }
-        else if (typeName.IsStringTypeName())
+        else if (ConvertStringToStringBuilderOnBuilders && typeName.IsStringTypeName())
         {
             property.ConvertStringPropertyToStringBuilderPropertyOnBuilder(UseLazyInitialization);
         }
@@ -349,7 +355,9 @@ public abstract class CSharpClassBase : ClassBase
                 RecordConcreteCollectionType.WithoutGenerics(),
                 GetCustomCollectionArgumentType(typeName),
                 GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
-                builderCollectionTypeName: GetBuilderClassCollectionTypeName()
+                builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
+                builderName: BuilderName,
+                buildMethodName: BuilderBuildMethodName
             );
         }
         else
@@ -360,7 +368,9 @@ public abstract class CSharpClassBase : ClassBase
                 RecordConcreteCollectionType.WithoutGenerics(),
                 GetCustomCollectionArgumentType(typeName),
                 customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
-                builderCollectionTypeName: GetBuilderClassCollectionTypeName()
+                builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
+                builderName: BuilderName,
+                buildMethodName: BuilderBuildMethodName
             );
         }
     }
@@ -379,7 +389,9 @@ public abstract class CSharpClassBase : ClassBase
                 ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
                 : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}",
             GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName),
-            GetCustomBuilderMethodParameterExpression(typeName)
+            GetCustomBuilderMethodParameterExpression(typeName),
+            builderName: BuilderName,
+            buildMethodName: BuilderBuildMethodName
         );
 
         if (!property.IsNullable)
@@ -533,25 +545,28 @@ public abstract class CSharpClassBase : ClassBase
         string methodName,
         ITypeBase[] types,
         Func<ITypeBase, string> formatDelegate)
-        => new[] { new ClassBuilder()
-            .WithNamespace(@namespace)
-            .WithName(className)
-            .WithStatic()
-            .WithPartial()
-            .AddMethods(new ClassMethodBuilder()
-                .WithVisibility(Visibility.Private)
+        => new[]
+        {
+            new ClassBuilder()
+                .WithNamespace(@namespace)
+                .WithName(className)
                 .WithStatic()
-                .WithName(methodName)
-                .WithExtensionMethod()
-                .WithType(typeof(IServiceCollection))
-                .AddParameter("serviceCollection", typeof(IServiceCollection))
-                .AddLiteralCodeStatements("return serviceCollection")
-                .AddLiteralCodeStatements(types.Select(x => formatDelegate.Invoke(x)))
-                .AddLiteralCodeStatements(";")
-            )
-            .Build() };
+                .WithPartial()
+                .AddMethods(new ClassMethodBuilder()
+                    .WithVisibility(Visibility.Private)
+                    .WithStatic()
+                    .WithName(methodName)
+                    .WithExtensionMethod()
+                    .WithType(typeof(IServiceCollection))
+                    .AddParameter("serviceCollection", typeof(IServiceCollection))
+                    .AddLiteralCodeStatements("return serviceCollection")
+                    .AddLiteralCodeStatements(types.Select(x => formatDelegate.Invoke(x)))
+                    .AddLiteralCodeStatements(";")
+                )
+                .Build()
+        };
 
-    protected static ITypeBase[] CreateBuilderFactoryModels(
+    protected ITypeBase[] CreateBuilderFactoryModels(
         ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
@@ -668,13 +683,13 @@ public abstract class CSharpClassBase : ClassBase
             if (UseLazyInitialization)
             {
                 return property.IsNullable
-                    ? "_{1}Delegate = new (() => source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0}))"
-                    : "_{1}Delegate = new (() => " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0}))";
+                    ? "_{1}Delegate = new (() => source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0}))"
+                    : "_{1}Delegate = new (() => " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0}))";
             }
 
             return property.IsNullable
-                ? "_{0} = source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0})"
-                : "_{0} = " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + "BuilderFactory.Create(source.{0})";
+                ? "{0} = source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})"
+                : "{0} = " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})";
         }
 
         if (UseLazyInitialization)
@@ -690,7 +705,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
-        => "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName.GetGenericArguments()) + "." + GetEntityClassName(typeName.GetGenericArguments()) + "BuilderFactory.Create(x)).ToList()";
+        => "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName.GetGenericArguments()) + "." + GetEntityClassName(typeName.GetGenericArguments()) + BuilderFactoryName + ".Create(x)).ToList()";
 
     private Literal GetDefaultValueForBuilderClassConstructor(string typeName)
     {
@@ -701,7 +716,11 @@ public abstract class CSharpClassBase : ClassBase
 
         if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
         {
-            return new("default");
+            var nullableSuffix = EnableNullableContext
+                ? "!"
+                : string.Empty;
+
+            return new($"default{nullableSuffix}");
         }
 
         if (!string.IsNullOrEmpty(typeName.GetGenericArguments()))
@@ -718,7 +737,7 @@ public abstract class CSharpClassBase : ClassBase
             .Select(x => x.GetInterfaces()[0])
             .Distinct();
 
-    private static object GetBuilderFactoryModelDefaultValue(
+    private object GetBuilderFactoryModelDefaultValue(
         ITypeBase[] models,
         string builderNamespace,
         string classTypeName,
@@ -731,7 +750,7 @@ public abstract class CSharpClassBase : ClassBase
         // note that generic types are skipped here. you need to fill createLiteralCodeStatement to handle these ones
         foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
         {
-            builder.AppendLine("            { typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + "Builder((" + overrideClassNamespace + "." + modelName + ")x) },");
+            builder.AppendLine("            { typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + BuilderName + "((" + overrideClassNamespace + "." + modelName + ")x) },");
         }
         builder.Append("        }");
         return new Literal(builder.ToString());

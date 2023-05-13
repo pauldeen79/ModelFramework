@@ -406,7 +406,7 @@ namespace Test.Builders
         public TestClassBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _testPropertyDelegate = new (() => default(TestClassBuilder));
+            _testPropertyDelegate = new (() => default(TestClassBuilder)!);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -524,7 +524,7 @@ namespace Test.Builders
         public TestClassBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _testPropertyDelegate = new (() => default(T));
+            _testPropertyDelegate = new (() => default(T)!);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
