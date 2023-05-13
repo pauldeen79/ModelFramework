@@ -89,7 +89,7 @@ public static class StringExtensions
             ? "?"
             : string.Empty;
 
-        var postNullableSuffix = preNullableSuffix == string.Empty && enableNullableReferenceTypes
+        var postNullableSuffix = preNullableSuffix == string.Empty && !isNullable && enableNullableReferenceTypes
             ? "!"
             : string.Empty;
 
