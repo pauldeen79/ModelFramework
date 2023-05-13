@@ -199,9 +199,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
                 ? new[]
                 {
-                    "#pragma warning disable CS8601 // Possible null reference assignment.",
                     "#pragma warning disable CS8603 // Possible null reference return.",
-                    "#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.",
                 }
                 : Array.Empty<string>())
             .AddLiteralCodeStatements
@@ -216,9 +214,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
                 ? new[]
                 {
-                    "#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.",
                     "#pragma warning restore CS8603 // Possible null reference return.",
-                    "#pragma warning restore CS8601 // Possible null reference assignment.",
                 }
                 : Array.Empty<string>());
 
