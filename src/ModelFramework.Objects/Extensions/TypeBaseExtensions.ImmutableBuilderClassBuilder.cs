@@ -850,7 +850,6 @@ public static partial class TypeBaseEtensions
                               property.TypeName.GetGenericArguments(),                             // 2
                               CreateIndentForImmutableBuilderAddOverloadMethodStatement(settings), // 3
                               GetPropertyName(property.Name, extensionMethod)),                    // 4
-                "    }",
                 "}",
                 $"return {GetReturnValue(settings, extensionMethod)};"
             }).ToList()
