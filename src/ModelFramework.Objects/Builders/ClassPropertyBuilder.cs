@@ -14,11 +14,13 @@ public partial class ClassPropertyBuilder
                                                                         bool addNullableCheck = true,
                                                                         bool useLazyInitialization = false,
                                                                         bool useTargetTypeNewExpressions = false,
-                                                                        string? buildersNamespace = null)
-        => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}Builder" : buildersNamespace + ".{2}Builder"))
+                                                                        string? buildersNamespace = null,
+                                                                        string builderName = "Builder",
+                                                                        string buildMethodName = "Build")
+        => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}" + builderName : buildersNamespace + ".{2}" + builderName))
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
-                ? "{0}?.Build()"
-                : "{0}{2}.Build()"))
+                ? "{0}?." + buildMethodName + "()"
+                : "{0}{2}." + buildMethodName + "()"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
     public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder(bool useLazyInitialization)
@@ -45,10 +47,14 @@ public partial class ClassPropertyBuilder
                                                                             string? customBuilderConstructorInitializeExpression = null,
                                                                             string? buildersNamespace = null,
                                                                             string? customBuilderMethodParameterExpression = null,
-                                                                            string? builderCollectionTypeName = null)
+                                                                            string? builderCollectionTypeName = null,
+                                                                            string builderName = "Builder",
+                                                                            string buildMethodName = "Build")
         => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
-          .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "System.Collections.Generic.IEnumerable<{1}Builder>" : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}Builder>"))
-          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x.Build())"))
+          .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace)
+            ? "System.Collections.Generic.IEnumerable<{1}" + builderName + ">"
+            : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}" + builderName + ">"))
+          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x." + buildMethodName + "())"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace, builderCollectionTypeName)));
 
     public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType)
