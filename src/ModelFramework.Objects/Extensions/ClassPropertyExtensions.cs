@@ -77,7 +77,7 @@ public static class ClassPropertyExtensions
     public static string GetInitializerModifiers(this IClassProperty property)
         => property.GetSubModifiers(property.InitializerVisibility, MetadataNames.PropertyInitializerModifiers);
 
-    internal static string GetDefaultValue(this IClassProperty property)
+    internal static string GetDefaultValue(this IClassProperty property, bool enableNullableReferenceTypes)
     {
         var md = property.Metadata.FirstOrDefault(x => x.Name == MetadataNames.CustomBuilderDefaultValue);
         if (md != null && md.Value != null)
@@ -89,7 +89,7 @@ public static class ClassPropertyExtensions
             return md.Value.CsharpFormat();
         }
 
-        return property.TypeName.GetDefaultValue(property.IsNullable);
+        return property.TypeName.GetDefaultValue(property.IsNullable, enableNullableReferenceTypes);
     }
 
     internal static IClassProperty EnsureParentTypeFullName(this IClassProperty property, IClass parentClass)

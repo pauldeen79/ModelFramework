@@ -199,7 +199,9 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
                 ? new[]
                 {
-                    "#pragma warning disable CS8603 // Possible null reference return."
+                    "#pragma warning disable CS8601 // Possible null reference assignment.",
+                    "#pragma warning disable CS8603 // Possible null reference return.",
+                    "#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.",
                 }
                 : Array.Empty<string>())
             .AddLiteralCodeStatements
@@ -214,7 +216,9 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
                 ? new[]
                 {
-                    "#pragma warning restore CS8603 // Possible null reference return."
+                    "#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.",
+                    "#pragma warning restore CS8603 // Possible null reference return.",
+                    "#pragma warning restore CS8601 // Possible null reference assignment.",
                 }
                 : Array.Empty<string>());
 
@@ -324,7 +328,7 @@ public static partial class TypeBaseEtensions
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.GenerationSettings.UseLazyInitialization
             ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {GetNewBuilderExpression(property, settings)});"
-            : $"{property.Name} = {property.GetDefaultValue()};";
+            : $"{property.Name} = {property.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes)};";
 
     private static string GetNewBuilderExpression(IClassProperty property, ImmutableBuilderClassSettings settings)
     {
@@ -338,7 +342,8 @@ public static partial class TypeBaseEtensions
             return md.Value.CsharpFormat();
         }
 
-        return CreateLazyPropertyTypeName(property, settings).GetDefaultValue(property.IsNullable);
+        return CreateLazyPropertyTypeName(property, settings)
+            .GetDefaultValue(property.IsNullable, settings.TypeSettings.EnableNullableReferenceTypes);
     }
 
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)

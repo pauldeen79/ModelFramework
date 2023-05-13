@@ -72,7 +72,11 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual Dictionary<string, string> GetCustomDefaultValueForBuilderClassConstructorValues()
     {
         var result = new Dictionary<string, string>();
-        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", "null")));
+        var nullableSuffix = EnableNullableContext
+            ? "!"
+            : string.Empty;
+
+        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{RootNamespace}.{x.GetEntityClassName()}", $"default{nullableSuffix}")));
         return result;
     }
 
@@ -712,7 +716,11 @@ public abstract class CSharpClassBase : ClassBase
 
         if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
         {
-            return new("default");
+            var nullableSuffix = EnableNullableContext
+                ? "!"
+                : string.Empty;
+
+            return new($"default{nullableSuffix}");
         }
 
         if (!string.IsNullOrEmpty(typeName.GetGenericArguments()))
