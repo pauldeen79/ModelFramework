@@ -63,7 +63,7 @@ namespace ModelFramework.Objects.Models
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
             #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility);
+            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 

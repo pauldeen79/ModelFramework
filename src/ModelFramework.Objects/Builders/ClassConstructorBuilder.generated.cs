@@ -336,11 +336,11 @@ namespace ModelFramework.Objects.Builders
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _chainCallDelegate = new (() => new System.Text.StringBuilder());
-            _staticDelegate = new (() => default(bool));
-            _virtualDelegate = new (() => default(bool));
-            _abstractDelegate = new (() => default(bool));
-            _protectedDelegate = new (() => default(bool));
-            _overrideDelegate = new (() => default(bool));
+            _staticDelegate = new (() => default(bool)!);
+            _virtualDelegate = new (() => default(bool)!);
+            _abstractDelegate = new (() => default(bool)!);
+            _protectedDelegate = new (() => default(bool)!);
+            _overrideDelegate = new (() => default(bool)!);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
             #pragma warning restore CS8603 // Possible null reference return.
         }

@@ -360,13 +360,13 @@ namespace ModelFramework.Database.Builders
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _typeDelegate = new (() => new System.Text.StringBuilder());
-            _isIdentityDelegate = new (() => default(bool));
-            _isRequiredDelegate = new (() => default(bool));
+            _isIdentityDelegate = new (() => default(bool)!);
+            _isRequiredDelegate = new (() => default(bool)!);
             _numericPrecisionDelegate = new (() => default(System.Nullable<byte>));
             _numericScaleDelegate = new (() => default(System.Nullable<byte>));
             _stringLengthDelegate = new (() => default(System.Nullable<int>));
             _stringCollationDelegate = new (() => new System.Text.StringBuilder());
-            _isStringMaxLengthDelegate = new (() => default(bool));
+            _isStringMaxLengthDelegate = new (() => default(bool)!);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }

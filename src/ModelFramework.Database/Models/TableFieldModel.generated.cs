@@ -98,10 +98,10 @@ namespace ModelFramework.Database.Models
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Models.CheckConstraintModel>();
             #pragma warning disable CS8603 // Possible null reference return.
             Type = string.Empty;
-            IsIdentity = default(System.Boolean);
-            IsRequired = default(System.Boolean);
+            IsIdentity = default(System.Boolean)!;
+            IsRequired = default(System.Boolean)!;
             StringCollation = string.Empty;
-            IsStringMaxLength = default(System.Boolean);
+            IsStringMaxLength = default(System.Boolean)!;
             Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }

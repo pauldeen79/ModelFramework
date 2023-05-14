@@ -509,19 +509,19 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _readOnlyDelegate = new (() => default(bool));
-            _constantDelegate = new (() => default(bool));
-            _eventDelegate = new (() => default(bool));
-            _staticDelegate = new (() => default(bool));
-            _virtualDelegate = new (() => default(bool));
-            _abstractDelegate = new (() => default(bool));
-            _protectedDelegate = new (() => default(bool));
-            _overrideDelegate = new (() => default(bool));
+            _readOnlyDelegate = new (() => default(bool)!);
+            _constantDelegate = new (() => default(bool)!);
+            _eventDelegate = new (() => default(bool)!);
+            _staticDelegate = new (() => default(bool)!);
+            _virtualDelegate = new (() => default(bool)!);
+            _abstractDelegate = new (() => default(bool)!);
+            _protectedDelegate = new (() => default(bool)!);
+            _overrideDelegate = new (() => default(bool)!);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Private);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool));
-            _isValueTypeDelegate = new (() => default(bool));
+            _isNullableDelegate = new (() => default(bool)!);
+            _isValueTypeDelegate = new (() => default(bool)!);
             _defaultValueDelegate = new (() => default(object?));
             _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.

@@ -677,20 +677,20 @@ namespace ModelFramework.Objects.Builders
             #pragma warning disable CS8603 // Possible null reference return.
             _hasGetterDelegate = new (() => true);
             _hasSetterDelegate = new (() => true);
-            _hasInitializerDelegate = new (() => default(bool));
+            _hasInitializerDelegate = new (() => default(bool)!);
             _getterVisibilityDelegate = new (() => default(System.Nullable<ModelFramework.Objects.Contracts.Visibility>));
             _setterVisibilityDelegate = new (() => default(System.Nullable<ModelFramework.Objects.Contracts.Visibility>));
             _initializerVisibilityDelegate = new (() => default(System.Nullable<ModelFramework.Objects.Contracts.Visibility>));
-            _staticDelegate = new (() => default(bool));
-            _virtualDelegate = new (() => default(bool));
-            _abstractDelegate = new (() => default(bool));
-            _protectedDelegate = new (() => default(bool));
-            _overrideDelegate = new (() => default(bool));
+            _staticDelegate = new (() => default(bool)!);
+            _virtualDelegate = new (() => default(bool)!);
+            _abstractDelegate = new (() => default(bool)!);
+            _protectedDelegate = new (() => default(bool)!);
+            _overrideDelegate = new (() => default(bool)!);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool));
-            _isValueTypeDelegate = new (() => default(bool));
+            _isNullableDelegate = new (() => default(bool)!);
+            _isValueTypeDelegate = new (() => default(bool)!);
             _explicitInterfaceNameDelegate = new (() => new System.Text.StringBuilder());
             _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.

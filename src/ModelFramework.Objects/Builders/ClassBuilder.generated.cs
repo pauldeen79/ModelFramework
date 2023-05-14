@@ -245,11 +245,11 @@ namespace ModelFramework.Objects.Builders
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _staticDelegate = new (() => default(bool));
-            _sealedDelegate = new (() => default(bool));
-            _abstractDelegate = new (() => default(bool));
+            _staticDelegate = new (() => default(bool)!);
+            _sealedDelegate = new (() => default(bool)!);
+            _abstractDelegate = new (() => default(bool)!);
             _baseClassDelegate = new (() => new System.Text.StringBuilder());
-            _recordDelegate = new (() => default(bool));
+            _recordDelegate = new (() => default(bool)!);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 

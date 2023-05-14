@@ -120,7 +120,7 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _namespaceDelegate = new (() => new System.Text.StringBuilder());
-            _partialDelegate = new (() => default(bool));
+            _partialDelegate = new (() => default(bool)!);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.

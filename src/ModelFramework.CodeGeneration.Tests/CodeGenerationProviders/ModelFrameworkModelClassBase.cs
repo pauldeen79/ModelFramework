@@ -27,13 +27,12 @@ public abstract class ModelFrameworkModelClassBase : ModelFrameworkCSharpClassBa
             var defaultCustomBuilderMethodParameterExpression = property.IsNullable || AddNullChecks
                 ? "{0}?.ToEntity()"
                 : "{0}{2}.ToEntity()";
-            property.ConvertSinglePropertyToBuilderOnBuilder
-            (
-                typeName.Replace("Contracts.I", "Models.", StringComparison.InvariantCulture) + "Model",
-                customBuilderMethodParameterExpression: isClass
-                    ? "{0}{2}.ToTypedEntity()"
-                    : defaultCustomBuilderMethodParameterExpression
-            );
+            var argumentType = typeName.Replace("Contracts.I", "Models.", StringComparison.InvariantCulture) + "Model";
+            property.WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType);
+            property.WithCustomBuilderArgumentTypeSingleProperty(argumentType);
+            property.WithCustomBuilderMethodParameterExpression(isClass
+                ? "{0}{2}.ToTypedEntity()"
+                : defaultCustomBuilderMethodParameterExpression);
         }
         else if (typeName.Contains("Collection<ModelFramework.", StringComparison.InvariantCulture))
         {
