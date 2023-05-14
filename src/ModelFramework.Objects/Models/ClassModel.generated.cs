@@ -87,11 +87,11 @@ namespace ModelFramework.Objects.Models
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Models.ClassConstructorModel>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Models.EnumModel>();
             #pragma warning disable CS8603 // Possible null reference return.
-            Static = default(System.Boolean);
-            Sealed = default(System.Boolean);
-            Abstract = default(System.Boolean);
+            Static = default(System.Boolean)!;
+            Sealed = default(System.Boolean)!;
+            Abstract = default(System.Boolean)!;
             BaseClass = string.Empty;
-            Record = default(System.Boolean);
+            Record = default(System.Boolean)!;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 

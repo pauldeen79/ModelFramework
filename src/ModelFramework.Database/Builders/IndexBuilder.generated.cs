@@ -191,7 +191,7 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _uniqueDelegate = new (() => default(bool));
+            _uniqueDelegate = new (() => default(bool)!);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             _fileGroupNameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.

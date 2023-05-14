@@ -133,19 +133,19 @@ namespace ModelFramework.Objects.Models
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Models.AttributeModel>();
             #pragma warning disable CS8603 // Possible null reference return.
-            ReadOnly = default(System.Boolean);
-            Constant = default(System.Boolean);
-            Event = default(System.Boolean);
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility);
+            ReadOnly = default(System.Boolean)!;
+            Constant = default(System.Boolean)!;
+            Event = default(System.Boolean)!;
+            Static = default(System.Boolean)!;
+            Virtual = default(System.Boolean)!;
+            Abstract = default(System.Boolean)!;
+            Protected = default(System.Boolean)!;
+            Override = default(System.Boolean)!;
+            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
             Name = string.Empty;
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
+            IsNullable = default(System.Boolean)!;
+            IsValueType = default(System.Boolean)!;
             ParentTypeFullName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }

@@ -48,7 +48,7 @@ namespace ModelFramework.Database.Models
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
             #pragma warning disable CS8603 // Possible null reference return.
-            IsDescending = default(System.Boolean);
+            IsDescending = default(System.Boolean)!;
             Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }

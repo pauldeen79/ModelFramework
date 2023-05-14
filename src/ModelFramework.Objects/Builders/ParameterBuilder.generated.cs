@@ -317,12 +317,12 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _isParamArrayDelegate = new (() => default(bool));
-            _isOutDelegate = new (() => default(bool));
-            _isRefDelegate = new (() => default(bool));
+            _isParamArrayDelegate = new (() => default(bool)!);
+            _isOutDelegate = new (() => default(bool)!);
+            _isRefDelegate = new (() => default(bool)!);
             _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool));
-            _isValueTypeDelegate = new (() => default(bool));
+            _isNullableDelegate = new (() => default(bool)!);
+            _isValueTypeDelegate = new (() => default(bool)!);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             _defaultValueDelegate = new (() => default(object?));
             #pragma warning restore CS8603 // Possible null reference return.

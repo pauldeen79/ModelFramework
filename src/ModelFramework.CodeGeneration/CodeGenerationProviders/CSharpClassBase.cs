@@ -347,12 +347,11 @@ public abstract class CSharpClassBase : ClassBase
             return;
         }
 
+        property.ConvertCollectionOnBuilderToEnumerable(false, RecordConcreteCollectionType.WithoutGenerics());
         if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
         {
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
-                false,
-                RecordConcreteCollectionType.WithoutGenerics(),
                 GetCustomCollectionArgumentType(typeName),
                 GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
                 builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
@@ -364,8 +363,6 @@ public abstract class CSharpClassBase : ClassBase
         {
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
-                false,
-                RecordConcreteCollectionType.WithoutGenerics(),
                 GetCustomCollectionArgumentType(typeName),
                 customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
                 builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
@@ -383,16 +380,13 @@ public abstract class CSharpClassBase : ClassBase
             return;
         }
 
-        property.ConvertSinglePropertyToBuilderOnBuilder
-        (
-            !string.IsNullOrEmpty(typeName.GetGenericArguments())
+        var argumentType = !string.IsNullOrEmpty(typeName.GetGenericArguments())
                 ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
-                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}",
-            GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName),
-            GetCustomBuilderMethodParameterExpression(typeName),
-            builderName: BuilderName,
-            buildMethodName: BuilderBuildMethodName
-        );
+                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
+
+        property.WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType, GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName));
+        property.WithCustomBuilderArgumentTypeSingleProperty(argumentType, BuilderName);
+        property.WithCustomBuilderMethodParameterExpression(GetCustomBuilderMethodParameterExpression(typeName), BuilderBuildMethodName);
 
         if (!property.IsNullable)
         {

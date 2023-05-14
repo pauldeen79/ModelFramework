@@ -125,7 +125,7 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _isDescendingDelegate = new (() => default(bool));
+            _isDescendingDelegate = new (() => default(bool)!);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }

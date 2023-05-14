@@ -167,20 +167,20 @@ namespace ModelFramework.Objects.Models
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementModel>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Models.ParameterModel>();
             #pragma warning disable CS8603 // Possible null reference return.
-            Partial = default(System.Boolean);
-            ExtensionMethod = default(System.Boolean);
-            Operator = default(System.Boolean);
-            Async = default(System.Boolean);
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility);
+            Partial = default(System.Boolean)!;
+            ExtensionMethod = default(System.Boolean)!;
+            Operator = default(System.Boolean)!;
+            Async = default(System.Boolean)!;
+            Static = default(System.Boolean)!;
+            Virtual = default(System.Boolean)!;
+            Abstract = default(System.Boolean)!;
+            Protected = default(System.Boolean)!;
+            Override = default(System.Boolean)!;
+            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
             Name = string.Empty;
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
+            IsNullable = default(System.Boolean)!;
+            IsValueType = default(System.Boolean)!;
             ExplicitInterfaceName = string.Empty;
             ParentTypeFullName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.

@@ -174,17 +174,17 @@ namespace ModelFramework.Objects.Models
             #pragma warning disable CS8603 // Possible null reference return.
             HasGetter = true;
             HasSetter = true;
-            HasInitializer = default(System.Boolean);
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility);
+            HasInitializer = default(System.Boolean)!;
+            Static = default(System.Boolean)!;
+            Virtual = default(System.Boolean)!;
+            Abstract = default(System.Boolean)!;
+            Protected = default(System.Boolean)!;
+            Override = default(System.Boolean)!;
+            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
             Name = string.Empty;
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
+            IsNullable = default(System.Boolean)!;
+            IsValueType = default(System.Boolean)!;
             ExplicitInterfaceName = string.Empty;
             ParentTypeFullName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.

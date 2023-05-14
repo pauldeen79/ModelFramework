@@ -312,8 +312,8 @@ namespace ModelFramework.Database.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _topDelegate = new (() => default(System.Nullable<int>));
-            _topPercentDelegate = new (() => default(bool));
-            _distinctDelegate = new (() => default(bool));
+            _topPercentDelegate = new (() => default(bool)!);
+            _distinctDelegate = new (() => default(bool)!);
             _definitionDelegate = new (() => new System.Text.StringBuilder());
             _nameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.

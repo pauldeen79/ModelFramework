@@ -14,25 +14,45 @@ public partial class ClassPropertyBuilder
                                                                         bool addNullableCheck = true,
                                                                         bool useLazyInitialization = false,
                                                                         bool useTargetTypeNewExpressions = false,
-                                                                        string? buildersNamespace = null,
-                                                                        string builderName = "Builder",
-                                                                        string buildMethodName = "Build")
-        => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}" + builderName : buildersNamespace + ".{2}" + builderName))
-          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
+                                                                        string? buildersNamespace = null)
+    => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}Builder" : buildersNamespace + ".{2}Builder"))
+      .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
+            ? "{0}?.Build()"
+            : "{0}{2}.Build()"))
+      .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
+
+    public ClassPropertyBuilder WithCustomBuilderConstructorInitializeExpressionSingleProperty(string? argumentType = null,
+                                                                                               string? customBuilderConstructorInitializeExpression = null,
+                                                                                               bool useLazyInitialization = false,
+                                                                                               bool useTargetTypeNewExpressions = false,
+                                                                                               string? buildersNamespace = null)
+        => ReplaceMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression
+            .WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
+
+    public ClassPropertyBuilder WithCustomBuilderArgumentTypeSingleProperty(string? argumentType = null,
+                                                                            string? buildersNamespace = null,
+                                                                            string builderName = "Builder")
+        => ReplaceMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}" + builderName : buildersNamespace + ".{2}" + builderName));
+
+    public ClassPropertyBuilder WithCustomBuilderMethodParameterExpression(string? customBuilderMethodParameterExpression = null,
+                                                                           string buildMethodName = "Build",
+                                                                           bool addNullableCheck = true)
+        => ReplaceMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
                 ? "{0}?." + buildMethodName + "()"
-                : "{0}{2}." + buildMethodName + "()"))
-          .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
+                : "{0}{2}." + buildMethodName + "()"));
 
     public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder(bool useLazyInitialization)
     {
-        ConvertSinglePropertyToBuilderOnBuilder
-        (
-            argumentType: typeof(StringBuilder).FullName,
-            customBuilderMethodParameterExpression: "{0}?.ToString()",
-            customBuilderConstructorInitializeExpression: useLazyInitialization
-                ? $"_{{1}}Delegate = new (() => new {typeof(StringBuilder).FullName}(source.{{0}}))"
-                : $"{{0}} = new {typeof(StringBuilder).FullName}(source.{{0}})"
-        );
+        var argumentType = typeof(StringBuilder).FullName;
+        var customBuilderMethodParameterExpression = "{0}?.ToString()";
+        var customBuilderConstructorInitializeExpression = useLazyInitialization
+            ? $"_{{1}}Delegate = new (() => new {typeof(StringBuilder).FullName}(source.{{0}}))"
+            : $"{{0}} = new {typeof(StringBuilder).FullName}(source.{{0}})";
+
+        WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType, customBuilderConstructorInitializeExpression, useLazyInitialization);
+        WithCustomBuilderArgumentTypeSingleProperty(argumentType);
+        WithCustomBuilderMethodParameterExpression(customBuilderMethodParameterExpression);
+
         SetDefaultValueForStringPropertyOnBuilderClassConstructor();
         AddBuilderOverload(new OverloadBuilder().AddParameter("value", typeof(string)).WithInitializeExpression($"if ({{2}} == null)\r\n    {{2}} = new {typeof(StringBuilder).FullName}();\r\n{{2}}.Clear().Append(value);").Build());
         AddBuilderOverload(new OverloadBuilder().WithMethodName("AppendTo{0}").AddParameter("value", typeof(string)).WithInitializeExpression($"if ({{2}} == null)\r\n    {{2}} = new {typeof(StringBuilder).FullName}();\r\n{{2}}.Append(value);").Build());
@@ -47,11 +67,22 @@ public partial class ClassPropertyBuilder
                                                                             string? customBuilderConstructorInitializeExpression = null,
                                                                             string? buildersNamespace = null,
                                                                             string? customBuilderMethodParameterExpression = null,
+                                                                            string? builderCollectionTypeName = null)
+        => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
+          .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace)
+            ? "System.Collections.Generic.IEnumerable<{1}Builder>"
+            : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}Builder>"))
+          .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x.Build())"))
+          .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace, builderCollectionTypeName)));
+
+    public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(string? argumentType = null,
+                                                                            string? customBuilderConstructorInitializeExpression = null,
+                                                                            string? buildersNamespace = null,
+                                                                            string? customBuilderMethodParameterExpression = null,
                                                                             string? builderCollectionTypeName = null,
                                                                             string builderName = "Builder",
                                                                             string buildMethodName = "Build")
-        => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
-          .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace)
+        => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace)
             ? "System.Collections.Generic.IEnumerable<{1}" + builderName + ">"
             : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}" + builderName + ">"))
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x." + buildMethodName + "())"))

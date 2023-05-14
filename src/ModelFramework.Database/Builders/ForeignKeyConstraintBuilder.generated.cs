@@ -234,8 +234,8 @@ namespace ModelFramework.Database.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
             _foreignTableNameDelegate = new (() => new System.Text.StringBuilder());
-            _cascadeUpdateDelegate = new (() => default(ModelFramework.Database.Contracts.CascadeAction));
-            _cascadeDeleteDelegate = new (() => default(ModelFramework.Database.Contracts.CascadeAction));
+            _cascadeUpdateDelegate = new (() => default(ModelFramework.Database.Contracts.CascadeAction)!);
+            _cascadeDeleteDelegate = new (() => default(ModelFramework.Database.Contracts.CascadeAction)!);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
         }

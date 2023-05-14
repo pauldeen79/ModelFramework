@@ -96,8 +96,8 @@ namespace ModelFramework.Objects.Models
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Models.AttributeModel>();
             #pragma warning disable CS8603 // Possible null reference return.
             Namespace = string.Empty;
-            Partial = default(System.Boolean);
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility);
+            Partial = default(System.Boolean)!;
+            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
             Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }

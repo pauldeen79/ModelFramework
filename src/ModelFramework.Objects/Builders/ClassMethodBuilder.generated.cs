@@ -665,20 +665,20 @@ namespace ModelFramework.Objects.Builders
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _partialDelegate = new (() => default(bool));
-            _extensionMethodDelegate = new (() => default(bool));
-            _operatorDelegate = new (() => default(bool));
-            _asyncDelegate = new (() => default(bool));
-            _staticDelegate = new (() => default(bool));
-            _virtualDelegate = new (() => default(bool));
-            _abstractDelegate = new (() => default(bool));
-            _protectedDelegate = new (() => default(bool));
-            _overrideDelegate = new (() => default(bool));
+            _partialDelegate = new (() => default(bool)!);
+            _extensionMethodDelegate = new (() => default(bool)!);
+            _operatorDelegate = new (() => default(bool)!);
+            _asyncDelegate = new (() => default(bool)!);
+            _staticDelegate = new (() => default(bool)!);
+            _virtualDelegate = new (() => default(bool)!);
+            _abstractDelegate = new (() => default(bool)!);
+            _protectedDelegate = new (() => default(bool)!);
+            _overrideDelegate = new (() => default(bool)!);
             _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
             _nameDelegate = new (() => new System.Text.StringBuilder());
             _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool));
-            _isValueTypeDelegate = new (() => default(bool));
+            _isNullableDelegate = new (() => default(bool)!);
+            _isValueTypeDelegate = new (() => default(bool)!);
             _explicitInterfaceNameDelegate = new (() => new System.Text.StringBuilder());
             _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder());
             #pragma warning restore CS8603 // Possible null reference return.
