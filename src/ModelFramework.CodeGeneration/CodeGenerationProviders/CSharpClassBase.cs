@@ -1,6 +1,8 @@
 ﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
+#pragma warning restore IDE0079 // Remove unnecessary suppression
 public abstract class CSharpClassBase : ClassBase
 {
     protected virtual Type BuilderClassCollectionType => typeof(List<>);
