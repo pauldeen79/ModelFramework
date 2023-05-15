@@ -5,8 +5,8 @@ public class BuilderObjectHandler : IObjectHandler
 {
     public bool ProcessInstance(ObjectHandlerRequest command, ICsharpExpressionDumperCallback callback)
     {
-        Guard.AgainstNull(command, nameof(command));
-        Guard.AgainstNull(callback, nameof(callback));
+        Guard.IsNotNull(command);
+        Guard.IsNotNull(callback);
 
         var type = command.Type ?? command.InstanceType;
         if (type is null)

@@ -5,8 +5,8 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
 {
     public bool IsValid(ObjectHandlerRequest command, PropertyInfo propertyInfo)
     {
-        Guard.AgainstNull(command, nameof(command));
-        Guard.AgainstNull(propertyInfo, nameof(propertyInfo));
+        Guard.IsNotNull(command);
+        Guard.IsNotNull(propertyInfo);
         var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
         if (classPropertyBuilder is not null)
         {
