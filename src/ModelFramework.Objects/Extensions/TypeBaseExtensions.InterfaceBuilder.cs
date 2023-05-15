@@ -19,9 +19,6 @@ public static partial class TypeBaseExtensions
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
 
-    public static IInterface ToInterfaceClass(this ITypeBase instance, InterfaceSettings settings)
-        => instance.ToInterfaceBuilder(settings).BuildTyped();
-
     public static InterfaceBuilder ToInterfaceBuilder(this ITypeBase instance, InterfaceSettings settings)
         => new InterfaceBuilder()
             .WithName("I" + instance.Name)
@@ -71,6 +68,9 @@ public static partial class TypeBaseExtensions
             .AddGenericTypeArguments(GenerateGenericTypeArguments(settings.ApplyGenericTypes))
             .AddGenericTypeArguments(instance.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(instance.GenericTypeArgumentConstraints);
+
+    public static IInterface ToInterfaceClass(this ITypeBase instance, InterfaceSettings settings)
+        => instance.ToInterfaceBuilder(settings).BuildTyped();
 
     private static IClassProperty ChangeProperty(IClassProperty property,
                                                  IDictionary<string, string>? applyGenericTypes,
