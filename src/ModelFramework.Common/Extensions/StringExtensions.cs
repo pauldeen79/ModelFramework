@@ -179,9 +179,9 @@ public static class StringExtensions
             : fullyQualifiedClassName.Substring(idx + 1);
     }
 
-    public static string GetNamespaceWithDefault(this string fullyQualifiedClassName, string defaultValue = "")
+    public static string GetNamespaceWithDefault(this string? fullyQualifiedClassName, string defaultValue = "")
     {
-        if (string.IsNullOrEmpty(fullyQualifiedClassName))
+        if (fullyQualifiedClassName == null || string.IsNullOrEmpty(fullyQualifiedClassName))
         {
             return defaultValue;
         }

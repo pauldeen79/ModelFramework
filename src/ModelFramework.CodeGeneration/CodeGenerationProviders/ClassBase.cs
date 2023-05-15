@@ -42,14 +42,6 @@ public abstract class ClassBase : ICodeGenerationProvider
     public object CreateGenerator()
         => new CSharpClassGenerator();
 
-    protected static IEnumerable<AttributeParameterBuilder> CreateConditional(Func<bool> condition, AttributeParameterBuilder result)
-    {
-        if (condition.Invoke())
-        {
-            yield return result;
-        }
-    }
-
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty
         : Path + "/";

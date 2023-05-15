@@ -1,9 +1,15 @@
 ﻿namespace ModelFramework.CodeGeneration.ObjectHandlers;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
+#pragma warning restore IDE0079 // Remove unnecessary suppression
 public class BuilderObjectHandler : IObjectHandler
 {
     public bool ProcessInstance(ObjectHandlerRequest command, ICsharpExpressionDumperCallback callback)
     {
+        Guard.IsNotNull(command);
+        Guard.IsNotNull(callback);
+
         var type = command.Type ?? command.InstanceType;
         if (type is null)
         {
