@@ -21,7 +21,7 @@ public abstract class ClassBase : ICodeGenerationProvider
 
     protected virtual AttributeBuilder? AttributeInitializeDelegate(Attribute sourceAttribute) => AttributeBuilder.DefaultInitializer(sourceAttribute);
 
-    public void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath)
+    public virtual void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath)
     {
         GenerateMultipleFiles = generateMultipleFiles;
         SkipWhenFileExists = skipWhenFileExists;
