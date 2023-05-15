@@ -1,5 +1,6 @@
 ﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
+#pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
 public abstract class CSharpClassBase : ClassBase
 {
     protected virtual Type BuilderClassCollectionType => typeof(List<>);
@@ -48,6 +49,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected virtual string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
     {
+        Guard.AgainstNull(instance, nameof(instance));
+
         if (InheritFromInterfaces && (instance.Namespace == RootNamespace || instance.Namespace == CoreNamespace))
         {
             return forCreate
@@ -124,90 +127,138 @@ public abstract class CSharpClassBase : ClassBase
         => MapCodeGenerationModelsToDomain(GetPureAbstractModels());
 
     protected ITypeBase[] GetOverrideModels(Type abstractType)
-        => MapCodeGenerationModelsToDomain(
+    {
+        Guard.AgainstNull(abstractType, nameof(abstractType));
+
+        return MapCodeGenerationModelsToDomain(
             GetType().Assembly.GetExportedTypes()
                 .Where(x => x.IsInterface && x.GetInterfaces().Any(y => y == abstractType)));
+    }
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
                                                      string entitiesNamespace,
                                                      string buildersNamespace,
                                                      params string[] interfacesToAdd)
-        => GetImmutableBuilderClasses(types.Select(x => x.ToTypeBase(CreateClassSettings())).ToArray(),
-                                      entitiesNamespace,
-                                      buildersNamespace,
-                                      interfacesToAdd);
+    {
+        Guard.AgainstNull(types, nameof(types));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+        Guard.AgainstNull(buildersNamespace, nameof(buildersNamespace));
+
+        return GetImmutableBuilderClasses(types.Select(x => x.ToTypeBase(CreateClassSettings())).ToArray(),
+                                          entitiesNamespace,
+                                          buildersNamespace,
+                                          interfacesToAdd);
+    }
 
     protected ITypeBase[] GetImmutableBuilderClasses(ITypeBase[] models,
                                                      string entitiesNamespace,
                                                      string buildersNamespace,
                                                      params string[] interfacesToAdd)
-        => models.Select
+    {
+        Guard.AgainstNull(models, nameof(models));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+        Guard.AgainstNull(buildersNamespace, nameof(buildersNamespace));
+
+        return models.Select
         (
             x => CreateBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
                 .With(x => Visit(x))
                 .Build()
         ).ToArray();
+    }
 
     protected ITypeBase[] GetImmutableNonGenericBuilderClasses(Type[] types,
                                                                string entitiesNamespace,
                                                                string buildersNamespace,
                                                                params string[] interfacesToAdd)
-        => GetImmutableNonGenericBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
-                                                entitiesNamespace,
-                                                buildersNamespace,
-                                                interfacesToAdd);
+    {
+        Guard.AgainstNull(types, nameof(types));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+        Guard.AgainstNull(buildersNamespace, nameof(buildersNamespace));
+
+        return GetImmutableNonGenericBuilderClasses(types.Select(x => x.ToTypeBase()).ToArray(),
+                                                    entitiesNamespace,
+                                                    buildersNamespace,
+                                                    interfacesToAdd);
+    }
 
     protected ITypeBase[] GetImmutableNonGenericBuilderClasses(ITypeBase[] models,
                                                                string entitiesNamespace,
                                                                string buildersNamespace,
                                                                params string[] interfacesToAdd)
-        => models.Select
+    {
+        Guard.AgainstNull(models, nameof(models));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+        Guard.AgainstNull(buildersNamespace, nameof(buildersNamespace));
+
+        return models.Select
         (
             x => CreateNonGenericBuilder(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With(x => x.AddInterfaces(interfacesToAdd.Select(y => string.Format(y, x.Name))))
                 .With(x => Visit(x))
                 .Build()
         ).ToArray();
+    }
 
     protected IClass[] GetImmutableBuilderExtensionClasses(Type[] types,
                                                            string entitiesNamespace,
                                                            string buildersNamespace,
                                                            string builderInterfacesNamespace)
-        => GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass()).ToArray(),
-                                               entitiesNamespace,
-                                               buildersNamespace,
-                                               builderInterfacesNamespace);
+    {
+        Guard.AgainstNull(types, nameof(types));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+        Guard.AgainstNull(buildersNamespace, nameof(buildersNamespace));
+
+        return GetImmutableBuilderExtensionClasses(types.Select(x => x.ToClass()).ToArray(),
+                                                   entitiesNamespace,
+                                                   buildersNamespace,
+                                                   builderInterfacesNamespace);
+    }
 
     protected IClass[] GetImmutableBuilderExtensionClasses(ITypeBase[] models,
                                                            string entitiesNamespace,
                                                            string buildersNamespace,
                                                            string builderInterfacesNamespace)
-        => models.Select
+    {
+        Guard.AgainstNull(models, nameof(models));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+        Guard.AgainstNull(buildersNamespace, nameof(buildersNamespace));
+
+        return models.Select
         (
             x => CreateBuilderExtensions(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
                 .With
                 (
                     x => x.Methods.ForEach(y => y.AddGenericTypeArguments("T")
-                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
+                                                    .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
                 )
                 .With
                 (
                     x => x.Methods.ForEach(y => y.WithTypeName("T")
-                                                 .With(z => z.Parameters.First().WithTypeName(z.TypeName)))
+                                                    .With(z => z.Parameters.First().WithTypeName(z.TypeName)))
                 )
                 .With(x => Visit(x))
                 .BuildTyped()
         )
         .ToArray();
+    }
 
     protected ITypeBase[] GetImmutableClasses(Type[] types, string entitiesNamespace)
-        => GetImmutableClasses(types.Select(x => x.IsInterface
-            ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
-            : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
+    {
+        Guard.AgainstNull(types, nameof(types));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+
+        return GetImmutableClasses(types.Select(x => x.IsInterface
+                ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
+                : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
+    }
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
     {
+        Guard.AgainstNull(models, nameof(models));
+        Guard.AgainstNull(entitiesNamespace, nameof(entitiesNamespace));
+
         if (ValidateArgumentsInConstructor == ArgumentValidationType.Shared)
         {
             return models.SelectMany
@@ -234,6 +285,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected IClass[] GetClassesFromSameNamespace(Type type)
     {
+        Guard.AgainstNull(type, nameof(type));
+
         if (type.FullName is null)
         {
             throw new ArgumentException("Can't get classes from same namespace when the FullName of this type is null. Could not determine namespace.");
@@ -259,39 +312,46 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     protected IClass CreateBaseclass(Type type, string @namespace)
-        => type.ToClass().ToImmutableClassBuilder(new ImmutableClassSettings
-            (
-                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
-                constructorSettings: new(
-                    validateArguments: ValidateArgumentsInConstructor,
-                    addNullChecks: AddNullChecks),
-                addPrivateSetters: AddPrivateSetters)
-            )
-            .WithNamespace(@namespace)
-            .WithName(type.GetEntityClassName())
-            .With(x => FixImmutableClassProperties(x))
-            .With(x => Visit(x))
-            .BuildTyped();
+    {
+        Guard.AgainstNull(type, nameof(type));
+        Guard.AgainstNull(@namespace, nameof(@namespace));
+
+        return type.ToClass().ToImmutableClassBuilder(new ImmutableClassSettings
+        (
+            newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+            allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
+            constructorSettings: new(
+                validateArguments: ValidateArgumentsInConstructor,
+                addNullChecks: AddNullChecks),
+            addPrivateSetters: AddPrivateSetters)
+        )
+        .WithNamespace(@namespace)
+        .WithName(type.GetEntityClassName())
+        .With(x => FixImmutableClassProperties(x))
+        .With(x => Visit(x))
+        .BuildTyped();
+    }
 
     protected ClassBuilder CreateBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
+        => Guard.AgainstNull(typeBase, nameof(typeBase)).ToImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
 
     protected ClassBuilder CreateNonGenericBuilder(ITypeBase typeBase, string @namespace)
-        => typeBase.ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
+        => Guard.AgainstNull(typeBase, nameof(typeBase)).ToNonGenericImmutableBuilderClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
 
     protected ClassBuilder CreateBuilderExtensions(ITypeBase typeBase, string @namespace)
-        => typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
+        => Guard.AgainstNull(typeBase, nameof(typeBase)).ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
 
     protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TEntity : ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
-        => FixImmutableBuilderProperties(typeBaseBuilder);
+        => FixImmutableBuilderProperties(Guard.AgainstNull(typeBaseBuilder, nameof(typeBaseBuilder)));
 
     protected virtual void FixImmutableBuilderProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TEntity : ITypeBase
         where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
+        Guard.AgainstNull(typeBaseBuilder, nameof(typeBaseBuilder));
+
         foreach (var property in typeBaseBuilder.Properties)
         {
             var typeName = property.TypeName.ToString().FixTypeName();
@@ -319,6 +379,9 @@ public abstract class CSharpClassBase : ClassBase
 
     protected virtual void FixImmutableBuilderProperty(ClassPropertyBuilder property, string typeName)
     {
+        Guard.AgainstNull(property, nameof(property));
+        Guard.AgainstNull(typeName, nameof(typeName));
+
         if (!property.IsValueType
             && typeName.StartsWithAny(StringComparison.InvariantCulture, GetBuilderNamespaceMappings().Keys.Select(x => $"{x}."))
             && !GetNonDomainTypes().Contains(typeName))
@@ -339,73 +402,8 @@ public abstract class CSharpClassBase : ClassBase
         }
     }
 
-    private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
-    {
-        if (typeName.GetGenericArguments().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
-        {
-            // Contracts need to be skipped, do not touch these!
-            return;
-        }
-
-        property.ConvertCollectionOnBuilderToEnumerable(false, RecordConcreteCollectionType.WithoutGenerics());
-        if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
-        {
-            property.ConvertCollectionPropertyToBuilderOnBuilder
-            (
-                GetCustomCollectionArgumentType(typeName),
-                GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
-                builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
-                builderName: BuilderName,
-                buildMethodName: BuilderBuildMethodName
-            );
-        }
-        else
-        {
-            property.ConvertCollectionPropertyToBuilderOnBuilder
-            (
-                GetCustomCollectionArgumentType(typeName),
-                customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
-                builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
-                builderName: BuilderName,
-                buildMethodName: BuilderBuildMethodName
-            );
-        }
-    }
-
-    private void FixSingleDomainProperty(ClassPropertyBuilder property, string typeName)
-    {
-        if (typeName.WithoutProcessedGenerics().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
-        {
-            // Contracts need to be skipped, do not touch these!
-            return;
-        }
-
-        var argumentType = !string.IsNullOrEmpty(typeName.GetGenericArguments())
-                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
-                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
-
-        property.WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType, GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName));
-        property.WithCustomBuilderArgumentTypeSingleProperty(argumentType, BuilderName);
-        property.WithCustomBuilderMethodParameterExpression(GetCustomBuilderMethodParameterExpression(typeName), BuilderBuildMethodName);
-
-        if (!property.IsNullable)
-        {
-            property.SetDefaultValueForBuilderClassConstructor(GetDefaultValueForBuilderClassConstructor(typeName));
-        }
-    }
-
-    private string? GetBuilderClassCollectionTypeName()
-        => BuilderClassCollectionType is null
-            ? null
-            : BuilderClassCollectionType.WithoutGenerics();
-
-    private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
-        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments()))
-            ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
-            : null;
-
     protected ITypeBase[] MapCodeGenerationModelsToDomain(IEnumerable<Type> types)
-        => types
+        => Guard.AgainstNull(types, nameof(types))
             .Select(x => x.ToClassBuilder(new ClassSettings())
                 .AddMetadata("CSharpClassBase.ModelType", x)
                 .WithNamespace(RootNamespace)
@@ -422,6 +420,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected virtual string ReplaceWithBuilderNamespaces(string typeName)
     {
+        Guard.AgainstNull(typeName, nameof(typeName));
+
         var match = GetBuilderNamespaceMappings()
             .Select(x => new { x.Key, x.Value })
             .FirstOrDefault(x => typeName.Contains($"{x.Key}."));
@@ -441,6 +441,8 @@ public abstract class CSharpClassBase : ClassBase
 
     protected string GetEntityTypeName(string builderFullName)
     {
+        Guard.AgainstNull(builderFullName, nameof(builderFullName));
+
         var match = GetBuilderNamespaceMappings()
             .Select(x => new { x.Key, x.Value })
             .FirstOrDefault(x => builderFullName.StartsWith($"{x.Value}.", StringComparison.InvariantCulture));
@@ -527,9 +529,13 @@ public abstract class CSharpClassBase : ClassBase
         );
 
     protected string GetModelTypeName(Type modelType)
-        => GetCoreModels().Concat(GetAbstractModels())
+    {
+        Guard.AgainstNull(modelType, nameof(modelType));
+
+        return GetCoreModels().Concat(GetAbstractModels())
             .FirstOrDefault(x => x.Metadata.GetValue<Type?>("CSharpClassBase.ModelType", () => null) == modelType)?.GetFullName()
                 ?? throw new ArgumentOutOfRangeException(nameof(modelType), $"Unknown model type: {modelType.FullName}");
+    }
 
     protected virtual string CurrentNamespace => Path.Replace("/", ".");
 
@@ -542,19 +548,19 @@ public abstract class CSharpClassBase : ClassBase
         => new[]
         {
             new ClassBuilder()
-                .WithNamespace(@namespace)
-                .WithName(className)
+                .WithNamespace(Guard.AgainstNull(@namespace, nameof(@namespace)))
+                .WithName(Guard.AgainstNull(className, nameof(className)))
                 .WithStatic()
                 .WithPartial()
                 .AddMethods(new ClassMethodBuilder()
                     .WithVisibility(Visibility.Private)
                     .WithStatic()
-                    .WithName(methodName)
+                    .WithName(Guard.AgainstNull(methodName, nameof(methodName)))
                     .WithExtensionMethod()
                     .WithType(typeof(IServiceCollection))
                     .AddParameter("serviceCollection", typeof(IServiceCollection))
                     .AddLiteralCodeStatements("return serviceCollection")
-                    .AddLiteralCodeStatements(types.Select(x => formatDelegate.Invoke(x)))
+                    .AddLiteralCodeStatements(Guard.AgainstNull(types, nameof(types)).Select(Guard.AgainstNull(formatDelegate, nameof(formatDelegate)).Invoke))
                     .AddLiteralCodeStatements(";")
                 )
                 .Build()
@@ -564,7 +570,11 @@ public abstract class CSharpClassBase : ClassBase
         ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
-        => new[]
+    {
+        Guard.AgainstNull(models, nameof(models));
+        Guard.AgainstNull(namespaceSettings, nameof(namespaceSettings));
+
+        return new[]
         {
             new ClassBuilder()
                 .WithName(namespaceSettings.ClassName)
@@ -589,7 +599,7 @@ public abstract class CSharpClassBase : ClassBase
                             x.AddLiteralCodeStatements(createLiteralCodeStatement!);
                         }
                     })
-                    .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(\"Unknown instance type: \" + instance.GetType().FullName);"),
+                    .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new " + typeof(ArgumentOutOfRangeException).FullName + "(\"Unknown instance type: \" + instance.GetType().FullName);"),
                     new ClassMethodBuilder()
                     .WithStatic()
                     .WithName("Register")
@@ -599,6 +609,72 @@ public abstract class CSharpClassBase : ClassBase
                 )
                 .Build()
         };
+    }
+
+    private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
+    {
+        if (typeName.GetGenericArguments().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
+        {
+            // Contracts need to be skipped, do not touch these!
+            return;
+        }
+
+        property.ConvertCollectionOnBuilderToEnumerable(false, RecordConcreteCollectionType.WithoutGenerics());
+        if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
+        {
+            property.ConvertCollectionPropertyToBuilderOnBuilder
+            (
+                GetCustomCollectionArgumentType(typeName),
+                GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(typeName),
+                builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
+                builderName: BuilderName,
+                buildMethodName: BuilderBuildMethodName
+            );
+        }
+        else
+        {
+            property.ConvertCollectionPropertyToBuilderOnBuilder
+            (
+                GetCustomCollectionArgumentType(typeName),
+                customBuilderMethodParameterExpression: GetCustomBuilderMethodParameterExpressionForCollectionProperty(typeName),
+                builderCollectionTypeName: GetBuilderClassCollectionTypeName(),
+                builderName: BuilderName,
+                buildMethodName: BuilderBuildMethodName
+            );
+        }
+    }
+
+    private void FixSingleDomainProperty(ClassPropertyBuilder property, string typeName)
+    {
+        if (typeName.WithoutProcessedGenerics().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
+        {
+            // Contracts need to be skipped, do not touch these!
+            return;
+        }
+
+        var argumentType = !string.IsNullOrEmpty(typeName.GetGenericArguments())
+                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
+                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
+
+        property.WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType, GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName));
+        property.WithCustomBuilderArgumentTypeSingleProperty(argumentType, BuilderName);
+        property.WithCustomBuilderMethodParameterExpression(GetCustomBuilderMethodParameterExpression(typeName), BuilderBuildMethodName);
+
+        if (!property.IsNullable)
+        {
+            property.SetDefaultValueForBuilderClassConstructor(GetDefaultValueForBuilderClassConstructor(typeName));
+        }
+    }
+
+    private string? GetBuilderClassCollectionTypeName()
+        => BuilderClassCollectionType is null
+            ? null
+            : BuilderClassCollectionType.WithoutGenerics();
+
+    private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
+        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments()))
+            ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
+            : null;
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
@@ -703,9 +779,9 @@ public abstract class CSharpClassBase : ClassBase
 
     private Literal GetDefaultValueForBuilderClassConstructor(string typeName)
     {
-        if (GetCustomDefaultValueForBuilderClassConstructorValues().ContainsKey(typeName))
+        if (GetCustomDefaultValueForBuilderClassConstructorValues().TryGetValue(typeName, out var customDefaultValue))
         {
-            return new(GetCustomDefaultValueForBuilderClassConstructorValues()[typeName]);
+            return new(customDefaultValue);
         }
 
         if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
@@ -727,7 +803,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetExportedTypes()
-            .Where(x => x.IsInterface && x.Namespace.StartsWith($"{CodeGenerationRootNamespace}.Models.") && x.GetInterfaces().Length == 1)
+            .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Length == 1)
             .Select(x => x.GetInterfaces()[0])
             .Distinct();
 

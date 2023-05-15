@@ -150,12 +150,12 @@ public static partial class TypeBaseExtensiosn
             return typeName;
         }
 
-        if (!applyGenericTypes.ContainsKey(typeName))
+        if (!applyGenericTypes.TryGetValue(typeName, out var applyGenericTypesValue))
         {
             return typeName;
         }
 
-        return applyGenericTypes[typeName];
+        return applyGenericTypesValue;
     }
 
     private static List<string> GenerateGenericTypeArguments(IDictionary<string, string>? applyGenericTypes)

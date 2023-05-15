@@ -1163,7 +1163,7 @@ namespace MyNamespace.Domain.Builders
     {
         public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
         {
-            return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(""Unknown instance type: "" + instance.GetType().FullName);
+            return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new System.ArgumentOutOfRangeException(""Unknown instance type: "" + instance.GetType().FullName);
         }
 
         public static void Register(System.Type type, Func<MyNamespace.Domain.MyClass,MyClassBuilder> createDelegate)
@@ -1209,7 +1209,7 @@ namespace MyNamespace.Domain.Builders
         public static MyNamespace.Domain.Builders.MyClassBuilder Create(MyNamespace.Domain.MyClass instance)
         {
             // custom code goes here
-            return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new ArgumentOutOfRangeException(""Unknown instance type: "" + instance.GetType().FullName);
+            return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new System.ArgumentOutOfRangeException(""Unknown instance type: "" + instance.GetType().FullName);
         }
 
         public static void Register(System.Type type, Func<MyNamespace.Domain.MyClass,MyClassBuilder> createDelegate)

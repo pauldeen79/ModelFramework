@@ -1,9 +1,13 @@
 ﻿namespace ModelFramework.CodeGeneration.ObjectHandlers;
 
+#pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
 public class BuilderObjectHandler : IObjectHandler
 {
     public bool ProcessInstance(ObjectHandlerRequest command, ICsharpExpressionDumperCallback callback)
     {
+        Guard.AgainstNull(command, nameof(command));
+        Guard.AgainstNull(callback, nameof(callback));
+
         var type = command.Type ?? command.InstanceType;
         if (type is null)
         {

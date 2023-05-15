@@ -1,9 +1,12 @@
 ﻿namespace ModelFramework.CodeGeneration.ObjectHandlerPropertyFilters;
 
+#pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
 public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
 {
     public bool IsValid(ObjectHandlerRequest command, PropertyInfo propertyInfo)
     {
+        Guard.AgainstNull(command, nameof(command));
+        Guard.AgainstNull(propertyInfo, nameof(propertyInfo));
         var classPropertyBuilder = command.Instance as ClassPropertyBuilder;
         if (classPropertyBuilder is not null)
         {
@@ -25,7 +28,7 @@ public class SkipDefaultValuesForModelFramework : IObjectHandlerPropertyFilter
         return ValueIsEmptyOrUnequalToDefaultValue(propertyInfo, defaultValue, actualValue);
     }
 
-    private static bool ValueIsEmptyOrUnequalToDefaultValue(PropertyInfo propertyInfo, object? defaultValue, object actualValue)
+    private static bool ValueIsEmptyOrUnequalToDefaultValue(PropertyInfo propertyInfo, object? defaultValue, object? actualValue)
     {
         if (typeof(ICollection).IsAssignableFrom(propertyInfo.PropertyType) && actualValue is ICollection c && c.Count == 0)
         {
