@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.2.0" />
+    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.2.1" />
   </ItemGroup>
 
   <ItemGroup>
