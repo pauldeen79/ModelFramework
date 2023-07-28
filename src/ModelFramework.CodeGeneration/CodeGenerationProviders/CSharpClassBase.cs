@@ -37,7 +37,7 @@ public abstract class CSharpClassBase : ClassBase
         && typeBase is not null
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)
             || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-            || GetModelAbstractBaseTyped().Any(x => x == parent.ParentTypeFullName.GetClassName())
+            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parent.ParentTypeFullName.GetClassName())
             || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}")));
 
     protected abstract string ProjectName { get; }
@@ -134,7 +134,7 @@ public abstract class CSharpClassBase : ClassBase
 
         return MapCodeGenerationModelsToDomain(
             GetType().Assembly.GetExportedTypes()
-                .Where(x => x.IsInterface && x.GetInterfaces().Any(y => y == abstractType)));
+                .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType)));
     }
 
     protected ITypeBase[] GetImmutableBuilderClasses(Type[] types,
@@ -238,7 +238,7 @@ public abstract class CSharpClassBase : ClassBase
                 .With
                 (
                     x => x.Methods.ForEach(y => y.WithTypeName("T")
-                                                    .With(z => z.Parameters.First().WithTypeName(z.TypeName)))
+                                                    .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
                 )
                 .With(x => Visit(x))
                 .BuildTyped()
@@ -457,7 +457,7 @@ public abstract class CSharpClassBase : ClassBase
     /// <param name="className">The typename to get the base classname from.</param>
     /// <returns>Base classname when found, otherwise string.Empty</returns>
     protected string GetEntityClassName(string className)
-        => GetCustomBuilderTypes().FirstOrDefault(x => className.EndsWith(x, StringComparison.InvariantCulture)) ?? string.Empty;
+        => Array.Find(GetCustomBuilderTypes(), x => className.EndsWith(x, StringComparison.InvariantCulture)) ?? string.Empty;
 
     protected string GetEntityTypeName(string builderFullName)
     {
@@ -765,13 +765,13 @@ public abstract class CSharpClassBase : ClassBase
             .Build();
 
     private bool TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(string typeName)
-        => GetCustomBuilderTypes().Any(x => GetBuilderNamespaceMappings().Any(y => typeName == $"{y.Key}.{x}"));
+        => Array.Exists(GetCustomBuilderTypes(), x => GetBuilderNamespaceMappings().Any(y => typeName == $"{y.Key}.{x}"));
 
     private string GetCustomCollectionArgumentType(string typeName)
         => ReplaceWithBuilderNamespaces(typeName).ReplaceSuffix(">", $"{BuilderName}> ", StringComparison.InvariantCulture);
 
     private bool TypeNameNeedsSpecialTreatmentForBuilderInCollection(string typeName)
-        => GetCustomBuilderTypes().Any(x => GetBuilderNamespaceMappings().Any(y => typeName == $"{RecordCollectionType.WithoutGenerics()}<{y.Key}.{x}>"));
+        => Array.Exists(GetCustomBuilderTypes(), x => GetBuilderNamespaceMappings().Any(y => typeName == $"{RecordCollectionType.WithoutGenerics()}<{y.Key}.{x}>"));
 
     private string GetCustomBuilderConstructorInitializeExpressionForSingleProperty(ClassPropertyBuilder property, string typeName)
     {
