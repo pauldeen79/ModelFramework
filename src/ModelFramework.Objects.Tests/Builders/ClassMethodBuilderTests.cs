@@ -13,7 +13,7 @@ public class ClassMethodBuilderTests
 
         // Assert
         sut.CodeStatements.Should().ContainSingle();
-        sut.CodeStatements.First().Build().ToString().Should().Be("throw new System.NotImplementedException();");
+        sut.CodeStatements[0].Build().ToString().Should().Be("throw new System.NotImplementedException();");
     }
 
     [Fact]

@@ -19,7 +19,7 @@ public class NullableTestClassTests
     {
         // Act
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-        var actual = typeof(NullableTestClass).GetMethod(nameof(NullableTestClass.GetValue)).GetParameters().First().IsNullable();
+        var actual = typeof(NullableTestClass).GetMethod(nameof(NullableTestClass.GetValue)).GetParameters()[0].IsNullable();
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
         // Assert

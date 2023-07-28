@@ -104,7 +104,7 @@ public class Method_DefaultClassTests
             .WithType(typeof(string))
             .AddCodeStatements(new LiteralCodeStatementBuilder("throw new NotImplementedException();"))
             .Build();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel, iterationContextModel: rootModel.First());
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultMethodTemplate>(model, rootModel, iterationContextModel: rootModel[0]);
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);

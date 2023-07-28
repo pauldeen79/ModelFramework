@@ -27,8 +27,8 @@ public class LiteralCodeStatementTests
         {
             actual.Statement.ToString().Should().Be(sut.Statement);
             actual.Metadata.Should().ContainSingle();
-            actual.Metadata.First().Name.ToString().Should().Be(sut.Metadata.First().Name);
-            actual.Metadata.First().Value.Should().Be(sut.Metadata.First().Value);
+            actual.Metadata[0].Name.ToString().Should().Be(sut.Metadata.First().Name);
+            actual.Metadata[0].Value.Should().Be(sut.Metadata.First().Value);
         }
     }
 

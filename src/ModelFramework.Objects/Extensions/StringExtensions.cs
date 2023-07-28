@@ -3,7 +3,7 @@
 public static class StringExtensions
 {
     public static bool ContainsAny(this string instance, params string[] verbs)
-        => verbs.Any(instance.Contains);
+        => Array.Exists(verbs, instance.Contains);
 
     public static string ConvertTypeNameToArray(this string typeName)
         => $"{typeName.GetGenericArguments()}[]";

@@ -15,7 +15,7 @@ public static class PropertyInfoExtensions
         var setMethodReturnParameterModifiers = setMethod.ReturnParameter.GetRequiredCustomModifiers();
 
         // Init-only properties are marked with the IsExternalInit type.
-        return setMethodReturnParameterModifiers.Any(t => t.FullName == "System.Runtime.CompilerServices.IsExternalInit");
+        return Array.Exists(setMethodReturnParameterModifiers, t => t.FullName == "System.Runtime.CompilerServices.IsExternalInit");
     }
 
     public static bool IsNullable(this PropertyInfo property)

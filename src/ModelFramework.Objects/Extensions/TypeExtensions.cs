@@ -140,7 +140,7 @@ public static class TypeExtensions
                 .WithParentTypeFullName(p.DeclaringType.FullName == "System.Object" ? string.Empty : p.DeclaringType.FullName.WithoutGenerics())
                 .WithIsNullable(p.IsNullable())
                 .WithIsValueType(p.PropertyType.IsValueType || p.PropertyType.IsEnum)
-                .WithVisibility(p.GetAccessors().Any(m => m.IsPublic)
+                .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic)
                     ? Visibility.Public
                     : Visibility.Private)
                 .WithGetterVisibility(p.GetGetMethod()?.IsPublic ?? false
@@ -319,7 +319,7 @@ public static class TypeExtensions
         {
             foreach (var pi in instance.BaseType.GetPropertiesRecursively())
             {
-                if (!results.Any(x => x.Name == pi.Name))
+                if (!results.Exists(x => x.Name == pi.Name))
                 {
                     results.Add(pi);
                 }
@@ -330,7 +330,7 @@ public static class TypeExtensions
         {
             foreach (var pi in i.GetPropertiesRecursively())
             {
-                if (!results.Any(x => x.Name == pi.Name))
+                if (!results.Exists(x => x.Name == pi.Name))
                 {
                     results.Add(pi);
                 }
@@ -352,7 +352,7 @@ public static class TypeExtensions
         {
             foreach (var fi in instance.BaseType.GetFieldsRecursively())
             {
-                if (!results.Any(x => x.Name == fi.Name))
+                if (!results.Exists(x => x.Name == fi.Name))
                 {
                     results.Add(fi);
                 }
@@ -363,7 +363,7 @@ public static class TypeExtensions
         {
             foreach (var fi in i.GetFieldsRecursively())
             {
-                if (!results.Any(x => x.Name == fi.Name))
+                if (!results.Exists(x => x.Name == fi.Name))
                 {
                     results.Add(fi);
                 }

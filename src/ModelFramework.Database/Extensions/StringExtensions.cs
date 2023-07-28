@@ -11,7 +11,7 @@ public static class StringExtensions
     };
 
     public static bool IsDatabaseStringType(this string instance)
-        => _databaseStringTypes.Any(x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
+        => Array.Exists(_databaseStringTypes, x => x.Equals(instance, StringComparison.OrdinalIgnoreCase));
 
     public static string FormatAsDatabaseIdentifier(this string instance)
         => instance

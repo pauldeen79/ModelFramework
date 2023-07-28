@@ -14,7 +14,7 @@ public class AttributeBuilderTests
         // Assert
         actual.Name.ToString().Should().Be("System.ComponentModel.DataAnnotations.MinLengthAttribute");
         actual.Parameters.Should().ContainSingle();
-        actual.Parameters.First().Value.Should().Be(1);
+        actual.Parameters[0].Value.Should().Be(1);
     }
 
     [Fact]
@@ -29,6 +29,6 @@ public class AttributeBuilderTests
         // Assert
         actual.Name.ToString().Should().Be("System.ComponentModel.ReadOnly");
         actual.Parameters.Should().ContainSingle();
-        actual.Parameters.First().Value.Should().Be(true);
+        actual.Parameters[0].Value.Should().Be(true);
     }
 }
