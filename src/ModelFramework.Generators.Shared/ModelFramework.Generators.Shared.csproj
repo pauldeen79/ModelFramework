@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
@@ -6,12 +6,7 @@
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.ModelFramework.Generators.Shared</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/ModelFramework</RepositoryUrl>
-    <CodeAnalysisRuleSet>..\..\.sonarlint\pauldeen79_modelframeworkcsharp.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\.sonarlint\pauldeen79_modelframework\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.2.3" />
