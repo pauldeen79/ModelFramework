@@ -22,4 +22,4 @@ global using ModelFramework.Objects.Builders;
 global using ModelFramework.Objects.Contracts;
 global using ModelFramework.Objects.Extensions;
 global using ModelFramework.Objects.Settings;
-global using TextTemplateTransformationFramework.Runtime.CodeGeneration;
+global using TemplateFramework.Abstractions.CodeGeneration;
