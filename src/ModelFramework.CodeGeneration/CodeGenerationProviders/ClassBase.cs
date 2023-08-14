@@ -33,7 +33,9 @@ public abstract class ClassBase : ICodeGenerationProvider
         };
 
     public object CreateGenerator()
-        => new TemplateProxy(new CSharpClassGenerator());
+        => GenerateMultipleFiles
+            ? new MultipleContentTemplateProxy(new CSharpClassGenerator())
+            : new SingleContentTemplateProxy(new CSharpClassGenerator());
 
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty

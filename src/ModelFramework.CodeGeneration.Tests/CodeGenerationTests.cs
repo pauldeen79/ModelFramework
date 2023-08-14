@@ -177,10 +177,11 @@ public class CodeGenerationTests
 
         // Act
         ActAndVerify(new PlainRecords(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual1 = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Contents.First().Builder.ToString());
+        var actual2 = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Contents.Last().Builder.ToString());
 
         // Assert
-        actual.Should().Be(@"using System;
+        actual1.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -198,7 +199,15 @@ namespace Test
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
+}
+");
+        actual2.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
+namespace Test
+{
     public partial record TestClassBase
     {
         public string TestProperty
@@ -235,7 +244,7 @@ namespace Test
 
         // Act
         ActAndVerify(new PlainBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -354,7 +363,7 @@ namespace Test.Builders
 
         // Act
         ActAndVerify(new CustomPropertiesRecords(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -401,7 +410,7 @@ namespace Test
 
         // Act
         ActAndVerify(new CustomPropertiesBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -484,7 +493,7 @@ namespace Test.Builders
 
         // Act
         ActAndVerify(new GenericsRecords(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -531,7 +540,7 @@ namespace Test
 
         // Act
         ActAndVerify(new GenericsBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -614,7 +623,7 @@ namespace Test.Builders
 
         // Act
         ActAndVerify(new GenericArgumentBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -710,7 +719,7 @@ namespace Test.Builders
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationCoreBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -813,7 +822,7 @@ namespace MyNamespace.Domain.Builders
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationCoreRecords(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -866,7 +875,7 @@ namespace MyNamespace.Domain
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationBaseBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -966,7 +975,7 @@ namespace MyNamespace.Domain.Builders
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationNonGenericBaseBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -1039,7 +1048,7 @@ namespace MyNamespace.Domain.Builders
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationBaseRecords(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -1091,7 +1100,7 @@ namespace MyNamespace.Domain
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilders(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -1174,7 +1183,7 @@ namespace MyNamespace.Domain.Builders
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideRecords(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -1221,7 +1230,7 @@ namespace MyNamespace.Domain
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -1264,7 +1273,7 @@ namespace MyNamespace.Domain.Extensions
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactory(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;
@@ -1315,7 +1324,7 @@ namespace MyNamespace.Domain.Builders
 
         // Act
         ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactoryCustomCode(), codeGenerationEngine, generationEnvironment, settings);
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
         actual.Should().Be(@"using System;

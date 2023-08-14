@@ -12,11 +12,11 @@ public class CsharpExpressionDumperClassBaseTests
             .AddTemplateFramework()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new StringBuilderEnvironment();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
         codeGenerationEngine.Generate(new Sut(), generationEnvironment, new CodeGenerationSettings("UnitTest", string.Empty, dryRun: true));
-        var actual = generationEnvironment.Builder.ToString();
+        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
 
         // Assert
         CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(actual).Should().Be(@"using System;
