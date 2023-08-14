@@ -33,7 +33,7 @@ public abstract class ClassBase : ICodeGenerationProvider
         };
 
     public object CreateGenerator()
-        => new CSharpClassGenerator();
+        => new TemplateProxy(new CSharpClassGenerator());
 
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty

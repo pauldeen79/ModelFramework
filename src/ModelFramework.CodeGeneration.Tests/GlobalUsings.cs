@@ -25,8 +25,6 @@ global using ModelFramework.Objects.Settings;
 global using TemplateFramework.Abstractions;
 global using TemplateFramework.Abstractions.CodeGeneration;
 global using TemplateFramework.Abstractions.Requests;
-global using TemplateFramework.Abstractions.Templates;
-global using TemplateFramework.Core;
 global using TemplateFramework.Core.Abstractions;
 global using TemplateFramework.Core.CodeGeneration;
 global using TemplateFramework.Core.CodeGeneration.Extensions;

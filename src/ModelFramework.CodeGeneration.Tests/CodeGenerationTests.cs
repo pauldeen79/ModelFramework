@@ -18,7 +18,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -36,7 +36,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -82,7 +82,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -106,7 +106,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -130,7 +130,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -154,7 +154,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -177,7 +177,7 @@ public class CodeGenerationTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -236,7 +236,7 @@ namespace Test
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -356,7 +356,7 @@ namespace Test.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -404,7 +404,7 @@ namespace Test
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -488,7 +488,7 @@ namespace Test.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -536,7 +536,7 @@ namespace Test
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -620,7 +620,7 @@ namespace Test.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -717,7 +717,7 @@ namespace Test.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -821,7 +821,7 @@ namespace MyNamespace.Domain.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -875,7 +875,7 @@ namespace MyNamespace.Domain
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -976,7 +976,7 @@ namespace MyNamespace.Domain.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -1050,7 +1050,7 @@ namespace MyNamespace.Domain.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -1103,7 +1103,7 @@ namespace MyNamespace.Domain
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -1187,7 +1187,7 @@ namespace MyNamespace.Domain.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -1235,7 +1235,7 @@ namespace MyNamespace.Domain
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -1279,7 +1279,7 @@ namespace MyNamespace.Domain.Extensions
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -1331,7 +1331,7 @@ namespace MyNamespace.Domain.Builders
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializer, ViewModelTemplateInitializer>()
+            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
