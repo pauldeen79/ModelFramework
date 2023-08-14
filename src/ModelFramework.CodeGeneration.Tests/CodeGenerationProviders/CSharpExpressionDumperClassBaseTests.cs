@@ -10,7 +10,6 @@ public class CsharpExpressionDumperClassBaseTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton<ITemplateInitializerComponent, ViewModelInitializer>()
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new StringBuilderEnvironment();
