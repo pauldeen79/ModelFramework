@@ -23,26 +23,7 @@ public class TemplateProxy : IStringBuilderTemplate, IParameterizedTemplate
     {
         Guard.IsNotNull(builder);
 
-        var sessionProperty = Instance.GetType().GetProperty("Session");
-        if (sessionProperty is not null)
-        {
-            sessionProperty.SetValue(Instance, _session);
-        }
-
-        // First initialize the TTTF template...
-        var initializeMethod = Instance.GetType().GetMethod("Initialize");
-        if (initializeMethod is not null)
-        {
-            initializeMethod.Invoke(Instance, new object?[] { null });
-        }
-
-        var renderMethod = Instance.GetType().GetMethod(nameof(Render));
-        if (renderMethod is null)
-        {
-            throw new NotSupportedException("No Render method found");
-        }
-
-        renderMethod.Invoke(Instance, new object?[] { builder });
+        TemplateRenderHelper.RenderTemplateWithModel(Instance, builder, null, additionalParameters: _session);
     }
 
     public void SetParameter(string name, object? value) => _session[name] = value;

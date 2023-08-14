@@ -25,3 +25,4 @@ global using ModelFramework.Objects.Settings;
 global using TemplateFramework.Abstractions.CodeGeneration;
 global using TemplateFramework.Abstractions.Templates;
 global using TemplateFramework.Core;
+global using TextTemplateTransformationFramework.Runtime;
