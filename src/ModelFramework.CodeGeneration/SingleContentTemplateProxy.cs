@@ -28,8 +28,19 @@ public class SingleContentTemplateProxy : IStringBuilderTemplate, IParameterized
         Guard.IsNotNull(builder);
 
         TemplateRenderHelper.RenderTemplateWithModel(Instance, builder, Model, additionalParameters: _session);
-        var contents = TextTemplateTransformationFramework.Runtime.MultipleContentBuilder.FromString(builder.ToString()).Contents.First().Builder.ToString();
+        var output = builder.ToString();
         builder.Clear();
-        builder.Append(contents.AsSpan(0, contents.Length - Environment.NewLine.Length));
+        if (output.Contains(@"<MultipleContents xmlns:i=""http://www.w3.org/2001/XMLSchema-instance"" xmlns=""http://schemas.datacontract.org/2004/07/TextTemplateTransformationFramework"">"))
+        {
+            var multipleContentBuilder = TextTemplateTransformationFramework.Runtime.MultipleContentBuilder.FromString(output);
+            foreach (var item in multipleContentBuilder.Contents)
+            {
+                builder.Append(item.Builder);
+            }
+        }
+        else if (!string.IsNullOrEmpty(output))
+        {
+            builder.Append(output);
+        }
     }
 }
