@@ -40,14 +40,7 @@ public class MultipleContentTemplateProxy : IMultipleContentBuilderTemplate, IPa
             var result = item.Builder.ToString().NormalizeLineEndings();
             if (!string.IsNullOrEmpty(result))
             {
-                if (result.EndsWith(Environment.NewLine))
-                {
-                    content.Builder.Append(result.AsSpan(0, item.Builder.Length - Environment.NewLine.Length));
-                }
-                else
-                {
-                    content.Builder.Append(result);
-                }
+                content.Builder.Append(result.AsSpan(0, item.Builder.Length - Environment.NewLine.Length));
             }
         }
     }
