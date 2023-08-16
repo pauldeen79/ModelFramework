@@ -2,17 +2,17 @@
 
 public abstract class ClassBase : ICodeGenerationProvider
 {
-    public bool GenerateMultipleFiles { get; private set; }
-    public bool SkipWhenFileExists { get; private set; }
-    public string BasePath { get; private set; } = string.Empty;
-
-    public abstract string Path { get; }
     public abstract string DefaultFileName { get; }
     public abstract bool RecurseOnDeleteGeneratedFiles { get; }
+
     public abstract object CreateModel();
 
-    public virtual string LastGeneratedFilesFileName => $"*{FileNameSuffix}.cs";
+    public virtual Encoding Encoding => Encoding.UTF8;
+    public virtual string LastGeneratedFilesFilename => $"*{FileNameSuffix}.cs";
+    public virtual string Path => string.Empty;
     public virtual Action? AdditionalActionDelegate => null;
+    public virtual bool GenerateMultipleFiles => true;
+    public virtual bool SkipWhenFileExists => false;
 
     protected abstract bool EnableNullableContext { get; }
     protected abstract bool CreateCodeGenerationHeader { get; }
@@ -20,13 +20,6 @@ public abstract class ClassBase : ICodeGenerationProvider
     protected virtual bool UseCustomInitializersOnAttributeBuilder => false;
 
     protected virtual AttributeBuilder? AttributeInitializeDelegate(Attribute sourceAttribute) => AttributeBuilder.DefaultInitializer(sourceAttribute);
-
-    public virtual void Initialize(bool generateMultipleFiles, bool skipWhenFileExists, string basePath)
-    {
-        GenerateMultipleFiles = generateMultipleFiles;
-        SkipWhenFileExists = skipWhenFileExists;
-        BasePath = basePath;
-    }
 
     public object CreateAdditionalParameters()
         => new Dictionary<string, object>
@@ -40,7 +33,9 @@ public abstract class ClassBase : ICodeGenerationProvider
         };
 
     public object CreateGenerator()
-        => new CSharpClassGenerator();
+        => GenerateMultipleFiles
+            ? new MultipleContentTemplateProxy(new CSharpClassGenerator())
+            : new SingleContentTemplateProxy(new CSharpClassGenerator());
 
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty

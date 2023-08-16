@@ -5,54 +5,65 @@ public class CodeGenerationTests
     private static readonly CodeGenerationSettings Settings = new CodeGenerationSettings
     (
         basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
-        generateMultipleFiles: true,
-        skipWhenFileExists: false,
-        dryRun: true
+        dryRun: true,
+        defaultFilename: string.Empty
     );
 
     // Bootstrap test that generates c# code for the model used in code generation :)
     [Fact]
     public void Can_Generate_Model_For_Abstractions()
     {
+        // Arrange
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
+
         // Act & Assert
-        Verify(GenerateCode.For<TestInterfacesModels>(Settings));
-        Verify(GenerateCode.For<ObjectsInterfacesModels>(Settings));
+        ActAndVerify(new TestInterfacesModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsInterfacesModels(), codeGenerationEngine, generationEnvironment, Settings);
     }
 
     [Fact]
     public void Can_Generate_All_Classes_For_ModelFramework()
     {
         // Arrange
-        var multipleContentBuilder = new MultipleContentBuilder(Settings.BasePath);
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
-        // Act
-        GenerateCode.For<CommonBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<CommonModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<CommonRecords>(Settings, multipleContentBuilder);
+        // Act & Assert
+        ActAndVerify(new CommonBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new CommonModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new CommonRecords(), codeGenerationEngine, generationEnvironment, Settings);
 
-        GenerateCode.For<DatabaseBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseRecords>(Settings, multipleContentBuilder);
+        ActAndVerify(new DatabaseBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseRecords(), codeGenerationEngine, generationEnvironment, Settings);
 
-        GenerateCode.For<ObjectsBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsRecords>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsBaseBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsBaseModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsNonGenericBaseBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsNonGenericBaseModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsBaseRecords>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsOverrideBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsOverrideModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsOverrideRecords>(Settings, multipleContentBuilder);
+        ActAndVerify(new ObjectsBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsRecords(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBaseBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBaseModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsNonGenericBaseBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsNonGenericBaseModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBaseRecords(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsOverrideBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsOverrideModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsOverrideRecords(), codeGenerationEngine, generationEnvironment, Settings);
 
-        GenerateCode.For<ObjectsCodeStatementBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<ObjectsCodeStatementModels>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseCodeStatementBuilders>(Settings, multipleContentBuilder);
-        GenerateCode.For<DatabaseCodeStatementModels>(Settings, multipleContentBuilder);
-
-        // Assert
-        Verify(multipleContentBuilder);
+        ActAndVerify(new ObjectsCodeStatementBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsCodeStatementModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseCodeStatementBuilders(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseCodeStatementModels(), codeGenerationEngine, generationEnvironment, Settings);
     }
 
     [Fact]
@@ -62,18 +73,20 @@ public class CodeGenerationTests
         var settings = new CodeGenerationSettings
         (
             basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
-            generateMultipleFiles: true,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
-        var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
-        // Act
-        GenerateCode.For<TestBuildersWithInheritance>(settings, multipleContentBuilder);
-        GenerateCode.For<TestRecordsWithInheritance>(settings, multipleContentBuilder);
-
-        // Assert
-        Verify(multipleContentBuilder);
+        // Act & Assert
+        ActAndVerify(new TestBuildersWithInheritance(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestRecordsWithInheritance(), codeGenerationEngine, generationEnvironment, settings);
     }
 
     [Fact]
@@ -83,18 +96,20 @@ public class CodeGenerationTests
         var settings = new CodeGenerationSettings
         (
             basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
-            generateMultipleFiles: true,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
-        var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
-        // Act
-        GenerateCode.For<TestBuildersWithoutInheritance>(settings, multipleContentBuilder);
-        GenerateCode.For<TestRecordsWithoutInheritance>(settings, multipleContentBuilder);
-
-        // Assert
-        Verify(multipleContentBuilder);
+        // Act & Assert
+        ActAndVerify(new TestBuildersWithoutInheritance(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestRecordsWithoutInheritance(), codeGenerationEngine, generationEnvironment, settings);
     }
 
     [Fact]
@@ -104,17 +119,19 @@ public class CodeGenerationTests
         var settings = new CodeGenerationSettings
         (
             basePath: Path.Combine(Directory.GetCurrentDirectory(), @"../../../../"),
-            generateMultipleFiles: true,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
-        var multipleContentBuilder = new MultipleContentBuilder(settings.BasePath);
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
-        // Act
-        GenerateCode.For<TestBuildersWithoutInheritanceNoPregeneration>(settings, multipleContentBuilder);
-
-        // Assert
-        Verify(multipleContentBuilder);
+        // Act & Assert
+        ActAndVerify(new TestBuildersWithoutInheritanceNoPregeneration(), codeGenerationEngine, generationEnvironment, settings);
     }
 
     // Example how to generate builder extensions
@@ -125,17 +142,19 @@ public class CodeGenerationTests
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
-        // Act
-        var generatedCode = GenerateCode.For<CommonBuildersExtensions>(settings);
-        var actual = generatedCode.GenerationEnvironment.ToString();
-
-        // Assert
-        actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+        // Act & Assert
+        ActAndVerify(new CommonBuildersExtensions(), codeGenerationEngine, generationEnvironment, settings);
     }
 
     [Fact]
@@ -145,17 +164,24 @@ public class CodeGenerationTests
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<PlainRecords>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new PlainRecords(), codeGenerationEngine, generationEnvironment, settings);
+        var actual1 = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Contents.First().Builder.ToString());
+        var actual2 = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Contents.Last().Builder.ToString());
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual1.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -173,7 +199,15 @@ namespace Test
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
+}
+");
+        actual2.Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
+namespace Test
+{
     public partial record TestClassBase
     {
         public string TestProperty
@@ -197,17 +231,23 @@ namespace Test
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<PlainBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new PlainBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -310,17 +350,23 @@ namespace Test.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<CustomPropertiesRecords>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new CustomPropertiesRecords(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -351,17 +397,23 @@ namespace Test
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<CustomPropertiesBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new CustomPropertiesBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -428,17 +480,23 @@ namespace Test.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<GenericsRecords>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new GenericsRecords(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -469,17 +527,23 @@ namespace Test
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<GenericsBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new GenericsBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -546,17 +610,23 @@ namespace Test.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<GenericArgumentBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new GenericArgumentBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -636,17 +706,23 @@ namespace Test.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationCoreBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -733,17 +809,23 @@ namespace MyNamespace.Domain.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreRecords>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationCoreRecords(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -780,17 +862,23 @@ namespace MyNamespace.Domain
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationBaseBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationBaseBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -874,17 +962,23 @@ namespace MyNamespace.Domain.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationNonGenericBaseBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationNonGenericBaseBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -941,17 +1035,23 @@ namespace MyNamespace.Domain.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationBaseRecords>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationBaseRecords(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -987,17 +1087,23 @@ namespace MyNamespace.Domain
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideBuilders>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1064,17 +1170,23 @@ namespace MyNamespace.Domain.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideRecords>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideRecords(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1105,17 +1217,23 @@ namespace MyNamespace.Domain
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1142,17 +1260,23 @@ namespace MyNamespace.Domain.Extensions
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideBuilderFactory>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactory(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1187,17 +1311,23 @@ namespace MyNamespace.Domain.Builders
         var settings = new CodeGenerationSettings
         (
             basePath: @"C:\Temp\ModelFramework",
-            generateMultipleFiles: false,
-            skipWhenFileExists: false,
-            dryRun: true
+            dryRun: true,
+            defaultFilename: string.Empty
         );
+        using var provider = new ServiceCollection()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddTemplateFrameworkRuntime()
+            .AddTemplateFramework()
+            .BuildServiceProvider();
+        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationOverrideBuilderFactoryCustomCode>(settings);
-        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactoryCustomCode(), codeGenerationEngine, generationEnvironment, settings);
+        var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
+        actual.Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1284,24 +1414,18 @@ namespace MyNamespace.Domain.Builders
         actual.Should().BeEmpty();
     }
 
-    private void Verify(GenerateCode generatedCode)
+    private void ActAndVerify(ICodeGenerationProvider codeGenerationProvider, ICodeGenerationEngine codeGenerationEngine, IGenerationEnvironment generationEnvironment, CodeGenerationSettings settings)
     {
+        // Act
+        codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
+
         if (Settings.DryRun)
         {
-            // Act
-            var actual = generatedCode.GenerationEnvironment.ToString();
-
             // Assert
-            actual.NormalizeLineEndings().Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
+            var actual = generationEnvironment.ToString()!;
+
+            actual.Should().NotBeNullOrEmpty().And.NotStartWith("Error:");
         }
-    }
-
-    private void Verify(MultipleContentBuilder multipleContentBuilder)
-    {
-        var actual = multipleContentBuilder.ToString();
-
-        // Assert
-        actual.NormalizeLineEndings().Should().NotBeNullOrEmpty();
     }
 
     private abstract class PlainBase : CSharpClassBase
