@@ -31,7 +31,24 @@ public class MultipleContentTemplateProxy : IMultipleContentBuilderTemplate, IPa
         TemplateRenderHelper.RenderTemplateWithModel(Instance, env, Model, additionalParameters: _session);
         foreach (var item in env.Contents)
         {
-            builder.AddContent(item.FileName, item.SkipWhenFileExists, null /*item.Builder*/).Builder.Append(item.Builder.ToString().AsSpan(0, item.Builder.Length - Environment.NewLine.Length));
+            var filename = item.FileName;
+            if (string.IsNullOrEmpty(filename))
+            {
+                filename = "file.txt";
+            }
+            var content = builder.AddContent(filename, item.SkipWhenFileExists, null);
+            var result = item.Builder.ToString().NormalizeLineEndings();
+            if (!string.IsNullOrEmpty(result))
+            {
+                if (result.EndsWith(Environment.NewLine))
+                {
+                    content.Builder.Append(result.AsSpan(0, item.Builder.Length - Environment.NewLine.Length));
+                }
+                else
+                {
+                    content.Builder.Append(result);
+                }
+            }
         }
     }
 }
