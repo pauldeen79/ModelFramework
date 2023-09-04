@@ -16,11 +16,10 @@ public class CsharpExpressionDumperClassBaseTests
             .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
-        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        codeGenerationEngine.Generate(new Sut(), templateProvider, generationEnvironment, new CodeGenerationSettings("UnitTest", string.Empty, dryRun: true));
+        codeGenerationEngine.Generate(new Sut(), generationEnvironment, new CodeGenerationSettings("UnitTest", string.Empty, dryRun: true));
         var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
 
         // Assert

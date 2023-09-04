@@ -1296,10 +1296,9 @@ namespace MyNamespace.Domain.Builders
     {
         // Arrange
         var codeGenerationEngine = Provider.GetRequiredService<ICodeGenerationEngine>();
-        var templateProvider = Provider.GetRequiredService<ITemplateProvider>();
 
         // Act
-        codeGenerationEngine.Generate(codeGenerationProvider, templateProvider, generationEnvironment, settings);
+        codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
 
         if (Settings.DryRun)
         {

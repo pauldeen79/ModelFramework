@@ -1,6 +1,4 @@
-﻿using TemplateFramework.Core;
-
-namespace ModelFramework.CodeGeneration.Tests;
+﻿namespace ModelFramework.CodeGeneration.Tests;
 
 public class MultipleContentTemplateProxyTests
 {
