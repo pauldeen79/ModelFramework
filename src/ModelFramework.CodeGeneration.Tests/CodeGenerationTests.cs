@@ -14,56 +14,66 @@ public class CodeGenerationTests
     public void Can_Generate_Model_For_Abstractions()
     {
         // Arrange
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act & Assert
-        ActAndVerify(new TestInterfacesModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsInterfacesModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new TestInterfacesModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsInterfacesModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
     }
 
     [Fact]
     public void Can_Generate_All_Classes_For_ModelFramework()
     {
         // Arrange
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act & Assert
-        ActAndVerify(new CommonBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new CommonModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new CommonRecords(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new CommonBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new CommonModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new CommonRecords(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
 
-        ActAndVerify(new DatabaseBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new DatabaseModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new DatabaseRecords(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseRecords(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
 
-        ActAndVerify(new ObjectsBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsRecords(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsBaseBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsBaseModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsNonGenericBaseBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsNonGenericBaseModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsBaseRecords(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsOverrideBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsOverrideModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsOverrideRecords(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsRecords(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBaseBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBaseModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsNonGenericBaseBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsNonGenericBaseModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsBaseRecords(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsOverrideBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsOverrideModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsOverrideRecords(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
 
-        ActAndVerify(new ObjectsCodeStatementBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new ObjectsCodeStatementModels(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new DatabaseCodeStatementBuilders(), codeGenerationEngine, generationEnvironment, Settings);
-        ActAndVerify(new DatabaseCodeStatementModels(), codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsCodeStatementBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new ObjectsCodeStatementModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseCodeStatementBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
+        ActAndVerify(new DatabaseCodeStatementModels(), templateProvider, codeGenerationEngine, generationEnvironment, Settings);
     }
 
     [Fact]
@@ -76,17 +86,22 @@ public class CodeGenerationTests
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act & Assert
-        ActAndVerify(new TestBuildersWithInheritance(), codeGenerationEngine, generationEnvironment, settings);
-        ActAndVerify(new TestRecordsWithInheritance(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestBuildersWithInheritance(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestRecordsWithInheritance(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
     }
 
     [Fact]
@@ -99,17 +114,22 @@ public class CodeGenerationTests
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act & Assert
-        ActAndVerify(new TestBuildersWithoutInheritance(), codeGenerationEngine, generationEnvironment, settings);
-        ActAndVerify(new TestRecordsWithoutInheritance(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestBuildersWithoutInheritance(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestRecordsWithoutInheritance(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
     }
 
     [Fact]
@@ -122,16 +142,21 @@ public class CodeGenerationTests
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act & Assert
-        ActAndVerify(new TestBuildersWithoutInheritanceNoPregeneration(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestBuildersWithoutInheritanceNoPregeneration(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
     }
 
     // Example how to generate builder extensions
@@ -145,16 +170,20 @@ public class CodeGenerationTests
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>(); var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act & Assert
-        ActAndVerify(new CommonBuildersExtensions(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new CommonBuildersExtensions(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
     }
 
     [Fact]
@@ -167,16 +196,21 @@ public class CodeGenerationTests
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new PlainRecords(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new PlainRecords(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual1 = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Contents.First().Builder.ToString());
         var actual2 = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Contents.Last().Builder.ToString());
 
@@ -234,16 +268,21 @@ namespace Test
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new PlainBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new PlainBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -353,16 +392,21 @@ namespace Test.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new CustomPropertiesRecords(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new CustomPropertiesRecords(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -400,16 +444,21 @@ namespace Test
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new CustomPropertiesBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new CustomPropertiesBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -483,16 +532,21 @@ namespace Test.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new GenericsRecords(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new GenericsRecords(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -530,16 +584,21 @@ namespace Test
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new GenericsBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new GenericsBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -613,16 +672,21 @@ namespace Test.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new GenericArgumentBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new GenericArgumentBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -709,16 +773,21 @@ namespace Test.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationCoreBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationCoreBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -812,16 +881,21 @@ namespace MyNamespace.Domain.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationCoreRecords(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationCoreRecords(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -865,16 +939,21 @@ namespace MyNamespace.Domain
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationBaseBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationBaseBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -965,16 +1044,21 @@ namespace MyNamespace.Domain.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationNonGenericBaseBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationNonGenericBaseBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1038,16 +1122,20 @@ namespace MyNamespace.Domain.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>(); var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationBaseRecords(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationBaseRecords(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1090,16 +1178,21 @@ namespace MyNamespace.Domain
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilders(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilders(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1173,16 +1266,21 @@ namespace MyNamespace.Domain.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideRecords(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideRecords(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1220,16 +1318,21 @@ namespace MyNamespace.Domain
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideServiceCollectionExtension(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1263,16 +1366,21 @@ namespace MyNamespace.Domain.Extensions
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactory(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactory(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1314,16 +1422,21 @@ namespace MyNamespace.Domain.Builders
             dryRun: true,
             defaultFilename: string.Empty
         );
+        var templateFactoryMock = new Mock<ITemplateFactory>();
+        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
+            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
+        var templateProvider = provider.GetRequiredService<ITemplateProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
 
         // Act
-        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactoryCustomCode(), codeGenerationEngine, generationEnvironment, settings);
+        ActAndVerify(new TestCSharpClassBaseModelTransformationOverrideBuilderFactoryCustomCode(), templateProvider, codeGenerationEngine, generationEnvironment, settings);
         var actual = CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(generationEnvironment.Builder.Build().Contents.First().Contents);
 
         // Assert
@@ -1414,10 +1527,10 @@ namespace MyNamespace.Domain.Builders
         actual.Should().BeEmpty();
     }
 
-    private void ActAndVerify(ICodeGenerationProvider codeGenerationProvider, ICodeGenerationEngine codeGenerationEngine, IGenerationEnvironment generationEnvironment, CodeGenerationSettings settings)
+    private void ActAndVerify(ICodeGenerationProvider codeGenerationProvider, ITemplateProvider templateProvider, ICodeGenerationEngine codeGenerationEngine, IGenerationEnvironment generationEnvironment, CodeGenerationSettings settings)
     {
         // Act
-        codeGenerationEngine.Generate(codeGenerationProvider, generationEnvironment, settings);
+        codeGenerationEngine.Generate(codeGenerationProvider, templateProvider, generationEnvironment, settings);
 
         if (Settings.DryRun)
         {

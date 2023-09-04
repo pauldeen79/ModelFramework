@@ -32,10 +32,10 @@ public abstract class ClassBase : ICodeGenerationProvider
             { nameof(CSharpClassGenerator.FileNameSuffix), FileNameSuffix }
         };
 
-    public object CreateGenerator()
+    public Type GetGeneratorType()
         => GenerateMultipleFiles
-            ? new MultipleContentTemplateProxy(new CSharpClassGenerator())
-            : new SingleContentTemplateProxy(new CSharpClassGenerator());
+            ? typeof(MultipleContentTemplateCSharpClassGeneratorProxy)
+            : typeof(SingleContentTemplateCSharpClassGeneratorProxy);
 
     private string FileNamePrefix => string.IsNullOrEmpty(Path)
         ? string.Empty
