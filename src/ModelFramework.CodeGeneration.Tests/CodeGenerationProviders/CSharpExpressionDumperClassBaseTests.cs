@@ -12,7 +12,7 @@ public class CsharpExpressionDumperClassBaseTests
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
             .AddSingleton(templateFactoryMock.Object)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();

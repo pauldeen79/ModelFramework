@@ -10,7 +10,7 @@ public sealed class CodeGenerationTests : IDisposable
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton(new Mock<ITemplateProviderPluginFactory>().Object)
+            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
             .AddSingleton(TemplateFactoryMock.Object)
             .BuildServiceProvider();
     }
