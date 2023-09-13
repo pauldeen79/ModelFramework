@@ -4,14 +4,14 @@ public sealed class CodeGenerationTests : IDisposable
 {
     public CodeGenerationTests()
     {
-        TemplateFactoryMock = new Mock<ITemplateFactory>();
-        TemplateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
+        TemplateFactoryMock = Substitute.For<ITemplateFactory>();
+        TemplateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         Provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
-            .AddSingleton(TemplateFactoryMock.Object)
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+            .AddSingleton(TemplateFactoryMock)
             .BuildServiceProvider();
     }
 
@@ -22,7 +22,7 @@ public sealed class CodeGenerationTests : IDisposable
         defaultFilename: string.Empty
     );
 
-    private Mock<ITemplateFactory> TemplateFactoryMock { get; }
+    private ITemplateFactory TemplateFactoryMock { get; }
     private ServiceProvider Provider { get; }
 
     // Bootstrap test that generates c# code for the model used in code generation :)

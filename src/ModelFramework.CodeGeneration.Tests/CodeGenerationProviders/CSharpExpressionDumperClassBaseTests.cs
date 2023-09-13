@@ -6,14 +6,14 @@ public class CsharpExpressionDumperClassBaseTests
     public void Can_Generate_Code_To_CsharpClass()
     {
         // Arrange
-        var templateFactoryMock = new Mock<ITemplateFactory>();
-        templateFactoryMock.Setup(x => x.Create(It.IsAny<Type>())).Returns<Type>(t => Activator.CreateInstance(t)!);
+        var templateFactoryMock = Substitute.For<ITemplateFactory>();
+        templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         using var provider = new ServiceCollection()
             .AddTemplateFrameworkCodeGeneration()
             .AddTemplateFrameworkRuntime()
             .AddTemplateFramework()
-            .AddSingleton(new Mock<ITemplateComponentRegistryPluginFactory>().Object)
-            .AddSingleton(templateFactoryMock.Object)
+            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
+            .AddSingleton(templateFactoryMock)
             .BuildServiceProvider();
         var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();

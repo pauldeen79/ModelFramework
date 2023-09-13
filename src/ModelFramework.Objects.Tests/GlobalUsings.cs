@@ -14,5 +14,5 @@ global using ModelFramework.Objects.CodeStatements.Builders;
 global using ModelFramework.Objects.Contracts;
 global using ModelFramework.Objects.Extensions;
 global using ModelFramework.Objects.Settings;
-global using Moq;
+global using NSubstitute;
 global using Xunit;
