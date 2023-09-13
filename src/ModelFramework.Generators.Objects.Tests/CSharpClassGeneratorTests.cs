@@ -3954,7 +3954,7 @@ namespace Models
         {
             #pragma warning disable CS8603 // Possible null reference return.
             Property1 = string.Empty;
-            Property2 = default(System.Int32)!;
+            Property2 = default(System.Int32);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 

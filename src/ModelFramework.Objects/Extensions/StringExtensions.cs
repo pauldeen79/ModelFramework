@@ -63,6 +63,18 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
+    private static readonly string[] _valueTypeNames = new[]
+    {
+        typeof(byte).FullName,
+        typeof(short).FullName,
+        typeof(int).FullName,
+        typeof(long).FullName,
+        typeof(bool).FullName,
+        typeof(float).FullName,
+        typeof(decimal).FullName,
+        typeof(double).FullName,
+    };
+
     public static string GetDefaultValue(this string typeName, bool isNullable, bool enableNullableReferenceTypes)
     {
         if ((typeName.IsStringTypeName() || typeName == "string") && !isNullable)
@@ -89,7 +101,7 @@ public static class StringExtensions
             ? "?"
             : string.Empty;
 
-        var postNullableSuffix = preNullableSuffix == string.Empty && !isNullable && enableNullableReferenceTypes
+        var postNullableSuffix = preNullableSuffix == string.Empty && !isNullable && enableNullableReferenceTypes && !_valueTypeNames.Contains(typeName)
             ? "!"
             : string.Empty;
 
