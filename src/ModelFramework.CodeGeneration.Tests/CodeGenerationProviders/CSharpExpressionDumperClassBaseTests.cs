@@ -5,25 +5,11 @@ public class CsharpExpressionDumperClassBaseTests
     [Fact]
     public void Can_Generate_Code_To_CsharpClass()
     {
-        // Arrange
-        var templateFactoryMock = Substitute.For<ITemplateFactory>();
-        templateFactoryMock.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
-        using var provider = new ServiceCollection()
-            .AddTemplateFrameworkCodeGeneration()
-            .AddTemplateFrameworkRuntime()
-            .AddTemplateFramework()
-            .AddSingleton(Substitute.For<ITemplateComponentRegistryPluginFactory>())
-            .AddSingleton(templateFactoryMock)
-            .BuildServiceProvider();
-        var codeGenerationEngine = provider.GetRequiredService<ICodeGenerationEngine>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
-
         // Act
-        codeGenerationEngine.Generate(new Sut(), generationEnvironment, new CodeGenerationSettings("UnitTest", string.Empty, dryRun: true));
-        var actual = generationEnvironment.Builder.Build().Contents.First().Contents;
+        var actual = GenerateCode.For<Sut>(new CodeGenerationSettings("Sut", false, false, true)).TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
 
         // Assert
-        CrossCutting.Common.Extensions.StringExtensions.NormalizeLineEndings(actual).Should().Be(@"using System;
+        actual.NormalizeLineEndings().Should().Be(@"using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
