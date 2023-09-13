@@ -119,10 +119,10 @@ public partial class TypeBaseExtensionsTests
     public void GetContainerType_Throws_On_Unknown_Type()
     {
         // Arrange
-        var sut = new Mock<ITypeBase>().Object;
+        var sut = Substitute.For<ITypeBase>();
         var action = new Action(() => sut.GetContainerType());
 
         // Act & Assert
-        action.Should().Throw<InvalidOperationException>().WithMessage("Unknown container type: [Castle.Proxies.ITypeBaseProxy]");
+        action.Should().Throw<InvalidOperationException>().WithMessage("Unknown container type: [Castle.Proxies.ObjectProxy]");
     }
 }

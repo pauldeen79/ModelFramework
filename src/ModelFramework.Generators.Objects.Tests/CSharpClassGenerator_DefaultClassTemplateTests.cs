@@ -1,4 +1,4 @@
-﻿namespace ModelFramework.Generators.Objects.Tests;
+namespace ModelFramework.Generators.Objects.Tests;
 
 public class CSharpClassGenerator_DefaultClassTemplateTests
 {
@@ -7,7 +7,7 @@ public class CSharpClassGenerator_DefaultClassTemplateTests
     {
         // Arrange
         var typeBaseMock = CreateTypeBaseMock();
-        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
+        var sut = TemplateRenderHelper.CreateNestedTemplate<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate>(typeBaseMock, rootAdditionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true });
 
         // Act
         var actual = TemplateRenderHelper.GetTemplateOutput(sut);
@@ -93,8 +93,8 @@ public class CSharpClassGenerator_DefaultClassTemplateTests
         var typeBaseMock = CreateTypeBaseMock();
         var sut = new CSharpClassGenerator_DefaultClassViewModel
         {
-            Model = typeBaseMock.Object,
-            TemplateContext = TemplateRenderHelper.CreateNestedTemplateContext<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate, TemplateInstanceContext>(typeBaseMock.Object, rootAdditionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true })
+            Model = typeBaseMock,
+            TemplateContext = TemplateRenderHelper.CreateNestedTemplateContext<CSharpClassGenerator, CSharpClassGenerator_DefaultClassTemplate, TemplateInstanceContext>(typeBaseMock, rootAdditionalParameters: new { EnableNullableContext = true, CreateCodeGenerationHeader = true })
         };
 
         // Act
@@ -104,20 +104,20 @@ public class CSharpClassGenerator_DefaultClassTemplateTests
         actual.Should().BeTrue();
     }
 
-    private static Mock<IClass> CreateTypeBaseMock()
+    private static IClass CreateTypeBaseMock()
     {
-        var typeBaseMock = new Mock<IClass>();
-        typeBaseMock.SetupGet(x => x.Name).Returns("Test");
-        typeBaseMock.SetupGet(x => x.Methods).Returns(new ReadOnlyValueCollection<IClassMethod>());
-        typeBaseMock.SetupGet(x => x.Properties).Returns(new ReadOnlyValueCollection<IClassProperty>());
-        typeBaseMock.SetupGet(x => x.Constructors).Returns(new ReadOnlyValueCollection<IClassConstructor>());
-        typeBaseMock.SetupGet(x => x.Fields).Returns(new ReadOnlyValueCollection<IClassField>());
-        typeBaseMock.SetupGet(x => x.Enums).Returns(new ReadOnlyValueCollection<IEnum>());
-        typeBaseMock.SetupGet(x => x.Attributes).Returns(new ReadOnlyValueCollection<IAttribute>());
-        typeBaseMock.SetupGet(x => x.Interfaces).Returns(new ReadOnlyValueCollection<string>());
-        typeBaseMock.SetupGet(x => x.Metadata).Returns(new ReadOnlyValueCollection<IMetadata>());
-        typeBaseMock.SetupGet(x => x.GenericTypeArguments).Returns(new ReadOnlyValueCollection<string>());
-        typeBaseMock.SetupGet(x => x.GenericTypeArgumentConstraints).Returns(new ReadOnlyValueCollection<string>());
+        var typeBaseMock = Substitute.For<IClass>();
+        typeBaseMock.Name.Returns("Test");
+        typeBaseMock.Methods.Returns(new ReadOnlyValueCollection<IClassMethod>());
+        typeBaseMock.Properties.Returns(new ReadOnlyValueCollection<IClassProperty>());
+        typeBaseMock.Constructors.Returns(new ReadOnlyValueCollection<IClassConstructor>());
+        typeBaseMock.Fields.Returns(new ReadOnlyValueCollection<IClassField>());
+        typeBaseMock.Enums.Returns(new ReadOnlyValueCollection<IEnum>());
+        typeBaseMock.Attributes.Returns(new ReadOnlyValueCollection<IAttribute>());
+        typeBaseMock.Interfaces.Returns(new ReadOnlyValueCollection<string>());
+        typeBaseMock.Metadata.Returns(new ReadOnlyValueCollection<IMetadata>());
+        typeBaseMock.GenericTypeArguments.Returns(new ReadOnlyValueCollection<string>());
+        typeBaseMock.GenericTypeArgumentConstraints.Returns(new ReadOnlyValueCollection<string>());
         return typeBaseMock;
     }
 }
