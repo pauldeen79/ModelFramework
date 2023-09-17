@@ -3632,7 +3632,7 @@ namespace MyNamespace
         {
             var instance = new MyNamespace.MyRecordBase(Property1);
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, validationContext, results, true);
             return results;
         }
 
@@ -3772,7 +3772,7 @@ namespace MyNamespace
         {
             var instance = new MyNamespace.MyRecordBase();
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, validationContext, results, true);
             return results;
         }
 
@@ -3853,7 +3853,7 @@ namespace MyNamespace
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, validationContext, results, true);
             return results;
         }
 
@@ -3946,7 +3946,7 @@ namespace Models
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
-            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance, null, null), results, true);
+            System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, validationContext, results, true);
             return results;
         }
 
