@@ -11,11 +11,7 @@ public abstract class ModelFrameworkModelClassBase : ModelFrameworkCSharpClassBa
 
     protected override void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
-        if (property == null)
-        {
-            // Not possible, but needs to be added because of .net standard 2.0
-            return;
-        }
+        property = ArgumentGuard.IsNotNull(property, nameof(property));
 
         var typeName = property.TypeName.ToString();
         var propertyName = property.Name.ToString();

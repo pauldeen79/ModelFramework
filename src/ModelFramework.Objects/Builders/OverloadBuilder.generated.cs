@@ -17,28 +17,16 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class OverloadBuilder
     {
-        public System.Text.StringBuilder MethodName
+        public string MethodName
         {
-            get
-            {
-                return _methodNameDelegate.Value;
-            }
-            set
-            {
-                _methodNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder InitializeExpression
+        public string InitializeExpression
         {
-            get
-            {
-                return _initializeExpressionDelegate.Value;
-            }
-            set
-            {
-                _initializeExpressionDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder> Parameters
@@ -51,80 +39,20 @@ namespace ModelFramework.Objects.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.Overload(MethodName?.ToString(), InitializeExpression?.ToString(), Parameters.Select(x => x.Build()));
+            return new ModelFramework.Objects.Overload(MethodName, InitializeExpression, Parameters.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public OverloadBuilder WithMethodName(System.Text.StringBuilder methodName)
+        public OverloadBuilder WithMethodName(string methodName)
         {
             MethodName = methodName;
             return this;
         }
 
-        public OverloadBuilder WithMethodName(System.Func<System.Text.StringBuilder> methodNameDelegate)
-        {
-            _methodNameDelegate = new (methodNameDelegate);
-            return this;
-        }
-
-        public OverloadBuilder WithMethodName(string value)
-        {
-            if (MethodName == null)
-                MethodName = new System.Text.StringBuilder();
-            MethodName.Clear().Append(value);
-            return this;
-        }
-
-        public OverloadBuilder AppendToMethodName(string value)
-        {
-            if (MethodName == null)
-                MethodName = new System.Text.StringBuilder();
-            MethodName.Append(value);
-            return this;
-        }
-
-        public OverloadBuilder AppendLineToMethodName(string value)
-        {
-            if (MethodName == null)
-                MethodName = new System.Text.StringBuilder();
-            MethodName.AppendLine(value);
-            return this;
-        }
-
-        public OverloadBuilder WithInitializeExpression(System.Text.StringBuilder initializeExpression)
+        public OverloadBuilder WithInitializeExpression(string initializeExpression)
         {
             InitializeExpression = initializeExpression;
-            return this;
-        }
-
-        public OverloadBuilder WithInitializeExpression(System.Func<System.Text.StringBuilder> initializeExpressionDelegate)
-        {
-            _initializeExpressionDelegate = new (initializeExpressionDelegate);
-            return this;
-        }
-
-        public OverloadBuilder WithInitializeExpression(string value)
-        {
-            if (InitializeExpression == null)
-                InitializeExpression = new System.Text.StringBuilder();
-            InitializeExpression.Clear().Append(value);
-            return this;
-        }
-
-        public OverloadBuilder AppendToInitializeExpression(string value)
-        {
-            if (InitializeExpression == null)
-                InitializeExpression = new System.Text.StringBuilder();
-            InitializeExpression.Append(value);
-            return this;
-        }
-
-        public OverloadBuilder AppendLineToInitializeExpression(string value)
-        {
-            if (InitializeExpression == null)
-                InitializeExpression = new System.Text.StringBuilder();
-            InitializeExpression.AppendLine(value);
             return this;
         }
 
@@ -167,22 +95,18 @@ namespace ModelFramework.Objects.Builders
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _methodNameDelegate = new (() => new System.Text.StringBuilder());
-            _initializeExpressionDelegate = new (() => new System.Text.StringBuilder());
+            MethodName = string.Empty;
+            InitializeExpression = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public OverloadBuilder(ModelFramework.Objects.Contracts.IOverload source)
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            _methodNameDelegate = new (() => new System.Text.StringBuilder(source.MethodName));
-            _initializeExpressionDelegate = new (() => new System.Text.StringBuilder(source.InitializeExpression));
+            MethodName = source.MethodName;
+            InitializeExpression = source.InitializeExpression;
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _methodNameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _initializeExpressionDelegate;
     }
 #nullable restore
 }

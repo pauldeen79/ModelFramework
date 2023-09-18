@@ -19,50 +19,26 @@ namespace ModelFramework.Objects.Builders
     {
         public bool Partial
         {
-            get
-            {
-                return _partialDelegate.Value;
-            }
-            set
-            {
-                _partialDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool ExtensionMethod
         {
-            get
-            {
-                return _extensionMethodDelegate.Value;
-            }
-            set
-            {
-                _extensionMethodDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Operator
         {
-            get
-            {
-                return _operatorDelegate.Value;
-            }
-            set
-            {
-                _operatorDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Async
         {
-            get
-            {
-                return _asyncDelegate.Value;
-            }
-            set
-            {
-                _asyncDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<string> GenericTypeArguments
@@ -85,86 +61,44 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get
-            {
-                return _staticDelegate.Value;
-            }
-            set
-            {
-                _staticDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Virtual
         {
-            get
-            {
-                return _virtualDelegate.Value;
-            }
-            set
-            {
-                _virtualDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Abstract
         {
-            get
-            {
-                return _abstractDelegate.Value;
-            }
-            set
-            {
-                _abstractDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Protected
         {
-            get
-            {
-                return _protectedDelegate.Value;
-            }
-            set
-            {
-                _protectedDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Override
         {
-            get
-            {
-                return _overrideDelegate.Value;
-            }
-            set
-            {
-                _overrideDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get
-            {
-                return _visibilityDelegate.Value;
-            }
-            set
-            {
-                _visibilityDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -185,71 +119,41 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder TypeName
+        public string TypeName
         {
-            get
-            {
-                return _typeNameDelegate.Value;
-            }
-            set
-            {
-                _typeNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsNullable
         {
-            get
-            {
-                return _isNullableDelegate.Value;
-            }
-            set
-            {
-                _isNullableDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsValueType
         {
-            get
-            {
-                return _isValueTypeDelegate.Value;
-            }
-            set
-            {
-                _isValueTypeDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder ExplicitInterfaceName
+        public string ExplicitInterfaceName
         {
-            get
-            {
-                return _explicitInterfaceNameDelegate.Value;
-            }
-            set
-            {
-                _explicitInterfaceNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder ParentTypeFullName
+        public string ParentTypeFullName
         {
-            get
-            {
-                return _parentTypeFullNameDelegate.Value;
-            }
-            set
-            {
-                _parentTypeFullNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.IClassMethod Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, Async, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name?.ToString(), Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName?.ToString(), IsNullable, IsValueType, ExplicitInterfaceName?.ToString(), ParentTypeFullName?.ToString());
+            return new ModelFramework.Objects.ClassMethod(Partial, ExtensionMethod, Operator, Async, new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()), TypeName, IsNullable, IsValueType, ExplicitInterfaceName, ParentTypeFullName);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -260,21 +164,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithPartial(System.Func<bool> partialDelegate)
-        {
-            _partialDelegate = new (partialDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithExtensionMethod(bool extensionMethod = true)
         {
             ExtensionMethod = extensionMethod;
-            return this;
-        }
-
-        public ClassMethodBuilder WithExtensionMethod(System.Func<bool> extensionMethodDelegate)
-        {
-            _extensionMethodDelegate = new (extensionMethodDelegate);
             return this;
         }
 
@@ -284,21 +176,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithOperator(System.Func<bool> operatorDelegate)
-        {
-            _operatorDelegate = new (@operatorDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithAsync(bool async = true)
         {
             Async = async;
-            return this;
-        }
-
-        public ClassMethodBuilder WithAsync(System.Func<bool> asyncDelegate)
-        {
-            _asyncDelegate = new (asyncDelegate);
             return this;
         }
 
@@ -347,21 +227,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithStatic(System.Func<bool> staticDelegate)
-        {
-            _staticDelegate = new (@staticDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
-            return this;
-        }
-
-        public ClassMethodBuilder WithVirtual(System.Func<bool> virtualDelegate)
-        {
-            _virtualDelegate = new (@virtualDelegate);
             return this;
         }
 
@@ -371,21 +239,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
-            return this;
-        }
-
-        public ClassMethodBuilder WithProtected(System.Func<bool> protectedDelegate)
-        {
-            _protectedDelegate = new (@protectedDelegate);
             return this;
         }
 
@@ -395,57 +251,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithOverride(System.Func<bool> overrideDelegate)
-        {
-            _overrideDelegate = new (@overrideDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
             return this;
         }
 
-        public ClassMethodBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
-        {
-            _visibilityDelegate = new (visibilityDelegate);
-            return this;
-        }
-
-        public ClassMethodBuilder WithName(System.Text.StringBuilder name)
+        public ClassMethodBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public ClassMethodBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ClassMethodBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -518,45 +332,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithTypeName(System.Text.StringBuilder typeName)
+        public ClassMethodBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;
             return this;
         }
 
-        public ClassMethodBuilder WithTypeName(System.Func<System.Text.StringBuilder> typeNameDelegate)
-        {
-            _typeNameDelegate = new (typeNameDelegate);
-            return this;
-        }
-
-        public ClassMethodBuilder WithTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.Clear().Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendToTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendLineToTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.AppendLine(value);
-            return this;
-        }
-
         public ClassMethodBuilder WithType(System.Type type)
         {
-            TypeName.Clear().Append(type.AssemblyQualifiedName.FixTypeName()); IsValueType = type.IsValueType || type.IsEnum;
+            TypeName = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 
@@ -566,93 +350,21 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassMethodBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
-        {
-            _isNullableDelegate = new (isNullableDelegate);
-            return this;
-        }
-
         public ClassMethodBuilder WithIsValueType(bool isValueType = true)
         {
             IsValueType = isValueType;
             return this;
         }
 
-        public ClassMethodBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
-        {
-            _isValueTypeDelegate = new (isValueTypeDelegate);
-            return this;
-        }
-
-        public ClassMethodBuilder WithExplicitInterfaceName(System.Text.StringBuilder explicitInterfaceName)
+        public ClassMethodBuilder WithExplicitInterfaceName(string explicitInterfaceName)
         {
             ExplicitInterfaceName = explicitInterfaceName;
             return this;
         }
 
-        public ClassMethodBuilder WithExplicitInterfaceName(System.Func<System.Text.StringBuilder> explicitInterfaceNameDelegate)
-        {
-            _explicitInterfaceNameDelegate = new (explicitInterfaceNameDelegate);
-            return this;
-        }
-
-        public ClassMethodBuilder WithExplicitInterfaceName(string value)
-        {
-            if (ExplicitInterfaceName == null)
-                ExplicitInterfaceName = new System.Text.StringBuilder();
-            ExplicitInterfaceName.Clear().Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendToExplicitInterfaceName(string value)
-        {
-            if (ExplicitInterfaceName == null)
-                ExplicitInterfaceName = new System.Text.StringBuilder();
-            ExplicitInterfaceName.Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendLineToExplicitInterfaceName(string value)
-        {
-            if (ExplicitInterfaceName == null)
-                ExplicitInterfaceName = new System.Text.StringBuilder();
-            ExplicitInterfaceName.AppendLine(value);
-            return this;
-        }
-
-        public ClassMethodBuilder WithParentTypeFullName(System.Text.StringBuilder parentTypeFullName)
+        public ClassMethodBuilder WithParentTypeFullName(string parentTypeFullName)
         {
             ParentTypeFullName = parentTypeFullName;
-            return this;
-        }
-
-        public ClassMethodBuilder WithParentTypeFullName(System.Func<System.Text.StringBuilder> parentTypeFullNameDelegate)
-        {
-            _parentTypeFullNameDelegate = new (parentTypeFullNameDelegate);
-            return this;
-        }
-
-        public ClassMethodBuilder WithParentTypeFullName(string value)
-        {
-            if (ParentTypeFullName == null)
-                ParentTypeFullName = new System.Text.StringBuilder();
-            ParentTypeFullName.Clear().Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendToParentTypeFullName(string value)
-        {
-            if (ParentTypeFullName == null)
-                ParentTypeFullName = new System.Text.StringBuilder();
-            ParentTypeFullName.Append(value);
-            return this;
-        }
-
-        public ClassMethodBuilder AppendLineToParentTypeFullName(string value)
-        {
-            if (ParentTypeFullName == null)
-                ParentTypeFullName = new System.Text.StringBuilder();
-            ParentTypeFullName.AppendLine(value);
             return this;
         }
 
@@ -665,22 +377,22 @@ namespace ModelFramework.Objects.Builders
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _partialDelegate = new (() => default(bool)!);
-            _extensionMethodDelegate = new (() => default(bool)!);
-            _operatorDelegate = new (() => default(bool)!);
-            _asyncDelegate = new (() => default(bool)!);
-            _staticDelegate = new (() => default(bool)!);
-            _virtualDelegate = new (() => default(bool)!);
-            _abstractDelegate = new (() => default(bool)!);
-            _protectedDelegate = new (() => default(bool)!);
-            _overrideDelegate = new (() => default(bool)!);
-            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
-            _nameDelegate = new (() => new System.Text.StringBuilder());
-            _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool)!);
-            _isValueTypeDelegate = new (() => default(bool)!);
-            _explicitInterfaceNameDelegate = new (() => new System.Text.StringBuilder());
-            _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder());
+            Partial = default(System.Boolean);
+            ExtensionMethod = default(System.Boolean);
+            Operator = default(System.Boolean);
+            Async = default(System.Boolean);
+            Static = default(System.Boolean);
+            Virtual = default(System.Boolean);
+            Abstract = default(System.Boolean);
+            Protected = default(System.Boolean);
+            Override = default(System.Boolean);
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
+            Name = string.Empty;
+            TypeName = string.Empty;
+            IsNullable = default(System.Boolean);
+            IsValueType = default(System.Boolean);
+            ExplicitInterfaceName = string.Empty;
+            ParentTypeFullName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -692,61 +404,29 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            _partialDelegate = new (() => source.Partial);
-            _extensionMethodDelegate = new (() => source.ExtensionMethod);
-            _operatorDelegate = new (() => source.Operator);
-            _asyncDelegate = new (() => source.Async);
+            Partial = source.Partial;
+            ExtensionMethod = source.ExtensionMethod;
+            Operator = source.Operator;
+            Async = source.Async;
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
             GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _staticDelegate = new (() => source.Static);
-            _virtualDelegate = new (() => source.Virtual);
-            _abstractDelegate = new (() => source.Abstract);
-            _protectedDelegate = new (() => source.Protected);
-            _overrideDelegate = new (() => source.Override);
-            _visibilityDelegate = new (() => source.Visibility);
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Visibility = source.Visibility;
+            Name = source.Name;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
-            _typeNameDelegate = new (() => new System.Text.StringBuilder(source.TypeName));
-            _isNullableDelegate = new (() => source.IsNullable);
-            _isValueTypeDelegate = new (() => source.IsValueType);
-            _explicitInterfaceNameDelegate = new (() => new System.Text.StringBuilder(source.ExplicitInterfaceName));
-            _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder(source.ParentTypeFullName));
+            TypeName = source.TypeName;
+            IsNullable = source.IsNullable;
+            IsValueType = source.IsValueType;
+            ExplicitInterfaceName = source.ExplicitInterfaceName;
+            ParentTypeFullName = source.ParentTypeFullName;
         }
-
-        protected System.Lazy<bool> _partialDelegate;
-
-        protected System.Lazy<bool> _extensionMethodDelegate;
-
-        protected System.Lazy<bool> _operatorDelegate;
-
-        protected System.Lazy<bool> _asyncDelegate;
-
-        protected System.Lazy<bool> _staticDelegate;
-
-        protected System.Lazy<bool> _virtualDelegate;
-
-        protected System.Lazy<bool> _abstractDelegate;
-
-        protected System.Lazy<bool> _protectedDelegate;
-
-        protected System.Lazy<bool> _overrideDelegate;
-
-        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _typeNameDelegate;
-
-        protected System.Lazy<bool> _isNullableDelegate;
-
-        protected System.Lazy<bool> _isValueTypeDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _explicitInterfaceNameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _parentTypeFullNameDelegate;
     }
 #nullable restore
 }

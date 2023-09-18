@@ -19,74 +19,38 @@ namespace ModelFramework.Objects.Builders
     {
         public bool IsParamArray
         {
-            get
-            {
-                return _isParamArrayDelegate.Value;
-            }
-            set
-            {
-                _isParamArrayDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsOut
         {
-            get
-            {
-                return _isOutDelegate.Value;
-            }
-            set
-            {
-                _isOutDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsRef
         {
-            get
-            {
-                return _isRefDelegate.Value;
-            }
-            set
-            {
-                _isRefDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder TypeName
+        public string TypeName
         {
-            get
-            {
-                return _typeNameDelegate.Value;
-            }
-            set
-            {
-                _typeNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsNullable
         {
-            get
-            {
-                return _isNullableDelegate.Value;
-            }
-            set
-            {
-                _isNullableDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsValueType
         {
-            get
-            {
-                return _isValueTypeDelegate.Value;
-            }
-            set
-            {
-                _isValueTypeDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -101,35 +65,23 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public object? DefaultValue
         {
-            get
-            {
-                return _defaultValueDelegate.Value;
-            }
-            set
-            {
-                _defaultValueDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.IParameter Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.Parameter(IsParamArray, IsOut, IsRef, TypeName?.ToString(), IsNullable, IsValueType, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name?.ToString(), DefaultValue);
+            return new ModelFramework.Objects.Parameter(IsParamArray, IsOut, IsRef, TypeName, IsNullable, IsValueType, Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, DefaultValue);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -140,21 +92,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithIsParamArray(System.Func<bool> isParamArrayDelegate)
-        {
-            _isParamArrayDelegate = new (isParamArrayDelegate);
-            return this;
-        }
-
         public ParameterBuilder WithIsOut(bool isOut = true)
         {
             IsOut = isOut;
-            return this;
-        }
-
-        public ParameterBuilder WithIsOut(System.Func<bool> isOutDelegate)
-        {
-            _isOutDelegate = new (isOutDelegate);
             return this;
         }
 
@@ -164,51 +104,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithIsRef(System.Func<bool> isRefDelegate)
-        {
-            _isRefDelegate = new (isRefDelegate);
-            return this;
-        }
-
-        public ParameterBuilder WithTypeName(System.Text.StringBuilder typeName)
+        public ParameterBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;
             return this;
         }
 
-        public ParameterBuilder WithTypeName(System.Func<System.Text.StringBuilder> typeNameDelegate)
-        {
-            _typeNameDelegate = new (typeNameDelegate);
-            return this;
-        }
-
-        public ParameterBuilder WithTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.Clear().Append(value);
-            return this;
-        }
-
-        public ParameterBuilder AppendToTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.Append(value);
-            return this;
-        }
-
-        public ParameterBuilder AppendLineToTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.AppendLine(value);
-            return this;
-        }
-
         public ParameterBuilder WithType(System.Type type)
         {
-            TypeName.Clear().Append(type.AssemblyQualifiedName.FixTypeName()); IsValueType = type.IsValueType || type.IsEnum;
+            TypeName = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 
@@ -218,21 +122,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
-        {
-            _isNullableDelegate = new (isNullableDelegate);
-            return this;
-        }
-
         public ParameterBuilder WithIsValueType(bool isValueType = true)
         {
             IsValueType = isValueType;
-            return this;
-        }
-
-        public ParameterBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
-        {
-            _isValueTypeDelegate = new (isValueTypeDelegate);
             return this;
         }
 
@@ -264,39 +156,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithName(System.Text.StringBuilder name)
+        public ParameterBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public ParameterBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ParameterBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public ParameterBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public ParameterBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -306,25 +168,18 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ParameterBuilder WithDefaultValue(System.Func<object?> defaultValueDelegate)
-        {
-            _defaultValueDelegate = new (defaultValueDelegate);
-            return this;
-        }
-
         public ParameterBuilder()
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _isParamArrayDelegate = new (() => default(bool)!);
-            _isOutDelegate = new (() => default(bool)!);
-            _isRefDelegate = new (() => default(bool)!);
-            _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool)!);
-            _isValueTypeDelegate = new (() => default(bool)!);
-            _nameDelegate = new (() => new System.Text.StringBuilder());
-            _defaultValueDelegate = new (() => default(object?));
+            IsParamArray = default(System.Boolean);
+            IsOut = default(System.Boolean);
+            IsRef = default(System.Boolean);
+            TypeName = string.Empty;
+            IsNullable = default(System.Boolean);
+            IsValueType = default(System.Boolean);
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -332,33 +187,17 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _isParamArrayDelegate = new (() => source.IsParamArray);
-            _isOutDelegate = new (() => source.IsOut);
-            _isRefDelegate = new (() => source.IsRef);
-            _typeNameDelegate = new (() => new System.Text.StringBuilder(source.TypeName));
-            _isNullableDelegate = new (() => source.IsNullable);
-            _isValueTypeDelegate = new (() => source.IsValueType);
+            IsParamArray = source.IsParamArray;
+            IsOut = source.IsOut;
+            IsRef = source.IsRef;
+            TypeName = source.TypeName;
+            IsNullable = source.IsNullable;
+            IsValueType = source.IsValueType;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
-            _defaultValueDelegate = new (() => source.DefaultValue);
+            Name = source.Name;
+            DefaultValue = source.DefaultValue;
         }
-
-        protected System.Lazy<bool> _isParamArrayDelegate;
-
-        protected System.Lazy<bool> _isOutDelegate;
-
-        protected System.Lazy<bool> _isRefDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _typeNameDelegate;
-
-        protected System.Lazy<bool> _isNullableDelegate;
-
-        protected System.Lazy<bool> _isValueTypeDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
-
-        protected System.Lazy<object?> _defaultValueDelegate;
     }
 #nullable restore
 }

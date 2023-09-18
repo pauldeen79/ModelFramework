@@ -19,14 +19,8 @@ namespace ModelFramework.Objects.Builders
     {
         public object Value
         {
-            get
-            {
-                return _valueDelegate.Value;
-            }
-            set
-            {
-                _valueDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -35,23 +29,17 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.IAttributeParameter Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name?.ToString());
+            return new ModelFramework.Objects.AttributeParameter(Value, Metadata.Select(x => x.Build()), Name);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -59,12 +47,6 @@ namespace ModelFramework.Objects.Builders
         public AttributeParameterBuilder WithValue(object value)
         {
             Value = value;
-            return this;
-        }
-
-        public AttributeParameterBuilder WithValue(System.Func<object> valueDelegate)
-        {
-            _valueDelegate = new (valueDelegate);
             return this;
         }
 
@@ -85,39 +67,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public AttributeParameterBuilder WithName(System.Text.StringBuilder name)
+        public AttributeParameterBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public AttributeParameterBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public AttributeParameterBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public AttributeParameterBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public AttributeParameterBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -125,22 +77,18 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _valueDelegate = new (() => new System.Object());
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Value = new System.Object();
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public AttributeParameterBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _valueDelegate = new (() => source.Value);
+            Value = source.Value;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Name = source.Name;
         }
-
-        protected System.Lazy<object> _valueDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

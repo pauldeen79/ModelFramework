@@ -53,16 +53,10 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -71,16 +65,10 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Text.StringBuilder FileGroupName
+        public string FileGroupName
         {
-            get
-            {
-                return _fileGroupNameDelegate.Value;
-            }
-            set
-            {
-                _fileGroupNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder> CheckConstraints
@@ -93,7 +81,7 @@ namespace ModelFramework.Database.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name?.ToString(), Metadata.Select(x => x.Build()), FileGroupName?.ToString(), CheckConstraints.Select(x => x.Build()));
+            return new ModelFramework.Database.Table(PrimaryKeyConstraints.Select(x => x.Build()), UniqueConstraints.Select(x => x.Build()), DefaultValueConstraints.Select(x => x.Build()), ForeignKeyConstraints.Select(x => x.Build()), Indexes.Select(x => x.Build()), Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName, CheckConstraints.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -164,39 +152,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder WithName(System.Text.StringBuilder name)
+        public TableBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public TableBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public TableBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public TableBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public TableBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -217,39 +175,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public TableBuilder WithFileGroupName(System.Text.StringBuilder fileGroupName)
+        public TableBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
-            return this;
-        }
-
-        public TableBuilder WithFileGroupName(System.Func<System.Text.StringBuilder> fileGroupNameDelegate)
-        {
-            _fileGroupNameDelegate = new (fileGroupNameDelegate);
-            return this;
-        }
-
-        public TableBuilder WithFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.Clear().Append(value);
-            return this;
-        }
-
-        public TableBuilder AppendToFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.Append(value);
-            return this;
-        }
-
-        public TableBuilder AppendLineToFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.AppendLine(value);
             return this;
         }
 
@@ -275,8 +203,8 @@ namespace ModelFramework.Database.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _nameDelegate = new (() => new System.Text.StringBuilder());
-            _fileGroupNameDelegate = new (() => new System.Text.StringBuilder());
+            Name = string.Empty;
+            FileGroupName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -296,15 +224,11 @@ namespace ModelFramework.Database.Builders
             ForeignKeyConstraints.AddRange(source.ForeignKeyConstraints.Select(x => new ModelFramework.Database.Builders.ForeignKeyConstraintBuilder(x)));
             Indexes.AddRange(source.Indexes.Select(x => new ModelFramework.Database.Builders.IndexBuilder(x)));
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.TableFieldBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _fileGroupNameDelegate = new (() => new System.Text.StringBuilder(source.FileGroupName));
+            FileGroupName = source.FileGroupName;
             CheckConstraints.AddRange(source.CheckConstraints.Select(x => new ModelFramework.Database.Builders.CheckConstraintBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _fileGroupNameDelegate;
     }
 #nullable restore
 }

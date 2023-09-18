@@ -35,35 +35,23 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get
-            {
-                return _visibilityDelegate.Value;
-            }
-            set
-            {
-                _visibilityDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.IEnum Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name?.ToString(), Visibility);
+            return new ModelFramework.Objects.Enum(Members.Select(x => x.Build()), Attributes.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name, Visibility);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -107,39 +95,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumBuilder WithName(System.Text.StringBuilder name)
+        public EnumBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public EnumBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public EnumBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public EnumBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public EnumBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -149,20 +107,14 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
-        {
-            _visibilityDelegate = new (visibilityDelegate);
-            return this;
-        }
-
         public EnumBuilder()
         {
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _nameDelegate = new (() => new System.Text.StringBuilder());
-            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            Name = string.Empty;
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -174,13 +126,9 @@ namespace ModelFramework.Objects.Builders
             Members.AddRange(source.Members.Select(x => new ModelFramework.Objects.Builders.EnumMemberBuilder(x)));
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
-            _visibilityDelegate = new (() => source.Visibility);
+            Name = source.Name;
+            Visibility = source.Visibility;
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
-
-        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
     }
 #nullable restore
 }

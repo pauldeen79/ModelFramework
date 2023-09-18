@@ -19,33 +19,21 @@ namespace ModelFramework.Common.Builders
     {
         public object? Value
         {
-            get
-            {
-                return _valueDelegate.Value;
-            }
-            set
-            {
-                _valueDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Common.Contracts.IMetadata Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Common.Metadata(Value, Name?.ToString());
+            return new ModelFramework.Common.Metadata(Value, Name);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -56,65 +44,24 @@ namespace ModelFramework.Common.Builders
             return this;
         }
 
-        public MetadataBuilder WithValue(System.Func<object?> valueDelegate)
-        {
-            _valueDelegate = new (valueDelegate);
-            return this;
-        }
-
-        public MetadataBuilder WithName(System.Text.StringBuilder name)
+        public MetadataBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public MetadataBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public MetadataBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public MetadataBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public MetadataBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
         public MetadataBuilder()
         {
             #pragma warning disable CS8603 // Possible null reference return.
-            _valueDelegate = new (() => default(object?));
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MetadataBuilder(ModelFramework.Common.Contracts.IMetadata source)
         {
-            _valueDelegate = new (() => source.Value);
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Value = source.Value;
+            Name = source.Name;
         }
-
-        protected System.Lazy<object?> _valueDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

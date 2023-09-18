@@ -10,6 +10,8 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     protected override string ProjectName => "ModelFramework";
     protected override bool InheritFromInterfaces => true;
     protected override string FileNameSuffix => ".generated";
+    protected override bool UseLazyInitialization => false;
+    protected override bool ConvertStringToStringBuilderOnBuilders => false;
 
     protected override string GetFullBasePath()
         => Directory.GetCurrentDirectory().EndsWith("ModelFramework")
@@ -144,11 +146,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
 
     protected virtual void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
-        if (property == null)
-        {
-            // Not possible, but needs to be added because of .net standard 2.0
-            return;
-        }
+        property = ArgumentGuard.IsNotNull(property, nameof(property));
 
         var typeName = property.TypeName.ToString();
         var propertyName = property.Name.ToString();
@@ -193,7 +191,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
                 property.SetDefaultValueForBuilderClassConstructor(new Literal("true"));
             }
         }
-        else if (typeName.IsStringTypeName())
+        else if (ConvertStringToStringBuilderOnBuilders && typeName.IsStringTypeName())
         {
             property.ConvertStringPropertyToStringBuilderPropertyOnBuilder(UseLazyInitialization);
         }
@@ -239,7 +237,7 @@ if ({2})
             property.AddBuilderOverload(new OverloadBuilder()
                 .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
                 .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2}.Clear().Append(type.AssemblyQualifiedName.FixTypeName()); IsValueType = type.IsValueType || type.IsEnum;")
+                .WithInitializeExpression("{2} = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;")
                 .Build());
         }
 

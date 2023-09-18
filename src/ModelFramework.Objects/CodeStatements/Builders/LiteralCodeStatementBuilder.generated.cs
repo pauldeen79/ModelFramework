@@ -23,23 +23,17 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             set;
         }
 
-        public System.Text.StringBuilder Statement
+        public string Statement
         {
-            get
-            {
-                return _statementDelegate.Value;
-            }
-            set
-            {
-                _statementDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.ICodeStatement Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.CodeStatements.LiteralCodeStatement(Statement, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -61,39 +55,9 @@ namespace ModelFramework.Objects.CodeStatements.Builders
             return this;
         }
 
-        public LiteralCodeStatementBuilder WithStatement(System.Text.StringBuilder statement)
+        public LiteralCodeStatementBuilder WithStatement(string statement)
         {
             Statement = statement;
-            return this;
-        }
-
-        public LiteralCodeStatementBuilder WithStatement(System.Func<System.Text.StringBuilder> statementDelegate)
-        {
-            _statementDelegate = new (statementDelegate);
-            return this;
-        }
-
-        public LiteralCodeStatementBuilder WithStatement(string value)
-        {
-            if (Statement == null)
-                Statement = new System.Text.StringBuilder();
-            Statement.Clear().Append(value);
-            return this;
-        }
-
-        public LiteralCodeStatementBuilder AppendToStatement(string value)
-        {
-            if (Statement == null)
-                Statement = new System.Text.StringBuilder();
-            Statement.Append(value);
-            return this;
-        }
-
-        public LiteralCodeStatementBuilder AppendLineToStatement(string value)
-        {
-            if (Statement == null)
-                Statement = new System.Text.StringBuilder();
-            Statement.AppendLine(value);
             return this;
         }
 
@@ -101,7 +65,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _statementDelegate = new (() => new System.Text.StringBuilder());
+            Statement = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -109,10 +73,8 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _statementDelegate = new (() => new System.Text.StringBuilder(source.Statement));
+            Statement = source.Statement;
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _statementDelegate;
     }
 #nullable restore
 }

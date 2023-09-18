@@ -49,62 +49,32 @@ namespace ModelFramework.Database.Builders
 
         public System.Nullable<int> Top
         {
-            get
-            {
-                return _topDelegate.Value;
-            }
-            set
-            {
-                _topDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool TopPercent
         {
-            get
-            {
-                return _topPercentDelegate.Value;
-            }
-            set
-            {
-                _topPercentDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Distinct
         {
-            get
-            {
-                return _distinctDelegate.Value;
-            }
-            set
-            {
-                _distinctDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Definition
+        public string Definition
         {
-            get
-            {
-                return _definitionDelegate.Value;
-            }
-            set
-            {
-                _definitionDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -117,7 +87,7 @@ namespace ModelFramework.Database.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition?.ToString(), Name?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.View(SelectFields.Select(x => x.Build()), OrderByFields.Select(x => x.Build()), GroupByFields.Select(x => x.Build()), Sources.Select(x => x.Build()), Conditions.Select(x => x.Build()), Top, TopPercent, Distinct, Definition, Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -183,21 +153,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewBuilder WithTop(System.Func<System.Nullable<int>> topDelegate)
-        {
-            _topDelegate = new (topDelegate);
-            return this;
-        }
-
         public ViewBuilder WithTopPercent(bool topPercent = true)
         {
             TopPercent = topPercent;
-            return this;
-        }
-
-        public ViewBuilder WithTopPercent(System.Func<bool> topPercentDelegate)
-        {
-            _topPercentDelegate = new (topPercentDelegate);
             return this;
         }
 
@@ -207,81 +165,15 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewBuilder WithDistinct(System.Func<bool> distinctDelegate)
-        {
-            _distinctDelegate = new (distinctDelegate);
-            return this;
-        }
-
-        public ViewBuilder WithDefinition(System.Text.StringBuilder definition)
+        public ViewBuilder WithDefinition(string definition)
         {
             Definition = definition;
             return this;
         }
 
-        public ViewBuilder WithDefinition(System.Func<System.Text.StringBuilder> definitionDelegate)
-        {
-            _definitionDelegate = new (definitionDelegate);
-            return this;
-        }
-
-        public ViewBuilder WithDefinition(string value)
-        {
-            if (Definition == null)
-                Definition = new System.Text.StringBuilder();
-            Definition.Clear().Append(value);
-            return this;
-        }
-
-        public ViewBuilder AppendToDefinition(string value)
-        {
-            if (Definition == null)
-                Definition = new System.Text.StringBuilder();
-            Definition.Append(value);
-            return this;
-        }
-
-        public ViewBuilder AppendLineToDefinition(string value)
-        {
-            if (Definition == null)
-                Definition = new System.Text.StringBuilder();
-            Definition.AppendLine(value);
-            return this;
-        }
-
-        public ViewBuilder WithName(System.Text.StringBuilder name)
+        public ViewBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public ViewBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ViewBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public ViewBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public ViewBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -311,11 +203,10 @@ namespace ModelFramework.Database.Builders
             Conditions = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewConditionBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _topDelegate = new (() => default(System.Nullable<int>));
-            _topPercentDelegate = new (() => default(bool)!);
-            _distinctDelegate = new (() => default(bool)!);
-            _definitionDelegate = new (() => new System.Text.StringBuilder());
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            TopPercent = default(System.Boolean);
+            Distinct = default(System.Boolean);
+            Definition = string.Empty;
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -332,23 +223,13 @@ namespace ModelFramework.Database.Builders
             GroupByFields.AddRange(source.GroupByFields.Select(x => new ModelFramework.Database.Builders.ViewFieldBuilder(x)));
             Sources.AddRange(source.Sources.Select(x => new ModelFramework.Database.Builders.ViewSourceBuilder(x)));
             Conditions.AddRange(source.Conditions.Select(x => new ModelFramework.Database.Builders.ViewConditionBuilder(x)));
-            _topDelegate = new (() => source.Top);
-            _topPercentDelegate = new (() => source.TopPercent);
-            _distinctDelegate = new (() => source.Distinct);
-            _definitionDelegate = new (() => new System.Text.StringBuilder(source.Definition));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Top = source.Top;
+            TopPercent = source.TopPercent;
+            Distinct = source.Distinct;
+            Definition = source.Definition;
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<System.Nullable<int>> _topDelegate;
-
-        protected System.Lazy<bool> _topPercentDelegate;
-
-        protected System.Lazy<bool> _distinctDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _definitionDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

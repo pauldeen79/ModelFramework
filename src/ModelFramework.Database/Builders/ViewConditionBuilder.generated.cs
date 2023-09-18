@@ -17,28 +17,16 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class ViewConditionBuilder
     {
-        public System.Text.StringBuilder Expression
+        public string Expression
         {
-            get
-            {
-                return _expressionDelegate.Value;
-            }
-            set
-            {
-                _expressionDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Combination
+        public string Combination
         {
-            get
-            {
-                return _combinationDelegate.Value;
-            }
-            set
-            {
-                _combinationDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -47,96 +35,30 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Text.StringBuilder FileGroupName
+        public string FileGroupName
         {
-            get
-            {
-                return _fileGroupNameDelegate.Value;
-            }
-            set
-            {
-                _fileGroupNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Database.Contracts.IViewCondition Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.ViewCondition(Expression?.ToString(), Combination?.ToString(), Metadata.Select(x => x.Build()), FileGroupName?.ToString());
+            return new ModelFramework.Database.ViewCondition(Expression, Combination, Metadata.Select(x => x.Build()), FileGroupName);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ViewConditionBuilder WithExpression(System.Text.StringBuilder expression)
+        public ViewConditionBuilder WithExpression(string expression)
         {
             Expression = expression;
             return this;
         }
 
-        public ViewConditionBuilder WithExpression(System.Func<System.Text.StringBuilder> expressionDelegate)
-        {
-            _expressionDelegate = new (expressionDelegate);
-            return this;
-        }
-
-        public ViewConditionBuilder WithExpression(string value)
-        {
-            if (Expression == null)
-                Expression = new System.Text.StringBuilder();
-            Expression.Clear().Append(value);
-            return this;
-        }
-
-        public ViewConditionBuilder AppendToExpression(string value)
-        {
-            if (Expression == null)
-                Expression = new System.Text.StringBuilder();
-            Expression.Append(value);
-            return this;
-        }
-
-        public ViewConditionBuilder AppendLineToExpression(string value)
-        {
-            if (Expression == null)
-                Expression = new System.Text.StringBuilder();
-            Expression.AppendLine(value);
-            return this;
-        }
-
-        public ViewConditionBuilder WithCombination(System.Text.StringBuilder combination)
+        public ViewConditionBuilder WithCombination(string combination)
         {
             Combination = combination;
-            return this;
-        }
-
-        public ViewConditionBuilder WithCombination(System.Func<System.Text.StringBuilder> combinationDelegate)
-        {
-            _combinationDelegate = new (combinationDelegate);
-            return this;
-        }
-
-        public ViewConditionBuilder WithCombination(string value)
-        {
-            if (Combination == null)
-                Combination = new System.Text.StringBuilder();
-            Combination.Clear().Append(value);
-            return this;
-        }
-
-        public ViewConditionBuilder AppendToCombination(string value)
-        {
-            if (Combination == null)
-                Combination = new System.Text.StringBuilder();
-            Combination.Append(value);
-            return this;
-        }
-
-        public ViewConditionBuilder AppendLineToCombination(string value)
-        {
-            if (Combination == null)
-                Combination = new System.Text.StringBuilder();
-            Combination.AppendLine(value);
             return this;
         }
 
@@ -157,39 +79,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public ViewConditionBuilder WithFileGroupName(System.Text.StringBuilder fileGroupName)
+        public ViewConditionBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
-            return this;
-        }
-
-        public ViewConditionBuilder WithFileGroupName(System.Func<System.Text.StringBuilder> fileGroupNameDelegate)
-        {
-            _fileGroupNameDelegate = new (fileGroupNameDelegate);
-            return this;
-        }
-
-        public ViewConditionBuilder WithFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.Clear().Append(value);
-            return this;
-        }
-
-        public ViewConditionBuilder AppendToFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.Append(value);
-            return this;
-        }
-
-        public ViewConditionBuilder AppendLineToFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.AppendLine(value);
             return this;
         }
 
@@ -197,26 +89,20 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _expressionDelegate = new (() => new System.Text.StringBuilder());
-            _combinationDelegate = new (() => new System.Text.StringBuilder());
-            _fileGroupNameDelegate = new (() => new System.Text.StringBuilder());
+            Expression = string.Empty;
+            Combination = string.Empty;
+            FileGroupName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewConditionBuilder(ModelFramework.Database.Contracts.IViewCondition source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _expressionDelegate = new (() => new System.Text.StringBuilder(source.Expression));
-            _combinationDelegate = new (() => new System.Text.StringBuilder(source.Combination));
+            Expression = source.Expression;
+            Combination = source.Combination;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _fileGroupNameDelegate = new (() => new System.Text.StringBuilder(source.FileGroupName));
+            FileGroupName = source.FileGroupName;
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _expressionDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _combinationDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _fileGroupNameDelegate;
     }
 #nullable restore
 }

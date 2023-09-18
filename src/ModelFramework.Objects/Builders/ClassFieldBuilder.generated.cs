@@ -19,38 +19,20 @@ namespace ModelFramework.Objects.Builders
     {
         public bool ReadOnly
         {
-            get
-            {
-                return _readOnlyDelegate.Value;
-            }
-            set
-            {
-                _readOnlyDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Constant
         {
-            get
-            {
-                return _constantDelegate.Value;
-            }
-            set
-            {
-                _constantDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Event
         {
-            get
-            {
-                return _eventDelegate.Value;
-            }
-            set
-            {
-                _eventDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -61,86 +43,44 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get
-            {
-                return _staticDelegate.Value;
-            }
-            set
-            {
-                _staticDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Virtual
         {
-            get
-            {
-                return _virtualDelegate.Value;
-            }
-            set
-            {
-                _virtualDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Abstract
         {
-            get
-            {
-                return _abstractDelegate.Value;
-            }
-            set
-            {
-                _abstractDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Protected
         {
-            get
-            {
-                return _protectedDelegate.Value;
-            }
-            set
-            {
-                _protectedDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Override
         {
-            get
-            {
-                return _overrideDelegate.Value;
-            }
-            set
-            {
-                _overrideDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get
-            {
-                return _visibilityDelegate.Value;
-            }
-            set
-            {
-                _visibilityDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -149,71 +89,41 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder TypeName
+        public string TypeName
         {
-            get
-            {
-                return _typeNameDelegate.Value;
-            }
-            set
-            {
-                _typeNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsNullable
         {
-            get
-            {
-                return _isNullableDelegate.Value;
-            }
-            set
-            {
-                _isNullableDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool IsValueType
         {
-            get
-            {
-                return _isValueTypeDelegate.Value;
-            }
-            set
-            {
-                _isValueTypeDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public object? DefaultValue
         {
-            get
-            {
-                return _defaultValueDelegate.Value;
-            }
-            set
-            {
-                _defaultValueDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder ParentTypeFullName
+        public string ParentTypeFullName
         {
-            get
-            {
-                return _parentTypeFullNameDelegate.Value;
-            }
-            set
-            {
-                _parentTypeFullNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.IClassField Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name?.ToString(), Attributes.Select(x => x.Build()), TypeName?.ToString(), IsNullable, IsValueType, DefaultValue, ParentTypeFullName?.ToString());
+            return new ModelFramework.Objects.ClassField(ReadOnly, Constant, Event, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Name, Attributes.Select(x => x.Build()), TypeName, IsNullable, IsValueType, DefaultValue, ParentTypeFullName);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -224,33 +134,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithReadOnly(System.Func<bool> readOnlyDelegate)
-        {
-            _readOnlyDelegate = new (readOnlyDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithConstant(bool constant = true)
         {
             Constant = constant;
             return this;
         }
 
-        public ClassFieldBuilder WithConstant(System.Func<bool> constantDelegate)
-        {
-            _constantDelegate = new (constantDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithEvent(bool @event = true)
         {
             Event = @event;
-            return this;
-        }
-
-        public ClassFieldBuilder WithEvent(System.Func<bool> eventDelegate)
-        {
-            _eventDelegate = new (@eventDelegate);
             return this;
         }
 
@@ -277,21 +169,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithStatic(System.Func<bool> staticDelegate)
-        {
-            _staticDelegate = new (@staticDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
-            return this;
-        }
-
-        public ClassFieldBuilder WithVirtual(System.Func<bool> virtualDelegate)
-        {
-            _virtualDelegate = new (@virtualDelegate);
             return this;
         }
 
@@ -301,21 +181,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
-            return this;
-        }
-
-        public ClassFieldBuilder WithProtected(System.Func<bool> protectedDelegate)
-        {
-            _protectedDelegate = new (@protectedDelegate);
             return this;
         }
 
@@ -325,57 +193,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithOverride(System.Func<bool> overrideDelegate)
-        {
-            _overrideDelegate = new (@overrideDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
             return this;
         }
 
-        public ClassFieldBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
-        {
-            _visibilityDelegate = new (visibilityDelegate);
-            return this;
-        }
-
-        public ClassFieldBuilder WithName(System.Text.StringBuilder name)
+        public ClassFieldBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public ClassFieldBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ClassFieldBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public ClassFieldBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public ClassFieldBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -390,45 +216,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithTypeName(System.Text.StringBuilder typeName)
+        public ClassFieldBuilder WithTypeName(string typeName)
         {
             TypeName = typeName;
             return this;
         }
 
-        public ClassFieldBuilder WithTypeName(System.Func<System.Text.StringBuilder> typeNameDelegate)
-        {
-            _typeNameDelegate = new (typeNameDelegate);
-            return this;
-        }
-
-        public ClassFieldBuilder WithTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.Clear().Append(value);
-            return this;
-        }
-
-        public ClassFieldBuilder AppendToTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.Append(value);
-            return this;
-        }
-
-        public ClassFieldBuilder AppendLineToTypeName(string value)
-        {
-            if (TypeName == null)
-                TypeName = new System.Text.StringBuilder();
-            TypeName.AppendLine(value);
-            return this;
-        }
-
         public ClassFieldBuilder WithType(System.Type type)
         {
-            TypeName.Clear().Append(type.AssemblyQualifiedName.FixTypeName()); IsValueType = type.IsValueType || type.IsEnum;
+            TypeName = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;
             return this;
         }
 
@@ -438,21 +234,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithIsNullable(System.Func<bool> isNullableDelegate)
-        {
-            _isNullableDelegate = new (isNullableDelegate);
-            return this;
-        }
-
         public ClassFieldBuilder WithIsValueType(bool isValueType = true)
         {
             IsValueType = isValueType;
-            return this;
-        }
-
-        public ClassFieldBuilder WithIsValueType(System.Func<bool> isValueTypeDelegate)
-        {
-            _isValueTypeDelegate = new (isValueTypeDelegate);
             return this;
         }
 
@@ -462,45 +246,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassFieldBuilder WithDefaultValue(System.Func<object?> defaultValueDelegate)
-        {
-            _defaultValueDelegate = new (defaultValueDelegate);
-            return this;
-        }
-
-        public ClassFieldBuilder WithParentTypeFullName(System.Text.StringBuilder parentTypeFullName)
+        public ClassFieldBuilder WithParentTypeFullName(string parentTypeFullName)
         {
             ParentTypeFullName = parentTypeFullName;
-            return this;
-        }
-
-        public ClassFieldBuilder WithParentTypeFullName(System.Func<System.Text.StringBuilder> parentTypeFullNameDelegate)
-        {
-            _parentTypeFullNameDelegate = new (parentTypeFullNameDelegate);
-            return this;
-        }
-
-        public ClassFieldBuilder WithParentTypeFullName(string value)
-        {
-            if (ParentTypeFullName == null)
-                ParentTypeFullName = new System.Text.StringBuilder();
-            ParentTypeFullName.Clear().Append(value);
-            return this;
-        }
-
-        public ClassFieldBuilder AppendToParentTypeFullName(string value)
-        {
-            if (ParentTypeFullName == null)
-                ParentTypeFullName = new System.Text.StringBuilder();
-            ParentTypeFullName.Append(value);
-            return this;
-        }
-
-        public ClassFieldBuilder AppendLineToParentTypeFullName(string value)
-        {
-            if (ParentTypeFullName == null)
-                ParentTypeFullName = new System.Text.StringBuilder();
-            ParentTypeFullName.AppendLine(value);
             return this;
         }
 
@@ -509,21 +257,20 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _readOnlyDelegate = new (() => default(bool)!);
-            _constantDelegate = new (() => default(bool)!);
-            _eventDelegate = new (() => default(bool)!);
-            _staticDelegate = new (() => default(bool)!);
-            _virtualDelegate = new (() => default(bool)!);
-            _abstractDelegate = new (() => default(bool)!);
-            _protectedDelegate = new (() => default(bool)!);
-            _overrideDelegate = new (() => default(bool)!);
-            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Private);
-            _nameDelegate = new (() => new System.Text.StringBuilder());
-            _typeNameDelegate = new (() => new System.Text.StringBuilder());
-            _isNullableDelegate = new (() => default(bool)!);
-            _isValueTypeDelegate = new (() => default(bool)!);
-            _defaultValueDelegate = new (() => default(object?));
-            _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder());
+            ReadOnly = default(System.Boolean);
+            Constant = default(System.Boolean);
+            Event = default(System.Boolean);
+            Static = default(System.Boolean);
+            Virtual = default(System.Boolean);
+            Abstract = default(System.Boolean);
+            Protected = default(System.Boolean);
+            Override = default(System.Boolean);
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Private;
+            Name = string.Empty;
+            TypeName = string.Empty;
+            IsNullable = default(System.Boolean);
+            IsValueType = default(System.Boolean);
+            ParentTypeFullName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -531,54 +278,24 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            _readOnlyDelegate = new (() => source.ReadOnly);
-            _constantDelegate = new (() => source.Constant);
-            _eventDelegate = new (() => source.Event);
+            ReadOnly = source.ReadOnly;
+            Constant = source.Constant;
+            Event = source.Event;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _staticDelegate = new (() => source.Static);
-            _virtualDelegate = new (() => source.Virtual);
-            _abstractDelegate = new (() => source.Abstract);
-            _protectedDelegate = new (() => source.Protected);
-            _overrideDelegate = new (() => source.Override);
-            _visibilityDelegate = new (() => source.Visibility);
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Visibility = source.Visibility;
+            Name = source.Name;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            _typeNameDelegate = new (() => new System.Text.StringBuilder(source.TypeName));
-            _isNullableDelegate = new (() => source.IsNullable);
-            _isValueTypeDelegate = new (() => source.IsValueType);
-            _defaultValueDelegate = new (() => source.DefaultValue);
-            _parentTypeFullNameDelegate = new (() => new System.Text.StringBuilder(source.ParentTypeFullName));
+            TypeName = source.TypeName;
+            IsNullable = source.IsNullable;
+            IsValueType = source.IsValueType;
+            DefaultValue = source.DefaultValue;
+            ParentTypeFullName = source.ParentTypeFullName;
         }
-
-        protected System.Lazy<bool> _readOnlyDelegate;
-
-        protected System.Lazy<bool> _constantDelegate;
-
-        protected System.Lazy<bool> _eventDelegate;
-
-        protected System.Lazy<bool> _staticDelegate;
-
-        protected System.Lazy<bool> _virtualDelegate;
-
-        protected System.Lazy<bool> _abstractDelegate;
-
-        protected System.Lazy<bool> _protectedDelegate;
-
-        protected System.Lazy<bool> _overrideDelegate;
-
-        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _typeNameDelegate;
-
-        protected System.Lazy<bool> _isNullableDelegate;
-
-        protected System.Lazy<bool> _isValueTypeDelegate;
-
-        protected System.Lazy<object?> _defaultValueDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _parentTypeFullNameDelegate;
     }
 #nullable restore
 }

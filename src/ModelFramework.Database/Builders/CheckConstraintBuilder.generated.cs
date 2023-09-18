@@ -17,28 +17,16 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class CheckConstraintBuilder
     {
-        public System.Text.StringBuilder Expression
+        public string Expression
         {
-            get
-            {
-                return _expressionDelegate.Value;
-            }
-            set
-            {
-                _expressionDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -51,80 +39,20 @@ namespace ModelFramework.Database.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.CheckConstraint(Expression?.ToString(), Name?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.CheckConstraint(Expression, Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public CheckConstraintBuilder WithExpression(System.Text.StringBuilder expression)
+        public CheckConstraintBuilder WithExpression(string expression)
         {
             Expression = expression;
             return this;
         }
 
-        public CheckConstraintBuilder WithExpression(System.Func<System.Text.StringBuilder> expressionDelegate)
-        {
-            _expressionDelegate = new (expressionDelegate);
-            return this;
-        }
-
-        public CheckConstraintBuilder WithExpression(string value)
-        {
-            if (Expression == null)
-                Expression = new System.Text.StringBuilder();
-            Expression.Clear().Append(value);
-            return this;
-        }
-
-        public CheckConstraintBuilder AppendToExpression(string value)
-        {
-            if (Expression == null)
-                Expression = new System.Text.StringBuilder();
-            Expression.Append(value);
-            return this;
-        }
-
-        public CheckConstraintBuilder AppendLineToExpression(string value)
-        {
-            if (Expression == null)
-                Expression = new System.Text.StringBuilder();
-            Expression.AppendLine(value);
-            return this;
-        }
-
-        public CheckConstraintBuilder WithName(System.Text.StringBuilder name)
+        public CheckConstraintBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public CheckConstraintBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public CheckConstraintBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public CheckConstraintBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public CheckConstraintBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -149,22 +77,18 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _expressionDelegate = new (() => new System.Text.StringBuilder());
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Expression = string.Empty;
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public CheckConstraintBuilder(ModelFramework.Database.Contracts.ICheckConstraint source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _expressionDelegate = new (() => new System.Text.StringBuilder(source.Expression));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Expression = source.Expression;
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _expressionDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

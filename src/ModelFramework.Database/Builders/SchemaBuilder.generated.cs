@@ -35,16 +35,10 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -57,7 +51,7 @@ namespace ModelFramework.Database.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.Schema(Tables.Select(x => x.Build()), StoredProcedures.Select(x => x.Build()), Views.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -95,39 +89,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public SchemaBuilder WithName(System.Text.StringBuilder name)
+        public SchemaBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public SchemaBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public SchemaBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public SchemaBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public SchemaBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -155,7 +119,7 @@ namespace ModelFramework.Database.Builders
             Views = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -168,11 +132,9 @@ namespace ModelFramework.Database.Builders
             Tables.AddRange(source.Tables.Select(x => new ModelFramework.Database.Builders.TableBuilder(x)));
             StoredProcedures.AddRange(source.StoredProcedures.Select(x => new ModelFramework.Database.Builders.StoredProcedureBuilder(x)));
             Views.AddRange(source.Views.Select(x => new ModelFramework.Database.Builders.ViewBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

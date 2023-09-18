@@ -25,38 +25,20 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get
-            {
-                return _staticDelegate.Value;
-            }
-            set
-            {
-                _staticDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Sealed
         {
-            get
-            {
-                return _sealedDelegate.Value;
-            }
-            set
-            {
-                _sealedDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Abstract
         {
-            get
-            {
-                return _abstractDelegate.Value;
-            }
-            set
-            {
-                _abstractDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder> SubClasses
@@ -71,28 +53,16 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder BaseClass
+        public string BaseClass
         {
-            get
-            {
-                return _baseClassDelegate.Value;
-            }
-            set
-            {
-                _baseClassDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Record
         {
-            get
-            {
-                return _recordDelegate.Value;
-            }
-            set
-            {
-                _recordDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder> Enums
@@ -105,7 +75,7 @@ namespace ModelFramework.Objects.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, Abstract, SubClasses.Select(x => x.BuildTyped()), Constructors.Select(x => x.Build()), BaseClass?.ToString(), Record, Namespace?.ToString(), Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name?.ToString(), Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
+            return new ModelFramework.Objects.Class(Fields.Select(x => x.Build()), Static, Sealed, Abstract, SubClasses.Select(x => x.BuildTyped()), Constructors.Select(x => x.Build()), BaseClass, Record, Namespace, Partial, new CrossCutting.Common.ValueCollection<System.String>(Interfaces), Properties.Select(x => x.Build()), Methods.Select(x => x.Build()), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArguments), new CrossCutting.Common.ValueCollection<System.String>(GenericTypeArgumentConstraints), Metadata.Select(x => x.Build()), Visibility, Name, Attributes.Select(x => x.Build()), Enums.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -127,33 +97,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithStatic(System.Func<bool> staticDelegate)
-        {
-            _staticDelegate = new (@staticDelegate);
-            return this;
-        }
-
         public ClassBuilder WithSealed(bool @sealed = true)
         {
             Sealed = @sealed;
             return this;
         }
 
-        public ClassBuilder WithSealed(System.Func<bool> sealedDelegate)
-        {
-            _sealedDelegate = new (@sealedDelegate);
-            return this;
-        }
-
         public ClassBuilder WithAbstract(bool @abstract = true)
         {
             Abstract = @abstract;
-            return this;
-        }
-
-        public ClassBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
             return this;
         }
 
@@ -179,51 +131,15 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassBuilder WithBaseClass(System.Text.StringBuilder baseClass)
+        public ClassBuilder WithBaseClass(string baseClass)
         {
             BaseClass = baseClass;
-            return this;
-        }
-
-        public ClassBuilder WithBaseClass(System.Func<System.Text.StringBuilder> baseClassDelegate)
-        {
-            _baseClassDelegate = new (baseClassDelegate);
-            return this;
-        }
-
-        public ClassBuilder WithBaseClass(string value)
-        {
-            if (BaseClass == null)
-                BaseClass = new System.Text.StringBuilder();
-            BaseClass.Clear().Append(value);
-            return this;
-        }
-
-        public ClassBuilder AppendToBaseClass(string value)
-        {
-            if (BaseClass == null)
-                BaseClass = new System.Text.StringBuilder();
-            BaseClass.Append(value);
-            return this;
-        }
-
-        public ClassBuilder AppendLineToBaseClass(string value)
-        {
-            if (BaseClass == null)
-                BaseClass = new System.Text.StringBuilder();
-            BaseClass.AppendLine(value);
             return this;
         }
 
         public ClassBuilder WithRecord(bool record = true)
         {
             Record = record;
-            return this;
-        }
-
-        public ClassBuilder WithRecord(System.Func<bool> recordDelegate)
-        {
-            _recordDelegate = new (recordDelegate);
             return this;
         }
 
@@ -245,11 +161,11 @@ namespace ModelFramework.Objects.Builders
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _staticDelegate = new (() => default(bool)!);
-            _sealedDelegate = new (() => default(bool)!);
-            _abstractDelegate = new (() => default(bool)!);
-            _baseClassDelegate = new (() => new System.Text.StringBuilder());
-            _recordDelegate = new (() => default(bool)!);
+            Static = default(System.Boolean);
+            Sealed = default(System.Boolean);
+            Abstract = default(System.Boolean);
+            BaseClass = string.Empty;
+            Record = default(System.Boolean);
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -260,25 +176,15 @@ namespace ModelFramework.Objects.Builders
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Objects.Builders.ClassFieldBuilder(x)));
-            _staticDelegate = new (() => source.Static);
-            _sealedDelegate = new (() => source.Sealed);
-            _abstractDelegate = new (() => source.Abstract);
+            Static = source.Static;
+            Sealed = source.Sealed;
+            Abstract = source.Abstract;
             SubClasses.AddRange(source.SubClasses.Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)));
             Constructors.AddRange(source.Constructors.Select(x => new ModelFramework.Objects.Builders.ClassConstructorBuilder(x)));
-            _baseClassDelegate = new (() => new System.Text.StringBuilder(source.BaseClass));
-            _recordDelegate = new (() => source.Record);
+            BaseClass = source.BaseClass;
+            Record = source.Record;
             Enums.AddRange(source.Enums.Select(x => new ModelFramework.Objects.Builders.EnumBuilder(x)));
         }
-
-        protected System.Lazy<bool> _staticDelegate;
-
-        protected System.Lazy<bool> _sealedDelegate;
-
-        protected System.Lazy<bool> _abstractDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _baseClassDelegate;
-
-        protected System.Lazy<bool> _recordDelegate;
     }
 #nullable restore
 }

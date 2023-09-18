@@ -17,16 +17,10 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public partial class ClassConstructorBuilder
     {
-        public System.Text.StringBuilder ChainCall
+        public string ChainCall
         {
-            get
-            {
-                return _chainCallDelegate.Value;
-            }
-            set
-            {
-                _chainCallDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -37,74 +31,38 @@ namespace ModelFramework.Objects.Builders
 
         public bool Static
         {
-            get
-            {
-                return _staticDelegate.Value;
-            }
-            set
-            {
-                _staticDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Virtual
         {
-            get
-            {
-                return _virtualDelegate.Value;
-            }
-            set
-            {
-                _virtualDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Abstract
         {
-            get
-            {
-                return _abstractDelegate.Value;
-            }
-            set
-            {
-                _abstractDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Protected
         {
-            get
-            {
-                return _protectedDelegate.Value;
-            }
-            set
-            {
-                _protectedDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Override
         {
-            get
-            {
-                return _overrideDelegate.Value;
-            }
-            set
-            {
-                _overrideDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get
-            {
-                return _visibilityDelegate.Value;
-            }
-            set
-            {
-                _visibilityDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -129,44 +87,14 @@ namespace ModelFramework.Objects.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.ClassConstructor(ChainCall?.ToString(), Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
+            return new ModelFramework.Objects.ClassConstructor(ChainCall, Metadata.Select(x => x.Build()), Static, Virtual, Abstract, Protected, Override, Visibility, Attributes.Select(x => x.Build()), CodeStatements.Select(x => x.Build()), Parameters.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ClassConstructorBuilder WithChainCall(System.Text.StringBuilder chainCall)
+        public ClassConstructorBuilder WithChainCall(string chainCall)
         {
             ChainCall = chainCall;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithChainCall(System.Func<System.Text.StringBuilder> chainCallDelegate)
-        {
-            _chainCallDelegate = new (chainCallDelegate);
-            return this;
-        }
-
-        public ClassConstructorBuilder WithChainCall(string value)
-        {
-            if (ChainCall == null)
-                ChainCall = new System.Text.StringBuilder();
-            ChainCall.Clear().Append(value);
-            return this;
-        }
-
-        public ClassConstructorBuilder AppendToChainCall(string value)
-        {
-            if (ChainCall == null)
-                ChainCall = new System.Text.StringBuilder();
-            ChainCall.Append(value);
-            return this;
-        }
-
-        public ClassConstructorBuilder AppendLineToChainCall(string value)
-        {
-            if (ChainCall == null)
-                ChainCall = new System.Text.StringBuilder();
-            ChainCall.AppendLine(value);
             return this;
         }
 
@@ -193,21 +121,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithStatic(System.Func<bool> staticDelegate)
-        {
-            _staticDelegate = new (@staticDelegate);
-            return this;
-        }
-
         public ClassConstructorBuilder WithVirtual(bool @virtual = true)
         {
             Virtual = @virtual;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithVirtual(System.Func<bool> virtualDelegate)
-        {
-            _virtualDelegate = new (@virtualDelegate);
             return this;
         }
 
@@ -217,21 +133,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithAbstract(System.Func<bool> abstractDelegate)
-        {
-            _abstractDelegate = new (@abstractDelegate);
-            return this;
-        }
-
         public ClassConstructorBuilder WithProtected(bool @protected = true)
         {
             Protected = @protected;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithProtected(System.Func<bool> protectedDelegate)
-        {
-            _protectedDelegate = new (@protectedDelegate);
             return this;
         }
 
@@ -241,21 +145,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public ClassConstructorBuilder WithOverride(System.Func<bool> overrideDelegate)
-        {
-            _overrideDelegate = new (@overrideDelegate);
-            return this;
-        }
-
         public ClassConstructorBuilder WithVisibility(ModelFramework.Objects.Contracts.Visibility visibility)
         {
             Visibility = visibility;
-            return this;
-        }
-
-        public ClassConstructorBuilder WithVisibility(System.Func<ModelFramework.Objects.Contracts.Visibility> visibilityDelegate)
-        {
-            _visibilityDelegate = new (visibilityDelegate);
             return this;
         }
 
@@ -335,13 +227,13 @@ namespace ModelFramework.Objects.Builders
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _chainCallDelegate = new (() => new System.Text.StringBuilder());
-            _staticDelegate = new (() => default(bool)!);
-            _virtualDelegate = new (() => default(bool)!);
-            _abstractDelegate = new (() => default(bool)!);
-            _protectedDelegate = new (() => default(bool)!);
-            _overrideDelegate = new (() => default(bool)!);
-            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
+            ChainCall = string.Empty;
+            Static = default(System.Boolean);
+            Virtual = default(System.Boolean);
+            Abstract = default(System.Boolean);
+            Protected = default(System.Boolean);
+            Override = default(System.Boolean);
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -351,32 +243,18 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            _chainCallDelegate = new (() => new System.Text.StringBuilder(source.ChainCall));
+            ChainCall = source.ChainCall;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _staticDelegate = new (() => source.Static);
-            _virtualDelegate = new (() => source.Virtual);
-            _abstractDelegate = new (() => source.Abstract);
-            _protectedDelegate = new (() => source.Protected);
-            _overrideDelegate = new (() => source.Override);
-            _visibilityDelegate = new (() => source.Visibility);
+            Static = source.Static;
+            Virtual = source.Virtual;
+            Abstract = source.Abstract;
+            Protected = source.Protected;
+            Override = source.Override;
+            Visibility = source.Visibility;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
             CodeStatements.AddRange(source.CodeStatements.Select(x => x.CreateBuilder()));
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.ParameterBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _chainCallDelegate;
-
-        protected System.Lazy<bool> _staticDelegate;
-
-        protected System.Lazy<bool> _virtualDelegate;
-
-        protected System.Lazy<bool> _abstractDelegate;
-
-        protected System.Lazy<bool> _protectedDelegate;
-
-        protected System.Lazy<bool> _overrideDelegate;
-
-        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
     }
 #nullable restore
 }

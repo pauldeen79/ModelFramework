@@ -23,16 +23,10 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -41,23 +35,17 @@ namespace ModelFramework.Database.Builders
             set;
         }
 
-        public System.Text.StringBuilder FileGroupName
+        public string FileGroupName
         {
-            get
-            {
-                return _fileGroupNameDelegate.Value;
-            }
-            set
-            {
-                _fileGroupNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Database.Contracts.IUniqueConstraint Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.UniqueConstraint(Fields.Select(x => x.Build()), Name?.ToString(), Metadata.Select(x => x.Build()), FileGroupName?.ToString());
+            return new ModelFramework.Database.UniqueConstraint(Fields.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()), FileGroupName);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -73,39 +61,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public UniqueConstraintBuilder WithName(System.Text.StringBuilder name)
+        public UniqueConstraintBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public UniqueConstraintBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public UniqueConstraintBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public UniqueConstraintBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public UniqueConstraintBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -126,39 +84,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public UniqueConstraintBuilder WithFileGroupName(System.Text.StringBuilder fileGroupName)
+        public UniqueConstraintBuilder WithFileGroupName(string fileGroupName)
         {
             FileGroupName = fileGroupName;
-            return this;
-        }
-
-        public UniqueConstraintBuilder WithFileGroupName(System.Func<System.Text.StringBuilder> fileGroupNameDelegate)
-        {
-            _fileGroupNameDelegate = new (fileGroupNameDelegate);
-            return this;
-        }
-
-        public UniqueConstraintBuilder WithFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.Clear().Append(value);
-            return this;
-        }
-
-        public UniqueConstraintBuilder AppendToFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.Append(value);
-            return this;
-        }
-
-        public UniqueConstraintBuilder AppendLineToFileGroupName(string value)
-        {
-            if (FileGroupName == null)
-                FileGroupName = new System.Text.StringBuilder();
-            FileGroupName.AppendLine(value);
             return this;
         }
 
@@ -167,8 +95,8 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _nameDelegate = new (() => new System.Text.StringBuilder());
-            _fileGroupNameDelegate = new (() => new System.Text.StringBuilder());
+            Name = string.Empty;
+            FileGroupName = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -177,14 +105,10 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.UniqueConstraintFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Fields.AddRange(source.Fields.Select(x => new ModelFramework.Database.Builders.UniqueConstraintFieldBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _fileGroupNameDelegate = new (() => new System.Text.StringBuilder(source.FileGroupName));
+            FileGroupName = source.FileGroupName;
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _fileGroupNameDelegate;
     }
 #nullable restore
 }

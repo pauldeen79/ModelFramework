@@ -17,28 +17,16 @@ namespace ModelFramework.Objects.Builders
 #nullable enable
     public abstract partial class TypeBaseBuilder
     {
-        public System.Text.StringBuilder Namespace
+        public string Namespace
         {
-            get
-            {
-                return _namespaceDelegate.Value;
-            }
-            set
-            {
-                _namespaceDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public bool Partial
         {
-            get
-            {
-                return _partialDelegate.Value;
-            }
-            set
-            {
-                _partialDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<string> Interfaces
@@ -79,26 +67,14 @@ namespace ModelFramework.Objects.Builders
 
         public ModelFramework.Objects.Contracts.Visibility Visibility
         {
-            get
-            {
-                return _visibilityDelegate.Value;
-            }
-            set
-            {
-                _visibilityDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -119,10 +95,10 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _namespaceDelegate = new (() => new System.Text.StringBuilder());
-            _partialDelegate = new (() => default(bool)!);
-            _visibilityDelegate = new (() => ModelFramework.Objects.Contracts.Visibility.Public);
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Namespace = string.Empty;
+            Partial = default(System.Boolean);
+            Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -135,26 +111,18 @@ namespace ModelFramework.Objects.Builders
             GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            _namespaceDelegate = new (() => new System.Text.StringBuilder(source.Namespace));
-            _partialDelegate = new (() => source.Partial);
+            Namespace = source.Namespace;
+            Partial = source.Partial;
             Interfaces.AddRange(source.Interfaces);
             Properties.AddRange(source.Properties.Select(x => new ModelFramework.Objects.Builders.ClassPropertyBuilder(x)));
             Methods.AddRange(source.Methods.Select(x => new ModelFramework.Objects.Builders.ClassMethodBuilder(x)));
             GenericTypeArguments.AddRange(source.GenericTypeArguments);
             GenericTypeArgumentConstraints.AddRange(source.GenericTypeArgumentConstraints);
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _visibilityDelegate = new (() => source.Visibility);
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Visibility = source.Visibility;
+            Name = source.Name;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _namespaceDelegate;
-
-        protected System.Lazy<bool> _partialDelegate;
-
-        protected System.Lazy<ModelFramework.Objects.Contracts.Visibility> _visibilityDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

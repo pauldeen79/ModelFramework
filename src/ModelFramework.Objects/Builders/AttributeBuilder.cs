@@ -48,7 +48,7 @@ public partial class AttributeBuilder
 
     public AttributeBuilder(Type type) : this()
     {
-        Name.Append(type.FullName);
+        Name = type.FullName;
     }
 
     public AttributeBuilder(System.Attribute source, Func<System.Attribute, AttributeBuilder?>? initializeDelegate = null) : this()
@@ -64,7 +64,7 @@ public partial class AttributeBuilder
         }
         else
         {
-            Name.Append(source.GetType().FullName);
+            Name = source.GetType().FullName;
         }
     }
 

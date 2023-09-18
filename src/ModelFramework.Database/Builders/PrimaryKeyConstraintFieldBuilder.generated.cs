@@ -19,26 +19,14 @@ namespace ModelFramework.Database.Builders
     {
         public bool IsDescending
         {
-            get
-            {
-                return _isDescendingDelegate.Value;
-            }
-            set
-            {
-                _isDescendingDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -51,7 +39,7 @@ namespace ModelFramework.Database.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.PrimaryKeyConstraintField(IsDescending, Name?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.PrimaryKeyConstraintField(IsDescending, Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -62,45 +50,9 @@ namespace ModelFramework.Database.Builders
             return this;
         }
 
-        public PrimaryKeyConstraintFieldBuilder WithIsDescending(System.Func<bool> isDescendingDelegate)
-        {
-            _isDescendingDelegate = new (isDescendingDelegate);
-            return this;
-        }
-
-        public PrimaryKeyConstraintFieldBuilder WithName(System.Text.StringBuilder name)
+        public PrimaryKeyConstraintFieldBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public PrimaryKeyConstraintFieldBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public PrimaryKeyConstraintFieldBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public PrimaryKeyConstraintFieldBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public PrimaryKeyConstraintFieldBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -125,22 +77,18 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _isDescendingDelegate = new (() => default(bool)!);
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            IsDescending = default(System.Boolean);
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public PrimaryKeyConstraintFieldBuilder(ModelFramework.Database.Contracts.IPrimaryKeyConstraintField source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _isDescendingDelegate = new (() => source.IsDescending);
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            IsDescending = source.IsDescending;
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<bool> _isDescendingDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

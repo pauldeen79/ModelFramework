@@ -29,23 +29,17 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public ModelFramework.Objects.Contracts.IAttribute Build()
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name?.ToString());
+            return new ModelFramework.Objects.Attribute(Parameters.Select(x => x.Build()), Metadata.Select(x => x.Build()), Name);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -78,39 +72,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public AttributeBuilder WithName(System.Text.StringBuilder name)
+        public AttributeBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public AttributeBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public AttributeBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public AttributeBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public AttributeBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -119,7 +83,7 @@ namespace ModelFramework.Objects.Builders
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -129,10 +93,8 @@ namespace ModelFramework.Objects.Builders
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Parameters.AddRange(source.Parameters.Select(x => new ModelFramework.Objects.Builders.AttributeParameterBuilder(x)));
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Name = source.Name;
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

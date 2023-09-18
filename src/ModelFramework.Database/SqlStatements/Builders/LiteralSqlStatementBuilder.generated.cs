@@ -17,16 +17,10 @@ namespace ModelFramework.Database.SqlStatements.Builders
 #nullable enable
     public partial class LiteralSqlStatementBuilder : ModelFramework.Database.Contracts.ISqlStatementBuilder
     {
-        public System.Text.StringBuilder Statement
+        public string Statement
         {
-            get
-            {
-                return _statementDelegate.Value;
-            }
-            set
-            {
-                _statementDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -39,44 +33,14 @@ namespace ModelFramework.Database.SqlStatements.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.SqlStatements.LiteralSqlStatement(Statement, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public LiteralSqlStatementBuilder WithStatement(System.Text.StringBuilder statement)
+        public LiteralSqlStatementBuilder WithStatement(string statement)
         {
             Statement = statement;
-            return this;
-        }
-
-        public LiteralSqlStatementBuilder WithStatement(System.Func<System.Text.StringBuilder> statementDelegate)
-        {
-            _statementDelegate = new (statementDelegate);
-            return this;
-        }
-
-        public LiteralSqlStatementBuilder WithStatement(string value)
-        {
-            if (Statement == null)
-                Statement = new System.Text.StringBuilder();
-            Statement.Clear().Append(value);
-            return this;
-        }
-
-        public LiteralSqlStatementBuilder AppendToStatement(string value)
-        {
-            if (Statement == null)
-                Statement = new System.Text.StringBuilder();
-            Statement.Append(value);
-            return this;
-        }
-
-        public LiteralSqlStatementBuilder AppendLineToStatement(string value)
-        {
-            if (Statement == null)
-                Statement = new System.Text.StringBuilder();
-            Statement.AppendLine(value);
             return this;
         }
 
@@ -101,18 +65,16 @@ namespace ModelFramework.Database.SqlStatements.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _statementDelegate = new (() => new System.Text.StringBuilder());
+            Statement = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public LiteralSqlStatementBuilder(ModelFramework.Database.SqlStatements.LiteralSqlStatement source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _statementDelegate = new (() => new System.Text.StringBuilder(source.Statement));
+            Statement = source.Statement;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _statementDelegate;
     }
 #nullable restore
 }

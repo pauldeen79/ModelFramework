@@ -17,52 +17,28 @@ namespace ModelFramework.Database.Builders
 #nullable enable
     public partial class ViewSourceBuilder
     {
-        public System.Text.StringBuilder Alias
+        public string Alias
         {
-            get
-            {
-                return _aliasDelegate.Value;
-            }
-            set
-            {
-                _aliasDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder SourceSchemaName
+        public string SourceSchemaName
         {
-            get
-            {
-                return _sourceSchemaNameDelegate.Value;
-            }
-            set
-            {
-                _sourceSchemaNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder SourceObjectName
+        public string SourceObjectName
         {
-            get
-            {
-                return _sourceObjectNameDelegate.Value;
-            }
-            set
-            {
-                _sourceObjectNameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -75,152 +51,32 @@ namespace ModelFramework.Database.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Database.ViewSource(Alias?.ToString(), SourceSchemaName?.ToString(), SourceObjectName?.ToString(), Name?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Database.ViewSource(Alias, SourceSchemaName, SourceObjectName, Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
 
-        public ViewSourceBuilder WithAlias(System.Text.StringBuilder alias)
+        public ViewSourceBuilder WithAlias(string alias)
         {
             Alias = alias;
             return this;
         }
 
-        public ViewSourceBuilder WithAlias(System.Func<System.Text.StringBuilder> aliasDelegate)
-        {
-            _aliasDelegate = new (aliasDelegate);
-            return this;
-        }
-
-        public ViewSourceBuilder WithAlias(string value)
-        {
-            if (Alias == null)
-                Alias = new System.Text.StringBuilder();
-            Alias.Clear().Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendToAlias(string value)
-        {
-            if (Alias == null)
-                Alias = new System.Text.StringBuilder();
-            Alias.Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendLineToAlias(string value)
-        {
-            if (Alias == null)
-                Alias = new System.Text.StringBuilder();
-            Alias.AppendLine(value);
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceSchemaName(System.Text.StringBuilder sourceSchemaName)
+        public ViewSourceBuilder WithSourceSchemaName(string sourceSchemaName)
         {
             SourceSchemaName = sourceSchemaName;
             return this;
         }
 
-        public ViewSourceBuilder WithSourceSchemaName(System.Func<System.Text.StringBuilder> sourceSchemaNameDelegate)
-        {
-            _sourceSchemaNameDelegate = new (sourceSchemaNameDelegate);
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceSchemaName(string value)
-        {
-            if (SourceSchemaName == null)
-                SourceSchemaName = new System.Text.StringBuilder();
-            SourceSchemaName.Clear().Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendToSourceSchemaName(string value)
-        {
-            if (SourceSchemaName == null)
-                SourceSchemaName = new System.Text.StringBuilder();
-            SourceSchemaName.Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendLineToSourceSchemaName(string value)
-        {
-            if (SourceSchemaName == null)
-                SourceSchemaName = new System.Text.StringBuilder();
-            SourceSchemaName.AppendLine(value);
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceObjectName(System.Text.StringBuilder sourceObjectName)
+        public ViewSourceBuilder WithSourceObjectName(string sourceObjectName)
         {
             SourceObjectName = sourceObjectName;
             return this;
         }
 
-        public ViewSourceBuilder WithSourceObjectName(System.Func<System.Text.StringBuilder> sourceObjectNameDelegate)
-        {
-            _sourceObjectNameDelegate = new (sourceObjectNameDelegate);
-            return this;
-        }
-
-        public ViewSourceBuilder WithSourceObjectName(string value)
-        {
-            if (SourceObjectName == null)
-                SourceObjectName = new System.Text.StringBuilder();
-            SourceObjectName.Clear().Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendToSourceObjectName(string value)
-        {
-            if (SourceObjectName == null)
-                SourceObjectName = new System.Text.StringBuilder();
-            SourceObjectName.Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendLineToSourceObjectName(string value)
-        {
-            if (SourceObjectName == null)
-                SourceObjectName = new System.Text.StringBuilder();
-            SourceObjectName.AppendLine(value);
-            return this;
-        }
-
-        public ViewSourceBuilder WithName(System.Text.StringBuilder name)
+        public ViewSourceBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public ViewSourceBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public ViewSourceBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public ViewSourceBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -245,30 +101,22 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _aliasDelegate = new (() => new System.Text.StringBuilder());
-            _sourceSchemaNameDelegate = new (() => new System.Text.StringBuilder());
-            _sourceObjectNameDelegate = new (() => new System.Text.StringBuilder());
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Alias = string.Empty;
+            SourceSchemaName = string.Empty;
+            SourceObjectName = string.Empty;
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewSourceBuilder(ModelFramework.Database.Contracts.IViewSource source)
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _aliasDelegate = new (() => new System.Text.StringBuilder(source.Alias));
-            _sourceSchemaNameDelegate = new (() => new System.Text.StringBuilder(source.SourceSchemaName));
-            _sourceObjectNameDelegate = new (() => new System.Text.StringBuilder(source.SourceObjectName));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Alias = source.Alias;
+            SourceSchemaName = source.SourceSchemaName;
+            SourceObjectName = source.SourceObjectName;
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<System.Text.StringBuilder> _aliasDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _sourceSchemaNameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _sourceObjectNameDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }

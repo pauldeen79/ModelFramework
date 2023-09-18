@@ -19,14 +19,8 @@ namespace ModelFramework.Objects.Builders
     {
         public object? Value
         {
-            get
-            {
-                return _valueDelegate.Value;
-            }
-            set
-            {
-                _valueDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder> Attributes
@@ -35,16 +29,10 @@ namespace ModelFramework.Objects.Builders
             set;
         }
 
-        public System.Text.StringBuilder Name
+        public string Name
         {
-            get
-            {
-                return _nameDelegate.Value;
-            }
-            set
-            {
-                _nameDelegate = new (() => value);
-            }
+            get;
+            set;
         }
 
         public System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder> Metadata
@@ -57,7 +45,7 @@ namespace ModelFramework.Objects.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name?.ToString(), Metadata.Select(x => x.Build()));
+            return new ModelFramework.Objects.EnumMember(Value, Attributes.Select(x => x.Build()), Name, Metadata.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -65,12 +53,6 @@ namespace ModelFramework.Objects.Builders
         public EnumMemberBuilder WithValue(object? value)
         {
             Value = value;
-            return this;
-        }
-
-        public EnumMemberBuilder WithValue(System.Func<object?> valueDelegate)
-        {
-            _valueDelegate = new (valueDelegate);
             return this;
         }
 
@@ -85,39 +67,9 @@ namespace ModelFramework.Objects.Builders
             return this;
         }
 
-        public EnumMemberBuilder WithName(System.Text.StringBuilder name)
+        public EnumMemberBuilder WithName(string name)
         {
             Name = name;
-            return this;
-        }
-
-        public EnumMemberBuilder WithName(System.Func<System.Text.StringBuilder> nameDelegate)
-        {
-            _nameDelegate = new (nameDelegate);
-            return this;
-        }
-
-        public EnumMemberBuilder WithName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Clear().Append(value);
-            return this;
-        }
-
-        public EnumMemberBuilder AppendToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.Append(value);
-            return this;
-        }
-
-        public EnumMemberBuilder AppendLineToName(string value)
-        {
-            if (Name == null)
-                Name = new System.Text.StringBuilder();
-            Name.AppendLine(value);
             return this;
         }
 
@@ -143,8 +95,7 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             #pragma warning disable CS8603 // Possible null reference return.
-            _valueDelegate = new (() => default(object?));
-            _nameDelegate = new (() => new System.Text.StringBuilder());
+            Name = string.Empty;
             #pragma warning restore CS8603 // Possible null reference return.
         }
 
@@ -152,15 +103,11 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            _valueDelegate = new (() => source.Value);
+            Value = source.Value;
             Attributes.AddRange(source.Attributes.Select(x => new ModelFramework.Objects.Builders.AttributeBuilder(x)));
-            _nameDelegate = new (() => new System.Text.StringBuilder(source.Name));
+            Name = source.Name;
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
         }
-
-        protected System.Lazy<object?> _valueDelegate;
-
-        protected System.Lazy<System.Text.StringBuilder> _nameDelegate;
     }
 #nullable restore
 }
