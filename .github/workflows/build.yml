@@ -29,8 +29,10 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore
         run: dotnet restore
+      - name: Build code generation
+        run: dotnet build --project src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
       - name: Run code generation
-        run: dotnet run --project src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
+        run: dotnet src/ClassFramework.CodeGeneration/bin/Release/net7.0/ClassFramework.CodeGeneration.dll
       - name: Build
         run: dotnet build -c Release --no-restore
       - name: Test
@@ -78,7 +80,8 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet run --project src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
+          dotnet build --project src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
+          dotnet src/ClassFramework.CodeGeneration/bin/Release/net7.0/ClassFramework.CodeGeneration.dll
           dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
         run: |
