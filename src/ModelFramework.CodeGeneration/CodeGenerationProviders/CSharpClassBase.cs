@@ -611,28 +611,29 @@ public abstract class CSharpClassBase : ClassBase
                 .AddFields(new ClassFieldBuilder()
                     .WithName("registeredTypes")
                     .WithStatic()
-                    .WithTypeName($"Dictionary<Type,Func<{namespaceSettings.ClassTypeName},{namespaceSettings.BuilderTypeName}>>")
+                    .WithTypeName($"Dictionary<{typeof(Type).FullName},Func<{namespaceSettings.ClassTypeName},{namespaceSettings.BuilderTypeName}>>")
                     .WithDefaultValue(GetBuilderFactoryModelDefaultValue(models, namespaceSettings.BuilderNamespace, namespaceSettings.ClassTypeName, namespaceSettings.BuilderTypeName, namespaceSettings.OverrideClassNamespace))
                 )
-                .AddMethods(new ClassMethodBuilder()
-                    .WithName("Create")
-                    .WithTypeName($"{namespaceSettings.ClassNamespace}.{namespaceSettings.BuilderTypeName}")
-                    .WithStatic()
-                    .AddParameter("instance", namespaceSettings.ClassTypeName)
-                    .With(x =>
-                    {
-                        if (!string.IsNullOrEmpty(createLiteralCodeStatement))
-                        {
-                            x.AddLiteralCodeStatements(createLiteralCodeStatement!);
-                        }
-                    })
-                    .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new " + typeof(ArgumentOutOfRangeException).FullName + "(\"Unknown instance type: \" + instance.GetType().FullName);"),
+                .AddMethods(
                     new ClassMethodBuilder()
-                    .WithStatic()
-                    .WithName("Register")
-                    .AddParameter("type", typeof(Type))
-                    .AddParameter("createDelegate", $"Func<{namespaceSettings.ClassTypeName},{namespaceSettings.BuilderTypeName}>")
-                    .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
+                        .WithName("Create")
+                        .WithTypeName($"{namespaceSettings.ClassNamespace}.{namespaceSettings.BuilderTypeName}")
+                        .WithStatic()
+                        .AddParameter("instance", namespaceSettings.ClassTypeName)
+                        .With(x =>
+                        {
+                            if (!string.IsNullOrEmpty(createLiteralCodeStatement))
+                            {
+                                x.AddLiteralCodeStatements(createLiteralCodeStatement!);
+                            }
+                        })
+                        .AddLiteralCodeStatements("return registeredTypes.ContainsKey(instance.GetType()) ? registeredTypes[instance.GetType()].Invoke(instance) : throw new " + typeof(ArgumentOutOfRangeException).FullName + "(\"Unknown instance type: \" + instance.GetType().FullName);"),
+                    new ClassMethodBuilder()
+                        .WithStatic()
+                        .WithName("Register")
+                        .AddParameter("type", typeof(Type))
+                        .AddParameter("createDelegate", $"Func<{namespaceSettings.ClassTypeName},{namespaceSettings.BuilderTypeName}>")
+                        .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
                 )
                 .Build()
         };
@@ -828,7 +829,7 @@ public abstract class CSharpClassBase : ClassBase
         return new("new " + ReplaceWithBuilderNamespaces(typeName) + $"{BuilderName}()");
     }
 
-    private IEnumerable<Type> GetPureAbstractModels()
+    protected virtual IEnumerable<Type> GetPureAbstractModels()
         => GetType().Assembly.GetExportedTypes()
             .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Length == 1)
             .Select(x => x.GetInterfaces()[0])
@@ -842,7 +843,7 @@ public abstract class CSharpClassBase : ClassBase
         string overrideClassNamespace)
     {
         var builder = new StringBuilder();
-        builder.AppendLine($"new Dictionary<Type, Func<{classTypeName}, {builderTypeName}>>")
+        builder.AppendLine($"new Dictionary<{typeof(Type).FullName}, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("        {");
         // note that generic types are skipped here. you need to fill createLiteralCodeStatement to handle these ones
         foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
