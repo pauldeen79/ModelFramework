@@ -1171,7 +1171,7 @@ namespace MyNamespace.Domain.Builders
             registeredTypes.Add(type, createDelegate);
         }
 
-        private static Dictionary<Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
+        private static Dictionary<System.Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<System.Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
         {
             { typeof(MyNamespace.Domain.MyDerivedClass),x => new MyNamespace.Domain.Builders.MyClass.MyDerivedClassBuilder((MyNamespace.Domain.MyDerivedClass)x) },
         };
@@ -1217,7 +1217,7 @@ namespace MyNamespace.Domain.Builders
             registeredTypes.Add(type, createDelegate);
         }
 
-        private static Dictionary<Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
+        private static Dictionary<System.Type,Func<MyNamespace.Domain.MyClass,MyClassBuilder>> registeredTypes = new Dictionary<System.Type, Func<MyNamespace.Domain.MyClass, MyClassBuilder>>
         {
             { typeof(MyNamespace.Domain.MyDerivedClass),x => new MyNamespace.Domain.Builders.MyClass.MyDerivedClassBuilder((MyNamespace.Domain.MyDerivedClass)x) },
         };
