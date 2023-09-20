@@ -1022,7 +1022,7 @@ namespace MyNamespace.Domain.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children);
+            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }

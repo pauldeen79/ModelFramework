@@ -329,6 +329,7 @@ public abstract class CSharpClassBase : ClassBase
         )
         .WithNamespace(@namespace)
         .WithName(type.GetEntityClassName())
+        .With(x => x.Properties.ForEach(y => GetModelMappings().Where(x => !x.Key.EndsWith(".Contracts", StringComparison.InvariantCulture)).ToList().ForEach(m => y.TypeName = y.TypeName.Replace(m.Key, m.Value))))
         .With(x => FixImmutableClassProperties(x))
         .With(x => Visit(x))
         .BuildTyped();
