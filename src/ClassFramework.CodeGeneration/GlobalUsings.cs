@@ -1,0 +1,17 @@
+﻿global using System;
+global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Linq;
+global using CrossCutting.Common;
+global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
+global using ClassFramework.CodeGeneration.CodeGenerationProviders;
+global using ClassFramework.CodeGeneration.Models.Domains;
+global using ClassFramework.CodeGeneration.Models;
+global using ClassFramework.CodeGeneration.Models.Abstractions;
+global using ModelFramework.CodeGeneration.CodeGenerationProviders;
+global using ModelFramework.Common.Extensions;
+global using ModelFramework.Objects.Extensions;
+global using ModelFramework.Objects.Settings;
+global using TextTemplateTransformationFramework.Runtime;
+global using TextTemplateTransformationFramework.Runtime.CodeGeneration;

@@ -29,10 +29,12 @@ jobs:
           dotnet-version: 7.0.x
       - name: Restore
         run: dotnet restore
+      - name: Run code generation
+        run: dotnet run --project src/ClassFramework.CodeGeneration/ClassFramework.Codegeneration.csproj
       - name: Build
         run: dotnet build -c Release --no-restore
       - name: Test
-        run: dotnet test -c Release
+        run: dotnet test -c Release --no-restore
   #    - name: Pack
   #      if: matrix.os == 'ubuntu-latest'
   #      run: dotnet pack -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
@@ -76,6 +78,7 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
+          dotnet run --project src/ClassFramework.CodeGeneration/ClassFramework.Codegeneration.csproj
           dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
         run: |
