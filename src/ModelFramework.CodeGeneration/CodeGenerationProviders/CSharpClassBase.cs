@@ -701,7 +701,7 @@ public abstract class CSharpClassBase : ClassBase
             : BuilderClassCollectionType.WithoutGenerics();
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
-        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments()))
+        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
             ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
             : null;
 
