@@ -30,7 +30,7 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Build code generation
-        run: dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
+        run: dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
       - name: Run code generation
         run: dotnet src/ClassFramework.CodeGeneration/bin/Release/net7.0/ClassFramework.CodeGeneration.dll
       - name: Build
@@ -80,7 +80,7 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj
+          dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
           dotnet src/ClassFramework.CodeGeneration/bin/Release/net7.0/ClassFramework.CodeGeneration.dll
           dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
