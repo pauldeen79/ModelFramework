@@ -2,5 +2,5 @@
 
 public interface IMetadataContainer
 {
-    IReadOnlyCollection<IMetadata> Metadata { get; }
+    [Required] IReadOnlyCollection<IMetadata> Metadata { get; }
 }

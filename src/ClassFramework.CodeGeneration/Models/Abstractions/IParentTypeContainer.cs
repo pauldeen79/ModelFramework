@@ -2,5 +2,5 @@
 
 public interface IParentTypeContainer
 {
-    string ParentTypeFullName { get; }
+    string? ParentTypeFullName { get; }
 }

@@ -2,5 +2,5 @@
 
 public interface IExplicitInterfaceNameContainer
 {
-    string ExplicitInterfaceName { get; }
+    string? ExplicitInterfaceName { get; }
 }

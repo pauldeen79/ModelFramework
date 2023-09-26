@@ -6,6 +6,6 @@ public interface IClassMethod : IMetadataContainer, IExtendedVisibilityContainer
     bool ExtensionMethod { get; }
     bool Operator { get; }
     bool Async { get; }
-    IReadOnlyCollection<string> GenericTypeArguments { get; }
-    IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
+    [Required] IReadOnlyCollection<string> GenericTypeArguments { get; }
+    [Required] IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
 }

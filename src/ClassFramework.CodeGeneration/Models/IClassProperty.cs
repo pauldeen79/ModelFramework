@@ -8,7 +8,7 @@ public interface IClassProperty : IMetadataContainer, IExtendedVisibilityContain
     Visibility? GetterVisibility { get; }
     Visibility? SetterVisibility { get; }
     Visibility? InitializerVisibility { get; }
-    IReadOnlyCollection<ICodeStatement> GetterCodeStatements { get; }
-    IReadOnlyCollection<ICodeStatement> SetterCodeStatements { get; }
-    IReadOnlyCollection<ICodeStatement> InitializerCodeStatements { get; }
+    [Required] IReadOnlyCollection<ICodeStatement> GetterCodeStatements { get; }
+    [Required] IReadOnlyCollection<ICodeStatement> SetterCodeStatements { get; }
+    [Required] IReadOnlyCollection<ICodeStatement> InitializerCodeStatements { get; }
 }

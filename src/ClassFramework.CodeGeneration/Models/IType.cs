@@ -2,12 +2,12 @@
 
 public interface IType : IMetadataContainer, IVisibilityContainer, INameContainer, IAttributesContainer
 {
-    string Namespace { get; }
+    [Required] string Namespace { get; }
     bool Partial { get; }
-    IReadOnlyCollection<string> Interfaces { get; }
-    IReadOnlyCollection<IClassProperty> Properties { get; }
-    IReadOnlyCollection<IClassMethod> Methods { get; }
-    IReadOnlyCollection<string> GenericTypeArguments { get; }
-    IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
-    IReadOnlyCollection<string> SuppressWarningCodes { get; }
+    [Required] IReadOnlyCollection<string> Interfaces { get; }
+    [Required] IReadOnlyCollection<IClassProperty> Properties { get; }
+    [Required] IReadOnlyCollection<IClassMethod> Methods { get; }
+    [Required] IReadOnlyCollection<string> GenericTypeArguments { get; }
+    [Required] IReadOnlyCollection<string> GenericTypeArgumentConstraints { get; }
+    [Required] IReadOnlyCollection<string> SuppressWarningCodes { get; }
 }

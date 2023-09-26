@@ -2,5 +2,5 @@
 
 public interface IClassConstructor : IMetadataContainer, IExtendedVisibilityContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer
 {
-    string ChainCall { get; }
+    string? ChainCall { get; }
 }

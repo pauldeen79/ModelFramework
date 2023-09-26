@@ -2,5 +2,5 @@
 
 public interface INameContainer
 {
-    string Name { get; }
+    [Required] string Name { get; }
 }

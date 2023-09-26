@@ -2,7 +2,7 @@
 
 public interface ITypeContainer
 {
-    string TypeName { get; }
+    [Required] string TypeName { get; }
     bool IsNullable { get; }
     bool IsValueType { get; }
 }
