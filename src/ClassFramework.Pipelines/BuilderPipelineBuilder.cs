@@ -6,7 +6,7 @@ public class BuilderPipelineBuilder : PipelineBuilder<TypeBuilder, BuilderPipeli
     {
         AddFeatures
         (
-            new BogusFeatureBuilder()
+            new MakePropertiesWritableFeatureBuilder()
         );
     }
 
