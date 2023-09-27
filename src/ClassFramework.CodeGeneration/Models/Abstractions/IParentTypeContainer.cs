@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface IParentTypeContainer
+internal interface IParentTypeContainer
 {
     string? ParentTypeFullName { get; }
 }

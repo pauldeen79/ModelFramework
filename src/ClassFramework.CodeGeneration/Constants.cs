@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.CodeGeneration;
 
-public static class Constants
+internal static class Constants
 {
-    public const string ProjectName = "ClassFramework";
-    public const string TemplateGenerated = ".template.generated";
+    internal const string ProjectName = "ClassFramework";
+    internal const string TemplateGenerated = ".template.generated";
 
-    public static class Namespaces
+    internal static class Namespaces
     {
-        public const string Domain = "ClassFramework.Domain";
-        public const string DomainBuilders = "ClassFramework.Domain.Builders";
-        public const string DomainModels = "ClassFramework.Domain.Models";
+        internal const string Domain = "ClassFramework.Domain";
+        internal const string DomainBuilders = "ClassFramework.Domain.Builders";
+        internal const string DomainModels = "ClassFramework.Domain.Models";
     }
 }

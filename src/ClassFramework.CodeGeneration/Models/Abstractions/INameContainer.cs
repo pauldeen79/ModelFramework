@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface INameContainer
+internal interface INameContainer
 {
     [Required] string Name { get; }
 }

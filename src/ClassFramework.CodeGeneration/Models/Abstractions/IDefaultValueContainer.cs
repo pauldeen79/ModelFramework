@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface IDefaultValueContainer
+internal interface IDefaultValueContainer
 {
     object? DefaultValue { get; }
 }

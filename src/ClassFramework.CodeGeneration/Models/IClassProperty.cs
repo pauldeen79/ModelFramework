@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-public interface IClassProperty : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ITypeContainer, IExplicitInterfaceNameContainer, IParentTypeContainer
+internal interface IClassProperty : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ITypeContainer, IExplicitInterfaceNameContainer, IParentTypeContainer
 {
     bool HasGetter { get; }
     bool HasSetter { get; }

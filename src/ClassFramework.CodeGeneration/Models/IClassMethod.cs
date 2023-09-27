@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-public interface IClassMethod : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer, ITypeContainer, IExplicitInterfaceNameContainer, IParentTypeContainer
+internal interface IClassMethod : IMetadataContainer, IExtendedVisibilityContainer, INameContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer, ITypeContainer, IExplicitInterfaceNameContainer, IParentTypeContainer
 {
     bool Partial { get; }
     bool ExtensionMethod { get; }

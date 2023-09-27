@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-public interface IMetadata : INameContainer
+internal interface IMetadata : INameContainer
 {
     object? Value { get; }
 }

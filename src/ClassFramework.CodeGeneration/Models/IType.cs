@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-public interface IType : IMetadataContainer, IVisibilityContainer, INameContainer, IAttributesContainer
+internal interface IType : IMetadataContainer, IVisibilityContainer, INameContainer, IAttributesContainer
 {
     [Required] string Namespace { get; }
     bool Partial { get; }

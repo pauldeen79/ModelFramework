@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-public interface ICodeStatement : IMetadataContainer
+internal interface ICodeStatement : IMetadataContainer
 {
 }

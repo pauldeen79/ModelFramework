@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Types;
 
-public interface IClass : IType
+internal interface IClass : IType
 {
     [Required] IReadOnlyCollection<IClassField> Fields { get; }
     bool Static { get; }

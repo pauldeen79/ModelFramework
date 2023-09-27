@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface IParametersContainer
+internal interface IParametersContainer
 {
     [Required] IReadOnlyCollection<IParameter> Parameters { get; }
 }

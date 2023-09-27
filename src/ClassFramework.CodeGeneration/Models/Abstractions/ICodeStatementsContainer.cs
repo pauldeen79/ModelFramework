@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface ICodeStatementsContainer
+internal interface ICodeStatementsContainer
 {
     [Required] IReadOnlyCollection<ICodeStatement> CodeStatements { get; }
 }

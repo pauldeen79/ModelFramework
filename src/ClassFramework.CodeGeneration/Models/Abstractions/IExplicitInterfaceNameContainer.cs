@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface IExplicitInterfaceNameContainer
+internal interface IExplicitInterfaceNameContainer
 {
     string? ExplicitInterfaceName { get; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface ITypeContainer
+internal interface ITypeContainer
 {
     [Required] string TypeName { get; }
     bool IsNullable { get; }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-public interface IAttributesContainer
+internal interface IAttributesContainer
 {
     [Required] IReadOnlyCollection<IAttribute> Attributes { get; }
 }

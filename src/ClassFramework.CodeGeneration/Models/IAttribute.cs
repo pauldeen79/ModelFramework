@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models;
 
-public interface IAttribute : IMetadataContainer, INameContainer
+internal interface IAttribute : IMetadataContainer, INameContainer
 {
     [Required] IReadOnlyCollection<IAttributeParameter> Parameters { get; }
 }
