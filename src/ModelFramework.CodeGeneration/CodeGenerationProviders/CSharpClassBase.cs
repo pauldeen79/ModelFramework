@@ -111,7 +111,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     protected virtual string[] GetNonDomainTypes()
-        => GetType().Assembly.GetExportedTypes()
+        => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == CodeGenerationRootNamespace)
             .Select(x => $"{RootNamespace}.{x.Name}")
             .ToArray();
@@ -124,7 +124,7 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ITypeBase[] GetCoreModels()
         => MapCodeGenerationModelsToDomain(
-            GetType().Assembly.GetExportedTypes()
+            GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
 
     protected ITypeBase[] GetAbstractModels()
@@ -135,7 +135,7 @@ public abstract class CSharpClassBase : ClassBase
         Guard.IsNotNull(abstractType);
 
         return MapCodeGenerationModelsToDomain(
-            GetType().Assembly.GetExportedTypes()
+            GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType)));
     }
 
@@ -296,7 +296,7 @@ public abstract class CSharpClassBase : ClassBase
             throw new ArgumentException("Can't get classes from same namespace when the FullName of this type is null. Could not determine namespace.");
         }
 
-        return type.Assembly.GetExportedTypes()
+        return type.Assembly.GetTypes()
             .Where
             (
                 t => t.FullName is not null
@@ -833,7 +833,7 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
-        => GetType().Assembly.GetExportedTypes()
+        => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Length == 1)
             .Select(x => x.GetInterfaces()[0])
             .Distinct();
