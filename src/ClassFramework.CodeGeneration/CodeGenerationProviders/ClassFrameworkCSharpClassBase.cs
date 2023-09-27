@@ -18,14 +18,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
 
-    protected override bool IsMemberValid(ModelFramework.Objects.Contracts.IParentTypeContainer parent, ModelFramework.Objects.Contracts.ITypeBase typeBase)
-        => parent != null
-        && typeBase != null
-        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
-            || (parent.ParentTypeFullName.StartsWith("ClassFramework.CodeGeneration.Models.Abstractions.") && typeBase.Namespace == "ClassFramework.Domain")
-           );
-
     protected override IEnumerable<Type> GetPureAbstractModels()
     {
         yield return typeof(IType);

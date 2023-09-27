@@ -38,7 +38,9 @@ public abstract class CSharpClassBase : ClassBase
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)
             || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parent.ParentTypeFullName.GetClassName())
-            || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}")));
+            || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}"))
+            || (parent.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
+        );
 
     protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => InheritFromInterfaces
