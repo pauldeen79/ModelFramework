@@ -2,4 +2,7 @@
 
 internal enum Visibility
 {
+    Public,
+    Internal,
+    Private
 }
