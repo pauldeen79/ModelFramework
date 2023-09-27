@@ -13,6 +13,5 @@ public class AbstractEntities : ClassFrameworkCSharpClassBase
     public override object CreateModel()
         => GetImmutableClasses(
             GetAbstractModels(),
-            //MapCodeGenerationModelsToDomain(new[] { typeof(ICodeStatement), typeof(IType) }),
             Constants.Namespaces.Domain);
 }

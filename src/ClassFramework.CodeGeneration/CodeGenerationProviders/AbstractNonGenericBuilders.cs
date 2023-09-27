@@ -12,7 +12,6 @@ public class AbstractNonGenericBuilders : ClassFrameworkCSharpClassBase
     public override object CreateModel()
         => GetImmutableNonGenericBuilderClasses(
             GetAbstractModels(),
-            //MapCodeGenerationModelsToDomain(new[] { typeof(ICodeStatement), typeof(IType) }),
             Constants.Namespaces.Domain,
             Constants.Namespaces.DomainBuilders);
 }

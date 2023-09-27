@@ -11,7 +11,6 @@ public class AbstractBuilders : ClassFrameworkCSharpClassBase
     public override object CreateModel()
         => GetImmutableBuilderClasses(
             GetAbstractModels(),
-            //MapCodeGenerationModelsToDomain(new[] { typeof(ICodeStatement), typeof(IType) }),
             Constants.Namespaces.Domain,
             Constants.Namespaces.DomainBuilders);
 }
