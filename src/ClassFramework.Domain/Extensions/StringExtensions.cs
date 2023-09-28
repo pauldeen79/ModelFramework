@@ -14,7 +14,7 @@ public static class StringExtensions
 
     public static string FixTypeName(this string? instance)
     {
-        if (instance == null)
+        if (instance is null)
         {
             return string.Empty;
         }
@@ -142,8 +142,13 @@ public static class StringExtensions
         return value.Substring(open + 1, comma - open - 1);
     }
 
-    public static string Sanitize(this string token)
+    public static string? Sanitize(this string token)
     {
+        if (token is null)
+        {
+            return token;
+        }
+
         // Replace all invalid chars by underscores 
         token = Regex.Replace(token, @"[\W\b]", "_", RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(200));
 
@@ -183,7 +188,7 @@ public static class StringExtensions
 
     public static string GetNamespaceWithDefault(this string? fullyQualifiedClassName, string defaultValue = "")
     {
-        if (fullyQualifiedClassName == null || string.IsNullOrEmpty(fullyQualifiedClassName))
+        if (fullyQualifiedClassName is null || string.IsNullOrEmpty(fullyQualifiedClassName))
         {
             return defaultValue;
         }
@@ -212,16 +217,16 @@ public static class StringExtensions
         return instance.Substring(0, instance.Length - find.Length) + replace;
     }
 
-    public static bool IsStringTypeName(this string instance)
+    public static bool IsStringTypeName(this string? instance)
         => instance.FixTypeName() == typeof(string).FullName;
 
-    public static bool IsBooleanTypeName(this string instance)
+    public static bool IsBooleanTypeName(this string? instance)
         => instance.FixTypeName() == typeof(bool).FullName;
 
-    public static bool IsNullableBooleanTypeName(this string instance)
+    public static bool IsNullableBooleanTypeName(this string? instance)
         => instance.FixTypeName() == typeof(bool?).FullName.FixTypeName();
 
-    public static bool IsObjectTypeName(this string instance)
+    public static bool IsObjectTypeName(this string? instance)
         => instance.FixTypeName() == typeof(object).FullName;
 
     private static string FixAnonymousTypeName(string instance)

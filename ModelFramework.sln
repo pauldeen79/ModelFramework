@@ -44,7 +44,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Domain.Model
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Pipelines", "src\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj", "{D517F64F-2E83-4F03-AF99-7D612377AD1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.Pipelines.Tests", "src\ClassFramework.Pipelines.Tests\ClassFramework.Pipelines.Tests.csproj", "{155CD26A-4B71-4C70-BFBD-3B73DF8987F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Pipelines.Tests", "src\ClassFramework.Pipelines.Tests\ClassFramework.Pipelines.Tests.csproj", "{155CD26A-4B71-4C70-BFBD-3B73DF8987F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.Domain.Tests", "src\ClassFramework.Domain.Tests\ClassFramework.Domain.Tests.csproj", "{E8564F8C-7E79-40DE-85B1-53166BBE4DE0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,6 +130,10 @@ Global
 		{155CD26A-4B71-4C70-BFBD-3B73DF8987F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{155CD26A-4B71-4C70-BFBD-3B73DF8987F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{155CD26A-4B71-4C70-BFBD-3B73DF8987F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8564F8C-7E79-40DE-85B1-53166BBE4DE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8564F8C-7E79-40DE-85B1-53166BBE4DE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8564F8C-7E79-40DE-85B1-53166BBE4DE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8564F8C-7E79-40DE-85B1-53166BBE4DE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
