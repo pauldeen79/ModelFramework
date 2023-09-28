@@ -43,11 +43,11 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         {
             property.SetDefaultValueForBuilderClassConstructor
             (
-            new ModelFramework.Common.Literal
-            (
-                    $"I{typeName}" == nameof(IClassField)
-                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}".Replace(CodeGenerationRootNamespace + ".Models", RootNamespace, StringComparison.InvariantCulture)
-                        : $"{typeof(Visibility).FullName}.{Visibility.Public}".Replace(CodeGenerationRootNamespace + ".Models", RootNamespace, StringComparison.InvariantCulture)
+                new ModelFramework.Common.Literal
+                (
+                    MapCodeGenerationNamespacesToDomain($"I{typeName}" == nameof(IClassField)
+                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
+                        : $"{typeof(Visibility).FullName}.{Visibility.Public}")
                 )
             );
         }

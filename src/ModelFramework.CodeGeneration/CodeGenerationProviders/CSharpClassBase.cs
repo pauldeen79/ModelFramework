@@ -430,9 +430,19 @@ public abstract class CSharpClassBase : ClassBase
             .AddMetadata("CSharpClassBase.ModelType", x)
             .WithNamespace(RootNamespace)
             .WithName(x.GetEntityClassName())
-            .With(y => y.Properties.ForEach(z => GetModelMappings().Where(x => !x.Key.EndsWith(".Contracts", StringComparison.InvariantCulture)).ToList().ForEach(m => z.TypeName = z.TypeName.Replace(m.Key, m.Value))))
+            .With(y => y.Properties.ForEach(z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)))
             .Build())
         .ToArray();
+    }
+
+    protected string MapCodeGenerationNamespacesToDomain(string typeName)
+    {
+        foreach (var mapping in GetModelMappings().Where(x => !x.Key.EndsWith(".Contracts", StringComparison.InvariantCulture)))
+        {
+            typeName = typeName.Replace(mapping.Key, mapping.Value);
+        }
+
+        return typeName;
     }
 
     protected string GetBuilderNamespace(string typeName)
