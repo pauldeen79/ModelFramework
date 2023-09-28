@@ -76,15 +76,6 @@ if ({2})
                 .Build());
         }
 
-        if (propertyName == nameof(IClass.BaseClass) && typeName.IsStringTypeName())
-        {
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("WithBaseClass") //if we omit this, then the method name would be WithTypeName
-                .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2} = type.FullName;")
-                .Build());
-        }
-
         if (propertyName == nameof(IMetadataContainer.Metadata) && typeName.GetGenericArguments().GetClassName() == nameof(IMetadata))
         {
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
