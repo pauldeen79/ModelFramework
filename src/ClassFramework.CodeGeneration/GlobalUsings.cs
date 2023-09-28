@@ -6,6 +6,7 @@ global using ClassFramework.CodeGeneration.CodeGenerationProviders;
 global using ClassFramework.CodeGeneration.Models;
 global using ClassFramework.CodeGeneration.Models.Abstractions;
 global using ClassFramework.CodeGeneration.Models.Domains;
+global using ClassFramework.CodeGeneration.Models.Types;
 global using CommunityToolkit.Diagnostics;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
