@@ -4,7 +4,7 @@
 public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
 {
     public override bool RecurseOnDeleteGeneratedFiles => false;
-    public override string DefaultFileName => string.Empty; // not used because we're using multiple files, but it's abstract so we need to fill ilt
+    public override string DefaultFileName => string.Empty; // not used because we're using multiple files, but it's abstract so we need to fill it
 
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
@@ -17,12 +17,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
-
-    protected override IEnumerable<Type> GetPureAbstractModels()
-    {
-        yield return typeof(IType);
-        yield return typeof(ICodeStatement);
-    }
 
     protected override void FixImmutableBuilderProperty(ModelFramework.Objects.Builders.ClassPropertyBuilder property, string typeName)
     {
