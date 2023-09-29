@@ -1,6 +1,10 @@
-﻿global using System.Globalization;
+﻿global using System.ComponentModel.DataAnnotations;
+global using System.Globalization;
 global using ClassFramework.Domain.Builders;
+global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Domain.Extensions;
+global using ClassFramework.Domain.Types;
+global using ClassFramework.Pipelines.Domains;
 global using ClassFramework.Pipelines.Features;
 global using ClassFramework.Pipelines.PlaceholderProcessors;
 global using CrossCutting.Common;

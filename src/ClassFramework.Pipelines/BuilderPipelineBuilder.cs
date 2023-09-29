@@ -4,12 +4,22 @@ public class BuilderPipelineBuilder : PipelineBuilder<TypeBuilder, BuilderPipeli
 {
     public BuilderPipelineBuilder()
     {
-        var formattableStringParser = new FormattableStringParser(new IFormattableStringStateProcessor[] { new OpenSignProcessor(), new CloseSignProcessor(new[] { new ContextProcessor() }), new PlaceholderProcessor(), new ResultProcessor()  });
+        var formattableStringParser = new FormattableStringParser
+        (
+            new IFormattableStringStateProcessor[]
+            {
+                new OpenSignProcessor(),
+                new CloseSignProcessor(new[] { new ContextProcessor() }),
+                new PlaceholderProcessor(),
+                new ResultProcessor()
+            }
+        );
 
         AddFeatures
         (
             new MakePropertiesWritableFeatureBuilder(),
-            new ChangeNameFeatureBuilder(formattableStringParser)
+            new ChangeNameFeatureBuilder(formattableStringParser),
+            new AbstractBuilderFeatureBuilder(formattableStringParser)
         );
     }
 
