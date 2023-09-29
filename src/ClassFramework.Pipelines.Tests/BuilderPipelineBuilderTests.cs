@@ -46,6 +46,6 @@ public class BuilderPipelineBuilderTests
         pipeline.Process(model, context);
 
         // Assert
-        model.Properties.TrueForAll(x => x.HasSetter).Should().BeTrue();
+        model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
     }
 }
