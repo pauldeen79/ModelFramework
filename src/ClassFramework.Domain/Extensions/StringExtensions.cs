@@ -5,11 +5,9 @@ namespace ClassFramework.Domain.Extensions;
 public static class StringExtensions
 {
     public static string ToPascalCase(this string value)
-#pragma warning disable CA1308 // Normalize strings to uppercase
         => string.IsNullOrEmpty(value)
             ? value
             : string.Concat(value.Substring(0, 1).ToLowerInvariant(), value.Substring(1));
-#pragma warning restore CA1308 // Normalize strings to uppercase
 
     public static string SqlEncode(this string value)
         => "'" + value.Replace("'", "''") + "'";

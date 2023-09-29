@@ -35,23 +35,38 @@ public class BuilderPipelineBuilderTests
 
     public class Process
     {
+        private BuilderPipelineBuilderSettings Context { get; } = new BuilderPipelineBuilderSettings(new BuilderPipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"));
+        private Pipeline<TypeBuilder, BuilderPipelineBuilderSettings> Pipeline { get; } = new BuilderPipelineBuilder().Build();
+        private ClassBuilder model { get; } = CreateModel();
+
         [Fact]
         public void Makes_All_Properties_Writable()
         {
-            // Arrange
-            var model = new ClassBuilder()
-                .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithHasSetter(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithHasSetter(true)
-                );
-            var context = new BuilderPipelineBuilderSettings();
-            var pipeline = new BuilderPipelineBuilder().Build();
-
             // Act
-            pipeline.Process(model, context);
+            Pipeline.Process(model, Context);
 
             // Assert
             model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
         }
+
+        [Fact]
+        public void Changes_Namespace_And_Name_According_To_Settings()
+        {
+            // Act
+            Pipeline.Process(model, Context);
+
+            // Assert
+            model.Name.Should().Be("MyClassBuilder");
+            model.Namespace.Should().Be("MyNamespace.Builders");
+        }
+
+        private static ClassBuilder CreateModel()
+            => new ClassBuilder()
+                .WithName("MyClass")
+                .WithNamespace("MyNamespace")
+                .AddProperties(
+                    new ClassPropertyBuilder().WithName("Property1").WithHasSetter(false),
+                    new ClassPropertyBuilder().WithName("Property2").WithHasSetter(true)
+                );
     }
 }

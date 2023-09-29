@@ -1,5 +1,12 @@
-﻿global using ClassFramework.Domain.Builders;
+﻿global using System.Globalization;
+global using AutoFixture;
+global using AutoFixture.AutoNSubstitute;
+global using ClassFramework.Domain.Builders;
 global using ClassFramework.Domain.Builders.Types;
+global using ClassFramework.Pipelines.PlaceholderProcessors;
 global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;
+global using CrossCutting.ProcessingPipeline;
+global using CrossCutting.Utilities.Parsers.Contracts;
 global using FluentAssertions;
 global using Xunit;
