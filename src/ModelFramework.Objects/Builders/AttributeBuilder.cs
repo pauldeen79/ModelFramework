@@ -35,6 +35,12 @@ public partial class AttributeBuilder
             UrlAttribute urlAttribute =>
                 new AttributeBuilder(urlAttribute)
                     .AddParameters(CreateConditional(() => !string.IsNullOrEmpty(urlAttribute.ErrorMessage), new AttributeParameterBuilder().WithValue(urlAttribute.ErrorMessage).WithName(nameof(UrlAttribute.ErrorMessage)))),
+            PhoneAttribute phoneAttribute =>
+                new AttributeBuilder(phoneAttribute)
+                    .AddParameters(CreateConditional(() => !string.IsNullOrEmpty(phoneAttribute.ErrorMessage), new AttributeParameterBuilder().WithValue(phoneAttribute.ErrorMessage).WithName(nameof(UrlAttribute.ErrorMessage)))),
+            EmailAddressAttribute emailAddressAttribute =>
+                new AttributeBuilder(emailAddressAttribute)
+                    .AddParameters(CreateConditional(() => !string.IsNullOrEmpty(emailAddressAttribute.ErrorMessage), new AttributeParameterBuilder().WithValue(emailAddressAttribute.ErrorMessage).WithName(nameof(UrlAttribute.ErrorMessage)))),
             _ => new AttributeBuilder().WithName(sourceAttribute.GetType().FullName)
         };
 

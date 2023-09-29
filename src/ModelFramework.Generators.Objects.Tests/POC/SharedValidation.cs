@@ -11,10 +11,16 @@ public record MySharedValidationDomainEntity1Base
     public string Name { get; }
     [Range(1, 100, ErrorMessage = "The Age field must be between 1 and 100.")]
     public int Age { get; }
+    [Phone]
+    public string PhoneNumber { get; }
+    [EmailAddress]
+    public string EmailAddress { get; }
 
-    public MySharedValidationDomainEntity1Base(string name, int age)
+    public MySharedValidationDomainEntity1Base(string name, string phoneNumber, string emailAddress, int age)
     {
         Name = name;
+        PhoneNumber = phoneNumber;
+        EmailAddress = emailAddress;
         Age = age;
     }
 }
@@ -25,7 +31,7 @@ public record MySharedValidationDomainEntity1 : MySharedValidationDomainEntity1B
     {
     }
 
-    public MySharedValidationDomainEntity1(string name, int age) : base(name, age)
+    public MySharedValidationDomainEntity1(string name, string phoneNumber, string emailAddress, int age) : base(name, phoneNumber, emailAddress, age)
     {
         Validator.ValidateObject(this, new ValidationContext(this, null, null), true);
     }
@@ -34,13 +40,15 @@ public record MySharedValidationDomainEntity1 : MySharedValidationDomainEntity1B
 public class MySharedValidationDomainEntityBuilder : IValidatableObject
 {
     public StringBuilder Name { get; set; }
+    public StringBuilder PhoneNumber { get; set; }
+    public StringBuilder EmailAddress { get; set; }
     public int Age { get; set; }
 
-    public MySharedValidationDomainEntity1 Build() => new(Name.ToString(), Age);
+    public MySharedValidationDomainEntity1 Build() => new(Name.ToString(), PhoneNumber.ToString(), EmailAddress.ToString(), Age);
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        var instance = new MySharedValidationDomainEntity1Base(Name.ToString(), Age);
+        var instance = new MySharedValidationDomainEntity1Base(Name.ToString(), PhoneNumber.ToString(), EmailAddress.ToString(), Age);
         var results = new List<ValidationResult>();
         Validator.TryValidateObject(instance, new ValidationContext(instance, null, null), results, true);
         return results;
@@ -49,5 +57,7 @@ public class MySharedValidationDomainEntityBuilder : IValidatableObject
     public MySharedValidationDomainEntityBuilder()
     {
         Name = new StringBuilder();
+        PhoneNumber = new StringBuilder();
+        EmailAddress = new StringBuilder();
     }
 }
