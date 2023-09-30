@@ -28,7 +28,7 @@ jobs:
         with:
           dotnet-version: 7.0.x
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ModelFramework.sln
       # - name: Build code generation
       #   run: dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
       # - name: Run code generation
