@@ -36,7 +36,7 @@ public class BuilderPipelineBuilderTests
     public class Process
     {
         private BuilderPipelineBuilderSettings Context { get; } = new BuilderPipelineBuilderSettings(new BuilderPipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"));
-        private Pipeline<TypeBuilder, BuilderPipelineBuilderSettings> Pipeline { get; } = new BuilderPipelineBuilder().Build();
+        private Pipeline<ClassBuilder, BuilderPipelineBuilderSettings> Pipeline { get; } = new BuilderPipelineBuilder().Build();
         private ClassBuilder model { get; } = CreateModel();
 
         [Fact]

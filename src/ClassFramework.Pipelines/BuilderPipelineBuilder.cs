@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public class BuilderPipelineBuilder : PipelineBuilder<TypeBuilder, BuilderPipelineBuilderSettings>
+public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipelineBuilderSettings>
 {
     public BuilderPipelineBuilder()
     {
@@ -23,7 +23,7 @@ public class BuilderPipelineBuilder : PipelineBuilder<TypeBuilder, BuilderPipeli
         );
     }
 
-    public BuilderPipelineBuilder(Pipeline<TypeBuilder, BuilderPipelineBuilderSettings> source) : base(source)
+    public BuilderPipelineBuilder(Pipeline<ClassBuilder, BuilderPipelineBuilderSettings> source) : base(source)
     {
     }
 }

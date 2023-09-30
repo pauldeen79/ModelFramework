@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Features;
 
-public class AbstractBuilderFeatureBuilder : IBuilder<IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>>
+public class AbstractBuilderFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -9,11 +9,11 @@ public class AbstractBuilderFeatureBuilder : IBuilder<IPipelineFeature<TypeBuild
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings> Build()
+    public IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings> Build()
         => new AbstractBuilderFeature(_formattableStringParser);
 }
 
-public class AbstractBuilderFeature : FeatureBase
+public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,29 +22,24 @@ public class AbstractBuilderFeature : FeatureBase
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public override void Process(PipelineContext<TypeBuilder, BuilderPipelineBuilderSettings> context)
+    public void Process(PipelineContext<ClassBuilder, BuilderPipelineBuilderSettings> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Model is not ClassBuilder classBuilder)
-        {
-            return;
-        }
-
         if (context.Context.IsBuilderForAbstractEntity)
         {
-            classBuilder
+            context.Model
                 .AddGenericTypeArguments("TBuilder", "TEntity")
-                .AddGenericTypeArgumentConstraints($"where TEntity : {FormatInstanceName(classBuilder, false, context.Context.TypeSettings.FormatInstanceTypeNameDelegate)}")
+                .AddGenericTypeArgumentConstraints($"where TEntity : {context.Model.FormatInstanceName(false, context.Context.TypeSettings.FormatInstanceTypeNameDelegate)}")
                 .AddGenericTypeArgumentConstraints($"where TBuilder : {_formattableStringParser.Parse(context.Context.NameSettings.BuilderNameFormatString, CultureInfo.CurrentCulture, context).GetValueOrThrow()}<TBuilder, TEntity>")
                 .WithAbstract(context.Context.IsBuilderForAbstractEntity);
         }
         else if (context.Context.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
         {
-            classBuilder.AddInterfaces(typeof(IValidatableObject));
+            context.Model.AddInterfaces(typeof(IValidatableObject));
         }
     }
 
-    public override IBuilder<IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>> ToBuilder()
         => new AbstractBuilderFeatureBuilder(_formattableStringParser);
 }

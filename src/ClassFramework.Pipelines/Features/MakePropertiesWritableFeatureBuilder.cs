@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Features;
 
-public class MakePropertiesWritableFeatureBuilder : IBuilder<IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>>
+public class MakePropertiesWritableFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>>
 {
-    public IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings> Build()
+    public IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings> Build()
         => new MakePropertiesWritableFeature();
 }
 
-public class MakePropertiesWritableFeature : IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>
+public class MakePropertiesWritableFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>
 {
-    public void Process(PipelineContext<TypeBuilder, BuilderPipelineBuilderSettings> context)
+    public void Process(PipelineContext<ClassBuilder, BuilderPipelineBuilderSettings> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -18,6 +18,6 @@ public class MakePropertiesWritableFeature : IPipelineFeature<TypeBuilder, Build
         }
     }
 
-    public IBuilder<IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>> ToBuilder()
         => new MakePropertiesWritableFeatureBuilder();
 }

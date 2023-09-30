@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Features;
 
-public class ChangeNameFeatureBuilder : IBuilder<IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>>
+public class ChangeNameFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -9,11 +9,11 @@ public class ChangeNameFeatureBuilder : IBuilder<IPipelineFeature<TypeBuilder, B
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings> Build()
+    public IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings> Build()
         => new ChangeNameFeature(_formattableStringParser);
 }
 
-public class ChangeNameFeature : IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>
+public class ChangeNameFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class ChangeNameFeature : IPipelineFeature<TypeBuilder, BuilderPipelineBu
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<TypeBuilder, BuilderPipelineBuilderSettings> context)
+    public void Process(PipelineContext<ClassBuilder, BuilderPipelineBuilderSettings> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -30,6 +30,6 @@ public class ChangeNameFeature : IPipelineFeature<TypeBuilder, BuilderPipelineBu
         context.Model.Namespace = _formattableStringParser.Parse(context.Context.NameSettings.BuilderNamespaceFormatString, CultureInfo.CurrentCulture, context).GetValueOrThrow();
     }
 
-    public IBuilder<IPipelineFeature<TypeBuilder, BuilderPipelineBuilderSettings>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>> ToBuilder()
         => new ChangeNameFeatureBuilder(_formattableStringParser);
 }
