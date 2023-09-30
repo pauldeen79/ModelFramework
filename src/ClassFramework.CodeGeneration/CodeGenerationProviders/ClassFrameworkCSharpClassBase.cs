@@ -72,26 +72,26 @@ if ({2})
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
                 .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
                 .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2} = type.AssemblyQualifiedName.FixTypeName(); IsValueType = type.IsValueType || type.IsEnum;")
+                .WithInitializeExpression("{2} = ClassFramework.Domain.Extensions.StringExtensions.FixTypeName(type.AssemblyQualifiedName); IsValueType = type.IsValueType || type.IsEnum;")
                 .Build());
         }
 
-        if (propertyName == nameof(IMetadataContainer.Metadata) && typeName.GetGenericArguments().GetClassName() == nameof(IMetadata))
+        if (propertyName == nameof(IMetadataContainer.Metadata) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(IMetadata))
         {
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
                 .AddParameter("name", typeof(string))
                 .AddParameter("value", typeof(object), true)
-                .WithInitializeExpression("Add{4}(new ModelFramework.Common.Builders.MetadataBuilder().WithName(name).WithValue(value));")
+                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.MetadataBuilder().WithName(name).WithValue(value));")
                 .Build());
         }
 
-        if (propertyName == nameof(IParametersContainer.Parameters) && typeName.GetGenericArguments().GetClassName() == nameof(IParameter))
+        if (propertyName == nameof(IParametersContainer.Parameters) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(IParameter))
         {
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
                 .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
                 .AddParameter("name", typeof(string))
                 .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type));")
+                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithType(type));")
                 .Build());
 
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
@@ -99,14 +99,14 @@ if ({2})
                 .AddParameter("name", typeof(string))
                 .AddParameter("type", typeof(Type))
                 .AddParameter("isNullable", typeof(bool))
-                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithType(type).WithIsNullable(isNullable));")
+                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithType(type).WithIsNullable(isNullable));")
                 .Build());
 
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
                 .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
                 .AddParameter("name", typeof(string))
                 .AddParameter("typeName", typeof(string))
-                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
+                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
                 .Build());
 
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
@@ -114,21 +114,21 @@ if ({2})
                 .AddParameter("name", typeof(string))
                 .AddParameter("typeName", typeof(string))
                 .AddParameter("isNullable", typeof(bool))
-                .WithInitializeExpression("Add{4}(new ModelFramework.Objects.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName).WithIsNullable(isNullable));")
+                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName).WithIsNullable(isNullable));")
                 .Build());
         }
 
-        if (propertyName == nameof(ICodeStatementsContainer.CodeStatements) && typeName.GetGenericArguments().GetClassName() == nameof(ICodeStatementBase))
+        if (propertyName == nameof(ICodeStatementsContainer.CodeStatements) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(ICodeStatementBase))
         {
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
+                .WithMethodName("AddStringCodeStatements") //if we omit this, then the method name would be AddCodeStatements
                 .AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName("statements").WithType(typeof(string[])).WithIsParamArray())
-                .WithInitializeExpression("Add{4}(ModelFramework.Objects.Extensions.EnumerableOfStringExtensions.ToLiteralCodeStatementBuilders(statements));")
+                .WithInitializeExpression("Add{4}(ClassFramework.Domain.Builders.Extensions.EnumerableOfStringExtensions.ToStringCodeStatementBuilders(statements));")
                 .Build());
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements
+                .WithMethodName("AddStringCodeStatements") //if we omit this, then the method name would be AddCodeStatements
                 .AddParameter("statements", typeof(IEnumerable<string>))
-                .WithInitializeExpression("AddLiteralCodeStatements(statements.ToArray());")
+                .WithInitializeExpression("AddStringCodeStatements(statements.ToArray());")
                 .Build());
         }
     }
