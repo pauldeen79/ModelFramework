@@ -45,24 +45,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 )
             );
         }
-
-        if (property.Name == nameof(IClassProperty.HasSetter))
-        {
-            property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasInitializer = false;
-{6}");
-        }
-
-        if (property.Name == nameof(IClassProperty.HasInitializer))
-        {
-            property.SetBuilderWithExpression(@"{0} = {2};
-if ({2})
-{5}
-    HasSetter = false;
-{6}");
-        }
     }
 
     private static void AddBuilderOverloads(ModelFramework.Objects.Builders.ClassPropertyBuilder property, string typeName, string propertyName)

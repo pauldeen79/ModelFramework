@@ -15,7 +15,7 @@ public class MakePropertiesWritableFeature : IPipelineFeature<ClassBuilder, Buil
         foreach (var prop in context.Model.Properties)
         {
             prop.HasSetter = true;
-            //TODO: Automatically generate this in code generation, like a dependent property...
+            //TODO: Automatically generate this in code generation, like a dependent property... Or maybe just use INotifyPropertyChanged behavior
             prop.HasInitializer = false;
         }
     }
