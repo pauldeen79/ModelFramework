@@ -7,12 +7,12 @@ public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;
-    protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(IType), Constants.Namespaces.Domain);
+    protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), Constants.Namespaces.Domain);
     protected override string BaseClassBuilderNamespace => Constants.Namespaces.DomainBuilders;
 
     public override object CreateModel()
         => GetImmutableBuilderClasses(
-            GetOverrideModels(typeof(IType)),
+            GetOverrideModels(typeof(ITypeBase)),
             $"{Constants.Namespaces.Domain}.Types",
             $"{Constants.Namespaces.DomainBuilders}.Types");
 }

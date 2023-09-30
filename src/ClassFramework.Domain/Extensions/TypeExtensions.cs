@@ -7,7 +7,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="typeName">Typename with or without generics</param>
     /// <returns>Typename without generics (`1)</returns>
-    public static string WithoutGenerics(this System.Type instance)
+    public static string WithoutGenerics(this Type instance)
     {
         var name = instance.IsGenericParameter
             ? instance.Name

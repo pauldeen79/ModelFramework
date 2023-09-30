@@ -157,7 +157,7 @@ public static class StringExtensions
     }
 
     public static bool IsRequiredEnum(this string instance)
-        => !string.IsNullOrEmpty(instance) && System.Type.GetType(instance)?.IsEnum == true;
+        => !string.IsNullOrEmpty(instance) && Type.GetType(instance)?.IsEnum == true;
 
     public static bool IsOptionalEnum(this string instance)
     {
@@ -166,7 +166,7 @@ public static class StringExtensions
             return false;
         }
 
-        var t = System.Type.GetType(instance);
+        var t = Type.GetType(instance);
         if (t == null)
         {
             return false;

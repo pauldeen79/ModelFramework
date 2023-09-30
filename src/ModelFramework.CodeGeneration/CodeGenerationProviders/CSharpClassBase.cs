@@ -103,7 +103,7 @@ public abstract class CSharpClassBase : ClassBase
         var result = new Dictionary<string, string>();
         var suffix = InheritFromInterfaces ? "I" : string.Empty;
         result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.{suffix}");
-        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName()}s.I", $"{RootNamespace}.{x.GetEntityClassName()}s.")));
+        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}s.I", $"{RootNamespace}.{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}s.")));
         result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
         result.Add($"{CodeGenerationRootNamespace}.Models.Contracts.", $"{RootNamespace}.Contracts.");
         result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");

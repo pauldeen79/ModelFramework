@@ -2,6 +2,6 @@
 
 public partial class ClassBuilder
 {
-    public ClassBuilder WithBaseClass(System.Type baseClassType)
+    public ClassBuilder WithBaseClass(Type baseClassType)
         => WithBaseClass(baseClassType.IsNotNull(nameof(baseClassType)).FullName);
 }

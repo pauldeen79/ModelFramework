@@ -1,17 +1,17 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class TypeBuilderFactory : ClassFrameworkCSharpClassBase
+public class TypeBaseBuilderFactory : ClassFrameworkCSharpClassBase
 {
     public override string Path => Constants.Namespaces.DomainBuilders;
 
     public override object CreateModel()
         => CreateBuilderFactoryModels(
-            GetOverrideModels(typeof(IType)),
+            GetOverrideModels(typeof(ITypeBase)),
             new(Constants.Namespaces.DomainBuilders,
-            nameof(TypeBuilderFactory),
-            $"{Constants.Namespaces.Domain}.Type",
+            nameof(TypeBaseBuilderFactory),
+            $"{Constants.Namespaces.Domain}.TypeBase",
             $"{Constants.Namespaces.DomainBuilders}.Types",
-            "TypeBuilder",
+            "TypeBaseBuilder",
             $"{Constants.Namespaces.Domain}.Types"));
 }

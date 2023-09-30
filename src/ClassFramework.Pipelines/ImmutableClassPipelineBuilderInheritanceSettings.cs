@@ -6,16 +6,16 @@ public record ImmutableClassPipelineBuilderInheritanceSettings
     public bool IsAbstract { get; }
     public bool InheritFromInterfaces { get; }
     public Class? BaseClass { get; }
-    public Func<string, Domain.Type, bool>? InheritanceComparisonFunction { get; }
-    public Func<Domain.Type, bool, string>? FormatInstanceTypeNameDelegate { get; }
+    public Func<string, TypeBase, bool>? InheritanceComparisonFunction { get; }
+    public Func<TypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
 
     public ImmutableClassPipelineBuilderInheritanceSettings(
         bool enableInheritance = false,
         bool isAbstract = false,
         bool inheritFromInterfaces = false,
         Class? baseClass = null,
-        Func<string, Domain.Type, bool>? inheritanceComparisonFunction = null,
-        Func<Domain.Type, bool, string>? formatInstanceTypeNameDelegate = null)
+        Func<string, TypeBase, bool>? inheritanceComparisonFunction = null,
+        Func<TypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
     {
         EnableInheritance = enableInheritance;
         IsAbstract = isAbstract;

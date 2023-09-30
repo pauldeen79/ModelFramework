@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Types;
 
-internal interface IInterface : IType
+internal interface IInterface : ITypeBase
 {
 }

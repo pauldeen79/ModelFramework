@@ -118,7 +118,7 @@ if ({2})
                 .Build());
         }
 
-        if (propertyName == nameof(ICodeStatementsContainer.CodeStatements) && typeName.GetGenericArguments().GetClassName() == nameof(ICodeStatement))
+        if (propertyName == nameof(ICodeStatementsContainer.CodeStatements) && typeName.GetGenericArguments().GetClassName() == nameof(ICodeStatementBase))
         {
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
                 .WithMethodName("AddLiteralCodeStatements") //if we omit this, then the method name would be AddCodeStatements

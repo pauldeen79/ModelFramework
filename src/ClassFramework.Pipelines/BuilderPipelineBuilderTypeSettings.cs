@@ -2,5 +2,5 @@
 
 public record BuilderPipelineBuilderTypeSettings
 {
-    public Func<TypeBuilder, bool, string>? FormatInstanceTypeNameDelegate { get; }
+    public Func<TypeBaseBuilder, bool, string>? FormatInstanceTypeNameDelegate { get; }
 }

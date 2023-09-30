@@ -12,6 +12,7 @@ global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using ModelFramework.CodeGeneration.CodeGenerationProviders;
 global using ModelFramework.Common.Extensions;
+global using ModelFramework.Objects.Extensions;
 global using ModelFramework.Objects.Settings;
 global using TextTemplateTransformationFramework.Runtime;
 global using TextTemplateTransformationFramework.Runtime.CodeGeneration;

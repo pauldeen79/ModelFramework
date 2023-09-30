@@ -1,17 +1,17 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class CodeStatementModelFactory : ClassFrameworkModelClassBase
+public class CodeStatementBaseModelFactory : ClassFrameworkModelClassBase
 {
     public override string Path => Constants.Namespaces.DomainModels;
 
     public override object CreateModel()
         => CreateBuilderFactoryModels(
-            GetOverrideModels(typeof(ICodeStatement)),
+            GetOverrideModels(typeof(ICodeStatementBase)),
             new(Constants.Namespaces.DomainModels,
-            nameof(CodeStatementModelFactory),
-            $"{Constants.Namespaces.Domain}.CodeStatement",
+            nameof(CodeStatementBaseModelFactory),
+            $"{Constants.Namespaces.Domain}.CodeStatementBase",
             $"{Constants.Namespaces.DomainModels}.CodeStatements",
-            "CodeStatementModel",
+            "CodeStatementBaseModel",
             $"{Constants.Namespaces.Domain}.CodeStatements"));
 }
