@@ -2,7 +2,7 @@
 
 public partial class TypeBaseBuilder
 {
-    public string GetFullName() => $"{Namespace.ToString().GetNamespacePrefix()}{Name}";
+    public string GetFullName() => $"{Namespace.GetNamespacePrefix()}{Name}";
 }
 
 public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder

@@ -14,7 +14,9 @@ public class MakePropertiesWritableFeature : IPipelineFeature<ClassBuilder, Buil
 
         foreach (var prop in context.Model.Properties)
         {
-            prop.WithHasSetter();
+            prop.HasSetter = true;
+            //TODO: Automatically generate this in code generation, like a dependent property...
+            prop.HasInitializer = false;
         }
     }
 

@@ -2,5 +2,5 @@
 
 public partial record TypeBase
 {
-    public string GetFullName() => Namespace.GetNamespacePrefix() + Name;
+    public string GetFullName() => $"{Namespace.GetNamespacePrefix()}{Name}";
 }
