@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.CodeStatements;
 
-internal interface ILiteralCodeStatement : ICodeStatement
+internal interface IStringCodeStatement : ICodeStatement
 {
     [Required] string Statement { get; set; }
 }
