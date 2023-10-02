@@ -18,33 +18,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
 
-    protected override void FixImmutableBuilderProperty(ModelFramework.Objects.Builders.ClassPropertyBuilder property, string typeName)
-    {
-        Guard.IsNotNull(property);
-        Guard.IsNotNull(typeName);
-
-        base.FixImmutableBuilderProperty(property, typeName);
-
-        if ((typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
-            && property.Name.In(nameof(IClassProperty.HasGetter), nameof(IClassProperty.HasSetter)))
-        {
-            property.SetDefaultValueForBuilderClassConstructor(new ModelFramework.Common.Literal("true"));
-        }
-
-        if (property.Name == nameof(IVisibilityContainer.Visibility))
-        {
-            property.SetDefaultValueForBuilderClassConstructor
-            (
-                new ModelFramework.Common.Literal
-                (
-                    MapCodeGenerationNamespacesToDomain($"I{typeName}" == nameof(IClassField)
-                        ? $"{typeof(Visibility).FullName}.{Visibility.Private}"
-                        : $"{typeof(Visibility).FullName}.{Visibility.Public}")
-                )
-            );
-        }
-    }
-
     protected override void Visit<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
     {
         Guard.IsNotNull(typeBaseBuilder);
@@ -54,6 +27,12 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         
         if (typeBaseBuilder.Name.EndsWith("Builder"))
         {
+            if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder)
+            {
+                classBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(ModelFramework.Objects.Contracts.Visibility.Private));
+                classBuilder.Constructors.First(x => x.Parameters.Count == 0).CodeStatements.Add(new ModelFramework.Objects.CodeStatements.Builders.LiteralCodeStatementBuilder("SetDefaultValues();"));
+            }
+
             sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name.ReplaceSuffix("Builder", string.Empty, StringComparison.Ordinal)}");
             if (sourceModel is null)
             {

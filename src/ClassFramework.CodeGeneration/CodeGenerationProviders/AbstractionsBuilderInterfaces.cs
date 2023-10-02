@@ -12,6 +12,7 @@ public class AbstractionsBuilderInterfaces : ClassFrameworkCSharpClassBase
                 .WithNamespace(CurrentNamespace)
                 .WithVisibility(ModelFramework.Objects.Contracts.Visibility.Public)
                 .WithName($"{x.Name}Builder")
+                .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
                 .WithAll(y => y.Properties, z =>
                 {
                     z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName).Replace("System.Collections.Generic.IReadOnlyCollection", "System.Collections.Generic.List", StringComparison.Ordinal);
@@ -37,7 +38,13 @@ public class AbstractionsBuilderInterfaces : ClassFrameworkCSharpClassBase
                     z.SetterVisibility = null; //TODO: Find out why this is set to Private. null should be sufficient (means equal to the property visibility)
                     z.Attributes.Clear();
                 })
+                .Chain(y =>
+                {
+                    for (int i = 0; i < y.Interfaces.Count; i++)
+                    {
+                        y.Interfaces[i] = y.Interfaces[i].Replace("ClassFramework.CodeGeneration.Models.Abstractions.", "ClassFramework.Domain.Builders.Abstractions.", StringComparison.Ordinal) + "Builder";
+                    }
+                })
                 .Build()
-            )
-            .ToArray();
+            ).ToArray();
 }

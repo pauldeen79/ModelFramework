@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-internal interface IExtendedVisibilityContainer
+internal interface IExtendedVisibilityContainer : IVisibilityContainer
 {
     bool Static { get; }
     bool Virtual { get; }
