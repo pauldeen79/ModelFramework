@@ -114,4 +114,41 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 .Build());
         }
     }
+
+    protected override void Visit<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+    {
+        Guard.IsNotNull(typeBaseBuilder);
+        
+        Type? sourceModel = null;
+        Type[] interfaces;
+        
+        if (typeBaseBuilder.Name.EndsWith("Builder"))
+        {
+            sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name.ReplaceSuffix("Builder", string.Empty, StringComparison.Ordinal)}");
+            if (sourceModel is null)
+            {
+                return;
+            }
+
+            interfaces = sourceModel.GetInterfaces();
+            foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
+            {
+                typeBaseBuilder.AddInterfaces(i.FullName!.Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"{Constants.Namespaces.DomainBuilders}.Abstractions.", StringComparison.Ordinal) + "Builder");
+            }
+
+            return;
+        }
+
+        sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
+        if (sourceModel is null)
+        {
+            return;
+        }
+
+        interfaces = sourceModel.GetInterfaces();
+        foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
+        {
+            typeBaseBuilder.AddInterfaces(i.FullName!.Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"{Constants.Namespaces.Domain}.Abstractions.", StringComparison.Ordinal));
+        }
+    }
 }
