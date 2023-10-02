@@ -13,25 +13,31 @@ public static class VisibilityContainerExtensions
         var builder = new StringBuilder();
         if (instance is IExtendedVisibilityContainer extendedVisibilityContainer)
         {
-            builder.AddWithCondition("protected", extendedVisibilityContainer.Protected);
-            if (!(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal))
-            {
-                builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
-            }
-            builder.AddWithCondition("static", extendedVisibilityContainer.Static);
-            builder.AddWithCondition("abstract", extendedVisibilityContainer.Abstract);
-            builder.AddWithCondition("virtual", extendedVisibilityContainer.Virtual);
-            builder.AddWithCondition("override", extendedVisibilityContainer.Override);
+            var classMethod = instance as IClassMethod;
 
-            if (instance is IClassField classField)
+            if (classMethod is null || !classMethod.Partial)
             {
-                builder.AddWithCondition("readonly", classField.ReadOnly);
-                builder.AddWithCondition("const", classField.Constant);
+                builder.AddWithCondition("protected", extendedVisibilityContainer.Protected);
+                if (!(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal))
+                {
+                    builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
+                }
+                builder.AddWithCondition("static", extendedVisibilityContainer.Static);
+                builder.AddWithCondition("abstract", extendedVisibilityContainer.Abstract);
+                builder.AddWithCondition("virtual", extendedVisibilityContainer.Virtual);
+                builder.AddWithCondition("override", extendedVisibilityContainer.Override);
+
+                if (instance is IClassField classField)
+                {
+                    builder.AddWithCondition("readonly", classField.ReadOnly);
+                    builder.AddWithCondition("const", classField.Constant);
+                }
             }
 
-            if (instance is IClassMethod classMethod)
+            if (classMethod is not null)
             {
                 builder.AddWithCondition("async", classMethod.Async);
+                builder.AddWithCondition("partial", classMethod.Partial);
             }
         }
         else
