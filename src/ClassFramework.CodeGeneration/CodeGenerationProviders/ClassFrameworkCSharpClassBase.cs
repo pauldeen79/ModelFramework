@@ -31,8 +31,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             property.SetDefaultValueForBuilderClassConstructor(new ModelFramework.Common.Literal("true"));
         }
 
-        AddBuilderOverloads(property, typeName, property.Name);
-
         if (property.Name == nameof(IVisibilityContainer.Visibility))
         {
             property.SetDefaultValueForBuilderClassConstructor
@@ -44,65 +42,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                         : $"{typeof(Visibility).FullName}.{Visibility.Public}")
                 )
             );
-        }
-    }
-
-    private static void AddBuilderOverloads(ModelFramework.Objects.Builders.ClassPropertyBuilder property, string typeName, string propertyName)
-    {
-        if (propertyName == nameof(IMetadataContainer.Metadata) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(IMetadata))
-        {
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .AddParameter("name", typeof(string))
-                .AddParameter("value", typeof(object), true)
-                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.MetadataBuilder().WithName(name).WithValue(value));")
-                .Build());
-        }
-
-        if (propertyName == nameof(IParametersContainer.Parameters) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(IParameter))
-        {
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
-                .AddParameter("name", typeof(string))
-                .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithType(type));")
-                .Build());
-
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
-                .AddParameter("name", typeof(string))
-                .AddParameter("type", typeof(Type))
-                .AddParameter("isNullable", typeof(bool))
-                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithType(type).WithIsNullable(isNullable));")
-                .Build());
-
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
-                .AddParameter("name", typeof(string))
-                .AddParameter("typeName", typeof(string))
-                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName));")
-                .Build());
-
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddParameter") //if we omit this, then the method name would be AddParameters
-                .AddParameter("name", typeof(string))
-                .AddParameter("typeName", typeof(string))
-                .AddParameter("isNullable", typeof(bool))
-                .WithInitializeExpression("Add{4}(new ClassFramework.Domain.Builders.ParameterBuilder().WithName(name).WithTypeName(typeName).WithIsNullable(isNullable));")
-                .Build());
-        }
-
-        if (propertyName == nameof(ICodeStatementsContainer.CodeStatements) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(ICodeStatementBase))
-        {
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddStringCodeStatements") //if we omit this, then the method name would be AddCodeStatements
-                .AddParameters(new ModelFramework.Objects.Builders.ParameterBuilder().WithName("statements").WithType(typeof(string[])).WithIsParamArray())
-                .WithInitializeExpression("Add{4}(ClassFramework.Domain.Builders.Extensions.EnumerableOfStringExtensions.ToStringCodeStatementBuilders(statements));")
-                .Build());
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("AddStringCodeStatements") //if we omit this, then the method name would be AddCodeStatements
-                .AddParameter("statements", typeof(IEnumerable<string>))
-                .WithInitializeExpression("AddStringCodeStatements(statements.ToArray());")
-                .Build());
         }
     }
 
