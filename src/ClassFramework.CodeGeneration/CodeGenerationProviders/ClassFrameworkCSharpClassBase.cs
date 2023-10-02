@@ -49,15 +49,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
 
     private static void AddBuilderOverloads(ModelFramework.Objects.Builders.ClassPropertyBuilder property, string typeName, string propertyName)
     {
-        if (propertyName == nameof(ITypeContainer.TypeName) && typeName.IsStringTypeName())
-        {
-            property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
-                .WithMethodName("WithType") //if we omit this, then the method name would be WithTypeName
-                .AddParameter("type", typeof(Type))
-                .WithInitializeExpression("{2} = ClassFramework.Domain.Extensions.StringExtensions.FixTypeName(type.AssemblyQualifiedName); IsValueType = type.IsValueType || type.IsEnum;")
-                .Build());
-        }
-
         if (propertyName == nameof(IMetadataContainer.Metadata) && $"I{typeName.GetGenericArguments().GetClassName()}" == nameof(IMetadata))
         {
             property.AddBuilderOverload(new ModelFramework.Objects.Builders.OverloadBuilder()
