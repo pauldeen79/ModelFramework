@@ -18,47 +18,35 @@ public static class VisibilityContainerExtensions
             if (classMethod is null || !classMethod.Partial)
             {
                 builder.AddWithCondition("protected", extendedVisibilityContainer.Protected);
-                if (!(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal))
-                {
-                    builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
-                }
+                builder.AddWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), !(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal));
                 builder.AddWithCondition("static", extendedVisibilityContainer.Static);
                 builder.AddWithCondition("abstract", extendedVisibilityContainer.Abstract);
                 builder.AddWithCondition("virtual", extendedVisibilityContainer.Virtual);
                 builder.AddWithCondition("override", extendedVisibilityContainer.Override);
 
-                if (instance is IClassField classField)
-                {
-                    builder.AddWithCondition("readonly", classField.ReadOnly);
-                    builder.AddWithCondition("const", classField.Constant);
-                }
+                var classField = instance as IClassField;
+                builder.AddWithCondition("readonly", classField?.ReadOnly == true);
+                builder.AddWithCondition("const", classField?.Constant == true);
             }
 
-            if (classMethod is not null)
-            {
-                builder.AddWithCondition("async", classMethod.Async);
-                builder.AddWithCondition("partial", classMethod.Partial);
-            }
+            builder.AddWithCondition("async", classMethod?.Async == true);
+            builder.AddWithCondition("partial", classMethod?.Partial == true);
         }
         else
         {
             builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
-            if (instance is IClass cls)
-            {
-                builder.AddWithCondition("sealed", cls.Sealed);
-                builder.AddWithCondition("abstract", cls.Abstract);
-                builder.AddWithCondition("static", cls.Static);
-            }
-            if (instance is ITypeBase typeBase)
-            {
-                builder.AddWithCondition("partial", typeBase.Partial);
-            }
+
+            var cls = instance as IClass;
+            builder.AddWithCondition("sealed", cls?.Sealed == true);
+            builder.AddWithCondition("abstract", cls?.Abstract == true);
+            builder.AddWithCondition("static", cls?.Static == true);
+
+            var typeBase = instance as ITypeBase;
+            builder.AddWithCondition("partial", typeBase?.Partial == true);
         }
 
-        if (builder.Length > 0)
-        {
-            builder.Append(" ");
-        }
+        // Append trailing space when filled
+        builder.AddWithCondition(string.Empty, builder.Length > 0);
 
         return builder.ToString();
     }
