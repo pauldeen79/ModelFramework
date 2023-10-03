@@ -2,7 +2,6 @@
 
 public partial class AttributeBuilder
 {
-
     public AttributeBuilder AddNameAndParameter(string name, object value)
         => WithName(name).AddParameters(new AttributeParameterBuilder().WithValue(value));
 
