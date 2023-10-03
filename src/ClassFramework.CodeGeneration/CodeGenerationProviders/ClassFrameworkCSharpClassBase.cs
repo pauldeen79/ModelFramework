@@ -42,7 +42,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             interfaces = sourceModel.GetInterfaces();
             foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
             {
-                typeBaseBuilder.AddInterfaces(i.FullName!.Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"{Constants.Namespaces.Domain}.{BuilderName}s.Abstractions.", StringComparison.Ordinal) + BuilderName);
+                typeBaseBuilder.AddInterfaces(i.FullName!.Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"{Constants.Namespaces.Domain}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
             }
 
             return;
@@ -98,7 +98,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 {
                     for (int i = 0; i < y.Interfaces.Count; i++)
                     {
-                        y.Interfaces[i] = y.Interfaces[i].Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"ClassFramework.Domain.{BuilderName}s.Abstractions.", StringComparison.Ordinal) + BuilderName;
+                        y.Interfaces[i] = y.Interfaces[i].Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"ClassFramework.Domain.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
                     }
                 })
                 .Build()
