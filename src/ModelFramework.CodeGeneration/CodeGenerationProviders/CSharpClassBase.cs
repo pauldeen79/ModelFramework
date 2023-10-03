@@ -606,7 +606,7 @@ public abstract class CSharpClassBase : ClassBase
         };
     }
 
-    protected ITypeBase[] CreateBuilderFactoryModels(
+    protected ITypeBase[] CreateBuilderFactories(
         ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
@@ -652,6 +652,51 @@ public abstract class CSharpClassBase : ClassBase
         };
     }
 
+    protected ITypeBase[] CreateBuilderInterfaces()
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
+            .Select(x => x.ToInterfaceBuilder()
+                .WithNamespace(CurrentNamespace)
+                .WithVisibility(Visibility.Public)
+                .WithName($"{x.Name}{BuilderName}")
+                .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
+                .WithAll(y => y.Properties, z =>
+                {
+                    z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
+                        .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
+
+                    if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
+                    {
+                        foreach (var mapping in GetBuilderNamespaceMappings())
+                        {
+                            if (z.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
+                            {
+                                z.TypeName = z.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
+                                if (z.TypeName.EndsWith(">", StringComparison.Ordinal))
+                                {
+                                    z.TypeName = z.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
+                                }
+                                else
+                                {
+                                    z.TypeName += BuilderName;
+                                }
+                            }
+                        }
+                    }
+                    z.HasSetter = true;
+                    z.SetterVisibility = null; //TODO: Find out why this is set to Private. null should be sufficient (means equal to the property visibility)
+                    z.Attributes.Clear();
+                })
+                .Chain(y =>
+                {
+                    for (int i = 0; i < y.Interfaces.Count; i++)
+                    {
+                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
+                    }
+                })
+                .Build()
+            ).ToArray();
+
     private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
     {
         if (typeName.GetGenericArguments().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
@@ -694,8 +739,8 @@ public abstract class CSharpClassBase : ClassBase
         }
 
         var argumentType = !string.IsNullOrEmpty(typeName.GetGenericArguments())
-                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
-                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
+            ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
+            : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
 
         property.WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType, GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName));
         property.WithCustomBuilderArgumentTypeSingleProperty(argumentType, BuilderName);

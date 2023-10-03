@@ -6,7 +6,7 @@ public class TypeBaseModelFactory : ClassFrameworkModelClassBase
     public override string Path => Constants.Namespaces.DomainModels;
 
     public override object CreateModel()
-        => CreateBuilderFactoryModels(
+        => CreateBuilderFactories(
             GetOverrideModels(typeof(ITypeBase)),
             new(Constants.Namespaces.DomainModels,
             nameof(TypeBaseModelFactory),

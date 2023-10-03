@@ -6,7 +6,7 @@ public class CodeStatementBaseBuilderFactory : ClassFrameworkCSharpClassBase
     public override string Path => Constants.Namespaces.DomainBuilders;
 
     public override object CreateModel()
-        => CreateBuilderFactoryModels(
+        => CreateBuilderFactories(
             GetOverrideModels(typeof(ICodeStatementBase)),
             new(Constants.Namespaces.DomainBuilders,
             nameof(CodeStatementBaseBuilderFactory),

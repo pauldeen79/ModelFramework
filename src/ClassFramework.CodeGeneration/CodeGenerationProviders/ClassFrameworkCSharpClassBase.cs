@@ -60,49 +60,4 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal));
         }
     }
-
-    protected object CreateBuilderInterfacesModel()
-        => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
-            .Select(x => x.ToInterfaceBuilder()
-                .WithNamespace(CurrentNamespace)
-                .WithVisibility(ModelFramework.Objects.Contracts.Visibility.Public)
-                .WithName($"{x.Name}{BuilderName}")
-                .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
-                .WithAll(y => y.Properties, z =>
-                {
-                    z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
-                        .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
-
-                    if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
-                    {
-                        foreach (var mapping in GetBuilderNamespaceMappings())
-                        {
-                            if (z.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
-                            {
-                                z.TypeName = z.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
-                                if (z.TypeName.EndsWith(">", StringComparison.Ordinal))
-                                {
-                                    z.TypeName = z.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
-                                }
-                                else
-                                {
-                                    z.TypeName += BuilderName;
-                                }
-                            }
-                        }
-                    }
-                    z.HasSetter = true;
-                    z.SetterVisibility = null; //TODO: Find out why this is set to Private. null should be sufficient (means equal to the property visibility)
-                    z.Attributes.Clear();
-                })
-                .Chain(y =>
-                {
-                    for (int i = 0; i < y.Interfaces.Count; i++)
-                    {
-                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
-                    }
-                })
-                .Build()
-            ).ToArray();
 }
