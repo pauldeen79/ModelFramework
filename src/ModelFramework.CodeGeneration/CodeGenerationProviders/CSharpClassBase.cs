@@ -654,73 +654,75 @@ public abstract class CSharpClassBase : ClassBase
         };
     }
 
-    protected ITypeBase[] CreateBuilderInterfaces(IEnumerable<InterfaceBuilder> interfaceBuilders)
-        => interfaceBuilders.IsNotNull(nameof(interfaceBuilders))
-            .Select(x =>
-                x.WithNamespace(CurrentNamespace)
-                .WithVisibility(Visibility.Public)
-                .WithName($"{x.Name}{BuilderName}")
-                .WithAll(y => y.Properties, z =>
-                {
-                    z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
-                        .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
+    protected ITypeBase CreateBuilderInterface(InterfaceBuilder interfaceBuilder)
+    {
+        Guard.IsNotNull(interfaceBuilder);
 
-                    if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
-                    {
-                        FixPropertyInterfacesNamespaces(z);
-                    }
-                    z.HasSetter = true;
-                    z.Attributes.Clear();
-                })
-                .Chain(y =>
-                {
-                    FixInterfacesNamespaces(y);
-                })
-                .Build()
-            ).ToArray();
+        return interfaceBuilder
+            .WithNamespace(CurrentNamespace)
+            .WithVisibility(Visibility.Public)
+            .WithName($"{interfaceBuilder.Name}{BuilderName}")
+            .WithAll(y => y.Properties, z =>
+            {
+                z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
+                    .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
 
-    private void FixPropertyInterfacesNamespaces(ClassPropertyBuilder builder)
+                if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
+                {
+                    FixPropertyInterfacesNamespaces(z);
+                }
+
+                z.HasSetter = true;
+                z.Attributes.Clear();
+            })
+            .Chain(FixInterfacesNamespaces)
+            .Build();
+    }
+
+    private void FixPropertyInterfacesNamespaces(ClassPropertyBuilder classPropertyBuilder)
     {
         foreach (var mapping in GetBuilderNamespaceMappings())
         {
-            if (builder.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
+            if (classPropertyBuilder.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
             {
-                builder.TypeName = builder.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
-                if (builder.TypeName.EndsWith(">", StringComparison.Ordinal))
+                classPropertyBuilder.TypeName = classPropertyBuilder.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
+                if (classPropertyBuilder.TypeName.EndsWith(">", StringComparison.Ordinal))
                 {
-                    builder.TypeName = builder.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
+                    classPropertyBuilder.TypeName = classPropertyBuilder.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
                 }
                 else
                 {
-                    builder.TypeName += BuilderName;
+                    classPropertyBuilder.TypeName += BuilderName;
                 }
             }
         }
     }
 
-    private void FixInterfacesNamespaces(InterfaceBuilder y)
+    private void FixInterfacesNamespaces(InterfaceBuilder interfaceBuilder)
     {
-        for (int i = 0; i < y.Interfaces.Count; i++)
+        for (int i = 0; i < interfaceBuilder.Interfaces.Count; i++)
         {
-            y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
+            interfaceBuilder.Interfaces[i] = interfaceBuilder.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
         }
     }
 
-    protected ITypeBase[] CreateInterfaces(IEnumerable<InterfaceBuilder> interfaceBuilders)
-        => interfaceBuilders.Select(x =>
-                x.WithNamespace(CurrentNamespace)
-                .WithVisibility(Visibility.Public)
-                .WithAll(y => y.Properties, z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName))
-                .Chain(y =>
+    protected ITypeBase CreateInterface(InterfaceBuilder interfaceBuilder)
+    {
+        Guard.IsNotNull(interfaceBuilder);
+
+        return interfaceBuilder
+            .WithNamespace(CurrentNamespace)
+            .WithVisibility(Visibility.Public)
+            .WithAll(y => y.Properties, z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName))
+            .Chain(y =>
+            {
+                for (int i = 0; i < y.Interfaces.Count; i++)
                 {
-                    for (int i = 0; i < y.Interfaces.Count; i++)
-                    {
-                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal);
-                    }
-                })
-                .Build()
-            )
-            .ToArray();
+                    y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal);
+                }
+            })
+            .Build();
+    }
 
     private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
     {

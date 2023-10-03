@@ -3,6 +3,8 @@
 public class TestCSharpClassBaseModelTransformationCoreBuilderInterfaces : TestCSharpClassBaseModelTransformationBase
 {
     public override object CreateModel()
-        => CreateBuilderInterfaces(GetCoreModelTransformationTypes()
-            .Select(x => x.ToInterfaceBuilder().Chain(y => y.Name = "I" + y.Name)));
+        => GetCoreModelTransformationTypes()
+            .Select(x => x.ToInterfaceBuilder().Chain(y => y.Name = "I" + y.Name))
+            .Select(CreateBuilderInterface)
+            .ToArray();
 }
