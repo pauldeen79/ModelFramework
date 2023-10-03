@@ -1,9 +1,9 @@
 ﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
-public class AbstractionsBuilderInterfaces : ClassFrameworkCSharpClassBase
+public class AbstractionsModelInterfaces : ClassFrameworkModelClassBase
 {
-    public override string Path => $"{Constants.Namespaces.DomainBuilders}/Abstractions";
+    public override string Path => $"{Constants.Namespaces.DomainModels}/Abstractions";
 
     public override object CreateModel()
         => CreateBuilderInterfacesModel();
