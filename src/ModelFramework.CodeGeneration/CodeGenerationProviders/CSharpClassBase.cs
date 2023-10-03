@@ -670,7 +670,6 @@ public abstract class CSharpClassBase : ClassBase
                         FixPropertyInterfacesNamespaces(z);
                     }
                     z.HasSetter = true;
-                    z.SetterVisibility = null; //TODO: Find out why this is set to Private. null should be sufficient (means equal to the property visibility)
                     z.Attributes.Clear();
                 })
                 .Chain(y =>

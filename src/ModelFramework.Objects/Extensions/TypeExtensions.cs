@@ -143,15 +143,6 @@ public static class TypeExtensions
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic)
                     ? Visibility.Public
                     : Visibility.Private)
-                .WithGetterVisibility(p.GetGetMethod()?.IsPublic ?? false
-                    ? Visibility.Public
-                    : Visibility.Private)
-                .WithSetterVisibility(p.GetSetMethod()?.IsPublic ?? false
-                    ? Visibility.Public
-                    : Visibility.Private)
-                .WithInitializerVisibility(p.GetSetMethod()?.IsPublic ?? false
-                    ? Visibility.Public
-                    : Visibility.Private)
                 .AddAttributes(GetAttributes(p.GetCustomAttributes(false), attributeInitializeDelegate))
         );
 
