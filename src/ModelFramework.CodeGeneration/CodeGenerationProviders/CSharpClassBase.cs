@@ -667,21 +667,7 @@ public abstract class CSharpClassBase : ClassBase
 
                     if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
                     {
-                        foreach (var mapping in GetBuilderNamespaceMappings())
-                        {
-                            if (z.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
-                            {
-                                z.TypeName = z.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
-                                if (z.TypeName.EndsWith(">", StringComparison.Ordinal))
-                                {
-                                    z.TypeName = z.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
-                                }
-                                else
-                                {
-                                    z.TypeName += BuilderName;
-                                }
-                            }
-                        }
+                        FixPropertyInterfacesNamespaces(z);
                     }
                     z.HasSetter = true;
                     z.SetterVisibility = null; //TODO: Find out why this is set to Private. null should be sufficient (means equal to the property visibility)
@@ -689,13 +675,37 @@ public abstract class CSharpClassBase : ClassBase
                 })
                 .Chain(y =>
                 {
-                    for (int i = 0; i < y.Interfaces.Count; i++)
-                    {
-                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
-                    }
+                    FixInterfacesNamespaces(y);
                 })
                 .Build()
             ).ToArray();
+
+    private void FixPropertyInterfacesNamespaces(ClassPropertyBuilder builder)
+    {
+        foreach (var mapping in GetBuilderNamespaceMappings())
+        {
+            if (builder.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
+            {
+                builder.TypeName = builder.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
+                if (builder.TypeName.EndsWith(">", StringComparison.Ordinal))
+                {
+                    builder.TypeName = builder.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
+                }
+                else
+                {
+                    builder.TypeName += BuilderName;
+                }
+            }
+        }
+    }
+
+    private void FixInterfacesNamespaces(InterfaceBuilder y)
+    {
+        for (int i = 0; i < y.Interfaces.Count; i++)
+        {
+            y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
+        }
+    }
 
     protected ITypeBase[] CreateInterfaces()
         => GetType().Assembly.GetTypes()
