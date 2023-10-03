@@ -42,7 +42,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             interfaces = sourceModel.GetInterfaces();
             foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
             {
-                typeBaseBuilder.AddInterfaces(i.FullName!.Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"{Constants.Namespaces.Domain}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
+                typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
             }
 
             return;
@@ -57,13 +57,13 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         interfaces = sourceModel.GetInterfaces();
         foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
         {
-            typeBaseBuilder.AddInterfaces(i.FullName!.Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"{Constants.Namespaces.Domain}.Abstractions.", StringComparison.Ordinal));
+            typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal));
         }
     }
 
     protected object CreateBuilderInterfacesModel()
         => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == "ClassFramework.CodeGeneration.Models.Abstractions")
+            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
             .Select(x => x.ToInterfaceBuilder()
                 .WithNamespace(CurrentNamespace)
                 .WithVisibility(ModelFramework.Objects.Contracts.Visibility.Public)
@@ -71,7 +71,9 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
                 .WithAll(y => y.Properties, z =>
                 {
-                    z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName).Replace("System.Collections.Generic.IReadOnlyCollection", "System.Collections.Generic.List", StringComparison.Ordinal);
+                    z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
+                        .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
+
                     if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
                     {
                         foreach (var mapping in GetBuilderNamespaceMappings())
@@ -98,7 +100,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 {
                     for (int i = 0; i < y.Interfaces.Count; i++)
                     {
-                        y.Interfaces[i] = y.Interfaces[i].Replace("ClassFramework.CodeGeneration.Models.Abstractions.", $"ClassFramework.Domain.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
+                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
                     }
                 })
                 .Build()
