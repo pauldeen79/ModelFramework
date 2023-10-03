@@ -7,7 +7,7 @@ public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
 
     public override object CreateModel()
         => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == "ClassFramework.CodeGeneration.Models.Abstractions")
+            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
             .Select(x => x.ToInterfaceBuilder()
                 .WithNamespace(CurrentNamespace)
                 .WithVisibility(ModelFramework.Objects.Contracts.Visibility.Public)
@@ -17,7 +17,7 @@ public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
                 {
                     for (int i = 0; i < y.Interfaces.Count; i++)
                     {
-                        y.Interfaces[i] = y.Interfaces[i].Replace("ClassFramework.CodeGeneration.Models.Abstractions.", "ClassFramework.Domain.Abstractions.", StringComparison.Ordinal);
+                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal);
                     }
                 })
                 .Build()
