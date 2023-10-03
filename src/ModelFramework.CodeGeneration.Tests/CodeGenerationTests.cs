@@ -774,6 +774,88 @@ namespace MyNamespace.Domain
     }
 
     [Fact]
+    public void Can_Generate_Core_Interface_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreInterfaces>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NotUsed
+{
+    public interface IMyClass
+    {
+        System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyClass> SubTypes
+        {
+            get;
+        }
+
+        MyNamespace.Domain.MyClass? ParentType
+        {
+            get;
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Core_Builder_Interface_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreBuilderInterfaces>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NotUsed
+{
+    public interface IMyClassBuilder
+    {
+        System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder> SubTypes
+        {
+            get;
+            set;
+        }
+
+        MyNamespace.Domain.Builders.MyClassBuilder? ParentType
+        {
+            get;
+            set;
+        }
+    }
+}
+");
+    }
+
+    [Fact]
     public void Can_Generate_Base_Builder_Using_ModelTransformation_And_Automatic_Builder_Properties()
     {
         // Arrange

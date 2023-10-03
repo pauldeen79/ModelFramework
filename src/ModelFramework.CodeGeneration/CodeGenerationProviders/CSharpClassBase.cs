@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
+﻿using CrossCutting.Common;
+
+namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
@@ -652,14 +654,12 @@ public abstract class CSharpClassBase : ClassBase
         };
     }
 
-    protected ITypeBase[] CreateBuilderInterfaces()
-        => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
-            .Select(x => x.ToInterfaceBuilder()
-                .WithNamespace(CurrentNamespace)
+    protected ITypeBase[] CreateBuilderInterfaces(IEnumerable<InterfaceBuilder> interfaceBuilders)
+        => interfaceBuilders.IsNotNull(nameof(interfaceBuilders))
+            .Select(x =>
+                x.WithNamespace(CurrentNamespace)
                 .WithVisibility(Visibility.Public)
                 .WithName($"{x.Name}{BuilderName}")
-                .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
                 .WithAll(y => y.Properties, z =>
                 {
                     z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
@@ -707,13 +707,10 @@ public abstract class CSharpClassBase : ClassBase
         }
     }
 
-    protected ITypeBase[] CreateInterfaces()
-        => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
-            .Select(x => x.ToInterfaceBuilder()
-                .WithNamespace(CurrentNamespace)
+    protected ITypeBase[] CreateInterfaces(IEnumerable<InterfaceBuilder> interfaceBuilders)
+        => interfaceBuilders.Select(x =>
+                x.WithNamespace(CurrentNamespace)
                 .WithVisibility(Visibility.Public)
-                .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
                 .WithAll(y => y.Properties, z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName))
                 .Chain(y =>
                 {
