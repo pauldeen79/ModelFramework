@@ -697,6 +697,25 @@ public abstract class CSharpClassBase : ClassBase
                 .Build()
             ).ToArray();
 
+    protected ITypeBase[] CreateInterfaces()
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
+            .Select(x => x.ToInterfaceBuilder()
+                .WithNamespace(CurrentNamespace)
+                .WithVisibility(Visibility.Public)
+                .Chain(y => y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName))
+                .WithAll(y => y.Properties, z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName))
+                .Chain(y =>
+                {
+                    for (int i = 0; i < y.Interfaces.Count; i++)
+                    {
+                        y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal);
+                    }
+                })
+                .Build()
+            )
+            .ToArray();
+
     private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
     {
         if (typeName.GetGenericArguments().GetNamespaceWithDefault() == $"{RootNamespace}.Contracts")
