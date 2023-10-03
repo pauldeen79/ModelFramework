@@ -392,8 +392,8 @@ public abstract class CSharpClassBase : ClassBase
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <param name="typeBaseBuilder">Builder instance to visit.</param>
     protected virtual void Visit<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
-    where TEntity : ITypeBase
-    where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ITypeBase
+        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
     }
 

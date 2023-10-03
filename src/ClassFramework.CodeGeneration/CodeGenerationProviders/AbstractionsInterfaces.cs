@@ -5,5 +5,6 @@ public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
 {
     public override string Path => $"{Constants.Namespaces.Domain}/Abstractions";
 
-    public override object CreateModel() => CreateInterfaces();
+    public override object CreateModel()
+        => CreateInterfaces();
 }
