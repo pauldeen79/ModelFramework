@@ -333,18 +333,6 @@ public class StringExtensionsTests
         result.Should().Be(expected);
     }
 
-    /*    public static bool IsStringTypeName(this string instance)
-        => instance.FixTypeName() == typeof(string).FullName;
-
-    public static bool IsBooleanTypeName(this string instance)
-        => instance.FixTypeName() == typeof(bool).FullName;
-
-    public static bool IsNullableBooleanTypeName(this string instance)
-        => instance.FixTypeName() == typeof(bool?).FullName.FixTypeName();
-
-    public static bool IsObjectTypeName(this string instance)
-        => instance.FixTypeName() == typeof(object).FullName;*/
-
     [Theory]
     [InlineData("", false)]
     [InlineData(null, false)]

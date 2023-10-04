@@ -17,4 +17,51 @@ public static class TypeExtensions
             ? name.FixTypeName()
             : name.Substring(0, index).FixTypeName();
     }
+
+    public static string GetTypeName(this Type type, MemberInfo declaringType)
+    {
+        declaringType = declaringType.IsNotNull(nameof(declaringType));
+
+        if (!type.IsGenericType)
+        {
+            return type.FullName.FixTypeName().WhenNullOrEmpty(() => type.Name);
+        }
+
+        var typeName = type.FullName.FixTypeName();
+        if (typeName.IsCollectionTypeName())
+        {
+            // for now, we will ignore nullability of the generic argument on generic lists
+            return $"{typeName.WithoutProcessedGenerics()}<{typeName.GetGenericArguments()}>";
+        }
+
+        var builder = new StringBuilder();
+        builder.Append(type.WithoutGenerics());
+        builder.Append("<");
+        var first = true;
+        var index = 0;
+        foreach (var arg in type.GetGenericArguments())
+        {
+            if (first)
+            {
+                first = false;
+            }
+            else
+            {
+                builder.Append(",");
+            }
+
+            index++;
+            builder.Append(arg.GetTypeName(type));
+            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
+            {
+                builder.Append("?");
+            }
+            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
+            {
+                builder.Append("?");
+            }
+        }
+        builder.Append(">");
+        return builder.ToString();
+    }
 }
