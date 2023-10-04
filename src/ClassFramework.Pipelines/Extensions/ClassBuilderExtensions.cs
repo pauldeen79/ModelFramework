@@ -16,6 +16,6 @@ public static class ClassBuilderExtensions
             }
         }
 
-        return instance.IsNotNull(nameof(instance)).GetFullName().GetCsharpFriendlyTypeName();
+        return instance.GetFullName().GetCsharpFriendlyTypeName();
     }
 }

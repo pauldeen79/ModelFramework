@@ -2,7 +2,7 @@
 
 internal interface ITypeBase : IMetadataContainer, IVisibilityContainer, INameContainer, IAttributesContainer
 {
-    [Required] string Namespace { get; }
+    [Required(AllowEmptyStrings = true)] string Namespace { get; }
     bool Partial { get; }
     [Required] IReadOnlyCollection<string> Interfaces { get; }
     [Required] IReadOnlyCollection<IClassProperty> Properties { get; }
