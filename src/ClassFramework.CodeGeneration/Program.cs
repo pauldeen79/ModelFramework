@@ -22,10 +22,6 @@ internal static class Program
         ///var scaffoldingTypes = generators.Where(x => !x.Name.EndsWithAny(generationTypeNames));
         ///_ = scaffoldingTypes.Select(x => (ClassFrameworkCSharpClassBase)Activator.CreateInstance(x)!).Select(x => GenerateCode.For(new(basePath, generateMultipleFiles, true, dryRun), multipleContentBuilder, x)).ToArray();
 
-        var modelGenerators = typeof(ClassFrameworkModelClassBase).Assembly.GetExportedTypes().Where(x => !x.IsAbstract && x.BaseType == typeof(ClassFrameworkModelClassBase)).ToArray();
-        var modelGenerationTypes = modelGenerators.Where(x => x.Name.EndsWithAny(generationTypeNames));
-        _ = modelGenerationTypes.Select(x => (ClassFrameworkModelClassBase)Activator.CreateInstance(x)!).Select(x => GenerateCode.For(new(basePath, generateMultipleFiles, false, dryRun), multipleContentBuilder, x)).ToArray();
-
         // Log output to console
         if (string.IsNullOrEmpty(basePath))
         {
