@@ -17,6 +17,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
+    protected override bool UseBuilderFactories => false;
 
     protected override void Visit<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
     {
