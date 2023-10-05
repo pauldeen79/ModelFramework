@@ -2400,12 +2400,6 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             return BuildTyped();
         }
 
-        public T BuildTyped<T>()
-            where T : class
-        {
-            return BuildTyped() as T ?? throw new System.InvalidOperationException(""Wrong type"");
-        }
-
         public TBuilder WithBaseProperty(string baseProperty)
         {
             BaseProperty = baseProperty;
@@ -2497,12 +2491,6 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
         {
             return BuildTyped();
-        }
-
-        public T BuildTyped<T>()
-            where T : class
-        {
-            return BuildTyped() as T ?? throw new System.InvalidOperationException(""Wrong type"");
         }
 
         public TBuilder WithMiddleProperty(string middleProperty)
@@ -2615,12 +2603,6 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         public override ModelFramework.Generators.Objects.Tests.POC.BaseClass Build()
         {
             return BuildTyped();
-        }
-
-        public T BuildTyped<T>()
-            where T : class
-        {
-            return BuildTyped() as T ?? throw new System.InvalidOperationException(""Wrong type"");
         }
 
         public TBuilder WithBaseProperty(string baseProperty)

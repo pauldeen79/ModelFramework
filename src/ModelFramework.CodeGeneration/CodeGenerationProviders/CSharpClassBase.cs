@@ -44,13 +44,12 @@ public abstract class CSharpClassBase : ClassBase
             || (parent.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
         );
 
+    protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => InheritFromInterfaces
         ? $"{ProjectName}.Abstractions"
         : $"{ProjectName}.Domain";
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
-    protected virtual bool UseBuilderFactories => true;
-    protected abstract string ProjectName { get; }
     protected abstract Type RecordCollectionType { get; }
     protected abstract Type RecordConcreteCollectionType { get; }
 
@@ -493,7 +492,7 @@ public abstract class CSharpClassBase : ClassBase
     protected string? GetCustomBuilderMethodParameterExpression(string typeName)
         => (string.IsNullOrEmpty(GetEntityClassName(typeName)) || GetCustomBuilderTypes().Contains(typeName.GetClassName())) && string.IsNullOrEmpty(typeName.GetGenericArguments())
             ? string.Empty
-            : "{0}{2}." + BuilderBuildTypedMethodName + "<" + typeName + ">()";
+            : "{0}{2}." + BuilderBuildTypedMethodName + "()";
 
     protected ImmutableBuilderClassSettings CreateImmutableBuilderClassSettings(string @namespace, ArgumentValidationType? forceValidateArgumentsInConstructor = null)
         => new
@@ -786,16 +785,9 @@ public abstract class CSharpClassBase : ClassBase
             : BuilderClassCollectionType.WithoutGenerics();
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
-    {
-        if (string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) && !typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain."))
-        {
-            return null;
-        }
-
-        return UseBuilderFactories
+        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
             ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
-            : "{0}.Select(x => x." + BuilderBuildTypedMethodName + "<" + typeName.GetGenericArguments() + ">())";
-    }
+            : null;
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
@@ -845,25 +837,6 @@ public abstract class CSharpClassBase : ClassBase
             .WithPartial()
             .With(x => Visit(x))
             .Build();
-
-    //.With(AddToBuilderMethod)
-    //private void AddToBuilderMethod(ClassBuilder classBuilder)
-    //{
-    //    if (string.IsNullOrEmpty(GetEntityClassName(classBuilder.GetFullName())))
-    //    {
-    //        return;
-    //    }
-
-    //    if (UseBuilderFactories)
-    //    {
-    //        return;
-    //    }
-
-    //    classBuilder.AddMethods(new ClassMethodBuilder()
-    //        .WithName("ToBuilder")
-    //        .WithTypeName(classBuilder.GetFullName())
-    //        );
-    //}
 
     private ITypeBase CreateImmutableOverrideClassFromClass(IClass cls, string entitiesNamespace)
         => new ClassBuilder(cls)
@@ -916,9 +889,6 @@ public abstract class CSharpClassBase : ClassBase
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
         => "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName.GetGenericArguments()) + "." + GetEntityClassName(typeName.GetGenericArguments()) + BuilderFactoryName + ".Create(x)).ToList()";
-        //=> UseBuilderFactories
-        //    ? "{0} = source.{0}.Select(x => " + GetBuilderNamespace(typeName.GetGenericArguments()) + "." + GetEntityClassName(typeName.GetGenericArguments()) + BuilderFactoryName + ".Create(x)).ToList()"
-        //    : "{0} = source.{0}.Select(x => x.ToBuilder()).ToList()";
 
     private Literal GetDefaultValueForBuilderClassConstructor(string typeName)
     {

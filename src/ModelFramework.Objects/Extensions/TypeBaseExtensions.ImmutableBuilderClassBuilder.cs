@@ -456,13 +456,6 @@ public static partial class TypeBaseEtensions
                     .WithOverride()
                     .WithTypeName(FormatInstanceName(settings.InheritanceSettings.BaseClass ?? instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate) + (settings.InheritanceSettings.BaseClass ?? instance).GetGenericTypeArgumentsString())
                     .AddLiteralCodeStatements($"return {settings.NameSettings.BuildTypedMethodName}();");
-
-                yield return new ClassMethodBuilder()
-                    .WithName(settings.NameSettings.BuildTypedMethodName)
-                    .AddGenericTypeArguments("T")
-                    .AddGenericTypeArgumentConstraints("where T : class")
-                    .WithTypeName("T")
-                    .AddLiteralCodeStatements("return BuildTyped() as T ?? throw new System.InvalidOperationException(\"Wrong type\");");
             }
         }
 

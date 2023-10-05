@@ -581,7 +581,7 @@ namespace Test.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new Test.TestClass<T>(TestProperty.BuildTyped<ModelFramework.Domain.MyGenericType<T>>());
+            return new Test.TestClass<T>(TestProperty.BuildTyped());
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -888,12 +888,6 @@ namespace MyNamespace.Domain.Builders
         public override MyNamespace.Domain.MyBaseClass Build()
         {
             return BuildTyped();
-        }
-
-        public T BuildTyped<T>()
-            where T : class
-        {
-            return BuildTyped() as T ?? throw new System.InvalidOperationException(""Wrong type"");
         }
 
         public TBuilder WithBaseProperty(System.Text.StringBuilder baseProperty)
