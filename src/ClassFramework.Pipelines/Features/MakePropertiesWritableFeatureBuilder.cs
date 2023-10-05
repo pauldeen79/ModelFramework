@@ -15,7 +15,7 @@ public class MakePropertiesWritableFeature : IPipelineFeature<ClassBuilder, Buil
         foreach (var prop in context.Model.Properties)
         {
             prop.HasSetter = true;
-            prop.HasInitializer = false; //TODO: See if we can create some business logic, or validation that HasInitializer and HasSetter cannot both be true
+            prop.HasInitializer = false;
         }
     }
 
