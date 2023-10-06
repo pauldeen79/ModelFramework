@@ -71,6 +71,15 @@ public static partial class TypeBaseExtensions
                         : $"base(({instance.Name}Base)original)"),
                 new ClassConstructorBuilder()
                     .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
+                    .AddLiteralCodeStatements
+                    (
+                        instance.Properties
+                            .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
+                            .Select
+                            (
+                                p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(""{p.Name.ToPascalCase()}"");"
+                            )
+                    )
                     .AddLiteralCodeStatements(CreateValidationCode(instance, settings, false))
                     .WithChainCall(GenerateImmutableClassChainCall(instance, settings, true))
             )

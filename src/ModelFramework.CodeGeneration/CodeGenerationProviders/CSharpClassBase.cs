@@ -530,7 +530,7 @@ public abstract class CSharpClassBase : ClassBase
             classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.None)
         );
 
-    protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
+    protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
@@ -538,7 +538,7 @@ public abstract class CSharpClassBase : ClassBase
             constructorSettings: new(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
-                addNullChecks: false),
+                addNullChecks: overrideAddNullChecks ?? false),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
@@ -829,7 +829,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(overrideAddNullChecks: true))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
@@ -853,7 +853,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor))
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor, true))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))

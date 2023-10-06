@@ -170,6 +170,7 @@ namespace Test
 
         public TestClass(string testProperty) : base(testProperty)
         {
+            if (testProperty == null) throw new System.ArgumentNullException(""testProperty"");
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
         }
     }
