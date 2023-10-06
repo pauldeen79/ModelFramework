@@ -11,9 +11,9 @@ public class ContextProcessor : IPlaceholderProcessor
             return value switch
             {
                 nameof(ClassBuilder.Name) => Result<string>.Success(pipelineContext.Model.Name),
-                $"{nameof(ClassBuilder.Name)}Lower" => Result<string>.Success(pipelineContext.Model.Name.ToLower(formatProvider as CultureInfo ?? CultureInfo.CurrentCulture)),
-                $"{nameof(ClassBuilder.Name)}Upper" => Result<string>.Success(pipelineContext.Model.Name.ToUpper(formatProvider as CultureInfo ?? CultureInfo.CurrentCulture)),
-                $"{nameof(ClassBuilder.Name)}Pascal" => Result<string>.Success(pipelineContext.Model.Name.ToPascalCase()),
+                $"{nameof(ClassBuilder.Name)}Lower" => Result<string>.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo())),
+                $"{nameof(ClassBuilder.Name)}Upper" => Result<string>.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
+                $"{nameof(ClassBuilder.Name)}Pascal" => Result<string>.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
                 nameof(ClassBuilder.Namespace) => Result<string>.Success(pipelineContext.Model.Namespace),
                 _ => Result<string>.Continue()
             };

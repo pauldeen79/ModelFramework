@@ -11,7 +11,7 @@ public class StringExtensionsTests
     public void ToPascalCase_Returns_Correct_Result(string input, string expectedResult)
     {
         // Act
-        var actual = input.ToPascalCase();
+        var actual = input.ToPascalCase(CultureInfo.InvariantCulture);
 
         // Assert
         actual.Should().Be(expectedResult);

@@ -2,10 +2,10 @@
 
 public static class StringExtensions
 {
-    public static string ToPascalCase(this string value)
+    public static string ToPascalCase(this string value, CultureInfo cultureInfo)
         => string.IsNullOrEmpty(value)
             ? value
-            : string.Concat(value.Substring(0, 1).ToLowerInvariant(), value.Substring(1));
+            : string.Concat(value.Substring(0, 1).ToLower(cultureInfo), value.Substring(1));
 
     public static string SqlEncode(this string value)
         => "'" + value.Replace("'", "''") + "'";
