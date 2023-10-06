@@ -4,16 +4,7 @@ public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipel
 {
     public BuilderPipelineBuilder()
     {
-        var formattableStringParser = new FormattableStringParser
-        (
-            new IFormattableStringStateProcessor[]
-            {
-                new OpenSignProcessor(),
-                new CloseSignProcessor(new[] { new ContextProcessor() }),
-                new PlaceholderProcessor(),
-                new ResultProcessor()
-            }
-        );
+        var formattableStringParser = FormattableStringParser.Create(new ContextProcessor());
 
         AddFeatures
         (
