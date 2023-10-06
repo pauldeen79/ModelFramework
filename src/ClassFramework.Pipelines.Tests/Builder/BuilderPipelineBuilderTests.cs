@@ -35,29 +35,29 @@ public class BuilderPipelineBuilderTests
 
     public class Process
     {
-        private BuilderPipelineBuilderSettings Context { get; } = new BuilderPipelineBuilderSettings(new BuilderPipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"));
-        private Pipeline<ClassBuilder, BuilderPipelineBuilderSettings> Pipeline { get; } = new BuilderPipelineBuilder().Build();
-        private ClassBuilder model { get; } = CreateModel();
+        private BuilderPipelineBuilderContext Context { get; } = new BuilderPipelineBuilderContext(CreateModel().Build(), new BuilderPipelineBuilderSettings(new BuilderPipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
+        private Pipeline<ClassBuilder, BuilderPipelineBuilderContext> Pipeline { get; } = new BuilderPipelineBuilder().Build();
+        private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Makes_All_Properties_Writable()
+        public void Adds_Writable_Properties()
         {
             // Act
-            Pipeline.Process(model, Context);
+            Pipeline.Process(Model, Context);
 
             // Assert
-            model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
         }
 
         [Fact]
-        public void Changes_Namespace_And_Name_According_To_Settings()
+        public void Sets_Namespace_And_Name_According_To_Settings()
         {
             // Act
-            Pipeline.Process(model, Context);
+            Pipeline.Process(Model, Context);
 
             // Assert
-            model.Name.Should().Be("MyClassBuilder");
-            model.Namespace.Should().Be("MyNamespace.Builders");
+            Model.Name.Should().Be("MyClassBuilder");
+            Model.Namespace.Should().Be("MyNamespace.Builders");
         }
 
         private static ClassBuilder CreateModel()
@@ -65,8 +65,8 @@ public class BuilderPipelineBuilderTests
                 .WithName("MyClass")
                 .WithNamespace("MyNamespace")
                 .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithHasSetter(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithHasSetter(true)
+                    new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
+                    new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true)
                 );
     }
 }

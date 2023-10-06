@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipelineBuilderSettings>
+public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipelineBuilderContext>
 {
     public BuilderPipelineBuilder()
     {
@@ -8,13 +8,13 @@ public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipel
 
         AddFeatures
         (
-            new MakePropertiesWritableFeatureBuilder(),
-            new ChangeNameFeatureBuilder(formattableStringParser),
+            new AddPropertiesFeatureBuilder(),
+            new SetNameFeatureBuilder(formattableStringParser),
             new AbstractBuilderFeatureBuilder(formattableStringParser)
         );
     }
 
-    public BuilderPipelineBuilder(Pipeline<ClassBuilder, BuilderPipelineBuilderSettings> source) : base(source)
+    public BuilderPipelineBuilder(Pipeline<ClassBuilder, BuilderPipelineBuilderContext> source) : base(source)
     {
     }
 }

@@ -4,7 +4,8 @@ public class ContextProcessorTests : TestBase<ContextProcessor>
 {
     public class Process : ContextProcessorTests
     {
-        private ClassBuilder Model { get; } = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
+        private ClassBuilder Model { get; } = new();
+        private TypeBase CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
         [Fact]
         public void Returns_Continue_When_Context_Is_Not_PipelineContext()
@@ -43,7 +44,7 @@ public class ContextProcessorTests : TestBase<ContextProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderSettings>(Model, new BuilderPipelineBuilderSettings());
+            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderContext>(Model, new BuilderPipelineBuilderContext(CreateModel(), new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
