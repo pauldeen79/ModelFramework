@@ -323,20 +323,20 @@ public static class StringExtensions
 
         if ((typeName.IsObjectTypeName() || typeName == "object") && !isNullable)
         {
-            return "new System.Object()";
+            return $"new {typeof(object).FullName}()";
         }
 
         if (typeName == "System.Collections.IEnumerable" && !isNullable)
         {
-            return "System.Linq.Enumerable.Empty<object>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>()";
         }
 
-        if (typeName.WithoutProcessedGenerics() == "System.Collections.Generic.IEnumerable" && !isNullable)
+        if (typeName.WithoutProcessedGenerics() == typeof(IEnumerable<>).WithoutGenerics() && !isNullable)
         {
-            return $"System.Linq.Enumerable.Empty<{typeName.GetGenericArguments()}>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeName.GetGenericArguments()}>()";
         }
 
-        var preNullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith("System.Nullable")
+        var preNullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
             ? "?"
             : string.Empty;
 
@@ -351,7 +351,7 @@ public static class StringExtensions
                                                   bool isNullable,
                                                   bool enableNullableReferenceTypes)
         => !string.IsNullOrEmpty(instance)
-            && !instance.StartsWith("System.Nullable")
+            && !instance.StartsWith(typeof(Nullable<>).WithoutGenerics())
             && !instance.EndsWith("?")
             && isNullable
             && enableNullableReferenceTypes

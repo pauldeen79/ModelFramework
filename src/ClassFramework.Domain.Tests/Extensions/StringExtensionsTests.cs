@@ -395,4 +395,115 @@ public class StringExtensionsTests
         // Assert
         result.Should().Be(expected);
     }
+
+    [Fact]
+    public void ConvertTypeNameToArray_Returns_Correct_Result()
+    {
+        // Arrange
+        var input = typeof(List<string>).FullName!.FixTypeName(); // note that it's important to use the 'fixed type name', e.g. System.Collections.Generic.List<System.String> instead of List`...
+
+        // Act
+        var result = input.ConvertTypeNameToArray();
+
+        // Assert
+        result.Should().Be("System.String[]");
+    }
+
+    [Theory]
+    [InlineData("", "", "")]
+    [InlineData("", "System.Collections.Generic.List", "")]
+    [InlineData("SomeTypeThatIsNotAColl", "", "SomeTypeThatIsNotAColl")]
+    [InlineData("SomeTypeThatIsNotAColl", "System.Collections.Generic.List", "SomeTypeThatIsNotAColl")]
+    [InlineData("Custom.List<System.String>", "", "Custom.List<System.String>")]
+    [InlineData("Custom.List<System.String>", "System.Collections.Generic.List", "System.Collections.Generic.List<System.String>")]
+    public void FixCollectionTypeName_Returns_Correct_Result(string typeName, string newCollectionTypeName,string expectedResult)
+    {
+        // Act
+        var result = typeName.FixCollectionTypeName(newCollectionTypeName);
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("MyMethod", "MyMethod")]
+    [InlineData("ISomeInterface.MyMethod", "MyMethod")]
+    public void RemoveInterfacePrefix_Returns_Correct_Result(string input, string expectedResult)
+    {
+        // Act
+        var result = input.RemoveInterfacePrefix();
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("System.String", "System.String")]
+    [InlineData("System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]", "System.Collections.Generic.List")]
+    [InlineData("System.Collections.Generic.List<System.String>", "System.Collections.Generic.List<System.String>")] // note that you need WithoutProcessedGenerics to get the thing you want...
+    public void WithoutGenerics_Returns_Correct_Result(string typeName, string expectedResult)
+    {
+        // Act
+        var result = typeName.WithoutGenerics();
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Fact]
+    public void AbbreviateNamespaces_Returns_Value_Unchanged_When_Namespace_Is_Not_Supplied()
+    {
+        // Arrange
+        var sut = "MyNamespace.MyClass";
+        var namespacesToAbbreviate = new[] { "System" };
+
+        // Act
+        var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
+
+        // Assert
+        actual.Should().Be(sut);
+    }
+
+    [Fact]
+    public void AbbreviateNamespaces_Returns_Abbreviated_Value_When_Namespace_Is_Supplied()
+    {
+        // Arrange
+        var sut = "MyNamespace.MyClass";
+        var namespacesToAbbreviate = new[] { "MyNamespace" };
+
+        // Act
+        var actual = sut.AbbreviateNamespaces(namespacesToAbbreviate);
+
+        // Assert
+        actual.Should().Be("MyClass");
+    }
+
+    [Theory,
+        InlineData("System.String", true, false, "default(System.String?)"),
+        InlineData("System.String", false, false, "string.Empty"),
+        InlineData("string", true, false, "default(string?)"),
+        InlineData("string?", true, false, "default(string?)"),
+        InlineData("string", false, false, "string.Empty"),
+        InlineData("System.Object", true, false, "default(System.Object?)"),
+        InlineData("System.Object", false, false, "new System.Object()"),
+        InlineData("object", true, false, "default(object?)"),
+        InlineData("object?", true, false, "default(object?)"),
+        InlineData("object", false, false, "new System.Object()"),
+        InlineData("System.Int32", false, false, "default(System.Int32)"),
+        InlineData("System.Int32", true, false, "default(System.Int32?)"),
+        InlineData("System.Collections.IEnumerable", false, false, "System.Linq.Enumerable.Empty<System.Object>()"),
+        InlineData("System.Collections.IEnumerable", true, false, "default(System.Collections.IEnumerable?)"),
+        InlineData("System.Collections.Generic.IEnumerable<int>", false, false, "System.Linq.Enumerable.Empty<int>()"),
+        InlineData("System.Collections.Generic.IEnumerable<int>", true, false, "default(System.Collections.Generic.IEnumerable<int>?)"),
+        InlineData("SomeType", false, true, "default(SomeType)!")]
+    public void GetDefaultValue_Returns_Correct_Result(string input, bool isNullable, bool enableNullableReferenceTypes, string expected)
+    {
+        // Act
+        var actual = input.GetDefaultValue(isNullable, enableNullableReferenceTypes);
+
+        // Assert
+        actual.Should().Be(expected);
+    }
 }
