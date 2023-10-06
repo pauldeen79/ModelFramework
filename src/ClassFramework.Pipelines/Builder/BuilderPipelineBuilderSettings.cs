@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines;
+﻿namespace ClassFramework.Pipelines.Builder;
 
 public record BuilderPipelineBuilderSettings
 {

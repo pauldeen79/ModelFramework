@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Features;
 
 public class AbstractBuilderFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderSettings>>
 {

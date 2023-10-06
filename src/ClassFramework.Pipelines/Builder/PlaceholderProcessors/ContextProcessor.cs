@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.PlaceholderProcessors;
+﻿namespace ClassFramework.Pipelines.Builder.PlaceholderProcessors;
 
 public class ContextProcessor : IPlaceholderProcessor
 {

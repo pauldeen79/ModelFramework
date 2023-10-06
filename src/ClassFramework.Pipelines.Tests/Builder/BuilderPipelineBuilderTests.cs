@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
 public class BuilderPipelineBuilderTests
 {

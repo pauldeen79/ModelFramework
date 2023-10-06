@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Tests.PlaceholderProcessors;
+﻿namespace ClassFramework.Pipelines.Tests.Builder.PlaceholderProcessors;
 
 public class ContextProcessorTests : TestBase<ContextProcessor>
 {
