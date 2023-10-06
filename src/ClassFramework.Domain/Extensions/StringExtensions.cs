@@ -326,7 +326,7 @@ public static class StringExtensions
             return $"new {typeof(object).FullName}()";
         }
 
-        if (typeName == "System.Collections.IEnumerable" && !isNullable)
+        if (typeName == typeof(IEnumerable).FullName && !isNullable)
         {
             return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeof(object).FullName}>()";
         }
@@ -380,7 +380,7 @@ public static class StringExtensions
     {
         if (instance.StartsWith(typeof(IEnumerable<>).WithoutGenerics()))
         {
-            return $"Enumerable.Empty<{instance.GetGenericArguments()}>()";
+            return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{instance.GetGenericArguments()}>()";
         }
 
         return $"new {instance}()";
