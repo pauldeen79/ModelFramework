@@ -506,4 +506,31 @@ public class StringExtensionsTests
         // Assert
         actual.Should().Be(expected);
     }
+    
+    [Theory]
+    [InlineData("System.String", false, false, "System.String")]
+    [InlineData("System.String", true, false, "System.String")]
+    [InlineData("System.String", true, true, "System.String?")]
+    [InlineData("System.String?", true, true, "System.String?")]
+    [InlineData("System.Nullable<System.Int32>", true, true, "System.Nullable<System.Int32>")]
+    public void AppendNullableAnnotation_Returns_Correct_Result(string typeName, bool isNullable, bool enableNullableReferenceTypes, string expectedResult)
+    {
+        // Act
+        var result = typeName.AppendNullableAnnotation(isNullable, enableNullableReferenceTypes);
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("System.Collections.Generic.IEnumerable<System.Int32>", "System.Linq.Enumerable.Empty<System.Int32>()")]
+    [InlineData("System.Collections.Generic.List<System.Int32>", "new System.Collections.Generic.List<System.Int32>()")]
+    public void GetCollectionInitializeStatement_Returns_Correct_Result(string typeName, string expectedResult)
+    {
+        // Act
+        var result = typeName.GetCollectionInitializeStatement();
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
 }
