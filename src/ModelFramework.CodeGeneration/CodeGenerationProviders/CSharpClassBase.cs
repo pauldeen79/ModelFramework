@@ -538,7 +538,7 @@ public abstract class CSharpClassBase : ClassBase
             constructorSettings: new(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
-                addNullChecks: AddNullChecks),
+                addNullChecks: false),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
@@ -732,7 +732,7 @@ public abstract class CSharpClassBase : ClassBase
             return;
         }
 
-        property.ConvertCollectionOnBuilderToEnumerable(false, RecordConcreteCollectionType.WithoutGenerics());
+        property.ConvertCollectionOnBuilderToEnumerable(AddNullChecks, RecordConcreteCollectionType.WithoutGenerics());
         if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
         {
             property.ConvertCollectionPropertyToBuilderOnBuilder
@@ -785,9 +785,18 @@ public abstract class CSharpClassBase : ClassBase
             : BuilderClassCollectionType.WithoutGenerics();
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
-        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
+    {
+        if (AddNullChecks)
+        {
+            return !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
+                ? "{0}?.Select(x => x." + BuilderBuildTypedMethodName + "()) ?? " + typeof(Enumerable).FullName + ".Empty<" + typeName.GetGenericArguments() + ">()"
+                : "{0}?.Select(x => x." + BuilderBuildMethodName + "()) ?? " + typeof(Enumerable).FullName + ".Empty<" + typeName.GetGenericArguments() + ">()";
+        }
+
+        return !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
             ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
             : null;
+    }
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())

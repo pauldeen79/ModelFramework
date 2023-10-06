@@ -482,7 +482,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
-                $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, validationContext, results, true);",
+                $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
                 "return results;"
             );
 
@@ -970,7 +970,9 @@ public static partial class TypeBaseEtensions
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
                                                  p.Name,                            // 0
                                                  p.Name.ToPascalCase(),             // 1
-                                                 p.IsNullable ? "?" : string.Empty, // 2
+                                                 p.IsNullable || (settings.ConstructorSettings.AddNullChecks && p.IsValueType)
+                                                    ? "?" 
+                                                    : string.Empty,                 // 2
                                                  p.TypeName,                        // 3
                                                  p.TypeName.GetGenericArguments())) // 4
         );

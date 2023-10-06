@@ -91,7 +91,7 @@ public static partial class TypeBaseExtensions
                     .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
                     .Select
                     (
-                        p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
+                        p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(""{p.Name.ToPascalCase()}"");"
                     )
             )
             .AddLiteralCodeStatements
@@ -217,10 +217,10 @@ public static partial class TypeBaseExtensions
             ? GetCollectionFormatStringForInitialization(p)
             : p.Name.ToPascalCase().GetCsharpFriendlyName();
 
-    private static string GetCollectionFormatStringForInitialization(IClassProperty p)
-        => p.IsNullable
-            ? $"{p.Name.ToPascalCase()} == null ? null : new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})"
-            : $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})";
+    private static string GetCollectionFormatStringForInitialization(IClassProperty property)
+        => property.IsNullable
+            ? $"{property.Name.ToPascalCase()} == null ? null : new {typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase().GetCsharpFriendlyName()})"
+            : $"new {typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase().GetCsharpFriendlyName()})";
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
         => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null

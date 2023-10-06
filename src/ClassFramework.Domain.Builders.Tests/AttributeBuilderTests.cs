@@ -40,4 +40,20 @@ public class AttributeBuilderTests
             });
         }
     }
+
+    public class Validate
+    {
+        [Fact]
+        public void Returns_Single_Item_When_One_Property_Is_Null()
+        {
+            // Arrange
+            var sut = new AttributeBuilder { Parameters = null! };
+
+            // Act
+            var validationResult = sut.Validate(new ValidationContext(sut));
+
+            // Assert
+            validationResult.Should().ContainSingle();
+        }
+    }
 }
