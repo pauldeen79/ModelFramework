@@ -12,13 +12,9 @@ public class MakePropertiesWritableFeature : IPipelineFeature<ClassBuilder, Buil
     {
         context = context.IsNotNull(nameof(context));
 
-        foreach (var prop in context.Context.SourceModel.Properties)
-        {
-            var newProp = new ClassPropertyBuilder(prop);
-            newProp.HasSetter = true;
-            newProp.HasInitializer = false;
-            context.Model.AddProperties(newProp);
-        }
+        context.Model.AddProperties(
+            context.Context.SourceModel.Properties.Select(
+                x => new ClassPropertyBuilder(x).WithHasSetter().WithHasInitializer(false)));
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext>> ToBuilder()
