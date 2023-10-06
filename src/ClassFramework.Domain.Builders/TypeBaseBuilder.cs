@@ -7,9 +7,9 @@ public partial class TypeBaseBuilder
 
 public abstract partial class TypeBaseBuilder<TBuilder, TEntity> : TypeBaseBuilder
 {
-    public TBuilder AddInterfaces(params Type[] types)
-        => AddInterfaces(types.Select(x => x.FullName));
+    public TBuilder AddInterfaces(params Type[] interfaces)
+        => AddInterfaces(interfaces.IsNotNull(nameof(interfaces)).Select(x => x.FullName));
 
     public TBuilder AddInterfaces(IEnumerable<Type> interfaces)
-        => AddInterfaces(interfaces.ToArray());
+        => AddInterfaces(interfaces.IsNotNull(nameof(interfaces)).ToArray());
 }

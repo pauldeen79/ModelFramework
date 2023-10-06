@@ -30,4 +30,55 @@ public class TypeBaseBuilderTests
             result.Should().Be("MyClass");
         }
     }
+
+    public class AddInterfaces
+    {
+        [Fact]
+        public void Can_Add_Interfaces_Using_Types_In_Array()
+        {
+            // Arrange
+            var sut = new ClassBuilder();
+
+            // Act
+            var result = sut.AddInterfaces(typeof(INotifyPropertyChanged));
+
+            // Assert
+            result.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+        }
+
+        [Fact]
+        public void Can_Add_Interfaces_Using_Types_In_Enumerable()
+        {
+            // Arrange
+            var sut = new ClassBuilder();
+
+            // Act
+            var result = sut.AddInterfaces(new[] { typeof(INotifyPropertyChanged) }.AsEnumerable());
+
+            // Assert
+            result.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Interfaces_Using_Array()
+        {
+            // Arrange
+            var sut = new ClassBuilder();
+
+            // Act & Assert
+            sut.Invoking(x => x.AddInterfaces(interfaces: (Type[])null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("interfaces");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Interfaces_Using_Enumerable()
+        {
+            // Arrange
+            var sut = new ClassBuilder();
+
+            // Act & Assert
+            sut.Invoking(x => x.AddInterfaces(interfaces: (IEnumerable<Type>)null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("interfaces");
+        }
+    }
 }
