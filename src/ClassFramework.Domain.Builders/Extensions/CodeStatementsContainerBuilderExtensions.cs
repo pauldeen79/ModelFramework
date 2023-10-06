@@ -4,7 +4,7 @@ public static class CodeStatementsContainerBuilderExtensions
 {
     public static T AddStringCodeStatements<T>(this T instance, params string[] statements) where T : ICodeStatementsContainerBuilder
     {
-        instance.CodeStatements.AddRange(statements.IsNotNull(nameof(statements)).Select(x => new StringCodeStatementBuilder(x)));
+        instance.CodeStatements.AddRange(statements.IsNotNull(nameof(statements)).Select(x => new StringCodeStatementBuilder().WithStatement(x)));
         return instance;
     }
 
