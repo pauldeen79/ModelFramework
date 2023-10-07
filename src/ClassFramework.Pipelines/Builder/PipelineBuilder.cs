@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipelineBuilderContext>
+public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderContext>
 {
-    public BuilderPipelineBuilder()
+    public PipelineBuilder()
     {
         var formattableStringParser = FormattableStringParser.Create
         (
@@ -19,7 +19,7 @@ public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipel
         );
     }
 
-    public BuilderPipelineBuilder(Pipeline<ClassBuilder, BuilderPipelineBuilderContext> source) : base(source)
+    public PipelineBuilder(Pipeline<ClassBuilder, PipelineBuilderContext> source) : base(source)
     {
     }
 }

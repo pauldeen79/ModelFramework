@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Features;
 
-public class SetNameFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext>>
+public class SetNameFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -9,11 +9,11 @@ public class SetNameFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, Bui
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext> Build()
+    public IPipelineFeature<ClassBuilder, PipelineBuilderContext> Build()
         => new SetNameFeature(_formattableStringParser);
 }
 
-public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext>
+public class SetNameFeature : IPipelineFeature<ClassBuilder, PipelineBuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuil
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, BuilderPipelineBuilderContext> context)
+    public void Process(PipelineContext<ClassBuilder, PipelineBuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -30,6 +30,6 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuil
         context.Model.Namespace = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNamespaceFormatString, context.Context.FormatProvider, context).GetValueOrThrow();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 }

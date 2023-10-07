@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class BuilderPipelineBuilderTests
+public class PipelineBuilderTests
 {
     public class Build
     {
@@ -8,7 +8,7 @@ public class BuilderPipelineBuilderTests
         public void Builds_Pipeline()
         {
             // Arrange
-            var builder = new BuilderPipelineBuilder();
+            var builder = new PipelineBuilder();
 
             // Act
             var result = builder.Build();
@@ -21,10 +21,10 @@ public class BuilderPipelineBuilderTests
         public void Builds_Altered_Pipeline_Using_Existing_Pipeline()
         {
             // Arrange
-            var sourcePipeline = new BuilderPipelineBuilder().Build();
+            var sourcePipeline = new PipelineBuilder().Build();
 
             // Act
-            var pipeline = new BuilderPipelineBuilder(sourcePipeline)
+            var pipeline = new PipelineBuilder(sourcePipeline)
                 .With(x => x.Features.Clear())
                 .Build();
 
@@ -35,8 +35,8 @@ public class BuilderPipelineBuilderTests
 
     public class Process
     {
-        private BuilderPipelineBuilderContext Context { get; } = new BuilderPipelineBuilderContext(CreateModel().Build(), new BuilderPipelineBuilderSettings(new BuilderPipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
-        private Pipeline<ClassBuilder, BuilderPipelineBuilderContext> Pipeline { get; } = new BuilderPipelineBuilder().Build();
+        private PipelineBuilderContext Context { get; } = new PipelineBuilderContext(CreateModel().Build(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
+        private Pipeline<ClassBuilder, PipelineBuilderContext> Pipeline { get; } = new PipelineBuilder().Build();
         private ClassBuilder Model { get; } = new();
 
         [Fact]

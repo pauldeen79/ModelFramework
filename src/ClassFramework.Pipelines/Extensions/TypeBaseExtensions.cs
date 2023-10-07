@@ -22,7 +22,7 @@ public static class TypeBaseExtensions
     public static bool IsMemberValidForImmutableBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
-        BuilderPipelineBuilderInheritanceSettings inheritanceSettings,
+        PipelineBuilderInheritanceSettings inheritanceSettings,
         bool isForWithStatement)
     {
         inheritanceSettings = inheritanceSettings.IsNotNull(nameof(inheritanceSettings));

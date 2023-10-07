@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record BuilderPipelineBuilderNameSettings
+public record PipelineBuilderNameSettings
 {
     public string SetMethodNameFormatString { get; }
     public string AddMethodNameFormatString { get; }
@@ -9,7 +9,7 @@ public record BuilderPipelineBuilderNameSettings
     public string BuildMethodName { get; }
     public string BuildTypedMethodName { get; }
 
-    public BuilderPipelineBuilderNameSettings(string setMethodNameFormatString = "With{Name}",
+    public PipelineBuilderNameSettings(string setMethodNameFormatString = "With{Name}",
                                               string addMethodNameFormatString = "Add{Name}",
                                               string builderNamespaceFormatString = "{Namespace}",
                                               string builderNameFormatString = "{Name}Builder",

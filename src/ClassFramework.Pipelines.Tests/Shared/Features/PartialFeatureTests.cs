@@ -22,7 +22,7 @@ public class PartialFeatureTests : TestBase<PartialFeature>
             var sut = CreateSut();
             var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderContext>(model, new BuilderPipelineBuilderContext(sourceModel, new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);

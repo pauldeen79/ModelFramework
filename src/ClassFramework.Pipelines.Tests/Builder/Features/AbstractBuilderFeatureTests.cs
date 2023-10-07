@@ -25,8 +25,8 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
                   .Returns(x => Result<string>.Success(x.ArgAt<string>(0).Replace("{Name}", sourceModel.Name, StringComparison.Ordinal)));
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new BuilderPipelineBuilderSettings(inheritanceSettings: new BuilderPipelineBuilderInheritanceSettings(enableEntityInheritance: true));
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderContext>(model, new BuilderPipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = new PipelineBuilderSettings(inheritanceSettings: new PipelineBuilderInheritanceSettings(enableEntityInheritance: true));
+            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);
@@ -45,8 +45,8 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new BuilderPipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderContext>(model, new BuilderPipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
+            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);
@@ -65,8 +65,8 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new BuilderPipelineBuilderSettings();
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderContext>(model, new BuilderPipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = new PipelineBuilderSettings();
+            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);

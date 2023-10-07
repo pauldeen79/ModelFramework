@@ -25,7 +25,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassProperty, BuilderPipelineBuilderContext>(Model, new BuilderPipelineBuilderContext(CreateModel(), new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassProperty, PipelineBuilderContext>(Model, new PipelineBuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -43,7 +43,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassProperty, BuilderPipelineBuilderContext>(Model, new BuilderPipelineBuilderContext(CreateModel(), new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassProperty, PipelineBuilderContext>(Model, new PipelineBuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

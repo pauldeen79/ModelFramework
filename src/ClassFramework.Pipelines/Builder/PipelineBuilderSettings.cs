@@ -1,12 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record BuilderPipelineBuilderSettings
+public record PipelineBuilderSettings
 {
-    public BuilderPipelineBuilderNameSettings NameSettings { get; }
-    public BuilderPipelineBuilderInheritanceSettings InheritanceSettings { get; }
-    public BuilderPipelineBuilderConstructorSettings ConstructorSettings { get; }
-    public BuilderPipelineBuilderTypeSettings TypeSettings { get; }
-    public BuilderPipelineBuilderGenerationSettings GenerationSettings { get; }
+    public PipelineBuilderNameSettings NameSettings { get; }
+    public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
+    public PipelineBuilderConstructorSettings ConstructorSettings { get; }
+    public PipelineBuilderTypeSettings TypeSettings { get; }
+    public PipelineBuilderGenerationSettings GenerationSettings { get; }
     public ImmutableClassPipelineBuilderSettings ClassSettings { get; }
 
     public bool IsBuilderForAbstractEntity => InheritanceSettings.EnableEntityInheritance && (InheritanceSettings.BaseClass == null || InheritanceSettings.IsAbstract);
@@ -15,12 +15,12 @@ public record BuilderPipelineBuilderSettings
 
     public bool IsForAbstractBuilder { get; }
 
-    private BuilderPipelineBuilderSettings(
-        BuilderPipelineBuilderNameSettings? nameSettings,
-        BuilderPipelineBuilderInheritanceSettings? inheritanceSettings,
-        BuilderPipelineBuilderConstructorSettings? constructorSettings,
-        BuilderPipelineBuilderTypeSettings? typeSettings,
-        BuilderPipelineBuilderGenerationSettings? generationSettings,
+    private PipelineBuilderSettings(
+        PipelineBuilderNameSettings? nameSettings,
+        PipelineBuilderInheritanceSettings? inheritanceSettings,
+        PipelineBuilderConstructorSettings? constructorSettings,
+        PipelineBuilderTypeSettings? typeSettings,
+        PipelineBuilderGenerationSettings? generationSettings,
         ImmutableClassPipelineBuilderSettings? classSettings,
         bool isForAbstractBuilder)
     {
@@ -33,17 +33,17 @@ public record BuilderPipelineBuilderSettings
         IsForAbstractBuilder = isForAbstractBuilder;
     }
 
-    public BuilderPipelineBuilderSettings(
-        BuilderPipelineBuilderNameSettings? nameSettings = null,
-        BuilderPipelineBuilderInheritanceSettings? inheritanceSettings = null,
-        BuilderPipelineBuilderConstructorSettings? constructorSettings = null,
-        BuilderPipelineBuilderTypeSettings? typeSettings = null,
-        BuilderPipelineBuilderGenerationSettings? generationSettings = null,
+    public PipelineBuilderSettings(
+        PipelineBuilderNameSettings? nameSettings = null,
+        PipelineBuilderInheritanceSettings? inheritanceSettings = null,
+        PipelineBuilderConstructorSettings? constructorSettings = null,
+        PipelineBuilderTypeSettings? typeSettings = null,
+        PipelineBuilderGenerationSettings? generationSettings = null,
         ImmutableClassPipelineBuilderSettings? classSettings = null)
         : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, generationSettings, classSettings, false)
     {
     }
 
-    public BuilderPipelineBuilderSettings ForAbstractBuilder()
+    public PipelineBuilderSettings ForAbstractBuilder()
         => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, GenerationSettings, ClassSettings, true);
 }
