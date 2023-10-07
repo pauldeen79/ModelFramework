@@ -297,9 +297,9 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = source.Property1;
-            if (source.Property2 != null) Property2.AddRange(source.Property2);
+            Property2.AddRange(source.Property2);
             Property3 = new MyCustomTypeBuilder(source.Property3);
-            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
+            Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
         }
     }
 }

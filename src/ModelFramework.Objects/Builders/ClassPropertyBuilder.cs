@@ -38,8 +38,8 @@ public partial class ClassPropertyBuilder
                                                                            string buildMethodName = "Build",
                                                                            bool addNullableCheck = true)
         => ReplaceMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
-                ? "{0}?." + buildMethodName + "()"
-                : "{0}{2}." + buildMethodName + "()"));
+            ? "{0}?." + buildMethodName + "()"
+            : "{0}{2}." + buildMethodName + "()"));
 
     public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder(bool useLazyInitialization)
     {
