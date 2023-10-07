@@ -25,25 +25,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         
         Type? sourceModel = null;
         Type[] interfaces;
-
-        foreach (var property in typeBaseBuilder.Properties.Where(p => !p.Attributes.Exists(a => a.Name == typeof(ExcludeFromCodeCoverageAttribute).FullName)))
-        {
-            property.AddAttributes(new ModelFramework.Objects.Builders.AttributeBuilder().WithName(typeof(ExcludeFromCodeCoverageAttribute).FullName!));
-        }
-
-        foreach (var method in typeBaseBuilder.Methods.Where(m => !m.Attributes.Exists(a => a.Name == typeof(ExcludeFromCodeCoverageAttribute).FullName)))
-        {
-            method.AddAttributes(new ModelFramework.Objects.Builders.AttributeBuilder().WithName(typeof(ExcludeFromCodeCoverageAttribute).FullName!));
-        }
-
-        if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder1)
-        {
-            foreach (var property in classBuilder1.Constructors.Where(c => !c.Attributes.Exists(a => a.Name == typeof(ExcludeFromCodeCoverageAttribute).FullName)))
-            {
-                property.AddAttributes(new ModelFramework.Objects.Builders.AttributeBuilder().WithName(typeof(ExcludeFromCodeCoverageAttribute).FullName!));
-            }
-        }
-
+        
         if (typeBaseBuilder.Name.EndsWith(BuilderName))
         {
             if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder)
