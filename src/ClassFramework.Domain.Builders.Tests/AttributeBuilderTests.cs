@@ -56,4 +56,31 @@ public class AttributeBuilderTests
             validationResult.Should().ContainSingle();
         }
     }
+
+    public class AddParameters
+    {
+        [Fact]
+        public void Throws_On_Null_Parameters_As_Array()
+        {
+            // Arrange
+            var sut = new AttributeBuilder();
+            AttributeParameterBuilder[] parameters = default!;
+
+            // Act & Assert
+            sut.Invoking(x => x.AddParameters(parameters: parameters))
+               .Should().Throw<ArgumentNullException>().WithParameterName("parameters");
+        }
+
+        [Fact]
+        public void Throws_On_Null_Parameters_As_Enumerable()
+        {
+            // Arrange
+            var sut = new AttributeBuilder();
+            IEnumerable<AttributeParameterBuilder> parameters = default!;
+
+            // Act & Assert
+            sut.Invoking(x => x.AddParameters(parameters: parameters))
+               .Should().Throw<ArgumentNullException>().WithParameterName("parameters");
+        }
+    }
 }

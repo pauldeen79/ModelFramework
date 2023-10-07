@@ -487,7 +487,7 @@ public static partial class TypeBaseEtensions
             );
 
     private static string[] CreatePragmaWarningDisableStatements(ImmutableBuilderClassSettings settings)
-        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity && !settings.ConstructorSettings.AddNullChecks
             ? new[]
             {
                 "#pragma warning disable CS8604 // Possible null reference argument.",
@@ -496,7 +496,7 @@ public static partial class TypeBaseEtensions
             : Array.Empty<string>();
 
     private static string[] CreatePragmaWarningRestoreStatements(ImmutableBuilderClassSettings settings)
-        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
+        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity && !settings.ConstructorSettings.AddNullChecks
             ? new[]
             {
                 "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
@@ -625,7 +625,9 @@ public static partial class TypeBaseEtensions
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
             )
-            .AddLiteralCodeStatements($"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
+            .AddLiteralCodeStatements(settings.ConstructorSettings.AddNullChecks
+                ? $"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\"));"
+                : $"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
 
     private static ClassMethodBuilder CreateCollectionPropertyWithArrayParameter(ITypeBase instance,
                                                                                  ImmutableBuilderClassSettings settings,

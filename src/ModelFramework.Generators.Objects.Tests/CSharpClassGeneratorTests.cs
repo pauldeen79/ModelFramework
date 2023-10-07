@@ -252,7 +252,7 @@ namespace MyNamespace
 
         public MyRecordBuilder AddProperty2(System.Collections.Generic.IEnumerable<string> property2)
         {
-            return AddProperty2(property2.ToArray());
+            return AddProperty2(property2?.ToArray() ?? throw new System.ArgumentNullException(""property2""));
         }
 
         public MyRecordBuilder AddProperty2(params string[] property2)
@@ -270,7 +270,7 @@ namespace MyNamespace
 
         public MyRecordBuilder AddProperty4(System.Collections.Generic.IEnumerable<MyCustomTypeBuilder> property4)
         {
-            return AddProperty4(property4.ToArray());
+            return AddProperty4(property4?.ToArray() ?? throw new System.ArgumentNullException(""property4""));
         }
 
         public MyRecordBuilder AddProperty4(params MyCustomTypeBuilder[] property4)
@@ -3834,20 +3834,12 @@ namespace MyNamespace
 
         public MyNamespace.MyRecord Build()
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new MyNamespace.MyRecord(Property1);
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var instance = new MyNamespace.MyRecordBase(Property1);
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
             return results;
@@ -3927,20 +3919,12 @@ namespace Models
 
         public Entities.MyClass ToEntity()
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new Entities.MyClass { Property1 = Property1, Property2 = Property2 };
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var instance = new Entities.MyClassBase { Property1 = Property1, Property2 = Property2 };
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
             return results;
