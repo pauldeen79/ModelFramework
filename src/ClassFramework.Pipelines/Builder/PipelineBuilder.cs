@@ -15,6 +15,7 @@ public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderCont
             new PartialFeatureBuilder(),
             new SetNameFeatureBuilder(formattableStringParser),
             new AbstractBuilderFeatureBuilder(formattableStringParser),
+            new BaseClassFeatureBuilder(formattableStringParser),
             new AddPropertiesFeatureBuilder(formattableStringParser)
         );
     }

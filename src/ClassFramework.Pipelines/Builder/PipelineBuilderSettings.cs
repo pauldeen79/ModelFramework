@@ -9,9 +9,9 @@ public record PipelineBuilderSettings
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
     public ImmutableClassPipelineBuilderSettings ClassSettings { get; }
 
-    public bool IsBuilderForAbstractEntity => InheritanceSettings.EnableEntityInheritance && (InheritanceSettings.BaseClass == null || InheritanceSettings.IsAbstract);
-    public bool IsBuilderForOverrideEntity => InheritanceSettings.EnableEntityInheritance && InheritanceSettings.BaseClass != null;
-    public bool IsAbstractBuilder => InheritanceSettings.EnableBuilderInheritance && (InheritanceSettings.BaseClass == null || InheritanceSettings.IsAbstract) && !IsForAbstractBuilder;
+    public bool IsBuilderForAbstractEntity => InheritanceSettings.EnableEntityInheritance && (InheritanceSettings.BaseClass is null || InheritanceSettings.IsAbstract);
+    public bool IsBuilderForOverrideEntity => InheritanceSettings.EnableEntityInheritance && InheritanceSettings.BaseClass is not null;
+    public bool IsAbstractBuilder => InheritanceSettings.EnableBuilderInheritance && (InheritanceSettings.BaseClass is null || InheritanceSettings.IsAbstract) && !IsForAbstractBuilder;
 
     public bool IsForAbstractBuilder { get; }
 

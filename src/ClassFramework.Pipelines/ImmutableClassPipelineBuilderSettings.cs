@@ -31,7 +31,7 @@ public record ImmutableClassPipelineBuilderSettings
                 return ArgumentValidationType.None;
             }
 
-            if (InheritanceSettings.BaseClass == null)
+            if (InheritanceSettings.BaseClass is null)
             {
                 // Abstract base class
                 return ArgumentValidationType.None;

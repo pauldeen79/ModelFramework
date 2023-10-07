@@ -33,6 +33,54 @@ public static class TypeBaseExtensions
             inheritanceSettings.InheritanceComparisonFunction);
     }
 
+    public static string GetGenericTypeArgumentsString(this TypeBase instance)
+        => instance.GenericTypeArguments.Count > 0
+            ? $"<{string.Join(", ", instance.GenericTypeArguments)}>"
+            : string.Empty;
+
+    public static string GetGenericTypeArgumentConstraintsString(this TypeBase instance)
+        => instance.GenericTypeArgumentConstraints.Any()
+            ? string.Concat
+            (
+                Environment.NewLine,
+                "        ",
+                string.Join(string.Concat(Environment.NewLine, "        "), instance.GenericTypeArgumentConstraints)
+            )
+            : string.Empty;
+
+    public static string GetCustomValueForInheritedClass(
+        this TypeBase instance,
+        PipelineBuilderSettings settings,
+        Func<Class, string> customValue)
+        => instance.GetCustomValueForInheritedClass(settings.IsNotNull(nameof(settings)).InheritanceSettings.EnableEntityInheritance, customValue.IsNotNull(nameof(customValue)));
+
+    private static string GetCustomValueForInheritedClass(
+        this TypeBase instance,
+        bool enableInheritance,
+        Func<Class, string> customValue)
+    {
+        if (!enableInheritance)
+        {
+            // Inheritance is not enabled
+            return string.Empty;
+        }
+
+        var cls = instance as Class;
+        if (cls is null)
+        {
+            // Type is an interface
+            return string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(cls.BaseClass))
+        {
+            // Class is not inherited
+            return string.Empty;
+        }
+
+        return customValue(cls);
+    }
+
     private static bool IsMemberValidForImmutableBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
