@@ -40,13 +40,13 @@ public class BuilderPipelineBuilderTests
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Adds_Writable_Properties()
+        public void Sets_Partial()
         {
             // Act
             Pipeline.Process(Model, Context);
 
             // Assert
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            Model.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -58,6 +58,18 @@ public class BuilderPipelineBuilderTests
             // Assert
             Model.Name.Should().Be("MyClassBuilder");
             Model.Namespace.Should().Be("MyNamespace.Builders");
+        }
+
+        [Fact]
+        public void Adds_Properties()
+        {
+            // Act
+            Pipeline.Process(Model, Context);
+
+            // Assert
+            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.String");
         }
 
         private static ClassBuilder CreateModel()

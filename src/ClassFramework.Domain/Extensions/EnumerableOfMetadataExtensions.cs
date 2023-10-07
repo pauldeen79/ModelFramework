@@ -1,22 +1,23 @@
-﻿namespace ModelFramework.Common.Extensions;
+﻿namespace ClassFramework.Domain.Extensions;
 
 public static class EnumerableOfMetadataExtensions
 {
-    public static string GetStringValue(this IEnumerable<IMetadata> metadata, string metadataName, string defaultValue = "")
+    public static string GetStringValue(this IEnumerable<Metadata> metadata, string metadataName, string defaultValue = "")
         => metadata.GetStringValue(metadataName, () => defaultValue);
 
-    public static string GetStringValue(this IEnumerable<IMetadata> metadata, string metadataName, Func<string> defaultValueDelegate)
-        => metadata.GetValue<object?>(metadataName, defaultValueDelegate)
-            .ToStringWithDefault(defaultValueDelegate());
+    public static string GetStringValue(this IEnumerable<Metadata> metadata, string metadataName, Func<string> defaultValueDelegate)
+        => metadata.GetValue<object?>(metadataName, defaultValueDelegate).ToStringWithDefault(defaultValueDelegate());
 
-    public static bool GetBooleanValue(this IEnumerable<IMetadata> metadata, string metadataName, bool defaultValue = false)
+    public static bool GetBooleanValue(this IEnumerable<Metadata> metadata, string metadataName, bool defaultValue = false)
         => metadata.GetBooleanValue(metadataName, () => defaultValue);
 
-    public static bool GetBooleanValue(this IEnumerable<IMetadata> metadata, string metadataName, Func<bool> defaultValueDelegate)
+    public static bool GetBooleanValue(this IEnumerable<Metadata> metadata, string metadataName, Func<bool> defaultValueDelegate)
         => metadata.GetValue<object?>(metadataName, () => defaultValueDelegate.Invoke()).ToStringWithDefault().IsTrue();
 
-    public static T GetValue<T>(this IEnumerable<IMetadata> metadata, string metadataName, Func<T> defaultValueDelegate)
+    public static T GetValue<T>(this IEnumerable<Metadata> metadata, string metadataName, Func<T> defaultValueDelegate)
     {
+        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
+
         var metadataItem = metadata.FirstOrDefault(md => md.Name == metadataName);
 
         if (metadataItem == null)
@@ -27,16 +28,16 @@ public static class EnumerableOfMetadataExtensions
         return GetValue(metadataItem, defaultValueDelegate);
     }
 
-    public static IEnumerable<string> GetStringValues(this IEnumerable<IMetadata> metadata, string metadataName)
+    public static IEnumerable<string> GetStringValues(this IEnumerable<Metadata> metadata, string metadataName)
         => metadata.GetValues<object?>(metadataName).Select(x => x.ToStringWithDefault());
 
-    public static IEnumerable<T> GetValues<T>(this IEnumerable<IMetadata> metadata, string metadataName)
+    public static IEnumerable<T> GetValues<T>(this IEnumerable<Metadata> metadata, string metadataName)
         => metadata
             .Where(md => md.Name == metadataName)
             .Select(md => md.Value)
             .OfType<T>();
 
-    private static T GetValue<T>(IMetadata metadataItem, Func<T> defaultValueDelegate)
+    private static T GetValue<T>(Metadata metadataItem, Func<T> defaultValueDelegate)
     {
         if (metadataItem.Value is T t)
         {
@@ -48,7 +49,7 @@ public static class EnumerableOfMetadataExtensions
             var val = metadataItem.Value.ToStringWithNullCheck();
             return string.IsNullOrEmpty(val)
                 ? defaultValueDelegate()
-                : (T)Enum.Parse(typeof(T), val, true);
+                : (T)System.Enum.Parse(typeof(T), val, true);
         }
 
         if (typeof(T).FullName.StartsWith("System.Nullable`1[[") && typeof(T).GetGenericArguments()[0].IsEnum)
@@ -56,7 +57,7 @@ public static class EnumerableOfMetadataExtensions
             var val = metadataItem.Value.ToStringWithNullCheck();
             return string.IsNullOrEmpty(val)
                 ? defaultValueDelegate()
-                : (T)Enum.Parse(typeof(T).GetGenericArguments()[0], val, true);
+                : (T)System.Enum.Parse(typeof(T).GetGenericArguments()[0], val, true);
         }
 
         return (T)Convert.ChangeType(metadataItem.Value, typeof(T));

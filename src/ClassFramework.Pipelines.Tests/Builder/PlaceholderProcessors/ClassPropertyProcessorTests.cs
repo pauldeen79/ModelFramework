@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.PlaceholderProcessors;
 
-public class ContextProcessorTests : TestBase<ContextProcessor>
+public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
 {
-    public class Process : ContextProcessorTests
+    public class Process : ClassPropertyProcessorTests
     {
-        private ClassBuilder Model { get; } = new();
+        private ClassProperty Model { get; } = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).Build();
         private TypeBase CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
         [Fact]
@@ -25,7 +25,7 @@ public class ContextProcessorTests : TestBase<ContextProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderSettings>(Model, new BuilderPipelineBuilderSettings());
+            var context = new PipelineContext<ClassProperty, BuilderPipelineBuilderContext>(Model, new BuilderPipelineBuilderContext(CreateModel(), new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -35,16 +35,15 @@ public class ContextProcessorTests : TestBase<ContextProcessor>
         }
 
         [Theory]
-        [InlineData("Name", "MyClass")]
-        [InlineData("NameLower", "myclass")]
-        [InlineData("NameUpper", "MYCLASS")]
-        [InlineData("NamePascal", "myClass")]
-        [InlineData("Namespace", "MyNamespace")]
+        [InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
+        [InlineData("TypeName.GenericArguments", "System.String")]
+        [InlineData("TypeName.ClassName", "List<System.String>")]
+        [InlineData("TypeName.GenericArguments.ClassName", "String")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassBuilder, BuilderPipelineBuilderContext>(Model, new BuilderPipelineBuilderContext(CreateModel(), new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassProperty, BuilderPipelineBuilderContext>(Model, new BuilderPipelineBuilderContext(CreateModel(), new BuilderPipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

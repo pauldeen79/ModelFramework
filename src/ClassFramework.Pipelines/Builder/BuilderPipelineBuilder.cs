@@ -4,13 +4,18 @@ public class BuilderPipelineBuilder : PipelineBuilder<ClassBuilder, BuilderPipel
 {
     public BuilderPipelineBuilder()
     {
-        var formattableStringParser = FormattableStringParser.Create(new ContextProcessor());
+        var formattableStringParser = FormattableStringParser.Create
+        (
+            new ContextSourceModelProcessor(),
+            new ClassPropertyProcessor()
+        );
 
         AddFeatures
         (
-            new AddPropertiesFeatureBuilder(),
+            new PartialFeatureBuilder(),
             new SetNameFeatureBuilder(formattableStringParser),
-            new AbstractBuilderFeatureBuilder(formattableStringParser)
+            new AbstractBuilderFeatureBuilder(formattableStringParser),
+            new AddPropertiesFeatureBuilder(formattableStringParser)
         );
     }
 

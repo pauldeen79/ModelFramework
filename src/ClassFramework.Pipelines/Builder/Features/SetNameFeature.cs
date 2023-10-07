@@ -10,14 +10,14 @@ public class SetNameFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, Bui
     }
 
     public IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext> Build()
-        => new ChangeNameFeature(_formattableStringParser);
+        => new SetNameFeature(_formattableStringParser);
 }
 
-public class ChangeNameFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext>
+public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderPipelineBuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
-    public ChangeNameFeature(IFormattableStringParser formattableStringParser)
+    public SetNameFeature(IFormattableStringParser formattableStringParser)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }

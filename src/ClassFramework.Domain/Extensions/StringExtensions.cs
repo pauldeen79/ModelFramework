@@ -178,7 +178,11 @@ public static class StringExtensions
 
     public static string GetClassName(this string fullyQualifiedClassName)
     {
-        var idx = fullyQualifiedClassName.LastIndexOf(".");
+        var bracket = fullyQualifiedClassName.IndexOf("<");
+        var idx = bracket == -1
+            ? fullyQualifiedClassName.LastIndexOf(".")
+            : fullyQualifiedClassName.LastIndexOf(".", bracket);
+
         return idx == -1
             ? fullyQualifiedClassName
             : fullyQualifiedClassName.Substring(idx + 1);
@@ -191,7 +195,11 @@ public static class StringExtensions
             return defaultValue;
         }
 
-        var idx = fullyQualifiedClassName.LastIndexOf(".");
+        var bracket = fullyQualifiedClassName.IndexOf("<");
+        var idx = bracket == -1
+            ? fullyQualifiedClassName.LastIndexOf(".")
+            : fullyQualifiedClassName.LastIndexOf(".", bracket);
+
         return idx == -1
             ? defaultValue
             : fullyQualifiedClassName.Substring(0, idx);

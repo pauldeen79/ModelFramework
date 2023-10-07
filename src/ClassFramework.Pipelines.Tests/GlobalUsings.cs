@@ -3,6 +3,7 @@ global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Builders;
+global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Pipelines.Builder;
 global using ClassFramework.Pipelines.Builder.PlaceholderProcessors;

@@ -202,6 +202,7 @@ public class StringExtensionsTests
     [InlineData("", "")]
     [InlineData("MyClass", "MyClass")]
     [InlineData("MyNamespace.MyClass", "MyClass")]
+    [InlineData("MyNamespace.MyClass<My.GenericType>", "MyClass<My.GenericType>")]
     [InlineData("A.B.C.D", "D")]
     public void GetClassName_Returns_Correct_Result(string input, string expectedResult)
     {
@@ -212,12 +213,12 @@ public class StringExtensionsTests
         actual.Should().Be(expectedResult);
     }
 
-
     [Theory]
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("MyClass", "")]
     [InlineData("MyNamespace.MyClass", "MyNamespace")]
+    [InlineData("MyNamespace.MyClass<My.GenericType>", "MyNamespace")]
     [InlineData("A.B.C.D", "A.B.C")]
     public void GetNamespaceWithDefault_Returns_Correct_Result(string input, string expectedResult)
     {

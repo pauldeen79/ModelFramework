@@ -142,7 +142,7 @@ public static partial class TypeBaseEtensions
 
                 yield return new ClassFieldBuilder()
                     .WithName($"_{property.Name.ToPascalCase()}Delegate")
-                    .WithTypeName($"{typeof(Lazy<>).WithoutGenerics()}<{CreateLazyPropertyTypeName(property, settings)}>")
+                    .WithTypeName($"{typeof(Lazy<>).WithoutGenerics()}<{CreatePropertyTypeName(property, settings)}>")
                     .WithProtected();
             }
         }
@@ -338,16 +338,16 @@ public static partial class TypeBaseEtensions
             return md.Value.CsharpFormat();
         }
 
-        return CreateLazyPropertyTypeName(property, settings)
+        return CreatePropertyTypeName(property, settings)
             .GetDefaultValue(property.IsNullable, settings.TypeSettings.EnableNullableReferenceTypes);
     }
 
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.UseTargetTypeNewExpressions
             ? string.Empty
-            : $"{typeof(Lazy<>).WithoutGenerics()}<{CreateLazyPropertyTypeName(property, settings)}>";
+            : $"{typeof(Lazy<>).WithoutGenerics()}<{CreatePropertyTypeName(property, settings)}>";
 
-    private static string CreateLazyPropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
+    private static string CreatePropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
         => string.Format
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
