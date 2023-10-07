@@ -2,23 +2,10 @@
 
 public class PipelineBuilderTests
 {
-    public class Build
+    public class Constructor
     {
         [Fact]
-        public void Builds_Pipeline()
-        {
-            // Arrange
-            var builder = new PipelineBuilder();
-
-            // Act
-            var result = builder.Build();
-
-            // Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void Builds_Altered_Pipeline_Using_Existing_Pipeline()
+        public void Allows_Altering_Existing_Pipeline()
         {
             // Arrange
             var sourcePipeline = new PipelineBuilder().Build();
@@ -35,7 +22,7 @@ public class PipelineBuilderTests
 
     public class Process
     {
-        private PipelineBuilderContext Context { get; } = new PipelineBuilderContext(CreateModel().Build(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
+        private PipelineBuilderContext Context { get; } = new PipelineBuilderContext(CreateModel(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
         private Pipeline<ClassBuilder, PipelineBuilderContext> Pipeline { get; } = new PipelineBuilder().Build();
         private ClassBuilder Model { get; } = new();
 
@@ -72,13 +59,13 @@ public class PipelineBuilderTests
             Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.String");
         }
 
-        private static ClassBuilder CreateModel()
+        private static TypeBase CreateModel()
             => new ClassBuilder()
                 .WithName("MyClass")
                 .WithNamespace("MyNamespace")
                 .AddProperties(
                     new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true)
-                );
+                    new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true))
+                .Build();
     }
 }
