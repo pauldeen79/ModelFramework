@@ -556,7 +556,7 @@ public static partial class TypeBaseEtensions
                     yield return CreateCollectionPropertyOverload(instance, settings, extensionMethod, property, overload);
                 }
             }
-            else if (ShouldCreateSingleProperty(settings))
+            else if (ShouldCreateSingleProperty(settings, property))
             {
                 yield return CreateSingleProperty(instance, settings, extensionMethod, false, property);
                 if (settings.GenerationSettings.UseLazyInitialization)
@@ -579,8 +579,8 @@ public static partial class TypeBaseEtensions
                                                                        settings.InheritanceSettings,
                                                                        isForWithStatement: true));
 
-    private static bool ShouldCreateSingleProperty(ImmutableBuilderClassSettings settings)
-        => !string.IsNullOrEmpty(settings.NameSettings.SetMethodNameFormatString);
+    private static bool ShouldCreateSingleProperty(ImmutableBuilderClassSettings settings, IClassProperty property)
+        => !string.IsNullOrEmpty(settings.NameSettings.SetMethodNameFormatString) && !property.TypeName.IsCollectionTypeName();
 
     private static bool ShouldCreateCollectionProperty(ImmutableBuilderClassSettings settings, IClassProperty property)
         => property.TypeName.IsCollectionTypeName()
@@ -691,7 +691,7 @@ public static partial class TypeBaseEtensions
             (
                 string.Format
                 (
-                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod, useLazyInitialization)}{GetCallPropertyName(property.Name, useLazyInitialization)}{GetCallSuffix(useLazyInitialization)} = {GetExpressionPrefix(property, settings, useLazyInitialization)}{property.Name.ToPascalCase().GetCsharpFriendlyName()}{GetExpressionSuffix(useLazyInitialization)};"),
+                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod, useLazyInitialization)}{GetCallPropertyName(property.Name, useLazyInitialization)}{GetCallSuffix(useLazyInitialization)} = {GetExpressionPrefix(property, settings, useLazyInitialization)}{property.Name.ToPascalCase().GetCsharpFriendlyName()}{GetExpressionSuffix(useLazyInitialization)}{GetNullCheckSuffix(property, settings.ConstructorSettings.AddNullChecks)};"),
                     property.Name,                                                                   // 0
                     property.Name.ToPascalCase(),                                                    // 1
                     useLazyInitialization                                                            // 2
@@ -704,6 +704,21 @@ public static partial class TypeBaseEtensions
                 ),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
+    }
+
+    private static string GetNullCheckSuffix(IClassProperty property, bool addNullChecks)
+    {
+        if (!addNullChecks)
+        {
+            return string.Empty;
+        }
+
+        if (property.IsNullable || property.IsValueType)
+        {
+            return string.Empty;
+        }
+
+        return $" ?? throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\")";
     }
 
     private static ClassMethodBuilder CreateSinglePropertyOverload(ITypeBase instance,
@@ -786,16 +801,14 @@ public static partial class TypeBaseEtensions
         => settings.ConstructorSettings.AddNullChecks
             ? (new[]
                 {
-                    $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
-                    "{",
+                    $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\");",
                     string.Format
                     (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"    {CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)}"),
+                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
                         property.Name.ToPascalCase(),           // 0
                         property.TypeName,                      // 1
                         property.TypeName.GetGenericArguments() // 2
                     ),
-                    "}",
                     $"return {GetReturnValue(settings, extensionMethod)};"
                 }).ToList()
             : (new[]
