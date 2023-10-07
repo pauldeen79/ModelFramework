@@ -30,8 +30,6 @@ public static class TypeBaseExtensions
         return parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
             inheritanceSettings.EnableEntityInheritance,
-            inheritanceSettings.EnableBuilderInheritance,
-            isForWithStatement && !inheritanceSettings.RemoveDuplicateWithMethods, // only when duplicate methods need to be removed...
             inheritanceSettings.InheritanceComparisonFunction);
     }
 
@@ -39,19 +37,11 @@ public static class TypeBaseExtensions
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
         bool enableEntityInheritance,
-        bool enableBuilderInhericance,
-        bool isForWithStatement,
         Func<IParentTypeContainer, TypeBase, bool>? comparisonFunction = null)
     {
         if (!enableEntityInheritance)
         {
             // If entity inheritance is not enabled, then simply include all members
-            return true;
-        }
-
-        if (enableBuilderInhericance && isForWithStatement)
-        {
-            // If builder inheritance is enabled, then we have to duplicate the property for With statements
             return true;
         }
 
