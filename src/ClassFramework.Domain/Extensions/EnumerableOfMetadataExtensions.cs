@@ -20,7 +20,7 @@ public static class EnumerableOfMetadataExtensions
 
         var metadataItem = metadata.FirstOrDefault(md => md.Name == metadataName);
 
-        if (metadataItem == null)
+        if (metadataItem is null)
         {
             return defaultValueDelegate();
         }

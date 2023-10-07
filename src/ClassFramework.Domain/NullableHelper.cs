@@ -10,12 +10,12 @@ public static class NullableHelper
 
         if (memberType.IsValueType)
         {
-            return Nullable.GetUnderlyingType(memberType) != null;
+            return Nullable.GetUnderlyingType(memberType) is not null;
         }
 
         var nullable = customAttributes
             .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute");
-        if (nullable != null && nullable.ConstructorArguments.Count == 1)
+        if (nullable is not null && nullable.ConstructorArguments.Count == 1)
         {
             var attributeArgument = nullable.ConstructorArguments[0];
             if (attributeArgument.ArgumentType == typeof(byte[]))
@@ -32,11 +32,11 @@ public static class NullableHelper
             }
         }
 
-        for (var type = declaringType; type != null; type = type.DeclaringType)
+        for (var type = declaringType; type is not null; type = type.DeclaringType)
         {
             var context = type.CustomAttributes
                 .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
-            if (context != null &&
+            if (context is not null &&
                 context.ConstructorArguments.Count == 1 &&
                 context.ConstructorArguments[0].ArgumentType == typeof(byte))
             {
