@@ -17,8 +17,8 @@ public partial class ClassPropertyBuilder
                                                                         string? buildersNamespace = null)
     => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}Builder" : buildersNamespace + ".{2}Builder"))
       .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
-            ? "{0}?.Build()"
-            : "{0}{2}.Build()"))
+            ? "{0}?.Build(){5}"
+            : "{0}{2}.Build(){5}"))
       .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
     public ClassPropertyBuilder WithCustomBuilderConstructorInitializeExpressionSingleProperty(string? argumentType = null,
@@ -38,8 +38,8 @@ public partial class ClassPropertyBuilder
                                                                            string buildMethodName = "Build",
                                                                            bool addNullableCheck = true)
         => ReplaceMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
-            ? "{0}?." + buildMethodName + "()"
-            : "{0}{2}." + buildMethodName + "()"));
+            ? "{0}?." + buildMethodName + "(){5}"
+            : "{0}{2}." + buildMethodName + "(){5}"));
 
     public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder(bool useLazyInitialization)
     {

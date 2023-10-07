@@ -196,27 +196,16 @@ public static partial class TypeBaseEtensions
                     .Where(x => x.TypeName.IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(settings, x)};")
             )
-            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
-                ? new[]
-                {
-                    "#pragma warning disable CS8603 // Possible null reference return.",
-                }
-                : Array.Empty<string>())
             .AddLiteralCodeStatements
             (
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.IsCollectionTypeName()
-                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization))
+                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization)
+                        && (!x.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes).StartsWith("default(", StringComparison.Ordinal) || settings.GenerationSettings.UseLazyInitialization))
                     .Select(x => GenerateDefaultValueStatement(x, settings))
-            )
-            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
-                ? new[]
-                {
-                    "#pragma warning restore CS8603 // Possible null reference return.",
-                }
-                : Array.Empty<string>());
+            );
 
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
@@ -983,13 +972,16 @@ public static partial class TypeBaseEtensions
         (
             ", ",
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
-                                                 p.Name,                            // 0
-                                                 p.Name.ToPascalCase(),             // 1
-                                                 p.IsNullable || (settings.ConstructorSettings.AddNullChecks && p.IsValueType)
+                                                 p.Name,                           // 0
+                                                 p.Name.ToPascalCase(),            // 1
+                                                 p.IsNullable
                                                     ? "?" 
-                                                    : string.Empty,                 // 2
-                                                 p.TypeName,                        // 3
-                                                 p.TypeName.GetGenericArguments())) // 4
+                                                    : string.Empty,                // 2
+                                                 p.TypeName,                       // 3
+                                                 p.TypeName.GetGenericArguments(), // 4
+                                                 p.IsNullable || !settings.TypeSettings.EnableNullableReferenceTypes
+                                                    ? string.Empty
+                                                    : "!"))                        // 5
         );
     }
 }

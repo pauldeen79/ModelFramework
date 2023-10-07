@@ -288,9 +288,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => new System.Text.StringBuilder());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass source)
@@ -387,7 +385,7 @@ namespace Test.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new Test.TestClass(TestProperty?.Build());
+            return new Test.TestClass(TestProperty?.Build()!);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -406,9 +404,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => default(TestClassBuilder)!);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass source)
@@ -524,9 +520,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => default(T)!);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass<T> source)
@@ -601,9 +595,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => new ModelFramework.Builders.Domain.MyGenericTypeBuilder<T>());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass<T> source)
@@ -709,9 +701,7 @@ namespace MyNamespace.Domain.Builders
         public MyClassBuilder()
         {
             SubTypes = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             _parentTypeDelegate = new (() => default(MyNamespace.Domain.Builders.MyClassBuilder?));
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyClassBuilder(MyNamespace.Domain.MyClass source)
@@ -999,9 +989,7 @@ namespace MyNamespace.Domain.Builders
         protected MyBaseClassBuilder()
         {
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             _basePropertyDelegate = new (() => new System.Text.StringBuilder());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         protected MyBaseClassBuilder(MyNamespace.Domain.MyBaseClass source)
@@ -1105,7 +1093,7 @@ namespace MyNamespace.Domain.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children.Select(x => x.Build()));
+            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build()!, BaseProperty?.ToString(), Children.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -1124,9 +1112,7 @@ namespace MyNamespace.Domain.Builders
 
         public MyDerivedClassBuilder() : base()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyDerivedClassBuilder(MyNamespace.Domain.MyDerivedClass source) : base(source)

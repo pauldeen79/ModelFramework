@@ -285,7 +285,6 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = string.Empty;
-            Property3 = default(MyCustomType);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -412,7 +411,6 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = string.Empty;
-            Property3 = default(MyCustomType);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -1720,7 +1718,6 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            Static = default(System.Boolean);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -2852,7 +2849,6 @@ namespace MyNamespace
         public MyRecordBuilder()
         {
             Property1 = string.Empty;
-            Property2 = default(System.Boolean);
         }
     }
 
@@ -3853,8 +3849,6 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -3932,10 +3926,7 @@ namespace Models
 
         public MyClassModel()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             Property1 = string.Empty;
-            Property2 = default(System.Int32);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyClassModel(Entities.MyClass source)
