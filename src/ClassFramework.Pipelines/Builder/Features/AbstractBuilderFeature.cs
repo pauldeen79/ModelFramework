@@ -32,7 +32,7 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderPipe
                 .AddGenericTypeArguments("TBuilder", "TEntity")
                 .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}")
                 .AddGenericTypeArgumentConstraints($"where TBuilder : {_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}<TBuilder, TEntity>")
-                .WithAbstract();
+                .WithAbstract(context.Context.Settings.IsBuilderForAbstractEntity);
         }
         else if (context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
         {
