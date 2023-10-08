@@ -54,17 +54,16 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCo
                 .GetValueOrThrow() + genericTypeArgumentsString;
         }
 
-        //if (context.Context.Settings.InheritanceSettings.EnableEntityInheritance
-        //    && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
-        //    && context.Context.Settings.InheritanceSettings.BaseClass is not null
-        //    && !context.Context.Settings.IsForAbstractBuilder
-        //    && context.Context.Settings.InheritanceSettings.RemoveDuplicateWithMethods)
-        //{
-        //    var ns = string.IsNullOrEmpty(context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace)
-        //        ? string.Empty
-        //        : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
-        //    return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, PipelineBuilderContext>(context.Model, new PipelineBuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
-        //}
+        if (context.Context.Settings.InheritanceSettings.EnableEntityInheritance
+            && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
+            && context.Context.Settings.InheritanceSettings.BaseClass is not null
+            && !context.Context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
+        {
+            var ns = string.IsNullOrEmpty(context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace)
+                ? string.Empty
+                : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
+            return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, PipelineBuilderContext>(context.Model, new PipelineBuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
+        }
 
         var instanceNameBuilder = _formattableStringParser
             .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context)
@@ -80,9 +79,17 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCo
     }
 
     private string GetBaseClassName(PipelineContext<ClassBuilder, PipelineBuilderContext> context, Class cls)
-        => _formattableStringParser
-            .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, PipelineBuilderContext>(context.Model, new PipelineBuilderContext(CreateTypeBase(cls.BaseClass), context.Context.Settings, context.Context.FormatProvider)))
+    {
+        var newContext = new PipelineContext<ClassBuilder, PipelineBuilderContext>
+        (
+            context.Model,
+            new PipelineBuilderContext(CreateTypeBase(cls.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
+        );
+
+        return _formattableStringParser
+            .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, newContext)
             .GetValueOrThrow();
+    }
 
     private static TypeBase CreateTypeBase(string baseClass)
         => new ClassBuilder()
