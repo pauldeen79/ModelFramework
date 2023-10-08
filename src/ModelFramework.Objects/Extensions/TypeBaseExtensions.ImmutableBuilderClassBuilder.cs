@@ -151,7 +151,7 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
                                                                                              ImmutableBuilderClassSettings settings)
     {
-        if (settings.IsAbstractBuilder && !settings.InheritanceSettings.EnableBuilderInheritance)
+        if (!settings.NeedsConstructors)
         {
             yield break;
         }

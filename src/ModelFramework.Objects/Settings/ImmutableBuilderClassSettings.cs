@@ -14,6 +14,7 @@ public record ImmutableBuilderClassSettings
     public bool IsAbstractBuilder => InheritanceSettings.EnableBuilderInheritance && (InheritanceSettings.BaseClass == null || InheritanceSettings.IsAbstract) && !IsForAbstractBuilder;
 
     public bool IsForAbstractBuilder { get; }
+    public bool NeedsConstructors => !IsAbstractBuilder || InheritanceSettings.EnableBuilderInheritance;
 
     private ImmutableBuilderClassSettings(ImmutableBuilderClassTypeSettings? typeSettings,
                                           ImmutableBuilderClassConstructorSettings? constructorSettings,
