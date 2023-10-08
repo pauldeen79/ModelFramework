@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Features.Abstractions;
 
-public interface IBuilderFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
+public interface IBuilderFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>>
 {
 }

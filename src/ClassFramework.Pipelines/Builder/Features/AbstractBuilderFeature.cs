@@ -9,11 +9,11 @@ public class AbstractBuilderFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, PipelineBuilderContext> Build()
+    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
         => new AbstractBuilderFeature(_formattableStringParser);
 }
 
-public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, PipelineBuilderContext>
+public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, PipelineBui
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, PipelineBuilderContext> context)
+    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -40,6 +40,6 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, PipelineBui
         }
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AbstractBuilderFeatureBuilder(_formattableStringParser);
 }

@@ -6,7 +6,7 @@ public class ContextSourceModelProcessor : IPlaceholderProcessor
 
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
-        if (context is PipelineContext<ClassBuilder, PipelineBuilderContext> pipelineContext)
+        if (context is PipelineContext<ClassBuilder, BuilderContext> pipelineContext)
         {
             var model = pipelineContext.Context.SourceModel;
             return value switch

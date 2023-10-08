@@ -1,19 +1,19 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderContext>
+public class PipelineBuilder : PipelineBuilder<ClassBuilder, BuilderContext>
 {
     public PipelineBuilder(
-        IEnumerable<IContextBaseBuilder> baseContextFeatureBuilders,
+        IEnumerable<ISharedFeatureBuilder> baseContextFeatureBuilders,
         IEnumerable<IBuilderFeatureBuilder> builderContextFeatureBuilders)
     {
         baseContextFeatureBuilders.IsNotNull(nameof(baseContextFeatureBuilders));
         builderContextFeatureBuilders.IsNotNull(nameof(builderContextFeatureBuilders));
 
-        AddFeatures(baseContextFeatureBuilders.Select(x => x.Convert<PipelineBuilderContext>()));
+        AddFeatures(baseContextFeatureBuilders);
         AddFeatures(builderContextFeatureBuilders);
     }
 
-    public PipelineBuilder(Pipeline<ClassBuilder, PipelineBuilderContext> source) : base(source)
+    public PipelineBuilder(Pipeline<ClassBuilder, BuilderContext> source) : base(source)
     {
     }
 }

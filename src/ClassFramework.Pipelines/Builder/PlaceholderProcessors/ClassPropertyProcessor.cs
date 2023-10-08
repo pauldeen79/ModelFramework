@@ -7,7 +7,7 @@ public class ClassPropertyProcessor : IPlaceholderProcessor
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         //if (context is ClassProperty property)
-        if (context is PipelineContext<ClassProperty, PipelineBuilderContext> pipelineContext)
+        if (context is PipelineContext<ClassProperty, BuilderContext> pipelineContext)
         {
             return value switch
             {

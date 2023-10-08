@@ -9,11 +9,11 @@ public class SetNameFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, PipelineBuilderContext> Build()
+    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
         => new SetNameFeature(_formattableStringParser);
 }
 
-public class SetNameFeature : IPipelineFeature<ClassBuilder, PipelineBuilderContext>
+public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCont
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, PipelineBuilderContext> context)
+    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -30,6 +30,6 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCont
         context.Model.Namespace = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNamespaceFormatString, context.Context.FormatProvider, context).GetValueOrThrow();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 }

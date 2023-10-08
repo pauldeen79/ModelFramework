@@ -15,7 +15,7 @@ public class PipelineBuilderTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    protected IPipelineBuilder<ClassBuilder, PipelineBuilderContext> CreateSut() => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ClassBuilder, PipelineBuilderContext>>();
+    protected IPipelineBuilder<ClassBuilder, BuilderContext> CreateSut() => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>();
 
     public class Constructor : PipelineBuilderTests
     {
@@ -37,7 +37,7 @@ public class PipelineBuilderTests : IDisposable
 
     public class Process : PipelineBuilderTests
     {
-        private PipelineBuilderContext Context { get; } = new PipelineBuilderContext(CreateModel(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
+        private BuilderContext Context { get; } = new BuilderContext(CreateModel(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
         private ClassBuilder Model { get; } = new();
 
         [Fact]

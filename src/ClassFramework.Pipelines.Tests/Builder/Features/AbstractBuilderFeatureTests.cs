@@ -26,7 +26,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(inheritanceSettings: new PipelineBuilderInheritanceSettings(enableEntityInheritance: true));
-            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);
@@ -46,7 +46,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
-            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);
@@ -66,7 +66,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings();
-            var context = new PipelineContext<ClassBuilder, PipelineBuilderContext>(model, new PipelineBuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);

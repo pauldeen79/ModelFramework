@@ -9,11 +9,11 @@ public class BaseClassFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, PipelineBuilderContext> Build()
+    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
         => new BaseClassFeature(_formattableStringParser);
 }
 
-public class BaseClassFeature : IPipelineFeature<ClassBuilder, PipelineBuilderContext>
+public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,17 +22,17 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, PipelineBuilderContext> context)
+    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.BaseClass = GetImmutableBuilderClassBaseClass(context.Context.SourceModel, context);
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new BaseClassFeatureBuilder(_formattableStringParser);
 
-    private string GetImmutableBuilderClassBaseClass(TypeBase instance, PipelineContext<ClassBuilder, PipelineBuilderContext> context)
+    private string GetImmutableBuilderClassBaseClass(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -62,7 +62,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCo
             var ns = string.IsNullOrEmpty(context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace)
                 ? string.Empty
                 : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
-            return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, PipelineBuilderContext>(context.Model, new PipelineBuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
+            return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
         var instanceNameBuilder = _formattableStringParser
@@ -78,12 +78,12 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, PipelineBuilderCo
         );
     }
 
-    private string GetBaseClassName(PipelineContext<ClassBuilder, PipelineBuilderContext> context, Class cls)
+    private string GetBaseClassName(PipelineContext<ClassBuilder, BuilderContext> context, Class cls)
     {
-        var newContext = new PipelineContext<ClassBuilder, PipelineBuilderContext>
+        var newContext = new PipelineContext<ClassBuilder, BuilderContext>
         (
             context.Model,
-            new PipelineBuilderContext(CreateTypeBase(cls.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
+            new BuilderContext(CreateTypeBase(cls.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
         );
 
         return _formattableStringParser

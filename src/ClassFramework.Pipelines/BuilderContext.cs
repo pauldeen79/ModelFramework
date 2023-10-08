@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines;
+﻿namespace ClassFramework.Pipelines.Builder;
 
-public abstract record BuilderContextBase
+public record BuilderContext
 {
-    protected BuilderContextBase(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+    public BuilderContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
     {
         SourceModel = sourceModel.IsNotNull(nameof(SourceModel));
         Settings = settings.IsNotNull(nameof(settings));

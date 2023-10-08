@@ -4,8 +4,8 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPipelines(this IServiceCollection services)
         => services
-            .AddScoped<IPipelineBuilder<ClassBuilder, PipelineBuilderContext>, PipelineBuilder>()
-            .AddScoped<IContextBaseBuilder, PartialFeatureBuilder>()
+            .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, PipelineBuilder>()
+            .AddScoped<ISharedFeatureBuilder, PartialFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, SetNameFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AbstractBuilderFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()
