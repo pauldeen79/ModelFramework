@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, AbstractBuilderFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, AddConstructorsFeatureBuilder>()
             .AddScoped<IPlaceholderProcessor, ContextSourceModelProcessor>()
             .AddScoped<IPlaceholderProcessor, ClassPropertyProcessor>();
 }

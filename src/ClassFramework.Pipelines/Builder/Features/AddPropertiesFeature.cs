@@ -30,7 +30,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             context.Context.SourceModel.Properties
             .Where
             (
-                x => !context.Context.Settings.IsAbstractBuilder && context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false)
+                x => !context.Context.IsAbstractBuilder && context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false)
             )
             .Select(property => new ClassPropertyBuilder()
                 .WithName(property.Name)

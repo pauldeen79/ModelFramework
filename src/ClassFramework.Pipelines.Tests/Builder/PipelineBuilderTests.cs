@@ -82,6 +82,19 @@ public class PipelineBuilderTests : IDisposable
             Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.String");
         }
 
+        [Fact]
+        public void Adds_Constructor()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            sut.Process(Model, Context);
+
+            // Assert
+            Model.Constructors.Should().ContainSingle();
+        }
+
         private static TypeBase CreateModel()
             => new ClassBuilder()
                 .WithName("MyClass")

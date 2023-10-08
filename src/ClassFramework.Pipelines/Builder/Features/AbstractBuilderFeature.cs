@@ -26,7 +26,7 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderCont
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.Settings.IsBuilderForAbstractEntity)
+        if (context.Context.IsBuilderForAbstractEntity)
         {
             context.Model
                 .AddGenericTypeArguments("TBuilder", "TEntity")
