@@ -1,6 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Shared.Features;
 
-public class PartialFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
+public interface IPartialFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
+{
+}
+
+public class PartialFeatureBuilder : IPartialFeatureBuilder
 {
     public IPipelineFeature<ClassBuilder, PipelineBuilderContext> Build()
         => new PartialFeature();

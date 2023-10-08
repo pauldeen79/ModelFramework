@@ -1,22 +1,26 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderContext>
+public interface IPipelineBuilder : IValidatableObject
 {
-    public PipelineBuilder()
-    {
-        var formattableStringParser = FormattableStringParser.Create
-        (
-            new ContextSourceModelProcessor(),
-            new ClassPropertyProcessor()
-        );
+    public Pipeline<ClassBuilder, PipelineBuilderContext> Build();
+}
 
+public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderContext>, IPipelineBuilder
+{
+    public PipelineBuilder(
+        IPartialFeatureBuilder partialFeatureBuilder,
+        ISetNameFeatureBuilder setNameFeatureBuilder,
+        IAbstractBuilderFeatureBuilder abstractBuilderFeatureBuilder,
+        IBaseClassFeatureBuilder baseClassFeatureBuilder,
+        IAddPropertiesFeatureBuilder addPropertiesFeatureBuilder)
+    {
         AddFeatures
         (
-            new PartialFeatureBuilder(),
-            new SetNameFeatureBuilder(formattableStringParser),
-            new AbstractBuilderFeatureBuilder(formattableStringParser),
-            new BaseClassFeatureBuilder(formattableStringParser),
-            new AddPropertiesFeatureBuilder(formattableStringParser)
+            partialFeatureBuilder,
+            setNameFeatureBuilder,
+            abstractBuilderFeatureBuilder,
+            baseClassFeatureBuilder,
+            addPropertiesFeatureBuilder
         );
     }
 

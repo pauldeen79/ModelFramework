@@ -1,6 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Features;
 
-public class BaseClassFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
+public interface IBaseClassFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
+{
+}
+
+public class BaseClassFeatureBuilder : IBaseClassFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 

@@ -1,14 +1,29 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests
+public class PipelineBuilderTests : IDisposable
 {
-    public class Constructor
+    private bool disposedValue;
+    private readonly ServiceProvider _provider;
+    private readonly IServiceScope _scope;
+
+    public PipelineBuilderTests()
+    {
+        _provider = new ServiceCollection()
+            .AddParsers()
+            .AddPipelines()
+            .BuildServiceProvider();
+        _scope = _provider.CreateScope();
+    }
+
+    protected IPipelineBuilder CreateSut() => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder>();
+
+    public class Constructor : PipelineBuilderTests
     {
         [Fact]
         public void Allows_Altering_Existing_Pipeline()
         {
             // Arrange
-            var sourcePipeline = new PipelineBuilder().Build();
+            var sourcePipeline = CreateSut().Build();
 
             // Act
             var pipeline = new PipelineBuilder(sourcePipeline)
@@ -20,17 +35,19 @@ public class PipelineBuilderTests
         }
     }
 
-    public class Process
+    public class Process : PipelineBuilderTests
     {
         private PipelineBuilderContext Context { get; } = new PipelineBuilderContext(CreateModel(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
-        private Pipeline<ClassBuilder, PipelineBuilderContext> Pipeline { get; } = new PipelineBuilder().Build();
         private ClassBuilder Model { get; } = new();
 
         [Fact]
         public void Sets_Partial()
         {
+            // Arrange
+            var sut = CreateSut().Build();
+
             // Act
-            Pipeline.Process(Model, Context);
+            sut.Process(Model, Context);
 
             // Assert
             Model.Partial.Should().BeTrue();
@@ -39,8 +56,11 @@ public class PipelineBuilderTests
         [Fact]
         public void Sets_Namespace_And_Name_According_To_Settings()
         {
+            // Arrange
+            var sut = CreateSut().Build();
+
             // Act
-            Pipeline.Process(Model, Context);
+            sut.Process(Model, Context);
 
             // Assert
             Model.Name.Should().Be("MyClassBuilder");
@@ -50,8 +70,11 @@ public class PipelineBuilderTests
         [Fact]
         public void Adds_Properties()
         {
+            // Arrange
+            var sut = CreateSut().Build();
+
             // Act
-            Pipeline.Process(Model, Context);
+            sut.Process(Model, Context);
 
             // Assert
             Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
@@ -67,5 +90,26 @@ public class PipelineBuilderTests
                     new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
                     new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true))
                 .Build();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                _scope.Dispose();
+                _provider.Dispose();
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

@@ -1,15 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record PipelineBuilderContext
+public record PipelineBuilderContext : BuilderContextBase
 {
-    public PipelineBuilderContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+    public PipelineBuilderContext(BuilderContextBase original) : base(original)
     {
-        SourceModel = sourceModel.IsNotNull(nameof(SourceModel));
-        Settings = settings.IsNotNull(nameof(settings));
-        FormatProvider = formatProvider.IsNotNull(nameof(formatProvider));
     }
 
-    public TypeBase SourceModel { get; }
-    public PipelineBuilderSettings Settings { get; }
-    public IFormatProvider FormatProvider { get; }
+    public PipelineBuilderContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider) : base(sourceModel, settings, formatProvider)
+    {
+    }
 }
