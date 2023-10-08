@@ -3,14 +3,11 @@
 public class PipelineBuilder : PipelineBuilder<ClassBuilder, BuilderContext>
 {
     public PipelineBuilder(
-        IEnumerable<ISharedFeatureBuilder> baseContextFeatureBuilders,
-        IEnumerable<IBuilderFeatureBuilder> builderContextFeatureBuilders)
+        IEnumerable<ISharedFeatureBuilder> sharedFeatureBuilders,
+        IEnumerable<IBuilderFeatureBuilder> builderFeatureBuilders)
     {
-        baseContextFeatureBuilders.IsNotNull(nameof(baseContextFeatureBuilders));
-        builderContextFeatureBuilders.IsNotNull(nameof(builderContextFeatureBuilders));
-
-        AddFeatures(baseContextFeatureBuilders);
-        AddFeatures(builderContextFeatureBuilders);
+        AddFeatures(sharedFeatureBuilders);
+        AddFeatures(builderFeatureBuilders);
     }
 
     public PipelineBuilder(Pipeline<ClassBuilder, BuilderContext> source) : base(source)
