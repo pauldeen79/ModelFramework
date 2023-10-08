@@ -106,11 +106,8 @@ namespace ModelFramework.Database.Builders
         {
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.IndexFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            Unique = default(System.Boolean);
             Name = string.Empty;
             FileGroupName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public IndexBuilder(ModelFramework.Database.Contracts.IIndex source)

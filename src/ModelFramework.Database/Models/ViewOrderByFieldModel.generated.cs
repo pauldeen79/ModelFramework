@@ -71,14 +71,11 @@ namespace ModelFramework.Database.Models
         public ViewOrderByFieldModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            IsDescending = default(System.Boolean);
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
             Expression = string.Empty;
             Alias = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewOrderByFieldModel(ModelFramework.Database.Contracts.IViewOrderByField source)

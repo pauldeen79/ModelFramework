@@ -41,9 +41,7 @@ namespace ModelFramework.Database.Models
         public ForeignKeyConstraintFieldModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ForeignKeyConstraintFieldModel(ModelFramework.Database.Contracts.IForeignKeyConstraintField source)

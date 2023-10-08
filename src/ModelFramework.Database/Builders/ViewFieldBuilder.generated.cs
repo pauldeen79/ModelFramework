@@ -112,13 +112,11 @@ namespace ModelFramework.Database.Builders
         public ViewFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
             Expression = string.Empty;
             Alias = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewFieldBuilder(ModelFramework.Database.Contracts.IViewField source)

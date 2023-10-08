@@ -88,11 +88,9 @@ namespace ModelFramework.Database.Builders
         public StoredProcedureParameterBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Type = string.Empty;
             DefaultValue = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public StoredProcedureParameterBuilder(ModelFramework.Database.Contracts.IStoredProcedureParameter source)

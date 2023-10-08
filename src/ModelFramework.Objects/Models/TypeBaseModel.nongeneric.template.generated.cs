@@ -94,12 +94,8 @@ namespace ModelFramework.Objects.Models
             GenericTypeArgumentConstraints = new System.Collections.Generic.List<string>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Models.AttributeModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Namespace = string.Empty;
-            Partial = default(System.Boolean);
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         protected TypeBaseModel(ModelFramework.Objects.Contracts.ITypeBase source)

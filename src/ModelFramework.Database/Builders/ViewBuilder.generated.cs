@@ -202,12 +202,8 @@ namespace ModelFramework.Database.Builders
             Sources = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewSourceBuilder>();
             Conditions = new System.Collections.Generic.List<ModelFramework.Database.Builders.ViewConditionBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            TopPercent = default(System.Boolean);
-            Distinct = default(System.Boolean);
             Definition = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewBuilder(ModelFramework.Database.Contracts.IView source)

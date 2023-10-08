@@ -100,12 +100,8 @@ namespace ModelFramework.Database.Models
             Sources = new System.Collections.Generic.List<ModelFramework.Database.Models.ViewSourceModel>();
             Conditions = new System.Collections.Generic.List<ModelFramework.Database.Models.ViewConditionModel>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            TopPercent = default(System.Boolean);
-            Distinct = default(System.Boolean);
             Definition = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewModel(ModelFramework.Database.Contracts.IView source)

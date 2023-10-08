@@ -160,13 +160,7 @@ namespace ModelFramework.Objects.Builders
             SubClasses = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassBuilder>();
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ClassConstructorBuilder>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            Static = default(System.Boolean);
-            Sealed = default(System.Boolean);
-            Abstract = default(System.Boolean);
             BaseClass = string.Empty;
-            Record = default(System.Boolean);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassBuilder(ModelFramework.Objects.Contracts.IClass source) : base(source)

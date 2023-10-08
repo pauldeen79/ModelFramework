@@ -376,24 +376,11 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            Partial = default(System.Boolean);
-            ExtensionMethod = default(System.Boolean);
-            Operator = default(System.Boolean);
-            Async = default(System.Boolean);
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
             Name = string.Empty;
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
             ExplicitInterfaceName = string.Empty;
             ParentTypeFullName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassMethodBuilder(ModelFramework.Objects.Contracts.IClassMethod source)

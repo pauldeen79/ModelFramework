@@ -96,10 +96,8 @@ namespace ModelFramework.Database.Models
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Models.TableFieldModel>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Models.CheckConstraintModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
             FileGroupName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TableModel(ModelFramework.Database.Contracts.ITable source)

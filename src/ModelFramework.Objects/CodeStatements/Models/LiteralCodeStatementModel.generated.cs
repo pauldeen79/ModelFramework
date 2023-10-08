@@ -41,9 +41,7 @@ namespace ModelFramework.Objects.CodeStatements.Models
         public LiteralCodeStatementModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Statement = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public LiteralCodeStatementModel(ModelFramework.Objects.CodeStatements.LiteralCodeStatement source)

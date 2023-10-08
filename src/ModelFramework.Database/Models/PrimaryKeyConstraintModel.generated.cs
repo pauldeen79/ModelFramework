@@ -54,10 +54,8 @@ namespace ModelFramework.Database.Models
         {
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Models.PrimaryKeyConstraintFieldModel>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
             FileGroupName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public PrimaryKeyConstraintModel(ModelFramework.Database.Contracts.IPrimaryKeyConstraint source)

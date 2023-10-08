@@ -86,13 +86,7 @@ namespace ModelFramework.Objects.Models
             SubClasses = new System.Collections.Generic.List<ModelFramework.Objects.Models.ClassModel>();
             Constructors = new System.Collections.Generic.List<ModelFramework.Objects.Models.ClassConstructorModel>();
             Enums = new System.Collections.Generic.List<ModelFramework.Objects.Models.EnumModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            Static = default(System.Boolean);
-            Sealed = default(System.Boolean);
-            Abstract = default(System.Boolean);
             BaseClass = string.Empty;
-            Record = default(System.Boolean);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassModel(ModelFramework.Objects.Contracts.IClass source) : base(source)

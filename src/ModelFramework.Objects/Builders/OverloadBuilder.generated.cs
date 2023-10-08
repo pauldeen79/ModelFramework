@@ -94,10 +94,8 @@ namespace ModelFramework.Objects.Builders
         public OverloadBuilder()
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             MethodName = string.Empty;
             InitializeExpression = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public OverloadBuilder(ModelFramework.Objects.Contracts.IOverload source)

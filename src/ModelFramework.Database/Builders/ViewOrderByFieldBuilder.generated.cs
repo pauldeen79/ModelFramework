@@ -124,14 +124,11 @@ namespace ModelFramework.Database.Builders
         public ViewOrderByFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            IsDescending = default(System.Boolean);
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
             Expression = string.Empty;
             Alias = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewOrderByFieldBuilder(ModelFramework.Database.Contracts.IViewOrderByField source)

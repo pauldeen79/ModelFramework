@@ -136,12 +136,8 @@ namespace ModelFramework.Database.Builders
             LocalFields = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder>();
             ForeignFields = new System.Collections.Generic.List<ModelFramework.Database.Builders.ForeignKeyConstraintFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             ForeignTableName = string.Empty;
-            CascadeUpdate = default(ModelFramework.Database.Contracts.CascadeAction)!;
-            CascadeDelete = default(ModelFramework.Database.Contracts.CascadeAction)!;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ForeignKeyConstraintBuilder(ModelFramework.Database.Contracts.IForeignKeyConstraint source)

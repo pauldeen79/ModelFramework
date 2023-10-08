@@ -100,9 +100,7 @@ namespace ModelFramework.Database.Builders
             Statements = new System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Database.Builders.StoredProcedureParameterBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public StoredProcedureBuilder(ModelFramework.Database.Contracts.IStoredProcedure source)

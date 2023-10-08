@@ -226,15 +226,8 @@ namespace ModelFramework.Objects.Builders
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             CodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Builders.ParameterBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             ChainCall = string.Empty;
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassConstructorBuilder(ModelFramework.Objects.Contracts.IClassConstructor source)

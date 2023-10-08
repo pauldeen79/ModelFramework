@@ -62,9 +62,7 @@ namespace ModelFramework.Database.Models
             StoredProcedures = new System.Collections.Generic.List<ModelFramework.Database.Models.StoredProcedureModel>();
             Views = new System.Collections.Generic.List<ModelFramework.Database.Models.ViewModel>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public SchemaModel(ModelFramework.Database.Contracts.ISchema source)

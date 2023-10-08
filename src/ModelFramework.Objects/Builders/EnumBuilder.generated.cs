@@ -112,10 +112,8 @@ namespace ModelFramework.Objects.Builders
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Builders.EnumMemberBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public EnumBuilder(ModelFramework.Objects.Contracts.IEnum source)

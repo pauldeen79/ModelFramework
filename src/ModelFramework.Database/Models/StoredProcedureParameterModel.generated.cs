@@ -53,11 +53,9 @@ namespace ModelFramework.Database.Models
         public StoredProcedureParameterModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Type = string.Empty;
             DefaultValue = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public StoredProcedureParameterModel(ModelFramework.Database.Contracts.IStoredProcedureParameter source)

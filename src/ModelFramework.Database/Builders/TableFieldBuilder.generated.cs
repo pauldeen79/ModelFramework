@@ -178,14 +178,9 @@ namespace ModelFramework.Database.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Type = string.Empty;
-            IsIdentity = default(System.Boolean);
-            IsRequired = default(System.Boolean);
             StringCollation = string.Empty;
-            IsStringMaxLength = default(System.Boolean);
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TableFieldBuilder(ModelFramework.Database.Contracts.ITableField source)

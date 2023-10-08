@@ -28,8 +28,6 @@ namespace ModelFramework.Objects.Models
 
         public InterfaceModel() : base()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public InterfaceModel(ModelFramework.Objects.Contracts.IInterface source) : base(source)

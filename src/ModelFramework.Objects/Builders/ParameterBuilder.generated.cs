@@ -172,15 +172,8 @@ namespace ModelFramework.Objects.Builders
         {
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            IsParamArray = default(System.Boolean);
-            IsOut = default(System.Boolean);
-            IsRef = default(System.Boolean);
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ParameterBuilder(ModelFramework.Objects.Contracts.IParameter source)

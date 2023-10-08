@@ -61,10 +61,7 @@ namespace ModelFramework.Objects.Models
             Members = new System.Collections.Generic.List<ModelFramework.Objects.Models.EnumMemberModel>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Models.AttributeModel>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            Visibility = default(ModelFramework.Objects.Contracts.Visibility)!;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public EnumModel(ModelFramework.Objects.Contracts.IEnum source)

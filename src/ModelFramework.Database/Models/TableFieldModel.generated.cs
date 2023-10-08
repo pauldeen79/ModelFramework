@@ -96,14 +96,9 @@ namespace ModelFramework.Database.Models
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Models.CheckConstraintModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Type = string.Empty;
-            IsIdentity = default(System.Boolean);
-            IsRequired = default(System.Boolean);
             StringCollation = string.Empty;
-            IsStringMaxLength = default(System.Boolean);
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TableFieldModel(ModelFramework.Database.Contracts.ITableField source)

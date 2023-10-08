@@ -47,10 +47,8 @@ namespace ModelFramework.Objects.Models
         public OverloadModel()
         {
             Parameters = new System.Collections.Generic.List<ModelFramework.Objects.Models.ParameterModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             MethodName = string.Empty;
             InitializeExpression = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public OverloadModel(ModelFramework.Objects.Contracts.IOverload source)

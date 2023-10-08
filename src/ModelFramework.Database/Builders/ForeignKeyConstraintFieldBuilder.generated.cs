@@ -64,9 +64,7 @@ namespace ModelFramework.Database.Builders
         public ForeignKeyConstraintFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ForeignKeyConstraintFieldBuilder(ModelFramework.Database.Contracts.IForeignKeyConstraintField source)

@@ -76,10 +76,8 @@ namespace ModelFramework.Database.Builders
         public CheckConstraintBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Expression = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public CheckConstraintBuilder(ModelFramework.Database.Contracts.ICheckConstraint source)

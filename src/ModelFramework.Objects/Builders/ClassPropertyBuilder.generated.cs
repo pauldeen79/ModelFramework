@@ -354,23 +354,13 @@ namespace ModelFramework.Objects.Builders
             InitializerCodeStatements = new System.Collections.Generic.List<ModelFramework.Objects.Contracts.ICodeStatementBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             HasGetter = true;
             HasSetter = true;
-            HasInitializer = default(System.Boolean);
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
             Visibility = ModelFramework.Objects.Contracts.Visibility.Public;
             Name = string.Empty;
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
             ExplicitInterfaceName = string.Empty;
             ParentTypeFullName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassPropertyBuilder(ModelFramework.Objects.Contracts.IClassProperty source)

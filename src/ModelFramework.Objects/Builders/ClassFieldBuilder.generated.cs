@@ -256,22 +256,10 @@ namespace ModelFramework.Objects.Builders
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Attributes = new System.Collections.Generic.List<ModelFramework.Objects.Builders.AttributeBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            ReadOnly = default(System.Boolean);
-            Constant = default(System.Boolean);
-            Event = default(System.Boolean);
-            Static = default(System.Boolean);
-            Virtual = default(System.Boolean);
-            Abstract = default(System.Boolean);
-            Protected = default(System.Boolean);
-            Override = default(System.Boolean);
             Visibility = ModelFramework.Objects.Contracts.Visibility.Private;
             Name = string.Empty;
             TypeName = string.Empty;
-            IsNullable = default(System.Boolean);
-            IsValueType = default(System.Boolean);
             ParentTypeFullName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ClassFieldBuilder(ModelFramework.Objects.Contracts.IClassField source)

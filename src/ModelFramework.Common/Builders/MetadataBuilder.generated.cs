@@ -52,9 +52,7 @@ namespace ModelFramework.Common.Builders
 
         public MetadataBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MetadataBuilder(ModelFramework.Common.Contracts.IMetadata source)

@@ -47,10 +47,8 @@ namespace ModelFramework.Database.Models
         public CheckConstraintModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Expression = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public CheckConstraintModel(ModelFramework.Database.Contracts.ICheckConstraint source)

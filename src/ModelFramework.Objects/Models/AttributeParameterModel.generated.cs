@@ -47,10 +47,8 @@ namespace ModelFramework.Objects.Models
         public AttributeParameterModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Value = new System.Object();
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public AttributeParameterModel(ModelFramework.Objects.Contracts.IAttributeParameter source)

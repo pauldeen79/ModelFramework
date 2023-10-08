@@ -76,10 +76,8 @@ namespace ModelFramework.Objects.Builders
         public AttributeParameterBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Value = new System.Object();
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public AttributeParameterBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)

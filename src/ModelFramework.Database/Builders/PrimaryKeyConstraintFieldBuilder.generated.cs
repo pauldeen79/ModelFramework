@@ -76,10 +76,7 @@ namespace ModelFramework.Database.Builders
         public PrimaryKeyConstraintFieldBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
-            IsDescending = default(System.Boolean);
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public PrimaryKeyConstraintFieldBuilder(ModelFramework.Database.Contracts.IPrimaryKeyConstraintField source)

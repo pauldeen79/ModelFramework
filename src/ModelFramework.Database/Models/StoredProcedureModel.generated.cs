@@ -55,9 +55,7 @@ namespace ModelFramework.Database.Models
             Statements = new System.Collections.Generic.List<ModelFramework.Database.Contracts.ISqlStatementModel>();
             Parameters = new System.Collections.Generic.List<ModelFramework.Database.Models.StoredProcedureParameterModel>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public StoredProcedureModel(ModelFramework.Database.Contracts.IStoredProcedure source)

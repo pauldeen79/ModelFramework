@@ -88,11 +88,9 @@ namespace ModelFramework.Database.Builders
         public ViewConditionBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Expression = string.Empty;
             Combination = string.Empty;
             FileGroupName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewConditionBuilder(ModelFramework.Database.Contracts.IViewCondition source)

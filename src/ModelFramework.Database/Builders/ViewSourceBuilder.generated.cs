@@ -100,12 +100,10 @@ namespace ModelFramework.Database.Builders
         public ViewSourceBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Alias = string.Empty;
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewSourceBuilder(ModelFramework.Database.Contracts.IViewSource source)

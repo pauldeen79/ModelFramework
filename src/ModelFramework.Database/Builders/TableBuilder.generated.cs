@@ -202,10 +202,8 @@ namespace ModelFramework.Database.Builders
             Fields = new System.Collections.Generic.List<ModelFramework.Database.Builders.TableFieldBuilder>();
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             CheckConstraints = new System.Collections.Generic.List<ModelFramework.Database.Builders.CheckConstraintBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
             FileGroupName = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TableBuilder(ModelFramework.Database.Contracts.ITable source)

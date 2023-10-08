@@ -40,9 +40,7 @@ namespace ModelFramework.Common.Models
 
         public MetadataModel()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MetadataModel(ModelFramework.Common.Contracts.IMetadata source)

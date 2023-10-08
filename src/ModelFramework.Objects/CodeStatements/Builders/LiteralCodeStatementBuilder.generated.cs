@@ -64,9 +64,7 @@ namespace ModelFramework.Objects.CodeStatements.Builders
         public LiteralCodeStatementBuilder()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Statement = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public LiteralCodeStatementBuilder(ModelFramework.Objects.CodeStatements.LiteralCodeStatement source)

@@ -59,12 +59,10 @@ namespace ModelFramework.Database.Models
         public ViewSourceModel()
         {
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Models.MetadataModel>();
-            #pragma warning disable CS8603 // Possible null reference return.
             Alias = string.Empty;
             SourceSchemaName = string.Empty;
             SourceObjectName = string.Empty;
             Name = string.Empty;
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public ViewSourceModel(ModelFramework.Database.Contracts.IViewSource source)
