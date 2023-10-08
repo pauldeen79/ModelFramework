@@ -1,10 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder.Features;
 
-public interface ISetNameFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, PipelineBuilderContext>>
-{
-}
-
-public class SetNameFeatureBuilder : ISetNameFeatureBuilder
+public class SetNameFeatureBuilder : IBuilderFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 

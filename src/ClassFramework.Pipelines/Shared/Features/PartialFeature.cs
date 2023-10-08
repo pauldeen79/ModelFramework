@@ -1,17 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Shared.Features;
 
-public interface IPartialFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, BuilderContextBase>>
-{
-    IBuilder<IPipelineFeature<ClassBuilder, T>> Convert<T>() where T : BuilderContextBase;
-}
-
 public class PartialFeatureBuilder<T> : IBuilder<IPipelineFeature<ClassBuilder, T>> where T : BuilderContextBase
 {
     public IPipelineFeature<ClassBuilder, T> Build()
         => new PartialFeature<T>();
 }
 
-public class PartialFeatureBuilder : IPartialFeatureBuilder
+public class PartialFeatureBuilder : IContextBaseBuilder
 {
     public virtual IPipelineFeature<ClassBuilder, BuilderContextBase> Build()
         => new PartialFeature<BuilderContextBase>();

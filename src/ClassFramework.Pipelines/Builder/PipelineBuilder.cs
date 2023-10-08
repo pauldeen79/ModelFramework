@@ -8,20 +8,14 @@ public interface IPipelineBuilder : IValidatableObject
 public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderContext>, IPipelineBuilder
 {
     public PipelineBuilder(
-        IPartialFeatureBuilder partialFeatureBuilder,
-        ISetNameFeatureBuilder setNameFeatureBuilder,
-        IAbstractBuilderFeatureBuilder abstractBuilderFeatureBuilder,
-        IBaseClassFeatureBuilder baseClassFeatureBuilder,
-        IAddPropertiesFeatureBuilder addPropertiesFeatureBuilder)
+        IEnumerable<IContextBaseBuilder> baseContextFeatureBuilders,
+        IEnumerable<IBuilderFeatureBuilder> builderContextFeatureBuilders)
     {
-        AddFeatures
-        (
-            partialFeatureBuilder.IsNotNull(nameof(partialFeatureBuilder)).Convert<PipelineBuilderContext>(),
-            setNameFeatureBuilder,
-            abstractBuilderFeatureBuilder,
-            baseClassFeatureBuilder,
-            addPropertiesFeatureBuilder
-        );
+        baseContextFeatureBuilders.IsNotNull(nameof(baseContextFeatureBuilders));
+        builderContextFeatureBuilders.IsNotNull(nameof(builderContextFeatureBuilders));
+
+        AddFeatures(baseContextFeatureBuilders.Select(x => x.Convert<PipelineBuilderContext>()));
+        AddFeatures(builderContextFeatureBuilders);
     }
 
     public PipelineBuilder(Pipeline<ClassBuilder, PipelineBuilderContext> source) : base(source)
