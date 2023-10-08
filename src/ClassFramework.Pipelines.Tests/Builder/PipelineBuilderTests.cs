@@ -15,7 +15,7 @@ public class PipelineBuilderTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    protected IPipelineBuilder CreateSut() => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder>();
+    protected IPipelineBuilder<ClassBuilder, PipelineBuilderContext> CreateSut() => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ClassBuilder, PipelineBuilderContext>>();
 
     public class Constructor : PipelineBuilderTests
     {
