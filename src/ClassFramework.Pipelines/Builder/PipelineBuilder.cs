@@ -16,7 +16,7 @@ public class PipelineBuilder : PipelineBuilder<ClassBuilder, PipelineBuilderCont
     {
         AddFeatures
         (
-            partialFeatureBuilder,
+            partialFeatureBuilder.IsNotNull(nameof(partialFeatureBuilder)).Convert<PipelineBuilderContext>(),
             setNameFeatureBuilder,
             abstractBuilderFeatureBuilder,
             baseClassFeatureBuilder,
