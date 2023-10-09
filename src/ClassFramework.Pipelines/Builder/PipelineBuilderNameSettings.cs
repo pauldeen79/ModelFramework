@@ -10,11 +10,11 @@ public record PipelineBuilderNameSettings
     public string BuildTypedMethodName { get; }
 
     public PipelineBuilderNameSettings(string setMethodNameFormatString = "With{Name}",
-                                              string addMethodNameFormatString = "Add{Name}",
-                                              string builderNamespaceFormatString = "{Namespace}",
-                                              string builderNameFormatString = "{Name}Builder",
-                                              string buildMethodName = "Build",
-                                              string buildTypedMethodName = "BuildTyped")
+                                       string addMethodNameFormatString = "Add{Name}",
+                                       string builderNamespaceFormatString = "{Namespace}.Builders",
+                                       string builderNameFormatString = "{Name}Builder",
+                                       string buildMethodName = "Build",
+                                       string buildTypedMethodName = "BuildTyped")
     {
         SetMethodNameFormatString = setMethodNameFormatString.IsNotNull(setMethodNameFormatString);
         AddMethodNameFormatString = addMethodNameFormatString.IsNotNull(addMethodNameFormatString);

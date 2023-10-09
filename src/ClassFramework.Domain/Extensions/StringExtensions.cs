@@ -112,7 +112,7 @@ public static class StringExtensions
             ? "@" + instance
             : instance;
 
-    public static string GetGenericArguments(this string value)
+    public static string GetGenericArguments(this string value, bool addBrackets = false)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -137,7 +137,11 @@ public static class StringExtensions
             return string.Empty;
         }
 
-        return value.Substring(open + 1, comma - open - 1);
+        var generics = value.Substring(open + 1, comma - open - 1);
+
+        return addBrackets
+            ? $"<{generics}>"
+            : generics;
     }
 
     public static string? Sanitize(this string token)

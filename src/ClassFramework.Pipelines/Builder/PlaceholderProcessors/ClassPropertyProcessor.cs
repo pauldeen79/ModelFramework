@@ -6,19 +6,30 @@ public class ClassPropertyProcessor : IPlaceholderProcessor
 
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
-        //if (context is ClassProperty property)
-        if (context is PipelineContext<ClassProperty, BuilderContext> pipelineContext)
+        if (context is not PipelineContext<ClassProperty, BuilderContext> pipelineContext)
         {
-            return value switch
-            {
-                nameof(ClassProperty.TypeName) => Result<string>.Success(pipelineContext.Model.TypeName.FixTypeName()),
-                $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result<string>.Success(pipelineContext.Model.TypeName.FixTypeName().GetGenericArguments()),
-                $"{nameof(ClassProperty.TypeName)}.ClassName" => Result<string>.Success(pipelineContext.Model.TypeName.FixTypeName().GetClassName()),
-                $"{nameof(ClassProperty.TypeName)}.GenericArguments.ClassName" => Result<string>.Success(pipelineContext.Model.TypeName.FixTypeName().GetGenericArguments().GetClassName()),
-                _ => Result<string>.Continue()
-            };
+            return Result<string>.Continue();
         }
 
-        return Result<string>.Continue();
+        var model = pipelineContext.Model;
+
+        return Process(value, formatProvider, model);
     }
+
+    internal static Result<string> Process(string value, IFormatProvider formatProvider, ClassProperty model)
+        => value switch
+        {
+            nameof(ClassProperty.Name) => Result<string>.Success(model.Name),
+            $"{nameof(ClassProperty.Name)}Lower" => Result<string>.Success(model.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"{nameof(ClassProperty.Name)}Upper" => Result<string>.Success(model.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"{nameof(ClassProperty.Name)}Pascal" => Result<string>.Success(model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            nameof(ClassProperty.TypeName) => Result<string>.Success(model.TypeName.FixTypeName()),
+            $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result<string>.Success(model.TypeName.FixTypeName().GetGenericArguments()),
+            $"{nameof(ClassProperty.TypeName)}.GenericArgumentsWithBrackets" => Result<string>.Success(model.TypeName.FixTypeName().GetGenericArguments(addBrackets: true)),
+            $"{nameof(ClassProperty.TypeName)}.GenericArguments.ClassName" => Result<string>.Success(model.TypeName.FixTypeName().GetGenericArguments().GetClassName()),
+            $"{nameof(ClassProperty.TypeName)}.ClassName" => Result<string>.Success(model.TypeName.FixTypeName().GetClassName()),
+            $"{nameof(ClassProperty.TypeName)}.Namespace" => Result<string>.Success(model.TypeName.FixTypeName().GetNamespaceWithDefault()),
+            $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result<string>.Success(model.TypeName.FixTypeName().WithoutProcessedGenerics()),
+            _ => Result<string>.Continue()
+        };
 }

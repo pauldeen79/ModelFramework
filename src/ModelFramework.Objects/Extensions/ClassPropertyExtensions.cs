@@ -31,7 +31,7 @@ public static class ClassPropertyExtensions
                 : $"<{property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()}>",
             settings.TypeSettings.FormatInstanceTypeNameDelegate != null                                // 10
                 ? settings.TypeSettings.FormatInstanceTypeNameDelegate.Invoke(new ClassBuilder().WithName(property.TypeName.WithoutProcessedGenerics().GetClassName()).WithNamespace(property.TypeName.GetNamespaceWithDefault()).Build(), true).GetClassName().WhenNullOrEmpty(() => property.TypeName.WithoutProcessedGenerics().GetClassName())
-                : property.TypeName.GetClassName()
+                : property.TypeName.WithoutProcessedGenerics().GetClassName()
         );
 
     public static IEnumerable<IMetadata> GetImmutableCollectionMetadata(this IClassProperty property, string newCollectionTypeName)

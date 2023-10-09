@@ -35,10 +35,14 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         }
 
         [Theory]
+        [InlineData("Name", "MyProperty")]
         [InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
         [InlineData("TypeName.GenericArguments", "System.String")]
-        [InlineData("TypeName.ClassName", "List<System.String>")]
+        [InlineData("TypeName.GenericArgumentsWithBrackets", "<System.String>")]
         [InlineData("TypeName.GenericArguments.ClassName", "String")]
+        [InlineData("TypeName.ClassName", "List<System.String>")]
+        [InlineData("TypeName.Namespace", "System.Collections.Generic")]
+        [InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange

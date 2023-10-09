@@ -96,10 +96,7 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
             (
                 new[]
                 {
-                    "if (source is null)",
-                    "{",
-                    $@"    throw new {typeof(ArgumentNullException).FullName}(nameof(source));",
-                    "}"
+                    $@"if (source is null) throw new {typeof(ArgumentNullException).FullName}(nameof(source));"
                 }.Where(_ => context.Context.Settings.GenerationSettings.AddNullChecks)
             )
             .AddParameters
@@ -138,38 +135,8 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
                     : CreateSingleInitialization(property)
             ),
             context.Context.FormatProvider,
-            context //TODO: Create a new context here, a composition of both the original pipeline context (which holds the settings and the source model) and the property
+            new ParentChildContext<ClassProperty>(context, property)
         ).GetValueOrThrow();
-
-        //=> string.Format
-        //(
-        //    property.Metadata.GetStringValue
-        //    (
-        //        MetadataNames.CustomBuilderConstructorInitializeExpression,
-        //        () => property.TypeName.IsCollectionTypeName()
-        //            ? CreateCollectionInitialization(property, context.Context.Settings)
-        //            : CreateSingleInitialization(property, context.Context.Settings)
-        //    ),
-        //    property.Name,                                                                              // 0
-        //    property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()),                                                               // 1
-        //    property.TypeName.GetCsharpFriendlyTypeName(),                                              // 2
-        //    property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName(),                        // 3
-        //    context.Context.Settings.GenerationSettings.AddNullChecks && !property.IsValueType && property.IsNullable  // 4
-        //        ? $"if (source.{property.Name} != null) "
-        //        : "",
-        //    context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate != null                                // 5
-        //        ? context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate.Invoke(new ClassBuilder().WithName(property.TypeName.GetClassName()).WithNamespace(property.TypeName.GetNamespaceWithDefault()).Build(), true).GetClassName().WhenNullOrEmpty(property.TypeName.GetClassName)
-        //        : property.TypeName.GetClassName(),
-        //    property.TypeName.GetGenericArguments().GetClassName(),                                     // 6
-        //    context.Context.Settings.NameSettings.BuildersNamespace,                                                    // 7
-        //    property.TypeName.WithoutProcessedGenerics().GetCsharpFriendlyTypeName(),                   // 8
-        //    string.IsNullOrEmpty(property.TypeName.GetGenericArguments())                               // 9
-        //        ? string.Empty
-        //        : $"<{property.TypeName.GetGenericArguments().GetCsharpFriendlyTypeName()}>",
-        //    context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate != null                                // 10
-        //        ? context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate.Invoke(new ClassBuilder().WithName(property.TypeName.WithoutProcessedGenerics().GetClassName()).WithNamespace(property.TypeName.GetNamespaceWithDefault()).Build(), true).GetClassName().WhenNullOrEmpty(() => property.TypeName.WithoutProcessedGenerics().GetClassName())
-        //        : property.TypeName.GetClassName()
-        //);
 
     private static string CreateSingleInitialization(ClassProperty property)
         => $"{property.Name} = source.{property.Name}";
@@ -178,14 +145,10 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return settings.GenerationSettings.AddNullChecks && !property.IsValueType && property.IsNullable
-                ? $"if (source.{property.Name} is not null) {property.Name} = source.{property.Name}"
-                : $"{property.Name} = source.{property.Name}";
+            return "{{NullCheck}}{property.Name} = source.{property.Name}";
         }
 
-        return settings.GenerationSettings.AddNullChecks && !property.IsValueType && property.IsNullable
-            ? $"if (source.{property.Name} is not null) {property.Name}.AddRange(source.{property.Name})"
-            : $"{property.Name}.AddRange(source.{property.Name})";
+        return $"{{NullCheck}}{property.Name}.AddRange(source.{property.Name})";
     }
 
     private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
@@ -214,4 +177,3 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
                     .Select(x => new ParameterBuilder(x))
             );
 }
-
