@@ -83,7 +83,7 @@ public class PipelineBuilderTests : IDisposable
         }
 
         [Fact]
-        public void Adds_Constructor()
+        public void Adds_Constructors()
         {
             // Arrange
             var sut = CreateSut().Build();
@@ -92,7 +92,7 @@ public class PipelineBuilderTests : IDisposable
             sut.Process(Model, Context);
 
             // Assert
-            Model.Constructors.Should().ContainSingle();
+            Model.Constructors.Should().NotBeEmpty();
         }
 
         private static TypeBase CreateModel()

@@ -6,7 +6,7 @@ public record PipelineBuilderConstructorSettings
     public bool SetDefaultValues { get; }
 
     public PipelineBuilderConstructorSettings(
-        bool addCopyConstructor = false,
+        bool addCopyConstructor = true,
         bool setDefaultValues = true)
     {
         AddCopyConstructor = addCopyConstructor;
