@@ -16,5 +16,4 @@ public record BuilderContext
     public bool IsBuilderForAbstractEntity => Settings.InheritanceSettings.EnableEntityInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
     public bool IsBuilderForOverrideEntity => Settings.InheritanceSettings.EnableEntityInheritance && Settings.InheritanceSettings.BaseClass is not null;
     public bool IsAbstractBuilder => Settings.InheritanceSettings.EnableBuilderInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract) && !Settings.IsForAbstractBuilder;
-    public bool NeedsConstructors => !IsAbstractBuilder || Settings.InheritanceSettings.EnableBuilderInheritance;
 }

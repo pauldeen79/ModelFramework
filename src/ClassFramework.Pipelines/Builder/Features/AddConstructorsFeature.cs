@@ -26,11 +26,6 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.NeedsConstructors)
-        {
-            return;
-        }
-
         if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.IsAbstractBuilder
             && !context.Context.Settings.IsForAbstractBuilder)
