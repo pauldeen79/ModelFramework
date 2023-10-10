@@ -6,6 +6,7 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, PipelineBuilder>()
             .AddScoped<ISharedFeatureBuilder, PartialFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, ValidationFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, SetNameFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AbstractBuilderFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()
