@@ -30,9 +30,7 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
             && context.Context.IsAbstractBuilder
             && !context.Context.Settings.IsForAbstractBuilder)
         {
-            context.Model.Constructors.Add(new ClassConstructorBuilder()
-                .WithChainCall("base()")
-                .WithProtected(context.Context.IsBuilderForAbstractEntity));
+            context.Model.Constructors.Add(CreateInheritanceDefaultConstructor(context));
 
             if (context.Context.Settings.ConstructorSettings.AddCopyConstructor)
             {
@@ -69,7 +67,7 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
             (
                 context.Context.SourceModel.Properties
                     .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false))
-                    .Where(x => x.TypeName.IsCollectionTypeName())
+                    .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context.Context, x)};")
             )
             .AddStringCodeStatements
@@ -77,7 +75,7 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
                 context.Context.SourceModel.Properties
                     .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => context.Context.Settings.ConstructorSettings.SetDefaultValues
-                        && !x.TypeName.IsCollectionTypeName()
+                        && !x.TypeName.FixTypeName().IsCollectionTypeName()
                         && !x.IsNullable
                         && !x.GetDefaultValue(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes).StartsWith("default(", StringComparison.Ordinal))
                     .Select(x => GenerateDefaultValueStatement(x, context.Context.Settings))
@@ -100,16 +98,10 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
                     .WithName("source")
                     .WithTypeName(context.Context.SourceModel.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate) + context.Context.SourceModel.GetGenericTypeArgumentsString())
             )
-            .AddParameters
-            (
-                context.Context.SourceModel.Metadata
-                    .GetValues<Parameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
-                    .Select(x => new ParameterBuilder(x))
-            )
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false) && x.TypeName.IsCollectionTypeName())
+                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false) && x.TypeName.FixTypeName().IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context.Context, x)};")
             )
             .AddStringCodeStatements
@@ -125,7 +117,7 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
             property.Metadata.GetStringValue
             (
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
-                () => property.TypeName.IsCollectionTypeName()
+                () => property.TypeName.FixTypeName().IsCollectionTypeName()
                     ? CreateCollectionInitialization(property, context.Context.Settings)
                     : CreateSingleInitialization(property)
             ),
@@ -140,7 +132,7 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return "{{NullCheck}}{property.Name} = source.{property.Name}";
+            return $"{{NullCheck}}{property.Name} = {property.Name}.Concat(source.{property.Name})";
         }
 
         return $"{{NullCheck}}{property.Name}.AddRange(source.{property.Name})";
@@ -155,6 +147,11 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
     private static string GenerateDefaultValueStatement(ClassProperty property, PipelineBuilderSettings settings)
         => $"{property.Name} = {property.GetDefaultValue(settings.GenerationSettings.EnableNullableReferenceTypes)};";
 
+    private static ClassConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
+        => new ClassConstructorBuilder()
+            .WithChainCall("base()")
+            .WithProtected(context.Context.IsBuilderForAbstractEntity);
+
     private static ClassConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()
             .WithChainCall("base(source)")
@@ -164,11 +161,5 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
                 new ParameterBuilder()
                     .WithName("source")
                     .WithTypeName(context.Context.SourceModel.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate) + context.Context.SourceModel.GetGenericTypeArgumentsString())
-            )
-            .AddParameters
-            (
-                context.Context.SourceModel.Metadata
-                    .GetValues<Parameter>(MetadataNames.AdditionalBuilderCopyConstructorAdditionalParameter)
-                    .Select(x => new ParameterBuilder(x))
             );
 }
