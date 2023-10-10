@@ -66,14 +66,14 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance, isForWithStatement: false))
                     .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context.Context, x)};")
             )
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance, isForWithStatement: false))
                     .Where(x => context.Context.Settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.FixTypeName().IsCollectionTypeName()
                         && !x.IsNullable
@@ -101,13 +101,13 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false) && x.TypeName.FixTypeName().IsCollectionTypeName())
+                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance, isForWithStatement: false) && x.TypeName.FixTypeName().IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context.Context, x)};")
             )
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings.InheritanceSettings, context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance, isForWithStatement: false))
                     .Select(x => $"{CreateImmutableBuilderInitializationCode(x, context)};")
             );
 

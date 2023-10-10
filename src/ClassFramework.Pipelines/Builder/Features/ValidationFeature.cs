@@ -11,7 +11,7 @@ public class ValidationFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.ClassSettings.AllowGenerationWithoutProperties && !context.Context.SourceModel.Properties.Any() && !context.Context.Settings.InheritanceSettings.EnableEntityInheritance)
+        if (!context.Context.Settings.ClassSettings.AllowGenerationWithoutProperties && !context.Context.SourceModel.Properties.Any() && !context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance)
         {
             throw new InvalidOperationException("To create an immutable builder class, there must be at least one property");
         }

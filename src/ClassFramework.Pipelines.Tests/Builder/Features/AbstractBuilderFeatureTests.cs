@@ -25,7 +25,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
                   .Returns(x => Result<string>.Success(x.ArgAt<string>(0).Replace("{Name}", sourceModel.Name, StringComparison.Ordinal)));
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(inheritanceSettings: new PipelineBuilderInheritanceSettings(enableEntityInheritance: true));
+            var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

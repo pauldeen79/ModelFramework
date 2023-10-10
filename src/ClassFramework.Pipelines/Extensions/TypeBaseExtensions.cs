@@ -23,13 +23,14 @@ public static class TypeBaseExtensions
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
         PipelineBuilderInheritanceSettings inheritanceSettings,
+        bool enableEntityInheritance,
         bool isForWithStatement)
     {
         inheritanceSettings = inheritanceSettings.IsNotNull(nameof(inheritanceSettings));
 
         return parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
-            inheritanceSettings.EnableEntityInheritance,
+            enableEntityInheritance,
             inheritanceSettings.InheritanceComparisonFunction);
     }
 
@@ -52,7 +53,7 @@ public static class TypeBaseExtensions
         this TypeBase instance,
         PipelineBuilderSettings settings,
         Func<Class, string> customValue)
-        => instance.GetCustomValueForInheritedClass(settings.IsNotNull(nameof(settings)).InheritanceSettings.EnableEntityInheritance, customValue.IsNotNull(nameof(customValue)));
+        => instance.GetCustomValueForInheritedClass(settings.IsNotNull(nameof(settings)).ClassSettings.InheritanceSettings.EnableInheritance, customValue.IsNotNull(nameof(customValue)));
 
     private static string GetCustomValueForInheritedClass(
         this TypeBase instance,

@@ -36,12 +36,12 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
-        var isNotForAbstractBuilder = context.Context.Settings.InheritanceSettings.EnableEntityInheritance
+        var isNotForAbstractBuilder = context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
             && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.Settings.InheritanceSettings.BaseClass is null
             && !context.Context.Settings.IsForAbstractBuilder;
 
-        var isAbstract = context.Context.Settings.InheritanceSettings.EnableEntityInheritance
+        var isAbstract = context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
             && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.Settings.InheritanceSettings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder
@@ -54,7 +54,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
                 .GetValueOrThrow() + genericTypeArgumentsString;
         }
 
-        if (context.Context.Settings.InheritanceSettings.EnableEntityInheritance
+        if (context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
             && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.Settings.InheritanceSettings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
