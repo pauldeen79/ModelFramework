@@ -15,7 +15,8 @@ public class PipelineBuilderTests : IDisposable
         _scope = _provider.CreateScope();
     }
 
-    protected IPipelineBuilder<ClassBuilder, BuilderContext> CreateSut() => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>();
+    protected IPipelineBuilder<ClassBuilder, BuilderContext> CreateSut()
+        => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>();
 
     public class Constructor : PipelineBuilderTests
     {
@@ -40,9 +41,12 @@ public class PipelineBuilderTests : IDisposable
         private BuilderContext CreateContext(bool addProperties = true) => new BuilderContext
             (
                 CreateModel(addProperties),
-                new PipelineBuilderSettings(
+                new PipelineBuilderSettings
+                (
                     nameSettings: new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
-                    classSettings: new ImmutableClassPipelineBuilderSettings(allowGenerationWithoutProperties: false)),
+                    classSettings: new ImmutableClassPipelineBuilderSettings(allowGenerationWithoutProperties: false),
+                    generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true)
+                ),
                 CultureInfo.InvariantCulture
             );
 
@@ -130,6 +134,19 @@ public class PipelineBuilderTests : IDisposable
         }
 
         [Fact]
+        public void Adds_Attributes()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            sut.Process(Model, CreateContext());
+
+            // Assert
+            Model.Attributes.Should().NotBeEmpty();
+        }
+
+        [Fact]
         public void Throws_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
@@ -146,6 +163,7 @@ public class PipelineBuilderTests : IDisposable
                 .WithNamespace("MyNamespace")
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints("where T : class")
+                .AddAttributes(new AttributeBuilder().WithName("MyAttribute"))
                 .AddProperties(
                     new[]
                     {
