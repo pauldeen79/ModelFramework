@@ -37,7 +37,15 @@ public class PipelineBuilderTests : IDisposable
 
     public class Process : PipelineBuilderTests
     {
-        private BuilderContext Context { get; } = new BuilderContext(CreateModel(), new PipelineBuilderSettings(new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders")), CultureInfo.InvariantCulture);
+        private BuilderContext CreateContext(bool addProperties = true) => new BuilderContext
+            (
+                CreateModel(addProperties),
+                new PipelineBuilderSettings(
+                    nameSettings: new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
+                    classSettings: new ImmutableClassPipelineBuilderSettings(allowGenerationWithoutProperties: false)),
+                CultureInfo.InvariantCulture
+            );
+
         private ClassBuilder Model { get; } = new();
 
         [Fact]
@@ -47,7 +55,7 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, Context);
+            sut.Process(Model, CreateContext());
 
             // Assert
             Model.Partial.Should().BeTrue();
@@ -60,7 +68,7 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, Context);
+            sut.Process(Model, CreateContext());
 
             // Assert
             Model.Name.Should().Be("MyClassBuilder");
@@ -74,7 +82,7 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, Context);
+            sut.Process(Model, CreateContext());
 
             // Assert
             Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
@@ -89,19 +97,34 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, Context);
+            sut.Process(Model, CreateContext());
 
             // Assert
             Model.Constructors.Should().NotBeEmpty();
         }
 
-        private static TypeBase CreateModel()
+        [Fact]
+        public void Throws_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act & Assert
+            sut.Invoking(x => x.Process(Model, CreateContext(addProperties: false)))
+               .Should().Throw<InvalidOperationException>().WithMessage("To create a builder class, there must be at least one property");
+        }
+
+        private static TypeBase CreateModel(bool addProperties)
             => new ClassBuilder()
                 .WithName("MyClass")
                 .WithNamespace("MyNamespace")
                 .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true))
+                    new[]
+                    {
+                        new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
+                        new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true)
+                    }.Where(_ => addProperties)
+                )
                 .Build();
     }
 

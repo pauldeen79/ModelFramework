@@ -6,12 +6,23 @@ public class PipelineBuilder : PipelineBuilder<ClassBuilder, BuilderContext>
         IEnumerable<ISharedFeatureBuilder> sharedFeatureBuilders,
         IEnumerable<IBuilderFeatureBuilder> builderFeatureBuilders)
     {
-        AddFeatures(builderFeatureBuilders.Where(x => x is ValidationFeatureBuilder)); // important to add validation first, so the model does not get altered when validation fails...
         AddFeatures(sharedFeatureBuilders);
-        AddFeatures(builderFeatureBuilders.Where(x => x is not ValidationFeatureBuilder));
+        AddFeatures(builderFeatureBuilders);
     }
 
     public PipelineBuilder(Pipeline<ClassBuilder, BuilderContext> source) : base(source)
     {
+    }
+
+    protected override void Initialize(ClassBuilder model, PipelineContext<ClassBuilder, BuilderContext> pipelineContext)
+    {
+        pipelineContext = pipelineContext.IsNotNull(nameof(pipelineContext));
+
+        if (!pipelineContext.Context.Settings.ClassSettings.AllowGenerationWithoutProperties
+            && !pipelineContext.Context.SourceModel.Properties.Any()
+            && !pipelineContext.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance)
+        {
+            throw new InvalidOperationException("To create a builder class, there must be at least one property");
+        }
     }
 }
