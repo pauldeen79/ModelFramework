@@ -22,16 +22,15 @@ public static class TypeBaseExtensions
     public static bool IsMemberValidForImmutableBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
-        PipelineBuilderInheritanceSettings inheritanceSettings,
-        bool enableEntityInheritance,
-        bool isForWithStatement)
+        PipelineBuilderSettings settings)
     {
-        inheritanceSettings = inheritanceSettings.IsNotNull(nameof(inheritanceSettings));
+        parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
+        settings = settings.IsNotNull(nameof(settings));
 
         return parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
-            enableEntityInheritance,
-            inheritanceSettings.InheritanceComparisonFunction);
+            settings.ClassSettings.InheritanceSettings.EnableInheritance,
+            settings.InheritanceSettings.InheritanceComparisonFunction);
     }
 
     public static string GetGenericTypeArgumentsString(this TypeBase instance)
