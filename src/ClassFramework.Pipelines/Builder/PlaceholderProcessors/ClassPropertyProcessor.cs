@@ -30,6 +30,9 @@ public class ClassPropertyProcessor : IPlaceholderProcessor
             $"{nameof(ClassProperty.TypeName)}.ClassName" => Result<string>.Success(model.TypeName.FixTypeName().GetClassName()),
             $"{nameof(ClassProperty.TypeName)}.Namespace" => Result<string>.Success(model.TypeName.FixTypeName().GetNamespaceWithDefault()),
             $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result<string>.Success(model.TypeName.FixTypeName().WithoutProcessedGenerics()),
+            "NullableSuffix" => Result<string>.Success(model.IsNullable
+                ? "?"
+                : string.Empty),
             _ => Result<string>.Continue()
         };
 }

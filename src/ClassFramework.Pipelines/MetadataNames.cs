@@ -16,4 +16,10 @@ public static class MetadataNames
     /// Metadata name for defining a custom initialization in the constructor of the builder.
     /// </summary>
     public const string CustomBuilderConstructorInitializeExpression = "ClassFramework.Builder.ConstructorInitializeExpression";
+
+    /// <summary>
+    /// Metadata name for defining a custom parameter expression in the builder.
+    /// </summary>
+    public const string CustomBuilderMethodParameterExpression = "ClassFramework.Builder.Ctor.MethodParameterExpression";
+
 }

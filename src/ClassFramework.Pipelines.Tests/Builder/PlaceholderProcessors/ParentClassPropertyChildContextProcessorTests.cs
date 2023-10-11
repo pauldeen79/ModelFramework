@@ -4,7 +4,7 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
 {
     public class Process : ParentClassPropertyChildContextProcessorTests
     {
-        private ClassProperty PropertyModel { get; } = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).Build();
+        private ClassProperty CreatePropertyModel(bool isNullable = false) => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
         private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
         [Fact]
@@ -25,7 +25,7 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         {
             // Arrange
             var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture)), PropertyModel);
+            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture)), CreatePropertyModel());
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -51,7 +51,7 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result<string>.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), PropertyModel);
+            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), CreatePropertyModel());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -72,20 +72,42 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         [InlineData("TypeName.Namespace", "")]
         [InlineData("TypeName.NoGenerics", "delegate(MyClass,True)")]
         [InlineData("Name", "MyProperty")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_FormatInstanceTypeNameDelegate(string value, string expectedValue)
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_FormatInstanceTypeNameDelegate(string value, string expectedResult)
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result<string>.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(typeSettings: new PipelineBuilderTypeSettings(formatInstanceTypeNameDelegate: (type, forCreate) => $"delegate({type.Name},{forCreate})")), CultureInfo.InvariantCulture)), PropertyModel);
+            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(typeSettings: new PipelineBuilderTypeSettings(formatInstanceTypeNameDelegate: (type, forCreate) => $"delegate({type.Name},{forCreate})")), CultureInfo.InvariantCulture)), CreatePropertyModel());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value.Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("NullableRequiredSuffix", true, "")]
+        [InlineData("NullableRequiredSuffix", false, "!")]
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_FormatInstanceTypeNameDelegate_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
+        {
+            // Arrange
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result<string>.Success("MyNamespace.Builders"));
+            var sut = CreateSut();
+            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(
+                generationSettings: new PipelineBuilderGenerationSettings(enableNullableReferenceTypes: true),
+                typeSettings: new PipelineBuilderTypeSettings(formatInstanceTypeNameDelegate: (type, forCreate) => $"delegate({type.Name},{forCreate})")), CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable)
+                );
+
+            // Act
+            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(expectedResult);
         }
     }
 }

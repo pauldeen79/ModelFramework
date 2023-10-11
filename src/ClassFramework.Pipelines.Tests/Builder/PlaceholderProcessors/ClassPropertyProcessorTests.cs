@@ -4,7 +4,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
 {
     public class Process : ClassPropertyProcessorTests
     {
-        private ClassProperty Model { get; } = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).Build();
+        private ClassProperty CreatePropertyModel(bool isNullable = false) => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
         private TypeBase CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
         [Fact]
@@ -25,7 +25,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassProperty, BuilderContext>(Model, new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassProperty, BuilderContext>(CreatePropertyModel(), new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -43,18 +43,35 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         [InlineData("TypeName.ClassName", "List<System.String>")]
         [InlineData("TypeName.Namespace", "System.Collections.Generic")]
         [InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
+        public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedResult)
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassProperty, BuilderContext>(Model, new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassProperty, BuilderContext>(CreatePropertyModel(), new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedValue);
+            result.Value.Should().Be(expectedResult);
+        }
+
+        [Theory]
+        [InlineData("NullableSuffix", true, "?")]
+        [InlineData("NullableSuffix", false, "")]
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = new PipelineContext<ClassProperty, BuilderContext>(CreatePropertyModel(isNullable), new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(expectedResult);
         }
     }
 }

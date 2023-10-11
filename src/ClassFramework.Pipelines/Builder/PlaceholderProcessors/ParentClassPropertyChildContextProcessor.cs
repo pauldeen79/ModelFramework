@@ -22,6 +22,9 @@ public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
             "NullCheck.Source" => Result<string>.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
+            "NullableRequiredSuffix" => Result<string>.Success(parentChildContext.ChildContext.IsNullable || !parentChildContext.ParentContext.Context.Settings.GenerationSettings.EnableNullableReferenceTypes
+                ? string.Empty
+                : "!"),
             "BuildersNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
 
             // overrides of property typename (needed in case the FormatInstanceTypeNameDelegate is filled)
