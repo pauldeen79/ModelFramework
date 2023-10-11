@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Features;
 
-public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
+public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
 {
-    public class Process : AbstractBuilderFeatureTests
+    public class Process : ValidatableObjectFeatureTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -16,29 +16,24 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
         }
 
         [Fact]
-        public void Adds_AddGenericTypeArguments_When_IsBuilderForAbstractEntity_Is_True()
+        public void Adds_IValidatableObject_Interface_When_IsBuilderForAbstractEntity_Is_False_And_Validation_Is_Shared_Between_Builder_And_Entity()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            var parser = Fixture.Freeze<IFormattableStringParser>();
-            parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                  .Returns(x => Result<string>.Success(x.ArgAt<string>(0).Replace("{Name}", sourceModel.Name, StringComparison.Ordinal)));
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);
 
             // Assert
-            model.GenericTypeArguments.Should().BeEquivalentTo("TBuilder", "TEntity");
-            model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>");
-            model.Abstract.Should().BeTrue();
+            model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.DataAnnotations.IValidatableObject");
         }
 
         [Fact]
-        public void Does_Not_Add_AddGenericTypeArguments_When_IsBuilderForAbstractEntity_Is_False_And_Validation_Is_Not_Shared_Between_Builder_And_Entity()
+        public void Does_Not_Add_IValidatableObject_Interface_When_IsBuilderForAbstractEntity_Is_False_And_Validation_Is_Not_Shared_Between_Builder_And_Entity()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
@@ -51,9 +46,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             sut.Process(context);
 
             // Assert
-            model.GenericTypeArguments.Should().BeEmpty();
-            model.GenericTypeArgumentConstraints.Should().BeEmpty();
-            model.Abstract.Should().BeFalse();
+            model.Interfaces.Should().BeEmpty();
         }
     }
 }

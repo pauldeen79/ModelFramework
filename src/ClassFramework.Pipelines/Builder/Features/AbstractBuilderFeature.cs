@@ -34,10 +34,6 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderCont
                 .AddGenericTypeArgumentConstraints($"where TBuilder : {_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}<TBuilder, TEntity>")
                 .WithAbstract();
         }
-        else if (context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
-        {
-            context.Model.AddInterfaces(typeof(IValidatableObject));
-        }
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

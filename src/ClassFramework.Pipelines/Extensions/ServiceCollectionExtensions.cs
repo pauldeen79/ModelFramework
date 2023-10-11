@@ -6,12 +6,13 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, PipelineBuilder>()
             .AddScoped<ISharedFeatureBuilder, PartialFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, ValidationFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, SetNameFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AbstractBuilderFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, AddPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddConstructorsFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, AddPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, SetNameFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, ValidatableObjectFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, ValidationFeatureBuilder>()
             .AddScoped<IPlaceholderProcessor, ContextSourceModelProcessor>()
             .AddScoped<IPlaceholderProcessor, ClassPropertyProcessor>()
             .AddScoped<IPlaceholderProcessor, ParentClassPropertyChildContextProcessor>();
