@@ -41,7 +41,7 @@ public class AddConstructorsFeatureTests : TestBase<AddConstructorsFeature>
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().Be(expectedProtected);
-            ctor.ChainCall.Should().Be(!hasBaseClass ? "base()" : string.Empty); //TODO: Review this. Sounds unlogical?
+            ctor.ChainCall.Should().Be(!hasBaseClass ? "base()" : string.Empty); // sounds unlogical, but this is the non-abstract base class for the builder, and it needs the base() chaincall to the abstract base class for the builder
             ctor.Parameters.Should().BeEmpty();
             if (expectedCodeStatements)
             {
