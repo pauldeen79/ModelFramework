@@ -102,6 +102,32 @@ public class PipelineBuilderTests : IDisposable
             // Assert
             Model.Constructors.Should().NotBeEmpty();
         }
+        
+        [Fact]
+        public void Adds_GenericTypeArguments()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            sut.Process(Model, CreateContext());
+
+            // Assert
+            Model.GenericTypeArguments.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public void Adds_GenericTypeArgumentConstraints()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            sut.Process(Model, CreateContext());
+
+            // Assert
+            Model.GenericTypeArgumentConstraints.Should().NotBeEmpty();
+        }
 
         [Fact]
         public void Throws_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
@@ -118,6 +144,8 @@ public class PipelineBuilderTests : IDisposable
             => new ClassBuilder()
                 .WithName("MyClass")
                 .WithNamespace("MyNamespace")
+                .AddGenericTypeArguments("T")
+                .AddGenericTypeArgumentConstraints("where T : class")
                 .AddProperties(
                     new[]
                     {
