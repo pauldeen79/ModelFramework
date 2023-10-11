@@ -1,9 +1,8 @@
 ﻿namespace ClassFramework.Domain;
 
-public class Literal
+public record Literal
 {
     public string? Value { get; }
-
     public object? OriginalValue { get; }
 
     public Literal(string? value, object? originalValue = null)
@@ -11,6 +10,4 @@ public class Literal
         Value = value;
         OriginalValue = originalValue;
     }
-
-    public override string ToString() => Value ?? "null";
 }
