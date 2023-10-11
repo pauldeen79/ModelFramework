@@ -52,7 +52,48 @@ public static class TypeBaseExtensions
         this TypeBase instance,
         PipelineBuilderSettings settings,
         Func<Class, string> customValue)
-        => instance.GetCustomValueForInheritedClass(settings.IsNotNull(nameof(settings)).ClassSettings.InheritanceSettings.EnableInheritance, customValue.IsNotNull(nameof(customValue)));
+    {
+        settings = settings.IsNotNull(nameof(settings));
+        customValue = customValue.IsNotNull(nameof(customValue));
+
+        return instance.GetCustomValueForInheritedClass(settings.ClassSettings.InheritanceSettings.EnableInheritance, customValue);
+    }
+
+    public static IEnumerable<ClassProperty> GetImmutableBuilderConstructorProperties(
+        this TypeBase instance,
+        BuilderContext context,
+        bool poco)
+    {
+        context = context.IsNotNull(nameof(context));
+
+        var cls = instance as Class;
+        if (poco)
+        {
+            return instance.Properties;
+        }
+
+        var ctors = cls?.Constructors ?? new ReadOnlyValueCollection<ClassConstructor>();
+        var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
+        if (ctor is null)
+        {
+            return instance.Properties;
+        }
+
+        if (context.IsBuilderForOverrideEntity && context.Settings.InheritanceSettings.BaseClass is not null)
+        {
+            // Try to get property from either the base class c'tor or the class c'tor itself
+            return ctor
+                .Parameters
+                .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
+                    ?? context.Settings.InheritanceSettings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                .Where(x => x is not null);
+        }
+
+        return ctor
+            .Parameters
+            .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+            .Where(x => x is not null);
+    }
 
     private static string GetCustomValueForInheritedClass(
         this TypeBase instance,
@@ -81,39 +122,6 @@ public static class TypeBaseExtensions
         return customValue(cls);
     }
 
-    public static IEnumerable<ClassProperty> GetImmutableBuilderConstructorProperties(
-        this TypeBase instance,
-        BuilderContext context,
-        bool poco)
-    {
-        var cls = instance as Class;
-        if (poco)
-        {
-            return instance.Properties;
-        }
-
-        var ctors = cls?.Constructors ?? new ReadOnlyValueCollection<ClassConstructor>();
-        var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
-        if (ctor is null)
-        {
-            return instance.Properties;
-        }
-
-        if (context.IsBuilderForOverrideEntity && context.Settings.InheritanceSettings.BaseClass is not null)
-        {
-            // Try to get property from either the base class c'tor or the class c'tor itself
-            return ctor
-                .Parameters
-                .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
-                    ?? context.Settings.InheritanceSettings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
-                .Where(x => x != null);
-        }
-
-        return ctor
-            .Parameters
-            .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
-            .Where(x => x != null);
-    }
     private static bool IsMemberValidForImmutableBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
