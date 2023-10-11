@@ -5,5 +5,6 @@ global using System.Reflection;
 global using System.Text;
 global using System.Text.RegularExpressions;
 global using ClassFramework.Domain.Extensions;
+global using ClassFramework.Domain.Types;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
