@@ -51,17 +51,18 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
 
     private string CreateEntityInstanciation(PipelineContext<ClassBuilder, BuilderContext> context, string classNameSuffix)
     {
-        var openSign = GetImmutableBuilderPocoOpenSign(context.Context.SourceModel.IsPoco() && context.Context.SourceModel.Properties.Any());
-        var closeSign = GetImmutableBuilderPocoCloseSign(context.Context.SourceModel.IsPoco() && context.Context.SourceModel.Properties.Any());
+        var hasPublicParameterlessConstructor = context.Context.SourceModel is Class cls && cls.HasPublicParameterlessConstructor();
+        var openSign = GetImmutableBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
+        var closeSign = GetImmutableBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
         return $"new {context.Context.SourceModel.FormatInstanceName(true, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(context.Context.SourceModel, context)}{closeSign}";
     }
 
     private string GetConstructionMethodParameters(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
     {
-        var poco = instance.IsPoco();
-        var properties = instance.GetImmutableBuilderConstructorProperties(context.Context, poco);
+        var hasPublicParameterlessConstructor = instance is Class cls && cls.HasPublicParameterlessConstructor();
+        var properties = instance.GetImmutableBuilderConstructorProperties(context.Context, hasPublicParameterlessConstructor);
 
-        var defaultValueDelegate = poco
+        var defaultValueDelegate = hasPublicParameterlessConstructor
             ? new Func<ClassProperty, string>(p => $"{p.Name} = {p.Name}")
             : new Func<ClassProperty, string>(p => $"{p.Name}");
 
