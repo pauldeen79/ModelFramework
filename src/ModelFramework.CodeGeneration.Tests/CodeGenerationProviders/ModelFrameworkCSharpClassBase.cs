@@ -18,7 +18,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
             : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
 
-    protected override bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
+    protected override bool IsMemberValid(IParentTypeContainer parent, string name, ITypeBase typeBase)
         => parent != null
         && typeBase != null
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)

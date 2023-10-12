@@ -113,9 +113,11 @@ public static partial class TypeBaseExtensions
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
+                                                             string name,
                                                              ImmutableClassInheritanceSettings inheritanceSettings)
         => parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
+            name,
             inheritanceSettings.EnableInheritance,
             false,
             false,
@@ -123,10 +125,12 @@ public static partial class TypeBaseExtensions
 
     public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                              IParentTypeContainer parentTypeContainer,
+                                                             string name,
                                                              ImmutableBuilderClassInheritanceSettings inheritanceSettings,
                                                              bool isForWithStatement)
         => parent.IsMemberValidForImmutableBuilderClass(
             parentTypeContainer,
+            name,
             inheritanceSettings.EnableEntityInheritance,
             inheritanceSettings.EnableBuilderInheritance,
             isForWithStatement && !inheritanceSettings.RemoveDuplicateWithMethods, // only when duplicate methods need to be removed...
@@ -134,10 +138,11 @@ public static partial class TypeBaseExtensions
 
     private static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
                                                               IParentTypeContainer parentTypeContainer,
+                                                              string name,
                                                               bool enableEntityInheritance,
                                                               bool enableBuilderInhericance,
                                                               bool isForWithStatement,
-                                                              Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
+                                                              Func<IParentTypeContainer, string, ITypeBase, bool>? comparisonFunction = null)
     {
         if (!enableEntityInheritance)
         {
@@ -152,7 +157,7 @@ public static partial class TypeBaseExtensions
         }
 
         // If inheritance is enabled, then include the members if it's defined on the parent class
-        return parentTypeContainer.IsDefinedOn(parent, comparisonFunction);
+        return parentTypeContainer.IsDefinedOn(parent, name, comparisonFunction);
     }
 
     public static string GetEntityClassName(this ITypeBase instance)

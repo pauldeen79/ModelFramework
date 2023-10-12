@@ -32,10 +32,12 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddBackingFieldsForCollectionProperties => false;
     protected virtual IClass? BaseClass => null;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
-    protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
+    protected virtual bool IsMemberValid(IParentTypeContainer parent, string name, ITypeBase typeBase)
         => parent is not null
         && typeBase is not null
         && (string.IsNullOrEmpty(parent.ParentTypeFullName)
+            || parent.ParentTypeFullName == typeBase.GetFullName()
+            //|| (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == name))
             || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parent.ParentTypeFullName.GetClassName())
             || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}"))
@@ -524,7 +526,7 @@ public abstract class CSharpClassBase : ClassBase
                 baseClassBuilderNameSpace: BaseClassBuilderNamespace,
                 inheritanceComparisonFunction: EnableBuilderInhericance
                     ? IsMemberValid
-                    : (_, _) => true),
+                    : (_, _, _) => true),
             classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.None)
         );
 
@@ -545,7 +547,7 @@ public abstract class CSharpClassBase : ClassBase
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                 inheritanceComparisonFunction: EnableEntityInheritance
                     ? IsMemberValid
-                    : (_, _) => true)
+                    : (_, _, _) => true)
         );
 
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)

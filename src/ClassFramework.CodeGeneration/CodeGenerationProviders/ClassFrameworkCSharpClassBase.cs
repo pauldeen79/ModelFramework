@@ -61,15 +61,11 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal));
         }
     }
-
-    protected override bool IsMemberValid(ModelFramework.Objects.Contracts.IParentTypeContainer parent, ModelFramework.Objects.Contracts.ITypeBase typeBase)
-        => parent is not null
-        && typeBase is not null
-        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parent.ParentTypeFullName.GetClassName())
-            || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}"))
-            || (parent.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
-            || parent.ParentTypeFullName.GetClassName().In(nameof(IConstructorsContainer), nameof(IFieldsContainer), nameof(IRecordContainer)) // hacking here... need to make this generic in some way :(
-        );
+    protected override string[] GetModelAbstractBaseTyped()
+        => new[]
+        {
+            nameof(IConstructorsContainer),
+            nameof(IFieldsContainer),
+            nameof(IRecordContainer)
+        }; // hacking here... need to make this generic in some way :(
 }

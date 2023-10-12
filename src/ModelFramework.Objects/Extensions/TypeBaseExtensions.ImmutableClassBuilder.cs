@@ -96,7 +96,7 @@ public static partial class TypeBaseExtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(p => instance.IsMemberValidForImmutableBuilderClass(p, settings.InheritanceSettings))
+                    .Where(p => instance.IsMemberValidForImmutableBuilderClass(p, p.Name, settings.InheritanceSettings))
                     .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
                     .Select
                     (
@@ -106,7 +106,7 @@ public static partial class TypeBaseExtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings))
                     .Select
                     (
                         p => string.Format
@@ -125,7 +125,7 @@ public static partial class TypeBaseExtensions
         ImmutableClassSettings settings)
         => instance
             .Properties
-            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings))
+            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings))
             .Select
             (
                 p => new ClassPropertyBuilder()
