@@ -43,7 +43,7 @@ public record ImmutableClassPipelineBuilderSettings
     }
 
     public ImmutableClassPipelineBuilderSettings(
-        string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
+        string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         bool createWithMethod = false,
         bool implementIEquatable = false,
         bool addPrivateSetters = false,

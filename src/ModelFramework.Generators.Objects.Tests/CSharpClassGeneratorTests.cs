@@ -108,18 +108,18 @@ namespace MyNamespace
             get;
         }
 
-        public System.Collections.Immutable.IImmutableList<string> Property3
+        public System.Collections.Generic.IReadOnlyCollection<string> Property3
         {
             get;
         }
 
-        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Immutable.IImmutableList<string> property3 = default(System.Collections.Immutable.IImmutableList<string>))
+        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Generic.IReadOnlyCollection<string> property3 = default(System.Collections.Generic.IReadOnlyCollection<string>))
         {
             return new MyRecord
             (
                 property1 == default(string) ? this.Property1 : property1,
                 property2 == default(bool) ? this.Property2 : property2,
-                property3 == default(System.Collections.Immutable.IImmutableList<string>) ? this.Property3 : property3
+                property3 == default(System.Collections.Generic.IReadOnlyCollection<string>) ? this.Property3 : property3
             );
         }
 
@@ -127,7 +127,7 @@ namespace MyNamespace
         {
             this.Property1 = property1;
             this.Property2 = property2;
-            this.Property3 = property3;
+            this.Property3 = new System.Collections.Generic.List<System.String>(property3);
         }
     }
 }
@@ -151,18 +151,18 @@ namespace MyNamespace
             get;
         }
 
-        public System.Collections.Immutable.IImmutableList<string> Property3
+        public System.Collections.Generic.IReadOnlyCollection<string> Property3
         {
             get;
         }
 
-        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Immutable.IImmutableList<string> property3 = default(System.Collections.Immutable.IImmutableList<string>))
+        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Generic.IReadOnlyCollection<string> property3 = default(System.Collections.Generic.IReadOnlyCollection<string>))
         {
             return new MyRecord
             (
                 property1 == default(string) ? this.Property1 : property1,
                 property2 == default(bool) ? this.Property2 : property2,
-                property3 == default(System.Collections.Immutable.IImmutableList<string>) ? this.Property3 : property3
+                property3 == default(System.Collections.Generic.IReadOnlyCollection<string>) ? this.Property3 : property3
             );
         }
 
@@ -170,7 +170,7 @@ namespace MyNamespace
         {
             this.Property1 = property1;
             this.Property2 = property2;
-            this.Property3 = property3;
+            this.Property3 = new System.Collections.Generic.List<System.String>(property3);
         }
     }
 }

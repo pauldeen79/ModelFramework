@@ -42,7 +42,7 @@ public record ImmutableClassSettings
         }
     }
 
-    public ImmutableClassSettings(string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
+    public ImmutableClassSettings(string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
                                   bool createWithMethod = false,
                                   bool implementIEquatable = false,
                                   bool addPrivateSetters = false,
