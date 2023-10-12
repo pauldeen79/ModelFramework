@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common;
-
-namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
@@ -816,7 +814,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(overrideAddNullChecks: AddNullChecks && ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
@@ -841,7 +839,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(overrideAddNullChecks: AddNullChecks && ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
