@@ -20,7 +20,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser();
+            InitializeParser(sourceModel);
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
@@ -46,7 +46,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            InitializeParser();
+            InitializeParser(sourceModel);
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
@@ -83,13 +83,6 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             // Assert
             model.Interfaces.Should().BeEmpty();
             model.Methods.Should().BeEmpty();
-        }
-
-        private void InitializeParser()
-        {
-            var parser = Fixture.Freeze<IFormattableStringParser>();
-            parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                  .Returns(x => Result<string>.Success(x.ArgAt<string>(0)));
         }
     }
 }

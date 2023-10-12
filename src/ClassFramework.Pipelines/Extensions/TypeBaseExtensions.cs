@@ -62,21 +62,26 @@ public static class TypeBaseExtensions
     public static IEnumerable<ClassProperty> GetImmutableBuilderConstructorProperties(
         this TypeBase instance,
         BuilderContext context,
-        bool poco)
+        bool hasPublicParameterlessConstructor)
     {
         context = context.IsNotNull(nameof(context));
 
-        var cls = instance as Class;
-        if (poco)
+        if (hasPublicParameterlessConstructor)
         {
-            return instance.Properties;
+            return instance.Properties.Where(x => x.HasSetter || x.HasInitializer);
         }
 
-        var ctors = cls?.Constructors ?? new ReadOnlyValueCollection<ClassConstructor>();
-        var ctor = ctors.FirstOrDefault(x => x.Parameters.Count > 0);
+        var cls = instance as Class;
+        if (cls is null)
+        {
+            throw new ArgumentException("Cannot get immutable builder constructor properties for interface");
+        }
+
+        var ctor = cls.Constructors.FirstOrDefault(x => x.Visibility == Domain.Domains.Visibility.Public && x.Parameters.Count > 0);
         if (ctor is null)
         {
-            return instance.Properties;
+            // No public constructor, so we can't add properties to initialization.
+            return Enumerable.Empty<ClassProperty>();
         }
 
         if (context.IsBuilderForOverrideEntity && context.Settings.InheritanceSettings.BaseClass is not null)

@@ -16,4 +16,26 @@ public record BuilderContext
     public bool IsBuilderForAbstractEntity => Settings.ClassSettings.InheritanceSettings.EnableInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
     public bool IsBuilderForOverrideEntity => Settings.ClassSettings.InheritanceSettings.EnableInheritance && Settings.InheritanceSettings.BaseClass is not null;
     public bool IsAbstractBuilder => Settings.InheritanceSettings.EnableBuilderInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract) && !Settings.IsForAbstractBuilder;
+
+    public string[] CreatePragmaWarningDisableStatements()
+        => Settings.GenerationSettings.EnableNullableReferenceTypes
+        && !IsBuilderForAbstractEntity
+        && !Settings.GenerationSettings.AddNullChecks
+            ? new[]
+            {
+                "#pragma warning disable CS8604 // Possible null reference argument.",
+                "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.",
+            }
+            : Array.Empty<string>();
+
+    public string[] CreatePragmaWarningRestoreStatements()
+        => Settings.GenerationSettings.EnableNullableReferenceTypes
+        && !IsBuilderForAbstractEntity
+        && !Settings.GenerationSettings.AddNullChecks
+            ? new[]
+            {
+                "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
+                "#pragma warning restore CS8604 // Possible null reference argument.",
+            }
+            : Array.Empty<string>();
 }

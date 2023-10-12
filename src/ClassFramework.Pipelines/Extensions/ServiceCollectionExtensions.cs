@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<ISharedFeatureBuilder, PartialFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AbstractBuilderFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddAttributesFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, AddBuildMethodFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddConstructorsFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()

@@ -147,6 +147,19 @@ public class PipelineBuilderTests : IDisposable
         }
 
         [Fact]
+        public void Adds_Methods()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            sut.Process(Model, CreateContext());
+
+            // Assert
+            Model.Methods.Should().NotBeEmpty();
+        }
+
+        [Fact]
         public void Throws_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange

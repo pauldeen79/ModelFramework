@@ -1,0 +1,57 @@
+﻿namespace ClassFramework.Pipelines.Extensions;
+
+public static class PipelineContextExtensions
+{
+    public static string CreateEntityInstanciation(this PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
+    {
+        var cls = context.Context.SourceModel as Class;
+
+        if (cls is null)
+        {
+            throw new InvalidOperationException("Cannot create an instance of an interface");
+        }
+
+        if (cls.Abstract)
+        {
+            throw new InvalidOperationException("Cannot create an instance of an abstract class");
+        }
+
+        var hasPublicParameterlessConstructor = cls.HasPublicParameterlessConstructor();
+        var openSign = GetImmutableBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
+        var closeSign = GetImmutableBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
+        return $"new {context.Context.SourceModel.FormatInstanceName(true, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor)}{closeSign}";
+    }
+
+    private static string GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
+    {
+        var properties = context.Context.SourceModel.GetImmutableBuilderConstructorProperties(context.Context, hasPublicParameterlessConstructor);
+
+        var defaultValueDelegate = hasPublicParameterlessConstructor
+            ? new Func<ClassProperty, string>(p => $"{p.Name} = {p.Name}")
+            : new Func<ClassProperty, string>(p => p.Name);
+
+        return string.Join
+        (
+            ", ",
+            properties.Select
+            (
+                p => formattableStringParser.Parse
+                (
+                    p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
+                    context.Context.FormatProvider,
+                    new ParentChildContext<ClassProperty>(context, p)
+                ).GetValueOrThrow()
+            )
+        );
+    }
+
+    private static string GetImmutableBuilderPocoCloseSign(bool poco)
+        => poco
+            ? " }"
+            : ")";
+
+    private static string GetImmutableBuilderPocoOpenSign(bool poco)
+        => poco
+            ? " { "
+            : "(";
+}

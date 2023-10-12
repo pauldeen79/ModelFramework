@@ -295,7 +295,7 @@ public class AddConstructorsFeatureTests : TestBase<AddConstructorsFeature>
             );
         }
 
-        private void InitializeParser(TypeBase sourceModel)
+        protected override void InitializeParser(TypeBase sourceModel)
         {
             var parser = Fixture.Freeze<IFormattableStringParser>();
             parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
