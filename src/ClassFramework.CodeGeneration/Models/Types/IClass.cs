@@ -8,7 +8,7 @@ internal interface IClass : ITypeBase
     bool Abstract { get; }
     [Required] IReadOnlyCollection<IClass> SubClasses { get; }
     [Required] IReadOnlyCollection<IClassConstructor> Constructors { get; }
-    [Required] IReadOnlyCollection<IEnum> Enums { get; }
+    [Required] IReadOnlyCollection<IEnumeration> Enums { get; }
     string? BaseClass { get; }
     bool Record { get; }
 }
