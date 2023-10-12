@@ -430,7 +430,7 @@ public static partial class TypeBaseEtensions
     {
         if (!(settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.IsAbstract))
         {
-            yield return FillMethod(instance, new ClassMethodBuilder()
+            yield return FillBuildMethod(instance, new ClassMethodBuilder()
                 .WithName(settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity
                     ? settings.NameSettings.BuildTypedMethodName
                     : settings.NameSettings.BuildMethodName)
@@ -493,7 +493,7 @@ public static partial class TypeBaseEtensions
             }
             : Array.Empty<string>();
 
-    private static ClassMethodBuilder FillMethod(
+    private static ClassMethodBuilder FillBuildMethod(
         ITypeBase instance,
         ClassMethodBuilder classMethodBuilder,
         ImmutableBuilderClassSettings settings)
