@@ -71,13 +71,13 @@ public static class TypeBaseExtensions
             return instance.Properties.Where(x => x.HasSetter || x.HasInitializer);
         }
 
-        var cls = instance as Class;
-        if (cls is null)
+        var constructorsContainer = instance as IConstructorsContainer;
+        if (constructorsContainer is null)
         {
-            throw new ArgumentException("Cannot get immutable builder constructor properties for interface");
+            throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors");
         }
 
-        var ctor = cls.Constructors.FirstOrDefault(x => x.Visibility == Domain.Domains.Visibility.Public && x.Parameters.Count > 0);
+        var ctor = constructorsContainer.Constructors.FirstOrDefault(x => x.Visibility == Domain.Domains.Visibility.Public && x.Parameters.Count > 0);
         if (ctor is null)
         {
             // No public constructor, so we can't add properties to initialization.
