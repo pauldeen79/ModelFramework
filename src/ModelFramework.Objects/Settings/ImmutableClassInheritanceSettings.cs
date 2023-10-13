@@ -6,14 +6,14 @@ public record ImmutableClassInheritanceSettings
     public bool IsAbstract { get; }
     public bool InheritFromInterfaces { get; }
     public IClass? BaseClass { get; }
-    public Func<IParentTypeContainer, string, ITypeBase, bool>? InheritanceComparisonFunction { get; }
+    public Func<IParentTypeContainer, INameContainer, ITypeBase, bool>? InheritanceComparisonFunction { get; }
     public Func<ITypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
 
     public ImmutableClassInheritanceSettings(bool enableInheritance = false,
                                              bool isAbstract = false,
                                              bool inheritFromInterfaces = false,
                                              IClass? baseClass = null,
-                                             Func<IParentTypeContainer, string, ITypeBase, bool>? inheritanceComparisonFunction = null,
+                                             Func<IParentTypeContainer, INameContainer, ITypeBase, bool>? inheritanceComparisonFunction = null,
                                              Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
     {
         EnableInheritance = enableInheritance;

@@ -126,7 +126,7 @@ public static partial class TypeBaseEtensions
         if (settings.GenerationSettings.CopyFields)
         {
             foreach (var field in instance.GetFields()
-            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement))
+            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement))
             .Select(x => new ClassFieldBuilder(x).WithProtected()))
             {
                 yield return field;
@@ -136,7 +136,7 @@ public static partial class TypeBaseEtensions
         if (settings.GenerationSettings.UseLazyInitialization)
         {
             foreach (var property in instance.Properties
-                .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement))
+                .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement))
                 .Where(x => !x.TypeName.IsCollectionTypeName()))
             {
 
@@ -192,14 +192,14 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => x.TypeName.IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(settings, x)};")
             )
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.IsCollectionTypeName()
                         && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization)
@@ -236,7 +236,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => !settings.GenerationSettings.UseLazyInitialization || x.TypeName.IsCollectionTypeName())
                     .Select
                     (
@@ -293,14 +293,14 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => x.TypeName.IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetCopyConstructorInitializeExpression(settings, x)};")
             )
             .AddLiteralCodeStatements
             (
                 instance.Properties
-                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement: false))
+                    .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Select(x => $"{x.CreateImmutableBuilderInitializationCode(settings)};")
             );
 
@@ -565,7 +565,6 @@ public static partial class TypeBaseEtensions
             .Concat(settings.InheritanceSettings.BaseClass?.Properties.Select(x => x.EnsureParentTypeFullName(settings.InheritanceSettings.BaseClass!))
                 ?? Enumerable.Empty<IClassProperty>())
             .Where(x => instance.IsMemberValidForImmutableBuilderClass(x,
-                                                                       x.Name,
                                                                        settings.InheritanceSettings,
                                                                        isForWithStatement: true));
 
@@ -905,7 +904,7 @@ public static partial class TypeBaseEtensions
         => instance.Properties
             .Where
             (
-                x => !settings.IsAbstractBuilder && instance.IsMemberValidForImmutableBuilderClass(x, x.Name, settings.InheritanceSettings, isForWithStatement: false)
+                x => !settings.IsAbstractBuilder && instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false)
             )
             .Select(property => new ClassPropertyBuilder()
                 .WithName(property.Name)

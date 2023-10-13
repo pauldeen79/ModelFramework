@@ -1,4 +1,6 @@
-﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
+﻿using ModelFramework.Common.Contracts;
+
+namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
@@ -32,16 +34,16 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AddBackingFieldsForCollectionProperties => false;
     protected virtual IClass? BaseClass => null;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
-    protected virtual bool IsMemberValid(IParentTypeContainer parent, string name, ITypeBase typeBase)
-        => parent is not null
+    protected virtual bool IsMemberValid(IParentTypeContainer parentNameContainer, INameContainer nameContainer, ITypeBase typeBase)
+        => parentNameContainer is not null
         && typeBase is not null
-        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName == typeBase.GetFullName()
-            //|| (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == name))
-            || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parent.ParentTypeFullName.GetClassName())
+        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+            || parentNameContainer.ParentTypeFullName == typeBase.GetFullName()
+            //|| (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == nameContainer.Name))
+            || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
             || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}"))
-            || (parent.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
+            || (parentNameContainer.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
         );
 
     protected abstract string ProjectName { get; }

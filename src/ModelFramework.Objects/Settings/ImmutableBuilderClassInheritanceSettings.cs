@@ -8,7 +8,7 @@ public class ImmutableBuilderClassInheritanceSettings
     public bool RemoveDuplicateWithMethods { get; }
     public IClass? BaseClass { get; }
     public string? BaseClassBuilderNameSpace { get; }
-    public Func<IParentTypeContainer, string, ITypeBase, bool>? InheritanceComparisonFunction { get; }
+    public Func<IParentTypeContainer, INameContainer, ITypeBase, bool>? InheritanceComparisonFunction { get; }
 
     public ImmutableBuilderClassInheritanceSettings(bool enableEntityInheritance = false,
                                                     bool enableBuilderInheritance = false,
@@ -16,7 +16,7 @@ public class ImmutableBuilderClassInheritanceSettings
                                                     bool removeDuplicateWithMethods = false,
                                                     IClass? baseClass = null,
                                                     string? baseClassBuilderNameSpace = null,
-                                                    Func<IParentTypeContainer, string, ITypeBase, bool>? inheritanceComparisonFunction = null)
+                                                    Func<IParentTypeContainer, INameContainer, ITypeBase, bool>? inheritanceComparisonFunction = null)
     {
         EnableEntityInheritance = enableEntityInheritance;
         EnableBuilderInheritance = enableBuilderInheritance;

@@ -4,9 +4,9 @@ public static class ParentTypeContainerExtensions
 {
     public static bool IsDefinedOn(this IParentTypeContainer instance,
                                    ITypeBase typeBase,
-                                   string name,
-                                   Func<IParentTypeContainer, string, ITypeBase, bool>? comparisonFunction = null)
+                                   INameContainer nameContainer,
+                                   Func<IParentTypeContainer, INameContainer, ITypeBase, bool>? comparisonFunction = null)
         => comparisonFunction == null
             ? string.IsNullOrEmpty(instance.ParentTypeFullName) || instance.ParentTypeFullName == typeBase.GetFullName()
-            : comparisonFunction.Invoke(instance, name, typeBase);
+            : comparisonFunction.Invoke(instance, nameContainer, typeBase);
 }

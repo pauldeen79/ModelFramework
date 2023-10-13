@@ -18,12 +18,12 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
             : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
 
-    protected override bool IsMemberValid(IParentTypeContainer parent, string name, ITypeBase typeBase)
-        => parent != null
+    protected override bool IsMemberValid(IParentTypeContainer parentNameContainer, INameContainer nameContainer, ITypeBase typeBase)
+        => parentNameContainer != null
         && typeBase != null
-        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
-            || parent.ParentTypeFullName.GetClassName() == nameof(IEnumsContainer)
+        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+            || parentNameContainer.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
+            || parentNameContainer.ParentTypeFullName.GetClassName() == nameof(IEnumsContainer)
             || $"I{typeBase.Name}" == nameof(ITypeBase));
 
     protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
