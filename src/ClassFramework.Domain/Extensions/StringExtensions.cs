@@ -336,7 +336,7 @@ public static class StringExtensions
             return $"{typeof(Enumerable).FullName}.{nameof(Enumerable.Empty)}<{typeName.GetGenericArguments()}>()";
         }
 
-        var preNullableSuffix = isNullable && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
+        var preNullableSuffix = isNullable && (enableNullableReferenceTypes || isValueType) && !typeName.EndsWith("?") && !typeName.StartsWith(typeof(Nullable<>).WithoutGenerics())
             ? "?"
             : string.Empty;
 
