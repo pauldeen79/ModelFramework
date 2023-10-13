@@ -62,6 +62,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             var ns = string.IsNullOrEmpty(context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace)
                 ? string.Empty
                 : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
+
             return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
@@ -72,18 +73,18 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         return instance.GetCustomValueForInheritedClass
         (
             context.Context.Settings,
-            cls => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
-                ? $"{GetBaseClassName(context, cls)}{genericTypeArgumentsString}"
-                : $"{GetBaseClassName(context, cls)}<{instanceNameBuilder}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>"
+            baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
+                ? $"{GetBaseClassName(context, baseClassContainer)}{genericTypeArgumentsString}"
+                : $"{GetBaseClassName(context, baseClassContainer)}<{instanceNameBuilder}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>"
         );
     }
 
-    private string GetBaseClassName(PipelineContext<ClassBuilder, BuilderContext> context, Class cls)
+    private string GetBaseClassName(PipelineContext<ClassBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
     {
         var newContext = new PipelineContext<ClassBuilder, BuilderContext>
         (
             context.Model,
-            new BuilderContext(CreateTypeBase(cls.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
+            new BuilderContext(CreateTypeBase(baseClassContainer.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
         );
 
         return _formattableStringParser

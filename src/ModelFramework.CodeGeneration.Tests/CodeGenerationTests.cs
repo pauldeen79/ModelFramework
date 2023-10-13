@@ -1310,6 +1310,7 @@ namespace MyNamespace.Domain.Builders
             new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.I", "MyNamespace."),
             new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Domains.", "MyNamespace.Domains."),
             new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Contracts.", "MyNamespace.Contracts."),
+            new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Abstractions.", "MyNamespace.Abstractions."),
             new KeyValuePair<string, string>("MyProject.CodeGeneration.I", "MyNamespace.I"),
         });
     }

@@ -108,6 +108,7 @@ public abstract class CSharpClassBase : ClassBase
         result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}s.I", $"{RootNamespace}.{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}s.")));
         result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
         result.Add($"{CodeGenerationRootNamespace}.Models.Contracts.", $"{RootNamespace}.Contracts.");
+        result.Add($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.");
         result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");
         return result;
     }
@@ -716,9 +717,10 @@ public abstract class CSharpClassBase : ClassBase
             .WithAll(y => y.Properties, z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName))
             .Chain(y =>
             {
+                y.Interfaces.RemoveAll(x => x.StartsWith($"{CodeGenerationRootNamespace}.Abstractions."));
                 for (int i = 0; i < y.Interfaces.Count; i++)
                 {
-                    y.Interfaces[i] = y.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal);
+                    y.Interfaces[i] = MapCodeGenerationNamespacesToDomain(y.Interfaces[i]);
                 }
             })
             .Build();

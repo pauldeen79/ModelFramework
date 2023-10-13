@@ -58,7 +58,9 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         interfaces = sourceModel.GetInterfaces();
         foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
         {
-            typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal));
+            typeBaseBuilder.AddInterfaces(i.FullName!
+                .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)
+                .Replace($"{CodeGenerationRootNamespace}.Models.", $"{RootNamespace}.", StringComparison.Ordinal));
         }
     }
 }

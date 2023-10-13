@@ -51,7 +51,7 @@ public static class TypeBaseExtensions
     public static string GetCustomValueForInheritedClass(
         this TypeBase instance,
         PipelineBuilderSettings settings,
-        Func<Class, string> customValue)
+        Func<IBaseClassContainer, string> customValue)
     {
         settings = settings.IsNotNull(nameof(settings));
         customValue = customValue.IsNotNull(nameof(customValue));
@@ -103,7 +103,7 @@ public static class TypeBaseExtensions
     private static string GetCustomValueForInheritedClass(
         this TypeBase instance,
         bool enableInheritance,
-        Func<Class, string> customValue)
+        Func<IBaseClassContainer, string> customValue)
     {
         if (!enableInheritance)
         {
@@ -111,20 +111,20 @@ public static class TypeBaseExtensions
             return string.Empty;
         }
 
-        var cls = instance as Class;
-        if (cls is null)
+        var baseClassContainer = instance as IBaseClassContainer;
+        if (baseClassContainer is null)
         {
-            // Type is an interface
+            // Type cannot have a base class
             return string.Empty;
         }
 
-        if (string.IsNullOrEmpty(cls.BaseClass))
+        if (string.IsNullOrEmpty(baseClassContainer.BaseClass))
         {
             // Class is not inherited
             return string.Empty;
         }
 
-        return customValue(cls);
+        return customValue(baseClassContainer);
     }
 
     private static bool IsMemberValidForImmutableBuilderClass(
