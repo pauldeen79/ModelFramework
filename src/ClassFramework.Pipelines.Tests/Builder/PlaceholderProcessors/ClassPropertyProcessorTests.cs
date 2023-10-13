@@ -36,6 +36,9 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
 
         [Theory]
         [InlineData("Name", "MyProperty")]
+        [InlineData("NameLower", "myproperty")]
+        [InlineData("NameUpper", "MYPROPERTY")]
+        [InlineData("NamePascal", "myProperty")]
         [InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
         [InlineData("TypeName.GenericArguments", "System.String")]
         [InlineData("TypeName.GenericArgumentsWithBrackets", "<System.String>")]
