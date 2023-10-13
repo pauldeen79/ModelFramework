@@ -77,8 +77,8 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
                     .Where(x => context.Context.Settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.FixTypeName().IsCollectionTypeName()
                         && !x.IsNullable
-                        && !x.GetDefaultValue(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes).StartsWith("default(", StringComparison.Ordinal))
-                    .Select(x => GenerateDefaultValueStatement(x, context.Context.Settings))
+                        && !x.GetDefaultValue(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.FormatProvider.ToCultureInfo()).StartsWith("default(", StringComparison.Ordinal))
+                    .Select(x => GenerateDefaultValueStatement(x, context.Context))
             );
 
     private ClassConstructorBuilder CreateCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
@@ -144,8 +144,8 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
     private static string CreateImmutableBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings, _ => "base(source)");
 
-    private static string GenerateDefaultValueStatement(ClassProperty property, PipelineBuilderSettings settings)
-        => $"{property.Name} = {property.GetDefaultValue(settings.GenerationSettings.EnableNullableReferenceTypes)};";
+    private static string GenerateDefaultValueStatement(ClassProperty property, BuilderContext context)
+        => $"{property.Name} = {property.GetDefaultValue(context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.FormatProvider.ToCultureInfo())};";
 
     private static ClassConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()

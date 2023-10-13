@@ -11,7 +11,7 @@ public class ClassPropertyExtensionsTests
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act
-            var result = sut.GetDefaultValue(false);
+            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -24,7 +24,7 @@ public class ClassPropertyExtensionsTests
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
 
             // Act
-            var result = sut.GetDefaultValue(false);
+            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -37,7 +37,7 @@ public class ClassPropertyExtensionsTests
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value")).Build();
 
             // Act
-            var result = sut.GetDefaultValue(false);
+            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
 
             // Assert
             result.Should().Be("custom value");
@@ -50,7 +50,7 @@ public class ClassPropertyExtensionsTests
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value").Build();
 
             // Act
-            var result = sut.GetDefaultValue(false);
+            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
 
             // Assert
             result.Should().Be("@\"custom value\"");

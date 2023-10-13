@@ -2,7 +2,7 @@
 
 public static class ObjectExtensions
 {
-    public static string CsharpFormat(this object? value)
+    public static string CsharpFormat(this object? value, CultureInfo cultureInfo)
     {
         if (value is null)
         {
@@ -21,10 +21,10 @@ public static class ObjectExtensions
                 : "false";
         }
 
-        return value.ToStringWithCulture();
+        return value.ToStringWithCulture(cultureInfo);
     }
 
-    private static string ToStringWithCulture(this object objectToConvert)
+    private static string ToStringWithCulture(this object objectToConvert, CultureInfo cultureInfo)
     {
         var t = objectToConvert.GetType();
         var method = t.GetMethod("ToString", new Type[] { typeof(IFormatProvider) });
@@ -34,7 +34,7 @@ public static class ObjectExtensions
         }
         else
         {
-            return (string)method.Invoke(objectToConvert, new object[] { CultureInfo.InvariantCulture });
+            return (string)method.Invoke(objectToConvert, new object[] { cultureInfo });
         }
     }
 }
