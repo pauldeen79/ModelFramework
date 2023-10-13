@@ -61,11 +61,4 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal));
         }
     }
-    protected override string[] GetModelAbstractBaseTyped()
-        => new[]
-        {
-            nameof(IConstructorsContainer),
-            nameof(IFieldsContainer),
-            nameof(IRecordContainer)
-        }; // hacking here... need to make this generic in some way :(
 }

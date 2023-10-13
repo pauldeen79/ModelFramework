@@ -38,11 +38,9 @@ public abstract class CSharpClassBase : ClassBase
         => parentNameContainer is not null
         && typeBase is not null
         && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-            || parentNameContainer.ParentTypeFullName == typeBase.GetFullName()
-            //|| (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == nameContainer.Name))
+            || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == nameContainer.Name))
             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-            || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}"))
             || (parentNameContainer.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
         );
 
