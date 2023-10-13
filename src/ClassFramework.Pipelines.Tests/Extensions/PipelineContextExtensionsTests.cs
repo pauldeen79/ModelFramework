@@ -10,7 +10,7 @@ public class PipelineContextExtensionsTests : TestBase
             // Arrange
             var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").WithAbstract().AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -26,7 +26,7 @@ public class PipelineContextExtensionsTests : TestBase
             // Arrange
             var model = new ClassBuilder();
             var sourceModel = new InterfaceBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -42,7 +42,7 @@ public class PipelineContextExtensionsTests : TestBase
             // Arrange
             var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -60,7 +60,7 @@ public class PipelineContextExtensionsTests : TestBase
             // Arrange
             var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).AddConstructors(new ClassConstructorBuilder().AddParameter("myProperty", typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -78,7 +78,7 @@ public class PipelineContextExtensionsTests : TestBase
             // Arrange
             var model = new ClassBuilder();
             var sourceModel = new StructBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();

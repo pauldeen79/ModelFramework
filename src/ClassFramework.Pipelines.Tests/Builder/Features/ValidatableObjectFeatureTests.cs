@@ -20,7 +20,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
@@ -46,7 +46,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));

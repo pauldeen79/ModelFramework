@@ -5,7 +5,6 @@ public class ContextSourceModelProcessorTests : TestBase<ContextSourceModelProce
     public class Process : ContextSourceModelProcessorTests
     {
         private ClassBuilder Model { get; } = new();
-        private TypeBase CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
         [Fact]
         public void Returns_Continue_When_Context_Is_Not_PipelineContext()
@@ -35,11 +34,11 @@ public class ContextSourceModelProcessorTests : TestBase<ContextSourceModelProce
         }
 
         [Theory]
-        [InlineData("Name", "MyClass")]
-        [InlineData("NameLower", "myclass")]
-        [InlineData("NameUpper", "MYCLASS")]
-        [InlineData("NamePascal", "myClass")]
-        [InlineData("Namespace", "MyNamespace")]
+        [InlineData("Name", "SomeClass")]
+        [InlineData("NameLower", "someclass")]
+        [InlineData("NameUpper", "SOMECLASS")]
+        [InlineData("NamePascal", "someClass")]
+        [InlineData("Namespace", "SomeNamespace")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange

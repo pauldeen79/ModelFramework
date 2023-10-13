@@ -110,10 +110,11 @@ public static partial class TypeBaseEtensions
             return $"{ns}{string.Format(settings.NameSettings.BuilderNameFormatString, settings.InheritanceSettings.BaseClass.Name)}<{string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name)}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
-        var instanceNameBuilder = string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name);
+        var builderName = string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name);
+
         return instance.GetCustomValueForInheritedClass(settings, cls => settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null
             ? $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}{genericTypeArgumentsString}"
-            : $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}<{instanceNameBuilder}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
+            : $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}<{builderName}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
     }
 
     private static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(ITypeBase instance, ImmutableBuilderClassSettings settings, bool isForWithStatement)

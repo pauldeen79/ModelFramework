@@ -295,7 +295,7 @@ public class AddConstructorsFeatureTests : TestBase<AddConstructorsFeature>
             );
         }
 
-        protected override void InitializeParser(TypeBase sourceModel)
+        private void InitializeParser(TypeBase sourceModel)
         {
             var parser = Fixture.Freeze<IFormattableStringParser>();
             parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
@@ -304,15 +304,5 @@ public class AddConstructorsFeatureTests : TestBase<AddConstructorsFeature>
                     .Replace("{NullCheck}", "/* null check goes here */ ", StringComparison.Ordinal)
                     ));
         }
-
-        private static TypeBase CreateModel(string baseClass = "")
-            => new ClassBuilder()
-                .WithName("SomeClass")
-                .WithNamespace("SomeNamespace")
-                .WithBaseClass(baseClass)
-                .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)))
-                .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)))
-                .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<int>)))
-                .Build();
     }
 }

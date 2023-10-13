@@ -66,7 +66,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
-        var instanceNameBuilder = _formattableStringParser
+        var builderName = _formattableStringParser
             .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context)
             .GetValueOrThrow();
 
@@ -75,7 +75,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             context.Context.Settings,
             baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
                 ? $"{GetBaseClassName(context, baseClassContainer)}{genericTypeArgumentsString}"
-                : $"{GetBaseClassName(context, baseClassContainer)}<{instanceNameBuilder}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>"
+                : $"{GetBaseClassName(context, baseClassContainer)}<{builderName}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>"
         );
     }
 

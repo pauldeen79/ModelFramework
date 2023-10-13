@@ -37,7 +37,7 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings();
@@ -62,7 +62,7 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)));

@@ -5,7 +5,6 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
     public class Process : ClassPropertyProcessorTests
     {
         private ClassProperty CreatePropertyModel(bool isNullable = false) => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
-        private TypeBase CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
         [Fact]
         public void Returns_Continue_When_Context_Is_Not_PipelineContext()
