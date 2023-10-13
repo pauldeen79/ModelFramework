@@ -73,7 +73,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         return instance.GetCustomValueForInheritedClass
         (
             context.Context.Settings,
-            baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
+            baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
                 ? $"{GetBaseClassName(context, baseClassContainer)}{genericTypeArgumentsString}"
                 : $"{GetBaseClassName(context, baseClassContainer)}<{instanceNameBuilder}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>"
         );
