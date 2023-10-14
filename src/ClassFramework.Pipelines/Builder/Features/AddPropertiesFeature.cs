@@ -50,10 +50,32 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes.Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
+                .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, context.Context))
+                .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, context.Context))
             )
-        );
+        ).AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context.Context, _formattableStringParser));
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
+
+    private static IEnumerable<CodeStatementBaseBuilder> CreateImmutableBuilderPropertyGetterStatements(
+        ClassProperty property,
+        BuilderContext context)
+    {
+        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
+        }
+    }
+
+    private static IEnumerable<CodeStatementBaseBuilder> CreateImmutableBuilderPropertySetterStatements(
+        ClassProperty property,
+        BuilderContext context)
+    {
+        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.GenerationSettings.AddNullChecks)};");
+        }
+    }
 }

@@ -17,4 +17,19 @@ public static class ClassPropertyExtensions
 
         return property.TypeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
     }
+
+    public static string GetNullCheckSuffix(this ClassProperty property, string name, bool addNullChecks)
+    {
+        if (!addNullChecks)
+        {
+            return string.Empty;
+        }
+
+        if (property.IsNullable || property.IsValueType)
+        {
+            return string.Empty;
+        }
+
+        return $" ?? throw new {typeof(ArgumentNullException).FullName}(nameof({name}))";
+    }
 }

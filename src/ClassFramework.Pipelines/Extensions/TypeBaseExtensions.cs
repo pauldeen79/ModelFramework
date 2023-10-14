@@ -100,6 +100,41 @@ public static class TypeBaseExtensions
             .Where(x => x is not null);
     }
 
+    public static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(
+        this TypeBase instance,
+        BuilderContext context,
+        IFormattableStringParser formattableStringParser)
+    {
+        context = context.IsNotNull(nameof(context));
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        if (context.IsAbstractBuilder)
+        {
+            yield break;
+        }
+
+        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            foreach (var property in instance.Properties
+                .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, context.Settings)))
+            {
+                yield return new ClassFieldBuilder()
+                    .WithName($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}")
+                    .WithTypeName
+                    (
+                        formattableStringParser.Parse
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                            context.FormatProvider,
+                            context
+                        ).GetValueOrThrow().FixCollectionTypeName(context.Settings.TypeSettings.NewCollectionTypeName)
+                    )
+                    .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType);
+            }
+        }
+    }
+
     private static string GetCustomValueForInheritedClass(
         this TypeBase instance,
         bool enableInheritance,
