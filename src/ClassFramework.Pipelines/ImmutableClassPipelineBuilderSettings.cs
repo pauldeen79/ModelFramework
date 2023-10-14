@@ -3,9 +3,8 @@
 public record ImmutableClassPipelineBuilderSettings
 {
     public string NewCollectionTypeName { get; }
-    public bool CreateWithMethod { get; }
-    public bool ImplementIEquatable { get; }
     public bool AddPrivateSetters { get; }
+    public bool EnableNullableReferenceTypes { get; }
     public bool AllowGenerationWithoutProperties { get; }
     public ImmutableClassPipelineBuilderConstructorSettings ConstructorSettings { get; }
     public ImmutableClassPipelineBuilderInheritanceSettings InheritanceSettings { get; }
@@ -44,17 +43,15 @@ public record ImmutableClassPipelineBuilderSettings
 
     public ImmutableClassPipelineBuilderSettings(
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
-        bool createWithMethod = false,
-        bool implementIEquatable = false,
         bool addPrivateSetters = false,
+        bool enableNullableReferenceTypes = false,
         bool allowGenerationWithoutProperties = false,
         ImmutableClassPipelineBuilderConstructorSettings? constructorSettings = null,
         ImmutableClassPipelineBuilderInheritanceSettings? inheritanceSettings = null)
     {
         NewCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
-        CreateWithMethod = createWithMethod;
-        ImplementIEquatable = implementIEquatable;
         AddPrivateSetters = addPrivateSetters;
+        EnableNullableReferenceTypes = enableNullableReferenceTypes;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
