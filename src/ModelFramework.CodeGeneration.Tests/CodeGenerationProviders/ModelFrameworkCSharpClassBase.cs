@@ -169,7 +169,6 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 false,
-                ValidateArgumentsInConstructor,
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 isCodeStatement
                     ? typeName.ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)

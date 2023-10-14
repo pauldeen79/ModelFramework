@@ -63,14 +63,13 @@ public partial class ClassPropertyBuilder
     }
 
     public ClassPropertyBuilder ConvertCollectionPropertyToBuilderOnBuilder(bool addNullChecks,
-                                                                            ArgumentValidationType argumentValidationType,
                                                                             string collectionType = "System.Collections.Generic.List",
                                                                             string? argumentType = null,
                                                                             string? customBuilderConstructorInitializeExpression = null,
                                                                             string? buildersNamespace = null,
                                                                             string? customBuilderMethodParameterExpression = null,
                                                                             string? builderCollectionTypeName = null)
-        => ConvertCollectionOnBuilderToEnumerable(addNullChecks, argumentValidationType, collectionType)
+        => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType: collectionType)
           .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace)
             ? "System.Collections.Generic.IEnumerable<{1}Builder>"
             : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}Builder>"))

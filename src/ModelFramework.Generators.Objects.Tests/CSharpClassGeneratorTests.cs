@@ -209,7 +209,7 @@ namespace MyNamespace
             this.Property1 = property1;
             this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? Enumerable.Empty<System.String>());
             this.Property3 = property3;
-            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
+            this.Property4 = new <MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
         }
     }
 
@@ -369,7 +369,7 @@ namespace MyNamespace
             this.Property1 = property1;
             this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? Enumerable.Empty<System.String>());
             this.Property3 = property3;
-            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
+            this.Property4 = new <MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
         }
     }
 

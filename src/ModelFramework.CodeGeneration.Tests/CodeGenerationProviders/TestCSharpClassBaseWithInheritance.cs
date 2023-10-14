@@ -57,7 +57,6 @@ public abstract partial class TestCSharpClassBaseWithInheritance : ModelFramewor
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 addNullChecks: false, // already checked in constructor by using the AddNulLChecks property, see above in this class
-                argumentValidationType: ValidateArgumentsInConstructor,
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 argumentType: typeName.Replace("Test.Contracts.I", "Test.Builders.", StringComparison.InvariantCulture).Replace(">", "Builder>", StringComparison.InvariantCulture) // replace interface with concrete type
             );
