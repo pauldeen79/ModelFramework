@@ -827,30 +827,27 @@ public static partial class TypeBaseEtensions
     private static List<string> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
                                                                        IClassProperty property,
                                                                        bool extensionMethod)
-        => settings.ConstructorSettings.AddNullChecks
-            ? (new[]
-                {
-                    $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\");",
-                    string.Format
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
-                        property.Name.ToPascalCase(),           // 0
-                        property.TypeName,                      // 1
-                        property.TypeName.GetGenericArguments() // 2
-                    ),
-                    $"return {GetReturnValue(settings, extensionMethod)};"
-                }).ToList()
-            : (new[]
-                {
-                    string.Format
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
-                        property.Name.ToPascalCase(),           // 0
-                        property.TypeName,                      // 1
-                        property.TypeName.GetGenericArguments() // 2
-                    ),
-                    $"return {GetReturnValue(settings, extensionMethod)};"
-                }).ToList();
+    {
+        var statements = new List<string>();
+        if (settings.ConstructorSettings.AddNullChecks)
+        {
+            statements.Add($"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\");");
+            if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+            {
+                statements.Add($"if ({property.Name} == null) {GetInitializationName(property.Name, settings)} = {GetImmutableBuilderClassConstructorInitializer(settings, property)};");
+            }
+        }
+        statements.Add(string.Format
+        (
+            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
+            property.Name.ToPascalCase(),           // 0
+            property.TypeName,                      // 1
+            property.TypeName.GetGenericArguments() // 2
+        ));
+        statements.Add($"return {GetReturnValue(settings, extensionMethod)};");
+
+        return statements;
+    }
 
     private static string CreateImmutableBuilderCollectionPropertyAddExpression(IClassProperty property, bool extensionMethod, ImmutableBuilderClassSettings settings)
     {
