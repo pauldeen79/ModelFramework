@@ -1632,7 +1632,7 @@ namespace MyNamespace
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
             new ClassPropertyBuilder().WithName("Property2").WithType(typeof(ICollection<string>)).ConvertCollectionOnBuilderToEnumerable(true),
             new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
-            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName().Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
+            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName().Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true, default)
         };
         var cls = new ClassBuilder()
             .WithName("MyRecord")
@@ -1664,7 +1664,7 @@ namespace MyNamespace
             new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
             new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName()).ConvertCollectionOnBuilderToEnumerable(true),
             new ClassPropertyBuilder().WithName("Property3").WithTypeName("MyCustomType").ConvertSinglePropertyToBuilderOnBuilder(),
-            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName().Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true)
+            new ClassPropertyBuilder().WithName("Property4").WithTypeName(typeof(ICollection<string>).FullName!.FixTypeName().Replace("System.String","MyCustomType")).ConvertCollectionPropertyToBuilderOnBuilder(true, default)
         };
         var cls = new ClassBuilder()
             .WithName("MyRecord")

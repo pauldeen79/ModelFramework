@@ -9,7 +9,7 @@ public class AttributeTests
         {
             // Act & Assert
             this.Invoking(_ => new Attribute(parameters: null!, Enumerable.Empty<Metadata>(), "Name"))
-                .Should().Throw<ArgumentNullException>().WithParameterName("parameters");
+                .Should().Throw<ValidationException>();
         }
 
         [Fact]
@@ -17,7 +17,7 @@ public class AttributeTests
         {
             // Act & Assert
             this.Invoking(_ => new Attribute(Enumerable.Empty<AttributeParameter>(), Enumerable.Empty<Metadata>(), name: null!))
-                .Should().Throw<ArgumentNullException>().WithParameterName("name");
+                .Should().Throw<ValidationException>();
         }
 
         [Fact]

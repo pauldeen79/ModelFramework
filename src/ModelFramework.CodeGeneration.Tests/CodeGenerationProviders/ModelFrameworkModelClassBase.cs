@@ -38,6 +38,7 @@ public abstract class ModelFrameworkModelClassBase : ModelFrameworkCSharpClassBa
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 false,
+                ValidateArgumentsInConstructor,
                 typeof(ReadOnlyValueCollection<>).WithoutGenerics(),
                 isCodeStatement
                     ? typeName.ReplaceSuffix(">", "Model>", StringComparison.InvariantCulture)

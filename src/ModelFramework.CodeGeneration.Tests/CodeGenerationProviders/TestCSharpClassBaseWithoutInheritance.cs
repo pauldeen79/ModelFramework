@@ -41,6 +41,7 @@ public abstract partial class TestCSharpClassBaseWithoutInheritance : ModelFrame
             property.ConvertCollectionPropertyToBuilderOnBuilder
             (
                 addNullChecks: false, // already checked in constructor by using the AddNullChecks property, see above in this class
+                argumentValidationType: ValidateArgumentsInConstructor,
                 collectionType: typeof(ValueCollection<>).WithoutGenerics(),
                 argumentType: null, // using builders namespace instead
                 buildersNamespace: "ModelFramework.Common.Tests.Test.Builders",

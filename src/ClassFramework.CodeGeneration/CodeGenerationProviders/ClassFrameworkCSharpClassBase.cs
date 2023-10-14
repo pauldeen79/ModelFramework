@@ -15,7 +15,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override bool UseLazyInitialization => false; // we don't want lazy stuff in models, just getters and setters
     protected override bool AddBackingFieldsForCollectionProperties => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
+    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
     protected override bool AddNullChecks => true;
 

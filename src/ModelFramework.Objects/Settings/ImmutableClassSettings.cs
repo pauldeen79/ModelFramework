@@ -7,6 +7,7 @@ public record ImmutableClassSettings
     public bool ImplementIEquatable { get; }
     public bool AddPrivateSetters { get; }
     public bool AllowGenerationWithoutProperties { get; }
+    public bool EnableNullableReferenceTypes { get; }
     public ImmutableClassConstructorSettings ConstructorSettings { get; }
     public ImmutableClassInheritanceSettings InheritanceSettings { get; }
     public ArgumentValidationType AddValidationCode
@@ -47,6 +48,7 @@ public record ImmutableClassSettings
                                   bool implementIEquatable = false,
                                   bool addPrivateSetters = false,
                                   bool allowGenerationWithoutProperties = false,
+                                  bool enableNullableReferenceTypes = false,
                                   ImmutableClassConstructorSettings? constructorSettings = null,
                                   ImmutableClassInheritanceSettings? inheritanceSettings = null)
     {
@@ -55,6 +57,7 @@ public record ImmutableClassSettings
         ImplementIEquatable = implementIEquatable;
         AddPrivateSetters = addPrivateSetters;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
+        EnableNullableReferenceTypes = enableNullableReferenceTypes;
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
     }

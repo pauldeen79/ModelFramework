@@ -112,8 +112,9 @@ public static partial class TypeBaseExtensions
                         p => string.Format
                         (
                             GetFormatStringForInitialization(p, settings),
-                            p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                            p.TypeName.GetGenericArguments()
+                            p.Name.ToPascalCase().GetCsharpFriendlyName(),             // 0
+                            p.TypeName.GetGenericArguments(),                          // 1
+                            settings.EnableNullableReferenceTypes ? "!" : string.Empty // 2
                         )
                     )
             )

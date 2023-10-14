@@ -1465,7 +1465,12 @@ namespace MyNamespace.Domain.Builders
             {
                 if (forBuilder)
                 {
-                    property.ConvertCollectionPropertyToBuilderOnBuilder(addNullChecks: false, argumentType: typeName.Replace("Test.Contracts.", string.Empty, StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture));
+                    property.ConvertCollectionPropertyToBuilderOnBuilder
+                    (
+                        addNullChecks: false,
+                        argumentValidationType: ArgumentValidationType.None,
+                        argumentType: typeName.Replace("Test.Contracts.", string.Empty, StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
+                    );
                 }
                 else
                 {

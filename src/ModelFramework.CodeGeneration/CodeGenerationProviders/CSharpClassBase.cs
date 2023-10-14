@@ -330,7 +330,8 @@ public abstract class CSharpClassBase : ClassBase
             constructorSettings: new(
                 validateArguments: ValidateArgumentsInConstructor,
                 addNullChecks: AddNullChecks),
-            addPrivateSetters: AddPrivateSetters)
+            addPrivateSetters: AddPrivateSetters,
+            enableNullableReferenceTypes: EnableNullableContext)
         )
         .WithNamespace(@namespace)
         .WithName(type.GetEntityClassName())
@@ -548,7 +549,8 @@ public abstract class CSharpClassBase : ClassBase
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                 inheritanceComparisonFunction: EnableEntityInheritance
                     ? IsMemberValid
-                    : (_, _, _) => true)
+                    : (_, _, _) => true),
+                enableNullableReferenceTypes : EnableNullableContext
         );
 
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
@@ -734,7 +736,7 @@ public abstract class CSharpClassBase : ClassBase
             return;
         }
 
-        property.ConvertCollectionOnBuilderToEnumerable(AddNullChecks, RecordConcreteCollectionType.WithoutGenerics());
+        property.ConvertCollectionOnBuilderToEnumerable(AddNullChecks, ValidateArgumentsInConstructor, RecordConcreteCollectionType.WithoutGenerics());
         if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
         {
             property.ConvertCollectionPropertyToBuilderOnBuilder
