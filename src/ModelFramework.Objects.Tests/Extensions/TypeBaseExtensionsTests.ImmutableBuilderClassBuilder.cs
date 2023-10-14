@@ -143,8 +143,8 @@ Property1 = string.Empty;");
         actual.Constructors.Should().ContainSingle();
         actual.Constructors.First().Parameters.Should().BeEmpty();
         actual.Constructors.First().Visibility.Should().Be(Visibility.Public);
-        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"Property2 = new System.Collections.Generic.List<string>();
-Property1 = string.Empty;");
+        string.Join(Environment.NewLine, actual.Constructors.First().CodeStatements.Select(x => x.ToString())).Should().Be(@"_property2 = new System.Collections.Generic.List<string>();
+_property1 = string.Empty;");
 
         // Build method
         var buildMethod = actual.Methods.SingleOrDefault(x => x.Name == "Build");

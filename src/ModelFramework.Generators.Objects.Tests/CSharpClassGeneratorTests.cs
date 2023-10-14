@@ -217,26 +217,50 @@ namespace MyNamespace
     {
         public string Property1
         {
-            get;
-            set;
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public System.Collections.Generic.List<string> Property2
         {
-            get;
-            set;
+            get
+            {
+                return _property2;
+            }
+            set
+            {
+                _property2 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public MyCustomTypeBuilder Property3
         {
-            get;
-            set;
+            get
+            {
+                return _property3;
+            }
+            set
+            {
+                _property3 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public System.Collections.Generic.List<MyCustomTypeBuilder> Property4
         {
-            get;
-            set;
+            get
+            {
+                return _property4;
+            }
+            set
+            {
+                _property4 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public MyNamespace.MyRecord Build()
@@ -246,7 +270,7 @@ namespace MyNamespace
 
         public MyRecordBuilder WithProperty1(string property1)
         {
-            Property1 = property1 ?? throw new System.ArgumentNullException(""property1"");
+            Property1 = property1;
             return this;
         }
 
@@ -264,7 +288,7 @@ namespace MyNamespace
 
         public MyRecordBuilder WithProperty3(MyCustomTypeBuilder property3)
         {
-            Property3 = property3 ?? throw new System.ArgumentNullException(""property3"");
+            Property3 = property3;
             return this;
         }
 
@@ -282,9 +306,9 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = string.Empty;
+            _property2 = new System.Collections.Generic.List<string>();
+            _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            _property1 = string.Empty;
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -293,13 +317,21 @@ namespace MyNamespace
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = source.Property1;
+            _property2 = new System.Collections.Generic.List<string>();
+            _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            _property1 = source.Property1;
             Property2.AddRange(source.Property2);
             Property3 = new MyCustomTypeBuilder(source.Property3);
             Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
         }
+
+        private string _property1;
+
+        private System.Collections.Generic.List<string> _property2;
+
+        private MyCustomTypeBuilder _property3;
+
+        private System.Collections.Generic.List<MyCustomTypeBuilder> _property4;
     }
 }
 ";
@@ -2196,8 +2228,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string AdditionalProperty
         {
-            get;
-            set;
+            get
+            {
+                return _additionalProperty;
+            }
+            set
+            {
+                _additionalProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
@@ -2207,13 +2245,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
-            AdditionalProperty = additionalProperty ?? throw new System.ArgumentNullException(""additionalProperty"");
+            AdditionalProperty = additionalProperty;
             return this;
         }
 
         public InheritedClassBuilder() : base()
         {
-            AdditionalProperty = string.Empty;
+            _additionalProperty = string.Empty;
         }
 
         public InheritedClassBuilder(ModelFramework.Generators.Objects.Tests.POC.InheritedClass source) : base(source)
@@ -2222,8 +2260,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            AdditionalProperty = source.AdditionalProperty;
+            _additionalProperty = source.AdditionalProperty;
         }
+
+        private string _additionalProperty;
     }
 }
 ");
@@ -2286,8 +2326,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string AdditionalProperty
         {
-            get;
-            set;
+            get
+            {
+                return _additionalProperty;
+            }
+            set
+            {
+                _additionalProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
@@ -2297,19 +2343,19 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
-            AdditionalProperty = additionalProperty ?? throw new System.ArgumentNullException(""additionalProperty"");
+            AdditionalProperty = additionalProperty;
             return this;
         }
 
         public InheritedClassBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
+            BaseProperty = baseProperty;
             return this;
         }
 
         public InheritedClassBuilder() : base()
         {
-            AdditionalProperty = string.Empty;
+            _additionalProperty = string.Empty;
         }
 
         public InheritedClassBuilder(ModelFramework.Generators.Objects.Tests.POC.InheritedClass source) : base(source)
@@ -2318,8 +2364,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            AdditionalProperty = source.AdditionalProperty;
+            _additionalProperty = source.AdditionalProperty;
         }
+
+        private string _additionalProperty;
     }
 }
 ");
@@ -2382,8 +2430,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string BaseProperty
         {
-            get;
-            set;
+            get
+            {
+                return _baseProperty;
+            }
+            set
+            {
+                _baseProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract TEntity BuildTyped();
@@ -2395,13 +2449,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
+            BaseProperty = baseProperty;
             return (TBuilder)this;
         }
 
         protected BaseClassBuilder()
         {
-            BaseProperty = string.Empty;
+            _baseProperty = string.Empty;
         }
 
         protected BaseClassBuilder(ModelFramework.Generators.Objects.Tests.POC.BaseClass source)
@@ -2410,8 +2464,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            BaseProperty = source.BaseProperty;
+            _baseProperty = source.BaseProperty;
         }
+
+        private string _baseProperty;
     }
 }
 ");
@@ -2475,8 +2531,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string MiddleProperty
         {
-            get;
-            set;
+            get
+            {
+                return _middleProperty;
+            }
+            set
+            {
+                _middleProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract override TEntity BuildTyped();
@@ -2488,13 +2550,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithMiddleProperty(string middleProperty)
         {
-            MiddleProperty = middleProperty ?? throw new System.ArgumentNullException(""middleProperty"");
+            MiddleProperty = middleProperty;
             return (TBuilder)this;
         }
 
         protected MiddleClassBuilder() : base()
         {
-            MiddleProperty = string.Empty;
+            _middleProperty = string.Empty;
         }
 
         protected MiddleClassBuilder(ModelFramework.Generators.Objects.Tests.POC.MiddleClass source) : base(source)
@@ -2503,8 +2565,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            MiddleProperty = source.MiddleProperty;
+            _middleProperty = source.MiddleProperty;
         }
+
+        private string _middleProperty;
     }
 }
 ");
@@ -2566,15 +2630,21 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string BaseProperty
         {
-            get;
-            set;
+            get
+            {
+                return _baseProperty;
+            }
+            set
+            {
+                _baseProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract ModelFramework.Generators.Objects.Tests.POC.BaseClass Build();
 
         protected BaseClassBuilder()
         {
-            BaseProperty = string.Empty;
+            _baseProperty = string.Empty;
         }
 
         protected BaseClassBuilder(ModelFramework.Generators.Objects.Tests.POC.BaseClass source)
@@ -2583,8 +2653,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            BaseProperty = source.BaseProperty;
+            _baseProperty = source.BaseProperty;
         }
+
+        private string _baseProperty;
     }
 
     public abstract partial class BaseClassBuilder<TBuilder, TEntity> : BaseClassBuilder
@@ -2600,7 +2672,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
+            BaseProperty = baseProperty;
             return (TBuilder)this;
         }
 
@@ -2673,15 +2745,21 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string MiddleProperty
         {
-            get;
-            set;
+            get
+            {
+                return _middleProperty;
+            }
+            set
+            {
+                _middleProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract ModelFramework.Generators.Objects.Tests.POC.MiddleClass Build();
 
         protected MiddleClassBuilder() : base()
         {
-            MiddleProperty = string.Empty;
+            _middleProperty = string.Empty;
         }
 
         protected MiddleClassBuilder(ModelFramework.Generators.Objects.Tests.POC.MiddleClass source) : base(source)
@@ -2690,8 +2768,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            MiddleProperty = source.MiddleProperty;
+            _middleProperty = source.MiddleProperty;
         }
+
+        private string _middleProperty;
     }
 
     public abstract partial class MiddleClassBuilder<TBuilder, TEntity> : MiddleClassBuilder
@@ -2700,13 +2780,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public TBuilder WithMiddleProperty(string middleProperty)
         {
-            MiddleProperty = middleProperty ?? throw new System.ArgumentNullException(""middleProperty"");
+            MiddleProperty = middleProperty;
             return (TBuilder)this;
         }
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
+            BaseProperty = baseProperty;
             return (TBuilder)this;
         }
 
@@ -3690,8 +3770,14 @@ namespace MyNamespace
     {
         public string? Property1
         {
-            get;
-            set;
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value;
+            }
         }
 
         public MyNamespace.MyRecord Build()
@@ -3715,8 +3801,10 @@ namespace MyNamespace
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            Property1 = source.Property1;
+            _property1 = source.Property1;
         }
+
+        private string? _property1;
     }
 }
 ");

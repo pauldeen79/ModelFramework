@@ -98,9 +98,15 @@ public static class ClassPropertyExtensions
             .Build();
 
     private static string CreateSingleInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.GenerationSettings.UseLazyInitialization
+    {
+        var name = settings.ConstructorSettings.AddNullChecks && settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared
+            ? $"_{property.Name.ToPascalCase()}"
+            : property.Name;
+        
+        return settings.GenerationSettings.UseLazyInitialization
             ? $"_{property.Name.ToPascalCase()}Delegate = new {property.GetNewExpression(settings)}(() => source.{property.Name})"
-            : $"{property.Name} = source.{property.Name}";
+            : $"{name} = source.{property.Name}";
+    }
 
     private static string CreateCollectionInitialization(IClassProperty property, ImmutableBuilderClassSettings settings)
     {
