@@ -46,11 +46,11 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddCopyConstructorFeatureBuilder(_formattableStringParser);
 
-    private string GetImmutableBuilderClassConstructorInitializer(BuilderContext context, ClassProperty property)
+    private string GetImmutableBuilderClassConstructorInitializer(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
         => _formattableStringParser
-            .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.FormatProvider, new PipelineContext<ClassProperty, BuilderContext>(property, context))
+            .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<ClassProperty>(context, property))
             .GetValueOrThrow()
-            .FixCollectionTypeName(context.Settings.TypeSettings.NewCollectionTypeName)
+            .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
             .GetCollectionInitializeStatement()
             .GetCsharpFriendlyTypeName();
 
@@ -69,13 +69,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(context.Context.SourceModel.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate) + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                    .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
             )
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
                     .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context.Context, x)};")
+                    .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context, x)};")
             )
             .AddStringCodeStatements
             (
@@ -122,6 +122,6 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(context.Context.SourceModel.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate) + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                    .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
             );
 }

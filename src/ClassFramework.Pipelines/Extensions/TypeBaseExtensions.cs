@@ -2,23 +2,6 @@
 
 public static class TypeBaseExtensions
 {
-    public static string FormatInstanceName(
-        this TypeBase instance,
-        bool forCreate,
-        Func<TypeBase, bool, string>? formatInstanceTypeNameDelegate)
-    {
-        if (formatInstanceTypeNameDelegate is not null)
-        {
-            var retVal = formatInstanceTypeNameDelegate(instance, forCreate);
-            if (!string.IsNullOrEmpty(retVal))
-            {
-                return retVal;
-            }
-        }
-
-        return instance.GetFullName().GetCsharpFriendlyTypeName();
-    }
-
     public static bool IsMemberValidForImmutableBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,

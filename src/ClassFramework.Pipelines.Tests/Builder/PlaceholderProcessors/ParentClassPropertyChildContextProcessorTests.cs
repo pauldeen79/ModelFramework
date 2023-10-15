@@ -45,7 +45,10 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         [InlineData("TypeName.Namespace", "System.Collections.Generic")]
         [InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
         [InlineData("Name", "MyProperty")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_Without_FormatInstanceTypeNameDelegate(string value, string expectedValue)
+        [InlineData("NameLower", "myproperty")]
+        [InlineData("NameUpper", "MYPROPERTY")]
+        [InlineData("NamePascal", "myProperty")]
+        public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -62,45 +65,17 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         }
 
         [Theory]
-        [InlineData("NullCheck.Source", "")] // null checks are disabled in this unit test
-        [InlineData("BuildersNamespace", "MyNamespace.Builders")]
-        [InlineData("TypeName", "delegate(MyClass,True)")]
-        [InlineData("TypeName.GenericArguments", "")]
-        [InlineData("TypeName.GenericArgumentsWithBrackets", "")]
-        [InlineData("TypeName.GenericArguments.ClassName", "")]
-        [InlineData("TypeName.ClassName", "delegate(MyClass,True)")]
-        [InlineData("TypeName.Namespace", "")]
-        [InlineData("TypeName.NoGenerics", "delegate(MyClass,True)")]
-        [InlineData("Name", "MyProperty")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_FormatInstanceTypeNameDelegate(string value, string expectedResult)
-        {
-            // Arrange
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result<string>.Success("MyNamespace.Builders"));
-            var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(typeSettings: new PipelineBuilderTypeSettings(formatInstanceTypeNameDelegate: (type, forCreate) => $"delegate({type.Name},{forCreate})")), CultureInfo.InvariantCulture)), CreatePropertyModel());
-
-            // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
-
-            // Assert
-            result.Status.Should().Be(ResultStatus.Ok);
-            result.Value.Should().Be(expectedResult);
-        }
-
-        [Theory]
         [InlineData("NullableRequiredSuffix", true, "")]
         [InlineData("NullableRequiredSuffix", false, "!")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_FormatInstanceTypeNameDelegate_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result<string>.Success("MyNamespace.Builders"));
             var sut = CreateSut();
             var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(
-                generationSettings: new PipelineBuilderGenerationSettings(enableNullableReferenceTypes: true),
-                typeSettings: new PipelineBuilderTypeSettings(formatInstanceTypeNameDelegate: (type, forCreate) => $"delegate({type.Name},{forCreate})")), CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable)
-                );
+                generationSettings: new PipelineBuilderGenerationSettings(enableNullableReferenceTypes: true)
+                ) , CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

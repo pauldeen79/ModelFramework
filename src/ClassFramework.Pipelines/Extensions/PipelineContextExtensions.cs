@@ -19,7 +19,7 @@ public static class PipelineContextExtensions
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
         var openSign = GetImmutableBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
         var closeSign = GetImmutableBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
-        return $"new {context.Context.SourceModel.FormatInstanceName(true, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor)}{closeSign}";
+        return $"new {context.Context.SourceModel.GetFullName()}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor)}{closeSign}";
     }
 
     private static string GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)

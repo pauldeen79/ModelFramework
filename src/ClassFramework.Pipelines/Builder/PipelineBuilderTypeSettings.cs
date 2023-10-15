@@ -3,13 +3,9 @@
 public record PipelineBuilderTypeSettings
 {
     public string NewCollectionTypeName { get; }
-    public Func<TypeBase, bool, string>? FormatInstanceTypeNameDelegate { get; }
 
-    public PipelineBuilderTypeSettings(
-        string newCollectionTypeName = "System.Collections.Generic.List",
-        Func<TypeBase, bool, string>? formatInstanceTypeNameDelegate = null)
+    public PipelineBuilderTypeSettings(string newCollectionTypeName = "System.Collections.Generic.List")
     {
         NewCollectionTypeName = newCollectionTypeName;
-        FormatInstanceTypeNameDelegate = formatInstanceTypeNameDelegate;
     }
 }

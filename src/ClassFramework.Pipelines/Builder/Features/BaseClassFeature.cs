@@ -63,7 +63,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
                 ? string.Empty
                 : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
 
-            return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
+            return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>";
         }
 
         var builderName = _formattableStringParser
@@ -75,7 +75,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             context.Context.Settings,
             baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
                 ? $"{GetBaseClassName(context, baseClassContainer)}{genericTypeArgumentsString}"
-                : $"{GetBaseClassName(context, baseClassContainer)}<{builderName}{genericTypeArgumentsString}, {instance.FormatInstanceName(false, context.Context.Settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>"
+                : $"{GetBaseClassName(context, baseClassContainer)}<{builderName}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>"
         );
     }
 
