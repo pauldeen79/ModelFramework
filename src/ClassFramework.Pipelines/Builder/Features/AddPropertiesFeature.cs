@@ -42,7 +42,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithTypeName
                 (
                     _formattableStringParser
-                        .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, property)
+                        .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new PipelineContext<ClassProperty, BuilderContext>(property, context.Context))
                         .GetValueOrThrow()
                         .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
                 )

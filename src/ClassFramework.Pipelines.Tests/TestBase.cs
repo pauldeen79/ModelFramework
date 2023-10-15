@@ -14,7 +14,7 @@ public abstract class TestBase
                     {
                         PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name,
                         PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name,
-                        ClassProperty classProperty => classProperty.Name,
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name,
                         ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Name,
                         _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
                     }, StringComparison.Ordinal)

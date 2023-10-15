@@ -48,7 +48,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
 
     private string GetImmutableBuilderClassConstructorInitializer(BuilderContext context, ClassProperty property)
         => _formattableStringParser
-            .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.FormatProvider, property)
+            .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.FormatProvider, new PipelineContext<ClassProperty, BuilderContext>(property, context))
             .GetValueOrThrow()
             .FixCollectionTypeName(context.Settings.TypeSettings.NewCollectionTypeName)
             .GetCollectionInitializeStatement()
