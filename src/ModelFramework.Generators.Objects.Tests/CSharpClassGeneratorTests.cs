@@ -206,10 +206,14 @@ namespace MyNamespace
 
         public MyRecord(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
         {
+            if (property1 == null) throw new System.ArgumentNullException(""property1"");
+            if (property2 == null) throw new System.ArgumentNullException(""property2"");
+            if (property3 == null) throw new System.ArgumentNullException(""property3"");
+            if (property4 == null) throw new System.ArgumentNullException(""property4"");
             this.Property1 = property1;
-            this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? Enumerable.Empty<System.String>());
+            this.Property2 = new System.Collections.Generic.List<System.String>(property2);
             this.Property3 = property3;
-            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
+            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4);
         }
     }
 
@@ -367,9 +371,9 @@ namespace MyNamespace
         public MyRecord(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
         {
             this.Property1 = property1;
-            this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? Enumerable.Empty<System.String>());
+            this.Property2 = new System.Collections.Generic.List<System.String>(property2);
             this.Property3 = property3;
-            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
+            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4);
         }
     }
 
@@ -1555,7 +1559,7 @@ namespace Namespace2
             .WithNamespace("MyNamespace")
             .AddProperties(properties)
             .Build()
-            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
+            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection", constructorSettings: new ImmutableClassConstructorSettings(addNullChecks: true)));
         var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: true));
         var model = new[]
         {
@@ -1587,7 +1591,7 @@ namespace Namespace2
             .WithNamespace("MyNamespace")
             .AddProperties(properties)
             .Build()
-            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
+            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection", constructorSettings : new ImmutableClassConstructorSettings(addNullChecks: false)));
         var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: false));
         var model = new[]
         {

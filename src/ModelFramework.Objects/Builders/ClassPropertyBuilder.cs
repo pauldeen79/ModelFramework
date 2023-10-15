@@ -154,10 +154,8 @@ public partial class ClassPropertyBuilder
         => collectionType switch
         {
             "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
-            _ => addNullChecks
-                ? argumentValidationType.Transform(x => x == ArgumentValidationType.None
-                    ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
-                    : "{0} == null ? null{2} : new " + collectionType + "<{1}>({0})")
+            _ => addNullChecks && (argumentValidationType == ArgumentValidationType.Shared || argumentValidationType == ArgumentValidationType.DomainOnly)
+                ? "{0} == null ? null{2} : new " + collectionType + "<{1}>({0})"
                 : "new " + collectionType + "<{1}>({0})"
         };
 
