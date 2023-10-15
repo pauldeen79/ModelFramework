@@ -22,7 +22,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
         {
             // Arrange
             var sourceModel = CreateModel();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -52,7 +52,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
         {
             // Arrange
             var sourceModel = CreateModel();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -89,7 +89,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
         {
             // Arrange
             var sourceModel = CreateModel("MyBaseClass");
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -126,7 +126,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
         {
             // Arrange
             var sourceModel = CreateModel();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -156,16 +156,6 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
                 "Property2 = source.Property2;",
                 "/* null check goes here */ Property3 = Property3.Concat(source.Property3);"
             );
-        }
-
-        private void InitializeParser(TypeBase sourceModel)
-        {
-            var parser = Fixture.Freeze<IFormattableStringParser>();
-            parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                  .Returns(x => Result<string>.Success(x.ArgAt<string>(0)
-                    .Replace("{Name}", sourceModel.Name, StringComparison.Ordinal)
-                    .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
-                    ));
         }
     }
 }

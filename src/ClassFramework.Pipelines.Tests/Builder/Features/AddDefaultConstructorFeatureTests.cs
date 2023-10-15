@@ -22,7 +22,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
         {
             // Arrange
             var sourceModel = CreateModel();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -61,7 +61,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
         {
             // Arrange
             var sourceModel = CreateModel();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -93,7 +93,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
         {
             // Arrange
             var sourceModel = CreateModel();
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -125,7 +125,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
         {
             // Arrange
             var sourceModel = CreateModel("MyBaseClass");
-            InitializeParser(sourceModel);
+            InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
@@ -150,16 +150,6 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
                 "Property2 = string.Empty;",
                 "Property3 = new System.Collections.Generic.List<int>();"
             );
-        }
-
-        private void InitializeParser(TypeBase sourceModel)
-        {
-            var parser = Fixture.Freeze<IFormattableStringParser>();
-            parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-                  .Returns(x => Result<string>.Success(x.ArgAt<string>(0)
-                    .Replace("{Name}", sourceModel.Name, StringComparison.Ordinal)
-                    .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
-                    ));
         }
     }
 }
