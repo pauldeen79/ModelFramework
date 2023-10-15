@@ -790,7 +790,7 @@ public abstract class CSharpClassBase : ClassBase
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
     {
-        if (AddNullChecks)
+        if (AddNullChecks && ValidateArgumentsInConstructor == ArgumentValidationType.Shared)
         {
             return !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
                 ? "{0}?.Select(x => x." + BuilderBuildTypedMethodName + "()) ?? " + typeof(Enumerable).FullName + ".Empty<" + typeName.GetGenericArguments() + ">()"
