@@ -301,7 +301,7 @@ public class AddConstructorsFeatureTests : TestBase<AddConstructorsFeature>
             parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
                   .Returns(x => Result<string>.Success(x.ArgAt<string>(0)
                     .Replace("{Name}", sourceModel.Name, StringComparison.Ordinal)
-                    .Replace("{NullCheck}", "/* null check goes here */ ", StringComparison.Ordinal)
+                    .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
                     ));
         }
     }

@@ -132,10 +132,10 @@ public class AddConstructorsFeature : IPipelineFeature<ClassBuilder, BuilderCont
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return $"{{NullCheck}}{property.Name} = {property.Name}.Concat(source.{property.Name})";
+            return $"{{NullCheck.Source}}{property.Name} = {property.Name}.Concat(source.{property.Name})";
         }
 
-        return $"{{NullCheck}}{property.Name}.AddRange(source.{property.Name})";
+        return $"{{NullCheck.Source}}{property.Name}.AddRange(source.{property.Name})";
     }
 
     private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
