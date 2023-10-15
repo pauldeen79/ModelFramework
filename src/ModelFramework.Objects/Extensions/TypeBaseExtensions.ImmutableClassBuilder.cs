@@ -26,12 +26,6 @@ public static partial class TypeBaseExtensions
             .AddMethods(GetImmutableClassMethods(instance, settings, false))
             .AddInterfaces
             (
-                settings.ImplementIEquatable
-                    ? new[] { $"IEquatable<{instance.Name}>" }
-                    : Enumerable.Empty<string>()
-            )
-            .AddInterfaces
-            (
                 settings.InheritanceSettings.InheritFromInterfaces
                     ? new[] { FormatInstanceName(instance, false, settings.InheritanceSettings.FormatInstanceTypeNameDelegate) }
                     : Enumerable.Empty<string>()
@@ -269,8 +263,7 @@ public static partial class TypeBaseExtensions
                 instance,
                 settings: new ImmutableClassSettings(
                     settings.NewCollectionTypeName,
-                    createWithMethod: true,
-                    implementIEquatable: false),
+                    createWithMethod: true),
                 extensionMethod: true
             ))
             .WithStatic();
@@ -336,78 +329,12 @@ public static partial class TypeBaseExtensions
                             )
                     );
         }
-
-        if (settings.ImplementIEquatable)
-        {
-            // note that we don't use a filter for inherited types here... Just generate a full IEquatable method
-            yield return new ClassMethodBuilder()
-                .WithName("Equals")
-                .WithType(typeof(bool))
-                .WithOverride()
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("obj").WithType(typeof(object))
-                )
-                .AddLiteralCodeStatements
-                (
-                    $"return Equals(obj as {instance.Name});"
-                );
-            yield return new ClassMethodBuilder()
-                .WithName($"IEquatable<{instance.Name}>.Equals")
-                .WithType(typeof(bool))
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("other").WithTypeName(instance.Name)
-                )
-                .AddLiteralCodeStatements
-                (
-                    $"return other != null &&{Environment.NewLine}       {GetEqualsProperties(instance)};"
-                );
-            yield return new ClassMethodBuilder()
-                .WithName("GetHashCode")
-                .WithType(typeof(int))
-                .WithOverride()
-                .AddLiteralCodeStatements("int hashCode = 235838129;")
-                .AddLiteralCodeStatements
-                (
-                    instance.Properties.Select(p => p.IsValueType
-                        ? $"hashCode = hashCode * -1521134295 + {p.Name}.GetHashCode();"
-                        : $"hashCode = hashCode * -1521134295 + EqualityComparer<{p.TypeName}>.Default.GetHashCode({p.Name});")
-                )
-                .AddLiteralCodeStatements("return hashCode;");
-            yield return new ClassMethodBuilder()
-                .WithName("==")
-                .WithType(typeof(bool))
-                .WithStatic()
-                .WithOperator()
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
-                    new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
-                )
-                .AddLiteralCodeStatements($"return EqualityComparer<{instance.Name}>.Default.Equals(left, right);");
-            yield return new ClassMethodBuilder()
-                .WithName("!=")
-                .WithType(typeof(bool))
-                .WithStatic()
-                .WithOperator()
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
-                    new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
-                )
-                .AddLiteralCodeStatements("return !(left == right);");
-        }
     }
 
     private static string GetInstanceName(bool extensionMethod)
         => extensionMethod
             ? "instance"
             : "this";
-
-    private static string GetEqualsProperties(ITypeBase instance)
-        => string.Join(" &&" + Environment.NewLine + "       ",
-                       instance.Properties.Select(p => $"{p.Name} == other.{p.Name}"));
 
     private static string GetPropertyNamesConcatenated(IEnumerable<IClassProperty> properties)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
