@@ -15,7 +15,7 @@ public class ContextSourceModelProcessor : IPlaceholderProcessor
 
         return value switch
         {
-            nameof(TypeBase.Name) => Result<string>.Success(model.Name),
+            nameof(TypeBase.Name) or $"Class.{nameof(TypeBase.Name)}" => Result<string>.Success(model.Name),
             $"{nameof(TypeBase.Name)}Lower" => Result<string>.Success(model.Name.ToLower(formatProvider.ToCultureInfo())),
             $"{nameof(TypeBase.Name)}Upper" => Result<string>.Success(model.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(TypeBase.Name)}Pascal" => Result<string>.Success(model.Name.ToPascalCase(formatProvider.ToCultureInfo())),

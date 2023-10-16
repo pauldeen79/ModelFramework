@@ -36,6 +36,12 @@ public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
             $"{nameof(ClassProperty.TypeName)}.ClassName" => Result<string>.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetClassName()),
             $"{nameof(ClassProperty.TypeName)}.Namespace" => Result<string>.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetNamespaceWithDefault()),
             $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result<string>.Success(parentChildContext.ChildContext.TypeName.FixTypeName().WithoutProcessedGenerics()),
+            $"Class.{nameof(Class.Name)}" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Name),
+            $"Class.{nameof(Class.Name)}Lower" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"Class.{nameof(Class.Name)}Upper" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"Class.{nameof(Class.Name)}Pascal" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"Class.{nameof(Class.Namespace)}" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Namespace),
+            $"Class.FullName" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.GetFullName()),
             _ => Result<string>.Continue()
         };
     }

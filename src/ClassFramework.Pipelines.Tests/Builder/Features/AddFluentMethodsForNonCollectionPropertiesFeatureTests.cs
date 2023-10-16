@@ -34,7 +34,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
         }
 
         [Fact]
-        public void Adds_Method_When_SetMethodNameFormatString_Is_Empty()
+        public void Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -50,7 +50,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             // Assert
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
-            model.Methods.Select(x => x.TypeName).Should().BeEquivalentTo("Property1Builder", "Property2Builder", "Property3Builder");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName.FixTypeName()).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.List<System.Int32>");
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
@@ -81,10 +81,42 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
 
             // Assert
             model.Methods.Should().HaveCount(3);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("CustomProperty1", "CustomProperty2", "CustomProperty3");
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Property1 = property1;",
+                "return this;",
+                "Property2 = property2;",
+                "return this;",
+                "Property3 = property3;",
+                "return this;"
+            );
         }
 
-        //TODO: Add unit test for context.Context.Settings.NameSettings.BuilderNameFormatString
+        [Fact]
+        public void Uses_Correct_BuilderNameFormatString()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = new PipelineBuilderSettings(nameSettings: new PipelineBuilderNameSettings(builderNameFormatString: "My{Class.Name}Builder"));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            sut.Process(context);
+
+            // Assert
+            model.Methods.Should().HaveCount(3);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("MySomeClassBuilder");
+        }
+
         //TODO: Add unit test for MetadataNames.CustomBuilderWithDefaultPropertyValue
         //TODO: Add unit test for MetadataNames.CustomBuilderWithExpression
     }

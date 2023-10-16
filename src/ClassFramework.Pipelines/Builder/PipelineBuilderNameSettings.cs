@@ -12,7 +12,7 @@ public record PipelineBuilderNameSettings
     public PipelineBuilderNameSettings(string setMethodNameFormatString = "With{Name}",
                                        string addMethodNameFormatString = "Add{Name}",
                                        string builderNamespaceFormatString = "{Namespace}.Builders",
-                                       string builderNameFormatString = "{Name}Builder",
+                                       string builderNameFormatString = "{Class.Name}Builder",
                                        string buildMethodName = "Build",
                                        string buildTypedMethodName = "BuildTyped")
     {

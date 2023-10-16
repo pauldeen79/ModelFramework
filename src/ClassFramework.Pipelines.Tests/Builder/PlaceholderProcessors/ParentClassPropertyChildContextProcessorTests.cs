@@ -48,6 +48,12 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         [InlineData("NameLower", "myproperty")]
         [InlineData("NameUpper", "MYPROPERTY")]
         [InlineData("NamePascal", "myProperty")]
+        [InlineData("Class.Name", "MyClass")]
+        [InlineData("Class.NameLower", "myclass")]
+        [InlineData("Class.NameUpper", "MYCLASS")]
+        [InlineData("Class.NamePascal", "myClass")]
+        [InlineData("Class.Namespace", "MyNamespace")]
+        [InlineData("Class.FullName", "MyNamespace.MyClass")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange

@@ -18,6 +18,24 @@ public abstract class TestBase
                         ParentChildContext<ClassProperty> parentChild => parentChild.ChildContext.Name,
                         _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
                     }, StringComparison.Ordinal)
+                .Replace("{NameLower}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ChildContext.Name.ToLower(CultureInfo.InvariantCulture),
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{NameUpper}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ChildContext.Name.ToUpper(CultureInfo.InvariantCulture),
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
                 .Replace("{NamePascal}",
                     x[2] switch
                     {
@@ -34,6 +52,60 @@ public abstract class TestBase
                         PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Namespace,
                         PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Namespace,
                         ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Namespace,
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{Class.Name}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name,
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name,
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name,
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Name,
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{Class.NameLower}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Name.ToLower(CultureInfo.InvariantCulture),
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{Class.NameUpper}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Name.ToUpper(CultureInfo.InvariantCulture),
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{Class.NamePascal}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Name.ToPascalCase(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToPascalCase(CultureInfo.InvariantCulture),
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Name.ToPascalCase(CultureInfo.InvariantCulture),
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Name.ToPascalCase(CultureInfo.InvariantCulture),
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{Class.Namespace}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.Namespace,
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Namespace,
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.Namespace,
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.Namespace,
+                        _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
+                    }, StringComparison.Ordinal)
+                .Replace("{Class.FullName}",
+                    x[2] switch
+                    {
+                        PipelineContext<ClassBuilder, BuilderContext> classContext => classContext.Context.SourceModel.GetFullName(),
+                        PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => propertyContext.Context.SourceModel.GetFullName(),
+                        PipelineContext<ClassProperty, BuilderContext> propertyContext => propertyContext.Context.SourceModel.GetFullName(),
+                        ParentChildContext<ClassProperty> parentChild => parentChild.ParentContext.Context.SourceModel.GetFullName(),
                         _ => throw new NotSupportedException($"Context of type {x[2]?.GetType()} is not supported")
                     }, StringComparison.Ordinal)
                 .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)));
