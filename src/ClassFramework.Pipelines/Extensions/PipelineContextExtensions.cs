@@ -27,8 +27,8 @@ public static class PipelineContextExtensions
         var properties = context.Context.SourceModel.GetImmutableBuilderConstructorProperties(context.Context, hasPublicParameterlessConstructor);
 
         var defaultValueDelegate = hasPublicParameterlessConstructor
-            ? new Func<ClassProperty, string>(p => $"{p.Name} = {p.Name}")
-            : new Func<ClassProperty, string>(p => p.Name);
+            ? new Func<ClassProperty, string>(p => "{Name} = {Name}")
+            : new Func<ClassProperty, string>(p => "{Name}");
 
         return string.Join
         (

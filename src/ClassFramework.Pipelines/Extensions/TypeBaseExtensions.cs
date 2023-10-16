@@ -118,6 +118,12 @@ public static class TypeBaseExtensions
         }
     }
 
+    public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(this TypeBase instance, PipelineBuilderSettings settings)
+        => instance.Properties
+            .Concat(settings.IsNotNull(nameof(settings)).InheritanceSettings.BaseClass?.Properties.Select(x => x.EnsureParentTypeFullName(settings.InheritanceSettings.BaseClass!))
+                ?? Enumerable.Empty<ClassProperty>())
+            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings));
+
     private static string GetCustomValueForInheritedClass(
         this TypeBase instance,
         bool enableInheritance,

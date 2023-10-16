@@ -11,6 +11,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, AddBuildMethodFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddCopyConstructorFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddDefaultConstructorFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, AddFluentMethodsForNonCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, AddPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, BaseClassFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, GenericsFeatureBuilder>()

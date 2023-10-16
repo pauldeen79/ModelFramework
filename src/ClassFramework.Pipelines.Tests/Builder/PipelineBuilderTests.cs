@@ -91,7 +91,7 @@ public class PipelineBuilderTests : IDisposable
             // Assert
             Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
             Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.String");
+            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.List<System.String>");
         }
 
         [Fact]
@@ -147,7 +147,7 @@ public class PipelineBuilderTests : IDisposable
         }
 
         [Fact]
-        public void Adds_Methods()
+        public void Adds_Build_Method()
         {
             // Arrange
             var sut = CreateSut().Build();
@@ -156,7 +156,21 @@ public class PipelineBuilderTests : IDisposable
             sut.Process(Model, CreateContext());
 
             // Assert
-            Model.Methods.Should().NotBeEmpty();
+            Model.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
+        }
+
+        [Fact]
+        public void Adds_Fluent_Method_For_NonCollection_Property()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            sut.Process(Model, CreateContext());
+
+            // Assert
+            Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
+            Model.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -181,7 +195,7 @@ public class PipelineBuilderTests : IDisposable
                     new[]
                     {
                         new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
-                        new ClassPropertyBuilder().WithName("Property2").WithTypeName("System.String").WithHasSetter(true)
+                        new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).WithoutGenerics() + "<System.String>").WithHasSetter(true)
                     }.Where(_ => addProperties)
                 )
                 .Build();

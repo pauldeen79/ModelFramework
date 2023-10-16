@@ -144,7 +144,7 @@ public static class StringExtensions
             : generics;
     }
 
-    public static string? Sanitize(this string token)
+    public static string? Sanitize(this string? token)
     {
         if (token is null)
         {
@@ -160,10 +160,10 @@ public static class StringExtensions
         return token;
     }
 
-    public static bool IsRequiredEnum(this string instance)
+    public static bool IsRequiredEnum(this string? instance)
         => !string.IsNullOrEmpty(instance) && Type.GetType(instance)?.IsEnum == true;
 
-    public static bool IsOptionalEnum(this string instance)
+    public static bool IsOptionalEnum(this string? instance)
     {
         if (string.IsNullOrEmpty(instance))
         {

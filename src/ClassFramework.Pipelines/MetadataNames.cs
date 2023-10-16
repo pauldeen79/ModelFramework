@@ -22,4 +22,13 @@ public static class MetadataNames
     /// </summary>
     public const string CustomBuilderMethodParameterExpression = "ClassFramework.Builder.Ctor.MethodParameterExpression";
 
+    /// <summary>
+    /// Metadata name for defining default value for a non-collection property on a fluent (With/Set) method in a builder.
+    /// </summary>
+    public const string CustomBuilderWithDefaultPropertyValue = "ClassFramework.Builder.Property.DefaultValue";
+
+    /// <summary>
+    /// Metadata name for defining a custom initialization on a fluent (With/Set) method
+    /// </summary>
+    public const string CustomBuilderWithExpression = "ClassFramework.Builder.WithExpression";
 }

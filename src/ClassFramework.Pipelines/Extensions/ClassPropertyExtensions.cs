@@ -32,4 +32,9 @@ public static class ClassPropertyExtensions
 
         return $" ?? throw new {typeof(ArgumentNullException).FullName}(nameof({name}))";
     }
+
+    public static ClassProperty EnsureParentTypeFullName(this ClassProperty property, Class parentClass)
+        => new ClassPropertyBuilder(property)
+            .WithParentTypeFullName(property.ParentTypeFullName.WhenNullOrEmpty(() => parentClass.GetFullName().WithoutGenerics()))
+            .Build();
 }
