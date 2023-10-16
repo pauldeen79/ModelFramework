@@ -50,7 +50,8 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
             .GetCsharpFriendlyTypeName();
 
     private ClassConstructorBuilder CreateDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
-        => new ClassConstructorBuilder()
+    {
+        var ctor = new ClassConstructorBuilder()
             .WithChainCall(CreateImmutableBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
@@ -59,17 +60,26 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
                     .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings))
                     .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName())
                     .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context, x)};")
-            )
-            .AddStringCodeStatements
+            );
+
+        if (context.Context.Settings.ConstructorSettings.SetDefaultValues)
+        {
+            ctor.AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings))
-                    .Where(x => context.Context.Settings.ConstructorSettings.SetDefaultValues
+                    .Where
+                    (x =>
+                        context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)
                         && !x.TypeName.FixTypeName().IsCollectionTypeName()
                         && !x.IsNullable
-                        && !x.GetDefaultValue(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.FormatProvider.ToCultureInfo()).StartsWith("default(", StringComparison.Ordinal))
+                    )
                     .Select(x => GenerateDefaultValueStatement(x, context.Context))
+                    .Where(x => x.IndexOf(" = default(", StringComparison.OrdinalIgnoreCase) == -1)
             );
+        }
+
+        return ctor;
+    }
 
     private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings, _ => "base()");
