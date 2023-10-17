@@ -157,6 +157,10 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             Model.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
+            var method = Model.Methods.Single(x => x.Name == "Build");
+            method.TypeName.Should().Be("MyNamespace.MyClass<T>");
+            method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return new MyNamespace.MyClass<T> { Property2 = Property2 };");
         }
 
         [Fact]
@@ -170,6 +174,11 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
+            var method = Model.Methods.Single(x => x.Name == "WithProperty1");
+            method.TypeName.Should().Be("MyClassBuilder<T>");
+            method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Property1 = property1;", "return this;");
+
             Model.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
         }
 
