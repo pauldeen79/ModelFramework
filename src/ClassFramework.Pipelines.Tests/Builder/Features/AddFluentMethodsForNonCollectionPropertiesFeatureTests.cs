@@ -53,6 +53,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName.FixTypeName()).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.List<System.Int32>");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -85,6 +86,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("CustomProperty1", "CustomProperty2", "CustomProperty3");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -95,6 +97,32 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
                 "Property3 = property3;",
                 "return this;"
             );
+        }
+
+        [Fact]
+        public void Uses_CustomBuilderWithDefaultPropertyValue_When_Present()
+        {
+            // Arrange
+            // Note that this doesn't seem logical for this unit test, but in code generation the Literal is needed for correct formatting of literal values.
+            // If you would use a string without wrapping it in a Literal, then it will get formatted to "customDefaultValue" which may not be what you want.
+            // Or, in case you just want a default boolean value, you might also use true and false directly, without wrapping it in a Literal...
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue")));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = new PipelineBuilderSettings(nameSettings: new PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            sut.Process(context);
+
+            // Assert
+            model.Methods.Should().HaveCount(3);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeOfType<Literal>();
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).OfType<Literal>().Select(x => x.Value).Should().AllBeEquivalentTo("customDefaultValue");
         }
 
         [Fact]
@@ -117,7 +145,6 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             model.Methods.Select(x => x.TypeName).Should().AllBe("MySomeClassBuilder");
         }
 
-        //TODO: Add unit test for MetadataNames.CustomBuilderWithDefaultPropertyValue
         //TODO: Add unit test for MetadataNames.CustomBuilderWithExpression
     }
 }
