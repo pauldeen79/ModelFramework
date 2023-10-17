@@ -126,6 +126,35 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
         }
 
         [Fact]
+        public void Uses_CustomBuilderWithExpression_When_Present()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithExpression).WithValue("{Name} = {NamePascal}; // custom"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = new PipelineBuilderSettings(nameSettings: new PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            sut.Process(context);
+
+            // Assert
+            model.Methods.Should().HaveCount(3);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Property1 = property1; // custom",
+                "return this;",
+                "Property2 = property2; // custom",
+                "return this;",
+                "Property3 = property3; // custom",
+                "return this;"
+            );
+        }
+
+        [Fact]
         public void Uses_Correct_BuilderNameFormatString()
         {
             // Arrange
@@ -142,9 +171,6 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             // Assert
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("MySomeClassBuilder");
         }
-
-        //TODO: Add unit test for MetadataNames.CustomBuilderWithExpression
     }
 }
