@@ -10,10 +10,14 @@ public static class TypeBaseExtensions
         parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
         settings = settings.IsNotNull(nameof(settings));
 
-        return parent.IsMemberValidForImmutableBuilderClass(
-            parentTypeContainer,
-            settings.ClassSettings.InheritanceSettings.EnableInheritance,
-            settings.InheritanceSettings.InheritanceComparisonFunction);
+        if (!settings.ClassSettings.InheritanceSettings.EnableInheritance)
+        {
+            // If entity inheritance is not enabled, then simply include all members
+            return true;
+        }
+
+        // If inheritance is enabled, then include the members if it's defined on the parent class (or use the custom instance comparison delegate, when provided)
+        return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceSettings.InheritanceComparisonDelegate);
     }
 
     public static string GetGenericTypeArgumentsString(this TypeBase instance)
@@ -39,25 +43,43 @@ public static class TypeBaseExtensions
         settings = settings.IsNotNull(nameof(settings));
         customValue = customValue.IsNotNull(nameof(customValue));
 
-        return instance.GetCustomValueForInheritedClass(settings.ClassSettings.InheritanceSettings.EnableInheritance, customValue);
+        if (!settings.ClassSettings.InheritanceSettings.EnableInheritance)
+        {
+            // Inheritance is not enabled
+            return string.Empty;
+        }
+
+        var baseClassContainer = instance as IBaseClassContainer;
+        if (baseClassContainer is null)
+        {
+            // Type cannot have a base class
+            return string.Empty;
+        }
+
+        if (string.IsNullOrEmpty(baseClassContainer.BaseClass))
+        {
+            // Class is not inherited
+            return string.Empty;
+        }
+
+        return customValue(baseClassContainer);
     }
 
     public static IEnumerable<ClassProperty> GetImmutableBuilderConstructorProperties(
         this TypeBase instance,
-        BuilderContext context,
-        bool hasPublicParameterlessConstructor)
+        BuilderContext context)
     {
         context = context.IsNotNull(nameof(context));
-
-        if (hasPublicParameterlessConstructor)
-        {
-            return instance.Properties.Where(x => x.HasSetter || x.HasInitializer);
-        }
 
         var constructorsContainer = instance as IConstructorsContainer;
         if (constructorsContainer is null)
         {
-            throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors");
+            throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors", nameof(context));
+        }
+
+        if (constructorsContainer.HasPublicParameterlessConstructor())
+        {
+            return instance.Properties.Where(x => x.HasSetter || x.HasInitializer);
         }
 
         var ctor = constructorsContainer.Constructors.FirstOrDefault(x => x.Visibility == Domain.Domains.Visibility.Public && x.Parameters.Count > 0);
@@ -85,36 +107,34 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(
         this TypeBase instance,
-        BuilderContext context,
+        PipelineContext<ClassBuilder, BuilderContext> context,
         IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context.IsAbstractBuilder)
+        if (context.Context.IsAbstractBuilder
+            || !context.Context.Settings.GenerationSettings.AddNullChecks
+            || context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
         {
             yield break;
         }
-
-        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        
+        foreach (var property in instance.Properties.Where(x => instance.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)))
         {
-            foreach (var property in instance.Properties
-                .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, context.Settings)))
-            {
-                yield return new ClassFieldBuilder()
-                    .WithName($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}")
-                    .WithTypeName
+            yield return new ClassFieldBuilder()
+                .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
+                .WithTypeName
+                (
+                    formattableStringParser.Parse
                     (
-                        formattableStringParser.Parse
-                        (
-                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                            context.FormatProvider,
-                            context
-                        ).GetValueOrThrow().FixCollectionTypeName(context.Settings.TypeSettings.NewCollectionTypeName)
-                    )
-                    .WithIsNullable(property.IsNullable)
-                    .WithIsValueType(property.IsValueType);
-            }
+                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                        context.Context.FormatProvider,
+                        context
+                    ).GetValueOrThrow().FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                )
+                .WithIsNullable(property.IsNullable)
+                .WithIsValueType(property.IsValueType);
         }
     }
 
@@ -123,47 +143,4 @@ public static class TypeBaseExtensions
             .Concat(settings.IsNotNull(nameof(settings)).InheritanceSettings.BaseClass?.Properties.Select(x => x.EnsureParentTypeFullName(settings.InheritanceSettings.BaseClass!))
                 ?? Enumerable.Empty<ClassProperty>())
             .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings));
-
-    private static string GetCustomValueForInheritedClass(
-        this TypeBase instance,
-        bool enableInheritance,
-        Func<IBaseClassContainer, string> customValue)
-    {
-        if (!enableInheritance)
-        {
-            // Inheritance is not enabled
-            return string.Empty;
-        }
-
-        var baseClassContainer = instance as IBaseClassContainer;
-        if (baseClassContainer is null)
-        {
-            // Type cannot have a base class
-            return string.Empty;
-        }
-
-        if (string.IsNullOrEmpty(baseClassContainer.BaseClass))
-        {
-            // Class is not inherited
-            return string.Empty;
-        }
-
-        return customValue(baseClassContainer);
-    }
-
-    private static bool IsMemberValidForImmutableBuilderClass(
-        this TypeBase parent,
-        IParentTypeContainer parentTypeContainer,
-        bool enableEntityInheritance,
-        Func<IParentTypeContainer, TypeBase, bool>? comparisonFunction = null)
-    {
-        if (!enableEntityInheritance)
-        {
-            // If entity inheritance is not enabled, then simply include all members
-            return true;
-        }
-
-        // If inheritance is enabled, then include the members if it's defined on the parent class
-        return parentTypeContainer.IsDefinedOn(parent, comparisonFunction);
-    }
 }

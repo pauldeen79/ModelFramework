@@ -24,7 +24,7 @@ public static class PipelineContextExtensions
 
     private static string GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
-        var properties = context.Context.SourceModel.GetImmutableBuilderConstructorProperties(context.Context, hasPublicParameterlessConstructor);
+        var properties = context.Context.SourceModel.GetImmutableBuilderConstructorProperties(context.Context);
 
         var defaultValueDelegate = hasPublicParameterlessConstructor
             ? new Func<ClassProperty, string>(p => "{Name} = {Name}")

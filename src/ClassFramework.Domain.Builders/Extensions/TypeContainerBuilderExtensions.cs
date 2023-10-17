@@ -4,7 +4,11 @@ public static class TypeContainerBuilderExtensions
 {
     public static T WithType<T>(this T instance, Type type) where T : ITypeContainerBuilder
     {
-        instance.TypeName = type.IsNotNull(nameof(type)).FullName;
+        type = type.IsNotNull(nameof(type));
+
+        instance.TypeName = type.FullName;
+        instance.IsValueType = type.IsValueType;
+
         return instance;
     }
 }

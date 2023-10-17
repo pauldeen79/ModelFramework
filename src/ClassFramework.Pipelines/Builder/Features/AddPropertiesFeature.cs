@@ -53,7 +53,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, context.Context))
             )
-        ).AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context.Context, _formattableStringParser));
+        ).AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser));
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

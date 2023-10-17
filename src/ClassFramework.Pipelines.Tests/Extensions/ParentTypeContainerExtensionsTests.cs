@@ -25,7 +25,7 @@ public class ParentTypeContainerExtensionsTests
             var typeBase = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
-            var result = sut.IsDefinedOn(typeBase, comparisonFunction: (_, _) => comparisonFunctionResult);
+            var result = sut.IsDefinedOn(typeBase, comparisonDelegate: (_, _) => comparisonFunctionResult);
 
             // Assert
             result.Should().Be(expectedResult);

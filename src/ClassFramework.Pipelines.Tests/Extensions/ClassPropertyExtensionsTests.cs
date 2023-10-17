@@ -56,4 +56,104 @@ public class ClassPropertyExtensionsTests
             result.Should().Be("@\"custom value\"");
         }
     }
+
+    public class GetNullCheckSuffix
+    {
+        [Fact]
+        public void Returns_Empty_String_When_AddNullChecks_Is_False()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
+
+            // Act
+            var result = sut.GetNullCheckSuffix("myProperty", false);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Empty_String_When_AddNullChecks_Is_True_But_Property_Is_Nullable()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+
+            // Act
+            var result = sut.GetNullCheckSuffix("myProperty", true);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Empty_String_When_AddNullChecks_Is_True_But_Property_Is_ValueType()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(int)).Build();
+
+            // Act
+            var result = sut.GetNullCheckSuffix("myProperty", true);
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_NullThrowingExpression_When_AddNullChecks_Is_True_And_Property_Is_Not_ValueType_And_Not_Nullable()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
+
+            // Act
+            var result = sut.GetNullCheckSuffix("myProperty", true);
+
+            // Assert
+            result.Should().Be(" ?? throw new System.ArgumentNullException(nameof(myProperty))");
+        }
+    }
+
+    public class EnsureParentTypeFullName
+    {
+        [Fact]
+        public void Returns_ClassProperty_With_Original_ParentTypeFullName_When_Filled()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName("Original").Build();
+            var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").BuildTyped();
+
+            // Act
+            var result = sut.EnsureParentTypeFullName(parentClass);
+
+            // Assert
+            result.ParentTypeFullName.Should().Be("Original");
+        }
+
+        [Fact]
+        public void Returns_ClassProperty_With_ParentTypeFullName_From_ParentClass_When_Original_ParentTypeFullName_Is_Empty()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
+            var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").BuildTyped();
+
+            // Act
+            var result = sut.EnsureParentTypeFullName(parentClass);
+
+            // Assert
+            result.ParentTypeFullName.Should().Be("MyNamespace.MyClass");
+        }
+
+        [Fact]
+        public void Returns_ClassProperty_With_ParentTypeFullName_From_ParentClass_Without_Generics_When_Original_ParentTypeFullName_Is_Empty()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
+            var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").AddGenericTypeArguments("T").BuildTyped();
+
+            // Act
+            var result = sut.EnsureParentTypeFullName(parentClass);
+
+            // Assert
+            result.ParentTypeFullName.Should().Be("MyNamespace.MyClass");
+        }
+    }
 }

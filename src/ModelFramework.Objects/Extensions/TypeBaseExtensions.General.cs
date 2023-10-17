@@ -119,7 +119,7 @@ public static partial class TypeBaseExtensions
             inheritanceSettings.EnableInheritance,
             false,
             false,
-            inheritanceSettings.InheritanceComparisonFunction);
+            inheritanceSettings.InheritanceComparisonDelegate);
 
     public static bool IsMemberValidForImmutableBuilderClass<T>(this ITypeBase parent,
                                                                 T container,
@@ -130,7 +130,7 @@ public static partial class TypeBaseExtensions
             inheritanceSettings.EnableEntityInheritance,
             inheritanceSettings.EnableBuilderInheritance,
             isForWithStatement && !inheritanceSettings.RemoveDuplicateWithMethods, // only when duplicate methods need to be removed...
-            inheritanceSettings.InheritanceComparisonFunction);
+            inheritanceSettings.InheritanceComparisonDelegate);
 
     private static bool IsMemberValidForImmutableBuilderClass<T>(this ITypeBase parent,
                                                                  T container,

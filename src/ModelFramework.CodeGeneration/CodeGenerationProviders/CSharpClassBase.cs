@@ -526,7 +526,7 @@ public abstract class CSharpClassBase : ClassBase
                 removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
                 baseClassBuilderNameSpace: BaseClassBuilderNamespace,
-                inheritanceComparisonFunction: EnableBuilderInhericance
+                inheritanceComparisonDelegate: EnableBuilderInhericance
                     ? IsMemberValid
                     : (_, _, _) => true),
             classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.None)
@@ -547,7 +547,7 @@ public abstract class CSharpClassBase : ClassBase
                 baseClass: BaseClass,
                 inheritFromInterfaces: InheritFromInterfaces,
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
-                inheritanceComparisonFunction: EnableEntityInheritance
+                inheritanceComparisonDelegate: EnableEntityInheritance
                     ? IsMemberValid
                     : (_, _, _) => true),
                 enableNullableReferenceTypes : EnableNullableContext
