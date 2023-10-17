@@ -56,12 +56,17 @@ public static class StringExtensions
             .Replace("[[", "<")
             .Replace(",[", ",")
             .Replace(",]", ">")
-            .Replace("]", ">")
+            .Replace(']', '>')
             .Replace("[>", "[]") //hacking here! caused by the previous statements...
             .Replace("System.Void", "void")
-            .Replace("+", ".")
+            .Replace('+', '.')
             .Replace("&", ""));
     }
+
+    public static string GetCsharpFriendlyName(this string instance)
+        => _keywords.Contains(instance)
+            ? "@" + instance
+            : instance;
 
     public static string GetCsharpFriendlyTypeName(this string instance)
         => instance switch
@@ -98,19 +103,6 @@ public static class StringExtensions
                 .ReplaceGenericArgument("System.Int64", "long")
                 .ReplaceGenericArgument("System.UInt64", "ulong")
         };
-
-    private static string ReplaceGenericArgument(this string instance, string find, string replace)
-        => instance
-            .Replace($"<{find}", $"<{replace}")
-            .Replace($"{find}>", $"{replace}>")
-            .Replace($",{find}", $",{replace}")
-            .Replace($", {find}", $", {replace}")
-            .Replace($"{find}[]", $"{replace}[]");
-
-    public static string GetCsharpFriendlyName(this string instance)
-        => _keywords.Contains(instance)
-            ? "@" + instance
-            : instance;
 
     public static string GetGenericArguments(this string value, bool addBrackets = false)
     {
@@ -371,6 +363,9 @@ public static class StringExtensions
         return instance;
     }
 
+    public static string ReplaceGenericTypeName(this string instance, string genericArguments)
+        => instance.WithoutProcessedGenerics().MakeGenericTypeName(genericArguments);
+
     public static string GetNamespacePrefix(this string instance)
         => string.IsNullOrEmpty(instance)
             ? string.Empty
@@ -385,6 +380,15 @@ public static class StringExtensions
 
         return $"new {instance}()";
     }
+
+    private static string ReplaceGenericArgument(this string instance, string find, string replace)
+        => instance
+            .Replace($"<{find}", $"<{replace}")
+            .Replace($"{find}>", $"{replace}>")
+            .Replace($",{find}", $",{replace}")
+            .Replace($", {find}", $", {replace}")
+            .Replace($"{find}[]", $"{replace}[]");
+
     private static readonly string[] _keywords = new[]
     {
         "abstract",

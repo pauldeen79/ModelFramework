@@ -11,12 +11,16 @@ public static class TypeExtensions
     {
         var name = instance.IsGenericParameter
             ? instance.Name
-            : instance.FullName.WhenNullOrEmpty($"{instance.Namespace}.{instance.Name}");
+            : instance.FullName.WhenNullOrEmpty(() => $"{instance.Namespace}.{instance.Name}");
         var index = name.IndexOf('`');
+
         return index == -1
             ? name.FixTypeName()
             : name.Substring(0, index).FixTypeName();
     }
+
+    public static string ReplaceGenericTypeName(this Type instance, Type genericArguments)
+        => instance.WithoutGenerics().MakeGenericTypeName(genericArguments.IsNotNull(nameof(genericArguments)).FullName);
 
     public static string GetTypeName(this Type type, MemberInfo declaringType)
     {
@@ -31,7 +35,7 @@ public static class TypeExtensions
         if (typeName.IsCollectionTypeName())
         {
             // for now, we will ignore nullability of the generic argument on generic lists
-            return $"{typeName.WithoutProcessedGenerics()}<{typeName.GetGenericArguments()}>";
+            return typeName.ReplaceGenericTypeName(typeName.GetGenericArguments());
         }
 
         var builder = new StringBuilder();
@@ -52,11 +56,8 @@ public static class TypeExtensions
 
             index++;
             builder.Append(arg.GetTypeName(type));
-            if (!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
-            {
-                builder.Append("?");
-            }
-            if (arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index))
+            if ((!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
+                || (arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index)))
             {
                 builder.Append("?");
             }

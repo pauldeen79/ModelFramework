@@ -38,7 +38,7 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
                 .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
                 .AddStringCodeStatements
                 (
-                    $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
+                    $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
                     $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
                     "return results;"
                 )
