@@ -1,4 +1,5 @@
-﻿global using System.Globalization;
+﻿global using System.Collections.ObjectModel;
+global using System.Globalization;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
 global using ClassFramework.Domain;

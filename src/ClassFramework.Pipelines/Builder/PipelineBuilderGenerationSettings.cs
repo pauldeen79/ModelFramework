@@ -9,7 +9,7 @@ public record PipelineBuilderGenerationSettings
     public PipelineBuilderGenerationSettings(
         bool addNullChecks = false,
         bool enableNullableReferenceTypes = false,
-        bool copyAttributes = true)
+        bool copyAttributes = false)
     {
         AddNullChecks = addNullChecks;
         EnableNullableReferenceTypes = enableNullableReferenceTypes;
