@@ -539,6 +539,59 @@ public class TypeBaseExtensionsTests : TestBase
 
     public class GetPropertiesFromClassAndBaseClass
     {
-        //TODO: Add tests here
+        [Fact]
+        public void Throws_On_Null_Settings()
+        {
+            // Arrange
+            var sut = new ClassBuilder().WithName("MyClass").Build();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetPropertiesFromClassAndBaseClass(settings: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
+        }
+
+        [Fact]
+        public void Returns_Valid_Properties_From_Instance()
+        {
+            // Arrange
+            var sut = new ClassBuilder().WithName("MyClass")
+                .AddProperties(
+                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
+                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
+                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
+                .Build();
+            var settings = new PipelineBuilderSettings(
+                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)),
+                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null, inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1")
+            );
+
+            // Act
+            var result = sut.GetPropertiesFromClassAndBaseClass(settings).ToArray();
+
+            // Assert
+            result.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property3");
+        }
+
+        [Fact]
+        public void Returns_Merged_Properties_From_Instance_And_BaseClass_When_Present()
+        {
+            // Arrange
+            var sut = new ClassBuilder().WithName("MyClass")
+                .AddProperties(
+                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
+                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
+                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
+                .Build();
+            var settings = new PipelineBuilderSettings(
+                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)),
+                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClassBuilder").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int)).WithParentTypeFullName("3")).BuildTyped(), inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1" || parent.ParentTypeFullName == "3")
+            );
+
+            // Act
+            var result = sut.GetPropertiesFromClassAndBaseClass(settings).ToArray();
+
+            // Assert
+            result.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property3", "Property4");
+        }
     }
 }

@@ -139,8 +139,15 @@ public static class TypeBaseExtensions
     }
 
     public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(this TypeBase instance, PipelineBuilderSettings settings)
-        => instance.Properties
-            .Concat(settings.IsNotNull(nameof(settings)).InheritanceSettings.BaseClass?.Properties.Select(x => x.EnsureParentTypeFullName(settings.InheritanceSettings.BaseClass!))
-                ?? Enumerable.Empty<ClassProperty>())
-            .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings));
+    {
+        settings = settings.IsNotNull(nameof(settings));
+
+        var properties = instance.Properties.AsEnumerable();
+        if (settings.InheritanceSettings.BaseClass is not null)
+        {
+            properties = properties.Concat(settings.InheritanceSettings.BaseClass.Properties);
+        }
+
+        return properties.Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings));
+    }
 }
