@@ -41,7 +41,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             }
 
             interfaces = sourceModel.GetInterfaces();
-            foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
+            foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
             {
                 typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
             }
@@ -56,7 +56,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         }
 
         interfaces = sourceModel.GetInterfaces();
-        foreach (var i in interfaces.Where(x => x.FullName is not null && !x.Name.EndsWith("Base")))
+        foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
         {
             typeBaseBuilder.AddInterfaces(i.FullName!
                 .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)

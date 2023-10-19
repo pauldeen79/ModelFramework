@@ -238,12 +238,12 @@ public abstract class CSharpClassBase : ClassBase
                 .With
                 (
                     x => x.Methods.ForEach(y => y.AddGenericTypeArguments("T")
-                                                    .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
+                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
                 )
                 .With
                 (
                     x => x.Methods.ForEach(y => y.WithTypeName("T")
-                                                    .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
+                                                 .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
                 )
                 .With(x => Visit(x))
                 .BuildTyped()
@@ -257,8 +257,8 @@ public abstract class CSharpClassBase : ClassBase
         Guard.IsNotNull(entitiesNamespace);
 
         return GetImmutableClasses(types.Select(x => x.IsInterface
-                ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
-                : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
+            ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
+            : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
     }
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
@@ -309,11 +309,11 @@ public abstract class CSharpClassBase : ClassBase
             .Select
             (
                 t => t.ToClassBuilder(CreateClassSettings())
-                    .WithName(t.Name)
-                    .WithNamespace(t.FullName.GetNamespaceWithDefault())
-                .With(x => FixImmutableBuilderProperties(x))
-                .With(x => Visit(x))
-                .BuildTyped()
+                      .WithName(t.Name)
+                      .WithNamespace(t.FullName.GetNamespaceWithDefault())
+                      .With(x => FixImmutableBuilderProperties(x))
+                      .With(x => Visit(x))
+                      .BuildTyped()
             )
             .ToArray();
     }
@@ -430,7 +430,8 @@ public abstract class CSharpClassBase : ClassBase
     {
         Guard.IsNotNull(types);
 
-        return types.Select(x => x.ToClassBuilder(new ClassSettings())
+        return types
+            .Select(x => x.ToClassBuilder(new ClassSettings())
             .AddMetadata("CSharpClassBase.ModelType", x)
             .WithNamespace(RootNamespace)
             .WithName(x.GetEntityClassName())
