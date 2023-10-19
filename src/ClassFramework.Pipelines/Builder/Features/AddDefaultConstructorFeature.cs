@@ -76,6 +76,8 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
                     .Select(x => GenerateDefaultValueStatement(x, context.Context))
                     .Where(x => x.IndexOf(" = default(", StringComparison.OrdinalIgnoreCase) == -1)
             );
+            ctor.AddStringCodeStatements("SetDefaultValues();");
+            context.Model.AddMethods(new ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
         }
 
         return ctor;

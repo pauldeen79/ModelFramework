@@ -47,7 +47,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
                 ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
                 (
                     "Property2 = string.Empty;",
-                    "Property3 = new System.Collections.Generic.List<int>();"
+                    "Property3 = new System.Collections.Generic.List<int>();",
+                    "SetDefaultValues();"
                 );
             }
             else
@@ -84,7 +85,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "Property2 = string.Empty;",
-                "Property3 = new System.Collections.Generic.List<int>();"
+                "Property3 = new System.Collections.Generic.List<int>();",
+                "SetDefaultValues();"
             );
         }
 
@@ -116,7 +118,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "Property2 = string.Empty;",
-                "Property3 = System.Linq.Enumerable.Empty<int>();"
+                "Property3 = System.Linq.Enumerable.Empty<int>();",
+                "SetDefaultValues();"
             );
         }
 
@@ -148,6 +151,38 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "Property2 = string.Empty;",
+                "Property3 = new System.Collections.Generic.List<int>();",
+                "SetDefaultValues();"
+            );
+        }
+
+        [Fact]
+        public void Adds_Default_Constructor_Without_DefaultValue_Initialization_When_SetDefaultValues_Is_Set_To_False()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = new PipelineBuilderSettings(
+                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: false),
+                constructorSettings: new PipelineBuilderConstructorSettings(addCopyConstructor: false, setDefaultValues: false),
+                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: false))
+                );
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            sut.Process(context);
+
+            // Assert
+            model.Constructors.Should().ContainSingle();
+            var ctor = model.Constructors.Single();
+            ctor.Protected.Should().BeFalse();
+            ctor.ChainCall.Should().BeEmpty();
+            ctor.Parameters.Should().BeEmpty();
+            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
                 "Property3 = new System.Collections.Generic.List<int>();"
             );
         }

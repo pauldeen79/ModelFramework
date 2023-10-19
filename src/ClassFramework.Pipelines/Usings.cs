@@ -6,6 +6,7 @@ global using ClassFramework.Domain.Builders;
 global using ClassFramework.Domain.Builders.CodeStatements;
 global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Builders.Types;
+global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
 global using ClassFramework.Pipelines.Builder;
