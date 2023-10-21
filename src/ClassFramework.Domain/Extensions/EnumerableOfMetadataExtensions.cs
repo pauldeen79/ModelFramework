@@ -49,7 +49,7 @@ public static class EnumerableOfMetadataExtensions
             var val = metadataItem.Value.ToStringWithNullCheck();
             return string.IsNullOrEmpty(val)
                 ? defaultValueDelegate()
-                : (T)System.Enum.Parse(typeof(T), val, true);
+                : (T)Enum.Parse(typeof(T), val, true);
         }
 
         if (typeof(T).FullName.StartsWith("System.Nullable`1[[") && typeof(T).GetGenericArguments()[0].IsEnum)
@@ -57,7 +57,7 @@ public static class EnumerableOfMetadataExtensions
             var val = metadataItem.Value.ToStringWithNullCheck();
             return string.IsNullOrEmpty(val)
                 ? defaultValueDelegate()
-                : (T)System.Enum.Parse(typeof(T).GetGenericArguments()[0], val, true);
+                : (T)Enum.Parse(typeof(T).GetGenericArguments()[0], val, true);
         }
 
         return (T)Convert.ChangeType(metadataItem.Value, typeof(T));

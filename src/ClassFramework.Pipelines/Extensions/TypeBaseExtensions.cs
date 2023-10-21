@@ -82,7 +82,7 @@ public static class TypeBaseExtensions
             return instance.Properties.Where(x => x.HasSetter || x.HasInitializer);
         }
 
-        var ctor = constructorsContainer.Constructors.FirstOrDefault(x => x.Visibility == Domain.Domains.Visibility.Public && x.Parameters.Count > 0);
+        var ctor = constructorsContainer.Constructors.FirstOrDefault(x => x.Visibility == Visibility.Public && x.Parameters.Count > 0);
         if (ctor is null)
         {
             // No public constructor, so we can't add properties to initialization.
