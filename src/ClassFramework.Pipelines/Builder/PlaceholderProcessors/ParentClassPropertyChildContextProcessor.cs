@@ -18,6 +18,9 @@ public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
             "NullCheck.Source" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
+            "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
+                ? $"if ({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo())} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo())}));"
+                : string.Empty),
             "NullableRequiredSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable || !parentChildContext.ParentContext.Context.Settings.GenerationSettings.EnableNullableReferenceTypes
                 ? string.Empty
                 : "!"),

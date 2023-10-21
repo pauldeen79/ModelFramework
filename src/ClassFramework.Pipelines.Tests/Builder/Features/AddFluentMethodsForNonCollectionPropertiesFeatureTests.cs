@@ -69,6 +69,79 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
         }
 
         [Fact]
+        public void Adds_Method_With_Default_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = new PipelineBuilderSettings(nameSettings: new PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"), generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
+            model.Methods.Should().HaveCount(3);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName.FixTypeName()).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.List<System.Int32>");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "/* argument null check goes here */",
+                "Property1 = property1;",
+                "return this;",
+                "/* argument null check goes here */",
+                "Property2 = property2;",
+                "return this;",
+                "/* argument null check goes here */",
+                "Property3 = property3;",
+                "return this;"
+            );
+        }
+
+        [Fact]
+        public void Adds_Method_With_Custom_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("/* custom argument null check goes here */"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = new PipelineBuilderSettings(nameSettings: new PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"), generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
+            model.Methods.Should().HaveCount(3);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName.FixTypeName()).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.List<System.Int32>");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "/* custom argument null check goes here */",
+                "Property1 = property1;",
+                "return this;",
+                "/* custom argument null check goes here */",
+                "Property2 = property2;",
+                "return this;",
+                "/* custom argument null check goes here */",
+                "Property3 = property3;",
+                "return this;"
+            );
+        }
+        [Fact]
         public void Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange

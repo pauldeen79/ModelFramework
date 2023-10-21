@@ -31,4 +31,9 @@ public static class MetadataNames
     /// Metadata name for defining a custom initialization on a fluent (With/Set) method. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderWithExpression = "ClassFramework.Builder.WithExpression";
+
+    /// <summary>
+    /// Metadata name for defining a custom argument null check on a fluent (With/Set) method. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderArgumentNullCheckExpression = "ClassFramework.Builder.ArgumentNullCheck";
 }

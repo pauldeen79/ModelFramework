@@ -54,6 +54,18 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                 )
                 .AddStringCodeStatements
                 (
+                    new[]
+                    {
+                        _formattableStringParser.Parse
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
+                            context.Context.FormatProvider,
+                            childContext
+                        ).GetValueOrThrow()
+                    }.Where(_ => context.Context.Settings.GenerationSettings.AddNullChecks)
+                )
+                .AddStringCodeStatements
+                (
                     _formattableStringParser.Parse
                     (
                         property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascal};"),
