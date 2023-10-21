@@ -30,9 +30,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.BaseClass.Should().Be("SomeClassBuilder");
         }
 
@@ -51,9 +52,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.BaseClass.Should().Be("SomeClassBuilder");
         }
 
@@ -72,9 +74,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.BaseClass.Should().Be("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
@@ -93,9 +96,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.BaseClass.Should().Be("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
@@ -114,9 +118,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.BaseClass.Should().Be("MyBaseClassBuilder");
         }
 
@@ -135,9 +140,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.BaseClass.Should().Be("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
     }

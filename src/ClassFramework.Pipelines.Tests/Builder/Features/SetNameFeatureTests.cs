@@ -27,9 +27,10 @@ public class SetNameFeatureTests : TestBase<SetNameFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Name.Should().Be("SomeClassBuilder");
         }
 
@@ -45,9 +46,10 @@ public class SetNameFeatureTests : TestBase<SetNameFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Namespace.Should().Be("SomeNamespace.Builders");
         }
     }

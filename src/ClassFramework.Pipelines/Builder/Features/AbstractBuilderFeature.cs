@@ -22,7 +22,7 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderCont
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -34,6 +34,8 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderCont
                 .AddGenericTypeArgumentConstraints($"where TBuilder : {_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}<TBuilder, TEntity>")
                 .WithAbstract();
         }
+
+        return Result.Continue<BuilderContext>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

@@ -22,16 +22,17 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.IsAbstractBuilder)
         {
-            return;
+            return Result.Continue<BuilderContext>();
         }
 
-        context.Model.AddProperties(
+        context.Model.AddProperties
+        (
             context.Context.SourceModel.Properties
             .Where
             (
@@ -53,7 +54,10 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, context.Context))
             )
-        ).AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser));
+        );
+        context.Model.AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser));
+
+        return Result.Continue<BuilderContext>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

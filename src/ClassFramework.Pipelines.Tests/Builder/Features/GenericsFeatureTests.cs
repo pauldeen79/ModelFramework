@@ -26,9 +26,10 @@ public class GenericsFeatureTests : TestBase<GenericsFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.GenericTypeArguments.Should().BeEquivalentTo("T");
         }
 
@@ -43,9 +44,10 @@ public class GenericsFeatureTests : TestBase<GenericsFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
     }

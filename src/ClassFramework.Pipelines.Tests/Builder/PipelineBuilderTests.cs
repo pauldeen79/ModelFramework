@@ -59,9 +59,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Partial.Should().BeTrue();
         }
 
@@ -72,9 +73,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Name.Should().Be("MyClassBuilder");
             Model.Namespace.Should().Be("MyNamespace.Builders");
         }
@@ -86,9 +88,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
             Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
             Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.List<System.String>");
@@ -101,9 +104,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Constructors.Should().NotBeEmpty();
         }
         
@@ -114,9 +118,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.GenericTypeArguments.Should().NotBeEmpty();
         }
 
@@ -127,9 +132,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.GenericTypeArgumentConstraints.Should().NotBeEmpty();
         }
 
@@ -140,9 +146,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Attributes.Should().NotBeEmpty();
         }
 
@@ -153,9 +160,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var method = Model.Methods.Single(x => x.Name == "Build");
             method.TypeName.Should().Be("MyNamespace.MyClass<T>");
@@ -170,9 +178,10 @@ public class PipelineBuilderTests : IDisposable
             var sut = CreateSut().Build();
 
             // Act
-            sut.Process(Model, CreateContext());
+            var result = sut.Process(Model, CreateContext());
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
             var method = Model.Methods.Single(x => x.Name == "WithProperty1");
             method.TypeName.Should().Be("MyClassBuilder<T>");

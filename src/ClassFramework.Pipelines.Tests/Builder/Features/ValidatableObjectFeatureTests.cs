@@ -27,9 +27,10 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.DataAnnotations.IValidatableObject");
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("Validate");
             model.Methods.Single(x => x.Name == "Validate").CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -53,9 +54,10 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.DataAnnotations.IValidatableObject");
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("Validate");
             model.Methods.Single(x => x.Name == "Validate").CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -78,9 +80,10 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Interfaces.Should().BeEmpty();
             model.Methods.Should().BeEmpty();
         }

@@ -22,13 +22,13 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.SetMethodNameFormatString))
         {
-            return;
+            return Result.Continue<BuilderContext>();
         }
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.IsCollectionTypeName()))
@@ -63,6 +63,8 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                     $"return {GetReturnValue(context.Context)};"
                 ));
         }
+
+        return Result.Continue<BuilderContext>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

@@ -26,9 +26,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.Should().BeEmpty();
         }
 
@@ -44,9 +45,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
             model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.TypeName.FixTypeName()));
             model.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.IsNullable));
@@ -65,9 +67,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
             model.Properties.Select(x => x.TypeName).Should().AllBe("MyCustomType");
         }
@@ -87,9 +90,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.Select(x => x.Name).Should().BeEquivalentTo(sourceModel.Properties.Select(x => x.Name));
             model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.ObjectModel.ReadOnlyCollection<System.Int32>");
         }
@@ -106,9 +110,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.SelectMany(x => x.Metadata).Should().BeEquivalentTo(Enumerable.Range(1, 3).Select(_ => new MetadataBuilder().WithName("MyMetadata").WithValue("Value")));
         }
 
@@ -124,9 +129,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().NotBeEmpty();
             model.Properties.SelectMany(x => x.Attributes).Select(x => x.Name).Should().AllBeEquivalentTo("MyAttribute");
         }
@@ -143,9 +149,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.SelectMany(x => x.Attributes).Should().BeEmpty();
         }
 
@@ -161,9 +168,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
             model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
@@ -183,9 +191,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
             model.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
@@ -207,9 +216,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
             model.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _property1;", "return _property2;", "return _property3;");
@@ -235,9 +245,10 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
         }
     }

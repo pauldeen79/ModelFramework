@@ -27,9 +27,10 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             sourceModel.Methods.Should().BeEmpty();
         }
 
@@ -45,9 +46,10 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -78,9 +80,10 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -114,9 +117,10 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -137,9 +141,10 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
@@ -166,9 +171,10 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
         }

@@ -33,9 +33,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().Be(expectedProtected);
@@ -73,9 +74,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();
@@ -106,9 +108,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();
@@ -139,9 +142,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeTrue();
@@ -172,9 +176,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();

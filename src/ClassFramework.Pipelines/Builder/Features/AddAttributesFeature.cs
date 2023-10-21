@@ -8,16 +8,18 @@ public class AddAttributesFeatureBuilder : IBuilderFeatureBuilder
 
 public class AddAttributesFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 {
-    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.GenerationSettings.CopyAttributes)
         {
-            return;
+            return Result.Continue<BuilderContext>();
         }
 
         context.Model.AddAttributes(context.Context.SourceModel.Attributes.Select(x => new AttributeBuilder(x)));
+
+        return Result.Continue<BuilderContext>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

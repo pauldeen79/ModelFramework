@@ -8,7 +8,7 @@ public class ContextSourceModelProcessor : IPlaceholderProcessor
     {
         if (context is not PipelineContext<ClassBuilder, BuilderContext> pipelineContext)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         var model = pipelineContext.Context.SourceModel;
@@ -20,7 +20,7 @@ public class ContextSourceModelProcessor : IPlaceholderProcessor
             $"{nameof(TypeBase.Name)}Upper" => Result<string>.Success(model.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(TypeBase.Name)}Pascal" => Result<string>.Success(model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             nameof(TypeBase.Namespace) => Result<string>.Success(model.Namespace),
-            _ => Result<string>.Continue()
+            _ => Result.Continue<string>()
         };
     }
 }

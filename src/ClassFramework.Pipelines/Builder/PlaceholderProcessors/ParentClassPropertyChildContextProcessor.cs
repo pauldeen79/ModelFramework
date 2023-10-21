@@ -10,7 +10,7 @@ public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
 
         if (context is not ParentChildContext<ClassProperty> parentChildContext)
         {
-            return Result<string>.Continue();
+            return Result.Continue<string>();
         }
 
         return value switch
@@ -42,7 +42,7 @@ public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
             $"Class.{nameof(Class.Name)}Pascal" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"Class.{nameof(Class.Namespace)}" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.Namespace),
             $"Class.FullName" => Result<string>.Success(parentChildContext.ParentContext.Context.SourceModel.GetFullName()),
-            _ => Result<string>.Continue()
+            _ => Result.Continue<string>()
         };
     }
 }

@@ -22,28 +22,32 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public void Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.IsBuilderForAbstractEntity && context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+        if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
         {
-            context.Model.AddInterfaces(typeof(IValidatableObject));
-            context.Model.AddMethods(new ClassMethodBuilder()
-                .WithName(nameof(IValidatableObject.Validate))
-                .WithType(typeof(IEnumerable<ValidationResult>))
-                .AddParameter("validationContext", typeof(ValidationContext))
-                .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
-                .AddStringCodeStatements($"var instance = {context.CreateEntityInstanciation(_formattableStringParser, "Base")};")
-                .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
-                .AddStringCodeStatements
-                (
-                    $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
-                    $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
-                    "return results;"
-                )
-            );
+            return Result.Continue<BuilderContext>();
         }
+
+        context.Model.AddInterfaces(typeof(IValidatableObject));
+        context.Model.AddMethods(new ClassMethodBuilder()
+            .WithName(nameof(IValidatableObject.Validate))
+            .WithType(typeof(IEnumerable<ValidationResult>))
+            .AddParameter("validationContext", typeof(ValidationContext))
+            .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
+            .AddStringCodeStatements($"var instance = {context.CreateEntityInstanciation(_formattableStringParser, "Base")};")
+            .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
+            .AddStringCodeStatements
+            (
+                $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
+                $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
+                "return results;"
+            )
+        );
+
+        return Result.Continue<BuilderContext>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

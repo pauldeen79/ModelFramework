@@ -26,9 +26,10 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().BeEmpty();
         }
 
@@ -44,9 +45,10 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().ContainSingle();
             var method = model.Methods.Single();
             method.Name.Should().Be("Build");
@@ -69,9 +71,10 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
-            sut.Process(context);
+            var result = sut.Process(context);
 
             // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
             model.Methods.Should().HaveCount(2);
 
             var buildMethod = model.Methods.SingleOrDefault(x => x.Name == "Build");
