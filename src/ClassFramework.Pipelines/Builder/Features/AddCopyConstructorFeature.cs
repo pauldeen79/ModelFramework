@@ -93,24 +93,21 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 MetadataNames.CustomBuilderConstructorInitializeExpression,
                 () => property.TypeName.FixTypeName().IsCollectionTypeName()
-                    ? CreateCollectionInitialization(property, context.Context.Settings)
-                    : CreateSingleInitialization(property)
+                    ? CreateCollectionInitialization(context.Context.Settings)
+                    : "{Name} = source.{Name}"
             ),
             context.Context.FormatProvider,
             new ParentChildContext<ClassProperty>(context, property)
         ).GetValueOrThrow();
 
-    private static string CreateSingleInitialization(ClassProperty property)
-        => $"{property.Name} = source.{property.Name}";
-
-    private static string CreateCollectionInitialization(ClassProperty property, PipelineBuilderSettings settings)
+    private static string CreateCollectionInitialization(PipelineBuilderSettings settings)
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return $"{{NullCheck.Source}}{property.Name} = {property.Name}.Concat(source.{property.Name})";
+            return "{NullCheck.Source}{Name} = {Name}.Concat(source.{Name})";
         }
 
-        return $"{{NullCheck.Source}}{property.Name}.AddRange(source.{property.Name})";
+        return "{NullCheck.Source}{Name}.AddRange(source.{Name})";
     }
 
     private static string CreateImmutableBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)

@@ -20,12 +20,7 @@ public static class ClassPropertyExtensions
 
     public static string GetNullCheckSuffix(this ClassProperty property, string name, bool addNullChecks)
     {
-        if (!addNullChecks)
-        {
-            return string.Empty;
-        }
-
-        if (property.IsNullable || property.IsValueType)
+        if (!addNullChecks || property.IsNullable || property.IsValueType)
         {
             return string.Empty;
         }
