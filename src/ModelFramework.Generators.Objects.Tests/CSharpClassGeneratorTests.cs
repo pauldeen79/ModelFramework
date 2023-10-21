@@ -274,7 +274,7 @@ namespace MyNamespace
 
         public MyRecordBuilder WithProperty1(string property1)
         {
-            Property1 = property1;
+            Property1 = property1 ?? throw new System.ArgumentNullException(""property1"");
             return this;
         }
 
@@ -292,7 +292,7 @@ namespace MyNamespace
 
         public MyRecordBuilder WithProperty3(MyCustomTypeBuilder property3)
         {
-            Property3 = property3;
+            Property3 = property3 ?? throw new System.ArgumentNullException(""property3"");
             return this;
         }
 
@@ -2165,7 +2165,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
-            AdditionalProperty = additionalProperty;
+            AdditionalProperty = additionalProperty ?? throw new System.ArgumentNullException(""additionalProperty"");
             return this;
         }
 
@@ -2263,13 +2263,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
-            AdditionalProperty = additionalProperty;
+            AdditionalProperty = additionalProperty ?? throw new System.ArgumentNullException(""additionalProperty"");
             return this;
         }
 
         public InheritedClassBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return this;
         }
 
@@ -2369,7 +2369,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return (TBuilder)this;
         }
 
@@ -2470,7 +2470,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithMiddleProperty(string middleProperty)
         {
-            MiddleProperty = middleProperty;
+            MiddleProperty = middleProperty ?? throw new System.ArgumentNullException(""middleProperty"");
             return (TBuilder)this;
         }
 
@@ -2592,7 +2592,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return (TBuilder)this;
         }
 
@@ -2700,13 +2700,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public TBuilder WithMiddleProperty(string middleProperty)
         {
-            MiddleProperty = middleProperty;
+            MiddleProperty = middleProperty ?? throw new System.ArgumentNullException(""middleProperty"");
             return (TBuilder)this;
         }
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return (TBuilder)this;
         }
 
