@@ -36,7 +36,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeTrue();
@@ -67,7 +67,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();
@@ -105,7 +105,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeTrue();
@@ -143,7 +143,7 @@ public class AddCopyConstructorFeatureTests : TestBase<AddCopyConstructorFeature
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();

@@ -36,7 +36,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().Be(expectedProtected);
@@ -77,7 +77,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();
@@ -111,7 +111,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();
@@ -145,7 +145,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeTrue();
@@ -179,7 +179,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().ContainSingle();
             var ctor = model.Constructors.Single();
             ctor.Protected.Should().BeFalse();

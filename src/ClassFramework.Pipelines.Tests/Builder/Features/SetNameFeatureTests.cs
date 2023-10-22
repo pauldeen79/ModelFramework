@@ -30,7 +30,7 @@ public class SetNameFeatureTests : TestBase<SetNameFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Name.Should().Be("SomeClassBuilder");
         }
 
@@ -49,7 +49,7 @@ public class SetNameFeatureTests : TestBase<SetNameFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Namespace.Should().Be("SomeNamespace.Builders");
         }
     }

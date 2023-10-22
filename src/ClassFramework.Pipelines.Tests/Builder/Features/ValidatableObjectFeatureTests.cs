@@ -30,7 +30,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.DataAnnotations.IValidatableObject");
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("Validate");
             model.Methods.Single(x => x.Name == "Validate").CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -57,7 +57,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Interfaces.Should().BeEquivalentTo("System.ComponentModel.DataAnnotations.IValidatableObject");
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("Validate");
             model.Methods.Single(x => x.Name == "Validate").CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
@@ -83,7 +83,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Interfaces.Should().BeEmpty();
             model.Methods.Should().BeEmpty();
         }

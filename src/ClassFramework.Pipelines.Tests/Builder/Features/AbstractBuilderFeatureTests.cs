@@ -30,7 +30,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.GenericTypeArguments.Should().BeEquivalentTo("TBuilder", "TEntity");
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where TEntity : SomeNamespace.SomeClass", "where TBuilder : SomeClassBuilder<TBuilder, TEntity>");
             model.Abstract.Should().BeTrue();
@@ -50,7 +50,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.GenericTypeArguments.Should().BeEmpty();
             model.GenericTypeArgumentConstraints.Should().BeEmpty();
             model.Abstract.Should().BeFalse();

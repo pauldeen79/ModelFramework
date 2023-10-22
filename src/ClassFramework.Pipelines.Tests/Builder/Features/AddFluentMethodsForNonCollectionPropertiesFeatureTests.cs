@@ -30,7 +30,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             sourceModel.Methods.Should().BeEmpty();
         }
 
@@ -49,7 +49,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -83,7 +83,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -120,7 +120,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -156,7 +156,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -193,7 +193,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
@@ -217,7 +217,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
@@ -247,7 +247,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(3);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2", "WithProperty3");
         }

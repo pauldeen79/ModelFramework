@@ -33,7 +33,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("SomeClassBuilder");
         }
 
@@ -55,7 +55,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("SomeClassBuilder");
         }
 
@@ -77,7 +77,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
@@ -99,7 +99,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("BaseBuilders.BaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
 
@@ -121,7 +121,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("MyBaseClassBuilder");
         }
 
@@ -143,7 +143,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
     }

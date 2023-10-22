@@ -29,7 +29,7 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().BeEmpty();
         }
 
@@ -48,7 +48,7 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().ContainSingle();
             var method = model.Methods.Single();
             method.Name.Should().Be("Build");
@@ -74,7 +74,7 @@ public class AddBuildMethodFeatureTests : TestBase<AddBuildMethodFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
 
             var buildMethod = model.Methods.SingleOrDefault(x => x.Name == "Build");

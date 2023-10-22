@@ -29,7 +29,7 @@ public class AddAttributesFeatureTests : TestBase<AddAttributesFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
         }
 
@@ -47,7 +47,7 @@ public class AddAttributesFeatureTests : TestBase<AddAttributesFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.Attributes.Should().BeEmpty();
         }
     }

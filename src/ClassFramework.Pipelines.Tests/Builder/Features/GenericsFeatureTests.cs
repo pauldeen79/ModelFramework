@@ -29,7 +29,7 @@ public class GenericsFeatureTests : TestBase<GenericsFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.GenericTypeArguments.Should().BeEquivalentTo("T");
         }
 
@@ -47,7 +47,7 @@ public class GenericsFeatureTests : TestBase<GenericsFeature>
             var result = sut.Process(context);
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
     }

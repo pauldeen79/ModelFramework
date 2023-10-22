@@ -16,7 +16,7 @@ public class ContextSourceModelProcessorTests : TestBase<ContextSourceModelProce
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
         }
 
         [Fact]
@@ -30,7 +30,7 @@ public class ContextSourceModelProcessorTests : TestBase<ContextSourceModelProce
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.Status.Should().Be(ResultStatus.Continue);
+            result.IsSuccessful().Should().BeTrue();
         }
 
         [Theory]
