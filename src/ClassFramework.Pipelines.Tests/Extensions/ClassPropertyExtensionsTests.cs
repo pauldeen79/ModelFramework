@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
-public class ClassPropertyExtensionsTests
+public class ClassPropertyExtensionsTests : TestBase
 {
     public class GetDefaultValue
     {
@@ -154,6 +154,47 @@ public class ClassPropertyExtensionsTests
 
             // Assert
             result.ParentTypeFullName.Should().Be("MyNamespace.MyClass");
+        }
+    }
+
+    public class GetInitializationName
+    {
+        [Fact]
+        public void Throws_On_Null_Context()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetInitializationName(context: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+        }
+    }
+
+    public class GetImmutableBuilderClassConstructorInitializer : ClassPropertyExtensionsTests
+    {
+        [Fact]
+        public void Throws_On_Null_Context()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetImmutableBuilderClassConstructorInitializer(context: null!, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+        }
+
+        [Fact]
+        public void Throws_On_Null_FormatStringParser()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+
+            // Act & Assert
+            sut.Invoking(x => x.GetImmutableBuilderClassConstructorInitializer(context, formattableStringParser: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
     }
 }

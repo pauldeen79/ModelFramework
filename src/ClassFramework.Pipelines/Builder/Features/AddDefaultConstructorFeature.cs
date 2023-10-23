@@ -43,14 +43,6 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddDefaultConstructorFeatureBuilder(_formattableStringParser);
 
-    private string GetImmutableBuilderClassConstructorInitializer(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
-        => _formattableStringParser
-            .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<ClassProperty>(context, property))
-            .GetValueOrThrow()
-            .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-            .GetCollectionInitializeStatement()
-            .GetCsharpFriendlyTypeName();
-
     private ClassConstructorBuilder CreateDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         var ctor = new ClassConstructorBuilder()
@@ -61,7 +53,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
                 context.Context.SourceModel.Properties
                     .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings))
                     .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context, x)};")
+                    .Select(x => $"{x.Name} = {x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser)};")
             );
 
         if (context.Context.Settings.ConstructorSettings.SetDefaultValues)

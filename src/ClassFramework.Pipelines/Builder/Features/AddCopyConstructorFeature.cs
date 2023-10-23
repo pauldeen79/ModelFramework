@@ -48,14 +48,6 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddCopyConstructorFeatureBuilder(_formattableStringParser);
 
-    private string GetImmutableBuilderClassConstructorInitializer(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
-        => _formattableStringParser
-            .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<ClassProperty>(context, property))
-            .GetValueOrThrow()
-            .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-            .GetCollectionInitializeStatement()
-            .GetCsharpFriendlyTypeName();
-
     private ClassConstructorBuilder CreateCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()
             .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
@@ -77,7 +69,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 context.Context.SourceModel.Properties
                     .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(context, x)};")
+                    .Select(x => $"{x.Name} = {x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser)};")
             )
             .AddStringCodeStatements
             (

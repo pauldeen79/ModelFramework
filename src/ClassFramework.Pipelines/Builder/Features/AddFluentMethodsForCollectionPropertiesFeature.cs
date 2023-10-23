@@ -34,15 +34,18 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<ClassProperty>(context, property);
+
             var typeName = _formattableStringParser
                 .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, childContext)
                 .GetValueOrThrow();
 
+            var returnType = context.Context.IsBuilderForAbstractEntity
+                ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
+                : _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow() + context.Context.SourceModel.GetGenericTypeArgumentsString();
+
             context.Model.AddMethods(new ClassMethodBuilder()
                 .WithName(_formattableStringParser.Parse(context.Context.Settings.NameSettings.AddMethodNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow())
-                .WithTypeName(context.Context.IsBuilderForAbstractEntity
-                      ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
-                      : _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow() + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                .WithTypeName(returnType)
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -51,16 +54,12 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
                 )
-                .AddStringCodeStatements(context.Context.Settings.GenerationSettings.AddNullChecks
-                    ? $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())})));"
-                    : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}.ToArray());")
+                .AddStringCodeStatements(GetCodeStatementsForEnumerableOverload(context, property))
             );
 
             context.Model.AddMethods(new ClassMethodBuilder()
                 .WithName(_formattableStringParser.Parse(context.Context.Settings.NameSettings.AddMethodNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow())
-                .WithTypeName(context.Context.IsBuilderForAbstractEntity
-                      ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
-                      : _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow() + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                .WithTypeName(returnType)
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -76,6 +75,26 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         return Result.Continue<BuilderContext>();
     }
 
+    private IEnumerable<string> GetCodeStatementsForEnumerableOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
+    {
+        if (context.Context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
+        {
+            // When using IEnumerable<>, do not call ToArray because we want lazy evaluation
+            foreach (var statement in GetCodeStatementsForArrayOverload(context, property))
+            {
+                yield return statement;
+            }
+
+            yield break;
+        }
+
+        // When not using IEnumerable<>, we can simply force ToArray because it's stored in a generic list or collection of some sort anyway.
+        // (in other words, materialization is always performed)
+        yield return context.Context.Settings.GenerationSettings.AddNullChecks
+            ? $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())})));"
+            : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}.ToArray());";
+    }
+
     private IEnumerable<string> GetCodeStatementsForArrayOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
     {
         if (context.Context.Settings.GenerationSettings.AddNullChecks)
@@ -89,7 +108,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
             if (context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
-                yield return $"if ({property.Name} is null) {GetInitializationName(property.Name, context.Context)} = {GetImmutableBuilderClassConstructorInitializer(context, property)};";
+                yield return $"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {property.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser)};";
             }
         }
 
@@ -105,18 +124,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddFluentMethodsForCollectionPropertiesFeatureBuilder(_formattableStringParser);
-
-    private string GetImmutableBuilderClassConstructorInitializer(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
-        => _formattableStringParser.Parse
-        (
-            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-            context.Context.FormatProvider,
-            new ParentChildContext<ClassProperty>(context, property)
-        )
-        .GetValueOrThrow()
-        .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-        .GetCollectionInitializeStatement()
-        .GetCsharpFriendlyTypeName();
 
     private static string CreateImmutableBuilderCollectionPropertyAddExpression(ClassProperty property, BuilderContext context)
     {
@@ -136,15 +143,5 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         }
 
         return "this";
-    }
-
-    private static string GetInitializationName(string name, BuilderContext context)
-    {
-        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
-        {
-            return $"_{name.ToPascalCase(context.FormatProvider.ToCultureInfo())}";
-        }
-
-        return name;
     }
 }

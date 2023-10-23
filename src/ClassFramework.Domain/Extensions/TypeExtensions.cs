@@ -22,6 +22,9 @@ public static class TypeExtensions
     public static string ReplaceGenericTypeName(this Type instance, Type genericArguments)
         => instance.WithoutGenerics().MakeGenericTypeName(genericArguments.IsNotNull(nameof(genericArguments)).FullName);
 
+    public static string ReplaceGenericTypeName(this Type instance, string genericArgumentsTypeName)
+        => instance.WithoutGenerics().MakeGenericTypeName(genericArgumentsTypeName.IsNotNull(nameof(genericArgumentsTypeName)));
+
     public static string GetTypeName(this Type type, MemberInfo declaringType)
     {
         declaringType = declaringType.IsNotNull(nameof(declaringType));
