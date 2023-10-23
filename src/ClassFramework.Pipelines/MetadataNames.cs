@@ -36,4 +36,9 @@ public static class MetadataNames
     /// Metadata name for defining a custom argument null check on a fluent (With/Set) method. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderArgumentNullCheckExpression = "ClassFramework.Builder.ArgumentNullCheck";
+
+    /// <summary>
+    /// Metadata name for defining custom validation code statements. Note that the this metadata can occur multiple times, and that all values will all be converted to string.
+    /// </summary>
+    public const string CustomBuilderValidationCode = "ClassFramework.Builder.ValidationCode";
 }
