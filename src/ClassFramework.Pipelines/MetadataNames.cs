@@ -28,17 +28,22 @@ public static class MetadataNames
     public const string CustomBuilderWithDefaultPropertyValue = "ClassFramework.Builder.Property.DefaultValue";
 
     /// <summary>
-    /// Metadata name for defining a custom initialization on a fluent (With/Set) method. Note that the value will be converted to string.
+    /// Metadata name for defining a custom initialization on a fluent (With/Set) method in a builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderWithExpression = "ClassFramework.Builder.WithExpression";
 
     /// <summary>
-    /// Metadata name for defining a custom argument null check on a fluent (With/Set) method. Note that the value will be converted to string.
+    /// Metadata name for defining a custom argument null check on a fluent (With/Set) method in a builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderArgumentNullCheckExpression = "ClassFramework.Builder.ArgumentNullCheck";
 
     /// <summary>
-    /// Metadata name for defining custom validation code statements. Note that the this metadata can occur multiple times, and that all values will all be converted to string.
+    /// Metadata name for defining custom validation code statements in a builder. Note that the this metadata can occur multiple times, and that all values will all be converted to string.
     /// </summary>
     public const string CustomBuilderValidationCode = "ClassFramework.Builder.ValidationCode";
+
+    /// <summary>
+    /// Metadata name for defining a custom initialization on a fluent (Add) method in a builder. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderAddExpression = "ClassFramework.Builder.AddExpression";
 }

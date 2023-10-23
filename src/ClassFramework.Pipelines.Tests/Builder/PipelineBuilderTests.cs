@@ -192,6 +192,30 @@ public class PipelineBuilderTests : IDisposable
         }
 
         [Fact]
+        public void Adds_Fluent_Method_For_Collection_Property()
+        {
+            // Arrange
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, CreateContext());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            var methods = Model.Methods.Where(x => x.Name == "AddProperty2");
+            methods.Where(x => x.Name == "AddProperty2").Should().HaveCount(2);
+            methods.Select(x => x.TypeName).Should().BeEquivalentTo("MyClassBuilder<T>", "MyClassBuilder<T>");
+            methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.String>", "System.String[]");
+            methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "return AddProperty2(property2.ToArray());",
+                "Property2.AddRange(property2);",
+                "return this;"
+            );
+        }
+
+        [Fact]
         public void Throws_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
