@@ -31,7 +31,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             return Result.Continue<BuilderContext>();
         }
 
-        foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.IsCollectionTypeName()))
+        foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<ClassProperty>(context, property);
             var typeName = _formattableStringParser
