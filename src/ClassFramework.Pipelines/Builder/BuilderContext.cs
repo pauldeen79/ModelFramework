@@ -4,7 +4,7 @@ public record BuilderContext
 {
     public BuilderContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
     {
-        SourceModel = sourceModel.IsNotNull(nameof(SourceModel));
+        SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         Settings = settings.IsNotNull(nameof(settings));
         FormatProvider = formatProvider.IsNotNull(nameof(formatProvider));
     }
