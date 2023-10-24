@@ -190,7 +190,7 @@ public class ClassPropertyExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
             sut.Invoking(x => x.GetImmutableBuilderClassConstructorInitializer(context, formattableStringParser: null!))

@@ -1,13 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record EntityPipelineBuilderConstructorSettings
+public record PipelineBuilderConstructorSettings
 {
     public ArgumentValidationType ValidateArguments { get; }
     public ArgumentValidationType OriginalValidateArguments { get; }
     public bool AddNullChecks { get; }
     public string CollectionTypeName { get; }
 
-    public EntityPipelineBuilderConstructorSettings(
+    public PipelineBuilderConstructorSettings(
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         ArgumentValidationType? originalValidateArguments = null,
         bool addNullChecks = false,

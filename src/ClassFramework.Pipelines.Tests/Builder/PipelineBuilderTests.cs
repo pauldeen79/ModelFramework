@@ -41,10 +41,10 @@ public class PipelineBuilderTests : IDisposable
         private BuilderContext CreateContext(bool addProperties = true) => new BuilderContext
             (
                 CreateModel(addProperties),
-                new PipelineBuilderSettings
+                new Pipelines.Builder.PipelineBuilderSettings
                 (
                     nameSettings: new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
-                    classSettings: new EntityPipelineBuilderSettings(allowGenerationWithoutProperties: false),
+                    classSettings: new Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false),
                     generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true)
                 ),
                 CultureInfo.InvariantCulture

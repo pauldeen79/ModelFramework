@@ -11,7 +11,7 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.IsMemberValidForImmutableBuilderClass(parentTypeContainer: null!, new PipelineBuilderSettings()))
+            sut.Invoking(x => x.IsMemberValidForImmutableBuilderClass(parentTypeContainer: null!, new Pipelines.Builder.PipelineBuilderSettings()))
                .Should().Throw<ArgumentNullException>().WithParameterName("parentTypeContainer");
         }
 
@@ -33,7 +33,7 @@ public class TypeBaseExtensionsTests : TestBase
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: false)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: false)));
 
             // Act
             var result = sut.IsMemberValidForImmutableBuilderClass(parentTypeContainer, settings);
@@ -48,9 +48,9 @@ public class TypeBaseExtensionsTests : TestBase
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
-            var settings = new PipelineBuilderSettings(
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(inheritanceComparisonDelegate: (_, _) => false),
-                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(inheritanceComparisonDelegate: (_, _) => false),
+                classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
             );
 
             // Act
@@ -153,7 +153,7 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetCustomValueForInheritedClass(new PipelineBuilderSettings(), customValue: null!))
+            sut.Invoking(x => x.GetCustomValueForInheritedClass(new Pipelines.Builder.PipelineBuilderSettings(), customValue: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("customValue");
         }
 
@@ -162,7 +162,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: false)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: false)));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -176,7 +176,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new StructBuilder().WithName("MyClass").Build();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -190,7 +190,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -204,7 +204,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -232,7 +232,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new InterfaceBuilder().WithName("MyClass").Build();
-            var settings = new PipelineBuilderSettings();
+            var settings = new Pipelines.Builder.PipelineBuilderSettings();
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
@@ -254,7 +254,7 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(false) // this property should be skipped, because it does not have a setter or initializer
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings();
+            var settings = new Pipelines.Builder.PipelineBuilderSettings();
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -277,7 +277,7 @@ public class TypeBaseExtensionsTests : TestBase
                 )
                 .AddConstructors(new ClassConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
                 .Build();
-            var settings = new PipelineBuilderSettings();
+            var settings = new Pipelines.Builder.PipelineBuilderSettings();
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -297,9 +297,9 @@ public class TypeBaseExtensionsTests : TestBase
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped()),
-                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped()),
+                classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
             );
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
@@ -323,9 +323,9 @@ public class TypeBaseExtensionsTests : TestBase
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null),
-                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null),
+                classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
             );
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
@@ -349,9 +349,9 @@ public class TypeBaseExtensionsTests : TestBase
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: false, baseClass: null),
-                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: false, baseClass: null),
+                classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
             );
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
 
@@ -383,7 +383,7 @@ public class TypeBaseExtensionsTests : TestBase
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, new PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
             sut.Invoking(x => x.GetImmutableBuilderClassFields(context, formattableStringParser: null!).ToArray())
@@ -402,10 +402,10 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null),
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
@@ -430,10 +430,10 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: false),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
@@ -458,10 +458,10 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared))
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared))
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
@@ -487,10 +487,10 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
@@ -518,10 +518,10 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped()),
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly))
             );
             var model = new ClassBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
@@ -560,9 +560,9 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
                 .Build();
-            var settings = new PipelineBuilderSettings(
-                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null, inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1")
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)),
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: null, inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1")
             );
 
             // Act
@@ -582,9 +582,9 @@ public class TypeBaseExtensionsTests : TestBase
                     new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
                     new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
                 .Build();
-            var settings = new PipelineBuilderSettings(
-                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)),
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClassBuilder").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int)).WithParentTypeFullName("3")).BuildTyped(), inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1" || parent.ParentTypeFullName == "3")
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)),
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("MyBaseClassBuilder").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int)).WithParentTypeFullName("3")).BuildTyped(), inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1" || parent.ParentTypeFullName == "3")
             );
 
             // Act

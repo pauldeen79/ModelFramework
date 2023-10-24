@@ -23,7 +23,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -43,7 +43,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings();
+            var settings = new Pipelines.Builder.PipelineBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

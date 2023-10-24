@@ -7,7 +7,7 @@ public record PipelineBuilderSettings
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
-    public EntityPipelineBuilderSettings ClassSettings { get; }
+    public Entity.PipelineBuilderSettings ClassSettings { get; }
 
     public bool IsForAbstractBuilder { get; }
 
@@ -17,7 +17,7 @@ public record PipelineBuilderSettings
         PipelineBuilderConstructorSettings? constructorSettings,
         PipelineBuilderTypeSettings? typeSettings,
         PipelineBuilderGenerationSettings? generationSettings,
-        EntityPipelineBuilderSettings? classSettings,
+        Entity.PipelineBuilderSettings? classSettings,
         bool isForAbstractBuilder)
     {
         NameSettings = nameSettings ?? new();
@@ -35,7 +35,7 @@ public record PipelineBuilderSettings
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderTypeSettings? typeSettings = null,
         PipelineBuilderGenerationSettings? generationSettings = null,
-        EntityPipelineBuilderSettings? classSettings = null)
+        Entity.PipelineBuilderSettings? classSettings = null)
         : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, generationSettings, classSettings, false)
     {
     }

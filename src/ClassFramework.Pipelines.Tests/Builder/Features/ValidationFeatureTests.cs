@@ -22,7 +22,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings();
+            var settings = new Pipelines.Builder.PipelineBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -39,7 +39,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = new ClassBuilder().WithName("MyClass").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(allowGenerationWithoutProperties: true));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: true));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -56,7 +56,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = new ClassBuilder().WithName("MyClass").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(allowGenerationWithoutProperties: false, inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false, inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

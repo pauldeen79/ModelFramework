@@ -1,13 +1,13 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record EntityPipelineBuilderSettings
+public record PipelineBuilderSettings
 {
     public string NewCollectionTypeName { get; }
     public bool AddPrivateSetters { get; }
     public bool EnableNullableReferenceTypes { get; }
     public bool AllowGenerationWithoutProperties { get; }
-    public EntityPipelineBuilderConstructorSettings ConstructorSettings { get; }
-    public EntityPipelineBuilderInheritanceSettings InheritanceSettings { get; }
+    public PipelineBuilderConstructorSettings ConstructorSettings { get; }
+    public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public ArgumentValidationType AddValidationCode
     {
         get
@@ -41,13 +41,13 @@ public record EntityPipelineBuilderSettings
         }
     }
 
-    public EntityPipelineBuilderSettings(
+    public PipelineBuilderSettings(
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         bool addPrivateSetters = false,
         bool enableNullableReferenceTypes = false,
         bool allowGenerationWithoutProperties = false,
-        EntityPipelineBuilderConstructorSettings? constructorSettings = null,
-        EntityPipelineBuilderInheritanceSettings? inheritanceSettings = null)
+        PipelineBuilderConstructorSettings? constructorSettings = null,
+        PipelineBuilderInheritanceSettings? inheritanceSettings = null)
     {
         NewCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         AddPrivateSetters = addPrivateSetters;

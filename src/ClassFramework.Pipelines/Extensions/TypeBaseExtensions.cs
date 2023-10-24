@@ -5,7 +5,7 @@ public static class TypeBaseExtensions
     public static bool IsMemberValidForImmutableBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
-        PipelineBuilderSettings settings)
+        Builder.PipelineBuilderSettings settings)
     {
         parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
         settings = settings.IsNotNull(nameof(settings));
@@ -37,7 +37,7 @@ public static class TypeBaseExtensions
 
     public static string GetCustomValueForInheritedClass(
         this TypeBase instance,
-        PipelineBuilderSettings settings,
+        Builder.PipelineBuilderSettings settings,
         Func<IBaseClassContainer, string> customValue)
     {
         settings = settings.IsNotNull(nameof(settings));
@@ -138,7 +138,7 @@ public static class TypeBaseExtensions
         }
     }
 
-    public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(this TypeBase instance, PipelineBuilderSettings settings)
+    public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(this TypeBase instance, Builder.PipelineBuilderSettings settings)
     {
         settings = settings.IsNotNull(nameof(settings));
 

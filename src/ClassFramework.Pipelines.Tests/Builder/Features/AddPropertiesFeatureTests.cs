@@ -22,7 +22,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: true));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: true));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -41,7 +41,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: false, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped()));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: false, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped()));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -63,7 +63,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: false, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped()));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: false, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped()));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -83,8 +83,8 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(
-                inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: false, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped()),
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
+                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, isAbstract: false, baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped()),
                 typeSettings: new PipelineBuilderTypeSettings(newCollectionTypeName: typeof(ReadOnlyCollection<>).WithoutGenerics())
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -106,7 +106,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings();
+            var settings = new Pipelines.Builder.PipelineBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -125,7 +125,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -145,7 +145,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: false));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: false));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -164,7 +164,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: false));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: false));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -184,9 +184,9 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared))
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared))
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -209,9 +209,9 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: validateArguments))
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments))
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -238,9 +238,9 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: validateArguments))
+                classSettings: new Entity.PipelineBuilderSettings(constructorSettings: new Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments))
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
