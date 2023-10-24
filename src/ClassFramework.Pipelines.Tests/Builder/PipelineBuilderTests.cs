@@ -226,14 +226,17 @@ public class PipelineBuilderTests : IDisposable
         }
 
         [Fact]
-        public void Throws_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
         {
             // Arrange
             var sut = CreateSut().Build();
 
-            // Act & Assert
-            sut.Invoking(x => x.Process(Model, CreateContext(addProperties: false)))
-               .Should().Throw<InvalidOperationException>().WithMessage("To create a builder class, there must be at least one property");
+            // Act
+            var result = sut.Process(Model, CreateContext(addProperties: false));
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("To create a builder class, there must be at least one property");
         }
 
         private static TypeBase CreateModel(bool addProperties)
