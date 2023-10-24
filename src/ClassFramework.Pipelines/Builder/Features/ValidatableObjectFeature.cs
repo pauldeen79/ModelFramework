@@ -22,13 +22,13 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
         {
-            return Result.Continue<BuilderContext>();
+            return Result.Continue<ClassBuilder>();
         }
 
         context.Model.AddInterfaces(typeof(IValidatableObject));
@@ -51,7 +51,7 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
             )
         );
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

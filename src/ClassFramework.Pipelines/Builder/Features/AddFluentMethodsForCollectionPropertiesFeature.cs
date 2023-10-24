@@ -22,13 +22,13 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.AddMethodNameFormatString))
         {
-            return Result.Continue<BuilderContext>();
+            return Result.Continue<ClassBuilder>();
         }
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
@@ -72,7 +72,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             );
         }
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     private IEnumerable<string> GetCodeStatementsForEnumerableOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)

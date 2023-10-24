@@ -8,13 +8,13 @@ public class PartialFeatureBuilder : ISharedFeatureBuilder
 
 public class PartialFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 {
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.Partial = true;
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

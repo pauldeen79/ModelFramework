@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="3.0.0" />
+    <PackageReference Include="pauldeen79.CrossCutting.ProcessingPipeline" Version="3.1.0" />
     <PackageReference Include="pauldeen79.CrossCutting.Utilities.Parsers" Version="3.0.0" />
   </ItemGroup>
 

@@ -22,13 +22,13 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
         {
-            return Result.Continue<BuilderContext>();
+            return Result.Continue<ClassBuilder>();
         }
 
         context.Model.AddMethods(new ClassMethodBuilder()
@@ -56,7 +56,7 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
                 .AddStringCodeStatements($"return {context.Context.Settings.NameSettings.BuildTypedMethodName}();"));
         }
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

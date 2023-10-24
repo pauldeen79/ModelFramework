@@ -22,7 +22,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -37,7 +37,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
             context.Model.Constructors.Add(CreateDefaultConstructor(context));
         }
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

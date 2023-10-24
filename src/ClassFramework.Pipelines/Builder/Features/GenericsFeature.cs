@@ -8,7 +8,7 @@ public class GenericsFeatureBuilder : IBuilderFeatureBuilder
 
 public class GenericsFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 {
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -16,7 +16,7 @@ public class GenericsFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             .AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments)
             .AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

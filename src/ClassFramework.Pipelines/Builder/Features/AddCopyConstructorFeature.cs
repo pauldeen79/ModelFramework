@@ -22,13 +22,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<BuilderContext> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.ConstructorSettings.AddCopyConstructor)
         {
-            return Result.Continue<BuilderContext>();
+            return Result.Continue<ClassBuilder>();
         }
 
         if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
@@ -42,7 +42,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             context.Model.Constructors.Add(CreateCopyConstructor(context));
         }
 
-        return Result.Continue<BuilderContext>();
+        return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()

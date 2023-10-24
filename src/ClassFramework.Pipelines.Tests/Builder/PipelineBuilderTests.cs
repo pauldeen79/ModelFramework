@@ -63,7 +63,8 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Partial.Should().BeTrue();
+            result.Value.Should().NotBeNull();
+            result.Value!.Partial.Should().BeTrue();
         }
 
         [Fact]
@@ -77,8 +78,9 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Name.Should().Be("MyClassBuilder");
-            Model.Namespace.Should().Be("MyNamespace.Builders");
+            result.Value.Should().NotBeNull();
+            result.Value!.Name.Should().Be("MyClassBuilder");
+            result.Value.Namespace.Should().Be("MyNamespace.Builders");
         }
 
         [Fact]
@@ -92,9 +94,10 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
-            Model.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
-            Model.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.List<System.String>");
+            result.Value.Should().NotBeNull();
+            result.Value!.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
+            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo("Property1", "Property2");
+            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo("System.String", "System.Collections.Generic.List<System.String>");
         }
 
         [Fact]
@@ -108,7 +111,8 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Constructors.Should().NotBeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.Constructors.Should().NotBeEmpty();
         }
         
         [Fact]
@@ -122,7 +126,8 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.GenericTypeArguments.Should().NotBeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.GenericTypeArguments.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -136,7 +141,8 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.GenericTypeArgumentConstraints.Should().NotBeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.GenericTypeArgumentConstraints.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -150,7 +156,8 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Attributes.Should().NotBeEmpty();
+            result.Value.Should().NotBeNull();
+            result.Value!.Attributes.Should().NotBeEmpty();
         }
 
         [Fact]
@@ -164,8 +171,9 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
-            var method = Model.Methods.Single(x => x.Name == "Build");
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
+            var method = result.Value.Methods.Single(x => x.Name == "Build");
             method.TypeName.Should().Be("MyNamespace.MyClass<T>");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return new MyNamespace.MyClass<T> { Property2 = Property2 };");
@@ -182,13 +190,14 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            Model.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
-            var method = Model.Methods.Single(x => x.Name == "WithProperty1");
+            result.Value.Should().NotBeNull();
+            result.Value!.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
+            var method = result.Value.Methods.Single(x => x.Name == "WithProperty1");
             method.TypeName.Should().Be("MyClassBuilder<T>");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Property1 = property1;", "return this;");
 
-            Model.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
+            result.Value.Methods.Where(x => x.Name == "WithProperty2").Should().BeEmpty(); //only for the non-collection property
         }
 
         [Fact]
@@ -202,7 +211,8 @@ public class PipelineBuilderTests : IDisposable
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
-            var methods = Model.Methods.Where(x => x.Name == "AddProperty2");
+            result.Value.Should().NotBeNull();
+            var methods = result.Value!.Methods.Where(x => x.Name == "AddProperty2");
             methods.Where(x => x.Name == "AddProperty2").Should().HaveCount(2);
             methods.Select(x => x.TypeName).Should().BeEquivalentTo("MyClassBuilder<T>", "MyClassBuilder<T>");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.String>", "System.String[]");
