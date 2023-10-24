@@ -44,7 +44,7 @@ public class PipelineBuilderTests : IDisposable
                 new PipelineBuilderSettings
                 (
                     nameSettings: new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
-                    classSettings: new ImmutableClassPipelineBuilderSettings(allowGenerationWithoutProperties: false),
+                    classSettings: new EntityPipelineBuilderSettings(allowGenerationWithoutProperties: false),
                     generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true)
                 ),
                 CultureInfo.InvariantCulture

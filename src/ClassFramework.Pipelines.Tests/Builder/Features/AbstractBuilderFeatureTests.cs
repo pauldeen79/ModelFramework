@@ -23,7 +23,7 @@ public class AbstractBuilderFeatureTests : TestBase<AbstractBuilderFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new PipelineBuilderSettings(classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new PipelineBuilderSettings(classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

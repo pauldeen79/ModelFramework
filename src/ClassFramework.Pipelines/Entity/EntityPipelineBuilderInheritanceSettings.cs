@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Pipelines;
+﻿namespace ClassFramework.Pipelines.Entity;
 
-public record ImmutableClassPipelineBuilderInheritanceSettings
+public record EntityPipelineBuilderInheritanceSettings
 {
     public bool EnableInheritance { get; }
     public bool IsAbstract { get; }
@@ -8,7 +8,7 @@ public record ImmutableClassPipelineBuilderInheritanceSettings
     public Class? BaseClass { get; }
     public Func<string, TypeBase, bool>? InheritanceComparisonDelegate { get; }
 
-    public ImmutableClassPipelineBuilderInheritanceSettings(
+    public EntityPipelineBuilderInheritanceSettings(
         bool enableInheritance = false,
         bool isAbstract = false,
         bool inheritFromInterfaces = false,

@@ -176,7 +176,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<AddF
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)),
+                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)),
                 nameSettings: new PipelineBuilderNameSettings(addMethodNameFormatString: "Add{Name}")
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
@@ -212,7 +212,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<AddF
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true)),
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true)),
                 nameSettings: new PipelineBuilderNameSettings(addMethodNameFormatString: "Add{Name}")
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));

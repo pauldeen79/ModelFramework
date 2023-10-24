@@ -25,7 +25,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass:  null),
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true))
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
                 );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -47,7 +47,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(), isAbstract: true),
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true))
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
                 );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -69,7 +69,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(), isAbstract: false),
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true))
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
                 );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -91,7 +91,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(), isAbstract: false, baseClassBuilderNameSpace: "BaseBuilders"),
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true))
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
                 );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -113,7 +113,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: true),
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true))
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
                 ).ForAbstractBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -135,7 +135,7 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 inheritanceSettings: new PipelineBuilderInheritanceSettings(enableBuilderInheritance: false),
-                classSettings: new ImmutableClassPipelineBuilderSettings(inheritanceSettings: new ImmutableClassPipelineBuilderInheritanceSettings(enableInheritance: true))
+                classSettings: new EntityPipelineBuilderSettings(inheritanceSettings: new EntityPipelineBuilderInheritanceSettings(enableInheritance: true))
                 ).ForAbstractBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 

@@ -186,7 +186,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared))
+                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared))
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -211,7 +211,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: validateArguments))
+                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: validateArguments))
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -240,7 +240,7 @@ public class AddPropertiesFeatureTests : TestBase<AddPropertiesFeature>
             var model = new ClassBuilder();
             var settings = new PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true),
-                classSettings: new ImmutableClassPipelineBuilderSettings(constructorSettings: new ImmutableClassPipelineBuilderConstructorSettings(validateArguments: validateArguments))
+                classSettings: new EntityPipelineBuilderSettings(constructorSettings: new EntityPipelineBuilderConstructorSettings(validateArguments: validateArguments))
             );
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
