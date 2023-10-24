@@ -30,7 +30,7 @@ public abstract class TestBase
             PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.SourceModel),
             PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
             PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
-            ParentChildContext<ClassProperty> parentChild => classPropertyDelegate is null ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel) : classPropertyDelegate(parentChild.ChildContext),
+            ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel) : classPropertyDelegate(parentChild.ChildContext),
             _ => throw new NotSupportedException($"Context of type {input?.GetType()} is not supported")
         };
 

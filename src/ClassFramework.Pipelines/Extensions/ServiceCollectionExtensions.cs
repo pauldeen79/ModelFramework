@@ -21,5 +21,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, SetNameFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, ValidatableObjectFeatureBuilder>()
             .AddScoped<IPlaceholderProcessor, ContextSourceModelProcessor>()
-            .AddScoped<IPlaceholderProcessor, ParentClassPropertyChildContextProcessor>();
+            .AddScoped<IPlaceholderProcessor, ParentClassPropertyChildContextProcessor>()
+            .AddScoped<IPropertyPlaceholderProcessor, ClassPropertyChildContextProcessor>();
 }

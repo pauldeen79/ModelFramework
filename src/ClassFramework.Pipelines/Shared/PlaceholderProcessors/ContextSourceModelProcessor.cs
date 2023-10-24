@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builder.PlaceholderProcessors;
+﻿namespace ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 
 public class ContextSourceModelProcessor : IPlaceholderProcessor
 {

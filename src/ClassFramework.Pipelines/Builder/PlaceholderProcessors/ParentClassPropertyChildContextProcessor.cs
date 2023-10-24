@@ -2,13 +2,20 @@
 
 public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
 {
+    private readonly IPropertyPlaceholderProcessor _propertyPlaceholderProcessor;
+
+    public ParentClassPropertyChildContextProcessor(IPropertyPlaceholderProcessor propertyPlaceholderProcessor)
+    {
+        _propertyPlaceholderProcessor = propertyPlaceholderProcessor.IsNotNull(nameof(propertyPlaceholderProcessor));
+    }
+
     public int Order => 30;
 
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is not ParentChildContext<ClassProperty> parentChildContext)
+        if (context is not ParentChildContext<BuilderContext, ClassProperty> parentChildContext)
         {
             return Result.Continue<string>();
         }
@@ -28,24 +35,13 @@ public class ParentClassPropertyChildContextProcessor : IPlaceholderProcessor
                 ? "?"
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
-            nameof(ClassProperty.Name) => Result.Success(parentChildContext.ChildContext.Name),
-            $"{nameof(ClassProperty.Name)}Lower" => Result.Success(parentChildContext.ChildContext.Name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(ClassProperty.Name)}Upper" => Result.Success(parentChildContext.ChildContext.Name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(ClassProperty.Name)}Pascal" => Result.Success(parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo())),
-            nameof(ClassProperty.TypeName) => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName()),
-            $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetGenericArguments()),
-            $"{nameof(ClassProperty.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetGenericArguments(addBrackets: true)),
-            $"{nameof(ClassProperty.TypeName)}.GenericArguments.ClassName" => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetGenericArguments().GetClassName()),
-            $"{nameof(ClassProperty.TypeName)}.ClassName" => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetClassName()),
-            $"{nameof(ClassProperty.TypeName)}.Namespace" => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName().GetNamespaceWithDefault()),
-            $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result.Success(parentChildContext.ChildContext.TypeName.FixTypeName().WithoutProcessedGenerics()),
             $"Class.{nameof(Class.Name)}" => Result.Success(parentChildContext.ParentContext.Context.SourceModel.Name),
             $"Class.{nameof(Class.Name)}Lower" => Result.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
             $"Class.{nameof(Class.Name)}Upper" => Result.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"Class.{nameof(Class.Name)}Pascal" => Result.Success(parentChildContext.ParentContext.Context.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"Class.{nameof(Class.Namespace)}" => Result.Success(parentChildContext.ParentContext.Context.SourceModel.Namespace),
             $"Class.FullName" => Result.Success(parentChildContext.ParentContext.Context.SourceModel.GetFullName()),
-            _ => Result.Continue<string>()
+            _ => _propertyPlaceholderProcessor.Process(value, formatProvider, new PipelineContext<ClassProperty>(parentChildContext.ChildContext), formattableStringParser)
         };
     }
 }

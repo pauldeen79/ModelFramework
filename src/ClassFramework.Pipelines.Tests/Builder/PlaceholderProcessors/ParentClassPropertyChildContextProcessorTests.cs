@@ -21,33 +21,36 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         }
 
         [Fact]
-        public void Returns_Continue_On_Unknown_Value()
+        public void Returns_Result_From_PropertyPlaceholderProcessor_On_Unknown_Value()
         {
             // Arrange
+            var propertyPlaceholderProcessor = Fixture.Freeze<IPropertyPlaceholderProcessor>();
+            var externalResult = Result.NoContent<string>();
+            propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture)), CreatePropertyModel());
+            var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(), CultureInfo.InvariantCulture)), CreatePropertyModel());
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.Should().BeSameAs(externalResult);
         }
 
         [Theory]
         [InlineData("NullCheck.Source", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
         [InlineData("BuildersNamespace", "MyNamespace.Builders")]
-        [InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
-        [InlineData("TypeName.GenericArguments", "System.String")]
-        [InlineData("TypeName.GenericArgumentsWithBrackets", "<System.String>")]
-        [InlineData("TypeName.GenericArguments.ClassName", "String")]
-        [InlineData("TypeName.ClassName", "List<System.String>")]
-        [InlineData("TypeName.Namespace", "System.Collections.Generic")]
-        [InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
-        [InlineData("Name", "MyProperty")]
-        [InlineData("NameLower", "myproperty")]
-        [InlineData("NameUpper", "MYPROPERTY")]
-        [InlineData("NamePascal", "myProperty")]
+        //[InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
+        //[InlineData("TypeName.GenericArguments", "System.String")]
+        //[InlineData("TypeName.GenericArgumentsWithBrackets", "<System.String>")]
+        //[InlineData("TypeName.GenericArguments.ClassName", "String")]
+        //[InlineData("TypeName.ClassName", "List<System.String>")]
+        //[InlineData("TypeName.Namespace", "System.Collections.Generic")]
+        //[InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
+        //[InlineData("Name", "MyProperty")]
+        //[InlineData("NameLower", "myproperty")]
+        //[InlineData("NameUpper", "MYPROPERTY")]
+        //[InlineData("NamePascal", "myProperty")]
         [InlineData("Class.Name", "MyClass")]
         [InlineData("Class.NameLower", "myclass")]
         [InlineData("Class.NameUpper", "MYCLASS")]
@@ -60,7 +63,7 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), CreatePropertyModel());
+            var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), CreatePropertyModel());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -79,7 +82,7 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var context = new ParentChildContext<ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(
+            var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new PipelineBuilderSettings(
                 generationSettings: new PipelineBuilderGenerationSettings(enableNullableReferenceTypes: true)
                 ) , CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable));
 

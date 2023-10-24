@@ -43,7 +43,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithTypeName
                 (
                     _formattableStringParser
-                        .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<ClassProperty>(context, property))
+                        .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property))
                         .GetValueOrThrow()
                         .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
                 )

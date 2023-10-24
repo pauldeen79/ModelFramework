@@ -89,7 +89,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
                     : "{Name} = source.{Name}"
             ),
             context.Context.FormatProvider,
-            new ParentChildContext<ClassProperty>(context, property)
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property)
         ).GetValueOrThrow();
 
     private static string CreateCollectionInitialization(PipelineBuilderSettings settings)

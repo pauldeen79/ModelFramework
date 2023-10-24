@@ -39,7 +39,7 @@ public static class PipelineContextExtensions
                 (
                     p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
                     context.Context.FormatProvider,
-                    new ParentChildContext<ClassProperty>(context, p)
+                    new ParentChildContext<BuilderContext, ClassProperty>(context, p)
                 ).GetValueOrThrow()
             )
         );

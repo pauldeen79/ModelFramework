@@ -51,7 +51,7 @@ public static class ClassPropertyExtensions
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
                 context.Context.FormatProvider,
-                new ParentChildContext<ClassProperty>(context, property)
+                new ParentChildContext<BuilderContext, ClassProperty>(context, property)
             )
             .GetValueOrThrow()
             .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
