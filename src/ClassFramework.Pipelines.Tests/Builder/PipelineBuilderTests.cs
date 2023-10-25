@@ -27,7 +27,7 @@ public class PipelineBuilderTests : IDisposable
             var sourcePipeline = CreateSut().Build();
 
             // Act
-            var pipeline = new PipelineBuilder(sourcePipeline)
+            var pipeline = new Pipelines.Builder.PipelineBuilder(sourcePipeline)
                 .With(x => x.Features.Clear())
                 .Build();
 
@@ -44,7 +44,7 @@ public class PipelineBuilderTests : IDisposable
                 new Pipelines.Builder.PipelineBuilderSettings
                 (
                     nameSettings: new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
-                    classSettings: new Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false),
+                    classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false),
                     generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true)
                 ),
                 CultureInfo.InvariantCulture

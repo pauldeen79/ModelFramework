@@ -5,7 +5,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddPipelines(this IServiceCollection services)
         => services
             .AddScoped<IPipeline<ClassBuilder, BuilderContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>().Build())
-            .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, PipelineBuilder>()
+            .AddScoped<IPipeline<ClassBuilder, EntityContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, EntityContext>>().Build())
+            .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, Builder.PipelineBuilder>()
+            .AddScoped<IPipelineBuilder<ClassBuilder, EntityContext>, Entity.PipelineBuilder>()
             .AddScoped<ISharedFeatureBuilder, PartialFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderFeatureBuilder, AbstractBuilderFeatureBuilder>()

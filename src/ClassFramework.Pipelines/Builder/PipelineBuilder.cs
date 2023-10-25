@@ -7,7 +7,7 @@ public class PipelineBuilder : PipelineBuilder<ClassBuilder, BuilderContext>
         IEnumerable<IBuilderFeatureBuilder> builderFeatureBuilders)
     {
         AddFeatures(builderFeatureBuilders);
-        AddFeatures(sharedFeatureBuilders);
+        AddFeatures(sharedFeatureBuilders.Select(x => x.BuildFor<BuilderContext>()));
     }
 
     public PipelineBuilder(Pipeline<ClassBuilder, BuilderContext> source) : base(source)

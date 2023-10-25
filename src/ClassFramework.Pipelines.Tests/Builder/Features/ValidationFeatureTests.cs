@@ -39,7 +39,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = new ClassBuilder().WithName("MyClass").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: true));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: true));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -56,7 +56,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = new ClassBuilder().WithName("MyClass").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false, inheritanceSettings: new Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false, inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
