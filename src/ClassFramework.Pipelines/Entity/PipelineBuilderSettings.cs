@@ -6,6 +6,7 @@ public record PipelineBuilderSettings
     public bool AddPrivateSetters { get; }
     public bool EnableNullableReferenceTypes { get; }
     public bool AllowGenerationWithoutProperties { get; }
+    public PipelineBuilderNameSettings NameSettings { get; }
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public ArgumentValidationType AddValidationCode
@@ -46,6 +47,7 @@ public record PipelineBuilderSettings
         bool addPrivateSetters = false,
         bool enableNullableReferenceTypes = false,
         bool allowGenerationWithoutProperties = false,
+        PipelineBuilderNameSettings? nameSettings = null, 
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderInheritanceSettings? inheritanceSettings = null)
     {
@@ -53,6 +55,7 @@ public record PipelineBuilderSettings
         AddPrivateSetters = addPrivateSetters;
         EnableNullableReferenceTypes = enableNullableReferenceTypes;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
+        NameSettings = nameSettings ?? new();
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
     }

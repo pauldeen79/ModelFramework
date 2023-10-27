@@ -2,9 +2,9 @@
 
 public class PipelineFeatureWrapper<TContext> : IPipelineFeature<ClassBuilder, TContext>
 {
-    private readonly Func<PartialFeature> _featureCreateDelegate;
+    private readonly Func<IPipelineFeature<ClassBuilder>> _featureCreateDelegate;
 
-    public PipelineFeatureWrapper(Func<PartialFeature> featureCreateDelegate)
+    public PipelineFeatureWrapper(Func<IPipelineFeature<ClassBuilder>> featureCreateDelegate)
         => _featureCreateDelegate = featureCreateDelegate.IsNotNull(nameof(featureCreateDelegate));
 
     public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, TContext> context)
@@ -20,9 +20,9 @@ public class PipelineFeatureWrapper<TContext> : IPipelineFeature<ClassBuilder, T
 
 public class PipelineFeatureWrapperBuilder<TContext> : IBuilder<IPipelineFeature<ClassBuilder, TContext>>
 {
-    private readonly Func<PartialFeature> _featureCreateDelegate;
+    private readonly Func<IPipelineFeature<ClassBuilder>> _featureCreateDelegate;
 
-    public PipelineFeatureWrapperBuilder(Func<PartialFeature> featureCreateDelegate)
+    public PipelineFeatureWrapperBuilder(Func<IPipelineFeature<ClassBuilder>> featureCreateDelegate)
         => _featureCreateDelegate = featureCreateDelegate.IsNotNull(nameof(featureCreateDelegate));
 
     public IPipelineFeature<ClassBuilder, TContext> Build()

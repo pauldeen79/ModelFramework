@@ -43,7 +43,7 @@ public class PipelineBuilderTests : IDisposable
                 CreateModel(addProperties),
                 new Pipelines.Builder.PipelineBuilderSettings
                 (
-                    nameSettings: new PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
+                    nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
                     classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false),
                     generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true)
                 ),
