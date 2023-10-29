@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.PlaceholderProcessors;
 
-public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClassPropertyChildContextProcessor>
+public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipelinePlaceholderProcessor>
 {
-    public class Process : ParentClassPropertyChildContextProcessorTests
+    public class Process : BuilderPipelinePlaceholderProcessorTests
     {
         private ClassProperty CreatePropertyModel(bool isNullable = false) => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
         private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
@@ -24,7 +24,7 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         public void Returns_Result_From_PropertyPlaceholderProcessor_On_Unknown_Value()
         {
             // Arrange
-            var propertyPlaceholderProcessor = Fixture.Freeze<IPropertyPlaceholderProcessor>();
+            var propertyPlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             var externalResult = Result.NoContent<string>();
             propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
@@ -40,23 +40,12 @@ public class ParentClassPropertyChildContextProcessorTests : TestBase<ParentClas
         [Theory]
         [InlineData("NullCheck.Source", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
         [InlineData("BuildersNamespace", "MyNamespace.Builders")]
-        //[InlineData("TypeName", "System.Collections.Generic.List<System.String>")]
-        //[InlineData("TypeName.GenericArguments", "System.String")]
-        //[InlineData("TypeName.GenericArgumentsWithBrackets", "<System.String>")]
-        //[InlineData("TypeName.GenericArguments.ClassName", "String")]
-        //[InlineData("TypeName.ClassName", "List<System.String>")]
-        //[InlineData("TypeName.Namespace", "System.Collections.Generic")]
-        //[InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
-        //[InlineData("Name", "MyProperty")]
-        //[InlineData("NameLower", "myproperty")]
-        //[InlineData("NameUpper", "MYPROPERTY")]
-        //[InlineData("NamePascal", "myProperty")]
-        [InlineData("Class.Name", "MyClass")]
-        [InlineData("Class.NameLower", "myclass")]
-        [InlineData("Class.NameUpper", "MYCLASS")]
-        [InlineData("Class.NamePascal", "myClass")]
-        [InlineData("Class.Namespace", "MyNamespace")]
-        [InlineData("Class.FullName", "MyNamespace.MyClass")]
+        //[InlineData("Class.Name", "MyClass")]
+        //[InlineData("Class.NameLower", "myclass")]
+        //[InlineData("Class.NameUpper", "MYCLASS")]
+        //[InlineData("Class.NamePascal", "myClass")]
+        //[InlineData("Class.Namespace", "MyNamespace")]
+        //[InlineData("Class.FullName", "MyNamespace.MyClass")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange

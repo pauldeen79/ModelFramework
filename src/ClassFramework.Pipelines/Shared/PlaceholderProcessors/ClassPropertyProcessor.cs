@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 
-public class ClassPropertyChildContextProcessor : IPropertyPlaceholderProcessor
+public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
 {
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {

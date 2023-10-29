@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors;
 
-public class ClassPropertyChildContextProcessorTests : TestBase<ClassPropertyChildContextProcessor>
+public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
 {
-    public class Process : ClassPropertyChildContextProcessorTests
+    public class Process : ClassPropertyProcessorTests
     {
         private ClassProperty CreateModel() => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).Build();
         

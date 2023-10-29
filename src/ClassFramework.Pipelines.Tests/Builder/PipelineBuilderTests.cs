@@ -1,23 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests : TestBase, IDisposable
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBuilder, BuilderContext>>
 {
-    private bool disposedValue;
-    private readonly ServiceProvider _provider;
-    private readonly IServiceScope _scope;
-
-    public PipelineBuilderTests()
-    {
-        _provider = new ServiceCollection()
-            .AddParsers()
-            .AddPipelines()
-            .BuildServiceProvider();
-        _scope = _provider.CreateScope();
-    }
-
-    protected IPipelineBuilder<ClassBuilder, BuilderContext> CreateSut()
-        => _scope.ServiceProvider.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>();
-
     public class Constructor : PipelineBuilderTests
     {
         [Fact]
@@ -40,7 +24,7 @@ public class PipelineBuilderTests : TestBase, IDisposable
     {
         private BuilderContext CreateContext(bool addProperties = true) => new BuilderContext
             (
-                CreateModel(addProperties),
+                CreateGenericModel(addProperties),
                 CreateBuilderSettings
                 (
                     builderNamespaceFormatString: "{Namespace}.Builders",
@@ -238,42 +222,5 @@ public class PipelineBuilderTests : TestBase, IDisposable
             result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("To create a builder class, there must be at least one property");
         }
-
-        private static TypeBase CreateModel(bool addProperties)
-            => new ClassBuilder()
-                .WithName("MyClass")
-                .WithNamespace("MyNamespace")
-                .AddGenericTypeArguments("T")
-                .AddGenericTypeArgumentConstraints("where T : class")
-                .AddAttributes(new AttributeBuilder().WithName("MyAttribute"))
-                .AddProperties(
-                    new[]
-                    {
-                        new ClassPropertyBuilder().WithName("Property1").WithTypeName("System.String").WithHasSetter(false),
-                        new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).WithoutGenerics() + "<System.String>").WithHasSetter(true)
-                    }.Where(_ => addProperties)
-                )
-                .Build();
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                _scope.Dispose();
-                _provider.Dispose();
-            }
-
-            disposedValue = true;
-        }
-    }
-
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 }

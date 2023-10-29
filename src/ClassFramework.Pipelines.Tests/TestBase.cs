@@ -24,17 +24,22 @@ public abstract class TestBase
                 .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)));
     }
 
-    private string CreateReplacement(object? input, Func<TypeBase, string> typeBaseDelegate, Func<ClassProperty, string>? classPropertyDelegate)
+    private static string CreateReplacement(
+        object? input,
+        Func<TypeBase, string> typeBaseDelegate,
+        Func<ClassProperty, string>? classPropertyDelegate)
         => input switch
         {
             PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.SourceModel),
             PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
             PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
-            ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel) : classPropertyDelegate(parentChild.ChildContext),
+            ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null
+                ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel)
+                : classPropertyDelegate(parentChild.ChildContext),
             _ => throw new NotSupportedException($"Context of type {input?.GetType()} is not supported")
         };
 
-    protected virtual TypeBase CreateModel(string baseClass = "", params MetadataBuilder[] propertyMetadataBuilders)
+    protected static TypeBase CreateModel(string baseClass = "", params MetadataBuilder[] propertyMetadataBuilders)
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
@@ -42,6 +47,22 @@ public abstract class TestBase
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .Build();
+
+    protected static TypeBase CreateGenericModel(bool addProperties)
+        => new ClassBuilder()
+            .WithName("MyClass")
+            .WithNamespace("MyNamespace")
+            .AddGenericTypeArguments("T")
+            .AddGenericTypeArgumentConstraints("where T : class")
+            .AddAttributes(new AttributeBuilder().WithName("MyAttribute"))
+            .AddProperties(
+                new[]
+                {
+                        new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasSetter(false),
+                        new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
+                }.Where(_ => addProperties)
+            )
             .Build();
 
     protected static Pipelines.Builder.PipelineBuilderSettings CreateBuilderSettings(
@@ -69,12 +90,21 @@ public abstract class TestBase
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
             generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace),
-            classSettings: new Pipelines.Entity.PipelineBuilderSettings(
-                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
-                inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance),
-                constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks)
-                ),
+            classSettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, validateArguments, allowGenerationWithoutProperties),
             nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
+        );
+
+    protected static Pipelines.Entity.PipelineBuilderSettings CreateEntitySettings(
+        bool enableEntityInheritance = false,
+        bool addNullChecks = false,
+        ArgumentValidationType validateArguments = ArgumentValidationType.None,
+        bool allowGenerationWithoutProperties = false,
+        bool isAbstract = false,
+        Class? baseClass = null)
+        => new Pipelines.Entity.PipelineBuilderSettings(
+            allowGenerationWithoutProperties: allowGenerationWithoutProperties,
+            inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
+            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks)
         );
 }
 

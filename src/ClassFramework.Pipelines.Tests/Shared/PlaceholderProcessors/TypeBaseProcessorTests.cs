@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines.Tests.Builder.PlaceholderProcessors;
+﻿namespace ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors;
 
-public class ContextSourceModelProcessorTests : TestBase<ContextSourceModelProcessor>
+public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
 {
-    public class Process : ContextSourceModelProcessorTests
+    public class Process : TypeBaseProcessorTests
     {
         private ClassBuilder Model { get; } = new();
 
@@ -43,7 +43,7 @@ public class ContextSourceModelProcessorTests : TestBase<ContextSourceModelProce
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(Model, new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBase>(CreateModel());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
