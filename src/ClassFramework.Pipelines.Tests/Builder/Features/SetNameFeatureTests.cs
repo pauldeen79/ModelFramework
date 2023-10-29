@@ -23,7 +23,7 @@ public class SetNameFeatureTests : TestBase<SetNameFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings();
+            var settings = CreateBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -42,7 +42,7 @@ public class SetNameFeatureTests : TestBase<SetNameFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings();
+            var settings = CreateBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

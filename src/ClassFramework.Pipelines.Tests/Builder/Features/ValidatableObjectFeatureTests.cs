@@ -23,7 +23,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
+            var settings = CreateBuilderSettings(validateArguments: ArgumentValidationType.Shared);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -50,7 +50,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
+            var settings = CreateBuilderSettings(validateArguments: ArgumentValidationType.Shared);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -83,7 +83,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: ArgumentValidationType.Shared)));
+            var settings = CreateBuilderSettings(validateArguments: ArgumentValidationType.Shared);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -108,7 +108,7 @@ public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings();
+            var settings = CreateBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

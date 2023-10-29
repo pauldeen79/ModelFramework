@@ -61,13 +61,16 @@ public abstract class TestBase
         string buildMethodName = "Build",
         string buildTypedMethodName = "BuildTyped",
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
+        string? baseClassBuilderNameSpace = null,
+        bool allowGenerationWithoutProperties = false,
         Class? baseClass = null)
         => new Pipelines.Builder.PipelineBuilderSettings(
             typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName),
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
             generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes),
-            inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass),
+            inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace),
             classSettings: new Pipelines.Entity.PipelineBuilderSettings(
+                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
                 inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance),
                 constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks)
                 ),

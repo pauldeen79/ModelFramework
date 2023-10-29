@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests : IDisposable
+public class PipelineBuilderTests : TestBase, IDisposable
 {
     private bool disposedValue;
     private readonly ServiceProvider _provider;
@@ -41,11 +41,11 @@ public class PipelineBuilderTests : IDisposable
         private BuilderContext CreateContext(bool addProperties = true) => new BuilderContext
             (
                 CreateModel(addProperties),
-                new Pipelines.Builder.PipelineBuilderSettings
+                CreateBuilderSettings
                 (
-                    nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(builderNamespaceFormatString: "{Namespace}.Builders"),
-                    classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false),
-                    generationSettings: new PipelineBuilderGenerationSettings(copyAttributes: true)
+                    builderNamespaceFormatString: "{Namespace}.Builders",
+                    allowGenerationWithoutProperties: false,
+                    copyAttributes: true
                 ),
                 CultureInfo.InvariantCulture
             );

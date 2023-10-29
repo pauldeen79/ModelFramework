@@ -23,10 +23,10 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass:  null),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                baseClass:  null,
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -45,10 +45,11 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(), isAbstract: true),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
+                isAbstract: true,
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -67,10 +68,11 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(), isAbstract: false),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
+                isAbstract: false,
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -89,10 +91,12 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(), isAbstract: false, baseClassBuilderNameSpace: "BaseBuilders"),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
+                isAbstract: false,
+                baseClassBuilderNameSpace: "BaseBuilders",
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -111,10 +115,9 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                ).ForAbstractBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                enableEntityInheritance: true).ForAbstractBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -133,10 +136,9 @@ public class BaseClassFeatureTests : TestBase<BaseClassFeature>
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: false),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                ).ForAbstractBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                enableEntityInheritance: true).ForAbstractBuilder();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

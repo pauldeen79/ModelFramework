@@ -22,7 +22,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings();
+            var settings = CreateBuilderSettings();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -39,7 +39,7 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = new ClassBuilder().WithName("MyClass").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: true));
+            var settings = CreateBuilderSettings(allowGenerationWithoutProperties: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -56,7 +56,9 @@ public class ValidationFeatureTests : TestBase<ValidationFeature>
             var sourceModel = new ClassBuilder().WithName("MyClass").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(allowGenerationWithoutProperties: false, inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = CreateBuilderSettings(
+                allowGenerationWithoutProperties: false,
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
