@@ -43,6 +43,36 @@ public abstract class TestBase
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .Build();
+
+    protected static Pipelines.Builder.PipelineBuilderSettings CreateBuilderSettings(
+        bool enableBuilderInheritance = false,
+        bool isAbstract = false,
+        bool enableEntityInheritance = false,
+        bool addNullChecks = false,
+        bool enableNullableReferenceTypes = false,
+        bool copyAttributes = false,
+        bool addCopyConstructor = false,
+        bool setDefaultValues = true,
+        string newCollectionTypeName = "System.Collections.Generic.List",
+        string setMethodNameFormatString = "With{Name}",
+        string addMethodNameFormatString = "Add{Name}",
+        string builderNamespaceFormatString = "{Namespace}.Builders",
+        string builderNameFormatString = "{Class.Name}Builder",
+        string buildMethodName = "Build",
+        string buildTypedMethodName = "BuildTyped",
+        ArgumentValidationType validateArguments = ArgumentValidationType.None,
+        Class? baseClass = null)
+        => new Pipelines.Builder.PipelineBuilderSettings(
+            typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName),
+            constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
+            generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes),
+            inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass),
+            classSettings: new Pipelines.Entity.PipelineBuilderSettings(
+                inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance),
+                constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks)
+                ),
+            nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
+        );
 }
 
 public abstract class TestBase<T> : TestBase

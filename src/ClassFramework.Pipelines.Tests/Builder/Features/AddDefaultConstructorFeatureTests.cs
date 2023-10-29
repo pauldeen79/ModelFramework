@@ -25,11 +25,11 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: true, baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null),
-                constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor: false),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null,
+                addCopyConstructor: false,
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -66,11 +66,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: false),
-                constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor: false),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: false))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: false,
+                enableEntityInheritance: false);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -100,11 +99,11 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: false), constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor: false),
-                typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics()),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: false))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: false,
+                newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
+                enableEntityInheritance: false);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -134,11 +133,10 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: false),
-                constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor: false),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: false,
+                enableEntityInheritance: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -168,11 +166,11 @@ public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorF
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(
-                inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: false),
-                constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor: false, setDefaultValues: false),
-                classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: false))
-                );
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: false,
+                setDefaultValues: false,
+                enableEntityInheritance: false);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

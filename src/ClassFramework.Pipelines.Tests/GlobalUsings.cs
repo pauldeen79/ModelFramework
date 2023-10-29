@@ -10,6 +10,7 @@ global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
+global using ClassFramework.Domain.Types;
 global using ClassFramework.Pipelines.Abstractions;
 global using ClassFramework.Pipelines.Builder;
 global using ClassFramework.Pipelines.Builder.Features;

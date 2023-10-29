@@ -23,7 +23,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: string.Empty));
+            var settings = CreateBuilderSettings(setMethodNameFormatString: string.Empty);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -42,7 +42,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"));
+            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -74,7 +74,9 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"), generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true));
+            var settings = CreateBuilderSettings(
+                setMethodNameFormatString: "With{Name}",
+                addNullChecks: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -108,7 +110,9 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"), generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true));
+            var settings = CreateBuilderSettings(
+                setMethodNameFormatString: "With{Name}",
+                addNullChecks: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -141,7 +145,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"));
+            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -176,7 +180,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"));
+            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -200,7 +204,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString: "With{Name}"));
+            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -228,7 +232,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(builderNameFormatString: "My{Class.Name}Builder"));
+            var settings = CreateBuilderSettings(builderNameFormatString: "My{Class.Name}Builder");
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
