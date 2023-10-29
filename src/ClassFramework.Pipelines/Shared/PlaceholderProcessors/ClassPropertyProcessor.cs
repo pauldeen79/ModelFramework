@@ -22,7 +22,6 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(ClassProperty.TypeName)}.ClassName" => Result.Success(pipelineContext.Model.TypeName.FixTypeName().GetClassName()),
             $"{nameof(ClassProperty.TypeName)}.Namespace" => Result.Success(pipelineContext.Model.TypeName.FixTypeName().GetNamespaceWithDefault()),
             $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result.Success(pipelineContext.Model.TypeName.FixTypeName().WithoutProcessedGenerics()),
-
             _ => Result.Continue<string>()
         };
     }

@@ -16,7 +16,21 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.Status.Should().Be(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Continue_On_Unknown_Value()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = new PipelineContext<ClassProperty>(CreateModel());
+
+            // Act
+            var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Theory]

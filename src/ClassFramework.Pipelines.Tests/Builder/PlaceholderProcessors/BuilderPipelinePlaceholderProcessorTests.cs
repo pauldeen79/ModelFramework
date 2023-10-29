@@ -17,7 +17,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Fact]
@@ -39,14 +39,9 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 
         [Theory]
         [InlineData("NullCheck.Source", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
+        [InlineData("NullCheck.Argument", "if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));")] // null checks are enabled in this unit test
         [InlineData("BuildersNamespace", "MyNamespace.Builders")]
-        //[InlineData("Class.Name", "MyClass")]
-        //[InlineData("Class.NameLower", "myclass")]
-        //[InlineData("Class.NameUpper", "MYCLASS")]
-        //[InlineData("Class.NamePascal", "myClass")]
-        //[InlineData("Class.Namespace", "MyNamespace")]
-        //[InlineData("Class.FullName", "MyNamespace.MyClass")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext(string value, string expectedValue)
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
@@ -63,8 +58,28 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
+        [InlineData("BuildersNamespace", "MyNamespace.Builders")]
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_PipelineContext(string value, string expectedValue)
+        {
+            // Arrange
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
+            var sut = CreateSut();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(expectedValue);
+        }
+
+        [Theory]
         [InlineData("NullableRequiredSuffix", true, "")]
         [InlineData("NullableRequiredSuffix", false, "!")]
+        [InlineData("NullableSuffix", true, "?")]
+        [InlineData("NullableSuffix", false, "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
         {
             // Arrange
@@ -81,6 +96,72 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);
             result.Value.Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public void Returns_Result_When_PipelinePlaceholderProcessor_Supports_The_Value_With_ParentChildContext()
+        {
+            // Arrange
+            var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
+            pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Success("MyResult"));
+            var sut = CreateSut();
+            var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), CreatePropertyModel());
+
+            // Act
+            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("MyResult");
+        }
+
+        [Fact]
+        public void Returns_Continue_When_PipelinePlaceholderProcessor_Does_Not_Support_The_Value_With_ParentChildContext()
+        {
+            // Arrange
+            var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
+            pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Continue<string>());
+            var sut = CreateSut();
+            var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), CreatePropertyModel());
+
+            // Act
+            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
+        }
+
+        [Fact]
+        public void Returns_Result_When_PipelinePlaceholderProcessor_Supports_The_Value_With_PipelineChildContext()
+        {
+            // Arrange
+            var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
+            pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Success("MyResult"));
+            var sut = CreateSut();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be("MyResult");
+        }
+
+        [Fact]
+        public void Returns_Continue_When_PipelinePlaceholderProcessor_Does_Not_Support_The_Value_With_PipelineChildContext()
+        {
+            // Arrange
+            var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
+            pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Continue<string>());
+            var sut = CreateSut();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Continue);
         }
     }
 }

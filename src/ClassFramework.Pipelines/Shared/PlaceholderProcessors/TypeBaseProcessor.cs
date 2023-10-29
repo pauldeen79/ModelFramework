@@ -15,7 +15,7 @@ public class TypeBaseProcessor : IPipelinePlaceholderProcessor
             $"{nameof(TypeBase.Name)}Lower" or $"Class.{nameof(TypeBase.Name)}Lower" => Result.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo())),
             $"{nameof(TypeBase.Name)}Upper" or $"Class.{nameof(TypeBase.Name)}Upper" => Result.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(TypeBase.Name)}Pascal" or $"Class.{nameof(TypeBase.Name)}Pascal" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(TypeBase.Namespace)}" or nameof(TypeBase.Namespace) => Result.Success(pipelineContext.Model.Namespace),
+            $"{nameof(TypeBase.Namespace)}" or $"Class.{nameof(TypeBase.Namespace)}" => Result.Success(pipelineContext.Model.Namespace),
             $"FullName" or "Class.FullName" => Result.Success(pipelineContext.Model.GetFullName()),
             _ => Result.Continue<string>()
         };

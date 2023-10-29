@@ -16,7 +16,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, null, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
 
             // Assert
-            result.IsSuccessful().Should().BeTrue();
+            result.Status.Should().Be(ResultStatus.Continue);
         }
 
         [Theory]
@@ -39,6 +39,13 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         [InlineData("NameUpper", "SOMECLASS")]
         [InlineData("NamePascal", "someClass")]
         [InlineData("Namespace", "SomeNamespace")]
+        [InlineData("FullName", "SomeNamespace.SomeClass")]
+        [InlineData("Class.Name", "SomeClass")]
+        [InlineData("Class.NameLower", "someclass")]
+        [InlineData("Class.NameUpper", "SOMECLASS")]
+        [InlineData("Class.NamePascal", "someClass")]
+        [InlineData("Class.Namespace", "SomeNamespace")]
+        [InlineData("Class.FullName", "SomeNamespace.SomeClass")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange
