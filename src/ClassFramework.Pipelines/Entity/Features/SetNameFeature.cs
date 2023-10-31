@@ -28,18 +28,19 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, EntityContext>
 
         var results = new[]
         {
-            _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context),
-            _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context)
-        }.TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).ToArray();
+            new { Name = "Name", Result = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context) },
+            new { Name = "Namespace", Result = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context) },
+        }.TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 
-        if (Array.Exists(results, x => !x.IsSuccessful()))
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<ClassBuilder>(results.First(x => !x.IsSuccessful()));
+            return Result.FromExistingResult<ClassBuilder>(error.Result);
         }
 
-        context.Model.Name = results[0].Value!;
-        context.Model.Namespace = results[1].Value!;
+        context.Model.Name = results.First(x => x.Name == "Name").Result.Value!;
+        context.Model.Namespace = results.First(x => x.Name == "Namespace").Result.Value!;
 
         return Result.Continue<ClassBuilder>();
     }
