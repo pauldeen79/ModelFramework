@@ -160,5 +160,49 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "/* null check goes here */ Property3 = Property3.Concat(source.Property3);"
             );
         }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_CustomBuilderConstructorInitializeExpression_Is_Not_Successful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderConstructorInitializeExpression).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: true,
+                enableEntityInheritance: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: true,
+                enableEntityInheritance: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
     }
 }

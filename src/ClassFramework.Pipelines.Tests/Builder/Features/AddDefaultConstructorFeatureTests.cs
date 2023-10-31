@@ -189,5 +189,27 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 "Property3 = new System.Collections.Generic.List<int>();"
             );
         }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: true,
+                enableEntityInheritance: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
     }
 }

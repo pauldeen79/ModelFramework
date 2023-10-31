@@ -57,7 +57,7 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
         }
 
         [Fact]
-        public void Returns_Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
+        public void Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
