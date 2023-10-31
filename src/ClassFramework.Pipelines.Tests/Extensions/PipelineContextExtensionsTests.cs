@@ -51,7 +51,7 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
 
             // Assert
-            result.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+            result.Value.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
 
         [Fact]
@@ -69,7 +69,7 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
 
             // Assert
-            result.Should().Be("new MyNamespace.MyClass(MyProperty)");
+            result.Value.Should().Be("new MyNamespace.MyClass(MyProperty)");
         }
 
         [Fact]
@@ -87,7 +87,7 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
 
             // Assert
-            result.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+            result.Value.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
     }
 }

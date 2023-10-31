@@ -26,7 +26,13 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.BaseClass = GetBuilderBaseClass(context.Context.SourceModel, context);
+        var baseClassResult = GetBuilderBaseClass(context.Context.SourceModel, context);
+        if (!baseClassResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassBuilder>(baseClassResult);
+        }
+
+        context.Model.BaseClass = baseClassResult.Value!;
 
         return Result.Continue<ClassBuilder>();
     }
@@ -34,7 +40,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new BaseClassFeatureBuilder(_formattableStringParser);
 
-    private string GetBuilderBaseClass(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
+    private Result<string> GetBuilderBaseClass(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -49,11 +55,15 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             && !context.Context.Settings.IsForAbstractBuilder
             && context.Context.Settings.InheritanceSettings.IsAbstract;
 
+        var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context);
+        if (!nameResult.IsSuccessful())
+        {
+            return nameResult;
+        }
+
         if (isNotForAbstractBuilder || isAbstract)
         {
-            return _formattableStringParser
-                .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context)
-                .GetValueOrThrow() + genericTypeArgumentsString;
+            return Result.Success($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
         if (context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
@@ -65,23 +75,34 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
                 ? string.Empty
                 : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
 
-            return $"{ns}{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))).GetValueOrThrow()}<{_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>";
-        }
+            var inheritanceNameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider)));
+            if (!inheritanceNameResult.IsSuccessful())
+            {
+                return inheritanceNameResult;
+            }
 
-        var builderName = _formattableStringParser
-            .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context)
-            .GetValueOrThrow();
+            return Result.Success($"{ns}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+        }
 
         return instance.GetCustomValueForInheritedClass
         (
             context.Context.Settings.ClassSettings,
-            baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
-                ? $"{GetBaseClassName(context, baseClassContainer)}{genericTypeArgumentsString}"
-                : $"{GetBaseClassName(context, baseClassContainer)}<{builderName}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>"
+            baseClassContainer =>
+            {
+                var baseClassResult = GetBaseClassName(context, baseClassContainer);
+                if (!baseClassResult.IsSuccessful())
+                {
+                    return baseClassResult;
+                }
+
+                return Result.Success(context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
+                    ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
+                    : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+                }
         );
     }
 
-    private string GetBaseClassName(PipelineContext<ClassBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
+    private Result<string> GetBaseClassName(PipelineContext<ClassBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
     {
         var newContext = new PipelineContext<ClassBuilder, BuilderContext>
         (
@@ -89,9 +110,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             new BuilderContext(CreateTypeBase(baseClassContainer.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
         );
 
-        return _formattableStringParser
-            .Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, newContext)
-            .GetValueOrThrow();
+        return _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, newContext);
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

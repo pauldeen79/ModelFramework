@@ -63,8 +63,14 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
             return Result.FromExistingResult<ClassConstructorBuilder>(errorResult.Result);
         }
 
+        var chainCallResult = CreateImmutableBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings);
+        if (!chainCallResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassConstructorBuilder>(chainCallResult);
+        }
+
         var ctor = new ClassConstructorBuilder()
-            .WithChainCall(CreateImmutableBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
+            .WithChainCall(chainCallResult.Value!)
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements(immutableBuilderClassConstructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
 
@@ -89,8 +95,8 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         return Result.Success(ctor);
     }
 
-    private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => "base()");
+    private static Result<string> CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
+        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => Result.Success("base()"));
 
     private static string GenerateDefaultValueStatement(ClassProperty property, BuilderContext context)
         => $"{property.Name} = {property.GetDefaultValue(context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.FormatProvider.ToCultureInfo())};";

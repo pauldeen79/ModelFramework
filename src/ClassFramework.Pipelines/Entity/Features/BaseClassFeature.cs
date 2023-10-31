@@ -12,7 +12,13 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.BaseClass = GetEntityBaseClass(context.Context.SourceModel, context);
+        var baseClassResult = GetEntityBaseClass(context.Context.SourceModel, context);
+        if (!baseClassResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassBuilder>(baseClassResult);
+        }
+
+        context.Model.BaseClass = baseClassResult.Value!;
 
         return Result.Continue<ClassBuilder>();
     }
@@ -20,8 +26,8 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, EntityContext>
     public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
         => new BaseClassFeatureBuilder();
 
-    private string GetEntityBaseClass(TypeBase instance, PipelineContext<ClassBuilder, EntityContext> context)
+    private Result<string> GetEntityBaseClass(TypeBase instance, PipelineContext<ClassBuilder, EntityContext> context)
         => context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
-            ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()
-            : instance.GetCustomValueForInheritedClass(context.Context.Settings, cls => cls.BaseClass!);
+            ? Result.Success(context.Context.Settings.InheritanceSettings.BaseClass.GetFullName())
+            : instance.GetCustomValueForInheritedClass(context.Context.Settings, cls => Result.Success(cls.BaseClass!));
 }

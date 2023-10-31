@@ -27,7 +27,7 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         context = context.IsNotNull(nameof(context));
 
         var results = new[]
-{
+        {
             new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context)) },
             new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNamespaceFormatString, context.Context.FormatProvider, context)) },
         }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();

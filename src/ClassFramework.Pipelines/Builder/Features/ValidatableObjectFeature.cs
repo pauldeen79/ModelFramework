@@ -31,13 +31,19 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
             return Result.Continue<ClassBuilder>();
         }
 
+        var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, "Base");
+        if (!instanciationResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassBuilder>(instanciationResult);
+        }
+
         context.Model.AddInterfaces(typeof(IValidatableObject));
         context.Model.AddMethods(new ClassMethodBuilder()
             .WithName(nameof(IValidatableObject.Validate))
             .WithType(typeof(IEnumerable<ValidationResult>))
             .AddParameter("validationContext", typeof(ValidationContext))
             .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
-            .AddStringCodeStatements($"var instance = {context.CreateEntityInstanciation(_formattableStringParser, "Base")};")
+            .AddStringCodeStatements($"var instance = {instanciationResult.Value};")
             .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
             .AddStringCodeStatements
             (

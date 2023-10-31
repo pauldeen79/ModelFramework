@@ -31,6 +31,12 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
             return Result.Continue<ClassBuilder>();
         }
 
+        var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, string.Empty);
+        if (!instanciationResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassBuilder>(instanciationResult);
+        }
+
         context.Model.AddMethods(new ClassMethodBuilder()
             .WithName(context.Context.IsBuilderForAbstractEntity || context.Context.IsBuilderForOverrideEntity
                 ? context.Context.Settings.NameSettings.BuildTypedMethodName
@@ -42,7 +48,7 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
             .AddStringCodeStatements
             (
                 !context.Context.IsBuilderForAbstractEntity
-                    ? new[] { $"return {context.CreateEntityInstanciation(_formattableStringParser, string.Empty)};" }
+                    ? new[] { $"return {instanciationResult.Value};" }
                     : Array.Empty<string>()
             )
             .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements()));

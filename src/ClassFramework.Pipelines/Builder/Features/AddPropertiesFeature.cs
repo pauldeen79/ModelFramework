@@ -31,30 +31,27 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             return Result.Continue<ClassBuilder>();
         }
 
-        context.Model.AddProperties
-        (
-            context.Context.SourceModel.Properties
-            .Where
-            (
-                x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)
-            )
-            .Select(property => new ClassPropertyBuilder()
+        foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)))
+        {
+            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property));
+
+            if (!typeNameResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<ClassBuilder>(typeNameResult);
+            }
+
+            context.Model.AddProperties(new ClassPropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName
-                (
-                    _formattableStringParser
-                        .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property))
-                        .GetValueOrThrow()
-                        .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-                )
+                .WithTypeName(typeNameResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes.Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, context.Context))
-            )
-        );
+            );
+        }
+
         context.Model.AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser));
 
         return Result.Continue<ClassBuilder>();

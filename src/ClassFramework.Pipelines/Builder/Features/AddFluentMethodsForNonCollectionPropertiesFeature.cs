@@ -34,46 +34,50 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property);
-            var typeName = _formattableStringParser
-                .Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, childContext)
-                .GetValueOrThrow();
 
-            context.Model.AddMethods(new ClassMethodBuilder()
-                .WithName(_formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow())
+            var results = new[]
+            {
+                new { Name = "TypeName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, childContext)) },
+                new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext)) },
+                new { Name = "BuilderName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext)) },
+                new { Name = "ArgumentNullCheck", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext)) },
+                new { Name = "BuilderWithExpression", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascal};"), context.Context.FormatProvider, childContext)) },
+            }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
+
+            var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
+            if (error is not null)
+            {
+                // Error in formattable string parsing
+                return Result.FromExistingResult<ClassBuilder>(error.LazyResult.Value);
+            }
+
+            var builder = new ClassMethodBuilder()
+                .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
                 .WithTypeName(context.Context.IsBuilderForAbstractEntity
                       ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
-                      : _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext).GetValueOrThrow() + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                      : results.First(x => x.Name == "BuilderName").LazyResult.Value.Value! + context.Context.SourceModel.GetGenericTypeArgumentsString())
                 .AddParameters
                 (
                     new ParameterBuilder()
                         .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(typeName)
+                        .WithTypeName(results.First(x => x.Name == "TypeName").LazyResult.Value.Value!)
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
                         .WithDefaultValue(property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
-                )
-                .AddStringCodeStatements
-                (
-                    new[]
-                    {
-                        _formattableStringParser.Parse
-                        (
-                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
-                            context.Context.FormatProvider,
-                            childContext
-                        ).GetValueOrThrow()
-                    }.Where(_ => context.Context.Settings.GenerationSettings.AddNullChecks)
-                )
-                .AddStringCodeStatements
-                (
-                    _formattableStringParser.Parse
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascal};"),
-                        context.Context.FormatProvider,
-                        childContext
-                    ).GetValueOrThrow(),
-                    $"return {GetReturnValue(context.Context)};"
-                ));
+                );
+
+            if (context.Context.Settings.GenerationSettings.AddNullChecks)
+            {
+                builder.AddStringCodeStatements(results.First(x => x.Name == "ArgumentNullCheck").LazyResult.Value.Value!);
+            }
+
+            builder.AddStringCodeStatements
+            (
+                results.First(x => x.Name == "BuilderWithExpression").LazyResult.Value.Value!,
+                $"return {GetReturnValue(context.Context)};"
+            );
+
+            context.Model.AddMethods(builder);
         }
 
         return Result.Continue<ClassBuilder>();

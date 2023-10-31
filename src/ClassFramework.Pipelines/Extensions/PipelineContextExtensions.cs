@@ -2,7 +2,7 @@
 
 public static class PipelineContextExtensions
 {
-    public static string CreateEntityInstanciation(this PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
+    public static Result<string> CreateEntityInstanciation(this PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
     {
         var constructorsContainer = context.Context.SourceModel as IConstructorsContainer;
 
@@ -19,10 +19,18 @@ public static class PipelineContextExtensions
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
         var openSign = GetImmutableBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
         var closeSign = GetImmutableBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
-        return $"new {context.Context.SourceModel.GetFullName()}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor)}{closeSign}";
+
+        var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
+
+        if (!parametersResult.IsSuccessful())
+        {
+            return parametersResult;
+        }
+
+        return Result.Success($"new {context.Context.SourceModel.GetFullName()}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    private static string GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
+    private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
         var properties = context.Context.SourceModel.GetImmutableBuilderConstructorProperties(context.Context);
 
@@ -30,19 +38,23 @@ public static class PipelineContextExtensions
             ? new Func<ClassProperty, string>(p => "{Name} = {Name}")
             : new Func<ClassProperty, string>(p => "{Name}");
 
-        return string.Join
+        var results = properties.Select
         (
-            ", ",
-            properties.Select
+            p => formattableStringParser.Parse
             (
-                p => formattableStringParser.Parse
-                (
-                    p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
-                    context.Context.FormatProvider,
-                    new ParentChildContext<BuilderContext, ClassProperty>(context, p)
-                ).GetValueOrThrow()
+                p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
+                context.Context.FormatProvider,
+                new ParentChildContext<BuilderContext, ClassProperty>(context, p)
             )
-        );
+        ).TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).ToArray();
+
+        var error = Array.Find(results, x => !x.IsSuccessful());
+        if (error is not null)
+        {
+            return error;
+        }
+
+        return Result.Success(string.Join(", ", results.Select(x => x.Value)));
     }
 
     private static string GetImmutableBuilderPocoCloseSign(bool poco)

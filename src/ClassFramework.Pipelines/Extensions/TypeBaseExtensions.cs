@@ -35,10 +35,10 @@ public static class TypeBaseExtensions
             )
             : string.Empty;
 
-    public static string GetCustomValueForInheritedClass(
+    public static Result<string> GetCustomValueForInheritedClass(
         this TypeBase instance,
         Entity.PipelineBuilderSettings settings,
-        Func<IBaseClassContainer, string> customValue)
+        Func<IBaseClassContainer, Result<string>> customValue)
     {
         settings = settings.IsNotNull(nameof(settings));
         customValue = customValue.IsNotNull(nameof(customValue));
@@ -46,20 +46,20 @@ public static class TypeBaseExtensions
         if (!settings.InheritanceSettings.EnableInheritance)
         {
             // Inheritance is not enabled
-            return string.Empty;
+            return Result.Success(string.Empty);
         }
 
         var baseClassContainer = instance as IBaseClassContainer;
         if (baseClassContainer is null)
         {
             // Type cannot have a base class
-            return string.Empty;
+            return Result.Success(string.Empty);
         }
 
         if (string.IsNullOrEmpty(baseClassContainer.BaseClass))
         {
             // Class is not inherited
-            return string.Empty;
+            return Result.Success(string.Empty);
         }
 
         return customValue(baseClassContainer);
