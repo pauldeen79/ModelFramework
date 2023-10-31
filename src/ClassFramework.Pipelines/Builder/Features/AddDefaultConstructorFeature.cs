@@ -34,7 +34,13 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         }
         else
         {
-            context.Model.Constructors.Add(CreateDefaultConstructor(context));
+            var result = CreateDefaultConstructor(context);
+            if (!result.IsSuccessful())
+            {
+                return Result.FromExistingResult<ClassBuilder>(result);
+            }
+
+            context.Model.Constructors.Add(result.Value!);
         }
 
         return Result.Continue<ClassBuilder>();
@@ -43,18 +49,24 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddDefaultConstructorFeatureBuilder(_formattableStringParser);
 
-    private ClassConstructorBuilder CreateDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
+    private Result<ClassConstructorBuilder> CreateDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
     {
+        var immutableBuilderClassConstructorInitializerResults = context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
+            .Select(x => new { x.Name, Result = x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser) })
+            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
+            .ToArray();
+
+        var errorResult = Array.Find(immutableBuilderClassConstructorInitializerResults, x => !x.Result.IsSuccessful());
+        if (errorResult is not null)
+        {
+            return Result.FromExistingResult<ClassConstructorBuilder>(errorResult.Result);
+        }
+
         var ctor = new ClassConstructorBuilder()
             .WithChainCall(CreateImmutableBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
-            .AddStringCodeStatements
-            (
-                context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings))
-                    .Where(x => x.TypeName.FixTypeName().IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser)};")
-            );
+            .AddStringCodeStatements(immutableBuilderClassConstructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
 
         if (context.Context.Settings.ConstructorSettings.SetDefaultValues)
         {
@@ -74,7 +86,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
             context.Model.AddMethods(new ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
         }
 
-        return ctor;
+        return Result.Success(ctor);
     }
 
     private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)

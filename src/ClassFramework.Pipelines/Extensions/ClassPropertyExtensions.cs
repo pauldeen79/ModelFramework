@@ -41,22 +41,27 @@ public static class ClassPropertyExtensions
         return property.Name;
     }
 
-    public static string GetImmutableBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<string> GetImmutableBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));
 
-        return formattableStringParser
-            .Parse
-            (
-                property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, property)
-            )
-            .GetValueOrThrow()
+        var result = formattableStringParser.Parse
+        (
+            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+            context.Context.FormatProvider,
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property)
+        );
+
+        if (!result.IsSuccessful())
+        {
+            return result;
+        }
+
+        return Result.Success(result.Value!
             .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
             .GetCollectionInitializeStatement()
-            .GetCsharpFriendlyTypeName();
+            .GetCsharpFriendlyTypeName());
     }
 
     public static ClassProperty EnsureParentTypeFullName(this ClassProperty property, Class parentClass)

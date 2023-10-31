@@ -39,7 +39,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
         }
         else
         {
-            context.Model.Constructors.Add(CreateCopyConstructor(context));
+            var copyConstructorResult = CreateCopyConstructor(context);
+            if (!copyConstructorResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<ClassBuilder>(copyConstructorResult);
+            }
+
+            context.Model.Constructors.Add(copyConstructorResult.Value!);
         }
 
         return Result.Continue<ClassBuilder>();
@@ -48,8 +54,33 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddCopyConstructorFeatureBuilder(_formattableStringParser);
 
-    private ClassConstructorBuilder CreateCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
-        => new ClassConstructorBuilder()
+    private Result<ClassConstructorBuilder> CreateCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
+    {
+        var immutableBuilderInitializationCodeResults = context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings))
+            .Select(x => CreateImmutableBuilderInitializationCode(x, context))
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .ToArray();
+
+        var errorResult = Array.Find(immutableBuilderInitializationCodeResults, x => !x.IsSuccessful());
+        if (errorResult is not null)
+        {
+            return Result.FromExistingResult<ClassConstructorBuilder>(errorResult);
+        }
+
+        var immutableBuilderClassConstructorInitializerResults = context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
+            .Select(x => new { x.Name, Result = x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser) })
+            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
+            .ToArray();
+
+        var errorResult2 = Array.Find(immutableBuilderClassConstructorInitializerResults, x => !x.Result.IsSuccessful());
+        if (errorResult2 is not null)
+        {
+            return Result.FromExistingResult<ClassConstructorBuilder>(errorResult2.Result);
+        }
+
+        return Result.Success(new ClassConstructorBuilder()
             .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
@@ -65,20 +96,12 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
                     .WithName("source")
                     .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
             )
-            .AddStringCodeStatements
-            (
-                context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser)};")
-            )
-            .AddStringCodeStatements
-            (
-                context.Context.SourceModel.Properties
-                    .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings))
-                    .Select(x => $"{CreateImmutableBuilderInitializationCode(x, context)};")
-            );
+            .AddStringCodeStatements(immutableBuilderClassConstructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
+            .AddStringCodeStatements(immutableBuilderInitializationCodeResults.Select(x => $"{x.Value};"))
+        );
+    }
 
-    private string CreateImmutableBuilderInitializationCode(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
+    private Result<string> CreateImmutableBuilderInitializationCode(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
             property.Metadata.GetStringValue
@@ -90,7 +113,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             ),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property)
-        ).GetValueOrThrow();
+        );
 
     private static string CreateCollectionInitialization(PipelineBuilderSettings settings)
     {
