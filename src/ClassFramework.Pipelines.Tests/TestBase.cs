@@ -8,21 +8,23 @@ public abstract class TestBase
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
         parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
-              .Returns(x => Result.Success(x.ArgAt<string>(0)
-                .Replace("{Name}", CreateReplacement(x[2], y => y.Name, y => y.Name), StringComparison.Ordinal)
-                .Replace("{NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                .Replace("{NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                .Replace("{NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                .Replace("{Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
-                .Replace("{Class.Name}", CreateReplacement(x[2], y => y.Name, null), StringComparison.Ordinal)
-                .Replace("{Class.NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
-                .Replace("{Class.NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
-                .Replace("{Class.NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
-                .Replace("{Class.Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
-                .Replace("{Class.FullName}", CreateReplacement(x[2], y => y.GetFullName(), null), StringComparison.Ordinal)
-                .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
-                .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
-                .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)));
+              .Returns(x => x.ArgAt<string>(0) == "{Error}"
+                ? Result.Error<string>("Kaboom")
+                : Result.Success(x.ArgAt<string>(0)
+                    .Replace("{Name}", CreateReplacement(x[2], y => y.Name, y => y.Name), StringComparison.Ordinal)
+                    .Replace("{NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
+                    .Replace("{NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
+                    .Replace("{NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
+                    .Replace("{Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
+                    .Replace("{Class.Name}", CreateReplacement(x[2], y => y.Name, null), StringComparison.Ordinal)
+                    .Replace("{Class.NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
+                    .Replace("{Class.NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
+                    .Replace("{Class.NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
+                    .Replace("{Class.Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
+                    .Replace("{Class.FullName}", CreateReplacement(x[2], y => y.GetFullName(), null), StringComparison.Ordinal)
+                    .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
+                    .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
+                    .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)));
     }
 
     private static string CreateReplacement(

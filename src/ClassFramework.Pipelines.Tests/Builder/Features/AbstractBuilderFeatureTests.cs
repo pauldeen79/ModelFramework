@@ -55,5 +55,24 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             model.GenericTypeArgumentConstraints.Should().BeEmpty();
             model.Abstract.Should().BeFalse();
         }
+
+        [Fact]
+        public void Returns_Returns_Error_When_Parsing_NameFormatString_Is_Not_Successful()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(enableEntityInheritance: true, builderNameFormatString: "{Error}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
     }
 }

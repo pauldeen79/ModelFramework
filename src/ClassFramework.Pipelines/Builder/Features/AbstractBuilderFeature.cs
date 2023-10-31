@@ -28,10 +28,16 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderCont
 
         if (context.Context.IsBuilderForAbstractEntity)
         {
+            var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context);
+            if (!nameResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<ClassBuilder>(nameResult);
+            }
+
             context.Model
                 .AddGenericTypeArguments("TBuilder", "TEntity")
                 .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
-                .AddGenericTypeArgumentConstraints($"where TBuilder : {_formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow()}<TBuilder, TEntity>")
+                .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
                 .WithAbstract();
         }
 

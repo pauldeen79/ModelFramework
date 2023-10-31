@@ -26,8 +26,20 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.Name = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow();
-        context.Model.Namespace = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context).GetValueOrThrow();
+        var results = new[]
+        {
+            _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context),
+            _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context)
+        }.TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).ToArray();
+
+        if (Array.Exists(results, x => !x.IsSuccessful()))
+        {
+            // Error in formattable string parsing
+            return Result.FromExistingResult<ClassBuilder>(results.First(x => !x.IsSuccessful()));
+        }
+
+        context.Model.Name = results[0].Value!;
+        context.Model.Namespace = results[1].Value!;
 
         return Result.Continue<ClassBuilder>();
     }
