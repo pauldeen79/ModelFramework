@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Features;
 
-public class ValidatableObjectFeatureTests : TestBase<ValidatableObjectFeature>
+public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features.ValidatableObjectFeature>
 {
     public class Process : ValidatableObjectFeatureTests
     {

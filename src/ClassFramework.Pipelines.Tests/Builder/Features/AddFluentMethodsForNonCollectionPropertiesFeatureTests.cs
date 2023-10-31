@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Features;
 
-public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<AddFluentMethodsForNonCollectionPropertiesFeature>
+public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.AddFluentMethodsForNonCollectionPropertiesFeature>
 {
     public class Process : AddFluentMethodsForNonCollectionPropertiesFeatureTests
     {

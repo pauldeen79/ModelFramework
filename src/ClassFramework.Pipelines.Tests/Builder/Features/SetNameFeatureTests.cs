@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Features;
 
-public class SetNameFeatureTests : TestBase<SetNameFeature>
+public class SetNameFeatureTests : TestBase<Pipelines.Builder.Features.SetNameFeature>
 {
     public class Process : SetNameFeatureTests
     {

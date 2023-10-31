@@ -103,7 +103,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     }
 
     private static string CreateImmutableBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings, _ => "base(source)");
+        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => "base(source)");
 
     private static ClassConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()

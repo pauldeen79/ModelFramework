@@ -21,7 +21,8 @@ public abstract class TestBase
                 .Replace("{Class.Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
                 .Replace("{Class.FullName}", CreateReplacement(x[2], y => y.GetFullName(), null), StringComparison.Ordinal)
                 .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
-                .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)));
+                .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
+                .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)));
     }
 
     private static string CreateReplacement(
@@ -31,9 +32,15 @@ public abstract class TestBase
         => input switch
         {
             PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.SourceModel),
+            PipelineContext<ClassBuilder, EntityContext> classContext => typeBaseDelegate(classContext.Context.SourceModel),
             PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
+            PipelineContext<ClassPropertyBuilder, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
             PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
+            PipelineContext<ClassProperty, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
             ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null
+                ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel)
+                : classPropertyDelegate(parentChild.ChildContext),
+            ParentChildContext<EntityContext, ClassProperty> parentChild => classPropertyDelegate is null
                 ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel)
                 : classPropertyDelegate(parentChild.ChildContext),
             _ => throw new NotSupportedException($"Context of type {input?.GetType()} is not supported")
@@ -59,8 +66,8 @@ public abstract class TestBase
             .AddProperties(
                 new[]
                 {
-                        new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasSetter(false),
-                        new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
+                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasSetter(false),
+                    new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
                 }.Where(_ => addProperties)
             )
             .Build();
@@ -100,11 +107,14 @@ public abstract class TestBase
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
-        Class? baseClass = null)
+        Class? baseClass = null,
+        string entityNamespaceFormatString = "{Namespace}",
+        string entityNameFormatString = "{Class.Name}{EntityNameSuffix}")
         => new Pipelines.Entity.PipelineBuilderSettings(
             allowGenerationWithoutProperties: allowGenerationWithoutProperties,
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
-            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks)
+            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks),
+            nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString)
         );
 }
 

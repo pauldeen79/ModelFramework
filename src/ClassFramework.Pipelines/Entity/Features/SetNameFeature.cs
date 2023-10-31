@@ -27,12 +27,6 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, EntityContext>
         context = context.IsNotNull(nameof(context));
 
         context.Model.Name = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context).GetValueOrThrow();
-        
-        if (context.Context.Settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Shared)
-        {
-            context.Model.Name += "Base";
-        }
-
         context.Model.Namespace = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context).GetValueOrThrow();
 
         return Result.Continue<ClassBuilder>();

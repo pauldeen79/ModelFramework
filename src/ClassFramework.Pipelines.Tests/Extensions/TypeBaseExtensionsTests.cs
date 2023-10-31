@@ -153,7 +153,7 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetCustomValueForInheritedClass(new Pipelines.Builder.PipelineBuilderSettings(), customValue: null!))
+            sut.Invoking(x => x.GetCustomValueForInheritedClass(new Pipelines.Entity.PipelineBuilderSettings(), customValue: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("customValue");
         }
 
@@ -162,7 +162,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: false)));
+            var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: false));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -176,7 +176,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new StructBuilder().WithName("MyClass").Build();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -190,7 +190,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");
@@ -204,7 +204,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(classSettings: new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true)));
+            var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true));
 
             // Act
             var result = sut.GetCustomValueForInheritedClass(settings, _ => "CustomValue");

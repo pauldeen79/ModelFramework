@@ -26,7 +26,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.BaseClass = GetImmutableBuilderClassBaseClass(context.Context.SourceModel, context);
+        context.Model.BaseClass = GetBuilderBaseClass(context.Context.SourceModel, context);
 
         return Result.Continue<ClassBuilder>();
     }
@@ -34,7 +34,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new BaseClassFeatureBuilder(_formattableStringParser);
 
-    private string GetImmutableBuilderClassBaseClass(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
+    private string GetBuilderBaseClass(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -74,7 +74,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 
         return instance.GetCustomValueForInheritedClass
         (
-            context.Context.Settings,
+            context.Context.Settings.ClassSettings,
             baseClassContainer => context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
                 ? $"{GetBaseClassName(context, baseClassContainer)}{genericTypeArgumentsString}"
                 : $"{GetBaseClassName(context, baseClassContainer)}<{builderName}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>"

@@ -78,7 +78,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     }
 
     private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings, _ => "base()");
+        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => "base()");
 
     private static string GenerateDefaultValueStatement(ClassProperty property, BuilderContext context)
         => $"{property.Name} = {property.GetDefaultValue(context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.FormatProvider.ToCultureInfo())};";

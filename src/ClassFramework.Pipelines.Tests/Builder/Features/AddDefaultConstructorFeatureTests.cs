@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Features;
 
-public class AddDefaultConstructorFeatureTests : TestBase<AddDefaultConstructorFeature>
+public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Features.AddDefaultConstructorFeature>
 {
     public class Process : AddDefaultConstructorFeatureTests
     {

@@ -37,13 +37,13 @@ public static class TypeBaseExtensions
 
     public static string GetCustomValueForInheritedClass(
         this TypeBase instance,
-        Builder.PipelineBuilderSettings settings,
+        Entity.PipelineBuilderSettings settings,
         Func<IBaseClassContainer, string> customValue)
     {
         settings = settings.IsNotNull(nameof(settings));
         customValue = customValue.IsNotNull(nameof(customValue));
 
-        if (!settings.ClassSettings.InheritanceSettings.EnableInheritance)
+        if (!settings.InheritanceSettings.EnableInheritance)
         {
             // Inheritance is not enabled
             return string.Empty;
