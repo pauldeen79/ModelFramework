@@ -46,19 +46,19 @@ public static class ClassPropertyExtensions
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));
 
-        var result = formattableStringParser.Parse
+        var builderArgumentTypeResult = formattableStringParser.Parse
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property)
         );
 
-        if (!result.IsSuccessful())
+        if (!builderArgumentTypeResult.IsSuccessful())
         {
-            return result;
+            return builderArgumentTypeResult;
         }
 
-        return Result.Success(result.Value!
+        return Result.Success(builderArgumentTypeResult.Value!
             .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
             .GetCollectionInitializeStatement()
             .GetCsharpFriendlyTypeName());

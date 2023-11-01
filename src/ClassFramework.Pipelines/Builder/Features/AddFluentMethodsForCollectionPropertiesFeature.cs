@@ -133,35 +133,35 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
     {
         if (context.Context.Settings.GenerationSettings.AddNullChecks)
         {
-            var result = _formattableStringParser.Parse
+            var argumentNullCheckResult = _formattableStringParser.Parse
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
                 new ParentChildContext<BuilderContext, ClassProperty>(context, property)
             );
-            yield return result;
+            yield return argumentNullCheckResult;
             
             if (context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
-                var result2 = property.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser);
-                if (!result.IsSuccessful())
+                var constructorInitializerResult = property.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser);
+                if (!argumentNullCheckResult.IsSuccessful())
                 {
-                    yield return result2;
+                    yield return constructorInitializerResult;
                 }
                 else
                 {
-                    yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {result2.Value};");
+                    yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {constructorInitializerResult.Value};");
                 }
             }
         }
 
-        var result3 = _formattableStringParser.Parse
+        var builderAddExpressionResult = _formattableStringParser.Parse
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateImmutableBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property)
         );
-        yield return result3;
+        yield return builderAddExpressionResult;
 
         yield return Result.Success($"return {GetReturnValue(context.Context)};");
     }

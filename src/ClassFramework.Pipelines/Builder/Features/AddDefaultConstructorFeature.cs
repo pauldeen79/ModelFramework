@@ -34,13 +34,13 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         }
         else
         {
-            var result = CreateDefaultConstructor(context);
-            if (!result.IsSuccessful())
+            var defaultConstructorResult = CreateDefaultConstructor(context);
+            if (!defaultConstructorResult.IsSuccessful())
             {
-                return Result.FromExistingResult<ClassBuilder>(result);
+                return Result.FromExistingResult<ClassBuilder>(defaultConstructorResult);
             }
 
-            context.Model.Constructors.Add(result.Value!);
+            context.Model.Constructors.Add(defaultConstructorResult.Value!);
         }
 
         return Result.Continue<ClassBuilder>();

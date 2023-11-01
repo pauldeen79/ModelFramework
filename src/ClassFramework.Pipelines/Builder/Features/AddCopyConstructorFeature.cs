@@ -62,10 +62,10 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
-        var errorResult = Array.Find(immutableBuilderInitializationCodeResults, x => !x.IsSuccessful());
-        if (errorResult is not null)
+        var initializationCodeErrorResult = Array.Find(immutableBuilderInitializationCodeResults, x => !x.IsSuccessful());
+        if (initializationCodeErrorResult is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(errorResult);
+            return Result.FromExistingResult<ClassConstructorBuilder>(initializationCodeErrorResult);
         }
 
         var immutableBuilderClassConstructorInitializerResults = context.Context.SourceModel.Properties
@@ -74,10 +74,10 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 
-        var errorResult2 = Array.Find(immutableBuilderClassConstructorInitializerResults, x => !x.Result.IsSuccessful());
-        if (errorResult2 is not null)
+        var initializerErrorResult = Array.Find(immutableBuilderClassConstructorInitializerResults, x => !x.Result.IsSuccessful());
+        if (initializerErrorResult is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(errorResult2.Result);
+            return Result.FromExistingResult<ClassConstructorBuilder>(initializerErrorResult.Result);
         }
 
         var chainCallResult = CreateImmutableBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings);
