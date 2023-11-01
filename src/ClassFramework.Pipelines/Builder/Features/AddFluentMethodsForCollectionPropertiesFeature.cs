@@ -148,10 +148,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
                 {
                     yield return constructorInitializerResult;
                 }
-                else
-                {
-                    yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {constructorInitializerResult.Value};");
-                }
+
+                yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {constructorInitializerResult.Value};");
             }
         }
 

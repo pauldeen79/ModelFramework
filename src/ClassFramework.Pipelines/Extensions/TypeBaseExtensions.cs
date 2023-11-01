@@ -105,7 +105,7 @@ public static class TypeBaseExtensions
             .Where(x => x is not null);
     }
 
-    public static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(
+    public static IEnumerable<Result<ClassFieldBuilder>> GetImmutableBuilderClassFields(
         this TypeBase instance,
         PipelineContext<ClassBuilder, BuilderContext> context,
         IFormattableStringParser formattableStringParser)
@@ -122,19 +122,24 @@ public static class TypeBaseExtensions
         
         foreach (var property in instance.Properties.Where(x => instance.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)))
         {
-            yield return new ClassFieldBuilder()
+            var builderArgumentTypeResult = formattableStringParser.Parse
+            (
+                property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                context.Context.FormatProvider,
+                context
+            );
+
+            if (!builderArgumentTypeResult.IsSuccessful())
+            {
+                yield return Result.FromExistingResult<ClassFieldBuilder>(builderArgumentTypeResult);
+                yield break;
+            }
+
+            yield return Result.Success(new ClassFieldBuilder()
                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                .WithTypeName
-                (
-                    formattableStringParser.Parse
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
-                        context.Context.FormatProvider,
-                        context
-                    ).GetValueOrThrow().FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-                )
+                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName))
                 .WithIsNullable(property.IsNullable)
-                .WithIsValueType(property.IsValueType);
+                .WithIsValueType(property.IsValueType));
         }
     }
 

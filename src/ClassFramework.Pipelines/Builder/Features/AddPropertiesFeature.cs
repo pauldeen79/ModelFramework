@@ -52,7 +52,17 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             );
         }
 
-        context.Model.AddFields(context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser));
+        var classFieldsResults = context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser)
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .ToArray();
+
+        var classFieldResultError = Array.Find(classFieldsResults, x => !x.IsSuccessful());
+        if (classFieldResultError is not null)
+        {
+            return Result.FromExistingResult<ClassBuilder>(classFieldResultError);
+        }
+
+        context.Model.AddFields(classFieldsResults.Select(x => x.Value!));
 
         return Result.Continue<ClassBuilder>();
     }

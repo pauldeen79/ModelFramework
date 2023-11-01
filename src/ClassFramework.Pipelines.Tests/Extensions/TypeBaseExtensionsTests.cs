@@ -415,7 +415,7 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetImmutableBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEmpty();
+            result.Select(x => x.Value!.Name).Should().BeEmpty();
         }
 
         [Fact]
@@ -443,7 +443,7 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetImmutableBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEmpty();
+            result.Select(x => x.Value!.Name).Should().BeEmpty();
         }
 
         [Fact]
@@ -471,7 +471,7 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetImmutableBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEmpty();
+            result.Select(x => x.Value!.Name).Should().BeEmpty();
         }
 
         [Fact]
@@ -500,9 +500,9 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetImmutableBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
-            result.Select(x => x.TypeName).Should().AllBe(typeof(int).FullName);
-            result.Select(x => x.IsValueType).Should().AllBeEquivalentTo(true);
+            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
+            result.Select(x => x.Value!.TypeName).Should().AllBe(typeof(int).FullName);
+            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(true);
         }
 
         [Fact]
@@ -531,9 +531,9 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetImmutableBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
-            result.Select(x => x.TypeName).Should().BeEquivalentTo("MyCustomType", typeof(int).FullName, typeof(int).FullName);
-            result.Select(x => x.IsValueType).Should().AllBeEquivalentTo(true);
+            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
+            result.Select(x => x.Value!.TypeName).Should().BeEquivalentTo("MyCustomType", typeof(int).FullName, typeof(int).FullName);
+            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(true);
         }
     }
 
