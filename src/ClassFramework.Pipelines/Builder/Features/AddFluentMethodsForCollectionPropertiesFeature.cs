@@ -117,10 +117,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             foreach (var statement in GetCodeStatementsForArrayOverload(context, property))
             {
                 yield return statement;
-                if (!statement.IsSuccessful())
-                {
-                    yield break;
-                }
             }
 
             yield break;
