@@ -38,9 +38,7 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
         }
 
         context.Model.AddMethods(new ClassMethodBuilder()
-            .WithName(context.Context.IsBuilderForAbstractEntity || context.Context.IsBuilderForOverrideEntity
-                ? context.Context.Settings.NameSettings.BuildTypedMethodName
-                : context.Context.Settings.NameSettings.BuildMethodName)
+            .WithName(GetName(context))
             .WithAbstract(context.Context.IsBuilderForAbstractEntity)
             .WithOverride(context.Context.IsBuilderForOverrideEntity)
             .WithTypeName($"{GetImmutableBuilderBuildMethodReturnType(context.Context)}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
@@ -55,10 +53,11 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
 
         if (context.Context.IsBuilderForAbstractEntity)
         {
+            var baseClass = context.Context.Settings.InheritanceSettings.BaseClass ?? context.Context.SourceModel;
             context.Model.AddMethods(new ClassMethodBuilder()
                 .WithName(context.Context.Settings.NameSettings.BuildMethodName)
                 .WithOverride()
-                .WithTypeName((context.Context.Settings.InheritanceSettings.BaseClass ?? context.Context.SourceModel).GetFullName() + (context.Context.Settings.InheritanceSettings.BaseClass ?? context.Context.SourceModel).GetGenericTypeArgumentsString())
+                .WithTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
                 .AddStringCodeStatements($"return {context.Context.Settings.NameSettings.BuildTypedMethodName}();"));
         }
 
@@ -67,6 +66,11 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
 
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddBuildMethodFeatureBuilder(_formattableStringParser);
+
+    private static string GetName(PipelineContext<ClassBuilder, BuilderContext> context)
+        => context.Context.IsBuilderForAbstractEntity || context.Context.IsBuilderForOverrideEntity
+            ? context.Context.Settings.NameSettings.BuildTypedMethodName
+            : context.Context.Settings.NameSettings.BuildMethodName;
 
     private static string GetImmutableBuilderBuildMethodReturnType(BuilderContext context)
         => context.IsBuilderForAbstractEntity

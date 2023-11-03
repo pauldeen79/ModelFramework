@@ -80,14 +80,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             return Result.FromExistingResult<ClassConstructorBuilder>(initializerErrorResult.Result);
         }
 
-        var chainCallResult = CreateImmutableBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings);
-        if (!chainCallResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<ClassConstructorBuilder>(chainCallResult);
-        }
-
         return Result.Success(new ClassConstructorBuilder()
-            .WithChainCall(chainCallResult.Value!)
+            .WithChainCall(CreateImmutableBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
@@ -131,8 +125,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
         return "{NullCheck.Source}{Name}.AddRange(source.{Name})";
     }
 
-    private static Result<string> CreateImmutableBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => Result.Success("base(source)"));
+    private static string CreateImmutableBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
+        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => Result.Success("base(source)")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
 
     private static ClassConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()

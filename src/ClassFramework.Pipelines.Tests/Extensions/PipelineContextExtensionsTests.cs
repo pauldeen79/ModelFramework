@@ -5,7 +5,7 @@ public class PipelineContextExtensionsTests : TestBase
     public class CreateEntityInstanciation : PipelineContextExtensionsTests
     {
         [Fact]
-        public void Throws_On_Abstract_Class()
+        public void Returns_Invalid_On_Abstract_Class()
         {
             // Arrange
             var model = new ClassBuilder();
@@ -15,13 +15,16 @@ public class PipelineContextExtensionsTests : TestBase
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
-            // Act & Assert
-            context.Invoking(x => x.CreateEntityInstanciation(formattableStringParser, string.Empty))
-                   .Should().Throw<InvalidOperationException>().WithMessage("Cannot create an instance of an abstract class");
+            // Act
+            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Cannot create an instance of an abstract class");
         }
 
         [Fact]
-        public void Throws_On_Interface()
+        public void Rerturns_Invalid_On_Interface()
         {
             // Arrange
             var model = new ClassBuilder();
@@ -31,9 +34,12 @@ public class PipelineContextExtensionsTests : TestBase
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
-            // Act & Assert
-            context.Invoking(x => x.CreateEntityInstanciation(formattableStringParser, string.Empty))
-                   .Should().Throw<InvalidOperationException>().WithMessage("Cannot create an instance of a type that does not have constructors");
+            // Act
+            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("Cannot create an instance of a type that does not have constructors");
         }
 
         [Fact]
@@ -51,6 +57,7 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
 
             // Assert
+            result.IsSuccessful().Should().BeTrue();
             result.Value.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
         }
 
@@ -69,6 +76,7 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
 
             // Assert
+            result.IsSuccessful().Should().BeTrue();
             result.Value.Should().Be("new MyNamespace.MyClass(MyProperty)");
         }
 
@@ -87,7 +95,32 @@ public class PipelineContextExtensionsTests : TestBase
             var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
 
             // Assert
+            result.IsSuccessful().Should().BeTrue();
             result.Value.Should().Be("new MyNamespace.MyClass { MyProperty = MyProperty }");
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_For_Class_With_CustomEntityInstanciation_Metadata()
+        {
+            // Arrange
+            var model = new ClassBuilder();
+            var sourceModel = new ClassBuilder()
+                .WithNamespace("MyNamespace")
+                .WithName("MyClass")
+                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)"))
+                .Build();
+            InitializeParser();
+            var builderContext = new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, builderContext);
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act
+            var result = context.CreateEntityInstanciation(formattableStringParser, string.Empty);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            result.Value.Should().Be("Factory.DoSomething(this)");
         }
     }
 }

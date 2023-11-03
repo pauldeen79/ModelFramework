@@ -137,6 +137,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
                 "return this;"
             );
         }
+
         [Fact]
         public void Uses_CustomBuilderArgumentType_When_Present()
         {
@@ -242,6 +243,26 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
         }
     }
 }

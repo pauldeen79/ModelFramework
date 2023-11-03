@@ -46,4 +46,9 @@ public static class MetadataNames
     /// Metadata name for defining a custom initialization on a fluent (Add) method in a builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderAddExpression = "ClassFramework.Builder.AddExpression";
+
+    /// <summary>
+    /// Metadata name for defining a custom entity instanciation on a builder. Note that the value will be converted to string. Example: new MyType { Property1 = Property1 }
+    /// </summary>
+    public const string CustomBuilderEntityInstanciation = "ClassFramework.Builder.EntityInstanciation";
 }

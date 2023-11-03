@@ -19,7 +19,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
         public void Does_Not_Add_Methods_When_EnableBuilderInheritance_And_IsAbstract_Are_Both_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
+            var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(enableBuilderInheritance: true, isAbstract: true);
@@ -37,7 +37,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
         public void Adds_Build_Method_When_IsBuilderForAbstractEntity_Is_False()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
@@ -55,7 +55,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "return new SomeNamespace.SomeClass { MyProperty = MyProperty };"
+                "return new SomeNamespace.SomeClass { Property1 = Property1, Property2 = Property2, Property3 = Property3 };"
             );
         }
 
@@ -63,7 +63,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
         public void Adds_Build_And_BuildTyped_Methods_When_IsBuilderForAbstractEntity_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = CreateModel();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
@@ -92,6 +92,25 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             buildTypedMethod!.Abstract.Should().BeTrue();
             buildTypedMethod.TypeName.Should().Be("TEntity");
             buildTypedMethod.CodeStatements.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_EntityInstanciation_Is_Not_Successful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
         }
     }
 }

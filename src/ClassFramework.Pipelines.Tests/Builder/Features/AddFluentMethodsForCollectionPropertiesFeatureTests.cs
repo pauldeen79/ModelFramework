@@ -14,7 +14,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             sut.Invoking(x => x.Process(context: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
-        
+
         [Fact]
         public void Does_Not_Add_Method_When_AddMethodNameFormatString_Is_Empty()
         {
@@ -231,6 +231,105 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
                 "Property3.AddRange(property3);",
                 "return (TBuilder)this;"
             );
+        }
+
+        [Theory]
+        [InlineData(true, ArgumentValidationType.Shared)]
+        [InlineData(false, ArgumentValidationType.Shared)]
+        [InlineData(true, ArgumentValidationType.None)]
+        [InlineData(false, ArgumentValidationType.None)]
+        public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Succesful(bool addNullChecks, ArgumentValidationType validateArguments)
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(addNullChecks: addNullChecks, validateArguments: validateArguments);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(builderNameFormatString: "{Error}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_AddMethodNameFormatString_Is_Not_Succesful()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(addMethodNameFormatString: "{Error}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(addNullChecks: true);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_CustomBuilderArgumentNullCheckExpression_Is_Not_Succesful_Using_Enumerable_CollectionType()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentNullCheckExpression).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
         }
     }
 }

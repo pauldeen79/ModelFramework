@@ -4,16 +4,24 @@ public static class PipelineContextExtensions
 {
     public static Result<string> CreateEntityInstanciation(this PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
     {
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        var customEntityInstanciation = context.Context.SourceModel.Metadata.GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
+        if (!string.IsNullOrEmpty(customEntityInstanciation))
+        {
+            return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
+        }
+
         var constructorsContainer = context.Context.SourceModel as IConstructorsContainer;
 
         if (constructorsContainer is null)
         {
-            throw new InvalidOperationException("Cannot create an instance of a type that does not have constructors");
+            return Result.Invalid<string>("Cannot create an instance of a type that does not have constructors");
         }
 
         if (context.Context.SourceModel is Class cls && cls.Abstract)
         {
-            throw new InvalidOperationException("Cannot create an instance of an abstract class");
+            return Result.Invalid<string>("Cannot create an instance of an abstract class");
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
