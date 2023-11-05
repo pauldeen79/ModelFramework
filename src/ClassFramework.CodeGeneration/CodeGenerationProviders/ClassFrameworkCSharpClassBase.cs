@@ -70,6 +70,15 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             }
         }
 
+        if (!string.IsNullOrEmpty(GetEntityClassName(typeBaseBuilder.GetFullName())))
+        {
+            typeBaseBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                .WithName("ToBuilder")
+                .WithAbstract()
+                .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{typeBaseBuilder.Name}Builder")
+            );
+        }
+
         sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
         if (sourceModel is null)
         {

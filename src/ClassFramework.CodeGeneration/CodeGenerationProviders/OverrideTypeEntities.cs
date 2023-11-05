@@ -10,5 +10,16 @@ public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
     protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), Constants.Namespaces.Domain);
 
     public override object CreateModel()
-        => GetImmutableClasses(GetOverrideModels(typeof(ITypeBase)), $"{Constants.Namespaces.Domain}.Types");
+        => GetImmutableClasses(GetOverrideModels(typeof(ITypeBase)), $"{Constants.Namespaces.Domain}.Types")
+            .OfType<ModelFramework.Objects.Contracts.IClass>()
+            .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
+                .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                    .WithName("ToBuilder")
+                    .WithOverride()
+                    .WithTypeName($"{Constants.Namespaces.DomainBuilders}.TypeBaseBuilder")
+                    .AddLiteralCodeStatements($"return new {Constants.Namespaces.DomainBuilders}.Types.{x.Name}Builder(this);")
+                )
+                .BuildTyped()
+            )
+            .ToArray();
 }
