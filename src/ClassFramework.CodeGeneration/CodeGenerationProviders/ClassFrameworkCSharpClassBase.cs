@@ -49,6 +49,27 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
+        foreach (var property in typeBaseBuilder.Properties)
+        {
+            if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName)))
+            {
+                var value = property.IsNullable
+                    ? "if (source.{0} != null) {0} = source.{0}.ToBuilder()"
+                    : "{0} = source.{0}.ToBuilder()";
+
+                property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
+            }
+
+            if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName.GetGenericArguments())))
+            {
+                var value = property.IsNullable
+                    ? "if (source.{0} != null) {0}.AddRange(source.{0}.Select(x => x.ToBuilder()))"
+                    : "{0}.AddRange(source.{0}.Select(x => x.ToBuilder()))";
+
+                property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
+            }
+        }
+
         sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
         if (sourceModel is null)
         {
