@@ -52,17 +52,11 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             );
         }
 
-        var classFieldsResults = context.Context.SourceModel.GetImmutableBuilderClassFields(context, _formattableStringParser)
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
-            .ToArray();
-
-        var classFieldResultError = Array.Find(classFieldsResults, x => !x.IsSuccessful());
-        if (classFieldResultError is not null)
-        {
-            return Result.FromExistingResult<ClassBuilder>(classFieldResultError);
-        }
-
-        context.Model.AddFields(classFieldsResults.Select(x => x.Value!));
+        // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
+        // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
+        context.Model.AddFields(context.Context.SourceModel
+            .GetImmutableBuilderClassFields(context, _formattableStringParser)
+            .Select(x => x.GetValueOrThrow()));
 
         return Result.Continue<ClassBuilder>();
     }

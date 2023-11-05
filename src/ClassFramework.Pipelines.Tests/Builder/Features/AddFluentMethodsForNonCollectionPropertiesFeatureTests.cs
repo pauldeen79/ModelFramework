@@ -139,6 +139,40 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         }
 
         [Fact]
+        public void Adds_Method_For_BuilderForAbstractEntity()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableEntityInheritance: true,
+                setMethodNameFormatString: "With{Name}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().HaveCount(2);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("TBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Property1 = property1;",
+                "return (TBuilder)this;",
+                "Property2 = property2;",
+                "return (TBuilder)this;"
+            );
+        }
+
+        [Fact]
         public void Uses_CustomBuilderArgumentType_When_Present()
         {
             // Arrange
@@ -258,7 +292,6 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
 
             // Act
             var result = sut.Process(context);
-
 
             // Assert
             result.Status.Should().Be(ResultStatus.Error);

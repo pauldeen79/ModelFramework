@@ -148,5 +148,28 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             result.IsSuccessful().Should().BeTrue();
             model.BaseClass.Should().Be("MyBaseClassBuilder<SomeClassBuilder, SomeNamespace.SomeClass>");
         }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_BuilderNameFormatString_Is_Not_Succesful()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: true,
+                baseClass: null,
+                enableEntityInheritance: true,
+                builderNameFormatString: "{Error}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
     }
 }
