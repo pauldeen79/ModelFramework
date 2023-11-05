@@ -119,5 +119,29 @@ public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features
             model.Interfaces.Should().BeEmpty();
             model.Methods.Should().BeEmpty();
         }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_CustomBuilderEntityInstanciation_Is_Not_Succesful()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("{Error}"))
+                .Build();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(validateArguments: ArgumentValidationType.Shared);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
     }
 }
