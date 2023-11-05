@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractEntities : ClassFrameworkCSharpClassBase
 {
-    public override string Path => Constants.Namespaces.Domain;
+    public override string Path => Constants.Paths.Domain;
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;

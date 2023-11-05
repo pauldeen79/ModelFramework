@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Namespaces.Domain}/Types";
+    public override string Path => $"{Constants.Paths.Domain}/Types";
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;

@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class TypeBaseBuilderFactory : ClassFrameworkCSharpClassBase
 {
-    public override string Path => Constants.Namespaces.DomainBuilders;
+    public override string Path => Constants.Paths.DomainBuilders;
 
     public override object CreateModel()
         => CreateBuilderFactories(

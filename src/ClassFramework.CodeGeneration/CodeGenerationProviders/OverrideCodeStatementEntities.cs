@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class OverrideCodeStatementEntities : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Namespaces.Domain}/CodeStatements";
+    public override string Path => $"{Constants.Paths.Domain}/CodeStatements";
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;

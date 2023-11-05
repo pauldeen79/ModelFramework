@@ -3,7 +3,7 @@
 [ExcludeFromCodeCoverage]
 public class AbstractionsInterfaces : ClassFrameworkCSharpClassBase
 {
-    public override string Path => $"{Constants.Namespaces.Domain}/Abstractions";
+    public override string Path => $"{Constants.Paths.Domain}/Abstractions";
 
     public override object CreateModel()
         => GetType().Assembly.GetTypes()
