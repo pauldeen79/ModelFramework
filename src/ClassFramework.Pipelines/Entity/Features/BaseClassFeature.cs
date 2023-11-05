@@ -12,13 +12,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        var baseClassResult = GetEntityBaseClass(context.Context.SourceModel, context);
-        if (!baseClassResult.IsSuccessful())
-        {
-            return Result.FromExistingResult<ClassBuilder>(baseClassResult);
-        }
-
-        context.Model.BaseClass = baseClassResult.Value!;
+        context.Model.BaseClass = GetEntityBaseClass(context.Context.SourceModel, context);
 
         return Result.Continue<ClassBuilder>();
     }
@@ -26,8 +20,8 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, EntityContext>
     public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
         => new BaseClassFeatureBuilder();
 
-    private Result<string> GetEntityBaseClass(TypeBase instance, PipelineContext<ClassBuilder, EntityContext> context)
+    private string GetEntityBaseClass(TypeBase instance, PipelineContext<ClassBuilder, EntityContext> context)
         => context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
-            ? Result.Success(context.Context.Settings.InheritanceSettings.BaseClass.GetFullName())
-            : instance.GetCustomValueForInheritedClass(context.Context.Settings, cls => Result.Success(cls.BaseClass!));
+            ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()
+            : instance.GetCustomValueForInheritedClass(context.Context.Settings, cls => Result.Success(cls.BaseClass!)).GetValueOrThrow(); // we're always returning Success here, so we can shortcut the validation of the result with a GetValueOrThrow.
 }
