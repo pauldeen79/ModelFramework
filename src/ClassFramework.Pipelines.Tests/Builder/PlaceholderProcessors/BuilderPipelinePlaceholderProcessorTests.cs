@@ -8,6 +8,17 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
         [Fact]
+        public void Throws_On_Null_FormattableStringParser()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.Process("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+        }
+
+        [Fact]
         public void Returns_Continue_When_Context_Is_Not_ParentChildContext()
         {
             // Arrange
@@ -41,13 +52,32 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         [InlineData("NullCheck.Source", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
         [InlineData("NullCheck.Argument", "if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));")] // null checks are enabled in this unit test
         [InlineData("BuildersNamespace", "MyNamespace.Builders")]
-        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext(string value, string expectedValue)
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_With_NullChecks_Enabled(string value, string expectedValue)
         {
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
             var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: true)), CultureInfo.InvariantCulture)), CreatePropertyModel());
+
+            // Act
+            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(expectedValue);
+        }
+
+        [Theory]
+        [InlineData("NullCheck.Source", "")]
+        [InlineData("NullCheck.Argument", "")]
+        public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_Without_NullChecks(string value, string expectedValue)
+        {
+            // Arrange
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
+            var sut = CreateSut();
+            var context = new ParentChildContext<BuilderContext, ClassProperty>(new PipelineContext<ClassBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: false)), CultureInfo.InvariantCulture)), CreatePropertyModel());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
