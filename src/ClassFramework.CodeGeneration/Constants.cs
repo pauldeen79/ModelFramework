@@ -14,6 +14,6 @@ internal static class Constants
     internal static class Paths
     {
         internal const string Domain = "ClassFramework.Domain";
-        internal const string DomainBuilders = "ClassFramework.Domain.Builders";
+        internal const string DomainBuilders = "ClassFramework.Domain/Builders";
     }
 }
