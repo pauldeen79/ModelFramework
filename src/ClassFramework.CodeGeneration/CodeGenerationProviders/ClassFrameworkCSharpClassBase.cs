@@ -22,10 +22,10 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override void Visit<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
     {
         Guard.IsNotNull(typeBaseBuilder);
-        
+
         Type? sourceModel = null;
         Type[] interfaces;
-        
+
         if (typeBaseBuilder.Name.EndsWith(BuilderName))
         {
             if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder)
@@ -49,6 +49,27 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
+        ConvertBuilderFactoriesToToBuilderMethod(typeBaseBuilder);
+
+        sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
+        if (sourceModel is null)
+        {
+            return;
+        }
+
+        interfaces = sourceModel.GetInterfaces();
+        foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
+        {
+            typeBaseBuilder.AddInterfaces(i.FullName!
+                .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)
+                .Replace($"{CodeGenerationRootNamespace}.Models.", $"{RootNamespace}.", StringComparison.Ordinal));
+        }
+    }
+
+    private void ConvertBuilderFactoriesToToBuilderMethod<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
         foreach (var property in typeBaseBuilder.Properties)
         {
             if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName)))
@@ -77,20 +98,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 .WithAbstract()
                 .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{typeBaseBuilder.Name}Builder")
             );
-        }
-
-        sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
-        if (sourceModel is null)
-        {
-            return;
-        }
-
-        interfaces = sourceModel.GetInterfaces();
-        foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
-        {
-            typeBaseBuilder.AddInterfaces(i.FullName!
-                .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)
-                .Replace($"{CodeGenerationRootNamespace}.Models.", $"{RootNamespace}.", StringComparison.Ordinal));
         }
     }
 }
