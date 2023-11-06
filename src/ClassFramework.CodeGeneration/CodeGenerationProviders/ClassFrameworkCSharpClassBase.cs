@@ -75,7 +75,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName)))
             {
                 var value = property.IsNullable
-                    ? "if (source.{0} != null) {0} = source.{0}.ToBuilder()"
+                    ? "if (source.{0} is not null) {0} = source.{0}.ToBuilder()"
                     : "{0} = source.{0}.ToBuilder()";
 
                 property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
@@ -84,7 +84,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName.GetGenericArguments())))
             {
                 var value = property.IsNullable
-                    ? "if (source.{0} != null) {0}.AddRange(source.{0}.Select(x => x.ToBuilder()))"
+                    ? "if (source.{0} is not null) {0}.AddRange(source.{0}.Select(x => x.ToBuilder()))"
                     : "{0}.AddRange(source.{0}.Select(x => x.ToBuilder()))";
 
                 property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
