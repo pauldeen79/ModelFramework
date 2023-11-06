@@ -171,7 +171,7 @@ public class ClassPropertyExtensionsTests : TestBase
         }
     }
 
-    public class GetImmutableBuilderClassConstructorInitializer : ClassPropertyExtensionsTests
+    public class GetBuilderClassConstructorInitializer : ClassPropertyExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -181,7 +181,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetImmutableBuilderClassConstructorInitializer(context: null!, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context: null!, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -193,7 +193,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
-            sut.Invoking(x => x.GetImmutableBuilderClassConstructorInitializer(context, formattableStringParser: null!))
+            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
     }

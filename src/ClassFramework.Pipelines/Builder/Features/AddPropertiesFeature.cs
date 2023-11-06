@@ -31,7 +31,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             return Result.Continue<ClassBuilder>();
         }
 
-        foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)))
+        foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
             var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property));
 
@@ -47,15 +47,15 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes.Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
-                .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, context.Context))
-                .AddSetterCodeStatements(CreateImmutableBuilderPropertySetterStatements(property, context.Context))
+                .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
+                .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
             );
         }
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
         context.Model.AddFields(context.Context.SourceModel
-            .GetImmutableBuilderClassFields(context, _formattableStringParser)
+            .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 
         return Result.Continue<ClassBuilder>();
@@ -64,7 +64,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateImmutableBuilderPropertyGetterStatements(
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
         ClassProperty property,
         BuilderContext context)
     {
@@ -74,7 +74,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         }
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateImmutableBuilderPropertySetterStatements(
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
         ClassProperty property,
         BuilderContext context)
     {

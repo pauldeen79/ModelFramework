@@ -41,7 +41,7 @@ public static class ClassPropertyExtensions
         return property.Name;
     }
 
-    public static Result<string> GetImmutableBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<string> GetBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));

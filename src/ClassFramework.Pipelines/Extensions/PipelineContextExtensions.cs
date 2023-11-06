@@ -25,8 +25,8 @@ public static class PipelineContextExtensions
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
-        var openSign = GetImmutableBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
-        var closeSign = GetImmutableBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
+        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
+        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
 
         var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
 
@@ -40,7 +40,7 @@ public static class PipelineContextExtensions
 
     private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
-        var properties = context.Context.SourceModel.GetImmutableBuilderConstructorProperties(context.Context);
+        var properties = context.Context.SourceModel.GetBuilderConstructorProperties(context.Context);
 
         var defaultValueDelegate = hasPublicParameterlessConstructor
             ? new Func<ClassProperty, string>(p => "{Name} = {Name}")
@@ -65,12 +65,12 @@ public static class PipelineContextExtensions
         return Result.Success(string.Join(", ", results.Select(x => x.Value)));
     }
 
-    private static string GetImmutableBuilderPocoCloseSign(bool poco)
+    private static string GetBuilderPocoCloseSign(bool poco)
         => poco
             ? " }"
             : ")";
 
-    private static string GetImmutableBuilderPocoOpenSign(bool poco)
+    private static string GetBuilderPocoOpenSign(bool poco)
         => poco
             ? " { "
             : "(";

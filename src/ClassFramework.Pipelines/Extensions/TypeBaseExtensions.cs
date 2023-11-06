@@ -2,7 +2,7 @@
 
 public static class TypeBaseExtensions
 {
-    public static bool IsMemberValidForImmutableBuilderClass(
+    public static bool IsMemberValidForBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
         Builder.PipelineBuilderSettings settings)
@@ -65,7 +65,7 @@ public static class TypeBaseExtensions
         return customValue(baseClassContainer);
     }
 
-    public static IEnumerable<ClassProperty> GetImmutableBuilderConstructorProperties(
+    public static IEnumerable<ClassProperty> GetBuilderConstructorProperties(
         this TypeBase instance,
         BuilderContext context)
     {
@@ -105,7 +105,7 @@ public static class TypeBaseExtensions
             .Where(x => x is not null);
     }
 
-    public static IEnumerable<Result<ClassFieldBuilder>> GetImmutableBuilderClassFields(
+    public static IEnumerable<Result<ClassFieldBuilder>> GetBuilderClassFields(
         this TypeBase instance,
         PipelineContext<ClassBuilder, BuilderContext> context,
         IFormattableStringParser formattableStringParser)
@@ -120,7 +120,7 @@ public static class TypeBaseExtensions
             yield break;
         }
         
-        foreach (var property in instance.Properties.Where(x => instance.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)))
+        foreach (var property in instance.Properties.Where(x => instance.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
             var builderArgumentTypeResult = formattableStringParser.Parse
             (
@@ -153,6 +153,6 @@ public static class TypeBaseExtensions
             properties = properties.Concat(settings.InheritanceSettings.BaseClass.Properties);
         }
 
-        return properties.Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings));
+        return properties.Where(x => instance.IsMemberValidForBuilderClass(x, settings));
     }
 }

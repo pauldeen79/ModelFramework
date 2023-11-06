@@ -41,7 +41,7 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
             .WithName(GetName(context))
             .WithAbstract(context.Context.IsBuilderForAbstractEntity)
             .WithOverride(context.Context.IsBuilderForOverrideEntity)
-            .WithTypeName($"{GetImmutableBuilderBuildMethodReturnType(context.Context)}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+            .WithTypeName($"{GetBuilderBuildMethodReturnType(context.Context)}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
             .AddStringCodeStatements
             (
@@ -72,7 +72,7 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
             ? context.Context.Settings.NameSettings.BuildTypedMethodName
             : context.Context.Settings.NameSettings.BuildMethodName;
 
-    private static string GetImmutableBuilderBuildMethodReturnType(BuilderContext context)
+    private static string GetBuilderBuildMethodReturnType(BuilderContext context)
         => context.IsBuilderForAbstractEntity
             ? "TEntity"
             : context.SourceModel.GetFullName();

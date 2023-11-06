@@ -51,22 +51,22 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
 
     private Result<ClassConstructorBuilder> CreateDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
     {
-        var immutableBuilderClassConstructorInitializerResults = context.Context.SourceModel.Properties
-            .Where(x => context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(x => new { x.Name, Result = x.GetImmutableBuilderClassConstructorInitializer(context, _formattableStringParser) })
+        var constructorInitializerResults = context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
+            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser) })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 
-        var errorResult = Array.Find(immutableBuilderClassConstructorInitializerResults, x => !x.Result.IsSuccessful());
+        var errorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
         if (errorResult is not null)
         {
             return Result.FromExistingResult<ClassConstructorBuilder>(errorResult.Result);
         }
 
         var ctor = new ClassConstructorBuilder()
-            .WithChainCall(CreateImmutableBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
+            .WithChainCall(CreateBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
-            .AddStringCodeStatements(immutableBuilderClassConstructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
+            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
 
         if (context.Context.Settings.ConstructorSettings.SetDefaultValues)
         {
@@ -75,7 +75,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
                 context.Context.SourceModel.Properties
                     .Where
                     (x =>
-                        context.Context.SourceModel.IsMemberValidForImmutableBuilderClass(x, context.Context.Settings)
+                        context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)
                         && !x.TypeName.FixTypeName().IsCollectionTypeName()
                         && !x.IsNullable
                     )
@@ -89,7 +89,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         return Result.Success(ctor);
     }
 
-    private static string CreateImmutableBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
+    private static string CreateBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => Result.Success("base()")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
 
     private static string GenerateDefaultValueStatement(ClassProperty property, BuilderContext context)
