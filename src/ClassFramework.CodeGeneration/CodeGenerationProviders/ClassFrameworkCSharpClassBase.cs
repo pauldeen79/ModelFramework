@@ -50,7 +50,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         }
 
         ConvertBuilderFactoriesToToBuilderMethod(typeBaseBuilder);
-        AddToBuilderMethod(typeBaseBuilder);
 
         sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
         if (sourceModel is null)
@@ -90,20 +89,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
 
                 property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
             }
-        }
-    }
-
-    private void AddToBuilderMethod<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
-        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
-        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
-    {
-        if (!string.IsNullOrEmpty(GetEntityClassName(typeBaseBuilder.GetFullName())))
-        {
-            typeBaseBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                .WithName("ToBuilder")
-                .WithAbstract()
-                .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{typeBaseBuilder.Name}Builder")
-            );
         }
     }
 }
