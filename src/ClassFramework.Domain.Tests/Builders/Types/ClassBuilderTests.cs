@@ -27,5 +27,31 @@ public class ClassBuilderTests
             // Assert
             result.BaseClass.Should().Be(typeof(string).FullName);
         }
+
+        [Fact]
+        public void Can_Convert_Entity_To_Builder()
+        {
+            // Arrange
+            var entity = new ClassBuilder().WithName("MyClass").Build();
+
+            // Act
+            var builder = entity.ToBuilder();
+
+            // Assert
+            builder.Should().BeOfType<ClassBuilder>();
+        }
+
+        [Fact]
+        public void Can_Convert_Builder_To_Entity()
+        {
+            // Arrange
+            var builder = new ClassBuilder().WithName("MyClass");
+
+            // Act
+            var entity = builder.Build();
+
+            // Assert
+            entity.Should().BeOfType<Class>();
+        }
     }
 }
