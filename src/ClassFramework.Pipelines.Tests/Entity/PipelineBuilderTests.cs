@@ -58,7 +58,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
 
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
-            result.ErrorMessage.Should().Be("To create a builder class, there must be at least one property");
+            result.ErrorMessage.Should().Be("To create an entity class, there must be at least one property");
         }
     }
 }

@@ -15,7 +15,7 @@ public class ValidationFeature : IPipelineFeature<ClassBuilder, EntityContext>
             && !context.Context.SourceModel.Properties.Any()
             && !context.Context.Settings.InheritanceSettings.EnableInheritance)
         {
-            return Result.Invalid<ClassBuilder>("To create a builder class, there must be at least one property");
+            return Result.Invalid<ClassBuilder>("To create an entity class, there must be at least one property");
         }
         
         return Result.Continue<ClassBuilder>();
