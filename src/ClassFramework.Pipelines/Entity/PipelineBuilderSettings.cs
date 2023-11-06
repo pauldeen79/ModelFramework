@@ -3,7 +3,8 @@
 public record PipelineBuilderSettings
 {
     public string NewCollectionTypeName { get; }
-    public bool AddPrivateSetters { get; }
+    public bool AddSetters { get; }
+    public Visibility? SetterVisibility { get; }
     public bool EnableNullableReferenceTypes { get; }
     public bool AllowGenerationWithoutProperties { get; }
     public PipelineBuilderNameSettings NameSettings { get; }
@@ -44,7 +45,8 @@ public record PipelineBuilderSettings
 
     public PipelineBuilderSettings(
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
-        bool addPrivateSetters = false,
+        bool addSetters = false,
+        Visibility? setterVisibility = null,
         bool enableNullableReferenceTypes = false,
         bool allowGenerationWithoutProperties = false,
         PipelineBuilderNameSettings? nameSettings = null, 
@@ -52,7 +54,8 @@ public record PipelineBuilderSettings
         PipelineBuilderInheritanceSettings? inheritanceSettings = null)
     {
         NewCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
-        AddPrivateSetters = addPrivateSetters;
+        AddSetters = addSetters;
+        SetterVisibility = setterVisibility;
         EnableNullableReferenceTypes = enableNullableReferenceTypes;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
         NameSettings = nameSettings ?? new();
