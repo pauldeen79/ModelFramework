@@ -79,10 +79,11 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
+                "/* source null check goes here */ ",
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* null check goes here */ Property3.AddRange(source.Property3);"
+                "/* source argument null check goes here */ Property3.AddRange(source.Property3);"
             );
         }
 
@@ -116,10 +117,50 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
+                "/* source null check goes here */ ",
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* null check goes here */ Property3.AddRange(source.Property3);"
+                "/* source argument null check goes here */ Property3.AddRange(source.Property3);"
+            );
+        }
+
+        [Fact]
+        public void Adds_Copy_Constructor_For_Non_Abstract_Builder_With_NullChecks()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                addNullChecks: true,
+                enableBuilderInheritance: false,
+                addCopyConstructor: true,
+                enableEntityInheritance: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Constructors.Should().ContainSingle();
+            var ctor = model.Constructors.Single();
+            ctor.Protected.Should().BeFalse();
+            ctor.ChainCall.Should().BeEmpty();
+            ctor.Parameters.Should().ContainSingle();
+            var parameter = ctor.Parameters.Single();
+            parameter.Name.Should().Be("source");
+            parameter.TypeName.Should().Be("SomeNamespace.SomeClass");
+            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "/* source null check goes here */ ",
+                "Property3 = new System.Collections.Generic.List<int>();",
+                "Property1 = source.Property1;",
+                "Property2 = source.Property2;",
+                "/* source argument null check goes here */ Property3.AddRange(source.Property3);"
             );
         }
 
@@ -154,10 +195,11 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
+                "/* source null check goes here */ ",
                 "Property3 = System.Linq.Enumerable.Empty<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* null check goes here */ Property3 = Property3.Concat(source.Property3);"
+                "/* source argument null check goes here */ Property3 = Property3.Concat(source.Property3);"
             );
         }
 

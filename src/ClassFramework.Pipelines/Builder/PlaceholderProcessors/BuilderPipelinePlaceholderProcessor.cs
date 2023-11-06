@@ -31,6 +31,9 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<ClassBuilder, BuilderContext> pipelineContext)
         => value switch
         {
+            "NullCheck.Source" => Result.Success(pipelineContext.Context.Settings.GenerationSettings.AddNullChecks
+                ? $"if (source is null) throw new {typeof(ArgumentNullException).FullName}(nameof(source));"
+                : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
@@ -39,7 +42,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<BuilderContext, ClassProperty> parentChildContext)
         => value switch
         {
-            "NullCheck.Source" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
+            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks

@@ -87,8 +87,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 new[]
                 {
-                    $@"if (source is null) throw new {typeof(ArgumentNullException).FullName}(nameof(source));"
-                }.Where(_ => context.Context.Settings.GenerationSettings.AddNullChecks)
+                    _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context).GetValueOrThrow()
+                }.Where(x => !string.IsNullOrEmpty(x))
             )
             .AddParameters
             (
@@ -119,10 +119,10 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return "{NullCheck.Source}{Name} = {Name}.Concat(source.{Name})";
+            return "{NullCheck.Source.Argument}{Name} = {Name}.Concat(source.{Name})";
         }
 
-        return "{NullCheck.Source}{Name}.AddRange(source.{Name})";
+        return "{NullCheck.Source.Argument}{Name}.AddRange(source.{Name})";
     }
 
     private static string CreateImmutableBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)

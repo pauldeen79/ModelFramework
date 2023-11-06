@@ -22,7 +22,8 @@ public abstract class TestBase
                     .Replace("{Class.NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
                     .Replace("{Class.Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
                     .Replace("{Class.FullName}", CreateReplacement(x[2], y => y.GetFullName(), null), StringComparison.Ordinal)
-                    .Replace("{NullCheck.Source}", "/* null check goes here */ ", StringComparison.Ordinal)
+                    .Replace("{NullCheck.Source}", "/* source null check goes here */ ", StringComparison.Ordinal)
+                    .Replace("{NullCheck.Source.Argument}", "/* source argument null check goes here */ ", StringComparison.Ordinal)
                     .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
                     .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)));
     }

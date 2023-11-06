@@ -49,7 +49,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
-        [InlineData("NullCheck.Source", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
+        [InlineData("NullCheck.Source.Argument", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
         [InlineData("NullCheck.Argument", "if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));")] // null checks are enabled in this unit test
         [InlineData("BuildersNamespace", "MyNamespace.Builders")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_With_NullChecks_Enabled(string value, string expectedValue)
@@ -69,7 +69,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
-        [InlineData("NullCheck.Source", "")]
+        [InlineData("NullCheck.Source.Argument", "")]
         [InlineData("NullCheck.Argument", "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_Without_NullChecks(string value, string expectedValue)
         {
