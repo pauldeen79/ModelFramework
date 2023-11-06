@@ -27,5 +27,31 @@ public class AttributeTests
             this.Invoking(_ => new Attribute(Enumerable.Empty<AttributeParameter>(), Enumerable.Empty<Metadata>(), name: string.Empty))
                 .Should().Throw<ValidationException>();
         }
+
+        [Fact]
+        public void Can_Convert_Entity_To_Builder()
+        {
+            // Arrange
+            var entity = new AttributeBuilder().WithName("MyClass").Build();
+
+            // Act
+            var builder = entity.ToBuilder();
+
+            // Assert
+            builder.Should().BeOfType<AttributeBuilder>();
+        }
+
+        [Fact]
+        public void Can_Convert_Builder_To_Entity()
+        {
+            // Arrange
+            var builder = new AttributeBuilder().WithName("MyClass");
+
+            // Act
+            var entity = builder.Build();
+
+            // Assert
+            entity.Should().BeOfType<Attribute>();
+        }
     }
 }
