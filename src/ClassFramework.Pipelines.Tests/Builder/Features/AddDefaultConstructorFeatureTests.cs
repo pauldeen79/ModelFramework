@@ -191,6 +191,48 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
         }
 
         [Fact]
+        public void Adds_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_True()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(setDefaultValues: true);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().ContainSingle(x => x.Name == "SetDefaultValues");
+            var method = model.Methods.Single(x => x.Name == "SetDefaultValues");
+            method.Partial.Should().BeTrue();
+            method.Parameters.Should().BeEmpty();
+            method.CodeStatements.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Does_Not_Add_SetDefaultValues_Partial_Method_When_SetDefaultValues_Is_Set_To_False()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(setDefaultValues: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().NotContain(x => x.Name == "SetDefaultValues");
+        }
+
+        [Fact]
         public void Returns_Error_When_Parsing_CustomBuilderArgumentType_Is_Not_Successful()
         {
             // Arrange
