@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace ClassFramework.Domain.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Extensions;
 
 public class TypeExtensionsTests
 {
@@ -91,7 +89,7 @@ public class TypeExtensionsTests
         }
 
         public IReadOnlyCollection<string> MyProperty { get; } = new ReadOnlyCollection<string>(Array.Empty<string>());
-        public Nullable<int> MyProperty2 { get; }
+        public int? MyProperty2 { get; }
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
     }
 }

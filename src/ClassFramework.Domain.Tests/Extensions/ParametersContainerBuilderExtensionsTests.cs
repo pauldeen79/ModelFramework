@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Builders.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Extensions;
 
 public class ParametersContainerBuilderExtensionsTests
 {
@@ -71,7 +71,7 @@ public class ParametersContainerBuilderExtensionsTests
             var result = sut.AddParameter("Name", typeof(int), true);
 
             // Assert
-           result.Parameters.Should().BeEquivalentTo(new[] { new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsNullable().WithIsValueType().Build() });
+            result.Parameters.Should().BeEquivalentTo(new[] { new ParameterBuilder().WithName("Name").WithTypeName("System.Int32").WithIsNullable().WithIsValueType().Build() });
         }
 
         [Fact]

@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Builders.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Extensions;
 
 public class CodeStatementsContainerBuilderExtensionsTests
 {
@@ -39,7 +39,7 @@ public class CodeStatementsContainerBuilderExtensionsTests
             var sut = new ClassConstructorBuilder();
 
             // Act & Assert
-            sut.Invoking(x => x.AddStringCodeStatements(statements: (string[])null!))
+            sut.Invoking(x => x.AddStringCodeStatements(statements: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("statements");
         }
 

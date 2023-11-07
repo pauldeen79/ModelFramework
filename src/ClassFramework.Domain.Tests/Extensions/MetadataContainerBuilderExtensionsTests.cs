@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Builders.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Extensions;
 
 public class MetadataContainerBuilderExtensionsTests
 {
