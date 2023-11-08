@@ -251,11 +251,10 @@ public static class StringExtensions
     public static string FixCollectionTypeName(this string typeName, string newCollectionTypeName)
     {
         var fixedTypeName = typeName.FixTypeName();
-        return fixedTypeName.IsCollectionTypeName()
-                && !string.IsNullOrEmpty(newCollectionTypeName)
-                && !string.IsNullOrEmpty(fixedTypeName.GetGenericArguments())
-                    ? $"{newCollectionTypeName}<{fixedTypeName.GetGenericArguments()}>"
-                    : fixedTypeName;
+        return !string.IsNullOrEmpty(newCollectionTypeName)
+            && !string.IsNullOrEmpty(fixedTypeName.GetCollectionItemType())
+                ? $"{newCollectionTypeName}<{fixedTypeName.GetCollectionItemType()}>"
+                : fixedTypeName;
     }
 
     public static bool ContainsAny(this string instance, params string[] verbs)
@@ -269,6 +268,21 @@ public static class StringExtensions
             "Collection<",
             "Array<"
         ) || typeName.EndsWith("[]");
+
+    public static string GetCollectionItemType(this string instance)
+    {
+        if (string.IsNullOrEmpty(instance) || !instance.IsCollectionTypeName())
+        {
+            return string.Empty;
+        }
+
+        if (instance.EndsWith("[]"))
+        {
+            return instance.Substring(0, instance.Length - 2);
+        }
+
+        return instance.GetGenericArguments();
+    }
 
     public static string RemoveInterfacePrefix(this string name)
     {

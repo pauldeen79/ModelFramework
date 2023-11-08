@@ -417,6 +417,7 @@ public class StringExtensionsTests
     [InlineData("SomeTypeThatIsNotAColl", "System.Collections.Generic.List", "SomeTypeThatIsNotAColl")]
     [InlineData("Custom.List<System.String>", "", "Custom.List<System.String>")]
     [InlineData("Custom.List<System.String>", "System.Collections.Generic.List", "System.Collections.Generic.List<System.String>")]
+    [InlineData("System.String[]", "System.Collections.Generic.List", "System.Collections.Generic.List<System.String>")]
     public void FixCollectionTypeName_Returns_Correct_Result(string typeName, string newCollectionTypeName,string expectedResult)
     {
         // Act
@@ -531,6 +532,22 @@ public class StringExtensionsTests
     {
         // Act
         var result = typeName.GetCollectionInitializeStatement();
+
+        // Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Theory]
+    [InlineData("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32")]
+    [InlineData("System.Collections.Generic.List<System.Int32>", "System.Int32")]
+    [InlineData("System.Int32[]", "System.Int32")]
+    [InlineData("", "")]
+    [InlineData(null, "")]
+    [InlineData("SomeTypeNameThatIsNotAGenericCollectionOrArray", "")]
+    public void GetCollectionItemType_Returns_Correct_Result(string typeName, string expectedResult)
+    {
+        // Act
+        var result = typeName.GetCollectionItemType();
 
         // Assert
         result.Should().Be(expectedResult);
