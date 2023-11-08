@@ -82,6 +82,7 @@ public abstract class TestBase
         bool addNullChecks = false,
         bool enableNullableReferenceTypes = false,
         bool copyAttributes = false,
+        bool copyInterfaces = false,
         bool addCopyConstructor = false,
         bool setDefaultValues = true,
         string newCollectionTypeName = "System.Collections.Generic.List",
@@ -95,11 +96,13 @@ public abstract class TestBase
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
         Class? baseClass = null,
-        Func<IParentTypeContainer, TypeBase, bool>? inheritanceComparisonDelegate = null)
+        Func<IParentTypeContainer, TypeBase, bool>? inheritanceComparisonDelegate = null,
+        Predicate<Domain.Attribute>? copyAttributePredicate = null,
+        Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Builder.PipelineBuilderSettings(
             typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName),
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
-            generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes),
+            generationSettings: new PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
             classSettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, validateArguments, allowGenerationWithoutProperties),
             nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)

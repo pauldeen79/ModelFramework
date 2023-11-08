@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder.Features;
 
-public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.AddAttributesFeature>
+public class AddInterfacesFeatureTests : TestBase<Pipelines.Builder.Features.AddInterfacesFeature>
 {
-    public class Process : AddAttributesFeatureTests
+    public class Process : AddInterfacesFeatureTests
     {
         [Fact]
         public void Throws_On_Null_Context()
@@ -16,13 +16,13 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         }
 
         [Fact]
-        public void Adds_Attributes_When_CopyAttributes_Setting_Is_True()
+        public void Adds_Interfaces_When_CopyInterfaces_Setting_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: true);
+            var settings = CreateBuilderSettings(copyInterfaces: true);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -30,23 +30,23 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
+            model.Interfaces.Should().BeEquivalentTo("IMyInterface");
         }
 
         [Fact]
-        public void Adds_Filtered_Attributes_When_CopyAttributes_Setting_Is_True_And_Predicate_Is_Filled()
+        public void Adds_Filtered_Interfaces_When_CopyInterfaces_Setting_Is_True_And_Predicate_Is_Filled()
         {
             // Arrange
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddAttributes(
-                    new AttributeBuilder().WithName("MyAttribute1"),
-                    new AttributeBuilder().WithName("MyAttribute2"))
+                .AddInterfaces(
+                    "IMyInterface1",
+                    "IMyInterface2")
                 .Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: true, copyAttributePredicate: x => x.Name == "MyAttribute2");
+            var settings = CreateBuilderSettings(copyInterfaces: true, copyInterfacePredicate: x => x == "IMyInterface2");
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -54,17 +54,17 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute2") });
+            model.Interfaces.Should().BeEquivalentTo("IMyInterface2");
         }
 
         [Fact]
-        public void Does_Not_Add_Attributes_When_CopyAttributes_Setting_Is_False()
+        public void Does_Not_Add_Interfaces_When_CopyInterfaces_Setting_Is_False()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: false);
+            var settings = CreateBuilderSettings(copyInterfaces: false);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -72,7 +72,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Attributes.Should().BeEmpty();
+            model.Interfaces.Should().BeEmpty();
         }
     }
 }
