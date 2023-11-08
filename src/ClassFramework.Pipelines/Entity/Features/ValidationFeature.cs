@@ -11,7 +11,7 @@ public class ValidationFeature : IPipelineFeature<ClassBuilder, EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.AllowGenerationWithoutProperties
+        if (!context.Context.Settings.GenerationSettings.AllowGenerationWithoutProperties
             && !context.Context.SourceModel.Properties.Any()
             && !context.Context.Settings.InheritanceSettings.EnableInheritance)
         {

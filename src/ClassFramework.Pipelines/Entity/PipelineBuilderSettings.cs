@@ -2,14 +2,12 @@
 
 public record PipelineBuilderSettings
 {
-    public string NewCollectionTypeName { get; }
-    public bool AddSetters { get; }
-    public Visibility? SetterVisibility { get; }
-    public bool EnableNullableReferenceTypes { get; }
-    public bool AllowGenerationWithoutProperties { get; }
     public PipelineBuilderNameSettings NameSettings { get; }
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
+    public PipelineBuilderTypeSettings TypeSettings { get; }
+    public PipelineBuilderGenerationSettings GenerationSettings { get; }
+
     public ArgumentValidationType AddValidationCode
     {
         get
@@ -44,22 +42,16 @@ public record PipelineBuilderSettings
     }
 
     public PipelineBuilderSettings(
-        string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
-        bool addSetters = false,
-        Visibility? setterVisibility = null,
-        bool enableNullableReferenceTypes = false,
-        bool allowGenerationWithoutProperties = false,
         PipelineBuilderNameSettings? nameSettings = null, 
         PipelineBuilderConstructorSettings? constructorSettings = null,
-        PipelineBuilderInheritanceSettings? inheritanceSettings = null)
+        PipelineBuilderInheritanceSettings? inheritanceSettings = null,
+        PipelineBuilderTypeSettings? typeSettings = null,
+        PipelineBuilderGenerationSettings? generationSettings = null)
     {
-        NewCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
-        AddSetters = addSetters;
-        SetterVisibility = setterVisibility;
-        EnableNullableReferenceTypes = enableNullableReferenceTypes;
-        AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
         NameSettings = nameSettings ?? new();
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
+        TypeSettings = typeSettings ?? new();
+        GenerationSettings = generationSettings ?? new();
     }
 }
