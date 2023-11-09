@@ -4,7 +4,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
 {
     public class Process : ClassPropertyProcessorTests
     {
-        private ClassProperty CreateModel() => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).Build();
+        private ClassProperty CreateModel() => new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).Build();
         
         [Fact]
         public void Returns_Continue_When_Context_Is_Not_ParentChildContext()
@@ -41,10 +41,11 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         [InlineData("TypeName.ClassName", "List<System.String>")]
         [InlineData("TypeName.Namespace", "System.Collections.Generic")]
         [InlineData("TypeName.NoGenerics", "System.Collections.Generic.List")]
-        [InlineData("Name", "MyProperty")]
-        [InlineData("NameLower", "myproperty")]
-        [InlineData("NameUpper", "MYPROPERTY")]
-        [InlineData("NamePascal", "myProperty")]
+        [InlineData("Name", "Delegate")]
+        [InlineData("NameLower", "delegate")]
+        [InlineData("NameUpper", "DELEGATE")]
+        [InlineData("NamePascal", "delegate")]
+        [InlineData("NamePascalCsharpFriendlyName", "@delegate")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange

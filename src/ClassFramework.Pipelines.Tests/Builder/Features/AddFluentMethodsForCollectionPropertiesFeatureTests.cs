@@ -97,7 +97,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         }
 
         [Fact]
-        public void Adds_Methods_With_ArgumentNulLChecks()
+        public void Adds_Methods_With_ArgumentNullChecks()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -126,6 +126,44 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
                 "/* argument null check goes here */",
                 "Property3.AddRange(property3);",
+                "return this;"
+            );
+        }
+
+        [Fact]
+        public void Adds_Methods_With_ArgumentNullChecks_CsharpFriendlyName()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(List<int>)))
+                .Build();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                addNullChecks: true,
+                addMethodNameFormatString: "Add{Name}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().HaveCount(2);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddDelegate", "AddDelegate");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate", "delegate");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "return AddDelegate(@delegate?.ToArray() ?? throw new System.ArgumentNullException(nameof(@delegate)));",
+                "/* argument null check goes here */",
+                "Delegate.AddRange(@delegate);",
                 "return this;"
             );
         }

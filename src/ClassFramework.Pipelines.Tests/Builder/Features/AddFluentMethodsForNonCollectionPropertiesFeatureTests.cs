@@ -67,6 +67,40 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         }
 
         [Fact]
+        public void Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty_CsharpFriendlyName()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(int)))
+                .Build();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Methods.Should().ContainSingle();
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithDelegate");
+            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
+            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
+            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Delegate = @delegate;",
+                "return this;"
+            );
+        }
+
+        [Fact]
         public void Adds_Method_With_Default_ArgumentNullChecks_When_SetMethodNameFormatString_Is_Not_Empty()
         {
             // Arrange

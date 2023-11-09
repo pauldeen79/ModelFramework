@@ -236,6 +236,38 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         [Theory]
         [InlineData(ArgumentValidationType.None)]
         [InlineData(ArgumentValidationType.DomainOnly)]
+        public void Adds_CodeStatements_To_Properties_With_CsharpFriendlyName_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(string)))
+                .Build();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                addNullChecks: true,
+                validateArguments: validateArguments);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
+            model.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _delegate;");
+            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
+            model.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
+            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_delegate = value ?? throw new System.ArgumentNullException(nameof(value));");
+        }
+
+        [Theory]
+        [InlineData(ArgumentValidationType.None)]
+        [InlineData(ArgumentValidationType.DomainOnly)]
         public void Adds_Fields_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange

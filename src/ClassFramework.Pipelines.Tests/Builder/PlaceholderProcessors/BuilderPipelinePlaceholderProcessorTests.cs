@@ -4,7 +4,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
 {
     public class Process : BuilderPipelinePlaceholderProcessorTests
     {
-        private ClassProperty CreatePropertyModel(bool isNullable = false) => new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
+        private ClassProperty CreatePropertyModel(bool isNullable = false) => new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).WithIsNullable(isNullable).Build();
         private ClassBuilder CreateModel() => new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
         [Fact]
@@ -49,8 +49,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
-        [InlineData("NullCheck.Source.Argument", "if (source.MyProperty is not null) ")] // null checks are enabled in this unit test
-        [InlineData("NullCheck.Argument", "if (myProperty is null) throw new System.ArgumentNullException(nameof(myProperty));")] // null checks are enabled in this unit test
+        [InlineData("NullCheck.Source.Argument", "if (source.Delegate is not null) ")] // null checks are enabled in this unit test
+        [InlineData("NullCheck.Argument", "if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));")] // null checks are enabled in this unit test
         [InlineData("BuildersNamespace", "MyNamespace.Builders")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_With_ParentChildContext_With_NullChecks_Enabled(string value, string expectedValue)
         {

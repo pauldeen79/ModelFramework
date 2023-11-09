@@ -15,6 +15,7 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(ClassProperty.Name)}Lower" => Result.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo())),
             $"{nameof(ClassProperty.Name)}Upper" => Result.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(ClassProperty.Name)}Pascal" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"{nameof(ClassProperty.Name)}PascalCsharpFriendlyName" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             nameof(ClassProperty.TypeName) => Result.Success(pipelineContext.Model.TypeName.FixTypeName()),
             $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result.Success(pipelineContext.Model.TypeName.FixTypeName().GetGenericArguments()),
             $"{nameof(ClassProperty.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(pipelineContext.Model.TypeName.FixTypeName().GetGenericArguments(addBrackets: true)),

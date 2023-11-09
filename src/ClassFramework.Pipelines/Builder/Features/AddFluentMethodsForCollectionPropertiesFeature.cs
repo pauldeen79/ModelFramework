@@ -125,8 +125,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         // When not using IEnumerable<>, we can simply force ToArray because it's stored in a generic list or collection of some sort anyway.
         // (in other words, materialization is always performed)
         yield return Result.Success(context.Context.Settings.GenerationSettings.AddNullChecks
-            ? $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())})));"
-            : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}.ToArray());");
+            ? $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()})));"
+            : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}.ToArray());");
     }
 
     private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
@@ -166,10 +166,10 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
     {
         if (context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return $"{property.Name} = {property.Name}.Concat({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())});";
+            return $"{property.Name} = {property.Name}.Concat({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()});";
         }
 
-        return $"{property.Name}.AddRange({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())});";
+        return $"{property.Name}.AddRange({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()});";
     }
 
     private static string GetReturnValue(BuilderContext context)

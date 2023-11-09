@@ -46,7 +46,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
-                ? $"if ({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo())} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo())}));"
+                ? $"if ({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()}));"
                 : string.Empty),
             "NullableRequiredSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable || !parentChildContext.ParentContext.Context.Settings.GenerationSettings.EnableNullableReferenceTypes
                 ? string.Empty
