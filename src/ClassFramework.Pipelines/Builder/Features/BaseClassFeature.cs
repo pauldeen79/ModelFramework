@@ -44,12 +44,12 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
-        var isNotForAbstractBuilder = context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
+        var isNotForAbstractBuilder = context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
             && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.Settings.InheritanceSettings.BaseClass is null
             && !context.Context.Settings.IsForAbstractBuilder;
 
-        var isAbstract = context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
+        var isAbstract = context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
             && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.Settings.InheritanceSettings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder
@@ -66,7 +66,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
             return Result.Success($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
-        if (context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance
+        if (context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
             && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
             && context.Context.Settings.InheritanceSettings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
@@ -86,7 +86,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
 
         return instance.GetCustomValueForInheritedClass
         (
-            context.Context.Settings.ClassSettings,
+            context.Context.Settings.EntitySettings,
             baseClassContainer =>
             {
                 var baseClassResult = GetBaseClassName(context, baseClassContainer);

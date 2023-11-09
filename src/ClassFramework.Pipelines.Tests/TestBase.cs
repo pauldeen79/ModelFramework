@@ -106,7 +106,7 @@ public abstract class TestBase
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
             generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
-            classSettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, validateArguments, allowGenerationWithoutProperties),
+            entitySettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, validateArguments, allowGenerationWithoutProperties),
             nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
         );
 

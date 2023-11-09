@@ -11,9 +11,9 @@ public class ValidationFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.ClassSettings.GenerationSettings.AllowGenerationWithoutProperties
+        if (!context.Context.Settings.EntitySettings.GenerationSettings.AllowGenerationWithoutProperties
             && !context.Context.SourceModel.Properties.Any()
-            && !context.Context.Settings.ClassSettings.InheritanceSettings.EnableInheritance)
+            && !context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance)
         {
             return Result.Invalid<ClassBuilder>("To create a builder class, there must be at least one property");
         }

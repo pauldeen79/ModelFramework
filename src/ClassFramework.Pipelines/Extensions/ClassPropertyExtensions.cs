@@ -33,7 +33,7 @@ public static class ClassPropertyExtensions
         context = context.IsNotNull(nameof(context));
 
         if (context.Settings.GenerationSettings.AddNullChecks
-            && context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+            && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
         {
             return $"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}";
         }

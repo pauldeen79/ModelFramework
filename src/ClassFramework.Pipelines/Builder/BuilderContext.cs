@@ -13,8 +13,8 @@ public record BuilderContext
     public PipelineBuilderSettings Settings { get; }
     public IFormatProvider FormatProvider { get; }
 
-    public bool IsBuilderForAbstractEntity => Settings.ClassSettings.InheritanceSettings.EnableInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
-    public bool IsBuilderForOverrideEntity => Settings.ClassSettings.InheritanceSettings.EnableInheritance && Settings.InheritanceSettings.BaseClass is not null;
+    public bool IsBuilderForAbstractEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
+    public bool IsBuilderForOverrideEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && Settings.InheritanceSettings.BaseClass is not null;
     public bool IsAbstractBuilder => Settings.InheritanceSettings.EnableBuilderInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract) && !Settings.IsForAbstractBuilder;
 
     public string[] CreatePragmaWarningDisableStatements()

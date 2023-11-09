@@ -7,7 +7,7 @@ public record PipelineBuilderSettings
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
-    public Entity.PipelineBuilderSettings ClassSettings { get; }
+    public Entity.PipelineBuilderSettings EntitySettings { get; }
 
     public bool IsForAbstractBuilder { get; }
 
@@ -17,7 +17,7 @@ public record PipelineBuilderSettings
         PipelineBuilderConstructorSettings? constructorSettings,
         PipelineBuilderTypeSettings? typeSettings,
         PipelineBuilderGenerationSettings? generationSettings,
-        Entity.PipelineBuilderSettings? classSettings,
+        Entity.PipelineBuilderSettings? entitySettings,
         bool isForAbstractBuilder)
     {
         NameSettings = nameSettings ?? new();
@@ -25,7 +25,7 @@ public record PipelineBuilderSettings
         ConstructorSettings = constructorSettings ?? new();
         TypeSettings = typeSettings ?? new();
         GenerationSettings = generationSettings ?? new();
-        ClassSettings = classSettings ?? new();
+        EntitySettings = entitySettings ?? new();
         IsForAbstractBuilder = isForAbstractBuilder;
     }
 
@@ -35,11 +35,11 @@ public record PipelineBuilderSettings
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderTypeSettings? typeSettings = null,
         PipelineBuilderGenerationSettings? generationSettings = null,
-        Entity.PipelineBuilderSettings? classSettings = null)
-        : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, generationSettings, classSettings, false)
+        Entity.PipelineBuilderSettings? entitySettings = null)
+        : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, generationSettings, entitySettings, false)
     {
     }
 
     public PipelineBuilderSettings ForAbstractBuilder()
-        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, GenerationSettings, ClassSettings, true);
+        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, GenerationSettings, EntitySettings, true);
 }

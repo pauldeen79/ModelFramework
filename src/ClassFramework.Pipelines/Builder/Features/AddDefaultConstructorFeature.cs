@@ -90,7 +90,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     }
 
     private static string CreateBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.ClassSettings, _ => Result.Success("base()")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
+        => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base()")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
 
     private static string GenerateDefaultValueStatement(ClassProperty property, BuilderContext context)
         => $"{property.Name} = {property.GetDefaultValue(context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.FormatProvider.ToCultureInfo())};";

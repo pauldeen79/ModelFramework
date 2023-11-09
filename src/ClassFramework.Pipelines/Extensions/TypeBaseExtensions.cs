@@ -10,7 +10,7 @@ public static class TypeBaseExtensions
         parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
         settings = settings.IsNotNull(nameof(settings));
 
-        if (!settings.ClassSettings.InheritanceSettings.EnableInheritance)
+        if (!settings.EntitySettings.InheritanceSettings.EnableInheritance)
         {
             // If entity inheritance is not enabled, then simply include all members
             return true;
@@ -115,7 +115,7 @@ public static class TypeBaseExtensions
 
         if (context.Context.IsAbstractBuilder
             || !context.Context.Settings.GenerationSettings.AddNullChecks
-            || context.Context.Settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+            || context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
         {
             yield break;
         }
