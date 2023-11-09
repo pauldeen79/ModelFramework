@@ -231,20 +231,6 @@ public static class StringExtensions
     public static bool IsObjectTypeName(this string? instance)
         => instance.FixTypeName() == typeof(object).FullName;
 
-    private static string FixAnonymousTypeName(string instance)
-    {
-        var isAnonymousType = instance.Contains("AnonymousType")
-            && (instance.Contains("<>") || instance.Contains("VB$"));
-
-        var arraySuffix = instance.EndsWith("[]")
-            ? "[]"
-            : string.Empty;
-
-        return isAnonymousType
-            ? $"AnonymousType{arraySuffix}"
-            : instance;
-    }
-
     public static string ConvertTypeNameToArray(this string typeName)
         => $"{typeName.GetGenericArguments()}[]";
 
@@ -393,6 +379,20 @@ public static class StringExtensions
         }
 
         return $"new {instance}()";
+    }
+
+    private static string FixAnonymousTypeName(string instance)
+    {
+        var isAnonymousType = instance.Contains("AnonymousType")
+            && (instance.Contains("<>") || instance.Contains("VB$"));
+
+        var arraySuffix = instance.EndsWith("[]")
+            ? "[]"
+            : string.Empty;
+
+        return isAnonymousType
+            ? $"AnonymousType{arraySuffix}"
+            : instance;
     }
 
     private static string ReplaceGenericArgument(this string instance, string find, string replace)
