@@ -55,7 +55,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ? "?"
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
-            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<ClassProperty>(parentChildContext.ChildContext), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new ClassPropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(parentChildContext.ParentContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };

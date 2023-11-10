@@ -5,7 +5,18 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
     public class Process : ClassPropertyProcessorTests
     {
         private ClassProperty CreateModel() => new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).Build();
-        
+
+        [Fact]
+        public void Throws_On_Null_FormattableStringParser()
+        {
+            // Arrange
+            var sut = CreateSut();
+
+            // Act & Assert
+            sut.Invoking(x => x.Process("Placeholder", CultureInfo.InvariantCulture, null, formattableStringParser: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+        }
+
         [Fact]
         public void Returns_Continue_When_Context_Is_Not_ParentChildContext()
         {
@@ -46,16 +57,17 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         [InlineData("NameUpper", "DELEGATE")]
         [InlineData("NamePascal", "delegate")]
         [InlineData("NamePascalCsharpFriendlyName", "@delegate")]
+        [InlineData("DefaultValue", "default(System.Collections.Generic.List<System.String>)")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-            formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
+            var formattableStringParser = InitializeParser();
             var sut = CreateSut();
-            var context = new PipelineContext<ClassProperty>(CreateModel());
+            var settingsMock = Fixture.Freeze<IPipelineBuilderGenerationSettings>();
+            var context = new ClassPropertyContext(CreateModel(), settingsMock, CultureInfo.InvariantCulture);
 
             // Act
-            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+            var result = sut.Process(value, CultureInfo.InvariantCulture, context, formattableStringParser);
 
             // Assert
             result.Status.Should().Be(ResultStatus.Ok);

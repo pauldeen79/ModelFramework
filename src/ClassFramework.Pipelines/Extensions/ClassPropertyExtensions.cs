@@ -15,7 +15,7 @@ public static class ClassPropertyExtensions
             return md.Value.CsharpFormat(cultureInfo);
         }
 
-        return property.TypeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
+        return property.TypeName.FixTypeName().GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
     }
 
     public static string GetNullCheckSuffix(this ClassProperty property, string name, bool addNullChecks)
@@ -50,7 +50,7 @@ public static class ClassPropertyExtensions
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property)
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );
 
         if (!builderArgumentTypeResult.IsSuccessful())

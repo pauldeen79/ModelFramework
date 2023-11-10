@@ -33,7 +33,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property));
+            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings));
 
             if (!typeNameResult.IsSuccessful())
             {

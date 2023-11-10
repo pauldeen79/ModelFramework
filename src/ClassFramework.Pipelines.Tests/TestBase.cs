@@ -4,13 +4,13 @@ public abstract class TestBase
 {
     protected IFixture Fixture { get; } = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-    protected virtual void InitializeParser()
+    protected virtual IFormattableStringParser InitializeParser()
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
         parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
               .Returns(x => x.ArgAt<string>(0) == "{Error}"
                 ? Result.Error<string>("Kaboom")
-                : Result.Success(x.ArgAt<string>(0)
+                : x.ArgAt<string>(0)
                     .Replace("{Name}", CreateReplacement(x[2], y => y.Name, y => y.Name), StringComparison.Ordinal)
                     .Replace("{NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
                     .Replace("{NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
@@ -27,7 +27,13 @@ public abstract class TestBase
                     .Replace("{NullCheck.Source}", "/* source null check goes here */ ", StringComparison.Ordinal)
                     .Replace("{NullCheck.Source.Argument}", "/* source argument null check goes here */ ", StringComparison.Ordinal)
                     .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
-                    .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)));
+                    .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)
+                    .Replace("{DefaultValue}", CreateReplacement(x[2], _ => string.Empty, y => y.GetDefaultValue(false, x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
+                    .Transform(x => x.Contains(@"@""{Error}""", StringComparison.Ordinal)
+                        ? Result.Error<string>("Kaboom")
+                        : Result.Success(x)));
+
+        return parser;
     }
 
     private static string CreateReplacement(
@@ -48,6 +54,9 @@ public abstract class TestBase
             ParentChildContext<EntityContext, ClassProperty> parentChild => classPropertyDelegate is null
                 ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel)
                 : classPropertyDelegate(parentChild.ChildContext),
+            ClassPropertyContext classPropertyContext => classPropertyDelegate is null
+                ? string.Empty
+                : classPropertyDelegate(classPropertyContext.SourceModel),
             _ => throw new NotSupportedException($"Context of type {input?.GetType()} is not supported")
         };
 

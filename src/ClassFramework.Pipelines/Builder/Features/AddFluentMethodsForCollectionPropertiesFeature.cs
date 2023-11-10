@@ -33,7 +33,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property);
+            var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings);
 
             var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, childContext);
             if (!typeNameResult.IsSuccessful())
@@ -137,7 +137,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, property)
+                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
             );
             yield return argumentNullCheckResult;
             
@@ -152,7 +152,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property)
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );
         yield return builderAddExpressionResult;
 

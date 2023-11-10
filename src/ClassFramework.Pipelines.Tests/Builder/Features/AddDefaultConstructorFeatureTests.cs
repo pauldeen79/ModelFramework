@@ -47,8 +47,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
                 ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
                 (
-                    "Property2 = string.Empty;",
                     "Property3 = new System.Collections.Generic.List<int>();",
+                    "Property2 = string.Empty;",
                     "SetDefaultValues();"
                 );
             }
@@ -85,8 +85,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "Property2 = string.Empty;",
                 "Property3 = new System.Collections.Generic.List<int>();",
+                "Property2 = string.Empty;",
                 "SetDefaultValues();"
             );
         }
@@ -119,8 +119,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "Property2 = string.Empty;",
                 "Property3 = System.Linq.Enumerable.Empty<int>();",
+                "Property2 = string.Empty;",
                 "SetDefaultValues();"
             );
         }
@@ -152,8 +152,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "Property2 = string.Empty;",
                 "Property3 = new System.Collections.Generic.List<int>();",
+                "Property2 = string.Empty;",
                 "SetDefaultValues();"
             );
         }
@@ -237,6 +237,28 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
         {
             // Arrange
             var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderArgumentType).WithValue("{Error}"));
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: true,
+                enableEntityInheritance: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Error);
+            result.ErrorMessage.Should().Be("Kaboom");
+        }
+
+        [Fact]
+        public void Returns_Error_When_Parsing_DefaultValueStatement_Is_Not_Successful()
+        {
+            // Arrange
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderDefaultValue).WithValue("{Error}"));
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();

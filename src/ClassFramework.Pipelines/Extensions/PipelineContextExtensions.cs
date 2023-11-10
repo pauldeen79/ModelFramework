@@ -48,11 +48,11 @@ public static class PipelineContextExtensions
 
         var results = properties.Select
         (
-            p => formattableStringParser.Parse
+            property => formattableStringParser.Parse
             (
-                p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
+                property.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(property)),
                 context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, p)
+                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
             )
         ).TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).ToArray();
 

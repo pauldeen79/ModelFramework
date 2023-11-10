@@ -70,18 +70,25 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
 
         if (context.Context.Settings.ConstructorSettings.SetDefaultValues)
         {
-            ctor.AddStringCodeStatements
-            (
-                context.Context.SourceModel.Properties
-                    .Where
-                    (x =>
-                        context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)
-                        && !x.TypeName.FixTypeName().IsCollectionTypeName()
-                        && !x.IsNullable
-                    )
-                    .Select(x => GenerateDefaultValueStatement(x, context.Context))
-                    .Where(x => x.IndexOf(" = default(", StringComparison.OrdinalIgnoreCase) == -1)
-            );
+            var defaultValueResults = context.Context.SourceModel.Properties
+                .Where
+                (x =>
+                    context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)
+                    && !x.TypeName.FixTypeName().IsCollectionTypeName()
+                    && !x.IsNullable
+                    && x.HasNonDefaultDefaultValue()
+                )
+                .Select(x => GenerateDefaultValueStatement(x, context))
+                .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+                .ToArray();
+            
+            var defaultValueErrorResult = Array.Find(defaultValueResults, x => !x.IsSuccessful());
+            if (defaultValueErrorResult is not null)
+            {
+                return Result.FromExistingResult<ClassConstructorBuilder>(defaultValueErrorResult);
+            }
+
+            ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!));
             ctor.AddStringCodeStatements("SetDefaultValues();");
             context.Model.AddMethods(new ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
         }
@@ -92,8 +99,8 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     private static string CreateBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base()")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
 
-    private static string GenerateDefaultValueStatement(ClassProperty property, BuilderContext context)
-        => $"{property.Name} = {property.GetDefaultValue(context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.FormatProvider.ToCultureInfo())};";
+    private Result<string> GenerateDefaultValueStatement(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
+        => _formattableStringParser.Parse("{Name} = {DefaultValue};", context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings));
 
     private static ClassConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()

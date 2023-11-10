@@ -33,7 +33,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property);
+            var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings);
 
             var results = new[]
             {
