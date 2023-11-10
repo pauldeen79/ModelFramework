@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassFramework.Domain\ClassFramework.Domain.csproj" />
-    <ProjectReference Include="..\ClassFramework.Infastructure.CsharpExpressionCreator\ClassFramework.Infastructure.CsharpExpressionCreator.csproj" />
+    <ProjectReference Include="..\ClassFramework.CsharpExpressionCreator\ClassFramework.CsharpExpressionCreator.csproj" />
   </ItemGroup>
 
 </Project>

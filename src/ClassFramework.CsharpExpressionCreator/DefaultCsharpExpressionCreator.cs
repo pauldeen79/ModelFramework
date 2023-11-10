@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Infastructure.CsharpExpressionCreator;
+﻿namespace ClassFramework.CsharpExpressionCreator;
 
 public class DefaultCsharpExpressionCreator : ICsharpExpressionCreator
 {

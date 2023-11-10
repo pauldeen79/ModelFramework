@@ -1,5 +1,6 @@
 ﻿global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
+global using ClassFramework.CsharpExpressionCreator;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders;
@@ -9,7 +10,6 @@ global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
-global using ClassFramework.Infastructure.CsharpExpressionCreator;
 global using ClassFramework.Pipelines.Abstractions;
 global using ClassFramework.Pipelines.Builder;
 global using ClassFramework.Pipelines.Builder.Features.Abstractions;
