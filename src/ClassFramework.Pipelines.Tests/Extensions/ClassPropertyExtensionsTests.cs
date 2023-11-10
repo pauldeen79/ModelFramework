@@ -2,16 +2,17 @@
 
 public class ClassPropertyExtensionsTests : TestBase
 {
-    public class GetDefaultValue
+    public class GetDefaultValue : ClassPropertyExtensionsTests
     {
         [Fact]
         public void Gets_Value_From_TypeName_When_Metadata_Is_Not_Found()
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
-            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -22,9 +23,10 @@ public class ClassPropertyExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
+            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
-            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -35,9 +37,10 @@ public class ClassPropertyExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value")).Build();
+            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
-            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
 
             // Assert
             result.Should().Be("custom value");
@@ -48,12 +51,14 @@ public class ClassPropertyExtensionsTests : TestBase
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value").Build();
+            var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
+            csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
 
             // Act
-            var result = sut.GetDefaultValue(false, CultureInfo.InvariantCulture);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
 
             // Assert
-            result.Should().Be("@\"custom value\"");
+            result.Should().Be("custom value");
         }
     }
 

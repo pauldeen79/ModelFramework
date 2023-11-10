@@ -7,6 +7,8 @@ public abstract class TestBase
     protected virtual IFormattableStringParser InitializeParser()
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
+        var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
+        csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
         parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
               .Returns(x => x.ArgAt<string>(0) == "{Error}"
                 ? Result.Error<string>("Kaboom")
@@ -28,8 +30,8 @@ public abstract class TestBase
                     .Replace("{NullCheck.Source.Argument}", "/* source argument null check goes here */ ", StringComparison.Ordinal)
                     .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
                     .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)
-                    .Replace("{DefaultValue}", CreateReplacement(x[2], _ => string.Empty, y => y.GetDefaultValue(false, x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                    .Transform(x => x.Contains(@"@""{Error}""", StringComparison.Ordinal)
+                    .Replace("{DefaultValue}", CreateReplacement(x[2], _ => string.Empty, y => y.GetDefaultValue(csharpExpressionCreator, false)), StringComparison.Ordinal)
+                    .Transform(x => x.Contains("{Error}", StringComparison.Ordinal)
                         ? Result.Error<string>("Kaboom")
                         : Result.Success(x)));
 

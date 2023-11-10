@@ -2,6 +2,13 @@
 
 public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
 {
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public ClassPropertyProcessor(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        _csharpExpressionCreator = csharpExpressionCreator.IsNotNull(nameof(csharpExpressionCreator));
+    }
+
     public Result<string> Process(string value, IFormatProvider formatProvider, object? context, IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -25,7 +32,7 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(ClassProperty.TypeName)}.ClassName" => Result.Success(classPropertyContext.SourceModel.TypeName.FixTypeName().GetClassName()),
             $"{nameof(ClassProperty.TypeName)}.Namespace" => Result.Success(classPropertyContext.SourceModel.TypeName.FixTypeName().GetNamespaceWithDefault()),
             $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result.Success(classPropertyContext.SourceModel.TypeName.FixTypeName().WithoutProcessedGenerics()),
-            "DefaultValue" => formattableStringParser.Parse(classPropertyContext.SourceModel.GetDefaultValue(classPropertyContext.Settings.EnableNullableReferenceTypes, formatProvider.ToCultureInfo()), formatProvider, context),
+            "DefaultValue" => formattableStringParser.Parse(classPropertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, classPropertyContext.Settings.EnableNullableReferenceTypes), formatProvider, context),
             _ => Result.Continue<string>()
         };
     }
