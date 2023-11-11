@@ -18,7 +18,7 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
             return Result.Continue<string>();
         }
 
-        var typeName = classPropertyContext.TypeName.FixTypeName(); //classPropertyContext.SourceModel.TypeName.FixTypeName();
+        var typeName = classPropertyContext.TypeName.FixTypeName();
 
         return value switch
         {

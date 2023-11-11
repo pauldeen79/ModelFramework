@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Entity;
+﻿using ClassFramework.Pipelines.Tests.Builder;
+
+namespace ClassFramework.Pipelines.Tests.Entity;
 
 public class EntityContextTests : TestBase
 {
@@ -26,6 +28,38 @@ public class EntityContextTests : TestBase
             // Act & Assert
             this.Invoking(_ => new EntityContext(model: CreateModel(), new Pipelines.Entity.PipelineBuilderSettings(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
+        }
+    }
+
+    public class MapTypeName : BuilderContextTests
+    {
+        [Fact]
+        public void Throws_On_Null_TypeName()
+        {
+            // Arrange
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+
+            // Act & Assert
+            sut.Invoking(x => x.MapTypeName(typeName: null!))
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("typeName");
+        }
+    }
+
+    public class MapAttribute : BuilderContextTests
+    {
+        [Fact]
+        public void Throws_On_Null_TypeName()
+        {
+            // Arrange
+            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+
+            // Act & Assert
+            sut.Invoking(x => x.MapAttribute(attribute: null!))
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("attribute");
         }
     }
 }

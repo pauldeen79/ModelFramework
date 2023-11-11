@@ -30,7 +30,7 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
             : Array.Empty<string>();
 
     public string MapTypeName(string typeName)
-        => typeName.MapTypeName(Settings.TypeSettings);
+        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
 
     public Domain.Attribute MapAttribute(Domain.Attribute attribute)
     {
