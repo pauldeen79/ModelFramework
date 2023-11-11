@@ -35,13 +35,27 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         {
             var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings);
 
-            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)), context.Context.FormatProvider, childContext);
+            var typeNameResult = _formattableStringParser.Parse
+            (
+                property.Metadata
+                    .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                    .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
+                context.Context.FormatProvider,
+                childContext
+            );
+
             if (!typeNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ClassBuilder>(typeNameResult);
             }
 
-            var namespaceResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext);
+            var namespaceResult = _formattableStringParser.Parse
+            (
+                context.Context.Settings.NameSettings.BuilderNameFormatString,
+                context.Context.FormatProvider,
+                childContext
+            );
+
             if (!namespaceResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ClassBuilder>(namespaceResult);
@@ -150,10 +164,13 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
         var builderAddExpressionResult = _formattableStringParser.Parse
         (
-            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
+            property.Metadata
+                .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );
+
         yield return builderAddExpressionResult;
 
         yield return Result.Success($"return {GetReturnValue(context.Context)};");

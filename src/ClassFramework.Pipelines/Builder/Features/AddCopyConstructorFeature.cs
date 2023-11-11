@@ -104,13 +104,15 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     private Result<string> CreateBuilderInitializationCode(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
-            property.Metadata.GetStringValue
-            (
-                MetadataNames.CustomBuilderConstructorInitializeExpression,
-                () => property.TypeName.FixTypeName().IsCollectionTypeName()
-                    ? CreateCollectionInitialization(context.Context.Settings)
-                    : "{Name} = source.{Name}"
-            ),
+            property.Metadata
+                .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                .GetStringValue
+                (
+                    MetadataNames.CustomBuilderConstructorInitializeExpression,
+                    () => property.TypeName.FixTypeName().IsCollectionTypeName()
+                        ? CreateCollectionInitialization(context.Context.Settings)
+                        : "{Name} = source.{Name}"
+                ),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );

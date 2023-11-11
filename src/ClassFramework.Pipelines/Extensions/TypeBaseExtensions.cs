@@ -124,7 +124,9 @@ public static class TypeBaseExtensions
         {
             var builderArgumentTypeResult = formattableStringParser.Parse
             (
-                property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
+                property.Metadata
+                    .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                    .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
                 context
             );

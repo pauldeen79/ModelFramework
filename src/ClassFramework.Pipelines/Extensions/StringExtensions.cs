@@ -14,6 +14,13 @@ public static class StringExtensions
                 .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), pipelineBuilderTypeSettings)); // so we can safely use ReplaceGenericTypeName here
         }
 
+        var typeNameMapping = pipelineBuilderTypeSettings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        if (typeNameMapping is not null)
+        {
+            // i.e. TSource => TTarget
+            return typeNameMapping.TargetTypeName;
+        }
+
         var ns = typeName.GetNamespaceWithDefault();
         if (!string.IsNullOrEmpty(ns))
         {
@@ -23,13 +30,6 @@ public static class StringExtensions
             {
                 return $"{namespaceMapping.TargetNamespace}.{typeName.GetClassName()}";
             }
-        }
-
-        var typeNameMapping = pipelineBuilderTypeSettings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
-        if (typeNameMapping is not null)
-        {
-            // i.e. TSource => TTarget
-            return typeNameMapping.TargetTypeName;
         }
 
         return typeName;
