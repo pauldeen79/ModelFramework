@@ -2,8 +2,8 @@
 
 public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
 {
-    public BuilderContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
-        : base(sourceModel, settings, formatProvider)
+    public BuilderContext(TypeBase model, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+        : base(model, settings, formatProvider)
     {
     }
 
@@ -30,10 +30,16 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
             : Array.Empty<string>();
 
     public string MapTypeName(string typeName)
-        => typeName;
+        => typeName.MapTypeName(Settings.TypeSettings);
 
     public Domain.Attribute MapAttribute(Domain.Attribute attribute)
-        => attribute;
+    {
+        attribute = attribute.IsNotNull(nameof(attribute));
+
+        return new AttributeBuilder(attribute)
+            .WithName(MapTypeName(attribute.Name))
+            .Build();
+    }
 
     private bool NeedsPragmas()
         => Settings.GenerationSettings.EnableNullableReferenceTypes

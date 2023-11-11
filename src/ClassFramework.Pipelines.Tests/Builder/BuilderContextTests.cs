@@ -5,18 +5,18 @@ public class BuilderContextTests : TestBase
     public class Constructor : BuilderContextTests
     {
         [Fact]
-        public void Throws_On_Null_SourceModel()
+        public void Throws_On_Null_Model()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: null!, new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
+            this.Invoking(_ => new BuilderContext(model: null!, new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture))
+                .Should().Throw<ArgumentNullException>().WithParameterName("model");
         }
 
         [Fact]
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateModel(), settings: null!, CultureInfo.InvariantCulture))
+            this.Invoking(_ => new BuilderContext(model: CreateModel(), settings: null!, CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -24,7 +24,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), formatProvider: null!))
+            this.Invoking(_ => new BuilderContext(model: CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }

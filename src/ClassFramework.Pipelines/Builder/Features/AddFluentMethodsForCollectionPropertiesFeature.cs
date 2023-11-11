@@ -31,11 +31,11 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             return Result.Continue<ClassBuilder>();
         }
 
-        foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Context.Model.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings);
 
-            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, childContext);
+            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)), context.Context.FormatProvider, childContext);
             if (!typeNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<ClassBuilder>(typeNameResult);
@@ -48,8 +48,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             }
 
             var returnType = context.Context.IsBuilderForAbstractEntity
-                ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
-                : namespaceResult.Value! + context.Context.SourceModel.GetGenericTypeArgumentsString();
+                ? "TBuilder" + context.Context.Model.GetGenericTypeArgumentsString()
+                : namespaceResult.Value! + context.Context.Model.GetGenericTypeArgumentsString();
 
             var enumerableOverloadResults = GetCodeStatementsForEnumerableOverload(context, property)
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
@@ -143,7 +143,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             
             if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
-                var constructorInitializerResult = property.GetBuilderClassConstructorInitializer(context, _formattableStringParser, context.Context.MapTypeName(property.TypeName)); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
+                var constructorInitializerResult = property.GetBuilderClassConstructorInitializer(context, _formattableStringParser, property.TypeName); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
                 yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {constructorInitializerResult.GetValueOrThrow()};"); // note that we use GetValueOrThrow here, because we have already checked this expression in the typeNameResult (see above in this class)
             }
         }

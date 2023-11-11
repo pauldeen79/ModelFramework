@@ -44,21 +44,21 @@ public abstract class TestBase
         Func<ClassProperty, string>? classPropertyDelegate)
         => input switch
         {
-            PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.SourceModel),
-            PipelineContext<ClassBuilder, EntityContext> classContext => typeBaseDelegate(classContext.Context.SourceModel),
-            PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
-            PipelineContext<ClassPropertyBuilder, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
-            PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
-            PipelineContext<ClassProperty, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.SourceModel),
+            PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.Model),
+            PipelineContext<ClassBuilder, EntityContext> classContext => typeBaseDelegate(classContext.Context.Model),
+            PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            PipelineContext<ClassPropertyBuilder, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            PipelineContext<ClassProperty, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
             ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null
-                ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel)
+                ? typeBaseDelegate(parentChild.ParentContext.Context.Model)
                 : classPropertyDelegate(parentChild.ChildContext),
             ParentChildContext<EntityContext, ClassProperty> parentChild => classPropertyDelegate is null
-                ? typeBaseDelegate(parentChild.ParentContext.Context.SourceModel)
+                ? typeBaseDelegate(parentChild.ParentContext.Context.Model)
                 : classPropertyDelegate(parentChild.ChildContext),
             ClassPropertyContext classPropertyContext => classPropertyDelegate is null
                 ? string.Empty
-                : classPropertyDelegate(classPropertyContext.SourceModel),
+                : classPropertyDelegate(classPropertyContext.Model),
             _ => throw new NotSupportedException($"Context of type {input?.GetType()} is not supported")
         };
 

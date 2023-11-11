@@ -66,6 +66,11 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         }
     }
 
+    protected ModelFramework.Objects.Contracts.ITypeBase[] GetPipelinesModels()
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetTypes()
+                .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
+
     private void ConvertBuilderFactoriesToToBuilderMethod<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
         where TEntity : ModelFramework.Objects.Contracts.ITypeBase

@@ -6,27 +6,27 @@ public static class PipelineContextExtensions
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var customEntityInstanciation = context.Context.SourceModel.Metadata.GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
+        var customEntityInstanciation = context.Context.Model.Metadata.GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
             return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
         }
 
-        var constructorsContainer = context.Context.SourceModel as IConstructorsContainer;
+        var constructorsContainer = context.Context.Model as IConstructorsContainer;
 
         if (constructorsContainer is null)
         {
             return Result.Invalid<string>("Cannot create an instance of a type that does not have constructors");
         }
 
-        if (context.Context.SourceModel is Class cls && cls.Abstract)
+        if (context.Context.Model is Class cls && cls.Abstract)
         {
             return Result.Invalid<string>("Cannot create an instance of an abstract class");
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
-        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
-        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Any());
+        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Any());
+        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Any());
 
         var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
 
@@ -35,12 +35,12 @@ public static class PipelineContextExtensions
             return parametersResult;
         }
 
-        return Result.Success($"new {context.Context.SourceModel.GetFullName()}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
+        return Result.Success($"new {context.Context.Model.GetFullName()}{classNameSuffix}{context.Context.Model.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
     private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
-        var properties = context.Context.SourceModel.GetBuilderConstructorProperties(context.Context);
+        var properties = context.Context.Model.GetBuilderConstructorProperties(context.Context);
 
         var defaultValueDelegate = hasPublicParameterlessConstructor
             ? new Func<ClassProperty, string>(p => "{Name} = {Name}")

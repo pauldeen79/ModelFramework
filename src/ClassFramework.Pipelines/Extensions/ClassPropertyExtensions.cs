@@ -43,7 +43,11 @@ public static class ClassPropertyExtensions
         return property.Name;
     }
 
-    public static Result<string> GetBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string typeName)
+    public static Result<string> GetBuilderClassConstructorInitializer(
+        this ClassProperty property,
+        PipelineContext<ClassBuilder, BuilderContext> context,
+        IFormattableStringParser formattableStringParser,
+        string typeName)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));
@@ -51,7 +55,7 @@ public static class ClassPropertyExtensions
 
         var builderArgumentTypeResult = formattableStringParser.Parse
         (
-            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, typeName),
+            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(typeName)),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );

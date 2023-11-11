@@ -5,18 +5,18 @@ public class EntityContextTests : TestBase
     public class Constructor : EntityContextTests
     {
         [Fact]
-        public void Throws_On_Null_SourceModel()
+        public void Throws_On_Null_Model()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: null!, new Pipelines.Entity.PipelineBuilderSettings(), CultureInfo.InvariantCulture))
-                .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
+            this.Invoking(_ => new EntityContext(model: null!, new Pipelines.Entity.PipelineBuilderSettings(), CultureInfo.InvariantCulture))
+                .Should().Throw<ArgumentNullException>().WithParameterName("model");
         }
 
         [Fact]
         public void Throws_On_Null_Settings()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: CreateModel(), settings: null!, CultureInfo.InvariantCulture))
+            this.Invoking(_ => new EntityContext(model: CreateModel(), settings: null!, CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
@@ -24,7 +24,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: CreateModel(), new Pipelines.Entity.PipelineBuilderSettings(), formatProvider: null!))
+            this.Invoking(_ => new EntityContext(model: CreateModel(), new Pipelines.Entity.PipelineBuilderSettings(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }

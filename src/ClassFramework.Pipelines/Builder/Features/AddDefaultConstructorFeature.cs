@@ -51,9 +51,9 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
 
     private Result<ClassConstructorBuilder> CreateDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
     {
-        var constructorInitializerResults = context.Context.SourceModel.Properties
-            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, context.Context.MapTypeName(x.TypeName)) })
+        var constructorInitializerResults = context.Context.Model.Properties
+            .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
+            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName) })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 
@@ -64,16 +64,16 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         }
 
         var ctor = new ClassConstructorBuilder()
-            .WithChainCall(CreateBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
+            .WithChainCall(CreateBuilderClassConstructorChainCall(context.Context.Model, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
 
         if (context.Context.Settings.ConstructorSettings.SetDefaultValues)
         {
-            var defaultValueResults = context.Context.SourceModel.Properties
+            var defaultValueResults = context.Context.Model.Properties
                 .Where
                 (x =>
-                    context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)
+                    context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings)
                     && !x.TypeName.FixTypeName().IsCollectionTypeName()
                     && !x.IsNullable
                     && x.HasNonDefaultDefaultValue()

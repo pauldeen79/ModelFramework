@@ -47,7 +47,7 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
             .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
             .AddStringCodeStatements
             (
-                context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
+                context.Context.Model.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
                 new[]
                 {
                     $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
