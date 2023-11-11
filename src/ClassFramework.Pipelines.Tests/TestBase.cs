@@ -30,7 +30,7 @@ public abstract class TestBase
                     .Replace("{NullCheck.Source.Argument}", "/* source argument null check goes here */ ", StringComparison.Ordinal)
                     .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
                     .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)
-                    .Replace("{DefaultValue}", CreateReplacement(x[2], _ => string.Empty, y => y.GetDefaultValue(csharpExpressionCreator, false)), StringComparison.Ordinal)
+                    .Replace("{DefaultValue}", CreateReplacement(x[2], _ => string.Empty, y => y.GetDefaultValue(csharpExpressionCreator, false, y.TypeName)), StringComparison.Ordinal)
                     .Transform(x => x.Contains("{Error}", StringComparison.Ordinal)
                         ? Result.Error<string>("Kaboom")
                         : Result.Success(x)));

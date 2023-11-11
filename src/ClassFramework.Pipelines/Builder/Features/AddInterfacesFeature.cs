@@ -18,7 +18,8 @@ public class AddInterfacesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         }
 
         context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
-            .Where(x => context.Context.Settings.GenerationSettings.CopyInterfacePredicate?.Invoke(x) ?? true));
+            .Where(x => context.Context.Settings.GenerationSettings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Select(context.Context.MapTypeName));
 
         return Result.Continue<ClassBuilder>();
     }

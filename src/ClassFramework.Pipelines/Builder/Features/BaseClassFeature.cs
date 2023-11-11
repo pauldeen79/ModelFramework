@@ -107,7 +107,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         var newContext = new PipelineContext<ClassBuilder, BuilderContext>
         (
             context.Model,
-            new BuilderContext(CreateTypeBase(baseClassContainer.BaseClass!), context.Context.Settings, context.Context.FormatProvider)
+            new BuilderContext(CreateTypeBase(context.Context.MapTypeName(baseClassContainer.BaseClass!)), context.Context.Settings, context.Context.FormatProvider)
         );
 
         return _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, newContext);

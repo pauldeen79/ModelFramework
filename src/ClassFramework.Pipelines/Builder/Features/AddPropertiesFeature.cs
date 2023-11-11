@@ -33,7 +33,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings));
+            var typeNameResult = _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)), context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings));
 
             if (!typeNameResult.IsSuccessful())
             {
@@ -45,7 +45,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithTypeName(typeNameResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .AddAttributes(property.Attributes.Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
+                .AddAttributes(property.Attributes.Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))

@@ -53,7 +53,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     {
         var constructorInitializerResults = context.Context.SourceModel.Properties
             .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser) })
+            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, context.Context.MapTypeName(x.TypeName)) })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 

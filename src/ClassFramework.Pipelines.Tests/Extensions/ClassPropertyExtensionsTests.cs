@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests.Extensions;
+﻿using CrossCutting.Utilities.Parsers;
+
+namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class ClassPropertyExtensionsTests : TestBase
 {
@@ -12,7 +14,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -26,7 +28,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName);
 
             // Assert
             result.Should().Be("default(System.String)");
@@ -40,7 +42,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName);
 
             // Assert
             result.Should().Be("custom value");
@@ -55,7 +57,7 @@ public class ClassPropertyExtensionsTests : TestBase
             csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
 
             // Act
-            var result = sut.GetDefaultValue(csharpExpressionCreator, false);
+            var result = sut.GetDefaultValue(csharpExpressionCreator, false, sut.TypeName);
 
             // Assert
             result.Should().Be("custom value");
@@ -186,7 +188,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context: null!, formattableStringParser))
+            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context: null!, formattableStringParser, sut.TypeName))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -198,8 +200,21 @@ public class ClassPropertyExtensionsTests : TestBase
             var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context, formattableStringParser: null!))
+            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context, formattableStringParser: null!, sut.TypeName))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
+        }
+
+        [Fact]
+        public void Throws_On_Null_TypeName()
+        {
+            // Arrange
+            var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context, formattableStringParser: formattableStringParser, typeName: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("typeName");
         }
     }
 }

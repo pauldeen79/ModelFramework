@@ -143,7 +143,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             
             if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
-                var constructorInitializerResult = property.GetBuilderClassConstructorInitializer(context, _formattableStringParser); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
+                var constructorInitializerResult = property.GetBuilderClassConstructorInitializer(context, _formattableStringParser, context.Context.MapTypeName(property.TypeName)); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
                 yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {constructorInitializerResult.GetValueOrThrow()};"); // note that we use GetValueOrThrow here, because we have already checked this expression in the typeNameResult (see above in this class)
             }
         }

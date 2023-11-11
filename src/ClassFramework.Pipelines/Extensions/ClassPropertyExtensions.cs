@@ -2,7 +2,7 @@
 
 public static class ClassPropertyExtensions
 {
-    public static string GetDefaultValue(this ClassProperty property, ICsharpExpressionCreator csharpExpressionCreator, bool enableNullableReferenceTypes)
+    public static string GetDefaultValue(this ClassProperty property, ICsharpExpressionCreator csharpExpressionCreator, bool enableNullableReferenceTypes, string typeName)
     {
         csharpExpressionCreator = csharpExpressionCreator.IsNotNull(nameof(csharpExpressionCreator));
 
@@ -17,7 +17,7 @@ public static class ClassPropertyExtensions
             return csharpExpressionCreator.Create(md.Value);
         }
 
-        return property.TypeName.FixTypeName().GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
+        return typeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
     }
 
     public static string GetNullCheckSuffix(this ClassProperty property, string name, bool addNullChecks)
@@ -43,14 +43,15 @@ public static class ClassPropertyExtensions
         return property.Name;
     }
 
-    public static Result<string> GetBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<string> GetBuilderClassConstructorInitializer(this ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string typeName)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));
+        typeName = typeName.IsNotNull(nameof(typeName));
 
         var builderArgumentTypeResult = formattableStringParser.Parse
         (
-            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, typeName),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );

@@ -29,6 +29,12 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
             }
             : Array.Empty<string>();
 
+    public string MapTypeName(string typeName)
+        => typeName;
+
+    public Domain.Attribute MapAttribute(Domain.Attribute attribute)
+        => attribute;
+
     private bool NeedsPragmas()
         => Settings.GenerationSettings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
