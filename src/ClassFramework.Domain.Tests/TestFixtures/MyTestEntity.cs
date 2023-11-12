@@ -1,5 +1,46 @@
 ﻿namespace ClassFramework.Domain.Tests.TestFixtures;
 
+public record TestValidatable : System.ComponentModel.DataAnnotations.IValidatableObject
+{
+    public TestValidatable(int property)
+    {
+        Property = property;
+        // Default built-in validation, using ValidationException:
+        /// System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+
+        // Convert validation exception to ArgumentException, for more DDD style validation:
+        var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        System.ComponentModel.DataAnnotations.Validator.TryValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this), results, true);
+        var error = results.Find(x => !string.IsNullOrEmpty(x.ErrorMessage) && x.MemberNames.Any());
+        if (error is not null)
+        {
+            throw new ArgumentException(error.ErrorMessage, error.MemberNames.First());
+        }
+    }
+
+    public int Property { get; }
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        yield return new ValidationResult("Error1", new[] { "Member1" });
+        yield return new ValidationResult("Error2", new[] { "Member2" });
+    }
+}
+
+public class TestValidatableBuilder : IValidatableObject
+{
+    public int Property { get; set; }
+
+    // Example of shared validation
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        var instance = new TestValidatable(Property);
+        var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
+        return results;
+    }
+}
+
 public partial record MyCustomEntity
 {
     public int Property1 { get; }
