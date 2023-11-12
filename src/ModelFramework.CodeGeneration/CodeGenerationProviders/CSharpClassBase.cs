@@ -875,6 +875,10 @@ public abstract class CSharpClassBase : ClassBase
 
     private string GetCustomBuilderConstructorInitializeExpressionForSingleProperty(ClassPropertyBuilder property, string typeName)
     {
+        var placeholder = AddNullChecks
+            ? "_{1}"
+            : "{0}";
+
         if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
         {
             if (UseLazyInitialization)
@@ -885,8 +889,8 @@ public abstract class CSharpClassBase : ClassBase
             }
 
             return property.IsNullable
-                ? "{0} = source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})"
-                : "{0} = " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})";
+                ? placeholder + " = source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})"
+                : placeholder + " = " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})";
         }
 
         if (UseLazyInitialization)
@@ -897,8 +901,8 @@ public abstract class CSharpClassBase : ClassBase
         }
 
         return property.IsNullable
-            ? "{0} = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})"
-            : "{0} = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})";
+            ? placeholder + " = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})"
+            : placeholder + " = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})";
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
