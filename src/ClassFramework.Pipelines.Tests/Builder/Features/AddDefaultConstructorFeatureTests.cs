@@ -47,8 +47,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
                 ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
                 (
-                    "_property3 = new System.Collections.Generic.List<int>();",
-                    "_property2 = string.Empty;",
+                    "Property3 = new System.Collections.Generic.List<int>();",
+                    "Property2 = string.Empty;",
                     "SetDefaultValues();"
                 );
             }
@@ -67,6 +67,41 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(
+                enableBuilderInheritance: false,
+                addCopyConstructor: false,
+                enableEntityInheritance: false);
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Constructors.Should().ContainSingle();
+            var ctor = model.Constructors.Single();
+            ctor.Protected.Should().BeFalse();
+            ctor.ChainCall.Should().BeEmpty();
+            ctor.Parameters.Should().BeEmpty();
+            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "Property3 = new System.Collections.Generic.List<int>();",
+                "Property2 = string.Empty;",
+                "SetDefaultValues();"
+            );
+        }
+
+        [Fact]
+        public void Adds_Default_Constructor_For_Non_Abstract_Builder_With_Backing_Fields()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateBuilderSettings(
+                enableNullableReferenceTypes: true, // important for backing fields
+                addNullChecks: true,                // important for backing fields
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
@@ -119,8 +154,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "_property3 = System.Linq.Enumerable.Empty<int>();",
-                "_property2 = string.Empty;",
+                "Property3 = System.Linq.Enumerable.Empty<int>();",
+                "Property2 = string.Empty;",
                 "SetDefaultValues();"
             );
         }
@@ -152,8 +187,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "_property3 = new System.Collections.Generic.List<int>();",
-                "_property2 = string.Empty;",
+                "Property3 = new System.Collections.Generic.List<int>();",
+                "Property2 = string.Empty;",
                 "SetDefaultValues();"
             );
         }
@@ -186,7 +221,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "_property3 = new System.Collections.Generic.List<int>();"
+                "Property3 = new System.Collections.Generic.List<int>();"
             );
         }
 

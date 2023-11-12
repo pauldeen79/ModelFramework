@@ -55,9 +55,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
             .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new
             {
-                Name = x.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)
-                    ? $"_{x.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}"
-                    : x.Name,
+                Name = x.GetInitializationName(context.Context),
                 Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
@@ -108,9 +106,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     private Result<string> GenerateDefaultValueStatement(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
-            property.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)
-                ? "_{NamePascal} = {DefaultValue};"
-                : "{Name} = {DefaultValue};",
+            "{BuilderMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
         );

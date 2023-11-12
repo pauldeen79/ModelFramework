@@ -3,4 +3,5 @@
 public interface IPipelineBuilderGenerationSettings
 {
     bool EnableNullableReferenceTypes { get; }
+    bool AddNullChecks { get; }
 }

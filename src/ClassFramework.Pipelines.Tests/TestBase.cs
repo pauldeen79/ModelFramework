@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Tests;
+﻿using CrossCutting.ProcessingPipeline;
+
+namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase
 {
@@ -18,6 +20,7 @@ public abstract class TestBase
                     .Replace("{NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
                     .Replace("{NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
                     .Replace("{NamePascalCsharpFriendlyName}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()).GetCsharpFriendlyName()), StringComparison.Ordinal)
+                    .Replace("{BuilderMemberName}", CreateReplacement(x[2], _ => string.Empty, y => GetAddNullChecks(x[2]) && y.HasBackingFieldOnBuilder(GetEnableNullableReferenceTypes(x[2])) ? $"_{y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo())}" : y.Name), StringComparison.Ordinal)
                     .Replace("{Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
                     .Replace("{Class.Name}", CreateReplacement(x[2], y => y.Name, null), StringComparison.Ordinal)
                     .Replace("{Class.NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
@@ -38,6 +41,76 @@ public abstract class TestBase
         return parser;
     }
 
+    private bool GetAddNullChecks(object? context)
+    {
+        if (context is BuilderContext b)
+        {
+            return b.Settings.GenerationSettings.AddNullChecks;
+        }
+
+        if (context is ParentChildContext<BuilderContext, ClassProperty> pc1)
+        {
+            return pc1.Settings.AddNullChecks;
+        }
+
+        if (context is ParentChildContext<EntityContext, ClassProperty> pc2)
+        {
+            return pc2.Settings.AddNullChecks;
+        }
+
+        if (context is ClassPropertyContext cp)
+        {
+            return cp.Settings.AddNullChecks;
+        }
+
+        if (context is PipelineContext<ClassBuilder, BuilderContext> pc3)
+        {
+            return pc3.Context.Settings.GenerationSettings.AddNullChecks;
+        }
+
+        if (context is PipelineContext<ClassBuilder, EntityContext> pc4)
+        {
+            return pc4.Context.Settings.GenerationSettings.AddNullChecks;
+        }
+
+        return false;
+    }
+
+    private bool GetEnableNullableReferenceTypes(object? context)
+    {
+        if (context is BuilderContext b)
+        {
+            return b.Settings.GenerationSettings.EnableNullableReferenceTypes;
+        }
+
+        if (context is ParentChildContext<BuilderContext, ClassProperty> pc1)
+        {
+            return pc1.Settings.EnableNullableReferenceTypes;
+        }
+
+        if (context is ParentChildContext<EntityContext, ClassProperty> pc2)
+        {
+            return pc2.Settings.EnableNullableReferenceTypes;
+        }
+
+        if (context is ClassPropertyContext cp)
+        {
+            return cp.Settings.EnableNullableReferenceTypes;
+        }
+
+        if (context is PipelineContext<ClassBuilder, BuilderContext> pc3)
+        {
+            return pc3.Context.Settings.GenerationSettings.EnableNullableReferenceTypes;
+        }
+
+        if (context is PipelineContext<ClassBuilder, EntityContext> pc4)
+        {
+            return pc4.Context.Settings.GenerationSettings.EnableNullableReferenceTypes;
+        }
+
+        return false;
+    }
+
     private static string CreateReplacement(
         object? input,
         Func<TypeBase, string> typeBaseDelegate,
@@ -46,10 +119,10 @@ public abstract class TestBase
         {
             PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.Model),
             PipelineContext<ClassBuilder, EntityContext> classContext => typeBaseDelegate(classContext.Context.Model),
-            PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
-            PipelineContext<ClassPropertyBuilder, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
-            PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
-            PipelineContext<ClassProperty, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            //PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            //PipelineContext<ClassPropertyBuilder, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            //PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
+            //PipelineContext<ClassProperty, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
             ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null
                 ? typeBaseDelegate(parentChild.ParentContext.Context.Model)
                 : classPropertyDelegate(parentChild.ChildContext),
@@ -117,13 +190,14 @@ public abstract class TestBase
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
             generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
-            entitySettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, validateArguments, allowGenerationWithoutProperties),
+            entitySettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, enableNullableReferenceTypes, validateArguments, allowGenerationWithoutProperties),
             nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
         );
 
     protected static Pipelines.Entity.PipelineBuilderSettings CreateEntitySettings(
         bool enableEntityInheritance = false,
         bool addNullChecks = false,
+        bool enableNullableReferenceTypes = false,
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
@@ -131,9 +205,9 @@ public abstract class TestBase
         string entityNamespaceFormatString = "{Namespace}",
         string entityNameFormatString = "{Class.Name}{EntityNameSuffix}")
         => new Pipelines.Entity.PipelineBuilderSettings(
-            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties),
+            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes),
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
-            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, addNullChecks: addNullChecks),
+            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
             nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString)
         );
 }
