@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Tests.TestFixtures;
 
-public record MyCustomEntity
+public partial record MyCustomEntity
 {
     public int Property1 { get; }
 
@@ -15,7 +15,7 @@ public record MyCustomEntity
     }
 }
 
-public record MyTestEntity
+public partial record MyTestEntity
 {
     public MyTestEntity(int property1, MyCustomEntity property2, IEnumerable<MyCustomEntity> property3)
     {
@@ -40,23 +40,13 @@ public record MyTestEntity
     }
 }
 
-public class MyTestEntityBuilder
+public partial class MyTestEntityBuilder
 {
-    private int _property1;
     private MyCustomEntityBuilder _property2;
     private Collection<MyCustomEntityBuilder> _property3;
 
-    public int Property1
-    {
-        get
-        {
-            return _property1;
-        }
-        set
-        {
-            _property1 = value;
-        }
-    }
+    // When not nullable, use auto property and no backing field
+    public int Property1 { get; set; }
 
     public MyCustomEntityBuilder Property2
     {
@@ -86,18 +76,23 @@ public class MyTestEntityBuilder
 
     public MyTestEntityBuilder()
     {
+        // Note that if you need to assign a default value to Property1, then you should either use _property1 or Property1, depending on the availability of a backing field.
         _property2 = new MyCustomEntityBuilder();
         _property3 = new Collection<MyCustomEntityBuilder>();
+        SetDefaultValues();
     }
 
     public MyTestEntityBuilder(MyTestEntity source)
     {
         if (source is null) throw new ArgumentNullException(nameof(source));
 
-        _property1 = source.Property1;
+        // Note that if you need to assign a default value to Property1, then you should either use _property1 or Property1, depending on the availability of a backing field.
+        Property1 = source.Property1;
         _property2 = new MyCustomEntityBuilder(source.Property2);
         _property3 = new Collection<MyCustomEntityBuilder>();
     }
+
+    partial void SetDefaultValues();
 
     public MyTestEntity Build()
     {
@@ -105,21 +100,9 @@ public class MyTestEntityBuilder
     }
 }
 
-public class MyCustomEntityBuilder
+public partial class MyCustomEntityBuilder
 {
-    private int _property1;
-
-    public int Property1
-    {
-        get
-        {
-            return _property1;
-        }
-        set
-        {
-            _property1 = value;
-        }
-    }
+    public int Property1 { get; set; }
 
     public MyCustomEntityBuilder()
     {
@@ -129,7 +112,7 @@ public class MyCustomEntityBuilder
     {
         if (source is null) throw new ArgumentNullException(nameof(source));
 
-        _property1 = source.Property1;
+        Property1 = source.Property1;
     }
 
     public MyCustomEntity Build()
