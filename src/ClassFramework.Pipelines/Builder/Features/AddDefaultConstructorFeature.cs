@@ -53,8 +53,13 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     {
         var constructorInitializerResults = context.Context.Model.Properties
             .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            // TODO: Use backing field instead of property name when available
-            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName) })
+            .Select(x => new
+            {
+                Name = x.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)
+                    ? $"_{x.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}"
+                    : x.Name,
+                Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
+            })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 
@@ -101,8 +106,14 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
         => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base()")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
 
     private Result<string> GenerateDefaultValueStatement(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
-        // TODO: Use backing field instead of property name when available
-        => _formattableStringParser.Parse("{Name} = {DefaultValue};", context.Context.FormatProvider, new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings));
+        => _formattableStringParser.Parse
+        (
+            property.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)
+                ? "_{NamePascal} = {DefaultValue};"
+                : "{Name} = {DefaultValue};",
+            context.Context.FormatProvider,
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+        );
 
     private static ClassConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()

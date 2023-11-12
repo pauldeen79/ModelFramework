@@ -38,13 +38,17 @@ public static class ClassPropertyExtensions
             && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared
             // For now, only add backing fields for non nullable fields.
             // Nullable fields can simply have auto properties, as null checks are not needed
-            && (!property.IsNullable(context.Settings.GenerationSettings.EnableNullableReferenceTypes) || (!property.IsValueType && !property.IsNullable)))
+            && property.HasBackingFieldOnBuilder(context.Settings.GenerationSettings.EnableNullableReferenceTypes))
         {
             return $"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}";
         }
 
         return property.Name;
     }
+
+    public static bool HasBackingFieldOnBuilder(this ClassProperty property, bool enableNullableReferenceTypes)
+        => !property.IsValueType
+        && (!property.IsNullable(enableNullableReferenceTypes || !property.IsNullable));
 
     public static Result<string> GetBuilderClassConstructorInitializer(
         this ClassProperty property,

@@ -122,7 +122,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
             // For now, only add backing fields for non nullable fields.
             // Nullable fields can simply have auto properties, as null checks are not needed
-            && (!x.IsNullable(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes) || (!x.IsValueType && !x.IsNullable))))
+            && x.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)))
         {
             var builderArgumentTypeResult = formattableStringParser.Parse
             (
