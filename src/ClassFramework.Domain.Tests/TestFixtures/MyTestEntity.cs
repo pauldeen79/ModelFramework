@@ -7,7 +7,19 @@ public partial record MyCustomEntity
     public MyCustomEntity(int property1)
     {
         Property1 = property1;
+
+        // When using validation (either DDD or IValidatableObject style):
+        Validate();
     }
+
+    // When using validation with IValidatableObject interface:
+    protected void Validate()
+    {
+        System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+    }
+
+    // When using domain driven style validation (just throw argument exceptions), use this:
+    ///partial void Validate();
 
     public MyCustomEntityBuilder ToBuilder()
     {
@@ -28,7 +40,19 @@ public partial record MyTestEntity
         // When using null checks:
         if (property3 is null) throw new ArgumentNullException(nameof(property3));
         Property3 = new ReadOnlyValueCollection<MyCustomEntity>(property3);
+
+        // When using validation (either DDD or IValidatableObject style):
+        Validate();
     }
+
+    // When using validation with IValidatableObject interface:
+    protected void Validate()
+    {
+        System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+    }
+
+    // When using domain driven style validation (just throw argument exceptions), use this:
+    ///partial void Validate();
 
     public int Property1 { get; }
     public MyCustomEntity Property2 { get; }
@@ -40,7 +64,7 @@ public partial record MyTestEntity
     }
 }
 
-public partial class MyTestEntityBuilder
+public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotations.IValidatableObject
 {
     private MyCustomEntityBuilder _property2;
     private Collection<MyCustomEntityBuilder> _property3;
@@ -100,7 +124,7 @@ public partial class MyTestEntityBuilder
     }
 }
 
-public partial class MyCustomEntityBuilder
+public partial class MyCustomEntityBuilder ///: System.ComponentModel.DataAnnotations.IValidatableObject
 {
     public int Property1 { get; set; }
 
