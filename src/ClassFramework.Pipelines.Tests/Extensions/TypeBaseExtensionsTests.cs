@@ -488,13 +488,13 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
+                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).WithIsNullable()
                 )
                 .Build();
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
+                enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.DomainOnly
@@ -507,9 +507,9 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
-            result.Select(x => x.Value!.TypeName).Should().AllBe(typeof(int).FullName);
-            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(true);
+            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1");
+            result.Select(x => x.Value!.TypeName).Should().AllBe(typeof(string).FullName);
+            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(false);
         }
 
         [Fact]
@@ -520,13 +520,14 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType"),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
+                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType"),
+                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)),
+                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(string)).WithIsNullable()
                 )
                 .Build();
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
+                enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.DomainOnly
@@ -539,9 +540,9 @@ public class TypeBaseExtensionsTests : TestBase
             var result = sut.GetBuilderClassFields(context, formattableStringParser);
 
             // Assert
-            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
-            result.Select(x => x.Value!.TypeName).Should().BeEquivalentTo("MyCustomType", typeof(int).FullName, typeof(int).FullName);
-            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(true);
+            result.Select(x => x.Value!.Name).Should().BeEquivalentTo("_property1", "_property2");
+            result.Select(x => x.Value!.TypeName).Should().BeEquivalentTo("MyCustomType", typeof(string).FullName);
+            result.Select(x => x.Value!.IsValueType).Should().AllBeEquivalentTo(false);
         }
     }
 

@@ -35,7 +35,10 @@ public static class ClassPropertyExtensions
         context = context.IsNotNull(nameof(context));
 
         if (context.Settings.GenerationSettings.AddNullChecks
-            && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+            && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared
+            // For now, only add backing fields for non nullable fields.
+            // Nullable fields can simply have auto properties, as null checks are not needed
+            && (!property.IsNullable(context.Settings.GenerationSettings.EnableNullableReferenceTypes) || (!property.IsValueType && !property.IsNullable)))
         {
             return $"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}";
         }

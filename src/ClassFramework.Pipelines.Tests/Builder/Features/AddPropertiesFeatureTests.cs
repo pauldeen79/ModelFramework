@@ -211,12 +211,18 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         public void Adds_CodeStatements_To_Properties_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("MyOptionalProperty").WithType(typeof(string)).WithIsNullable())
+                .AddProperties(new ClassPropertyBuilder().WithName("MyRequiredProperty").WithType(typeof(string)))
+                .Build();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
+                enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -227,10 +233,10 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             result.IsSuccessful().Should().BeTrue();
             model.Properties.SelectMany(x => x.GetterCodeStatements).Should().NotBeEmpty();
             model.Properties.SelectMany(x => x.GetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _property1;", "return _property2;", "return _property3;");
+            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return _myRequiredProperty;");
             model.Properties.SelectMany(x => x.SetterCodeStatements).Should().NotBeEmpty();
             model.Properties.SelectMany(x => x.SetterCodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_property1 = value;", "_property2 = value ?? throw new System.ArgumentNullException(nameof(value));", "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));");
+            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("_myRequiredProperty = value ?? throw new System.ArgumentNullException(nameof(value));");
         }
 
         [Theory]
@@ -249,6 +255,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
+                enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -271,12 +278,17 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
         public void Adds_Fields_When_AddNullChecks_Is_True_And_ValidateArguments_Is(ArgumentValidationType validateArguments)
         {
             // Arrange
-            var sourceModel = CreateModel();
+            var sourceModel = new ClassBuilder()
+                .WithName("SomeClass")
+                .WithNamespace("SomeNamespace")
+                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .Build();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
+                enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
             var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
@@ -285,7 +297,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
+            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_myProperty");
         }
 
         [Fact]

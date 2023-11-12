@@ -34,4 +34,16 @@ public static class StringExtensions
 
         return typeName;
     }
+
+    public static string FixNullableTypeName(this string typeName, ITypeContainer typeContainer)
+    {
+        typeContainer = typeContainer.IsNotNull(nameof(typeContainer));
+
+        if (!typeName.StartsWith("System.Nullable", StringComparison.Ordinal) && typeContainer.IsNullable && typeContainer.IsValueType)
+        {
+            return typeof(Nullable<>).ReplaceGenericTypeName(typeName);
+        }
+
+        return typeName;
+    }
 }

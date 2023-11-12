@@ -113,14 +113,16 @@ public static class TypeBaseExtensions
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context.Context.IsAbstractBuilder
-            || !context.Context.Settings.GenerationSettings.AddNullChecks
-            || context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+        if (!context.Context.HasBackingFields())
         {
             yield break;
         }
-        
-        foreach (var property in instance.Properties.Where(x => instance.IsMemberValidForBuilderClass(x, context.Context.Settings)))
+
+        foreach (var property in instance.Properties.Where(x =>
+            instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
+            // For now, only add backing fields for non nullable fields.
+            // Nullable fields can simply have auto properties, as null checks are not needed
+            && (!x.IsNullable(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes) || (!x.IsValueType && !x.IsNullable))))
         {
             var builderArgumentTypeResult = formattableStringParser.Parse
             (
@@ -139,7 +141,7 @@ public static class TypeBaseExtensions
 
             yield return Result.Success(new ClassFieldBuilder()
                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName))
+                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType));
         }
