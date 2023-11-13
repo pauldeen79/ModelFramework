@@ -2,7 +2,7 @@
 
 public record ParentChildContext<TParent, TChild>
 {
-    public ParentChildContext(PipelineContext<ClassBuilder, TParent> parentContext, TChild childContext, IPipelineBuilderGenerationSettings settings)
+    public ParentChildContext(PipelineContext<ClassBuilder, TParent> parentContext, TChild childContext, IPropertyGenerationSettings settings)
     {
         ParentContext = parentContext.IsNotNull(nameof(parentContext));
         ChildContext = childContext.IsNotNull(nameof(childContext));
@@ -11,5 +11,5 @@ public record ParentChildContext<TParent, TChild>
 
     public PipelineContext<ClassBuilder, TParent> ParentContext { get; }
     public TChild ChildContext { get; }
-    public IPipelineBuilderGenerationSettings Settings { get; }
+    public IPropertyGenerationSettings Settings { get; }
 }

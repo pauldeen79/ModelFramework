@@ -155,7 +155,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "if (source is null) throw new System.ArgumentNullException(nameof(source));",
-                "Property3 = new System.Collections.Generic.List<int>();",
+                "_property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
                 "if (source.Property3 is not null) Property3.AddRange(source.Property3);"

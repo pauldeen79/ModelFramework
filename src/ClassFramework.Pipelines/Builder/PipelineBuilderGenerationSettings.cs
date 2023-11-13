@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record PipelineBuilderGenerationSettings : IPipelineBuilderGenerationSettings
+public record PipelineBuilderGenerationSettings
 {
     public bool AddNullChecks { get; }
     public bool EnableNullableReferenceTypes { get; }

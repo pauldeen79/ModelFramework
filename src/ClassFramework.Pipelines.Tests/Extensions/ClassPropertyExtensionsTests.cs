@@ -167,14 +167,14 @@ public class ClassPropertyExtensionsTests : TestBase
     public class GetInitializationName
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public void Throws_On_Null_CultureInfo()
         {
             // Arrange
             var sut = new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act & Assert
-            sut.Invoking(x => x.GetInitializationName(context: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Invoking(x => x.GetInitializationName(default, default, default, cultureInfo: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("cultureInfo");
         }
     }
 

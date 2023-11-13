@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record PipelineBuilderGenerationSettings : IPipelineBuilderGenerationSettings
+public record PipelineBuilderGenerationSettings
 {
     public bool AddSetters { get; }
     public Visibility? SetterVisibility { get; }

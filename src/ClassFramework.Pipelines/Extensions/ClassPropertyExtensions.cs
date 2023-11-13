@@ -30,25 +30,25 @@ public static class ClassPropertyExtensions
         return $" ?? throw new {typeof(ArgumentNullException).FullName}(nameof({name}))";
     }
 
-    public static string GetInitializationName(this ClassProperty property, BuilderContext context)
+    public static string GetInitializationName(this ClassProperty property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, CultureInfo cultureInfo)
     {
-        context = context.IsNotNull(nameof(context));
+        cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
 
-        if (context.Settings.GenerationSettings.AddNullChecks
-            && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared
-            // For now, only add backing fields for non nullable fields.
-            // Nullable fields can simply have auto properties, as null checks are not needed
-            && property.HasBackingFieldOnBuilder(context.Settings.GenerationSettings.EnableNullableReferenceTypes))
+        if (property.HasBackingFieldOnBuilder(addNullChecks, enableNullableReferenceTypes, argumentValidation))
         {
-            return $"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())}";
+            return $"_{property.Name.ToPascalCase(cultureInfo)}";
         }
 
         return property.Name;
     }
 
-    public static bool HasBackingFieldOnBuilder(this ClassProperty property, bool enableNullableReferenceTypes)
-        => !property.IsValueType
-        && (!property.IsNullable(enableNullableReferenceTypes || !property.IsNullable));
+    // For now, only add backing fields for non nullable fields.
+    // Nullable fields can simply have auto properties, as null checks are not needed
+    public static bool HasBackingFieldOnBuilder(this ClassProperty property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation)
+        => addNullChecks
+        && !property.IsValueType
+        && !property.IsNullable(enableNullableReferenceTypes)
+        && argumentValidation != ArgumentValidationType.Shared;
 
     public static Result<string> GetBuilderClassConstructorInitializer(
         this ClassProperty property,
@@ -64,7 +64,7 @@ public static class ClassPropertyExtensions
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(typeName)),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
         );
 
         if (!builderArgumentTypeResult.IsSuccessful())

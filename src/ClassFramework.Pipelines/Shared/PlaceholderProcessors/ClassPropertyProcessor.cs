@@ -27,9 +27,7 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(ClassProperty.Name)}Upper" => Result.Success(classPropertyContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
             $"{nameof(ClassProperty.Name)}Pascal" => Result.Success(classPropertyContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"{nameof(ClassProperty.Name)}PascalCsharpFriendlyName" => Result.Success(classPropertyContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            "BuilderMemberName" => Result.Success(classPropertyContext.Settings.AddNullChecks && classPropertyContext.Model.HasBackingFieldOnBuilder(classPropertyContext.Settings.EnableNullableReferenceTypes)
-                ? $"_{classPropertyContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())}"
-                : classPropertyContext.Model.Name),
+            "BuilderMemberName" => Result.Success(classPropertyContext.Model.GetInitializationName(classPropertyContext.Settings.AddNullChecks, classPropertyContext.Settings.EnableNullableReferenceTypes, classPropertyContext.Settings.ValidateArguments, classPropertyContext.FormatProvider.ToCultureInfo())),
             nameof(ClassProperty.TypeName) => Result.Success(typeName),
             $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
             $"{nameof(ClassProperty.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),

@@ -63,7 +63,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
             // Arrange
             var formattableStringParser = InitializeParser();
             var sut = CreateSut();
-            var settingsMock = Fixture.Freeze<IPipelineBuilderGenerationSettings>();
+            var settingsMock = Fixture.Freeze<IPropertyGenerationSettings>();
             var model = CreateModel();
             var context = new ClassPropertyContext(model, settingsMock, CultureInfo.InvariantCulture, model.TypeName);
 

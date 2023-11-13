@@ -70,7 +70,11 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
 
         var constructorInitializerResults = context.Context.Model.Properties
             .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(x => new { x.Name, Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName) })
+            .Select(x => new
+            {
+                Name = x.GetInitializationName(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
+                Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
+            })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 
@@ -114,7 +118,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
                         : "{Name} = source.{Name}"
                 ),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
         );
 
     private static string CreateCollectionInitialization(PipelineBuilderSettings settings)

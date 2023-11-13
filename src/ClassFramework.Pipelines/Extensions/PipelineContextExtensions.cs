@@ -52,7 +52,7 @@ public static class PipelineContextExtensions
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(property)),
                 context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
             )
         ).TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).ToArray();
 

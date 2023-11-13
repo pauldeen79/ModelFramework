@@ -39,7 +39,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                     .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
                     .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
             );
 
             if (!typeNameResult.IsSuccessful())

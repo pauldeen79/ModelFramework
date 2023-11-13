@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public record ClassPropertyContext : ContextBase<ClassProperty, IPipelineBuilderGenerationSettings>
+public record ClassPropertyContext : ContextBase<ClassProperty, IPropertyGenerationSettings>
 {
-    public ClassPropertyContext(ClassProperty model, IPipelineBuilderGenerationSettings settings, IFormatProvider formatProvider, string typeName)
+    public ClassPropertyContext(ClassProperty model, IPropertyGenerationSettings settings, IFormatProvider formatProvider, string typeName)
         : base(model, settings, formatProvider)
     {
         TypeName = typeName.IsNotNull(nameof(typeName));

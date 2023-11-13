@@ -1,12 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record PipelineBuilderSettings
+public sealed record PipelineBuilderSettings : IPropertyGenerationSettings
 {
     public PipelineBuilderNameSettings NameSettings { get; }
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
+
+    bool IPropertyGenerationSettings.EnableNullableReferenceTypes => GenerationSettings.EnableNullableReferenceTypes;
+    bool IPropertyGenerationSettings.AddNullChecks => GenerationSettings.AddNullChecks;
+    ArgumentValidationType IPropertyGenerationSettings.ValidateArguments => ConstructorSettings.ValidateArguments;
 
     public ArgumentValidationType AddValidationCode
     {

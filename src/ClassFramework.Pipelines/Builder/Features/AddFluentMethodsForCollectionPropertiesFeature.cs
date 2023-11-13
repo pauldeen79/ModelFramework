@@ -33,7 +33,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
         foreach (var property in context.Context.Model.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings);
+            var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings);
 
             var typeNameResult = _formattableStringParser.Parse
             (
@@ -151,14 +151,14 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
             );
             yield return argumentNullCheckResult;
             
             if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
                 var constructorInitializerResult = property.GetBuilderClassConstructorInitializer(context, _formattableStringParser, property.TypeName); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
-                yield return Result.Success($"if ({property.Name} is null) {property.GetInitializationName(context.Context)} = {constructorInitializerResult.GetValueOrThrow()};"); // note that we use GetValueOrThrow here, because we have already checked this expression in the typeNameResult (see above in this class)
+                yield return Result.Success($"if ({property.GetInitializationName(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo())} is null) {property.GetInitializationName(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.GetValueOrThrow()};"); // note that we use GetValueOrThrow here, because we have already checked this expression in the typeNameResult (see above in this class)
             }
         }
 
@@ -168,7 +168,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
                 .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings.GenerationSettings)
+            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
         );
 
         yield return builderAddExpressionResult;
