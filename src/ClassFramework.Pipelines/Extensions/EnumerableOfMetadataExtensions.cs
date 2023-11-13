@@ -7,7 +7,7 @@ public static class EnumerableOfMetadataExtensions
         string typeName,
         IPipelineBuilderTypeSettings pipelineBuilderTypeSettings)
     {
-        typeName = typeName.IsNotNull(nameof(typeName));
+        typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
         pipelineBuilderTypeSettings = pipelineBuilderTypeSettings.IsNotNull(nameof(pipelineBuilderTypeSettings));
 
         var typeNameMapping = pipelineBuilderTypeSettings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
