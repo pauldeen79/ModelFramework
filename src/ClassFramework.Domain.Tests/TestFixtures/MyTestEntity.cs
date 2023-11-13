@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Domain.Tests.TestFixtures;
+﻿using CrossCutting.Common.Extensions;
+
+namespace ClassFramework.Domain.Tests.TestFixtures;
 
 public record TestValidatable : System.ComponentModel.DataAnnotations.IValidatableObject
 {
@@ -153,15 +155,16 @@ public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotati
 
         // Note that if you need to assign a default value to Property1, then you should either use _property1 or Property1, depending on the availability of a backing field.
         Property1 = source.Property1;
-        _property2 = new MyCustomEntityBuilder(source.Property2);
+        _property2 = new MyCustomEntityBuilder(source.Property2); // MetadataNames.CustomBuilderConstructorInitializeExpression (with {SourcePropertyName} as placeholder?)
         _property3 = new Collection<MyCustomEntityBuilder>();
+        _property3.AddRange(source.Property3.Select(x => new MyCustomEntityBuilder(x))); // MetadataNames.CustomBuilderConstructorInitializeExpression (with {SourcePropertyName} as placeholder?)
     }
 
     partial void SetDefaultValues();
 
     public MyTestEntity Build()
     {
-        return new MyTestEntity(Property1, Property2.Build(), Property3.Select(x => x.Build()));
+        return new MyTestEntity(Property1, Property2.Build(), Property3.Select(x => x.Build())); // MetadataNames.CustomBuilderMethodParameterExpression (with {SourcePropertyName} as placeholder?)
     }
 }
 
