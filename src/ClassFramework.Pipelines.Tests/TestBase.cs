@@ -1,93 +1,50 @@
 ﻿namespace ClassFramework.Pipelines.Tests;
 
-public abstract class TestBase
+public abstract class TestBase : IDisposable
 {
     protected IFixture Fixture { get; } = new Fixture().Customize(new AutoNSubstituteCustomization());
+
+    private ServiceProvider? _provider;
+    private IFormattableStringParser? _formattableStringParser;
+    private IServiceScope? _scope;
+    private bool disposedValue;
+
+    private IFormattableStringParser FormattableStringParser
+    {
+        get
+        {
+            if (_formattableStringParser is null)
+            {
+                _provider = new ServiceCollection()
+                    .AddParsers()
+                    .AddPipelines()
+                    .BuildServiceProvider();
+                _scope = _provider.CreateScope();
+                _formattableStringParser = _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
+            }
+
+            return _formattableStringParser;
+        }
+    }
 
     protected IFormattableStringParser InitializeParser()
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
         var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
         csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
+        
+        // Pass through real IFormattableStringParser implementation, with all placeholder processors and stuff in our ClassFramework.Pipelines project.
+        // One exception: If we supply "{Error}" as placeholder, then simply return an error with the error message "Kaboom".
         parser.Parse(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>())
               .Returns(x => x.ArgAt<string>(0) == "{Error}"
                 ? Result.Error<string>("Kaboom")
-                : x.ArgAt<string>(0)
-                    .Replace("{Name}", CreateReplacement(x[2], y => y.Name, y => y.Name), StringComparison.Ordinal)
-                    .Replace("{NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                    .Replace("{NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                    .Replace("{NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo())), StringComparison.Ordinal)
-                    .Replace("{NamePascalCsharpFriendlyName}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()).GetCsharpFriendlyName()), StringComparison.Ordinal)
-                    .Replace("{BuilderMemberName}", CreateReplacement(x[2], _ => string.Empty, y => GetAddNullChecks(x[2]) && y.HasBackingFieldOnBuilder(GetEnableNullableReferenceTypes(x[2])) ? $"_{y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo())}" : y.Name), StringComparison.Ordinal)
-                    .Replace("{Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
-                    .Replace("{Class.Name}", CreateReplacement(x[2], y => y.Name, null), StringComparison.Ordinal)
-                    .Replace("{Class.NameLower}", CreateReplacement(x[2], y => y.Name.ToLower(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
-                    .Replace("{Class.NameUpper}", CreateReplacement(x[2], y => y.Name.ToUpper(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
-                    .Replace("{Class.NamePascal}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), null), StringComparison.Ordinal)
-                    .Replace("{Class.NamePascalCsharpFriendlyName}", CreateReplacement(x[2], y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()), y => y.Name.ToPascalCase(x.ArgAt<IFormatProvider>(1).ToCultureInfo()).GetCsharpFriendlyName()), StringComparison.Ordinal)
-                    .Replace("{Class.Namespace}", CreateReplacement(x[2], y => y.Namespace, null), StringComparison.Ordinal)
-                    .Replace("{Class.FullName}", CreateReplacement(x[2], y => y.GetFullName(), null), StringComparison.Ordinal)
-                    .Replace("{NullCheck.Source}", "/* source null check goes here */ ", StringComparison.Ordinal)
-                    .Replace("{NullCheck.Source.Argument}", "/* source argument null check goes here */ ", StringComparison.Ordinal)
-                    .Replace("{NullCheck.Argument}", "/* argument null check goes here */", StringComparison.Ordinal)
-                    .Replace("{EntityNameSuffix}", "/* suffix goes here*/", StringComparison.Ordinal)
-                    .Replace("{DefaultValue}", CreateReplacement(x[2], _ => string.Empty, y => y.GetDefaultValue(csharpExpressionCreator, false, y.TypeName)), StringComparison.Ordinal)
-                    .Transform(x => x.Contains("{Error}", StringComparison.Ordinal)
+                : FormattableStringParser.Parse(x.ArgAt<string>(0), x.ArgAt<IFormatProvider>(1), x.ArgAt<object?>(2))
+                    .Transform(x => x.ErrorMessage == "Unknown placeholder in value: Error"
                         ? Result.Error<string>("Kaboom")
-                        : Result.Success(x)));
+                        : x ));
 
         return parser;
     }
-
-    private static bool GetAddNullChecks(object? context)
-    {
-        if (context is ParentChildContext<BuilderContext, ClassProperty> pc1)
-        {
-            return pc1.Settings.AddNullChecks;
-        }
-
-        if (context is ClassPropertyContext cp)
-        {
-            return cp.Settings.AddNullChecks;
-        }
-
-        return false;
-    }
-
-    private static bool GetEnableNullableReferenceTypes(object? context)
-    {
-        if (context is ParentChildContext<BuilderContext, ClassProperty> pc1)
-        {
-            return pc1.Settings.EnableNullableReferenceTypes;
-        }
-
-        if (context is ClassPropertyContext cp)
-        {
-            return cp.Settings.EnableNullableReferenceTypes;
-        }
-
-        return false;
-    }
-
-    private static string CreateReplacement(
-        object? input,
-        Func<TypeBase, string> typeBaseDelegate,
-        Func<ClassProperty, string>? classPropertyDelegate)
-        => input switch
-        {
-            PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.Model),
-            PipelineContext<ClassBuilder, EntityContext> classContext => typeBaseDelegate(classContext.Context.Model),
-            ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null
-                ? typeBaseDelegate(parentChild.ParentContext.Context.Model)
-                : classPropertyDelegate(parentChild.ChildContext),
-            ParentChildContext<EntityContext, ClassProperty> parentChild => classPropertyDelegate is null
-                ? typeBaseDelegate(parentChild.ParentContext.Context.Model)
-                : classPropertyDelegate(parentChild.ChildContext),
-            ClassPropertyContext classPropertyContext => classPropertyDelegate is null
-                ? string.Empty
-                : classPropertyDelegate(classPropertyContext.Model),
-            _ => throw new NotSupportedException($"Context of type {input?.GetType()} is not supported")
-        };
 
     protected static TypeBase CreateModel(string baseClass = "", params MetadataBuilder[] propertyMetadataBuilders)
         => new ClassBuilder()
@@ -164,6 +121,27 @@ public abstract class TestBase
             constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
             nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString)
         );
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                _scope?.Dispose();
+                _provider?.Dispose();
+            }
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }
 
 public abstract class TestBase<T> : TestBase

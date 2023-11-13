@@ -79,11 +79,10 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "/* source null check goes here */ ",
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* source argument null check goes here */ Property3.AddRange(source.Property3);"
+                "Property3.AddRange(source.Property3);"
             );
         }
 
@@ -117,11 +116,10 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "/* source null check goes here */ ",
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* source argument null check goes here */ Property3.AddRange(source.Property3);"
+                "Property3.AddRange(source.Property3);"
             );
         }
 
@@ -156,11 +154,11 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "/* source null check goes here */ ",
+                "if (source is null) throw new System.ArgumentNullException(nameof(source));",
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* source argument null check goes here */ Property3.AddRange(source.Property3);"
+                "if (source.Property3 is not null) Property3.AddRange(source.Property3);"
             );
         }
 
@@ -195,11 +193,10 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "/* source null check goes here */ ",
                 "Property3 = System.Linq.Enumerable.Empty<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "/* source argument null check goes here */ Property3 = Property3.Concat(source.Property3);"
+                "Property3 = Property3.Concat(source.Property3);"
             );
         }
 

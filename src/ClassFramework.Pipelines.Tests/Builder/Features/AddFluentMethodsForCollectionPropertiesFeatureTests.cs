@@ -124,7 +124,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
-                "/* argument null check goes here */",
+                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "Property3.AddRange(property3);",
                 "return this;"
             );
@@ -162,7 +162,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddDelegate(@delegate?.ToArray() ?? throw new System.ArgumentNullException(nameof(@delegate)));",
-                "/* argument null check goes here */",
+                "if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));",
                 "Delegate.AddRange(@delegate);",
                 "return this;"
             );
@@ -231,7 +231,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
-                "/* argument null check goes here */",
+                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "if (Property3 is null) Property3 = new System.Collections.Generic.List<int>();",
                 "Property3.AddRange(property3);",
                 "return this;"

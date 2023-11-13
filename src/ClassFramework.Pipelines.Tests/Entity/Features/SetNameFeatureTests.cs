@@ -31,7 +31,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Entity.Features.SetNameFea
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Name.Should().Be("SomeClass/* suffix goes here*/");
+            model.Name.Should().Be("SomeClass");
         }
 
         [Fact]
@@ -50,7 +50,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Entity.Features.SetNameFea
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Name.Should().Be("CustomClassName/* suffix goes here*/");
+            model.Name.Should().Be("CustomClassName");
         }
 
         [Fact]
