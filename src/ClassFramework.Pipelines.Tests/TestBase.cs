@@ -4,9 +4,9 @@ public abstract class TestBase : IDisposable
 {
     protected IFixture Fixture { get; } = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-    private ServiceProvider? _provider;
+    protected ServiceProvider? Provider { get; set; }
+    protected IServiceScope? Scope { get; set; }
     private IFormattableStringParser? _formattableStringParser;
-    private IServiceScope? _scope;
     private bool disposedValue;
 
     private IFormattableStringParser FormattableStringParser
@@ -15,12 +15,12 @@ public abstract class TestBase : IDisposable
         {
             if (_formattableStringParser is null)
             {
-                _provider = new ServiceCollection()
+                Provider = new ServiceCollection()
                     .AddParsers()
                     .AddPipelines()
                     .BuildServiceProvider();
-                _scope = _provider.CreateScope();
-                _formattableStringParser = _scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
+                Scope = Provider.CreateScope();
+                _formattableStringParser = Scope.ServiceProvider.GetRequiredService<IFormattableStringParser>();
             }
 
             return _formattableStringParser;
@@ -128,8 +128,8 @@ public abstract class TestBase : IDisposable
         {
             if (disposing)
             {
-                _scope?.Dispose();
-                _provider?.Dispose();
+                Scope?.Dispose();
+                Provider?.Dispose();
             }
 
             disposedValue = true;
