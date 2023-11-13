@@ -42,27 +42,27 @@ public static class PipelineContextExtensions
     {
         var properties = context.Context.Model.GetBuilderConstructorProperties(context.Context);
 
-        var defaultValueDelegate = hasPublicParameterlessConstructor
-            ? new Func<ClassProperty, string>(p => "{Name} = {Name}")
-            : new Func<ClassProperty, string>(p => "{Name}");
-
         var results = properties.Select
         (
-            property => formattableStringParser.Parse
-            (
-                property.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(property)),
-                context.Context.FormatProvider,
-                new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
-            )
-        ).TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).ToArray();
+            property => new
+            {
+                property.Name,
+                Result = formattableStringParser.Parse
+                (
+                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, property.Name),
+                    context.Context.FormatProvider,
+                    new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                )
+            }
+        ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 
-        var error = Array.Find(results, x => !x.IsSuccessful());
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
         {
-            return error;
+            return error.Result;
         }
 
-        return Result.Success(string.Join(", ", results.Select(x => x.Value)));
+        return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor ? $"{x.Name} = {x.Result.Value}" : x.Result.Value)));
     }
 
     private static string GetBuilderPocoCloseSign(bool poco)
