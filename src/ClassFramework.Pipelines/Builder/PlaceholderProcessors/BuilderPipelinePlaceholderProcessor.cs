@@ -42,7 +42,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<BuilderContext, ClassProperty> parentChildContext)
         => value switch
         {
-            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
+            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.EntitySettings.AddValidationCode == ArgumentValidationType.None // only if the source entity does not use validation...
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
