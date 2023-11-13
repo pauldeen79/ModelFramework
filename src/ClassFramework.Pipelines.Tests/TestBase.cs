@@ -1,12 +1,10 @@
-﻿using CrossCutting.ProcessingPipeline;
-
-namespace ClassFramework.Pipelines.Tests;
+﻿namespace ClassFramework.Pipelines.Tests;
 
 public abstract class TestBase
 {
     protected IFixture Fixture { get; } = new Fixture().Customize(new AutoNSubstituteCustomization());
 
-    protected virtual IFormattableStringParser InitializeParser()
+    protected IFormattableStringParser InitializeParser()
     {
         var parser = Fixture.Freeze<IFormattableStringParser>();
         var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
@@ -41,21 +39,11 @@ public abstract class TestBase
         return parser;
     }
 
-    private bool GetAddNullChecks(object? context)
+    private static bool GetAddNullChecks(object? context)
     {
-        if (context is BuilderContext b)
-        {
-            return b.Settings.GenerationSettings.AddNullChecks;
-        }
-
         if (context is ParentChildContext<BuilderContext, ClassProperty> pc1)
         {
             return pc1.Settings.AddNullChecks;
-        }
-
-        if (context is ParentChildContext<EntityContext, ClassProperty> pc2)
-        {
-            return pc2.Settings.AddNullChecks;
         }
 
         if (context is ClassPropertyContext cp)
@@ -63,49 +51,19 @@ public abstract class TestBase
             return cp.Settings.AddNullChecks;
         }
 
-        if (context is PipelineContext<ClassBuilder, BuilderContext> pc3)
-        {
-            return pc3.Context.Settings.GenerationSettings.AddNullChecks;
-        }
-
-        if (context is PipelineContext<ClassBuilder, EntityContext> pc4)
-        {
-            return pc4.Context.Settings.GenerationSettings.AddNullChecks;
-        }
-
         return false;
     }
 
-    private bool GetEnableNullableReferenceTypes(object? context)
+    private static bool GetEnableNullableReferenceTypes(object? context)
     {
-        if (context is BuilderContext b)
-        {
-            return b.Settings.GenerationSettings.EnableNullableReferenceTypes;
-        }
-
         if (context is ParentChildContext<BuilderContext, ClassProperty> pc1)
         {
             return pc1.Settings.EnableNullableReferenceTypes;
         }
 
-        if (context is ParentChildContext<EntityContext, ClassProperty> pc2)
-        {
-            return pc2.Settings.EnableNullableReferenceTypes;
-        }
-
         if (context is ClassPropertyContext cp)
         {
             return cp.Settings.EnableNullableReferenceTypes;
-        }
-
-        if (context is PipelineContext<ClassBuilder, BuilderContext> pc3)
-        {
-            return pc3.Context.Settings.GenerationSettings.EnableNullableReferenceTypes;
-        }
-
-        if (context is PipelineContext<ClassBuilder, EntityContext> pc4)
-        {
-            return pc4.Context.Settings.GenerationSettings.EnableNullableReferenceTypes;
         }
 
         return false;
@@ -119,10 +77,6 @@ public abstract class TestBase
         {
             PipelineContext<ClassBuilder, BuilderContext> classContext => typeBaseDelegate(classContext.Context.Model),
             PipelineContext<ClassBuilder, EntityContext> classContext => typeBaseDelegate(classContext.Context.Model),
-            //PipelineContext<ClassPropertyBuilder, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
-            //PipelineContext<ClassPropertyBuilder, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
-            //PipelineContext<ClassProperty, BuilderContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
-            //PipelineContext<ClassProperty, EntityContext> propertyContext => typeBaseDelegate(propertyContext.Context.Model),
             ParentChildContext<BuilderContext, ClassProperty> parentChild => classPropertyDelegate is null
                 ? typeBaseDelegate(parentChild.ParentContext.Context.Model)
                 : classPropertyDelegate(parentChild.ChildContext),
