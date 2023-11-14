@@ -58,14 +58,19 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     {
         var initializationCodeResults = context.Context.Model.Properties
             .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings))
-            .Select(x => CreateBuilderInitializationCode(x, context))
-            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .Select(x => new
+            {
+                x.Name,
+                Source = x,
+                Result = CreateBuilderInitializationCode(x, context)
+            })
+            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
 
-        var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.IsSuccessful());
+        var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Result.IsSuccessful());
         if (initializationCodeErrorResult is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(initializationCodeErrorResult);
+            return Result.FromExistingResult<ClassConstructorBuilder>(initializationCodeErrorResult.Result);
         }
 
         var constructorInitializerResults = context.Context.Model.Properties
@@ -101,7 +106,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
                     .WithTypeName(context.Context.Model.GetFullName() + context.Context.Model.GetGenericTypeArgumentsString())
             )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
-            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{x.Value};"))
+            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context.Context.Settings.TypeSettings, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)};"))
         );
     }
 
@@ -109,13 +114,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
         => _formattableStringParser.Parse
         (
             property.Metadata
-                .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                 .GetStringValue
                 (
                     MetadataNames.CustomBuilderConstructorInitializeExpression,
                     () => property.TypeName.FixTypeName().IsCollectionTypeName()
                         ? CreateCollectionInitialization(context.Context.Settings)
-                        : "{Name} = source.{Name}"
+                        : "{BuilderMemberName} = source.[SourceExpression]" // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
                 ),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
@@ -125,12 +130,30 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
-            return "{NullCheck.Source.Argument}{Name} = {Name}.Concat(source.{Name})";
+            return "{NullCheck.Source.Argument}{Name} = {Name}.Concat(source.[SourceExpression])";
         }
 
-        return "{NullCheck.Source.Argument}{Name}.AddRange(source.{Name})";
+        return "{NullCheck.Source.Argument}{Name}.AddRange(source.[SourceExpression])";
     }
 
+    private static string? GetSourceExpression(string? value, ClassProperty sourceProperty, PipelineBuilderTypeSettings typeSettings, bool enableNullableReferenceTypes)
+    {
+        if (value is null || !value.Contains("[SourceExpression]"))
+        {
+            return value;
+        }
+
+        if (value == "[SourceExpression]")
+        {
+            return sourceProperty.Name;
+        }
+
+        var metadata = sourceProperty.Metadata.WithMappingMetadata(sourceProperty.TypeName.GetCollectionItemType().WhenNullOrEmpty(sourceProperty.TypeName), typeSettings);
+        var sourceExpression = metadata.GetStringValue(MetadataNames.CustomBuilderSourceExpression, "[Name]");
+        return sourceProperty.TypeName.IsCollectionTypeName()
+            ? value.Replace("[SourceExpression]", $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)
+            : value.Replace("[SourceExpression]", sourceExpression).Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", sourceProperty.GetSuffix(enableNullableReferenceTypes));
+    }
     private static string CreateBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base(source)")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
 

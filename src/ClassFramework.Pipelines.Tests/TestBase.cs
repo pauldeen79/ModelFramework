@@ -72,6 +72,20 @@ public abstract class TestBase : IDisposable
             )
             .Build();
 
+    protected static TypeBase CreateModelWithCustomTypeProperties()
+        => new ClassBuilder()
+            .WithName("SomeClass")
+            .WithNamespace("SomeNamespace")
+            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
+            .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(string)))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
+            .AddProperties(new ClassPropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
+            .AddProperties(new ClassPropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
+            .AddProperties(new ClassPropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
+            .Build();
+
     protected static Pipelines.Builder.PipelineBuilderSettings CreateBuilderSettings(
         bool enableBuilderInheritance = false,
         bool isAbstract = false,
@@ -83,6 +97,8 @@ public abstract class TestBase : IDisposable
         bool addCopyConstructor = false,
         bool setDefaultValues = true,
         string newCollectionTypeName = "System.Collections.Generic.List",
+        IEnumerable<NamespaceMapping>? namespaceMappings = null,
+        IEnumerable<TypenameMapping>? typenameMappings = null,
         string setMethodNameFormatString = "With{Name}",
         string addMethodNameFormatString = "Add{Name}",
         string builderNamespaceFormatString = "{Namespace}.Builders",
@@ -97,7 +113,7 @@ public abstract class TestBase : IDisposable
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Builder.PipelineBuilderSettings(
-            typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName),
+            typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName, namespaceMappings, typenameMappings),
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
             generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),

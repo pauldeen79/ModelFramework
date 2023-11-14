@@ -36,7 +36,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             var typeNameResult = _formattableStringParser.Parse
             (
                 property.Metadata
-                    .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                    .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                     .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
                 new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)

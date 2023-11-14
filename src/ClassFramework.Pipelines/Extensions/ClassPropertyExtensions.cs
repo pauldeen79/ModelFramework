@@ -82,4 +82,9 @@ public static class ClassPropertyExtensions
         => new ClassPropertyBuilder(property)
             .WithParentTypeFullName(property.ParentTypeFullName.WhenNullOrEmpty(() => parentClass.IsNotNull(nameof(parentClass)).GetFullName().WithoutGenerics()))
             .Build();
+
+    public static string GetSuffix(this ClassProperty source, bool enableNullableReferenceTypes)
+        => !source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType
+            ? "?"
+            : string.Empty;
 }

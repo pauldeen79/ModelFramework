@@ -38,7 +38,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             var typeNameResult = _formattableStringParser.Parse
             (
                 property.Metadata
-                    .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                    .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                     .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
                 childContext
@@ -165,7 +165,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         var builderAddExpressionResult = _formattableStringParser.Parse
         (
             property.Metadata
-                .WithMappingMetadata(property.TypeName, context.Context.Settings.TypeSettings)
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
             new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)

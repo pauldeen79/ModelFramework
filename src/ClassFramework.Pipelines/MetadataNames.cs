@@ -18,6 +18,11 @@ public static class MetadataNames
     public const string CustomBuilderConstructorInitializeExpression = "ClassFramework.Builder.ConstructorInitializeExpression";
 
     /// <summary>
+    /// Metadata name for defining a custom source expression (e.g. [Name] or [Name].ToBuilder()). Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderSourceExpression = "ClassFramework.Builder.SourceExpression";
+
+    /// <summary>
     /// Metadata name for defining a custom parameter expression in the builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderMethodParameterExpression = "ClassFramework.Builder.Ctor.MethodParameterExpression";

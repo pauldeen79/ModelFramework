@@ -47,12 +47,16 @@ public static class PipelineContextExtensions
             property => new
             {
                 property.Name,
+                Source = property,
                 Result = formattableStringParser.Parse
                 (
-                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, property.Name),
+                    property.Metadata
+                        .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
+                        .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
                     new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
-                )
+                ),
+                Suffix = property.GetSuffix(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 
@@ -62,7 +66,26 @@ public static class PipelineContextExtensions
             return error.Result;
         }
 
-        return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor ? $"{x.Name} = {x.Result.Value}" : x.Result.Value)));
+        return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
+            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix)}"
+            : GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix))));
+    }
+
+    private static string? GetBuilderPropertyExpression(this string? value, ClassProperty sourceProperty, string suffix)
+    {
+        if (value is null || !value.Contains("[Name]"))
+        {
+            return value;
+        }
+
+        if (value == "[Name]")
+        {
+            return sourceProperty.Name;
+        }
+
+        return sourceProperty.TypeName.IsCollectionTypeName()
+            ? $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})"
+            : value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
     }
 
     private static string GetBuilderPocoCloseSign(bool poco)

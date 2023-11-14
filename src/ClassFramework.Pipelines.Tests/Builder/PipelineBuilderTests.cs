@@ -22,7 +22,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
 
     public class Process : PipelineBuilderTests
     {
-        private BuilderContext CreateContext(bool addProperties = true) => new BuilderContext
+        private BuilderContext CreateContext(bool addProperties = true)
+            => new BuilderContext
             (
                 CreateGenericModel(addProperties),
                 CreateBuilderSettings
@@ -221,6 +222,111 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
             // Assert
             result.Status.Should().Be(ResultStatus.Invalid);
             result.ErrorMessage.Should().Be("To create a builder class, there must be at least one property");
+        }
+    }
+
+    public class IntegrationTests : PipelineBuilderTests
+    {
+        private ClassBuilder Model { get; } = new();
+
+        [Fact]
+        public void Creates_Builder_Using_NamespaceMapping()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var namespaceMappings = new[]
+            {
+                new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
+            }.Select(x => x.Build());
+            var settings = CreateBuilderSettings(addCopyConstructor: true, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
+            var context = new BuilderContext(model, settings, CultureInfo.InvariantCulture);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            result.Value.Should().NotBeNull();
+
+            result.Value!.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
+            var buildMethod = result.Value.Methods.Single(x => x.Name == "Build");
+            buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            var expected = "return new SomeNamespace.SomeClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build(), Property6 = Property6.Build(), Property7 = Property7?.Select(x => x.Build()), Property8 = Property8.Select(x => x.Build()) };";
+            buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo(expected);
+
+            result.Value!.Constructors.Where(x => x.Parameters.Count == 1).Should().ContainSingle();
+            var copyConstructor = result.Value.Constructors.Single(x => x.Parameters.Count == 1);
+            copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "if (source is null) throw new System.ArgumentNullException(nameof(source));",
+                "_property7 = new System.Collections.Generic.List<MyNamespace.MyClass>();",
+                "Property8 = new System.Collections.Generic.List<MyNamespace.MyClass>();",
+                "Property1 = source.Property1;",
+                "Property2 = source.Property2;",
+                "_property3 = source.Property3;",
+                "Property4 = source.Property4;",
+                "_property5 = source.Property5?.ToBuilder();",
+                "Property6 = source.Property6.ToBuilder();",
+                "if (source.Property7 is not null) Property7.AddRange(source.Property7.Select(x => x.ToBuilder()));",
+                "Property8.AddRange(source.Property8.Select(x => x.ToBuilder()));"
+            );
+
+            // non-nullable non-value type fields have a backing field, so we can do null checks
+            result.Value.Fields.Select(x => x.Name).Should().BeEquivalentTo
+            (
+                "_property3",
+                "_property5",
+                "_property7"
+            );
+            result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
+            (
+                "System.String",
+                "MyNamespace.MyClass",
+                "System.Collections.Generic.List<MyNamespace.MyClass>"
+            );
+            result.Value.Fields.Select(x => x.IsNullable).Should().AllBeEquivalentTo(false);
+
+            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            (
+                "Property1",
+                "Property2",
+                "Property3",
+                "Property4",
+                "Property5",
+                "Property6",
+                "Property7",
+                "Property8"
+            );
+            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            (
+                "System.Int32",
+                "System.Nullable<System.Int32>",
+                "System.String",
+                "System.String",
+                "MyNamespace.MyClass",
+                "MyNamespace.MyClass",
+                "System.Collections.Generic.List<MyNamespace.MyClass>",
+                "System.Collections.Generic.List<MyNamespace.MyClass>"
+            );
+            result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            (
+                new[]
+                {
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true
+                }
+            );
         }
     }
 }
