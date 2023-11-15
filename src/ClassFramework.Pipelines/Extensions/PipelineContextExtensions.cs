@@ -25,8 +25,8 @@ public static class PipelineContextExtensions
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
-        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Any());
-        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Any());
+        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Count != 0);
+        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Count != 0);
 
         var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
 

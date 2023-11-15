@@ -26,7 +26,7 @@ public static class TypeBaseExtensions
             : string.Empty;
 
     public static string GetGenericTypeArgumentConstraintsString(this TypeBase instance)
-        => instance.GenericTypeArgumentConstraints.Any()
+        => instance.GenericTypeArgumentConstraints.Count != 0
             ? string.Concat
             (
                 Environment.NewLine,

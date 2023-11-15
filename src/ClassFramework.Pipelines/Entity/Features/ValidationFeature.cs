@@ -12,7 +12,7 @@ public class ValidationFeature : IPipelineFeature<ClassBuilder, EntityContext>
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.GenerationSettings.AllowGenerationWithoutProperties
-            && !context.Context.Model.Properties.Any()
+            && context.Context.Model.Properties.Count == 0
             && !context.Context.Settings.InheritanceSettings.EnableInheritance)
         {
             return Result.Invalid<ClassBuilder>("To create an entity class, there must be at least one property");
