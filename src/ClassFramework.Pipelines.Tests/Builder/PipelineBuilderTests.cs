@@ -234,12 +234,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
         {
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
-            var namespaceMappings = new[]
-            {
-                new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
-            }.Select(x => x.Build());
+            var namespaceMappings = CreateNamespaceMappings();
             var settings = CreateBuilderSettings(addCopyConstructor: true, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
             var context = new BuilderContext(model, settings, CultureInfo.InvariantCulture);
 
@@ -328,5 +323,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 }
             );
         }
+
+        private static IEnumerable<NamespaceMapping> CreateNamespaceMappings()
+            => new[]
+            {
+                new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
+            }.Select(x => x.Build());
     }
 }
