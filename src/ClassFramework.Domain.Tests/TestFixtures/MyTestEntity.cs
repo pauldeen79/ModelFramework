@@ -81,7 +81,7 @@ public partial record MyTestEntity
         // When not using null checks:
         ///Property3 = property3  is null ? null : new ReadOnlyValueCollection<MyCustomEntity>(property3);
         // When using null checks:
-        if (property3 is null) throw new ArgumentNullException(nameof(property3));
+        ArgumentNullException.ThrowIfNull(property3);
         Property3 = new ReadOnlyValueCollection<MyCustomEntity>(property3);
 
         // When using validation (either DDD or IValidatableObject style):
@@ -123,7 +123,7 @@ public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotati
         }
         set
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            System.ArgumentNullException.ThrowIfNull(value);
             _property2 = value;
         }
     }
@@ -136,7 +136,7 @@ public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotati
         }
         private set
         {
-            if (value is null) throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value);
             _property3 = value;
         }
     }
@@ -151,7 +151,7 @@ public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotati
 
     public MyTestEntityBuilder(MyTestEntity source)
     {
-        if (source is null) throw new ArgumentNullException(nameof(source));
+        ArgumentNullException.ThrowIfNull(source);
 
         // Note that if you need to assign a default value to Property1, then you should either use _property1 or Property1, depending on the availability of a backing field.
         Property1 = source.Property1;
@@ -178,7 +178,7 @@ public partial class MyCustomEntityBuilder ///: System.ComponentModel.DataAnnota
 
     public MyCustomEntityBuilder(MyCustomEntity source)
     {
-        if (source is null) throw new ArgumentNullException(nameof(source));
+        ArgumentNullException.ThrowIfNull(source);
 
         Property1 = source.Property1;
     }

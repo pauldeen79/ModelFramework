@@ -32,7 +32,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
         => value switch
         {
             "NullCheck.Source" => Result.Success(pipelineContext.Context.Settings.GenerationSettings.AddNullChecks
-                ? $"if (source is null) throw new {typeof(ArgumentNullException).FullName}(nameof(source));"
+                ? pipelineContext.Context.CreateArgumentNullException("source")
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(pipelineContext.Context.Model), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
@@ -46,7 +46,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.GenerationSettings.AddNullChecks
-                ? $"if ({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()}));"
+                ? parentChildContext.ParentContext.Context.CreateArgumentNullException(parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
             "NullableRequiredSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable || !parentChildContext.ParentContext.Context.Settings.GenerationSettings.EnableNullableReferenceTypes
                 ? string.Empty

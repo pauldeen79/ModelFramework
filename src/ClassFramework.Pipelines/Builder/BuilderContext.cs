@@ -50,4 +50,14 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
         => Settings.GenerationSettings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
         && !Settings.GenerationSettings.AddNullChecks;
+
+    public string CreateArgumentNullException(string argumentName)
+    {
+        if (Settings.GenerationSettings.UseExceptionThrowIfNull)
+        {
+            return $"System.ArgumentNullException.ThrowIfNull({argumentName});";
+        }
+        
+        return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
+    }
 }
