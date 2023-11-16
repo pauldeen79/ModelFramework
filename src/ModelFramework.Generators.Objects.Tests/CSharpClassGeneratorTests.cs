@@ -2299,7 +2299,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly, addNullChecks: true),
-            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, isAbstract: true),
             addPrivateSetters: true
         );
         var cls = typeof(BaseClass)
@@ -2500,7 +2500,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly, addNullChecks: true),
-            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, isAbstract: true),
             addPrivateSetters: true
         );
         var cls = typeof(BaseClass)

@@ -20,7 +20,7 @@ public static partial class TypeBaseExtensions
                 : instance.Name)
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableClassBaseClass(instance, settings))
-            .WithAbstract(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
+            .WithAbstract(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.IsAbstract)
             .AddProperties(CreateImmutableClassProperties(instance, settings))
             .AddConstructors(CreateImmutableClassConstructor(instance, settings))
             .AddMethods(GetImmutableClassMethods(instance, settings, false))

@@ -7,6 +7,10 @@ public record EntityContext : ContextBase<TypeBase, PipelineBuilderSettings>
     {
     }
 
+    public bool IsAbstract
+        => Settings.InheritanceSettings.EnableInheritance
+        && Settings.InheritanceSettings.IsAbstract;
+
     public string MapTypeName(string typeName)
         => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
 

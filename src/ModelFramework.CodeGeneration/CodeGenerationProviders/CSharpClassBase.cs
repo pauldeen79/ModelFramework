@@ -33,6 +33,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool AllowGenerationWithoutProperties => true;
     protected virtual bool AddBackingFieldsForCollectionProperties => false;
     protected virtual IClass? BaseClass => null;
+    protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool IsMemberValid(IParentTypeContainer parentNameContainer, INameContainer nameContainer, ITypeBase typeBase)
         => parentNameContainer is not null
@@ -331,7 +332,8 @@ public abstract class CSharpClassBase : ClassBase
                 validateArguments: ValidateArgumentsInConstructor,
                 addNullChecks: AddNullChecks),
             addPrivateSetters: AddPrivateSetters,
-            enableNullableReferenceTypes: EnableNullableContext)
+            enableNullableReferenceTypes: EnableNullableContext,
+            inheritanceSettings: new(isAbstract: true))
         )
         .WithNamespace(@namespace)
         .WithName(type.GetEntityClassName())
@@ -546,6 +548,7 @@ public abstract class CSharpClassBase : ClassBase
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
+                isAbstract: IsAbstract,
                 inheritFromInterfaces: InheritFromInterfaces,
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
                 inheritanceComparisonDelegate: EnableEntityInheritance
