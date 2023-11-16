@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Extensions;
+﻿using CrossCutting.Common.Extensions;
+
+namespace ClassFramework.Pipelines.Extensions;
 
 public static class PipelineContextExtensions
 {
@@ -35,7 +37,12 @@ public static class PipelineContextExtensions
             return parametersResult;
         }
 
-        return Result.Success($"new {context.Context.Model.GetFullName()}{classNameSuffix}{context.Context.Model.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
+        var entityNamespace = context.Context.Model.Metadata.WithMappingMetadata(context.Context.Model.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.Model.GetFullName()), context.Context.Settings.TypeSettings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.Model.Namespace);
+        var ns = string.IsNullOrEmpty(entityNamespace)
+            ? string.Empty
+            : $"{context.Context.MapNamespace(entityNamespace)}.";
+
+        return Result.Success($"new {ns}{context.Context.Model.Name}{classNameSuffix}{context.Context.Model.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
     private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)

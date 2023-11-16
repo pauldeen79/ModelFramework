@@ -12,3 +12,4 @@ global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
+global using CrossCutting.Common.Results;

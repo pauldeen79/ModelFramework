@@ -8,6 +8,17 @@ public static class EnumerableOfMetadataExtensions
     public static string GetStringValue(this IEnumerable<Metadata> metadata, string metadataName, Func<string> defaultValueDelegate)
         => metadata.GetValue<object?>(metadataName, defaultValueDelegate).ToStringWithDefault(defaultValueDelegate());
 
+    public static Result<string> GetStringResult(this IEnumerable<Metadata> metadata, string metadataName, Func<Result<string>> defaultValueDelegate)
+    {
+        defaultValueDelegate = defaultValueDelegate.IsNotNull(nameof(defaultValueDelegate));
+
+        var value = metadata.GetValue<object?>(metadataName, () => null).ToStringWithDefault();
+        
+        return string.IsNullOrEmpty(value)
+            ? defaultValueDelegate()
+            : Result.Success(value);
+    }
+
     public static bool GetBooleanValue(this IEnumerable<Metadata> metadata, string metadataName, bool defaultValue = false)
         => metadata.GetBooleanValue(metadataName, () => defaultValue);
 

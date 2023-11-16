@@ -56,4 +56,14 @@ public static class MetadataNames
     /// Metadata name for defining a custom entity instanciation on a builder. Note that the value will be converted to string. Example: new MyType { Property1 = Property1 }
     /// </summary>
     public const string CustomBuilderEntityInstanciation = "ClassFramework.Builder.EntityInstanciation";
+
+    /// <summary>
+    /// Metadata name for defining a custom builder namespace. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderNamespace = "ClassFramework.Builder.Namespace";
+
+    /// <summary>
+    /// Metadata name for defining a custom entity namespace. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomEntityNamespace = "ClassFramework.Entity.Namespace";
 }

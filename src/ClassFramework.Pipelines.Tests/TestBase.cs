@@ -75,7 +75,7 @@ public abstract class TestBase : IDisposable
     protected static TypeBase CreateModelWithCustomTypeProperties()
         => new ClassBuilder()
             .WithName("SomeClass")
-            .WithNamespace("SomeNamespace")
+            .WithNamespace("MySourceNamespace")
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)))
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
             .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(string)))

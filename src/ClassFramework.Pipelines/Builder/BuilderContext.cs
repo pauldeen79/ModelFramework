@@ -32,6 +32,9 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
     public string MapTypeName(string typeName)
         => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
 
+    public string MapNamespace(string? ns)
+        => ns.MapNamespace(Settings.TypeSettings);
+
     public Domain.Attribute MapAttribute(Domain.Attribute attribute)
     {
         attribute = attribute.IsNotNull(nameof(attribute));
