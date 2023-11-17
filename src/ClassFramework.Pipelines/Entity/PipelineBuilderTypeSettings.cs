@@ -1,18 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record PipelineBuilderTypeSettings : IPipelineBuilderTypeSettings
+public record PipelineBuilderTypeSettings : PipelineBuilderTypeSettingsBase
 {
-    public string NewCollectionTypeName { get; }
-    public IReadOnlyCollection<NamespaceMapping> NamespaceMappings { get; }
-    public IReadOnlyCollection<TypenameMapping> TypenameMappings { get; }
-
     public PipelineBuilderTypeSettings(
         string newCollectionTypeName = "System.Collections.Generic.List",
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null)
+        : base(newCollectionTypeName, namespaceMappings, typenameMappings)
     {
-        NewCollectionTypeName = newCollectionTypeName;
-        NamespaceMappings = new ReadOnlyValueCollection<NamespaceMapping>(namespaceMappings ?? Enumerable.Empty<NamespaceMapping>());
-        TypenameMappings = new ReadOnlyValueCollection<TypenameMapping>(typenameMappings ?? Enumerable.Empty<TypenameMapping>());
     }
 }
