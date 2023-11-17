@@ -93,9 +93,9 @@ public partial class ClassPropertyBuilder
     {
         AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement($"return _{Name.ToString().ToPascalCase()};", Enumerable.Empty<IMetadata>()));
         AddMetadata(MetadataNames.CustomImmutableConstructorInitialization, IsNullable
-            ? $"_{Name.ToString().ToPascalCase()} = {Name.ToString().ToPascalCase()} == null ? null : _{Name.ToString().ToPascalCase()} = new {typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});"
-            : $"_{Name.ToString().ToPascalCase()} = new {typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});");
-        AddMetadata(MetadataNames.CustomImmutableBackingField, new ClassFieldBuilder().WithName($"_{Name.ToString().ToPascalCase()}").WithTypeName($"{typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>").WithIsNullable(IsNullable).Build());
+            ? $"_{Name.ToString().ToPascalCase()} = {Name.ToString().ToPascalCase()} == null ? null : _{Name.ToString().ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});"
+            : $"_{Name.ToString().ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});");
+        AddMetadata(MetadataNames.CustomImmutableBackingField, new ClassFieldBuilder().WithName($"_{Name.ToString().ToPascalCase()}").WithTypeName($"{collectionType.WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>").WithIsNullable(IsNullable).Build());
         AddMetadata(MetadataNames.CustomImmutableHasSetter, false);
 
         return this;
