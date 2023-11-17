@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidatableObjectFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AbstractEntityFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddAttributesFeatureBuilder>()
+            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddGenericsFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddInterfacesFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.BaseClassFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
