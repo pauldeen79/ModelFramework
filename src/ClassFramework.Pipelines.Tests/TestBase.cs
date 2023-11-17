@@ -54,6 +54,7 @@ public abstract class TestBase : IDisposable
             .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddMetadata(new MetadataBuilder().WithName("MyMetadataName").WithValue("MyMetadataValue"))
             .Build();
 
     protected static TypeBase CreateGenericModel(bool addProperties)
@@ -132,13 +133,19 @@ public abstract class TestBase : IDisposable
         Class? baseClass = null,
         string entityNamespaceFormatString = "{Namespace}",
         string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
+        string newCollectionTypeName = "System.Collections.Generic.List",
+        bool addSetters = false,
+        Visibility? setterVisibility = null,
+        IEnumerable<NamespaceMapping>? namespaceMappings = null,
+        IEnumerable<TypenameMapping>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Entity.PipelineBuilderSettings(
-            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
+            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, addSetters: addSetters, setterVisibility: setterVisibility),
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
             constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
-            nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString)
+            nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString),
+            typeSettings: new Pipelines.Entity.PipelineBuilderTypeSettings(newCollectionTypeName, namespaceMappings, typenameMappings)
         );
 
     protected virtual void Dispose(bool disposing)
