@@ -10,7 +10,7 @@ public class ParentChildContextTests : TestBase
             // Arrange
             var parentContext = default(PipelineContext<ClassBuilder, TypeBase>);
             var childContext = new ClassPropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
-            var settings = Fixture.Freeze<IPropertyGenerationSettings>();
+            var settings = Fixture.Freeze<IPipelineGenerationSettings>();
 
             // Act & Assert
             this.Invoking(_ => new ParentChildContext<TypeBase, ClassProperty>(parentContext!, childContext, settings))
@@ -23,7 +23,7 @@ public class ParentChildContextTests : TestBase
             // Arrange
             var parentContext = new PipelineContext<ClassBuilder, TypeBase>(new ClassBuilder(), new ClassBuilder().WithName("MyClass").Build());
             var childContext = default(ClassProperty);
-            var settings = Fixture.Freeze<IPropertyGenerationSettings>();
+            var settings = Fixture.Freeze<IPipelineGenerationSettings>();
 
             // Act & Assert
             this.Invoking(_ => new ParentChildContext<TypeBase, ClassProperty>(parentContext, childContext!, settings))
@@ -36,7 +36,7 @@ public class ParentChildContextTests : TestBase
             // Arrange
             var parentContext = new PipelineContext<ClassBuilder, TypeBase>(new ClassBuilder(), new ClassBuilder().WithName("MyClass").Build());
             var childContext = new ClassPropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
-            var settings = default(IPropertyGenerationSettings);
+            var settings = default(IPipelineGenerationSettings);
 
             // Act & Assert
             this.Invoking(_ => new ParentChildContext<TypeBase, ClassProperty>(parentContext, childContext, settings!))

@@ -49,10 +49,14 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
 
             context.Model.AddProperties(new ClassPropertyBuilder()
                 .WithName(property.Name)
-                .WithTypeName(typeNameResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName).FixNullableTypeName(property))
+                .WithTypeName(typeNameResult.Value!
+                    .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                    .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
-                .AddAttributes(property.Attributes.Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
+                .AddAttributes(property.Attributes
+                    .Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes)
+                    .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))

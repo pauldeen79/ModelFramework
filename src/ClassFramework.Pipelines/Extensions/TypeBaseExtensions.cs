@@ -5,19 +5,19 @@ public static class TypeBaseExtensions
     public static bool IsMemberValidForBuilderClass(
         this TypeBase parent,
         IParentTypeContainer parentTypeContainer,
-        Builder.PipelineBuilderSettings settings)
+        IPipelineGenerationSettings settings)
     {
         parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
         settings = settings.IsNotNull(nameof(settings));
 
-        if (!settings.EntitySettings.InheritanceSettings.EnableInheritance)
+        if (!settings.EnableInheritance)
         {
             // If entity inheritance is not enabled, then simply include all members
             return true;
         }
 
         // If inheritance is enabled, then include the members if it's defined on the parent class (or use the custom instance comparison delegate, when provided)
-        return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceSettings.InheritanceComparisonDelegate);
+        return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
     public static string GetGenericTypeArgumentsString(this TypeBase instance)
