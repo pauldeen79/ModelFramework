@@ -25,6 +25,7 @@ public static class TypeExtensions
             .WithSealed(instance.IsSealed)
             .WithPartial(settings.Partial)
             .WithRecord(instance.IsRecord())
+            .WithAbstract(instance.IsAbstract)
             .AddInterfaces(GetInterfaces(instance))
             .AddFields(GetFields(instance, settings.AttributeInitializeDelegate).ToList())
             .AddProperties(GetProperties(instance, settings.AttributeInitializeDelegate))
