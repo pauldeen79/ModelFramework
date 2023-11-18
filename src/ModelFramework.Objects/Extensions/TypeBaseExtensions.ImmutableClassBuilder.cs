@@ -85,7 +85,7 @@ public static partial class TypeBaseExtensions
         ITypeBase instance,
         ImmutableClassSettings settings)
         => new ClassConstructorBuilder()
-            .WithProtected(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
+            .WithProtected(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.IsAbstract)
             .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
             .AddLiteralCodeStatements
             (
