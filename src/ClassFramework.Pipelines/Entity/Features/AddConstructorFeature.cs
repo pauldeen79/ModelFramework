@@ -38,7 +38,7 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
     private ClassConstructorBuilder CreateEntityConstructor(PipelineContext<ClassBuilder, EntityContext> context)
         => new ClassConstructorBuilder()
             .WithProtected(context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
-            .AddParameters(context.CreateImmutableClassCtorParameters(_formattableStringParser))
+            .AddParameters(context.CreateImmutableClassCtorParameters())
             .AddStringCodeStatements
             (
                 context.Context.Model.Properties
@@ -53,7 +53,7 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
                     .Select(property => _formattableStringParser.Parse("this.{Name} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)).GetValueOrThrow())
             )
             .AddStringCodeStatements(CreateValidationCode(context, true))
-            .WithChainCall(context.CreateEntityChainCall(_formattableStringParser, false));
+            .WithChainCall(context.CreateEntityChainCall(false));
 
     private static IEnumerable<string> CreateValidationCode(PipelineContext<ClassBuilder, EntityContext> context, bool baseClass)
 

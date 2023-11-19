@@ -43,16 +43,13 @@ public static class PipelineContextExtensions
         return Result.Success($"new {ns}{context.Context.Model.Name}{classNameSuffix}{context.Context.Model.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static string CreateEntityChainCall(
-        this PipelineContext<ClassBuilder, EntityContext> context,
-        IFormattableStringParser formattableStringParser,
-        bool baseClass)
+    public static string CreateEntityChainCall(this PipelineContext<ClassBuilder, EntityContext> context, bool baseClass)
     {
         context = context.IsNotNull(nameof(context));
 
         if (baseClass && context.Context.Settings.AddValidationCode == ArgumentValidationType.Shared)
         {
-            return $"base({CreateImmutableClassCtorParameterNames(context, formattableStringParser)})";
+            return $"base({CreateImmutableClassCtorParameterNames(context)})";
         }
 
         return context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
@@ -62,8 +59,7 @@ public static class PipelineContextExtensions
     }
 
     public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters(
-        this PipelineContext<ClassBuilder, EntityContext> context,
-        IFormattableStringParser formattableStringParser)
+        this PipelineContext<ClassBuilder, EntityContext> context)
         => context.Context.Model.Properties
             .Select
             (
@@ -71,15 +67,12 @@ public static class PipelineContextExtensions
                     .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
                     .WithTypeName
                     (
-                        context.Context.MapTypeName(formattableStringParser.Parse
+                        context.Context.MapTypeName
                         (
                             property.Metadata
                                 .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                                .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName),
-                            context.Context.FormatProvider,
-                            new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)
-                        ).GetValueOrThrow())
-                        .FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))
+                                .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName)
+                        ).FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))
                     )
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
@@ -89,9 +82,8 @@ public static class PipelineContextExtensions
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
     private static string CreateImmutableClassCtorParameterNames(
-        PipelineContext<ClassBuilder, EntityContext> context,
-        IFormattableStringParser formattableStringParser)
-        => string.Join(", ", context.CreateImmutableClassCtorParameters(formattableStringParser).Select(x => x.Name.ToString().GetCsharpFriendlyName()));
+        PipelineContext<ClassBuilder, EntityContext> context)
+        => string.Join(", ", context.CreateImmutableClassCtorParameters().Select(x => x.Name.ToString().GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
