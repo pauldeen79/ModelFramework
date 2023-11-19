@@ -3,7 +3,6 @@
 public record PipelineBuilderGenerationSettings
 {
     public bool AddNullChecks { get; }
-    public bool EnableNullableReferenceTypes { get; }
     public bool UseExceptionThrowIfNull { get; }
     public bool CopyAttributes { get; }
     public bool CopyInterfaces { get; }
@@ -12,7 +11,6 @@ public record PipelineBuilderGenerationSettings
 
     public PipelineBuilderGenerationSettings(
         bool addNullChecks = false,
-        bool enableNullableReferenceTypes = false,
         bool useExceptionThrowIfNull = false,
         bool copyAttributes = false,
         bool copyInterfaces = false,
@@ -20,7 +18,6 @@ public record PipelineBuilderGenerationSettings
         Predicate<string>? copyInterfacePredicate = null)
     {
         AddNullChecks = addNullChecks;
-        EnableNullableReferenceTypes = enableNullableReferenceTypes;
         UseExceptionThrowIfNull = useExceptionThrowIfNull;
         CopyAttributes = copyAttributes;
         CopyInterfaces = copyInterfaces;

@@ -8,7 +8,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     public PipelineBuilderTypeSettings TypeSettings { get; }
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
 
-    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => GenerationSettings.EnableNullableReferenceTypes;
+    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
     bool IPipelineGenerationSettings.AddNullChecks => GenerationSettings.AddNullChecks;
     bool IPipelineGenerationSettings.EnableInheritance => InheritanceSettings.EnableInheritance;
     string IPipelineGenerationSettings.CollectionTypeName => ConstructorSettings.CollectionTypeName;

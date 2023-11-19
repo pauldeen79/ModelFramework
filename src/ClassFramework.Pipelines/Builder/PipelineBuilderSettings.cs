@@ -11,7 +11,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
 
     public bool IsForAbstractBuilder { get; }
 
-    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => GenerationSettings.EnableNullableReferenceTypes;
+    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
     bool IPipelineGenerationSettings.AddNullChecks => GenerationSettings.AddNullChecks;
     bool IPipelineGenerationSettings.EnableInheritance => EntitySettings.InheritanceSettings.EnableInheritance;
     string IPipelineGenerationSettings.CollectionTypeName => TypeSettings.NewCollectionTypeName;

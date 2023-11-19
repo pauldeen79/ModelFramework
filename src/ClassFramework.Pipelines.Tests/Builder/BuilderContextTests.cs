@@ -35,7 +35,7 @@ public class BuilderContextTests : TestBase
         public void Returns_Empty_Array_When_Pragmas_Are_Not_Needed()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -49,7 +49,7 @@ public class BuilderContextTests : TestBase
         public void Returns_Correct_Result_When_Pragmas_Are_Needed()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: true));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: true);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -70,7 +70,7 @@ public class BuilderContextTests : TestBase
         public void Returns_Empty_Array_When_Pragmas_Are_Not_Needed()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -84,7 +84,7 @@ public class BuilderContextTests : TestBase
         public void Returns_Correct_Result_When_Pragmas_Are_Needed()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: true));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: true);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act
@@ -105,7 +105,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
@@ -121,7 +121,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert

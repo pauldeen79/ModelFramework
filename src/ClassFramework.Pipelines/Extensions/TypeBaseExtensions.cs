@@ -120,7 +120,7 @@ public static class TypeBaseExtensions
 
         foreach (var property in instance.Properties.Where(x =>
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
-            && x.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments)))
+            && x.HasBackingFieldOnBuilder(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments)))
         {
             var builderArgumentTypeResult = formattableStringParser.Parse
             (

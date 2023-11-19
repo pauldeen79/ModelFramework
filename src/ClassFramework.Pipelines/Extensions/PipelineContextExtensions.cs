@@ -103,7 +103,7 @@ public static class PipelineContextExtensions
                     context.Context.FormatProvider,
                     new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
                 ),
-                Suffix = property.GetSuffix(context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)
+                Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 

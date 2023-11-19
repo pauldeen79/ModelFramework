@@ -50,7 +50,7 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
         || Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared);
 
     private bool NeedsPragmas()
-        => Settings.GenerationSettings.EnableNullableReferenceTypes
+        => Settings.TypeSettings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
         && !Settings.GenerationSettings.AddNullChecks;
 

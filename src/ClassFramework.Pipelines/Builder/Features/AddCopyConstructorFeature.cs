@@ -77,7 +77,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new
             {
-                Name = x.GetInitializationName(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
+                Name = x.GetInitializationName(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
                 Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
@@ -109,7 +109,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
                     .WithTypeName(context.Context.Model.GetFullName() + context.Context.Model.GetGenericTypeArgumentsString())
             )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
-            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context.Context.Settings.TypeSettings, context.Context.Settings.GenerationSettings.EnableNullableReferenceTypes)};"))
+            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context.Context.Settings.TypeSettings, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)};"))
         );
     }
 

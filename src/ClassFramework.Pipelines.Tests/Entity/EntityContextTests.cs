@@ -37,7 +37,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
@@ -53,7 +53,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = new Pipelines.Builder.PipelineBuilderSettings(generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(enableNullableReferenceTypes: false));
+            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
