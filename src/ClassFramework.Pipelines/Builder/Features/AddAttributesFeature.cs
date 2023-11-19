@@ -17,7 +17,7 @@ public class AddAttributesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             return Result.Continue<ClassBuilder>();
         }
 
-        context.Model.AddAttributes(context.Context.Model.Attributes
+        context.Model.AddAttributes(context.Context.SourceModel.Attributes
             .Where(x => context.Context.Settings.EntitySettings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))));
 

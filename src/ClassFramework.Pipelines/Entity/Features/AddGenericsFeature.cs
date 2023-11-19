@@ -13,8 +13,8 @@ public class AddGenericsFeature : IPipelineFeature<ClassBuilder, EntityContext>
         context = context.IsNotNull(nameof(context));
 
         context.Model
-            .AddGenericTypeArguments(context.Context.Model.GenericTypeArguments)
-            .AddGenericTypeArgumentConstraints(context.Context.Model.GenericTypeArgumentConstraints);
+            .AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments)
+            .AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
         return Result.Continue<ClassBuilder>();
     }

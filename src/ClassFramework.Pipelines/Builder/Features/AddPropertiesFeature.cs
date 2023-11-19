@@ -31,7 +31,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
             return Result.Continue<ClassBuilder>();
         }
 
-        foreach (var property in context.Context.Model.Properties.Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings)))
+        foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
             var typeNameResult = _formattableStringParser.Parse
             (
@@ -65,7 +65,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
-        context.Model.AddFields(context.Context.Model
+        context.Model.AddFields(context.Context.SourceModel
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 

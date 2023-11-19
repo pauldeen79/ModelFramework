@@ -2,8 +2,8 @@
 
 public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
 {
-    public BuilderContext(TypeBase model, PipelineBuilderSettings settings, IFormatProvider formatProvider)
-        : base(model, settings, formatProvider)
+    public BuilderContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+        : base(sourceModel, settings, formatProvider)
     {
     }
 

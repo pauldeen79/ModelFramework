@@ -12,7 +12,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, EntityContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.BaseClass = GetEntityBaseClass(context.Context.Model, context);
+        context.Model.BaseClass = GetEntityBaseClass(context.Context.SourceModel, context);
 
         return Result.Continue<ClassBuilder>();
     }

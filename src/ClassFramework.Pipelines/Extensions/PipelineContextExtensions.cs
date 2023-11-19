@@ -6,27 +6,27 @@ public static class PipelineContextExtensions
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var customEntityInstanciation = context.Context.Model.Metadata.GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
+        var customEntityInstanciation = context.Context.SourceModel.Metadata.GetStringValue(MetadataNames.CustomBuilderEntityInstanciation);
         if (!string.IsNullOrEmpty(customEntityInstanciation))
         {
             return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
         }
 
-        var constructorsContainer = context.Context.Model as IConstructorsContainer;
+        var constructorsContainer = context.Context.SourceModel as IConstructorsContainer;
 
         if (constructorsContainer is null)
         {
             return Result.Invalid<string>("Cannot create an instance of a type that does not have constructors");
         }
 
-        if (context.Context.Model is Class cls && cls.Abstract)
+        if (context.Context.SourceModel is Class cls && cls.Abstract)
         {
             return Result.Invalid<string>("Cannot create an instance of an abstract class");
         }
 
         var hasPublicParameterlessConstructor = constructorsContainer.HasPublicParameterlessConstructor();
-        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Count != 0);
-        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.Model.Properties.Count != 0);
+        var openSign = GetBuilderPocoOpenSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Count != 0);
+        var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Count != 0);
 
         var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
 
@@ -35,12 +35,12 @@ public static class PipelineContextExtensions
             return parametersResult;
         }
 
-        var entityNamespace = context.Context.Model.Metadata.WithMappingMetadata(context.Context.Model.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.Model.GetFullName()), context.Context.Settings.TypeSettings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.Model.Namespace);
+        var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName()), context.Context.Settings.TypeSettings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
         var ns = string.IsNullOrEmpty(entityNamespace)
             ? string.Empty
             : $"{context.Context.MapNamespace(entityNamespace)}.";
 
-        return Result.Success($"new {ns}{context.Context.Model.Name}{classNameSuffix}{context.Context.Model.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
+        return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
     public static string CreateEntityChainCall(this PipelineContext<ClassBuilder, EntityContext> context, bool baseClass)
@@ -54,13 +54,13 @@ public static class PipelineContextExtensions
 
         return context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.InheritanceSettings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
-            : context.Context.Model.GetCustomValueForInheritedClass(context.Context.Settings,
-            cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.Model.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+            : context.Context.SourceModel.GetCustomValueForInheritedClass(context.Context.Settings,
+            cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
     public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters(
         this PipelineContext<ClassBuilder, EntityContext> context)
-        => context.Context.Model.Properties
+        => context.Context.SourceModel.Properties
             .Select
             (
                 property => new ParameterBuilder()
@@ -87,7 +87,7 @@ public static class PipelineContextExtensions
 
     private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
-        var properties = context.Context.Model.GetBuilderConstructorProperties(context.Context);
+        var properties = context.Context.SourceModel.GetBuilderConstructorProperties(context.Context);
 
         var results = properties.Select
         (

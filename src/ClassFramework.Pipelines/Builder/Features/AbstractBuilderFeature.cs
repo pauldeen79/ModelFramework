@@ -36,7 +36,7 @@ public class AbstractBuilderFeature : IPipelineFeature<ClassBuilder, BuilderCont
 
             context.Model
                 .AddGenericTypeArguments("TBuilder", "TEntity")
-                .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.Model.GetFullName()}")
+                .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
                 .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
                 .WithAbstract();
         }

@@ -56,8 +56,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
 
     private Result<ClassConstructorBuilder> CreateCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
     {
-        var initializationCodeResults = context.Context.Model.Properties
-            .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings))
+        var initializationCodeResults = context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings))
             .Select(x => new
             {
                 x.Name,
@@ -73,8 +73,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             return Result.FromExistingResult<ClassConstructorBuilder>(initializationCodeErrorResult.Result);
         }
 
-        var constructorInitializerResults = context.Context.Model.Properties
-            .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
+        var constructorInitializerResults = context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new
             {
                 Name = x.GetInitializationName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
@@ -96,7 +96,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
         }
 
         return Result.Success(new ClassConstructorBuilder()
-            .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.Model, context.Context.Settings))
+            .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
@@ -106,7 +106,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(context.Context.Model.GetFullName() + context.Context.Model.GetGenericTypeArgumentsString())
+                    .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
             )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
             .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context.Context.Settings.TypeSettings, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)};"))
@@ -168,6 +168,6 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(context.Context.Model.GetFullName() + context.Context.Model.GetGenericTypeArgumentsString())
+                    .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
             );
 }

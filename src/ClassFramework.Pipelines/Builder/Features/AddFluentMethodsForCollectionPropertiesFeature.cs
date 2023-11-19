@@ -31,7 +31,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             return Result.Continue<ClassBuilder>();
         }
 
-        foreach (var property in context.Context.Model.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings);
 
@@ -62,8 +62,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             }
 
             var returnType = context.Context.IsBuilderForAbstractEntity
-                ? "TBuilder" + context.Context.Model.GetGenericTypeArgumentsString()
-                : namespaceResult.Value! + context.Context.Model.GetGenericTypeArgumentsString();
+                ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
+                : namespaceResult.Value! + context.Context.SourceModel.GetGenericTypeArgumentsString();
 
             var enumerableOverloadResults = GetCodeStatementsForEnumerableOverload(context, property)
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())

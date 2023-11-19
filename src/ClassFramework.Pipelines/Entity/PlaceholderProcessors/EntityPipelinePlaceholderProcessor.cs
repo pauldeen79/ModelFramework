@@ -35,7 +35,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
             "EntityNameSuffix" => Result.Success(pipelineContext.Context.Settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Shared
                 ? "Base"
                 : string.Empty),
-            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(pipelineContext.Context.Model), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };
 
@@ -47,7 +47,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ? string.Empty
                 : "!"),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new ClassPropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName)), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(parentChildContext.ParentContext.Context.Model), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(parentChildContext.ParentContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };
 }

@@ -43,8 +43,8 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
 
     private Result<ClassConstructorBuilder> CreateEntityConstructor(PipelineContext<ClassBuilder, EntityContext> context)
     {
-        var initializationResults = context.Context.Model.Properties
-            .Where(property => context.Context.Model.IsMemberValidForBuilderClass(property, context.Context.Settings))
+        var initializationResults = context.Context.SourceModel.Properties
+            .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
             .Select(property => _formattableStringParser.Parse("this.{Name} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
@@ -60,8 +60,8 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
             .AddParameters(context.CreateImmutableClassCtorParameters())
             .AddStringCodeStatements
             (
-                context.Context.Model.Properties
-                    .Where(property => context.Context.Model.IsMemberValidForBuilderClass(property, context.Context.Settings))
+                context.Context.SourceModel.Properties
+                    .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
                     .Where(property => context.Context.Settings.NullCheckSettings.AddNullChecks && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
@@ -82,7 +82,7 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
             yield break;
         }
 
-        var customValidationCodeStatements = context.Context.Model.Metadata.GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
+        var customValidationCodeStatements = context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomEntityValidationCode).ToArray();
         if (customValidationCodeStatements.Length > 0)
         {
             foreach (var statement in customValidationCodeStatements)

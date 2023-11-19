@@ -13,9 +13,9 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
         context = context.IsNotNull(nameof(context));
 
         context.Model.AddProperties(
-            context.Context.Model
+            context.Context.SourceModel
                 .Properties
-                .Where(property => context.Context.Model.IsMemberValidForBuilderClass(property, context.Context.Settings))
+                .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
                 .Select
                 (
                     property => new ClassPropertyBuilder()

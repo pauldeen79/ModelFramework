@@ -26,7 +26,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     {
         context = context.IsNotNull(nameof(context));
 
-        var baseClassResult = GetBuilderBaseClass(context.Context.Model, context);
+        var baseClassResult = GetBuilderBaseClass(context.Context.SourceModel, context);
         if (!baseClassResult.IsSuccessful())
         {
             return Result.FromExistingResult<ClassBuilder>(baseClassResult);

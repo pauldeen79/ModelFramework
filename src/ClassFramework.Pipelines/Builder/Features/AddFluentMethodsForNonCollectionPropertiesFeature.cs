@@ -31,7 +31,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             return Result.Continue<ClassBuilder>();
         }
 
-        foreach (var property in context.Context.Model.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings);
             var typeName = context.Context.MapTypeName(property.TypeName);
@@ -55,8 +55,8 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             var builder = new ClassMethodBuilder()
                 .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
                 .WithTypeName(context.Context.IsBuilderForAbstractEntity
-                      ? "TBuilder" + context.Context.Model.GetGenericTypeArgumentsString()
-                      : results.First(x => x.Name == "BuilderName").LazyResult.Value.Value! + context.Context.Model.GetGenericTypeArgumentsString())
+                      ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
+                      : results.First(x => x.Name == "BuilderName").LazyResult.Value.Value! + context.Context.SourceModel.GetGenericTypeArgumentsString())
                 .AddParameters
                 (
                     new ParameterBuilder()

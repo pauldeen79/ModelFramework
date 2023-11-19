@@ -2,8 +2,8 @@
 
 public record EntityContext : ContextBase<TypeBase, PipelineBuilderSettings>
 {
-    public EntityContext(TypeBase model, PipelineBuilderSettings settings, IFormatProvider formatProvider)
-        : base(model, settings, formatProvider)
+    public EntityContext(TypeBase sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+        : base(sourceModel, settings, formatProvider)
     {
     }
 
