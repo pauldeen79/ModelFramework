@@ -55,7 +55,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes
-                    .Where(_ => context.Context.Settings.GenerationSettings.CopyAttributes)
+                    .Where(_ => context.Context.Settings.CopySettings.CopyAttributes)
                     .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))

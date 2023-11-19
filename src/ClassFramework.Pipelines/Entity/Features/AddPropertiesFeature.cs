@@ -26,7 +26,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
                         .AddAttributes(property.Attributes
-                            .Where(x => context.Context.Settings.GenerationSettings.CopyAttributePredicate?.Invoke(x) ?? true)
+                            .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
                             .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
                         .WithStatic(property.Static)
                         .WithVirtual(property.Virtual)

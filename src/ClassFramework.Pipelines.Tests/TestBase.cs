@@ -117,7 +117,7 @@ public abstract class TestBase : IDisposable
         => new Pipelines.Builder.PipelineBuilderSettings(
             typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName, enableNullableReferenceTypes: enableNullableReferenceTypes, namespaceMappings, typenameMappings),
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
-            generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
             nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
             entitySettings: CreateEntitySettings
@@ -139,6 +139,8 @@ public abstract class TestBase : IDisposable
         bool addNullChecks = false,
         bool useExceptionThrowIfNull = false,
         bool enableNullableReferenceTypes = false,
+        bool copyAttributes = false,
+        bool copyInterfaces = false,
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
@@ -153,22 +155,23 @@ public abstract class TestBase : IDisposable
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Entity.PipelineBuilderSettings(
-            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, addSetters: addSetters, setterVisibility: setterVisibility),
+            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addSetters: addSetters, setterVisibility: setterVisibility),
             nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
             constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
             nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString),
-            typeSettings: new Pipelines.Entity.PipelineBuilderTypeSettings(newCollectionTypeName, enableNullableReferenceTypes: enableNullableReferenceTypes, namespaceMappings, typenameMappings)
+            typeSettings: new Pipelines.Entity.PipelineBuilderTypeSettings(newCollectionTypeName, enableNullableReferenceTypes: enableNullableReferenceTypes, namespaceMappings, typenameMappings),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate)
         );
 
     protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings()
         => new[]
         {
-                new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
+            new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
+                .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
         }.Select(x => x.Build());
 
     protected virtual void Dispose(bool disposing)

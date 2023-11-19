@@ -16,13 +16,13 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
         }
 
         [Fact]
-        public void Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Not_Null()
+        public void Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Not_Null_And_CopyAttributes_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(copyAttributePredicate: _ => true);
+            var settings = CreateEntitySettings(copyAttributePredicate: _ => true, copyAttributes: true);
             var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
@@ -34,13 +34,31 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
         }
 
         [Fact]
-        public void Does_Not_Attributes_When_CopyAttributePredicate_Setting_Is_Null()
+        public void Adds_Attributes_When_CopyAttributePredicate_Setting_Is_Null_And_CopyAttributes_Is_True()
         {
             // Arrange
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(copyAttributePredicate: null);
+            var settings = CreateEntitySettings(copyAttributePredicate: null, copyAttributes: true);
+            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Attributes.Should().BeEquivalentTo(new[] { new AttributeBuilder().WithName("MyAttribute") });
+        }
+
+        [Fact]
+        public void Does_Not_Copy_Attributes_When_CopyAttributes_Is_False()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateEntitySettings(copyAttributes: false);
             var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

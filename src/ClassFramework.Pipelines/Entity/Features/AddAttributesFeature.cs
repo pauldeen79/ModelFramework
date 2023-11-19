@@ -12,13 +12,13 @@ public class AddAttributesFeature : IPipelineFeature<ClassBuilder, EntityContext
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.Settings.GenerationSettings.CopyAttributePredicate is null)
+        if (!context.Context.Settings.CopySettings.CopyAttributes)
         {
             return Result.Continue<ClassBuilder>();
         }
 
         context.Model.AddAttributes(context.Context.Model.Attributes
-            .Where(context.Context.Settings.GenerationSettings.CopyAttributePredicate.Invoke)
+            .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))));
 
         return Result.Continue<ClassBuilder>();

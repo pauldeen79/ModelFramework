@@ -6,6 +6,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
+    public PipelineBuilderCopySettings CopySettings { get; }
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
     public PipelineBuilderNullCheckSettings NullCheckSettings { get; }
 
@@ -54,6 +55,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderInheritanceSettings? inheritanceSettings = null,
         PipelineBuilderTypeSettings? typeSettings = null,
+        PipelineBuilderCopySettings? copySettings = null,
         PipelineBuilderGenerationSettings? generationSettings = null,
         PipelineBuilderNullCheckSettings? nullCheckSettings = null)
     {
@@ -61,6 +63,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
         TypeSettings = typeSettings ?? new();
+        CopySettings = copySettings ?? new();
         GenerationSettings = generationSettings ?? new();
         NullCheckSettings = nullCheckSettings ?? new();
     }

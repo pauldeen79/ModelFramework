@@ -1,13 +1,13 @@
-﻿namespace ClassFramework.Pipelines.Builder;
+﻿namespace ClassFramework.Pipelines.Shared;
 
-public record PipelineBuilderGenerationSettings
+public record PipelineBuilderCopySettings
 {
     public bool CopyAttributes { get; }
     public bool CopyInterfaces { get; }
     public Predicate<Domain.Attribute>? CopyAttributePredicate { get; }
     public Predicate<string>? CopyInterfacePredicate { get; }
 
-    public PipelineBuilderGenerationSettings(
+    public PipelineBuilderCopySettings(
         bool copyAttributes = false,
         bool copyInterfaces = false,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,

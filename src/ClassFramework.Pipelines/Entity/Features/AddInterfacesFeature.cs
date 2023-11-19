@@ -12,13 +12,13 @@ public class AddInterfacesFeature : IPipelineFeature<ClassBuilder, EntityContext
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.Settings.GenerationSettings.CopyInterfacePredicate is null)
+        if (!context.Context.Settings.CopySettings.CopyInterfaces)
         {
             return Result.Continue<ClassBuilder>();
         }
 
         context.Model.AddInterfaces(context.Context.Model.Interfaces
-            .Where(context.Context.Settings.GenerationSettings.CopyInterfacePredicate.Invoke)
+            .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(context.Context.MapTypeName));
 
         return Result.Continue<ClassBuilder>();

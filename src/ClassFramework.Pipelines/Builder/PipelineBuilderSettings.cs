@@ -6,7 +6,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
-    public PipelineBuilderGenerationSettings GenerationSettings { get; }
+    public PipelineBuilderCopySettings CopySettings { get; }
     public PipelineBuilderNullCheckSettings NullCheckSettings { get; }
     public Entity.PipelineBuilderSettings EntitySettings { get; }
 
@@ -24,7 +24,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         PipelineBuilderInheritanceSettings? inheritanceSettings,
         PipelineBuilderConstructorSettings? constructorSettings,
         PipelineBuilderTypeSettings? typeSettings,
-        PipelineBuilderGenerationSettings? generationSettings,
+        PipelineBuilderCopySettings? copySettings,
         PipelineBuilderNullCheckSettings? nullCheckSettings,
         Entity.PipelineBuilderSettings? entitySettings,
         bool isForAbstractBuilder)
@@ -33,7 +33,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         InheritanceSettings = inheritanceSettings ?? new();
         ConstructorSettings = constructorSettings ?? new();
         TypeSettings = typeSettings ?? new();
-        GenerationSettings = generationSettings ?? new();
+        CopySettings = copySettings ?? new();
         NullCheckSettings = nullCheckSettings ?? new();
         EntitySettings = entitySettings ?? new();
         IsForAbstractBuilder = isForAbstractBuilder;
@@ -44,13 +44,13 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         PipelineBuilderInheritanceSettings? inheritanceSettings = null,
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderTypeSettings? typeSettings = null,
-        PipelineBuilderGenerationSettings? generationSettings = null,
+        PipelineBuilderCopySettings? copySettings = null,
         PipelineBuilderNullCheckSettings? nullCheckSettings = null,
         Entity.PipelineBuilderSettings? entitySettings = null)
-        : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, generationSettings, nullCheckSettings, entitySettings, false)
+        : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, copySettings, nullCheckSettings, entitySettings, false)
     {
     }
 
     public PipelineBuilderSettings ForAbstractBuilder()
-        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, GenerationSettings, NullCheckSettings, EntitySettings, true);
+        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, CopySettings, NullCheckSettings, EntitySettings, true);
 }
