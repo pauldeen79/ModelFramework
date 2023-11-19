@@ -138,14 +138,14 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
         // When not using IEnumerable<>, we can simply force ToArray because it's stored in a generic list or collection of some sort anyway.
         // (in other words, materialization is always performed)
-        yield return Result.Success(context.Context.Settings.NullCheckSettings.AddNullChecks
+        yield return Result.Success(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks
             ? $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()})));"
             : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}.ToArray());");
     }
 
     private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
     {
-        if (context.Context.Settings.NullCheckSettings.AddNullChecks)
+        if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
         {
             var argumentNullCheckResult = _formattableStringParser.Parse
             (
@@ -158,7 +158,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
                 var constructorInitializerResult = property.GetBuilderClassConstructorInitializer(context, _formattableStringParser, property.TypeName); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
-                yield return Result.Success($"if ({property.GetInitializationName(context.Context.Settings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo())} is null) {property.GetInitializationName(context.Context.Settings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.GetValueOrThrow()};"); // note that we use GetValueOrThrow here, because we have already checked this expression in the typeNameResult (see above in this class)
+                yield return Result.Success($"if ({property.GetInitializationName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo())} is null) {property.GetInitializationName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.GetValueOrThrow()};"); // note that we use GetValueOrThrow here, because we have already checked this expression in the typeNameResult (see above in this class)
             }
         }
 

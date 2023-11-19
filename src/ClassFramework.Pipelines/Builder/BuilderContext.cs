@@ -46,17 +46,17 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
 
     public bool HasBackingFields()
         => !(IsAbstractBuilder
-        || !Settings.NullCheckSettings.AddNullChecks
+        || !Settings.EntitySettings.NullCheckSettings.AddNullChecks
         || Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared);
 
     private bool NeedsPragmas()
         => Settings.TypeSettings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
-        && !Settings.NullCheckSettings.AddNullChecks;
+        && !Settings.EntitySettings.NullCheckSettings.AddNullChecks;
 
     public string CreateArgumentNullException(string argumentName)
     {
-        if (Settings.NullCheckSettings.UseExceptionThrowIfNull)
+        if (Settings.EntitySettings.NullCheckSettings.UseExceptionThrowIfNull)
         {
             return $"System.ArgumentNullException.ThrowIfNull({argumentName});";
         }

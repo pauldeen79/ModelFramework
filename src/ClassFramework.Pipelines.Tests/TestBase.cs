@@ -117,19 +117,19 @@ public abstract class TestBase : IDisposable
         => new Pipelines.Builder.PipelineBuilderSettings(
             typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName, enableNullableReferenceTypes: enableNullableReferenceTypes, namespaceMappings, typenameMappings),
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
             entitySettings: CreateEntitySettings
             (
                 enableEntityInheritance: enableEntityInheritance,
                 addNullChecks: addNullChecks,
+                useExceptionThrowIfNull: useExceptionThrowIfNull,
                 enableNullableReferenceTypes: enableNullableReferenceTypes,
                 validateArguments: validateArguments,
                 allowGenerationWithoutProperties: allowGenerationWithoutProperties,
+                copyAttributes: copyAttributes,
+                copyInterfaces: copyInterfaces,
                 copyAttributePredicate: copyAttributePredicate,
-                copyInterfacePredicate: copyInterfacePredicate,
-                useExceptionThrowIfNull: useExceptionThrowIfNull
+                copyInterfacePredicate: copyInterfacePredicate
             ),
             nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
         );

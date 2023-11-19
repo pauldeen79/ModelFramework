@@ -67,7 +67,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                         .WithDefaultValue(property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
-            if (context.Context.Settings.NullCheckSettings.AddNullChecks)
+            if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
             {
                 builder.AddStringCodeStatements(results.First(x => x.Name == "ArgumentNullCheck").LazyResult.Value.Value!);
             }

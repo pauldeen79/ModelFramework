@@ -55,7 +55,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes
-                    .Where(_ => context.Context.Settings.CopySettings.CopyAttributes)
+                    .Where(_ => context.Context.Settings.EntitySettings.CopySettings.CopyAttributes)
                     .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
@@ -79,7 +79,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         ClassProperty property,
         BuilderContext context)
     {
-        if (context.Settings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
+        if (context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -89,9 +89,9 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         ClassProperty property,
         BuilderContext context)
     {
-        if (context.Settings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
+        if (context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.NullCheckSettings.AddNullChecks)};");
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)};");
         }
     }
 }

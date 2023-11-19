@@ -6,14 +6,12 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public PipelineBuilderConstructorSettings ConstructorSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
-    public PipelineBuilderCopySettings CopySettings { get; }
-    public PipelineBuilderNullCheckSettings NullCheckSettings { get; }
     public Entity.PipelineBuilderSettings EntitySettings { get; }
 
     public bool IsForAbstractBuilder { get; }
 
     bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
-    bool IPipelineGenerationSettings.AddNullChecks => NullCheckSettings.AddNullChecks;
+    bool IPipelineGenerationSettings.AddNullChecks => EntitySettings.NullCheckSettings.AddNullChecks;
     bool IPipelineGenerationSettings.EnableInheritance => EntitySettings.InheritanceSettings.EnableInheritance;
     string IPipelineGenerationSettings.CollectionTypeName => TypeSettings.NewCollectionTypeName;
     ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => EntitySettings.ConstructorSettings.OriginalValidateArguments;
@@ -24,8 +22,6 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         PipelineBuilderInheritanceSettings? inheritanceSettings,
         PipelineBuilderConstructorSettings? constructorSettings,
         PipelineBuilderTypeSettings? typeSettings,
-        PipelineBuilderCopySettings? copySettings,
-        PipelineBuilderNullCheckSettings? nullCheckSettings,
         Entity.PipelineBuilderSettings? entitySettings,
         bool isForAbstractBuilder)
     {
@@ -33,8 +29,6 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         InheritanceSettings = inheritanceSettings ?? new();
         ConstructorSettings = constructorSettings ?? new();
         TypeSettings = typeSettings ?? new();
-        CopySettings = copySettings ?? new();
-        NullCheckSettings = nullCheckSettings ?? new();
         EntitySettings = entitySettings ?? new();
         IsForAbstractBuilder = isForAbstractBuilder;
     }
@@ -44,13 +38,11 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         PipelineBuilderInheritanceSettings? inheritanceSettings = null,
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderTypeSettings? typeSettings = null,
-        PipelineBuilderCopySettings? copySettings = null,
-        PipelineBuilderNullCheckSettings? nullCheckSettings = null,
         Entity.PipelineBuilderSettings? entitySettings = null)
-        : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, copySettings, nullCheckSettings, entitySettings, false)
+        : this(nameSettings, inheritanceSettings, constructorSettings, typeSettings, entitySettings, false)
     {
     }
 
     public PipelineBuilderSettings ForAbstractBuilder()
-        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, CopySettings, NullCheckSettings, EntitySettings, true);
+        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, EntitySettings, true);
 }
