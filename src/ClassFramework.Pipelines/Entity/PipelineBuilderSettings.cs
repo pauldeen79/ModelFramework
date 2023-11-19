@@ -11,6 +11,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     bool IPipelineGenerationSettings.EnableNullableReferenceTypes => GenerationSettings.EnableNullableReferenceTypes;
     bool IPipelineGenerationSettings.AddNullChecks => GenerationSettings.AddNullChecks;
     bool IPipelineGenerationSettings.EnableInheritance => InheritanceSettings.EnableInheritance;
+    string IPipelineGenerationSettings.CollectionTypeName => ConstructorSettings.CollectionTypeName;
     ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => ConstructorSettings.ValidateArguments;
     Func<IParentTypeContainer, TypeBase, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
 

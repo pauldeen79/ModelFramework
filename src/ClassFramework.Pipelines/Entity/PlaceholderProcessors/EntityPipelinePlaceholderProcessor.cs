@@ -17,17 +17,37 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
 
         if (context is PipelineContext<ClassBuilder, EntityContext> pipelineContext)
         {
-            return value switch
-            {
-                "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
-                "EntityNameSuffix" => Result.Success(pipelineContext.Context.Settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Shared
-                    ? "Base"
-                    : string.Empty),
-                _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(pipelineContext.Context.Model), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
-                    ?? Result.Continue<string>()
-            };
+            return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
+        }
+
+        if (context is ParentChildContext<EntityContext, ClassProperty> parentChildContext)
+        {
+            return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
 
         return Result.Continue<string>();
     }
+
+    private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<ClassBuilder, EntityContext> pipelineContext)
+        => value switch
+        {
+            "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
+            "EntityNameSuffix" => Result.Success(pipelineContext.Context.Settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Shared
+                ? "Base"
+                : string.Empty),
+            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(pipelineContext.Context.Model), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Continue<string>()
+        };
+
+    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<EntityContext, ClassProperty> parentChildContext)
+        => value switch
+        {
+            "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.EntityNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
+            "NullableRequiredSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable || !parentChildContext.ParentContext.Context.Settings.GenerationSettings.EnableNullableReferenceTypes
+                ? string.Empty
+                : "!"),
+            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new ClassPropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName)), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<TypeBase>(parentChildContext.ParentContext.Context.Model), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+                ?? Result.Continue<string>()
+        };
 }

@@ -28,6 +28,7 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(ClassProperty.Name)}Pascal" => Result.Success(classPropertyContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"{nameof(ClassProperty.Name)}PascalCsharpFriendlyName" => Result.Success(classPropertyContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             "BuilderMemberName" => Result.Success(classPropertyContext.Model.GetInitializationName(classPropertyContext.Settings.AddNullChecks, classPropertyContext.Settings.EnableNullableReferenceTypes, classPropertyContext.Settings.ValidateArguments, classPropertyContext.FormatProvider.ToCultureInfo())),
+            "InitializationExpression" => Result.Success(classPropertyContext.Model.GetInitializationExpression(classPropertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo())),
             nameof(ClassProperty.TypeName) => Result.Success(typeName),
             $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
             $"{nameof(ClassProperty.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),

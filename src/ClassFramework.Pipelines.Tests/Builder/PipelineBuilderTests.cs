@@ -326,14 +326,5 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 }
             );
         }
-
-        private static IEnumerable<NamespaceMapping> CreateNamespaceMappings()
-            => new[]
-            {
-                new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
-                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
-            }.Select(x => x.Build());
     }
 }

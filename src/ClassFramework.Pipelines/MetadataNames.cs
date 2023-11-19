@@ -3,9 +3,14 @@
 public static class MetadataNames
 {
     /// <summary>
-    /// Metadata name for defining a custom typename for argument in builder. Note that the value will be converted to string.
+    /// Metadata name for defining a custom typename for argument in a builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderArgumentType = "ClassFramework.Builder.ArgumentType";
+
+    /// <summary>
+    /// Metadata name for defining a custom typename for argument in an entity. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomImmutableArgumentType = "ClassFramework.Entity.ArgumentType";
 
     /// <summary>
     /// Metadata name for defining a custom default value in builder c'tor.
@@ -48,6 +53,11 @@ public static class MetadataNames
     public const string CustomBuilderValidationCode = "ClassFramework.Builder.ValidationCode";
 
     /// <summary>
+    /// Metadata name for defining custom validation code statements in an entity. Note that the this metadata can occur multiple times, and that all values will all be converted to string.
+    /// </summary>
+    public const string CustomEntityValidationCode = "ClassFramework.Entity.ValiationCode";
+
+    /// <summary>
     /// Metadata name for defining a custom initialization on a fluent (Add) method in a builder. Note that the value will be converted to string.
     /// </summary>
     public const string CustomBuilderAddExpression = "ClassFramework.Builder.AddExpression";
@@ -66,4 +76,9 @@ public static class MetadataNames
     /// Metadata name for defining a custom entity namespace. Note that the value will be converted to string.
     /// </summary>
     public const string CustomEntityNamespace = "ClassFramework.Entity.Namespace";
+
+    /// <summary>
+    /// Metadata name for defining if the entity should be checked for null. Value needs to be a boolean.
+    /// </summary>
+    public const string EntityNullCheck = "ClassFramework.Entity.NullCheck";
 }

@@ -6,6 +6,7 @@ public record PipelineBuilderGenerationSettings
     public Visibility? SetterVisibility { get; }
     public bool EnableNullableReferenceTypes { get; }
     public bool AddNullChecks { get; }
+    public bool UseExceptionThrowIfNull { get; }
     public bool AllowGenerationWithoutProperties { get; }
     public Predicate<Domain.Attribute>? CopyAttributePredicate { get; }
     public Predicate<string>? CopyInterfacePredicate { get; }
@@ -14,6 +15,7 @@ public record PipelineBuilderGenerationSettings
         bool addSetters = false,
         Visibility? setterVisibility = null,
         bool addNullChecks = false,
+        bool useExceptionThrowIfNull = false,
         bool enableNullableReferenceTypes = false,
         bool allowGenerationWithoutProperties = false,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
@@ -22,6 +24,7 @@ public record PipelineBuilderGenerationSettings
         AddSetters = addSetters;
         SetterVisibility = setterVisibility;
         AddNullChecks = addNullChecks;
+        UseExceptionThrowIfNull = useExceptionThrowIfNull;
         EnableNullableReferenceTypes = enableNullableReferenceTypes;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
         CopyAttributePredicate = copyAttributePredicate;

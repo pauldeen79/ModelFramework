@@ -25,4 +25,14 @@ public record EntityContext : ContextBase<TypeBase, PipelineBuilderSettings>
             .WithName(MapTypeName(attribute.Name))
             .Build();
     }
+
+    public string CreateArgumentNullException(string argumentName)
+    {
+        if (Settings.GenerationSettings.UseExceptionThrowIfNull)
+        {
+            return $"System.ArgumentNullException.ThrowIfNull({argumentName});";
+        }
+
+        return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
+    }
 }

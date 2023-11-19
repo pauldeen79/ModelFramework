@@ -119,13 +119,24 @@ public abstract class TestBase : IDisposable
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
             generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
-            entitySettings: CreateEntitySettings(enableEntityInheritance, addNullChecks, enableNullableReferenceTypes, validateArguments, allowGenerationWithoutProperties, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
+            entitySettings: CreateEntitySettings
+            (
+                enableEntityInheritance: enableEntityInheritance,
+                addNullChecks: addNullChecks,
+                enableNullableReferenceTypes: enableNullableReferenceTypes,
+                validateArguments: validateArguments,
+                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
+                copyAttributePredicate: copyAttributePredicate,
+                copyInterfacePredicate: copyInterfacePredicate,
+                useExceptionThrowIfNull: useExceptionThrowIfNull
+            ),
             nameSettings: new Pipelines.Builder.PipelineBuilderNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
         );
 
     protected static Pipelines.Entity.PipelineBuilderSettings CreateEntitySettings(
         bool enableEntityInheritance = false,
         bool addNullChecks = false,
+        bool useExceptionThrowIfNull = false,
         bool enableNullableReferenceTypes = false,
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         bool allowGenerationWithoutProperties = false,
@@ -133,7 +144,7 @@ public abstract class TestBase : IDisposable
         Class? baseClass = null,
         string entityNamespaceFormatString = "{Namespace}",
         string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
-        string newCollectionTypeName = "System.Collections.Generic.List",
+        string newCollectionTypeName = "CrossCutting.Common.ValueCollection", //"System.Collections.Generic.IReadOnlyCollection",
         bool addSetters = false,
         Visibility? setterVisibility = null,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
@@ -141,12 +152,22 @@ public abstract class TestBase : IDisposable
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Entity.PipelineBuilderSettings(
-            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addNullChecks: addNullChecks, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, addSetters: addSetters, setterVisibility: setterVisibility),
+            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull, enableNullableReferenceTypes: enableNullableReferenceTypes, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, addSetters: addSetters, setterVisibility: setterVisibility),
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
             constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
             nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString),
             typeSettings: new Pipelines.Entity.PipelineBuilderTypeSettings(newCollectionTypeName, namespaceMappings, typenameMappings)
         );
+
+    protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings()
+        => new[]
+        {
+                new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
+                    .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
+        }.Select(x => x.Build());
 
     protected virtual void Dispose(bool disposing)
     {

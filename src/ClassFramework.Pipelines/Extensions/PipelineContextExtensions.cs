@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace ClassFramework.Pipelines.Extensions;
+﻿namespace ClassFramework.Pipelines.Extensions;
 
 public static class PipelineContextExtensions
 {
@@ -44,6 +42,56 @@ public static class PipelineContextExtensions
 
         return Result.Success($"new {ns}{context.Context.Model.Name}{classNameSuffix}{context.Context.Model.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
+
+    public static string CreateEntityChainCall(
+        this PipelineContext<ClassBuilder, EntityContext> context,
+        IFormattableStringParser formattableStringParser,
+        bool baseClass)
+    {
+        context = context.IsNotNull(nameof(context));
+
+        if (baseClass && context.Context.Settings.AddValidationCode == ArgumentValidationType.Shared)
+        {
+            return $"base({CreateImmutableClassCtorParameterNames(context, formattableStringParser)})";
+        }
+
+        return context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
+            ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.InheritanceSettings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
+            : context.Context.Model.GetCustomValueForInheritedClass(context.Context.Settings,
+            cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.Model.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).GetValueOrThrow(); // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+    }
+
+    public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters(
+        this PipelineContext<ClassBuilder, EntityContext> context,
+        IFormattableStringParser formattableStringParser)
+        => context.Context.Model.Properties
+            .Select
+            (
+                property => new ParameterBuilder()
+                    .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
+                    .WithTypeName
+                    (
+                        context.Context.MapTypeName(formattableStringParser.Parse
+                        (
+                            property.Metadata
+                                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
+                                .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName),
+                            context.Context.FormatProvider,
+                            new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)
+                        ).GetValueOrThrow())
+                        .FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))
+                    )
+                    .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType)
+            );
+    
+    private static string GetPropertyNamesConcatenated(IEnumerable<ClassProperty> properties, CultureInfo cultureInfo)
+        => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
+
+    private static string CreateImmutableClassCtorParameterNames(
+        PipelineContext<ClassBuilder, EntityContext> context,
+        IFormattableStringParser formattableStringParser)
+        => string.Join(", ", context.CreateImmutableClassCtorParameters(formattableStringParser).Select(x => x.Name.ToString().GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
