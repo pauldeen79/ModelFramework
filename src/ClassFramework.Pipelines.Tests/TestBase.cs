@@ -149,13 +149,14 @@ public abstract class TestBase : IDisposable
         string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
         string newCollectionTypeName = "CrossCutting.Common.ValueCollection", //"System.Collections.Generic.IReadOnlyCollection",
         bool addSetters = false,
+        bool createRecord = false,
         Visibility? setterVisibility = null,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Entity.PipelineBuilderSettings(
-            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addSetters: addSetters, setterVisibility: setterVisibility),
+            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addSetters: addSetters, setterVisibility: setterVisibility, createRecord: createRecord),
             nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
             constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),

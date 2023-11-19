@@ -32,6 +32,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddConstructorFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.BaseClassFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
+            .AddScoped<IEntityFeatureBuilder, Entity.Features.SetRecordFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.ValidationFeatureBuilder>()
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
