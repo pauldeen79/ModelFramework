@@ -26,7 +26,13 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddConstructors(CreateEntityConstructor(context));
+        var ctorResult = CreateEntityConstructor(context);
+        if (!ctorResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassBuilder>(ctorResult);
+        }
+
+        context.Model.AddConstructors(ctorResult.Value!);
 
         return Result.Continue<ClassBuilder>();
     }
@@ -35,8 +41,21 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
     public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 
-    private ClassConstructorBuilder CreateEntityConstructor(PipelineContext<ClassBuilder, EntityContext> context)
-        => new ClassConstructorBuilder()
+    private Result<ClassConstructorBuilder> CreateEntityConstructor(PipelineContext<ClassBuilder, EntityContext> context)
+    {
+        var initializationResults = context.Context.Model.Properties
+            .Where(property => context.Context.Model.IsMemberValidForBuilderClass(property, context.Context.Settings))
+            .Select(property => _formattableStringParser.Parse("this.{Name} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)))
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
+            .ToArray();
+
+        var error = Array.Find(initializationResults, x => !x.IsSuccessful());
+        if (error is not null)
+        {
+            return Result.FromExistingResult<ClassConstructorBuilder>(error);
+        }
+
+        return Result.Success(new ClassConstructorBuilder()
             .WithProtected(context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
             .AddParameters(context.CreateImmutableClassCtorParameters())
             .AddStringCodeStatements
@@ -46,14 +65,10 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
                     .Where(property => context.Context.Settings.GenerationSettings.AddNullChecks && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
-            .AddStringCodeStatements
-            (
-                context.Context.Model.Properties
-                    .Where(property => context.Context.Model.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                    .Select(property => _formattableStringParser.Parse("this.{Name} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)).GetValueOrThrow())
-            )
+            .AddStringCodeStatements(initializationResults.Select(x => x.Value!))
             .AddStringCodeStatements(CreateValidationCode(context, true))
-            .WithChainCall(context.CreateEntityChainCall(false));
+            .WithChainCall(context.CreateEntityChainCall(false)));
+    }
 
     private static IEnumerable<string> CreateValidationCode(PipelineContext<ClassBuilder, EntityContext> context, bool baseClass)
 
