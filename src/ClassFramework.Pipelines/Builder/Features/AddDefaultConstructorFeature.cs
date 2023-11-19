@@ -101,7 +101,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
     }
 
     private static string CreateBuilderClassConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base()")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
+        => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private Result<string> GenerateDefaultValueStatement(ClassProperty property, PipelineContext<ClassBuilder, BuilderContext> context)
         => _formattableStringParser.Parse

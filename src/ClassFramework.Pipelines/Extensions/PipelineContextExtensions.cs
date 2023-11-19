@@ -55,7 +55,7 @@ public static class PipelineContextExtensions
         return context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.InheritanceSettings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
             : context.Context.Model.GetCustomValueForInheritedClass(context.Context.Settings,
-            cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.Model.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).GetValueOrThrow(); // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
+            cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.Model.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
     public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters(

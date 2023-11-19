@@ -158,7 +158,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             : value.Replace("[SourceExpression]", sourceExpression).Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", sourceProperty.GetSuffix(enableNullableReferenceTypes));
     }
     private static string CreateBuilderClassCopyConstructorChainCall(TypeBase instance, PipelineBuilderSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base(source)")).GetValueOrThrow(); //note that the delegate always returns success, so we can simply use GetValueOrThrow here
+        => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ClassConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<ClassBuilder, BuilderContext> context)
         => new ClassConstructorBuilder()
