@@ -117,7 +117,8 @@ public abstract class TestBase : IDisposable
         => new Pipelines.Builder.PipelineBuilderSettings(
             typeSettings: new Pipelines.Builder.PipelineBuilderTypeSettings(newCollectionTypeName: newCollectionTypeName, enableNullableReferenceTypes: enableNullableReferenceTypes, namespaceMappings, typenameMappings),
             constructorSettings: new Pipelines.Builder.PipelineBuilderConstructorSettings(addCopyConstructor, setDefaultValues),
-            generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(addNullChecks: addNullChecks, copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, useExceptionThrowIfNull: useExceptionThrowIfNull),
+            generationSettings: new Pipelines.Builder.PipelineBuilderGenerationSettings(copyAttributes: copyAttributes, copyInterfaces: copyInterfaces, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate),
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Builder.PipelineBuilderInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
             entitySettings: CreateEntitySettings
             (
@@ -152,7 +153,8 @@ public abstract class TestBase : IDisposable
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Entity.PipelineBuilderSettings(
-            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, addSetters: addSetters, setterVisibility: setterVisibility),
+            generationSettings: new Pipelines.Entity.PipelineBuilderGenerationSettings(allowGenerationWithoutProperties: allowGenerationWithoutProperties, copyAttributePredicate: copyAttributePredicate, copyInterfacePredicate: copyInterfacePredicate, addSetters: addSetters, setterVisibility: setterVisibility),
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: addNullChecks, useExceptionThrowIfNull: useExceptionThrowIfNull),
             inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: enableEntityInheritance, isAbstract: isAbstract, baseClass: baseClass),
             constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
             nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString),

@@ -7,9 +7,10 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     public PipelineBuilderInheritanceSettings InheritanceSettings { get; }
     public PipelineBuilderTypeSettings TypeSettings { get; }
     public PipelineBuilderGenerationSettings GenerationSettings { get; }
+    public PipelineBuilderNullCheckSettings NullCheckSettings { get; }
 
     bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
-    bool IPipelineGenerationSettings.AddNullChecks => GenerationSettings.AddNullChecks;
+    bool IPipelineGenerationSettings.AddNullChecks => NullCheckSettings.AddNullChecks;
     bool IPipelineGenerationSettings.EnableInheritance => InheritanceSettings.EnableInheritance;
     string IPipelineGenerationSettings.CollectionTypeName => ConstructorSettings.CollectionTypeName;
     ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => ConstructorSettings.ValidateArguments;
@@ -53,12 +54,14 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
         PipelineBuilderConstructorSettings? constructorSettings = null,
         PipelineBuilderInheritanceSettings? inheritanceSettings = null,
         PipelineBuilderTypeSettings? typeSettings = null,
-        PipelineBuilderGenerationSettings? generationSettings = null)
+        PipelineBuilderGenerationSettings? generationSettings = null,
+        PipelineBuilderNullCheckSettings? nullCheckSettings = null)
     {
         NameSettings = nameSettings ?? new();
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
         TypeSettings = typeSettings ?? new();
         GenerationSettings = generationSettings ?? new();
+        NullCheckSettings = nullCheckSettings ?? new();
     }
 }

@@ -55,7 +55,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<ClassBuilder, Build
             .Where(x => context.Context.Model.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new
             {
-                Name = x.GetInitializationName(context.Context.Settings.GenerationSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
+                Name = x.GetInitializationName(context.Context.Settings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
                 Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())

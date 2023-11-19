@@ -28,7 +28,7 @@ public record EntityContext : ContextBase<TypeBase, PipelineBuilderSettings>
 
     public string CreateArgumentNullException(string argumentName)
     {
-        if (Settings.GenerationSettings.UseExceptionThrowIfNull)
+        if (Settings.NullCheckSettings.UseExceptionThrowIfNull)
         {
             return $"System.ArgumentNullException.ThrowIfNull({argumentName});";
         }

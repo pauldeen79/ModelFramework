@@ -62,7 +62,7 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
             (
                 context.Context.Model.Properties
                     .Where(property => context.Context.Model.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                    .Where(property => context.Context.Settings.GenerationSettings.AddNullChecks && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
+                    .Where(property => context.Context.Settings.NullCheckSettings.AddNullChecks && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))

@@ -79,7 +79,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         ClassProperty property,
         BuilderContext context)
     {
-        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
+        if (context.Settings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -89,9 +89,9 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         ClassProperty property,
         BuilderContext context)
     {
-        if (context.Settings.GenerationSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
+        if (context.Settings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.GenerationSettings.AddNullChecks)};");
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.NullCheckSettings.AddNullChecks)};");
         }
     }
 }
