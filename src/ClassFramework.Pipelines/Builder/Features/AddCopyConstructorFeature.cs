@@ -89,15 +89,18 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
             return Result.FromExistingResult<ClassConstructorBuilder>(initializerErrorResult.Result);
         }
 
+        var nullCheckResult = _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context);
+        if (!nullCheckResult.IsSuccessful())
+        {
+            return Result.FromExistingResult<ClassConstructorBuilder>(nullCheckResult);
+        }
+
         return Result.Success(new ClassConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.Model, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
-                new[]
-                {
-                    _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context).GetValueOrThrow()
-                }.Where(x => !string.IsNullOrEmpty(x))
+                new[] { nullCheckResult.Value! }.Where(x => !string.IsNullOrEmpty(x))
             )
             .AddParameters
             (
