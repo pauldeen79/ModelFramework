@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <LangVersion>11.0</LangVersion>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
     <Nullable>enable</Nullable>
     <PackageId>pauldeen79.ModelFramework.Generators.Shared</PackageId>
     <RepositoryUrl>https://github.com/pauldeen79/ModelFramework</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.2.9" />
+    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>

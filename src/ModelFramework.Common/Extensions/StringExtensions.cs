@@ -208,16 +208,16 @@ public static class StringExtensions
         return instance.Substring(0, instance.Length - find.Length) + replace;
     }
 
-    public static bool IsStringTypeName(this string instance)
+    public static bool IsStringTypeName(this string? instance)
         => instance.FixTypeName() == typeof(string).FullName;
 
-    public static bool IsBooleanTypeName(this string instance)
+    public static bool IsBooleanTypeName(this string? instance)
         => instance.FixTypeName() == typeof(bool).FullName;
 
-    public static bool IsNullableBooleanTypeName(this string instance)
+    public static bool IsNullableBooleanTypeName(this string? instance)
         => instance.FixTypeName() == typeof(bool?).FullName.FixTypeName();
 
-    public static bool IsObjectTypeName(this string instance)
+    public static bool IsObjectTypeName(this string? instance)
         => instance.FixTypeName() == typeof(object).FullName;
 
     private static string FixAnonymousTypeName(string instance)

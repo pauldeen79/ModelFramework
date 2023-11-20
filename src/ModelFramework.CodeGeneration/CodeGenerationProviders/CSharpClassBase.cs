@@ -305,7 +305,7 @@ public abstract class CSharpClassBase : ClassBase
             (
                 t => t.FullName is not null
                     && t.FullName.GetNamespaceWithDefault() == type.FullName.GetNamespaceWithDefault()
-                    && t.GetProperties().Any()
+                    && t.GetProperties().Length > 0
             )
             .Select
             (
@@ -693,7 +693,7 @@ public abstract class CSharpClassBase : ClassBase
             if (classPropertyBuilder.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
             {
                 classPropertyBuilder.TypeName = classPropertyBuilder.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
-                if (classPropertyBuilder.TypeName.EndsWith(">", StringComparison.Ordinal))
+                if (classPropertyBuilder.TypeName.EndsWith('>'))
                 {
                     classPropertyBuilder.TypeName = classPropertyBuilder.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
                 }
@@ -941,7 +941,7 @@ public abstract class CSharpClassBase : ClassBase
             .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
             .Distinct();
 
-    private object GetBuilderFactoryModelDefaultValue(
+    private Literal GetBuilderFactoryModelDefaultValue(
         ITypeBase[] models,
         string builderNamespace,
         string classTypeName,
@@ -952,7 +952,7 @@ public abstract class CSharpClassBase : ClassBase
         builder.AppendLine($"new Dictionary<{typeof(Type).FullName}, Func<{classTypeName}, {builderTypeName}>>")
                .AppendLine("        {");
         // note that generic types are skipped here. you need to fill createLiteralCodeStatement to handle these ones
-        foreach (var modelName in models.Where(x => !x.GenericTypeArguments.Any()).Select(x => x.Name))
+        foreach (var modelName in models.Where(x => x.GenericTypeArguments.Count == 0).Select(x => x.Name))
         {
             builder.AppendLine("            { typeof(" + overrideClassNamespace + "." + modelName + "),x => new " + builderNamespace + "." + modelName + BuilderName + "((" + overrideClassNamespace + "." + modelName + ")x) },");
         }
