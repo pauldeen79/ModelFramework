@@ -255,14 +255,14 @@ public static class StringExtensions
             "Array<"
         ) || typeName.EndsWith("[]");
 
-    public static string GetCollectionItemType(this string instance)
+    public static string GetCollectionItemType(this string? instance)
     {
-        if (string.IsNullOrEmpty(instance) || !instance.IsCollectionTypeName())
+        if (string.IsNullOrEmpty(instance) || !instance!.IsCollectionTypeName())
         {
             return string.Empty;
         }
 
-        if (instance.EndsWith("[]"))
+        if (instance!.EndsWith("[]"))
         {
             return instance.Substring(0, instance.Length - 2);
         }

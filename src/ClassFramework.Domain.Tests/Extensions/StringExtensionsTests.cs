@@ -220,7 +220,7 @@ public class StringExtensionsTests
     [InlineData("MyNamespace.MyClass", "MyNamespace")]
     [InlineData("MyNamespace.MyClass<My.GenericType>", "MyNamespace")]
     [InlineData("A.B.C.D", "A.B.C")]
-    public void GetNamespaceWithDefault_Returns_Correct_Result(string input, string expectedResult)
+    public void GetNamespaceWithDefault_Returns_Correct_Result(string? input, string expectedResult)
     {
         // Act
         var actual = input.GetNamespaceWithDefault();
@@ -312,10 +312,10 @@ public class StringExtensionsTests
     [InlineData(null, null)]
     [InlineData("someValidName", "someValidName")]
     [InlineData("operator", "@operator")]
-    public void GetCsharpFriendlyName_Returns_Correct_Result(string input, string expected)
+    public void GetCsharpFriendlyName_Returns_Correct_Result(string? input, string? expected)
     {
         // Act
-        var result = input.GetCsharpFriendlyName();
+        var result = input!.GetCsharpFriendlyName();
 
         // Assert
         result.Should().Be(expected);
@@ -325,7 +325,7 @@ public class StringExtensionsTests
     [InlineData("", "")]
     [InlineData(null, null)]
     [InlineData("some $$$ invalid stuff", "some_____invalid_stuff")]
-    public void Sanitize_Returns_Correct_Result(string input, string expected)
+    public void Sanitize_Returns_Correct_Result(string? input, string? expected)
     {
         // Act
         var result = input.Sanitize();
@@ -341,7 +341,7 @@ public class StringExtensionsTests
     [InlineData("System.Boolean", false)]
     [InlineData("System.Object", false)]
     [InlineData("string", false)]
-    public void IsStringTypeName_Returns_Correct_Result(string input, bool expected)
+    public void IsStringTypeName_Returns_Correct_Result(string? input, bool expected)
     {
         // Act
         var result = input.IsStringTypeName();
@@ -357,7 +357,7 @@ public class StringExtensionsTests
     [InlineData("System.Boolean", true)]
     [InlineData("System.Object", false)]
     [InlineData("boolean", false)]
-    public void IsBooleanTypeName_Returns_Correct_Result(string input, bool expected)
+    public void IsBooleanTypeName_Returns_Correct_Result(string? input, bool expected)
     {
         // Act
         var result = input.IsBooleanTypeName();
@@ -372,7 +372,7 @@ public class StringExtensionsTests
     [InlineData("Something else", false)]
     [InlineData("", false)]
     [InlineData(null, false)]
-    public void IsNullableBooleanTypeName_Returns_Correct_Result(string input, bool expected)
+    public void IsNullableBooleanTypeName_Returns_Correct_Result(string? input, bool expected)
     {
         // Act
         var result = input.IsNullableBooleanTypeName();
@@ -388,7 +388,7 @@ public class StringExtensionsTests
     [InlineData("System.Boolean", false)]
     [InlineData("System.Object", true)]
     [InlineData("object", false)]
-    public void IsObjectTypeName_Returns_Correct_Result(string input, bool expected)
+    public void IsObjectTypeName_Returns_Correct_Result(string? input, bool expected)
     {
         // Act
         var result = input.IsObjectTypeName();
@@ -544,7 +544,7 @@ public class StringExtensionsTests
     [InlineData("", "")]
     [InlineData(null, "")]
     [InlineData("SomeTypeNameThatIsNotAGenericCollectionOrArray", "")]
-    public void GetCollectionItemType_Returns_Correct_Result(string typeName, string expectedResult)
+    public void GetCollectionItemType_Returns_Correct_Result(string? typeName, string expectedResult)
     {
         // Act
         var result = typeName.GetCollectionItemType();
