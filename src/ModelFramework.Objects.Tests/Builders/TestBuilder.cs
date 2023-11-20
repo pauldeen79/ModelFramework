@@ -84,7 +84,7 @@ namespace ModelFramework.Objects.Tests.Builders
 
         public TestBuilder(ModelFramework.Objects.Contracts.IAttributeParameter source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
             Metadata = new System.Collections.Generic.List<ModelFramework.Common.Builders.MetadataBuilder>();
             Metadata.AddRange(source.Metadata.Select(x => new ModelFramework.Common.Builders.MetadataBuilder(x)));
             _valueDelegate = new Lazy<object>(() => source.Value);

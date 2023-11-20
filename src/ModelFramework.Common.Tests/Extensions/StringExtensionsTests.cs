@@ -217,7 +217,7 @@ public class StringExtensionsTests
     [InlineData("MyClass", "")]
     [InlineData("MyNamespace.MyClass", "MyNamespace")]
     [InlineData("A.B.C.D", "A.B.C")]
-    public void GetNamespaceWithDefault_Returns_Correct_Result(string input, string expectedResult)
+    public void GetNamespaceWithDefault_Returns_Correct_Result(string? input, string expectedResult)
     {
         // Act
         var actual = input.GetNamespaceWithDefault();
@@ -310,7 +310,7 @@ public class StringExtensionsTests
     [InlineData("Something else", false)]
     [InlineData("", false)]
     [InlineData(null, false)]
-    public void IsNullableBooleanTypeName_Returns_Correct_Result(string input, bool expected)
+    public void IsNullableBooleanTypeName_Returns_Correct_Result(string? input, bool expected)
     {
         // Act
         var result = input.IsNullableBooleanTypeName();
