@@ -482,7 +482,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 $"var results = new {typeof(List<>).WithoutGenerics()}<{typeof(ValidationResult).FullName}>();",
-                $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, validationContext, results, true);",
+                $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
                 "return results;"
             );
 
