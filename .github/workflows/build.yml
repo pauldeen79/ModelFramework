@@ -81,7 +81,7 @@ jobs:
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
           # dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
-          # dotnet src/ClassFramework.CodeGeneration/bin/Release/net7.0/ClassFramework.CodeGeneration.dll
+          # dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
           dotnet pack ModelFramework.sln -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
         run: |
