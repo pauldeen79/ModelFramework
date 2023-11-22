@@ -4,6 +4,7 @@
 public class PipelinesEntities : ClassFrameworkCSharpClassBase
 {
     public override string Path => Constants.Paths.Pipelines;
+    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
 
     public override object CreateModel()
         => GetImmutableClasses(GetPipelinesModels(), Constants.Namespaces.Pipelines)

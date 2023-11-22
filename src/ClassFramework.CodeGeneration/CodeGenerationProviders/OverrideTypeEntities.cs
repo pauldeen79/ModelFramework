@@ -17,7 +17,9 @@ public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
                     .WithName("ToBuilder")
                     .WithOverride()
                     .WithTypeName($"{Constants.Namespaces.DomainBuilders}.TypeBaseBuilder")
-                    .AddLiteralCodeStatements($"return new {Constants.Namespaces.DomainBuilders}.Types.{x.Name}Builder(this);")
+                    .AddLiteralCodeStatements(x.Name.EndsWith("Base")
+                        ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
+                        : $"return new {Constants.Namespaces.DomainBuilders}.Types.{x.Name}Builder(this);")
                 )
                 .BuildTyped()
             )

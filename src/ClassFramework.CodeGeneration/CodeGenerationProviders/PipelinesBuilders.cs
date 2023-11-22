@@ -4,6 +4,7 @@
 public class PipelinesBuilders : ClassFrameworkCSharpClassBase
 {
     public override string Path => Constants.Paths.PipelinesBuilders;
+    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
 
     public override object CreateModel()
         => GetImmutableBuilderClasses(
