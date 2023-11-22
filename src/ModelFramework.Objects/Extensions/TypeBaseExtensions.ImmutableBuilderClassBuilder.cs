@@ -226,7 +226,7 @@ public static partial class TypeBaseEtensions
                     .Where(x => settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.IsCollectionTypeName()
                         && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization)
-                        && (!x.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes).StartsWith("default(", StringComparison.Ordinal) || settings.GenerationSettings.UseLazyInitialization))
+                        && (!IsNoNullableDefault(settings, x) || settings.GenerationSettings.UseLazyInitialization))
                     .Select(x => GenerateDefaultValueStatement(x, settings))
             );
 
@@ -240,6 +240,12 @@ public static partial class TypeBaseEtensions
 
             yield return CreateConstructorWithAllProperties(instance, settings);
         }
+    }
+
+    private static bool IsNoNullableDefault(ImmutableBuilderClassSettings settings, IClassProperty x)
+    {
+        var value = x.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes);
+        return value.StartsWith("default(", StringComparison.Ordinal) && !value.EndsWith("!");
     }
 
     private static ClassConstructorBuilder CreateConstructorWithAllProperties(ITypeBase instance, ImmutableBuilderClassSettings settings)
