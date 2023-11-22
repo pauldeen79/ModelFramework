@@ -9,11 +9,12 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override bool CreateCodeGenerationHeader => true;
     protected override bool EnableNullableContext => true;
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
-    protected override Type RecordConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
+    protected override Type RecordConcreteCollectionType => typeof(List<>);
     protected override string FileNameSuffix => Constants.TemplateGenerated;
     protected override string ProjectName => Constants.ProjectName;
     protected override bool UseLazyInitialization => false; // we don't want lazy stuff, just getters and setters
-    protected override bool AddBackingFieldsForCollectionProperties => false; // we just want static stuff - else you need to choose builders or models instead of entities
+    protected override bool AddBackingFieldsForCollectionProperties => true; // we just want static stuff - else you need to choose builders or models instead of entities
+    protected override string? CollectionPropertyGetStatement => "return _[NamePascal]?.AsReadOnly()!;";
     protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings

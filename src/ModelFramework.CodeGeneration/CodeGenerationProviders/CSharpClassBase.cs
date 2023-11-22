@@ -32,6 +32,7 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual bool AllowGenerationWithoutProperties => true;
     protected virtual bool AddBackingFieldsForCollectionProperties => false;
+    protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual IClass? BaseClass => null;
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
@@ -380,13 +381,13 @@ public abstract class CSharpClassBase : ClassBase
 
         foreach (var property in typeBaseBuilder.Properties)
         {
-            var typeName = property.TypeName.ToString().FixTypeName();
+            var typeName = property.TypeName.FixTypeName();
             FixImmutableBuilderProperty(property, typeName);
 
             if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
                 && AddBackingFieldsForCollectionProperties)
             {
-                property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType);
+                property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType, CollectionPropertyGetStatement, forceNullCheck: ValidateArgumentsInConstructor != ArgumentValidationType.None);
             }
         }
     }

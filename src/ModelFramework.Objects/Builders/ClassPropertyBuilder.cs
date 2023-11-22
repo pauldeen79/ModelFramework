@@ -89,11 +89,14 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x." + buildMethodName + "())"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace, builderCollectionTypeName)));
 
-    public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType, string? propertyGetStatement = null)
+    public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType, string? propertyGetStatement = null, bool forceNullCheck = false)
     {
         AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement(propertyGetStatement?.Replace("[Name]", Name).Replace("[NamePascal]", Name.ToPascalCase()) ?? $"return _{Name};", Enumerable.Empty<IMetadata>()));
-        AddMetadata(MetadataNames.CustomImmutableConstructorInitialization, IsNullable
-            ? $"_{Name.ToPascalCase()} = {Name.ToPascalCase()} == null ? null : _{Name.ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>({Name.ToPascalCase()});"
+        var nullSuffix = IsNullable
+            ? string.Empty
+            : "!";
+        AddMetadata(MetadataNames.CustomImmutableConstructorInitialization, IsNullable || forceNullCheck
+            ? $"_{Name.ToPascalCase()} = {Name.ToPascalCase()} == null ? null{nullSuffix} : _{Name.ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>({Name.ToPascalCase()});"
             : $"_{Name.ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>({Name.ToPascalCase()});");
         AddMetadata(MetadataNames.CustomImmutableBackingField, new ClassFieldBuilder().WithName($"_{Name.ToPascalCase()}").WithTypeName($"{collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>").WithIsNullable(IsNullable).Build());
         AddMetadata(MetadataNames.CustomImmutableHasSetter, false);
