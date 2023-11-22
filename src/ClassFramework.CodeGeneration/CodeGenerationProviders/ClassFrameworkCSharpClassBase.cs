@@ -12,7 +12,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyValueCollection<>);
     protected override string FileNameSuffix => Constants.TemplateGenerated;
     protected override string ProjectName => Constants.ProjectName;
-    protected override bool UseLazyInitialization => false; // we don't want lazy stuff in models, just getters and setters
+    protected override bool UseLazyInitialization => false; // we don't want lazy stuff, just getters and setters
     protected override bool AddBackingFieldsForCollectionProperties => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
