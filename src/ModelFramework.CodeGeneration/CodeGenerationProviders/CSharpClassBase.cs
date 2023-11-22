@@ -386,7 +386,7 @@ public abstract class CSharpClassBase : ClassBase
             if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
                 && AddBackingFieldsForCollectionProperties)
             {
-                property.AddCollectionBackingFieldOnImmutableClass(BuilderClassCollectionType);
+                property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType);
             }
         }
     }
