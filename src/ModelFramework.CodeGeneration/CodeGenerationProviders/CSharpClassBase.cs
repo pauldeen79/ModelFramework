@@ -543,7 +543,7 @@ public abstract class CSharpClassBase : ClassBase
             constructorSettings: new(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
-                addNullChecks: overrideAddNullChecks ?? false),
+                addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false)),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
