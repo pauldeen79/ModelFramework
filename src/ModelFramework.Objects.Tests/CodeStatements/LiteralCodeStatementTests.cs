@@ -25,9 +25,9 @@ public class LiteralCodeStatementTests
         actual.Should().NotBeNull();
         if (actual != null)
         {
-            actual.Statement.ToString().Should().Be(sut.Statement);
+            actual.Statement.Should().Be(sut.Statement);
             actual.Metadata.Should().ContainSingle();
-            actual.Metadata[0].Name.ToString().Should().Be(sut.Metadata.First().Name);
+            actual.Metadata[0].Name.Should().Be(sut.Metadata.First().Name);
             actual.Metadata[0].Value.Should().Be(sut.Metadata.First().Value);
         }
     }

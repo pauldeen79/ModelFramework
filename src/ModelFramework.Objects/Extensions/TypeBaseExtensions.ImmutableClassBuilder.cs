@@ -208,7 +208,7 @@ public static partial class TypeBaseExtensions
     private static string CreateImmutableClassCtorParameterNames(
         ITypeBase instance,
         ImmutableClassSettings settings)
-        => string.Join(", ", CreateImmutableClassCtorParameters(instance, settings).Select(x => x.Name.ToString().GetCsharpFriendlyName()));
+        => string.Join(", ", CreateImmutableClassCtorParameters(instance, settings).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
         => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization,

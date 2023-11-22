@@ -14,7 +14,7 @@ public class AttributeBuilderTests
             var actual = sut.AddNameAndParameter("System.ComponentModel.ReadOnly", true);
 
             // Assert
-            actual.Name.ToString().Should().Be("System.ComponentModel.ReadOnly");
+            actual.Name.Should().Be("System.ComponentModel.ReadOnly");
             actual.Parameters.Should().ContainSingle();
             actual.Parameters[0].Value.Should().Be(true);
         }

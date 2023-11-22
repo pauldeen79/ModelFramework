@@ -69,7 +69,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
-        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name.ToString(), x));
+        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name, x));
     }
 
     protected static Type[] GetCommonModelTypes()
@@ -140,7 +140,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             (
                 c => CreateBuilder(c, buildersNamespace)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
-                    .With(x => x.Methods.First(x => x.Name.ToString().In("Build", "ToEntity")).WithType(codeStatementInterfaceType))
+                    .With(x => x.Methods.First(x => x.Name.In("Build", "ToEntity")).WithType(codeStatementInterfaceType))
                     .BuildTyped()
             ).ToArray();
 
@@ -148,8 +148,8 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
     {
         property = property.IsNotNull(nameof(property));
 
-        var typeName = property.TypeName.ToString();
-        var propertyName = property.Name.ToString();
+        var typeName = property.TypeName;
+        var propertyName = property.Name;
         if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
                                                                       "ModelFramework.Database.Contracts.I",
                                                                       "ModelFramework.Common.Contracts.I"))

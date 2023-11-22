@@ -13,8 +13,8 @@ public abstract class ModelFrameworkModelClassBase : ModelFrameworkCSharpClassBa
     {
         property = property.IsNotNull(nameof(property));
 
-        var typeName = property.TypeName.ToString();
-        var propertyName = property.Name.ToString();
+        var typeName = property.TypeName;
+        var propertyName = property.Name;
         if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
                                                                       "ModelFramework.Database.Contracts.I",
                                                                       "ModelFramework.Common.Contracts.I"))

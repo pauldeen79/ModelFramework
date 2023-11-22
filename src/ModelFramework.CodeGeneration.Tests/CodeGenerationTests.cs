@@ -1448,7 +1448,7 @@ namespace MyNamespace.Domain.Builders
 
         private static void FixImmutableBuilderProperty(ClassPropertyBuilder property, bool forBuilder)
         {
-            var typeName = property.TypeName.ToString();
+            var typeName = property.TypeName;
             if (typeName.StartsWith("Test.Contracts.", StringComparison.InvariantCulture))
             {
                 if (forBuilder)
