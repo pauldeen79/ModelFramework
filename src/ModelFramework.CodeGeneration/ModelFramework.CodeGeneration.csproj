@@ -12,7 +12,7 @@
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
     <PackageReference Include="CsharpExpressionDumper.Core" Version="1.4.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.3.0" />
+    <PackageReference Include="pauldeen79.TextTemplateTransformationFramework.Runtime" Version="0.3.1" />
   </ItemGroup>
 
   <ItemGroup>
