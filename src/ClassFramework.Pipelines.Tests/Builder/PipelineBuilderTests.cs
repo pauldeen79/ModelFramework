@@ -230,7 +230,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
         private ClassBuilder Model { get; } = new();
 
         [Fact]
-        public void Creates_Builder_Using_NamespaceMapping()
+        public void Creates_Builder_With_NamespaceMapping()
         {
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
