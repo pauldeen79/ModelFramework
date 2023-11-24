@@ -205,7 +205,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
         }
 
         [Fact]
-        public void Adds_Property_GetterCodeStatements_When_AddBackingFields_Is_True()
+        public void Adds_Property_GetterCodeStatements_Without_PropertyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_False()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -223,6 +223,40 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             (
                 "return _property1;",
                 "return _property2;"
+            );
+            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "_property1 = value;",
+                "_property2 = value;"
+            );
+        }
+
+        [Fact]
+        public void Adds_Property_GetterCodeStatements_With_ProperyChanged_Calls_When_AddBackingFields_Is_True_And_CreateAsObservable_Is_True()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateEntitySettings(addBackingFields: true, createAsObservable: true);
+            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "return _property1;",
+                "return _property2;"
+            );
+            model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "_property1 = value;",
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property1)));",
+                "_property2 = value;",
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property2)));"
             );
         }
 

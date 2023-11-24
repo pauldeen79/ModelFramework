@@ -90,6 +90,10 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
         if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
         {
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.NullCheckSettings.AddNullChecks)};");
+            if (context.Settings.GenerationSettings.CreateAsObservable)
+            {
+                yield return new StringCodeStatementBuilder().WithStatement($"PropertyChanged?.Invoke(this, new {typeof(PropertyChangedEventArgs).FullName}(nameof({property.Name})));");
+            }
         }
     }
 }

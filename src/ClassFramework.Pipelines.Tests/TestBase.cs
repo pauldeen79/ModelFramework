@@ -151,6 +151,7 @@ public abstract class TestBase : IDisposable
         bool addSetters = false,
         bool createRecord = false,
         bool addBackingFields = false,
+        bool createAsObservable = false,
         Visibility? setterVisibility = null,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null,
@@ -162,7 +163,8 @@ public abstract class TestBase : IDisposable
                 addSetters: addSetters,
                 setterVisibility: setterVisibility,
                 createRecord: createRecord,
-                addBackingFields: addBackingFields),
+                addBackingFields: addBackingFields,
+                createAsObservable: createAsObservable),
             nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
                 addNullChecks: addNullChecks,
                 useExceptionThrowIfNull: useExceptionThrowIfNull),
