@@ -274,7 +274,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "Property8.AddRange(source.Property8.Select(x => x.ToBuilder()));"
             );
 
-            // non-nullable non-value type fields have a backing field, so we can do null checks
+            // non-nullable non-value type properties have a backing field, so we can do null checks
             result.Value.Fields.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "_property3",
