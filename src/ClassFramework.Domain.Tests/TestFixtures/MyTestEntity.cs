@@ -208,7 +208,7 @@ public partial record MyObservableEntity : INotifyPropertyChanged
         }
     }
 
-    public ObservableValueCollection<int> Property2 { get; } // do not use backing fields on collections, gives CA2227 - Collection properties should be read only
+    public ObservableValueCollection<int> Property2 { get; } // do not use backing fields on collections, gives CA2227 - Collection properties should be read only (and ensure event handlers on the observable collection are preserved, as you can't overwrite the collection instance)
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
