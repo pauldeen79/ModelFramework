@@ -42,7 +42,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
             (
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = property3;"
+                "this.Property3 = new System.Collections.Generic.List<>(property3);"
             );
         }
 
@@ -75,7 +75,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = property3;"
+                "this.Property3 = new System.Collections.Generic.List<>(property3);"
             );
         }
 
@@ -108,7 +108,40 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "System.ArgumentNullException.ThrowIfNull(property3);",
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = property3;"
+                "this.Property3 = new System.Collections.Generic.List<>(property3);"
+            );
+        }
+
+        [Fact]
+        public void Adds_Constructor_With_NullChecks_And_BackingFields()
+        {
+            // Arrange
+            var sourceModel = CreateModel();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new ClassBuilder();
+            var settings = CreateEntitySettings(addNullChecks: true, addBackingFields: true);
+            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Constructors.Should().ContainSingle();
+            var ctor = model.Constructors.Single();
+            ctor.Protected.Should().BeFalse();
+            ctor.ChainCall.Should().BeEmpty();
+            ctor.Parameters.Select(x => x.Name).Should().BeEquivalentTo("property1", "property2", "property3");
+            ctor.Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String", "System.Collections.Generic.IEnumerable<System.Int32>");
+            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
+                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
+                "this._property1 = property1;",
+                "this._property2 = property2;",
+                "this.Property3 = new System.Collections.Generic.List<>(property3);"
             );
         }
 
@@ -139,7 +172,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
             (
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = property3;",
+                "this.Property3 = new System.Collections.Generic.List<>(property3);",
                 "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
             );
         }

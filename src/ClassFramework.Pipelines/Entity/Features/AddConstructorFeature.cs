@@ -45,7 +45,7 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
     {
         var initializationResults = context.Context.SourceModel.Properties
             .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{Name} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)))
+            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 

@@ -130,7 +130,7 @@ public static class PipelineContextExtensions
             return sourceProperty.Name;
         }
 
-        return sourceProperty.TypeName.IsCollectionTypeName()
+        return sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
             ? $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})"
             : value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
     }

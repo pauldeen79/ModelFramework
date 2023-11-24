@@ -1,6 +1,4 @@
-﻿using CrossCutting.Common.Extensions;
-
-namespace ClassFramework.Domain.Tests.TestFixtures;
+﻿namespace ClassFramework.Domain.Tests.TestFixtures;
 
 public record TestValidatable : System.ComponentModel.DataAnnotations.IValidatableObject
 {
@@ -157,7 +155,11 @@ public partial class MyTestEntityBuilder ///: System.ComponentModel.DataAnnotati
         Property1 = source.Property1;
         _property2 = new MyCustomEntityBuilder(source.Property2); // MetadataNames.CustomBuilderConstructorInitializeExpression (with {SourcePropertyName} as placeholder?)
         _property3 = new Collection<MyCustomEntityBuilder>();
-        _property3.AddRange(source.Property3.Select(x => new MyCustomEntityBuilder(x))); // MetadataNames.CustomBuilderConstructorInitializeExpression (with {SourcePropertyName} as placeholder?)
+        //note that Collection<T> does not have an AddRange method...
+        foreach (var x in source.Property3.Select(x => new MyCustomEntityBuilder(x)))
+        {
+            _property3.Add(x); // MetadataNames.CustomBuilderConstructorInitializeExpression (with {SourcePropertyName} as placeholder?)
+        }
     }
 
     partial void SetDefaultValues();
@@ -186,5 +188,33 @@ public partial class MyCustomEntityBuilder ///: System.ComponentModel.DataAnnota
     public MyCustomEntity Build()
     {
         return new MyCustomEntity(Property1);
+    }
+}
+
+public partial class MyObservableEntity : INotifyPropertyChanged
+{
+    private int _property1;
+
+    public int Property1
+    {
+        get
+        {
+            return _property1;
+        }
+        set
+        {
+            _property1 = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Property1)));
+        }
+    }
+
+    public ObservableCollection<int> Property2 { get; } // do not use backing fields on collections, gives CA2227 - Collection properties should be read only
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public MyObservableEntity(int property1, IEnumerable<int> property2)
+    {
+        _property1 = property1;
+        Property2 = new ObservableCollection<int>(property2);
     }
 }

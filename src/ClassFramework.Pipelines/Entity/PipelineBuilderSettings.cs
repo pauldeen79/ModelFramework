@@ -13,6 +13,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
     bool IPipelineGenerationSettings.AddNullChecks => NullCheckSettings.AddNullChecks;
     bool IPipelineGenerationSettings.EnableInheritance => InheritanceSettings.EnableInheritance;
+    bool IPipelineGenerationSettings.AddBackingFields => GenerationSettings.AddBackingFields;
     string IPipelineGenerationSettings.CollectionTypeName => ConstructorSettings.CollectionTypeName;
     ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => ConstructorSettings.ValidateArguments;
     Func<IParentTypeContainer, TypeBase, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;

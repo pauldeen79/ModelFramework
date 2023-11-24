@@ -12,11 +12,13 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddProperties(
-            context.Context.SourceModel
+        var properties = context.Context.SourceModel
                 .Properties
                 .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                .Select
+                .ToArray();
+
+        context.Model.AddProperties(
+                properties.Select
                 (
                     property => new ClassPropertyBuilder()
                         .WithName(property.Name)
@@ -44,14 +46,50 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
                         .WithInitializerVisibility(property.InitializerVisibility)
                         .WithExplicitInterfaceName(property.ExplicitInterfaceName)
                         .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
-                        .AddGetterCodeStatements(property.GetterCodeStatements.Select(x => x.ToBuilder()))
-                        .AddSetterCodeStatements(property.SetterCodeStatements.Select(x => x.ToBuilder()))
-                        .AddInitializerCodeStatements(property.InitializerCodeStatements.Select(x => x.ToBuilder()))
+                        .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
+                        .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
                 ));
+
+        if (context.Context.Settings.GenerationSettings.AddBackingFields)
+        {
+            context.Model.AddFields(
+                    properties
+                        .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()) // only non-collection properties to prevent CA2227 warning - convert to read-only property
+                        .Select
+                        (
+                            property => new ClassFieldBuilder()
+                                .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
+                                .WithTypeName(context.Context.MapTypeName(property.TypeName
+                                    .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                                    .FixNullableTypeName(property)))
+                                .WithIsNullable(property.IsNullable)
+                                .WithIsValueType(property.IsValueType)
+                        ));
+        }
 
         return Result.Continue<ClassBuilder>();
     }
 
     public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder();
+
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
+        ClassProperty property,
+        EntityContext context)
+    {
+        if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
+        {
+            yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
+        }
+    }
+
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
+        ClassProperty property,
+        EntityContext context)
+    {
+        if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
+        {
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.NullCheckSettings.AddNullChecks)};");
+        }
+    }
 }

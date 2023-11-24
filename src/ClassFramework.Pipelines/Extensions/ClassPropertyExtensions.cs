@@ -30,11 +30,23 @@ public static class ClassPropertyExtensions
         return $" ?? throw new {typeof(ArgumentNullException).FullName}(nameof({name}))";
     }
 
-    public static string GetInitializationName(this ClassProperty property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, CultureInfo cultureInfo)
+    public static string GetBuilderMemberName(this ClassProperty property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, CultureInfo cultureInfo)
     {
         cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
 
         if (property.HasBackingFieldOnBuilder(addNullChecks, enableNullableReferenceTypes, argumentValidation))
+        {
+            return $"_{property.Name.ToPascalCase(cultureInfo)}";
+        }
+
+        return property.Name;
+    }
+
+    public static string GetEntityMemberName(this ClassProperty property, bool addBackingFields, CultureInfo cultureInfo)
+    {
+        cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
+
+        if (addBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
         {
             return $"_{property.Name.ToPascalCase(cultureInfo)}";
         }
@@ -89,7 +101,7 @@ public static class ClassPropertyExtensions
             : string.Empty;
 
     public static string GetInitializationExpression(this ClassProperty property, string collectionTypeName, CultureInfo cultureInfo)
-        => property.TypeName.IsCollectionTypeName()
+        => property.TypeName.FixTypeName().IsCollectionTypeName()
         && collectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty)
             ? GetCollectionFormatStringForInitialization(property, cultureInfo)
             : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();

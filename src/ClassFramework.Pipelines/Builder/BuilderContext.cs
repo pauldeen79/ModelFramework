@@ -40,7 +40,7 @@ public record BuilderContext : ContextBase<TypeBase, PipelineBuilderSettings>
         attribute = attribute.IsNotNull(nameof(attribute));
 
         return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name))
+            .WithName(MapTypeName(attribute.Name.FixTypeName()))
             .Build();
     }
 
