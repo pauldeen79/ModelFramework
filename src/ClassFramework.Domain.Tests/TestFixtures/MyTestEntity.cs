@@ -191,7 +191,7 @@ public partial class MyCustomEntityBuilder ///: System.ComponentModel.DataAnnota
     }
 }
 
-public partial class MyObservableEntity : INotifyPropertyChanged
+public partial record MyObservableEntity : INotifyPropertyChanged
 {
     private int _property1;
 
@@ -208,13 +208,13 @@ public partial class MyObservableEntity : INotifyPropertyChanged
         }
     }
 
-    public ObservableCollection<int> Property2 { get; } // do not use backing fields on collections, gives CA2227 - Collection properties should be read only
+    public ObservableValueCollection<int> Property2 { get; } // do not use backing fields on collections, gives CA2227 - Collection properties should be read only
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public MyObservableEntity(int property1, IEnumerable<int> property2)
     {
         _property1 = property1;
-        Property2 = new ObservableCollection<int>(property2);
+        Property2 = new ObservableValueCollection<int>(property2);
     }
 }
