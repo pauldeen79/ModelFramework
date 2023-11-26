@@ -67,6 +67,96 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
         private ClassBuilder Model { get; } = new();
 
         [Fact]
+        public void Creates_ReadOnly_Entity_With_NamespaceMapping()
+        {
+            // Arrange
+            var model = CreateModelWithCustomTypeProperties();
+            var namespaceMappings = CreateNamespaceMappings();
+            var settings = CreateEntitySettings(
+                namespaceMappings: namespaceMappings,
+                addNullChecks: true,
+                enableNullableReferenceTypes: true,
+                newCollectionTypeName: typeof(IReadOnlyCollection<>).WithoutGenerics(),
+                collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics());
+            var context = new EntityContext(model, settings, CultureInfo.InvariantCulture);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(Model, context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            result.Value.Should().NotBeNull();
+
+            result.Value!.Name.Should().Be("SomeClass");
+            result.Value.Namespace.Should().Be("MyNamespace");
+            result.Value.Interfaces.Should().BeEmpty();
+
+            result.Value.Constructors.Should().ContainSingle();
+            var copyConstructor = result.Value.Constructors.Single();
+            copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            (
+                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
+                "if (property5 is null) throw new System.ArgumentNullException(nameof(property5));",
+                "if (property7 is null) throw new System.ArgumentNullException(nameof(property7));",
+                "this.Property1 = property1;",
+                "this.Property2 = property2;",
+                "this.Property3 = property3;",
+                "this.Property4 = property4;",
+                "this.Property5 = property5;",
+                "this.Property6 = property6;",
+                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property7);",
+                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property8);"
+            );
+
+            result.Value.Fields.Should().BeEmpty();
+
+            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            (
+                "Property1",
+                "Property2",
+                "Property3",
+                "Property4",
+                "Property5",
+                "Property6",
+                "Property7",
+                "Property8"
+            );
+            result.Value.Properties.Select(x => x.TypeName).Should().BeEquivalentTo
+            (
+                "System.Int32",
+                "System.Nullable<System.Int32>",
+                "System.String",
+                "System.String",
+                "MyNamespace.MyClass",
+                "MyNamespace.MyClass",
+                "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>",
+                "System.Collections.Generic.IReadOnlyCollection<MyNamespace.MyClass>"
+            );
+            result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
+            (
+                new[]
+                {
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true,
+                    false,
+                    true
+                }
+            );
+            result.Value.Properties.Select(x => x.HasGetter).Should().AllBeEquivalentTo(true);
+            result.Value.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
+            result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
+            result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
+            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
+        }
+
+        [Fact]
         public void Creates_Observable_Entity_With_NamespaceMapping()
         {
             // Arrange
@@ -78,7 +168,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 enableNullableReferenceTypes: true,
                 addBackingFields: true,
                 createAsObservable: true,
-                newCollectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
+                newCollectionTypeName: typeof(ObservableCollection<>).WithoutGenerics(),
+                collectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
             var context = new EntityContext(model, settings, CultureInfo.InvariantCulture);
 
             var sut = CreateSut().Build();
@@ -108,8 +199,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "this._property4 = property4;",
                 "this._property5 = property5;",
                 "this._property6 = property6;",
-                "this.Property7 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new System.Collections.Generic.List<MySourceNamespace.MyClass>(property8);"
+                "this.Property7 = new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property7);",
+                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property8);"
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
@@ -166,8 +257,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "System.String",
                 "MyNamespace.MyClass",
                 "MyNamespace.MyClass",
-                "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
-                "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>"
+                "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>",
+                "System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>"
             );
             result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (

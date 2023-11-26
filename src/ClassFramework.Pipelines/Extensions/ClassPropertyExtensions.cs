@@ -101,13 +101,21 @@ public static class ClassPropertyExtensions
             : string.Empty;
 
     public static string GetInitializationExpression(this ClassProperty property, string collectionTypeName, CultureInfo cultureInfo)
-        => property.TypeName.FixTypeName().IsCollectionTypeName()
-        && collectionTypeName.In(typeof(IEnumerable<>).WithoutGenerics(), string.Empty)
-            ? GetCollectionFormatStringForInitialization(property, cultureInfo)
-            : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
+    {
+        collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
-    private static string GetCollectionFormatStringForInitialization(ClassProperty property, CultureInfo cultureInfo)
-        => property.IsNullable
-            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null : new {typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
-            : $"new {typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
+        return property.TypeName.FixTypeName().IsCollectionTypeName()
+            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
+                ? GetCollectionFormatStringForInitialization(property, cultureInfo, collectionTypeName)
+                : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
+    }
+
+    private static string GetCollectionFormatStringForInitialization(ClassProperty property, CultureInfo cultureInfo, string collectionTypeName)
+    {
+        collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
+
+        return property.IsNullable
+            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null : new {collectionTypeName}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
+            : $"new {collectionTypeName}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
+    }
 }

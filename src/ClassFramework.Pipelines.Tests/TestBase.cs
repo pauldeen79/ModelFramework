@@ -147,7 +147,8 @@ public abstract class TestBase : IDisposable
         Class? baseClass = null,
         string entityNamespaceFormatString = "{Namespace}",
         string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
-        string newCollectionTypeName = "CrossCutting.Common.ValueCollection", //"System.Collections.Generic.IReadOnlyCollection",
+        string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
+        string collectionTypeName = "",
         bool addSetters = false,
         bool createRecord = false,
         bool addBackingFields = false,
@@ -172,7 +173,7 @@ public abstract class TestBase : IDisposable
                 enableInheritance: enableEntityInheritance,
                 isAbstract: isAbstract,
                 baseClass: baseClass),
-            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments),
+            constructorSettings: new Pipelines.Entity.PipelineBuilderConstructorSettings(validateArguments: validateArguments, collectionTypeName: collectionTypeName),
             nameSettings: new Pipelines.Entity.PipelineBuilderNameSettings(entityNamespaceFormatString, entityNameFormatString),
             typeSettings: new Pipelines.Entity.PipelineBuilderTypeSettings(
                 newCollectionTypeName,

@@ -56,8 +56,8 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
                 "System.String",
                 "MyMappedNamespace.MyClass",
                 "MyMappedNamespace.MyClass",
-                "CrossCutting.Common.ValueCollection<MyMappedNamespace.MyClass>",
-                "CrossCutting.Common.ValueCollection<MyMappedNamespace.MyClass>"
+                "System.Collections.Generic.IReadOnlyCollection<MyMappedNamespace.MyClass>",
+                "System.Collections.Generic.IReadOnlyCollection<MyMappedNamespace.MyClass>"
             );
         }
 
