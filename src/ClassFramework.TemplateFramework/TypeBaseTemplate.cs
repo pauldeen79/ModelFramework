@@ -24,6 +24,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
             var filename = $"{Model.Settings.FilenamePrefix}{Model.Data.Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
+
             Context.Engine.RenderChildTemplate(
                 Model.Settings,
                 generationEnvironment,
@@ -44,10 +45,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
             }
         }
 
-        if (Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1)
-        {
-            generationEnvironment.Builder.AppendLine("#nullable enable");
-        }
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1);
 
         foreach (var suppression in Model.Data.SuppressWarningCodes)
         {
@@ -55,10 +53,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
         }
 
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
-        for (int i = 0; i < Model.Settings.IndentCount; i++)
-        {
-            indentedBuilder.IncrementIndent();
-        }
+        PushIndent(indentedBuilder);
 
         //TODO: Render attributes
         indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.Data.GetContainerType()} {Model.Data.Name}");
@@ -79,24 +74,31 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
 
         indentedBuilder.AppendLine("}"); // end class
 
-        for (int i = 0; i < Model.Settings.IndentCount; i++)
-        {
-            indentedBuilder.DecrementIndent();
-        }
+        PopIndent(indentedBuilder);
 
-        if (Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1)
-        {
-            generationEnvironment.Builder.AppendLine("#nullable restore");
-        }
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1);
 
         foreach (var suppression in Model.Data.SuppressWarningCodes.Reverse())
         {
             generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
         }
 
-        if (Model.Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(Model.Data.Namespace))
+        generationEnvironment.Builder.AppendLineWithCondition("}", Model.Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(Model.Data.Namespace)); // end namespace
+    }
+
+    private void PushIndent(IndentedStringBuilder indentedBuilder)
+    {
+        for (int i = 0; i < Model!.Settings.IndentCount; i++)
         {
-            generationEnvironment.Builder.AppendLine("}"); // end namespace
+            indentedBuilder.IncrementIndent();
+        }
+    }
+
+    private void PopIndent(IndentedStringBuilder indentedBuilder)
+    {
+        for (int i = 0; i < Model!.Settings.IndentCount; i++)
+        {
+            indentedBuilder.DecrementIndent();
         }
     }
 }

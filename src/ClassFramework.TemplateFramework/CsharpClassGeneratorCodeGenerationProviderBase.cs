@@ -7,6 +7,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public string LastGeneratedFilesFilename { get; }
     public Encoding Encoding { get; }
 
+#pragma warning disable S107 // Methods should not have too many parameters
     protected CsharpClassGeneratorCodeGenerationProviderBase(
         IEnumerable<TypeBase> model,
         string path,
@@ -20,6 +21,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         CultureInfo cultureInfo,
         string filenameSuffix = ".template.generated",
         string? environmentVersion = null)
+#pragma warning restore S107 // Methods should not have too many parameters
     {
         Guard.IsNotNull(model);
         Guard.IsNotNull(path);
@@ -85,7 +87,8 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         registry.RegisterComponent(new ProviderComponent(registrations));
     }
 
-    private string? FilenamePrefix => string.IsNullOrEmpty(Path)
-        ? string.Empty
-        : Path + "/";
+    private string? FilenamePrefix
+        => string.IsNullOrEmpty(Path)
+            ? string.Empty
+            : Path + "/";
 }
