@@ -1,26 +1,30 @@
-﻿using NSubstitute;
+﻿namespace ClassFramework.TemplateFramework.Tests;
 
-namespace ClassFramework.TemplateFramework.Tests;
-
-public class IntegrationTests : TestBase
+public sealed class IntegrationTests : TestBase, IDisposable
 {
+    private readonly ServiceProvider _serviceProvider;
+    private readonly IServiceScope _scope;
+
+    public IntegrationTests()
+    {
+        var templateFactory = Fixture.Freeze<ITemplateFactory>();
+        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
+        var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
+        _serviceProvider = new ServiceCollection()
+            .AddTemplateFramework()
+            .AddTemplateFrameworkChildTemplateProvider()
+            .AddTemplateFrameworkCodeGeneration()
+            .AddScoped(_ => templateFactory)
+            .AddScoped(_ => templateProviderPluginFactory)
+            .BuildServiceProvider();
+        _scope = _serviceProvider.CreateScope();
+    }
+
     [Fact]
     public void Generation_Just_Works()
     {
         // Arrange
-        //var fileSystem = Fixture.Freeze<IFileSystem>();
-        var templateFactory = Fixture.Freeze<ITemplateFactory>();
-        var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
-        using var serviceProvider = new ServiceCollection()
-            .AddTemplateFramework()
-            .AddTemplateFrameworkChildTemplateProvider()
-            .AddTemplateFrameworkCodeGeneration()
-            //.AddScoped(_ => fileSystem)
-            .AddScoped(_ => templateFactory)
-            .AddScoped(_ => templateProviderPluginFactory)
-            .BuildServiceProvider();
-        using var scope = serviceProvider.CreateScope();
-        var engine = scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = new TestCodeGenerationProvider(
             new[] { new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").Build() },
             string.Empty,
@@ -36,7 +40,6 @@ public class IntegrationTests : TestBase
         );
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
-        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
 
         // Act
         engine.Generate(codeGenerationProvider, generationEnvironment, settings);
@@ -66,6 +69,12 @@ namespace MyNamespace
 #nullable restore
 }
 ");
+    }
+
+    public void Dispose()
+    {
+        _scope.Dispose();
+        _serviceProvider.Dispose();
     }
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
