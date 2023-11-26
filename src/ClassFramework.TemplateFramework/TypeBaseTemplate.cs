@@ -34,10 +34,14 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
                 new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(new[] { Model.Data }, Model.Settings),
                 generationEnvironment,
                 Context,
-                new TemplateByNameIdentifier("DefaultUsings")
+                new TemplateByNameIdentifier("Usings")
                 );
-            contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
-            contentBuilder.Builder.AppendLine("{"); // start namespace
+
+            if (!string.IsNullOrEmpty(Model.Data.Namespace))
+            {
+                contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
+                contentBuilder.Builder.AppendLine("{"); // start namespace
+            }
         }
 
         if (Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1)
@@ -90,7 +94,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
             generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
         }
 
-        if (Model.Settings.GenerateMultipleFiles)
+        if (Model.Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(Model.Data.Namespace))
         {
             generationEnvironment.Builder.AppendLine("}"); // end namespace
         }

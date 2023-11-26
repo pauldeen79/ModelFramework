@@ -60,7 +60,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         foreach (var ns in Model!.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
         {
-            if (Context.IsRootContext && singleStringBuilder is not null)
+            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {
                 singleStringBuilder.AppendLine(Model.Settings.CultureInfo, $"namespace {ns.Key}");
                 singleStringBuilder.AppendLine("{"); // open namespace
@@ -77,7 +77,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 typeBase => new TemplateByModelIdentifier(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
                 );
 
-            if (Context.IsRootContext && singleStringBuilder is not null)
+            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {
                 singleStringBuilder.AppendLine("}"); // close namespace
             }
