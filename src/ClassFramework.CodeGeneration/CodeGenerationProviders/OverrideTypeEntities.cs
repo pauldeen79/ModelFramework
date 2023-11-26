@@ -12,16 +12,6 @@ public class OverrideTypeEntities : ClassFrameworkCSharpClassBase
     public override object CreateModel()
         => GetImmutableClasses(GetOverrideModels(typeof(ITypeBase)), $"{Constants.Namespaces.Domain}.Types")
             .OfType<ModelFramework.Objects.Contracts.IClass>()
-            .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
-                .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                    .WithName("ToBuilder")
-                    .WithOverride()
-                    .WithTypeName($"{Constants.Namespaces.DomainBuilders}.TypeBaseBuilder")
-                    .AddLiteralCodeStatements(x.Name.EndsWith("Base")
-                        ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
-                        : $"return new {Constants.Namespaces.DomainBuilders}.Types.{x.Name}Builder(this);")
-                )
-                .BuildTyped()
-            )
+            .Select(x => FixOverrideEntity(x, "Type", $"{Constants.Namespaces.DomainBuilders}.Types"))
             .ToArray();
 }

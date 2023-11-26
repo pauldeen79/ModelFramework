@@ -12,16 +12,7 @@ public class OverrideCodeStatementEntities : ClassFrameworkCSharpClassBase
     public override object CreateModel()
         => GetImmutableClasses(GetOverrideModels(typeof(ICodeStatementBase)), $"{Constants.Namespaces.Domain}.CodeStatements")
             .OfType<ModelFramework.Objects.Contracts.IClass>()
-            .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
-                .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                    .WithName("ToBuilder")
-                    .WithOverride()
-                    .WithTypeName($"{Constants.Namespaces.DomainBuilders}.CodeStatementBaseBuilder")
-                    .AddLiteralCodeStatements(x.Name.EndsWith("Base")
-                        ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
-                        : $"return new {Constants.Namespaces.DomainBuilders}.CodeStatements.{x.Name}Builder(this);")
-                )
-                .BuildTyped()
-            )
+            .Select(x => FixOverrideEntity(x, "CodeStatement", $"{Constants.Namespaces.DomainBuilders}.CodeStatements"))
             .ToArray();
+
 }

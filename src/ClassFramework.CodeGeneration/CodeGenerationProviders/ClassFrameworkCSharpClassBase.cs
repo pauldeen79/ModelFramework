@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿
+namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
@@ -70,6 +71,21 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         => MapCodeGenerationModelsToDomain(
             GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
+
+    protected ModelFramework.Objects.Contracts.IClass FixOverrideEntity(ModelFramework.Objects.Contracts.IClass cls, string entityName, string buildersNamespace)
+    {
+        cls = cls.IsNotNull(nameof(cls));
+
+        return new ModelFramework.Objects.Builders.ClassBuilder(cls)
+            .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                .WithName("ToBuilder")
+                .WithOverride()
+                .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{entityName}BaseBuilder")
+                .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
+                    ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
+                    : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
+            ).BuildTyped();
+    }
 
     private void ConvertBuilderFactoriesToToBuilderMethod<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
