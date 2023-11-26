@@ -66,7 +66,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
                 FilenamePrefix,
                 _filenameSuffix,
                 _enableNullableContext,
-                0,
+                1,
                 _cultureInfo
             )
         );
