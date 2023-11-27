@@ -323,9 +323,9 @@ public class StringExtensionsTests
 
     [Theory]
     [InlineData("", "")]
-    [InlineData(null, null)]
+    [InlineData(null, "")]
     [InlineData("some $$$ invalid stuff", "some_____invalid_stuff")]
-    public void Sanitize_Returns_Correct_Result(string? input, string? expected)
+    public void Sanitize_Returns_Correct_Result(string? input, string expected)
     {
         // Act
         var result = input.Sanitize();

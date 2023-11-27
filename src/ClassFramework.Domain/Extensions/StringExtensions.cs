@@ -136,11 +136,11 @@ public static class StringExtensions
             : generics;
     }
 
-    public static string? Sanitize(this string? token)
+    public static string Sanitize(this string? token)
     {
         if (token is null)
         {
-            return token;
+            return string.Empty;
         }
 
         // Replace all invalid chars by underscores 
