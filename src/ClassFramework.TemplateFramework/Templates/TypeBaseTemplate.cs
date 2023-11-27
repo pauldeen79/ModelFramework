@@ -58,7 +58,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             generationEnvironment,
             Context);
 
-        indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.Data.GetContainerType()} {Model.Data.Name}");
+        indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.GetContainerType()} {Model.Data.Name}");
         indentedBuilder.AppendLine("{"); // start class
 
         //TODO: Render child items (properties, fields, constructors)
