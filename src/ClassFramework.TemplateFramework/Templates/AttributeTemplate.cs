@@ -16,7 +16,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<CsharpClassGene
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        //builder.Append(@"    ");
+        builder.Append(@"    ");
         //builder.Append(Prefix);
         builder.Append(@"[");
         builder.Append(Model.Data.Name);
