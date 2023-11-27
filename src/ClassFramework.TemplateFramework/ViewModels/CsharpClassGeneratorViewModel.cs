@@ -15,6 +15,7 @@ public class CsharpClassGeneratorViewModel<TModel> : CsharpClassGeneratorViewMod
 {
     public CsharpClassGeneratorViewModel(TModel data, CsharpClassGeneratorSettings settings) : base(settings)
     {
+        Guard.IsNotNull(data);
         Data = data;
     }
 
