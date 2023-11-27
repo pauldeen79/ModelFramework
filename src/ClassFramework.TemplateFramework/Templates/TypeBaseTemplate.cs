@@ -45,7 +45,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
             }
         }
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
 
         foreach (var suppression in Model.Data.SuppressWarningCodes)
         {
@@ -62,7 +62,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
         //TODO: Render child items (properties, fields, constructors)
 
         var subClasses = (Model.Data as Class)?.SubClasses;
-        if (subClasses is not null && subClasses.Count > 0)
+        if (subClasses is not null)
         {
             Context.Engine.RenderChildTemplates(
                 subClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
@@ -76,7 +76,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
 
         PopIndent(indentedBuilder);
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.Settings.EnableNullableContext && Model.Settings.IndentCount == 1);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
 
         foreach (var suppression in Model.Data.SuppressWarningCodes.Reverse())
         {

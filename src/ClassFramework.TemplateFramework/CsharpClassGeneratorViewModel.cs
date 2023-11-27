@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework;
+﻿using System.Reflection;
+
+namespace ClassFramework.TemplateFramework;
 
 public sealed class CsharpClassGeneratorViewModel<TModel>
 {
@@ -10,4 +12,6 @@ public sealed class CsharpClassGeneratorViewModel<TModel>
 
     public TModel Data { get; }
     public CsharpClassGeneratorSettings Settings { get; }
+
+    public bool ShouldRenderNullablePragmas => Settings.EnableNullableContext && Settings.IndentCount == 1; // note: only for root level, because it gets rendered in the same file
 }
