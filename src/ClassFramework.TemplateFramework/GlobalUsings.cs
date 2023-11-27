@@ -6,6 +6,7 @@ global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
 global using ClassFramework.TemplateFramework.Extensions;
+global using ClassFramework.TemplateFramework.Templates;
 global using CommunityToolkit.Diagnostics;
 global using TemplateFramework.Abstractions;
 global using TemplateFramework.Abstractions.CodeGeneration;

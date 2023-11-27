@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework;
+﻿namespace ClassFramework.TemplateFramework.Templates;
 
 public sealed class UsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
 {

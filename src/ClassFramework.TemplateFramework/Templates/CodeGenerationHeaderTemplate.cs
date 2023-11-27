@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework;
+﻿namespace ClassFramework.TemplateFramework.Templates;
 
 public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorSettings>, IStringBuilderTemplate
 {
