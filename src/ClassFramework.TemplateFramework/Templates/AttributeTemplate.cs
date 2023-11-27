@@ -2,14 +2,6 @@
 
 public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewModel>, IStringBuilderTemplate
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public AttributeTemplate(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -24,7 +16,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         {
 
             builder.Append(@"(");
-            builder.Append(Model.GetParametersText(_csharpExpressionCreator));
+            builder.Append(Model.GetParametersText());
             builder.Append(@")");
         }
 
