@@ -23,7 +23,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     }
 
     [Fact]
-    public void Generation_Just_Works()
+    public void Can_Generate_Code_For_Class()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();

@@ -51,8 +51,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 Model,
                 generationEnvironment,
                 Context,
-                new TemplateByNameIdentifier("Usings")
-                );
+                new TemplateByNameIdentifier("Usings"));
         }
     }
 
@@ -70,12 +69,10 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 .OrderBy(typeBase => typeBase.Name)
                 .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
 
-            Context.Engine.RenderChildTemplates(
+            Context.Engine.RenderCsharpChildTemplates(
                 typeBaseItems,
                 generationEnvironment,
-                Context,
-                typeBase => new TemplateByModelIdentifier(((CsharpClassGeneratorViewModel<TypeBase>)typeBase!).Data)
-                );
+                Context);
 
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {

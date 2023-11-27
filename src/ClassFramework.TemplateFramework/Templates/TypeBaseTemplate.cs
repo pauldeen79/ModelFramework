@@ -29,23 +29,21 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
                 Model.Settings,
                 generationEnvironment,
                 Context,
-                new TemplateByNameIdentifier("CodeGenerationHeader")
-                );
+                new TemplateByNameIdentifier("CodeGenerationHeader"));
             Context.Engine.RenderChildTemplate(
                 new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(new[] { Model.Data }, Model.Settings),
                 generationEnvironment,
                 Context,
-                new TemplateByNameIdentifier("Usings")
-                );
+                new TemplateByNameIdentifier("Usings"));
 
-            if (!string.IsNullOrEmpty(Model.Data.Namespace))
+            if (ShouldRenderNamespaceScope)
             {
                 contentBuilder.Builder.AppendLine(Model.Settings.CultureInfo, $"namespace {Model.Data.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace
             }
         }
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", ShouldRenderNullablePragmas);
 
         foreach (var suppression in Model.Data.SuppressWarningCodes)
         {
@@ -55,12 +53,10 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        Context.Engine.RenderChildTemplates(
+        Context.Engine.RenderCsharpChildTemplates(
             Model.Data.Attributes.Select(attribute => new CsharpClassGeneratorViewModel<Domain.Attribute>(attribute, Model.Settings)),
             generationEnvironment,
-            Context,
-            model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<Domain.Attribute>.Data))!.GetValue(model))
-            );
+            Context);
 
         indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.Data.GetContainerType()} {Model.Data.Name}");
         indentedBuilder.AppendLine("{"); // start class
@@ -70,27 +66,35 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
         var subClasses = (Model.Data as Class)?.SubClasses;
         if (subClasses is not null)
         {
-            Context.Engine.RenderChildTemplates(
+            Context.Engine.RenderCsharpChildTemplates(
                 subClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
                 generationEnvironment,
-                Context,
-                model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model))
-                );
+                Context);
         }
 
         indentedBuilder.AppendLine("}"); // end class
 
         PopIndent(indentedBuilder);
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", ShouldRenderNullablePragmas);
 
         foreach (var suppression in Model.Data.SuppressWarningCodes.Reverse())
         {
             generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
         }
 
-        generationEnvironment.Builder.AppendLineWithCondition("}", Model.Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(Model.Data.Namespace)); // end namespace
+        generationEnvironment.Builder.AppendLineWithCondition("}", ShouldRenderNamespaceScope); // end namespace
     }
+
+    public bool ShouldRenderNullablePragmas
+        => Model is not null
+        && Model.Settings.EnableNullableContext
+        && Model.Settings.IndentCount == 1; // note: only for root level, because it gets rendered in the same file
+
+    public bool ShouldRenderNamespaceScope
+        => Model is not null
+        && Model.Settings.GenerateMultipleFiles
+        && !string.IsNullOrEmpty(Model.Data.Namespace);
 
     private void PushIndent(IndentedStringBuilder indentedBuilder)
     {

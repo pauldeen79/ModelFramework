@@ -1,4 +1,5 @@
-﻿global using System.Globalization;
+﻿global using System.Collections;
+global using System.Globalization;
 global using System.Text;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
