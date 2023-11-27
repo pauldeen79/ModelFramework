@@ -8,6 +8,7 @@ global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
 global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Templates;
+global using ClassFramework.TemplateFramework.ViewModels;
 global using CommunityToolkit.Diagnostics;
 global using Microsoft.Extensions.DependencyInjection;
 global using TemplateFramework.Abstractions;

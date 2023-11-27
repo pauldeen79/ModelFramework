@@ -40,18 +40,18 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     private void RenderHeader(IGenerationEnvironment generationEnvironment)
     {
         Context.Engine.RenderChildTemplate(
-            Model!.Settings,
+            new CodeGenerationHeaderViewModel(Model!.Settings),
             generationEnvironment,
             Context,
-            new TemplateByNameIdentifier("CodeGenerationHeader"));
+            new TemplateByNameIdentifier(nameof(CodeGenerationHeaderTemplate)));
 
         if (Context.IsRootContext)
         {
             Context.Engine.RenderChildTemplate(
-                Model,
+                new UsingsViewModel(Model.Data, Model.Settings),
                 generationEnvironment,
                 Context,
-                new TemplateByNameIdentifier("Usings"));
+                new TemplateByNameIdentifier(nameof(UsingsTemplate)));
         }
     }
 
@@ -61,13 +61,13 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
         {
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {
-                singleStringBuilder.AppendLine(Model.Settings.CultureInfo, $"namespace {ns.Key}");
+                singleStringBuilder.AppendLine($"namespace {ns.Key}");
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
             var typeBaseItems = ns
                 .OrderBy(typeBase => typeBase.Name)
-                .Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings));
+                .Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings));
 
             Context.Engine.RenderCsharpChildTemplates(
                 typeBaseItems,

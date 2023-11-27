@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class UsingsTemplate : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IStringBuilderTemplate
+public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, IStringBuilderTemplate
 {
     public void Render(StringBuilder builder)
     {
@@ -8,9 +8,9 @@ public sealed class UsingsTemplate : CsharpClassGeneratorBase<CsharpClassGenerat
         Guard.IsNotNull(Model);
 
         var anyUsings = false;
-        foreach (var @using in Usings)
+        foreach (var @using in Model.Usings)
         {
-            builder.AppendLine(Model.Settings.CultureInfo, $"using {@using};");
+            builder.AppendLine($"using {@using};");
             anyUsings = true;
         }
 
@@ -19,18 +19,4 @@ public sealed class UsingsTemplate : CsharpClassGeneratorBase<CsharpClassGenerat
             builder.AppendLine();
         }
     }
-
-    private readonly static string[] DefaultUsings =
-    [
-        "System",
-        "System.Collections.Generic",
-        "System.Linq",
-        "System.Text"
-    ];
-
-    public IEnumerable<string> Usings
-        => DefaultUsings
-            .Union(Model?.Data.SelectMany(classItem => classItem.Metadata.GetStringValues(MetadataNames.CustomUsing)) ?? Enumerable.Empty<string>())
-            .OrderBy(ns => ns)
-            .Distinct();
 }
