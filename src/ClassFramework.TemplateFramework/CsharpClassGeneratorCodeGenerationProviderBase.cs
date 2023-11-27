@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework;
 
-public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGenerationProvider, ITemplateComponentRegistryPlugin
+public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGenerationProvider
 {
     public string Path { get; }
     public bool RecurseOnDeleteGeneratedFiles { get; }
@@ -72,20 +72,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
                 _cultureInfo
             )
         );
-
-    public void Initialize(ITemplateComponentRegistry registry)
-    {
-        Guard.IsNotNull(registry);
-
-        var registrations = new List<ITemplateCreator>
-        {
-            new TemplateCreator<CodeGenerationHeaderTemplate>("CodeGenerationHeader"),
-            new TemplateCreator<UsingsTemplate>("Usings"),
-            new TemplateCreator<TypeBaseTemplate>(typeof(TypeBase))
-        };
-
-        registry.RegisterComponent(new ProviderComponent(registrations));
-    }
 
     private string? FilenamePrefix
         => string.IsNullOrEmpty(Path)

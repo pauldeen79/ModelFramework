@@ -14,6 +14,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
+            .AddCsharpExpressionCreator()
+            .AddClassFrameworkTemplates()
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .BuildServiceProvider();
@@ -25,17 +27,22 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var typeBase = new ClassBuilder()
+            .WithNamespace("MyNamespace")
+            .WithName("MyClass")
+            .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))
+            .Build();
         var codeGenerationProvider = new TestCodeGenerationProvider(
-            new[] { new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").Build() },
-            string.Empty,
-            false,
-            string.Empty,
-            Encoding.UTF8,
-            true,
-            false,
-            true,
-            true,
-            CultureInfo.InvariantCulture,
+            model: new[] { typeBase },
+            path: string.Empty,
+            recurseOnDeleteGeneratedFiles: false,
+            lastGeneratedFilesFilename: string.Empty,
+            encoding: Encoding.UTF8,
+            generateMultipleFiles: true,
+            skipWhenFileExists: false,
+            createCodeGenerationHeader: true,
+            enableNullableContext: true,
+            cultureInfo: CultureInfo.InvariantCulture,
             environmentVersion: "1.0.0"
         );
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -63,6 +70,7 @@ using System.Text;
 namespace MyNamespace
 {
 #nullable enable
+    [System.ComponentModel.DataAnnotations.RequiredAttribute]
     public class MyClass
     {
     }

@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
-    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="0.8.3" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="0.8.4" />
     <PackageReference Include="xunit" Version="2.6.2" />
     <PackageReference Include="xunit.runner.console" Version="2.6.2">
       <PrivateAssets>all</PrivateAssets>
@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ClassFramework.CsharpExpressionCreator\ClassFramework.CsharpExpressionCreator.csproj" />
     <ProjectReference Include="..\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj" />
   </ItemGroup>
 

@@ -55,7 +55,13 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        //TODO: Render attributes
+        Context.Engine.RenderChildTemplates(
+            Model.Data.Attributes.Select(attribute => new CsharpClassGeneratorViewModel<Domain.Attribute>(attribute, Model.Settings)),
+            generationEnvironment,
+            Context,
+            model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<Domain.Attribute>.Data))!.GetValue(model))
+            );
+
         indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.Data.GetContainerType()} {Model.Data.Name}");
         indentedBuilder.AppendLine("{"); // start class
 
@@ -66,7 +72,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<CsharpClassGener
         {
             Context.Engine.RenderChildTemplates(
                 subClasses.Select(typeBase => new CsharpClassGeneratorViewModel<TypeBase>(typeBase, Model.Settings.ForSubclasses())),
-                new MultipleContentBuilderEnvironment(builder),
+                generationEnvironment,
                 Context,
                 model => new TemplateByModelIdentifier(model!.GetType().GetProperty(nameof(CsharpClassGeneratorViewModel<TypeBase>.Data))!.GetValue(model))
                 );

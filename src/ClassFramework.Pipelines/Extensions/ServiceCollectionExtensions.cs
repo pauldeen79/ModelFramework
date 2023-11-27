@@ -39,7 +39,5 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
-            .AddTransient<ICsharpExpressionCreator, DefaultCsharpExpressionCreator>()
-            .AddCsharpExpressionDumper();
+            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
 }

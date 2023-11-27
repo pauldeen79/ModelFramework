@@ -1,9 +1,13 @@
-﻿global using System.Globalization;
+﻿global using System.ComponentModel.DataAnnotations;
+global using System.Globalization;
 global using System.Text;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
+global using ClassFramework.CsharpExpressionCreator.Extensions;
 global using ClassFramework.Domain;
+global using ClassFramework.Domain.Builders;
 global using ClassFramework.Domain.Builders.Types;
+global using ClassFramework.TemplateFramework.Extensions;
 global using FluentAssertions;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;
