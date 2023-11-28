@@ -33,16 +33,8 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
 
-            Context.Engine.RenderChildTemplate(
-                new CodeGenerationHeaderViewModel(Model.Settings),
-                generationEnvironment,
-                Context,
-                new TemplateByNameIdentifier(nameof(CodeGenerationHeaderTemplate)));
-            Context.Engine.RenderChildTemplate(
-                new UsingsViewModel(new[] { Model.Data }, Model.Settings),
-                generationEnvironment,
-                Context,
-                new TemplateByNameIdentifier(nameof(UsingsTemplate)));
+            Context.Engine.RenderCsharpChildTemplate(new CodeGenerationHeaderViewModel(Model.Settings), generationEnvironment, Context);
+            Context.Engine.RenderCsharpChildTemplate(new UsingsViewModel(new[] { Model.Data }, Model.Settings), generationEnvironment, Context);
 
             if (Model.ShouldRenderNamespaceScope)
             {
@@ -61,10 +53,8 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        Context.Engine.RenderCsharpChildTemplates(
-            Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator)),
-            generationEnvironment,
-            Context);
+        var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator));
+        Context.Engine.RenderCsharpChildTemplates(attributes, generationEnvironment, Context);
 
         indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.GetContainerType()} {Model.GetName()}{Model.GetInheritedClasses()}");
         indentedBuilder.AppendLine("{"); // start class
@@ -78,10 +68,8 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var subClasses = (Model.Data as Class)?.SubClasses;
         if (subClasses is not null)
         {
-            Context.Engine.RenderCsharpChildTemplates(
-                subClasses.Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings.ForSubclasses())),
-                generationEnvironment,
-                Context);
+            var types = subClasses.Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings.ForSubclasses()));
+            Context.Engine.RenderCsharpChildTemplates(types, generationEnvironment, Context);
         }
 
         indentedBuilder.AppendLine("}"); // end class

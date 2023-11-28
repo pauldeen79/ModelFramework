@@ -39,25 +39,21 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private void RenderHeader(IGenerationEnvironment generationEnvironment)
     {
-        Context.Engine.RenderChildTemplate(
-            new CodeGenerationHeaderViewModel(Model!.Settings),
-            generationEnvironment,
-            Context,
-            new TemplateByNameIdentifier(nameof(CodeGenerationHeaderTemplate)));
+        Guard.IsNotNull(Model);
+
+        Context.Engine.RenderCsharpChildTemplate(new CodeGenerationHeaderViewModel(Model.Settings), generationEnvironment, Context);
 
         if (Context.IsRootContext)
         {
-            Context.Engine.RenderChildTemplate(
-                new UsingsViewModel(Model.Data, Model.Settings),
-                generationEnvironment,
-                Context,
-                new TemplateByNameIdentifier(nameof(UsingsTemplate)));
+            Context.Engine.RenderCsharpChildTemplate(new UsingsViewModel(Model.Data, Model.Settings), generationEnvironment, Context);
         }
     }
 
     private void RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder)
     {
-        foreach (var ns in Model!.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
+        Guard.IsNotNull(Model);
+
+        foreach (var ns in Model.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
         {
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {
@@ -69,10 +65,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 .OrderBy(typeBase => typeBase.Name)
                 .Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings));
 
-            Context.Engine.RenderCsharpChildTemplates(
-                typeBaseItems,
-                generationEnvironment,
-                Context);
+            Context.Engine.RenderCsharpChildTemplates(typeBaseItems, generationEnvironment, Context);
 
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {
