@@ -53,21 +53,17 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator));
+        var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator, Model.Data));
         Context.Engine.RenderCsharpChildTemplates(attributes, generationEnvironment, Context);
 
-        indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.GetContainerType()} {Model.GetName()}{Model.GetInheritedClasses()}");
+        indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.GetContainerType()} {Model.Name}{Model.GetInheritedClasses()}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        Context.Engine.RenderCsharpChildTemplates(Model.GetMembers(), generationEnvironment, Context);
+        Context.Engine.RenderCsharpChildTemplates(Model.GetMemberModels(), generationEnvironment, Context);
 
-        var subClasses = (Model.Data as Class)?.SubClasses;
-        if (subClasses is not null)
-        {
-            var types = subClasses.Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings.ForSubclasses(), _csharpExpressionCreator));
-            Context.Engine.RenderCsharpChildTemplates(types, generationEnvironment, Context);
-        }
+        // Subclasses
+        Context.Engine.RenderCsharpChildTemplates(Model.GetSubClassModels(), generationEnvironment, Context);
 
         indentedBuilder.AppendLine("}"); // end class
 

@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel>, IStringBuilderTemplate
+public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, IStringBuilderTemplate
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public EnumerationTemplate(ICsharpExpressionCreator csharpExpressionCreator)
+    public ParameterTemplate(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
         _csharpExpressionCreator = csharpExpressionCreator;
@@ -19,18 +19,14 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator, Model.Data));
         Context.Engine.RenderCsharpChildTemplates(attributes, new StringBuilderEnvironment(builder), Context);
 
-        builder.AppendLine($"        {Model.Data.GetModifiers()}enum {Model.Name}");
-        builder.AppendLine("        {");
+        builder.AppendWithCondition("params ", Model.Data.IsParamArray);
+        builder.AppendWithCondition("ref ", Model.Data.IsRef);
+        builder.AppendWithCondition("out ", Model.Data.IsOut);
+        builder.Append($"{Model.TypeName} {Model.Name}");
 
-        foreach (var member in Model.Data.Members)
+        if (Model.ShouldRenderDefaultValue)
         {
-            var valueExpression = member.Value is null
-                ? string.Empty
-                : $" = {_csharpExpressionCreator.Create(member.Value)}";
-
-            builder.AppendLine($"            {member.Name.Sanitize().GetCsharpFriendlyName()}{valueExpression},");
+            builder.Append($" = {Model.GetDefaultValueExpression()}");
         }
-
-        builder.AppendLine("        }");
     }
 }

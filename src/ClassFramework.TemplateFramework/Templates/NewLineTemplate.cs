@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class SeparatorTemplate : CsharpClassGeneratorBase<SeparatorViewModel>, IStringBuilderTemplate
+public class NewLineTemplate : CsharpClassGeneratorBase<NewLineViewModel>, IStringBuilderTemplate
 {
     public void Render(StringBuilder builder)
     {

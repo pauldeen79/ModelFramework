@@ -8,9 +8,12 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        for (int i = 0; i < Model.Settings.IndentCount; i++)
+        if (!Model.ParentIsParameter)
         {
-            builder.Append(@"    ");
+            for (int i = 0; i < Model.Settings.IndentCount; i++)
+            {
+                builder.Append(@"    ");
+            }
         }
 
         builder.Append(GetPrefix());
@@ -25,22 +28,30 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
             builder.Append(@")");
         }
 
-        builder.AppendLine(@"]");
+        builder.Append(@"]");
+
+        if (!Model.ParentIsParameter)
+        {
+            builder.AppendLine();
+        }
+        else
+        {
+            builder.Append(" ");
+        }
     }
 
     public string GetPrefix()
     {
-        // Hacking here... If the parent context has iterations, then the model is wrapped in an anomyoust type (together with the index).
-        // In this case, we need to get the Model property of the anonymous model instance.
-        var model = Context.ParentContext?.Model;
-        if (model is not null && model.GetType().FullName?.StartsWith("<>f__AnonymousType", StringComparison.Ordinal) == true)
+        Guard.IsNotNull(Model);
+        Guard.IsNotNull(Context);
+
+        if (Model.ParentIsParameter)
         {
-            var property = model.GetType().GetProperty("Model");
-            if (property is not null)
-            {
-                model = property.GetValue(model);
-            }
+            return string.Empty;
         }
+
+        //TODO: Revief we can simply check the parent on the Model, as it is already injected there
+        var model = Context.ParentContext?.GetUnderlyingModel();
 
         return model is TypeBaseViewModel
             ? string.Empty

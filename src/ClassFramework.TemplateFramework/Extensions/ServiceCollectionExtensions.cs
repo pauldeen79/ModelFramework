@@ -11,8 +11,12 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<ClassMethodTemplate>(typeof(ClassMethodViewModel))
             .AddChildTemplate<ClassPropertyTemplate>(typeof(ClassPropertyViewModel))
             .AddChildTemplate<CodeGenerationHeaderTemplate>(typeof(CodeGenerationHeaderViewModel))
+            .AddChildTemplate<CodeStatementTemplate>(typeof(CodeStatementViewModel))
             .AddChildTemplate<EnumerationTemplate>(typeof(EnumerationViewModel))
-            .AddChildTemplate<SeparatorTemplate>(typeof(SeparatorViewModel))
+            .AddChildTemplate<NewLineTemplate>(typeof(NewLineViewModel))
+            .AddChildTemplate<ParameterTemplate>(typeof(ParameterViewModel))
+            .AddChildTemplate<SpaceAndCommaTemplate>(typeof(SpaceAndCommaViewModel))
             .AddChildTemplate<TypeBaseTemplate>(typeof(TypeBaseViewModel))
-            .AddChildTemplate<UsingsTemplate>(typeof(UsingsViewModel));
+            .AddChildTemplate<UsingsTemplate>(typeof(UsingsViewModel))
+            .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement));
 }

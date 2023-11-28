@@ -16,11 +16,11 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
     public bool ShouldRenderNamespaceScope
         => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(Data.Namespace);
 
-    public string GetName() => Data.Name.Sanitize().GetCsharpFriendlyName();
+    public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
 
-    public IEnumerable<object> GetMembers()
+    public IEnumerable<CsharpClassGeneratorViewModel> GetMemberModels()
     {
-        var items = new List<object>();
+        var items = new List<CsharpClassGeneratorViewModel>();
 
         var fieldsContainer = Data as IFieldsContainer;
         if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings, _csharpExpressionCreator)));
@@ -28,7 +28,7 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
         items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings)));
 
         var constructorsContainer = Data as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings)));
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings, Data, _csharpExpressionCreator)));
 
         items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings)));
 
@@ -37,18 +37,29 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
         if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(x, Settings)));
 
         // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new SeparatorViewModel(Settings)] : new object[] { item });
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModel[] { item });
+    }
+
+    public IEnumerable<CsharpClassGeneratorViewModel> GetSubClassModels()
+    {
+        var subClasses = (Data as Class)?.SubClasses;
+        if (subClasses is null)
+        {
+            return Enumerable.Empty<CsharpClassGeneratorViewModel>();
+        }
+
+        return subClasses
+            .Select(typeBase => new TypeBaseViewModel(typeBase, Settings.ForSubclasses(), _csharpExpressionCreator))
+            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModel[] { item });
     }
 
     public string GetContainerType()
         => Data switch
         {
-            Class cls => cls.Record
-                ? "record"
-                : "class",
-            Struct str => str.Record
-                ? "record struct"
-                : "struct",
+            Class cls when cls.Record => "record",
+            Class cls when !cls.Record => "class",
+            Struct str when str.Record => "record struct",
+            Struct str when !str.Record => "struct",
             Interface => "interface",
             _ => throw new InvalidOperationException($"Unknown container type: [{Data.GetType().FullName}]")
         };
