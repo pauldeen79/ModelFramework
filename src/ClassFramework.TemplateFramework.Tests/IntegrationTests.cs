@@ -31,20 +31,9 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .WithNamespace("MyNamespace")
             .WithName("MyClass")
             .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))
+            .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .Build();
-        var codeGenerationProvider = new TestCodeGenerationProvider(
-            model: new[] { typeBase },
-            path: string.Empty,
-            recurseOnDeleteGeneratedFiles: false,
-            lastGeneratedFilesFilename: string.Empty,
-            encoding: Encoding.UTF8,
-            generateMultipleFiles: true,
-            skipWhenFileExists: false,
-            createCodeGenerationHeader: true,
-            enableNullableContext: true,
-            cultureInfo: CultureInfo.InvariantCulture,
-            environmentVersion: "1.0.0"
-        );
+        var codeGenerationProvider = new TestCodeGenerationProvider([typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
@@ -87,31 +76,19 @@ namespace MyNamespace
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public TestCodeGenerationProvider(IEnumerable<TypeBase> model,
-                                          string path,
-                                          bool recurseOnDeleteGeneratedFiles,
-                                          string lastGeneratedFilesFilename,
-                                          Encoding encoding,
-                                          bool generateMultipleFiles,
-                                          bool skipWhenFileExists,
-                                          bool createCodeGenerationHeader,
-                                          bool enableNullableContext,
-                                          CultureInfo cultureInfo,
-                                          string filenameSuffix = ".template.generated",
-                                          string? environmentVersion = null)
+        public TestCodeGenerationProvider(IEnumerable<TypeBase> model)
             : base(
                   model,
-                  path,
-                  recurseOnDeleteGeneratedFiles,
-                  lastGeneratedFilesFilename,
-                  encoding,
-                  generateMultipleFiles,
-                  skipWhenFileExists,
-                  createCodeGenerationHeader,
-                  enableNullableContext,
-                  cultureInfo,
-                  filenameSuffix,
-                  environmentVersion)
+                  path: string.Empty,
+                  recurseOnDeleteGeneratedFiles: false,
+                  lastGeneratedFilesFilename: string.Empty,
+                  encoding: Encoding.UTF8,
+                  generateMultipleFiles: true,
+                  skipWhenFileExists: false,
+                  createCodeGenerationHeader: true,
+                  enableNullableContext: true,
+                  cultureInfo: CultureInfo.InvariantCulture,
+                  environmentVersion: "1.0.0")
         {
         }
     }

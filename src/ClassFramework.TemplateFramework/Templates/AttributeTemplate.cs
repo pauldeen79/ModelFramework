@@ -24,7 +24,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
     }
 
     //private string Prefix
-    //    => !(Context.ParentContext != null && Context.ParentContext.Model is TypeBase)
+    //    => !(Context.ParentContext is not null && Context.ParentContext.Model is TypeBase)
     //        ? "    "
     //        : string.Empty;
 }

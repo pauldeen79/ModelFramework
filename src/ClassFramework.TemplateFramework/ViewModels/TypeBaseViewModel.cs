@@ -14,23 +14,23 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
 
     public string GetName() => Data.Name.Sanitize().GetCsharpFriendlyName();
 
-    public IEnumerable<object> GetSubItems()
+    public IEnumerable<object> GetMembers()
     {
         var items = new List<object>();
 
         var fieldsContainer = Data as IFieldsContainer;
-        if (fieldsContainer != null) items.AddRange(fieldsContainer.Fields);
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings)));
 
-        items.AddRange(Data.Properties);
+        items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings)));
 
         var constructorsContainer = Data as IConstructorsContainer;
-        if (constructorsContainer != null) items.AddRange(constructorsContainer.Constructors);
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings)));
 
-        items.AddRange(Data.Methods);
+        items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings)));
 
         // Quirk, enums as items below a class. There is no interface for this right now.
         var cls = Data as Class;
-        if (cls != null) items.AddRange(cls.Enums);
+        if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(x, Settings)));
 
         return items;
     }
