@@ -60,10 +60,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        Context.Engine.RenderCsharpChildTemplates(
-            Model.GetMembers(),
-            generationEnvironment,
-            Context);
+        Context.Engine.RenderCsharpChildTemplates(Model.GetMembers(), generationEnvironment, Context);
 
         var subClasses = (Model.Data as Class)?.SubClasses;
         if (subClasses is not null)

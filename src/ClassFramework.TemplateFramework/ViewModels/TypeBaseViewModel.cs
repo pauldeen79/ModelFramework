@@ -36,7 +36,8 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
         var cls = Data as Class;
         if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(x, Settings)));
 
-        return items;
+        // Add separators (empty lines) between each item
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new SeparatorViewModel(Settings)] : new object[] { item });
     }
 
     public string GetContainerType()

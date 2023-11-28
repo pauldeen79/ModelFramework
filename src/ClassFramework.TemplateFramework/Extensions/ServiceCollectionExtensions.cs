@@ -12,6 +12,7 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<ClassPropertyTemplate>(typeof(ClassPropertyViewModel))
             .AddChildTemplate<CodeGenerationHeaderTemplate>(typeof(CodeGenerationHeaderViewModel))
             .AddChildTemplate<EnumerationTemplate>(typeof(EnumerationViewModel))
+            .AddChildTemplate<SeparatorTemplate>(typeof(SeparatorViewModel))
             .AddChildTemplate<TypeBaseTemplate>(typeof(TypeBaseViewModel))
             .AddChildTemplate<UsingsTemplate>(typeof(UsingsViewModel));
 }

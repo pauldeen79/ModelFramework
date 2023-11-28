@@ -32,6 +32,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .WithName("MyClass")
             .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))
             .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
+            .AddEnums(new EnumerationBuilder().WithName("MyEnumeration").AddMembers(new EnumerationMemberBuilder().WithName("Value1").WithValue(0), new EnumerationMemberBuilder().WithName("Value2").WithValue(1)).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .Build();
         var codeGenerationProvider = new TestCodeGenerationProvider([typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -64,6 +65,13 @@ namespace MyNamespace
     {
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         private readonly string? _myField = @""default value""
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public enum MyEnumeration
+        {
+            Value1 = 0,
+            Value2 = 1,
+        }
     }
 #nullable restore
 }

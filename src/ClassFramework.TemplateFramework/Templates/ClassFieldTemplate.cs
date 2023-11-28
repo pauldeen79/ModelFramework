@@ -18,8 +18,7 @@ public class ClassFieldTemplate : CsharpClassGeneratorBase<ClassFieldViewModel>,
         var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator));
         Context.Engine.RenderCsharpChildTemplates(attributes, new StringBuilderEnvironment(builder), Context);
 
-        builder.Append("        ");
-        builder.Append(Model.Data.GetModifiers());
+        builder.Append($"        {Model.Data.GetModifiers()}");
         
         if (Model.Data.Event)
         {

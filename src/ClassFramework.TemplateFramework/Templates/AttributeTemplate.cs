@@ -8,13 +8,15 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        for (int i = 1; i <= Model.Settings.IndentCount; i++)
+        for (int i = 0; i < Model.Settings.IndentCount; i++)
         {
             builder.Append(@"    ");
         }
+
         builder.Append(GetPrefix());
         builder.Append(@"[");
         builder.Append(Model.Data.Name);
+
         if (Model.ShouldRenderParameters)
         {
 
@@ -41,7 +43,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         }
 
         return model is TypeBaseViewModel
-                ? string.Empty
-                : "    ";
+            ? string.Empty
+            : "    ";
     }
 }
