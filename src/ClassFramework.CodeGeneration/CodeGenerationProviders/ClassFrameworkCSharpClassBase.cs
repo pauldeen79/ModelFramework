@@ -1,5 +1,4 @@
-﻿
-namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
 
 [ExcludeFromCodeCoverage]
 public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
@@ -24,46 +23,13 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     {
         Guard.IsNotNull(typeBaseBuilder);
 
-        Type? sourceModel = null;
-        Type[] interfaces;
-
         if (typeBaseBuilder.Name.EndsWith(BuilderName))
         {
-            if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder)
-            {
-                classBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(ModelFramework.Objects.Contracts.Visibility.Private));
-                classBuilder.Constructors.First(x => x.Parameters.Count == 0).CodeStatements.Add(new ModelFramework.Objects.CodeStatements.Builders.LiteralCodeStatementBuilder("SetDefaultValues();"));
-            }
-
-            sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name.ReplaceSuffix(BuilderName, string.Empty, StringComparison.Ordinal)}");
-            if (sourceModel is null)
-            {
-                return;
-            }
-
-            interfaces = sourceModel.GetInterfaces();
-            foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
-            {
-                typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
-            }
-
-            return;
+            FixBuilder(typeBaseBuilder);
         }
-
-        ConvertBuilderFactoriesToToBuilderMethod(typeBaseBuilder);
-
-        sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
-        if (sourceModel is null)
+        else
         {
-            return;
-        }
-
-        interfaces = sourceModel.GetInterfaces();
-        foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
-        {
-            typeBaseBuilder.AddInterfaces(i.FullName!
-                .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)
-                .Replace($"{CodeGenerationRootNamespace}.Models.", $"{RootNamespace}.", StringComparison.Ordinal));
+            FixEntity(typeBaseBuilder);
         }
     }
 
@@ -90,6 +56,54 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                     ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
                     : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
             ).BuildTyped();
+    }
+
+    private void FixBuilder<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder)
+        {
+            classBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(ModelFramework.Objects.Contracts.Visibility.Private));
+            classBuilder.Constructors.First(x => x.Parameters.Count == 0).CodeStatements.Add(new ModelFramework.Objects.CodeStatements.Builders.LiteralCodeStatementBuilder("SetDefaultValues();"));
+        }
+
+        var sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name.ReplaceSuffix(BuilderName, string.Empty, StringComparison.Ordinal)}");
+        if (sourceModel is not null)
+        {
+            var interfaces = sourceModel.GetInterfaces();
+            foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
+            {
+                typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
+            }
+        }
+    }
+
+    private void FixEntity<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        ConvertBuilderFactoriesToToBuilderMethod(typeBaseBuilder);
+        AddAbstractionsInterfaces(typeBaseBuilder);
+    }
+
+    private void AddAbstractionsInterfaces<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        var sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
+        if (sourceModel is null)
+        {
+            return;
+        }
+
+        var interfaces = sourceModel.GetInterfaces();
+        foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
+        {
+            typeBaseBuilder.AddInterfaces(i.FullName!
+                .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)
+                .Replace($"{CodeGenerationRootNamespace}.Models.", $"{RootNamespace}.", StringComparison.Ordinal));
+        }
     }
 
     private void ConvertBuilderFactoriesToToBuilderMethod<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
