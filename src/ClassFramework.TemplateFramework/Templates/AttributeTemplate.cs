@@ -8,7 +8,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        if (!Model.ParentIsParameter)
+        if (!Model.IsSingleLineAttributeContainer)
         {
             for (int i = 0; i < Model.Settings.IndentCount; i++)
             {
@@ -30,7 +30,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
 
         builder.Append(@"]");
 
-        if (!Model.ParentIsParameter)
+        if (!Model.IsSingleLineAttributeContainer)
         {
             builder.AppendLine();
         }
@@ -45,15 +45,12 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        if (Model.ParentIsParameter)
+        if (Model.IsSingleLineAttributeContainer)
         {
             return string.Empty;
         }
 
-        //TODO: Revief we can simply check the parent on the Model, as it is already injected there
-        var model = Context.ParentContext?.GetUnderlyingModel();
-
-        return model is TypeBaseViewModel
+        return Model.Parent is TypeBase
             ? string.Empty
             : "    ";
     }
