@@ -4,6 +4,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddClassFrameworkTemplates(this IServiceCollection services)
         => services
+            .AddScoped<CsharpClassGenerator>()
             .AddChildTemplate<AttributeTemplate>(typeof(AttributeViewModel))
             .AddChildTemplate<ClassConstructorTemplate>(typeof(ClassConstructorViewModel))
             .AddChildTemplate<ClassFieldTemplate>(typeof(ClassFieldViewModel))

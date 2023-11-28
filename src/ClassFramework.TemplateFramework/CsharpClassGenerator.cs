@@ -2,6 +2,14 @@
 
 public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public CsharpClassGenerator(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+        _csharpExpressionCreator = csharpExpressionCreator;
+    }
+
     public void Render(IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -63,7 +71,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
             var typeBaseItems = ns
                 .OrderBy(typeBase => typeBase.Name)
-                .Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings));
+                .Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings, _csharpExpressionCreator));
 
             Context.Engine.RenderCsharpChildTemplates(typeBaseItems, generationEnvironment, Context);
 

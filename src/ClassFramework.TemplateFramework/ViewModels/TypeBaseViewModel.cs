@@ -2,8 +2,12 @@
 
 public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
 {
-    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings) : base(data, settings)
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings)
     {
+        Guard.IsNotNull(csharpExpressionCreator);
+        _csharpExpressionCreator = csharpExpressionCreator;
     }
 
     public bool ShouldRenderNullablePragmas
@@ -19,7 +23,7 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
         var items = new List<object>();
 
         var fieldsContainer = Data as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings)));
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings, _csharpExpressionCreator)));
 
         items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings)));
 

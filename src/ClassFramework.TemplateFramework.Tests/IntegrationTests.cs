@@ -8,7 +8,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
     public IntegrationTests()
     {
         var templateFactory = Fixture.Freeze<ITemplateFactory>();
-        templateFactory.Create(Arg.Any<Type>()).Returns(x => Activator.CreateInstance(x.ArgAt<Type>(0))!);
         var templateProviderPluginFactory = Fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         _serviceProvider = new ServiceCollection()
             .AddTemplateFramework()
@@ -20,6 +19,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateProviderPluginFactory)
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
+        templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .WithNamespace("MyNamespace")
             .WithName("MyClass")
             .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))
-            .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
+            .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .Build();
         var codeGenerationProvider = new TestCodeGenerationProvider([typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -62,6 +62,8 @@ namespace MyNamespace
     [System.ComponentModel.DataAnnotations.RequiredAttribute]
     public class MyClass
     {
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        private readonly string? _myField = @""default value""
     }
 #nullable restore
 }

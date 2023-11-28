@@ -68,7 +68,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var subClasses = (Model.Data as Class)?.SubClasses;
         if (subClasses is not null)
         {
-            var types = subClasses.Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings.ForSubclasses()));
+            var types = subClasses.Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings.ForSubclasses(), _csharpExpressionCreator));
             Context.Engine.RenderCsharpChildTemplates(types, generationEnvironment, Context);
         }
 
@@ -88,7 +88,9 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
 
     private void PushIndent(IndentedStringBuilder indentedBuilder)
     {
-        for (int i = 0; i < Model!.Settings.IndentCount; i++)
+        Guard.IsNotNull(Model);
+
+        for (int i = 0; i < Model.Settings.IndentCount; i++)
         {
             indentedBuilder.IncrementIndent();
         }
@@ -96,7 +98,9 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
 
     private void PopIndent(IndentedStringBuilder indentedBuilder)
     {
-        for (int i = 0; i < Model!.Settings.IndentCount; i++)
+        Guard.IsNotNull(Model);
+
+        for (int i = 0; i < Model.Settings.IndentCount; i++)
         {
             indentedBuilder.DecrementIndent();
         }
