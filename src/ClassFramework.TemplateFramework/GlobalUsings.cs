@@ -6,6 +6,7 @@ global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
+global using ClassFramework.TemplateFramework.Builders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Templates;
 global using ClassFramework.TemplateFramework.ViewModels;

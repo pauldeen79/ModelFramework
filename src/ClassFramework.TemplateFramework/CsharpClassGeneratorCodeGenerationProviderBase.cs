@@ -60,17 +60,17 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public object? CreateModel()
         => new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(
             _model,
-            new CsharpClassGeneratorSettings(
-                _generateMultipleFiles,
-                _skipWhenFileExists,
-                _createCodeGenerationHeader,
-                _environmentVersion,
-                FilenamePrefix,
-                _filenameSuffix,
-                _enableNullableContext,
-                1,
-                _cultureInfo
-            )
+            new CsharpClassGeneratorSettingsBuilder()
+                .WithGenerateMultipleFiles(_generateMultipleFiles)
+                .WithSkipWhenFileExists(_skipWhenFileExists)
+                .WithCreateCodeGenerationHeader(_createCodeGenerationHeader)
+                .WithEnvironmentVersion(_environmentVersion)
+                .WithFilenamePrefix(FilenamePrefix)
+                .WithFilenameSuffix(_filenameSuffix)
+                .WithEnableNullableContext(_enableNullableContext)
+                .WithIndentCount(1)
+                .WithCultureInfo(_cultureInfo)
+                .Build()
         );
 
     private string? FilenamePrefix
