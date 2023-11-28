@@ -19,8 +19,12 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator, Model.Data));
         Context.Engine.RenderCsharpChildTemplates(attributes, new StringBuilderEnvironment(builder), Context);
 
-        builder.AppendLine($"        {Model.Data.GetModifiers()}enum {Model.Name}");
-        builder.AppendLine("        {");
+        builder.Append(Model.CreateIndentation(1));
+        builder.Append(Model.Data.GetModifiers());
+        builder.Append("enum ");
+        builder.AppendLine(Model.Name);
+        builder.Append(Model.CreateIndentation(1));
+        builder.AppendLine("{");
 
         foreach (var member in Model.Data.Members)
         {
@@ -28,9 +32,13 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
                 ? string.Empty
                 : $" = {_csharpExpressionCreator.Create(member.Value)}";
 
-            builder.AppendLine($"            {member.Name.Sanitize().GetCsharpFriendlyName()}{valueExpression},");
+            builder.Append(Model.CreateIndentation(2));
+            builder.Append(member.Name.Sanitize().GetCsharpFriendlyName());
+            builder.Append(valueExpression);
+            builder.AppendLine(",");
         }
 
-        builder.AppendLine("        }");
+        builder.Append(Model.CreateIndentation(1));
+        builder.AppendLine("}");
     }
 }

@@ -14,14 +14,14 @@ public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute
 
     public IAttributesContainer Parent { get; }
 
-    public bool ShouldRenderParameters => Data.Parameters is not null && Data.Parameters.Count > 0;
-
     public bool IsSingleLineAttributeContainer => Parent is Parameter;
 
     public string GetParametersText()
-        => string.Join(", ", Data.Parameters.Select(p =>
-            string.IsNullOrEmpty(p.Name)
-                ? _csharpExpressionCreator.Create(p.Value)
-                : string.Format("{0} = {1}", p.Name, _csharpExpressionCreator.Create(p.Value))
-        ));
+        => Data.Parameters.Count == 0
+            ? string.Empty
+            : string.Concat("(", string.Join(", ", Data.Parameters.Select(p =>
+                string.IsNullOrEmpty(p.Name)
+                    ? _csharpExpressionCreator.Create(p.Value)
+                    : string.Format("{0} = {1}", p.Name, _csharpExpressionCreator.Create(p.Value))
+            )), ")");
 }

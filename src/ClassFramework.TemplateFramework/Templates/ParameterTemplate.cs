@@ -22,11 +22,14 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
         builder.AppendWithCondition("params ", Model.Data.IsParamArray);
         builder.AppendWithCondition("ref ", Model.Data.IsRef);
         builder.AppendWithCondition("out ", Model.Data.IsOut);
-        builder.Append($"{Model.TypeName} {Model.Name}");
+        builder.Append(Model.TypeName);
+        builder.Append(" ");
+        builder.Append(Model.Name);
 
         if (Model.ShouldRenderDefaultValue)
         {
-            builder.Append($" = {Model.GetDefaultValueExpression()}");
+            builder.Append(" = ");
+            builder.Append(Model.GetDefaultValueExpression());
         }
     }
 }

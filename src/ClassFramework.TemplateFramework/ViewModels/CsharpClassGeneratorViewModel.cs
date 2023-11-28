@@ -9,6 +9,8 @@ public class CsharpClassGeneratorViewModel
     }
 
     public CsharpClassGeneratorSettings Settings { get; }
+
+    public string CreateIndentation(int additionalIndents = 0) => new string(' ', 4 * (Settings.IndentCount + additionalIndents));
 }
 
 public class CsharpClassGeneratorViewModel<TModel> : CsharpClassGeneratorViewModel

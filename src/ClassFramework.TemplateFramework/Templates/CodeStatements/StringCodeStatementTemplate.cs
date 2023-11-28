@@ -7,6 +7,12 @@ public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeSt
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        builder.AppendLine($"            {Model.Statement}");
+        var vm = Context.GetModelFromContextByType<CsharpClassGeneratorViewModel>();
+        if (vm is not null)
+        {
+            builder.Append(vm.CreateIndentation(2));
+        }
+
+        builder.AppendLine(Model.Statement);
     }
 }

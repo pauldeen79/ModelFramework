@@ -8,6 +8,8 @@ public class CodeStatementTemplate : CsharpClassGeneratorBase<CodeStatementViewM
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
+        // Note that we render the model in the Data property of the ViewModel.
+        // This means you have to register each type of CodeStatementBase type in the DI container.
         Context.Engine.RenderCsharpChildTemplate(Model.Data, new StringBuilderEnvironment(builder), Context);
     }
 }

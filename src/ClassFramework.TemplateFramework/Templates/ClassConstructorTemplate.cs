@@ -10,11 +10,15 @@ public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructo
 
         Context.Engine.RenderCsharpChildTemplates(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
-        builder.Append($"        {Model.Data.GetModifiers()}{Model.Name}(");
+        builder.Append(Model.CreateIndentation(1));
+        builder.Append(Model.Data.GetModifiers());
+        builder.Append(Model.Name);
+        builder.Append("(");
 
         Context.Engine.RenderCsharpChildTemplates(Model.GetParameterModels(), new StringBuilderEnvironment(builder), Context);
 
-        builder.Append($"){Model.ChainCall}");
+        builder.Append(")");
+        builder.Append(Model.ChainCall);
 
         if (Model.OmitCode)
         {
@@ -23,9 +27,11 @@ public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructo
         else
         {
             builder.AppendLine();
-            builder.AppendLine("        {");
+            builder.Append(Model.CreateIndentation(1));
+            builder.AppendLine("{");
             Context.Engine.RenderCsharpChildTemplates(Model.GetCodeStatementModels(), new StringBuilderEnvironment(builder), Context);
-            builder.AppendLine("        }");
+            builder.Append(Model.CreateIndentation(1));
+            builder.AppendLine("}");
         }
     }
 }

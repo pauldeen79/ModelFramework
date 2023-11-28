@@ -10,25 +10,13 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
 
         if (!Model.IsSingleLineAttributeContainer)
         {
-            for (int i = 0; i < Model.Settings.IndentCount; i++)
-            {
-                builder.Append(@"    ");
-            }
+            builder.Append(Model.CreateIndentation(GetAdditionalIndents()));
         }
 
-        builder.Append(GetPrefix());
-        builder.Append(@"[");
+        builder.Append("[");
         builder.Append(Model.Data.Name);
-
-        if (Model.ShouldRenderParameters)
-        {
-
-            builder.Append(@"(");
-            builder.Append(Model.GetParametersText());
-            builder.Append(@")");
-        }
-
-        builder.Append(@"]");
+        builder.Append(Model.GetParametersText());
+        builder.Append("]");
 
         if (!Model.IsSingleLineAttributeContainer)
         {
@@ -40,18 +28,16 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         }
     }
 
-    public string GetPrefix()
+    public int GetAdditionalIndents()
     {
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        if (Model.IsSingleLineAttributeContainer)
+        if (Model.IsSingleLineAttributeContainer || Model.Parent is TypeBase)
         {
-            return string.Empty;
+            return 0;
         }
 
-        return Model.Parent is TypeBase
-            ? string.Empty
-            : "    ";
+        return 1;
     }
 }
