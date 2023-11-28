@@ -89,7 +89,7 @@ public static class ClassPropertyExtensions
             return md.Value.CsharpFormat();
         }
 
-        return property.TypeName.GetDefaultValue(property.IsNullable, enableNullableReferenceTypes);
+        return property.TypeName.GetDefaultValue(property.IsNullable, property.IsValueType, enableNullableReferenceTypes);
     }
 
     internal static IClassProperty EnsureParentTypeFullName(this IClassProperty property, IClass parentClass)

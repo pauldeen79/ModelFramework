@@ -372,7 +372,7 @@ public static partial class TypeBaseEtensions
         }
 
         return CreatePropertyTypeName(property, settings)
-            .GetDefaultValue(property.IsNullable, settings.TypeSettings.EnableNullableReferenceTypes);
+            .GetDefaultValue(property.IsNullable, property.IsValueType, settings.TypeSettings.EnableNullableReferenceTypes);
     }
 
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
