@@ -11,6 +11,8 @@ internal static class Constants
         internal const string DomainBuilders = "ClassFramework.Domain.Builders";
         internal const string Pipelines = "ClassFramework.Pipelines";
         internal const string PipelinesBuilders = "ClassFramework.Pipelines.Builders";
+        internal const string TemplateFramework = "ClassFramework.TemplateFramework";
+        internal const string TemplateFrameworkBuilders = "ClassFramework.TemplateFramework.Builders";
     }
 
     internal static class Paths
@@ -19,5 +21,7 @@ internal static class Constants
         internal const string DomainBuilders = "ClassFramework.Domain/Builders";
         internal const string Pipelines = "ClassFramework.Pipelines";
         internal const string PipelinesBuilders = "ClassFramework.Pipelines/Builders";
+        internal const string TemplateFramework = "ClassFramework.TemplateFramework";
+        internal const string TemplateFrameworkBuilders = "ClassFramework.TemplateFramework/Builders";
     }
 }

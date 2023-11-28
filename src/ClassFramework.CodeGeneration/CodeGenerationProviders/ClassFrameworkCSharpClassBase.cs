@@ -72,6 +72,11 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
 
+    protected ModelFramework.Objects.Contracts.ITypeBase[] GetTemplateFrameworkModels()
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetTypes()
+                .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
+
     protected ModelFramework.Objects.Contracts.IClass FixOverrideEntity(ModelFramework.Objects.Contracts.IClass cls, string entityName, string buildersNamespace)
     {
         cls = cls.IsNotNull(nameof(cls));

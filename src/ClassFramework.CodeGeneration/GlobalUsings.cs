@@ -1,6 +1,7 @@
 ﻿global using System;
 global using System.ComponentModel.DataAnnotations;
 global using System.Diagnostics.CodeAnalysis;
+global using System.Globalization;
 global using System.Linq;
 global using ClassFramework.CodeGeneration.CodeGenerationProviders;
 global using ClassFramework.CodeGeneration.Models;
