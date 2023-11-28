@@ -46,7 +46,7 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
             .AddStringCodeStatements
             (
                 !context.Context.IsBuilderForAbstractEntity
-                    ? new[] { $"return {instanciationResult.Value};" }
+                    ? [$"return {instanciationResult.Value};"]
                     : Array.Empty<string>()
             )
             .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements()));

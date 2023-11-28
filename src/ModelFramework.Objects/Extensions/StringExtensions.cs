@@ -63,8 +63,8 @@ public static class StringExtensions
             : instance.Substring(0, index);
     }
 
-    private static readonly string[] _valueTypeNames = new[]
-    {
+    private static readonly string[] _valueTypeNames =
+    [
         typeof(byte).FullName,
         typeof(short).FullName,
         typeof(int).FullName,
@@ -73,7 +73,7 @@ public static class StringExtensions
         typeof(float).FullName,
         typeof(decimal).FullName,
         typeof(double).FullName,
-    };
+    ];
 
     public static string GetDefaultValue(this string typeName, bool isNullable, bool enableNullableReferenceTypes)
     {

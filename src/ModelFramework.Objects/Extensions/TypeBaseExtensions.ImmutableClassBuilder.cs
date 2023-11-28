@@ -191,8 +191,8 @@ public static partial class TypeBaseExtensions
             ArgumentValidationType.Shared =>
                 baseClass
                     ? Array.Empty<string>()
-                    : new[]
-                    {
+                    :
+                    [
                         string.Format
                         (
                             instance.Metadata.GetStringValue(MetadataNames.CustomValidateCode, "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"),
@@ -200,7 +200,7 @@ public static partial class TypeBaseExtensions
                             instance.Name,          // 1
                             instance.Namespace      // 2
                         )
-                    },
+                    ],
             ArgumentValidationType.None => Array.Empty<string>(),
             _ => throw new ArgumentOutOfRangeException(nameof(settings), $"Unsupported ArgumentValidationType: {settings.AddValidationCode}")
         };

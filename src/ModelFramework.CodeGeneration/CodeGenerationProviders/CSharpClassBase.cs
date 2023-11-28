@@ -624,8 +624,8 @@ public abstract class CSharpClassBase : ClassBase
         Guard.IsNotNull(models);
         Guard.IsNotNull(namespaceSettings);
 
-        return new[]
-        {
+        return
+        [
             new ClassBuilder()
                 .WithName(namespaceSettings.ClassName)
                 .WithNamespace(namespaceSettings.ClassNamespace)
@@ -659,7 +659,7 @@ public abstract class CSharpClassBase : ClassBase
                         .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
                 )
                 .Build()
-        };
+        ];
     }
 
     protected ITypeBase CreateBuilderInterface(InterfaceBuilder interfaceBuilder)

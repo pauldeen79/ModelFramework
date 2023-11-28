@@ -521,20 +521,20 @@ public static partial class TypeBaseEtensions
 
     private static string[] CreatePragmaWarningDisableStatements(ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity && !settings.ConstructorSettings.AddNullChecks
-            ? new[]
-            {
+            ?
+            [
                 "#pragma warning disable CS8604 // Possible null reference argument.",
                 "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.",
-            }
+            ]
             : Array.Empty<string>();
 
     private static string[] CreatePragmaWarningRestoreStatements(ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity && !settings.ConstructorSettings.AddNullChecks
-            ? new[]
-            {
+            ?
+            [
                 "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
                 "#pragma warning restore CS8604 // Possible null reference argument.",
-            }
+            ]
             : Array.Empty<string>();
 
     private static ClassMethodBuilder FillBuildMethod(
@@ -546,7 +546,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 !settings.IsBuilderForAbstractEntity
-                    ? new[] { $"return {CreateEntityInstanciation(instance, settings, string.Empty)};" }
+                    ? [$"return {CreateEntityInstanciation(instance, settings, string.Empty)};"]
                     : Array.Empty<string>()
             )
             .AddLiteralCodeStatements(CreatePragmaWarningRestoreStatements(settings));

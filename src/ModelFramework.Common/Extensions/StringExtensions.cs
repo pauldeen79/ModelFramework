@@ -234,8 +234,8 @@ public static class StringExtensions
             : instance;
     }
 
-    private static readonly string[] _keywords = new[]
-    {
+    private static readonly string[] _keywords =
+    [
         "abstract",
         "as",
         "base",
@@ -313,5 +313,5 @@ public static class StringExtensions
         "void",
         "volatile",
         "while"
-    };
+    ];
 }
