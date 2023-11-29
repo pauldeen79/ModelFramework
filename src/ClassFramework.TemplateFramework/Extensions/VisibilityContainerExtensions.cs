@@ -3,7 +3,7 @@
 public static class VisibilityContainerExtensions
 {
     public static string GetModifiers<T>(this T instance)
-    where T : IMetadataContainer, IVisibilityContainer
+        where T : IMetadataContainer, IVisibilityContainer
     {
         var customModifiers = instance.Metadata.GetStringValue(MetadataNames.CustomModifiers);
         if (!string.IsNullOrEmpty(customModifiers))

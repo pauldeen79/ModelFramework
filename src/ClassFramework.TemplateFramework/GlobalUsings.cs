@@ -13,6 +13,7 @@ global using ClassFramework.TemplateFramework.Templates;
 global using ClassFramework.TemplateFramework.Templates.CodeStatements;
 global using ClassFramework.TemplateFramework.ViewModels;
 global using CommunityToolkit.Diagnostics;
+global using CrossCutting.Common.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
 global using TemplateFramework.Abstractions;
 global using TemplateFramework.Abstractions.CodeGeneration;

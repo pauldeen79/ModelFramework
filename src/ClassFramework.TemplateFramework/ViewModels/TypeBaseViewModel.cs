@@ -30,7 +30,7 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
         var constructorsContainer = Data as IConstructorsContainer;
         if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings, Data, _csharpExpressionCreator)));
 
-        items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings)));
+        items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings, Data, _csharpExpressionCreator)));
 
         // Quirk, enums as items below a class. There is no interface for this right now.
         var cls = Data as Class;
