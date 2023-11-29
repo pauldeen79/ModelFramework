@@ -20,11 +20,6 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static string GetGenericTypeArgumentsString(this TypeBase instance)
-        => instance.GenericTypeArguments.Count > 0
-            ? $"<{string.Join(", ", instance.GenericTypeArguments)}>"
-            : string.Empty;
-
     public static string GetGenericTypeArgumentConstraintsString(this TypeBase instance)
         => instance.GenericTypeArgumentConstraints.Count != 0
             ? string.Concat

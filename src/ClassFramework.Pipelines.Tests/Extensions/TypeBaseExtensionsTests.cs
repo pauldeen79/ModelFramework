@@ -61,35 +61,6 @@ public class TypeBaseExtensionsTests : TestBase
         }
     }
 
-    public class GetGenericTypeArgumentsString
-    {
-        [Fact]
-        public void Returns_Empty_String_When_No_GenericArguments_Are_Present()
-        {
-            // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
-
-            // Act
-            var result = sut.GetGenericTypeArgumentsString();
-
-            // Assert
-            result.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Returns_Correct_Result_When_GenericArguments_Are_Present()
-        {
-            // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").AddGenericTypeArguments("T").Build();
-
-            // Act
-            var result = sut.GetGenericTypeArgumentsString();
-
-            // Assert
-            result.Should().Be("<T>");
-        }
-    }
-
     public class GetGenericTypeArgumentConstraintsString
     {
         [Fact]
