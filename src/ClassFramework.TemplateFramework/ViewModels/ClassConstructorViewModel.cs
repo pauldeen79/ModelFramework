@@ -33,5 +33,5 @@ public class ClassConstructorViewModel : CsharpClassGeneratorViewModel<ClassCons
             .SelectMany((item, index) => index + 1 < Data.Parameters.Count ? [item, new SpaceAndCommaViewModel(Settings)] : new CsharpClassGeneratorViewModel[] { item });
 
     public IEnumerable<CsharpClassGeneratorViewModel> GetAttributeModels()
-        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator, Data));
+        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator));
 }

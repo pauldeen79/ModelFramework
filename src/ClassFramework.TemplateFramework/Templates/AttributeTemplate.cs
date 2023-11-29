@@ -8,7 +8,9 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        if (!Model.IsSingleLineAttributeContainer)
+        var isSingleLineAttributeContainer = Context.ParentContext?.Model is ParameterViewModel;
+
+        if (!isSingleLineAttributeContainer)
         {
             builder.Append(Model.CreateIndentation(GetAdditionalIndents()));
         }
@@ -18,7 +20,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         builder.Append(Model.GetParametersText());
         builder.Append("]");
 
-        if (!Model.IsSingleLineAttributeContainer)
+        if (!isSingleLineAttributeContainer)
         {
             builder.AppendLine();
         }
@@ -33,11 +35,10 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        if (Model.IsSingleLineAttributeContainer || Model.Parent is TypeBase)
+        return Context.ParentContext?.Model switch
         {
-            return 0;
-        }
-
-        return 1;
+            ParameterViewModel or TypeBaseViewModel => 0,
+            _ => 1
+        };
     }
 }

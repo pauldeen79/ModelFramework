@@ -4,17 +4,11 @@ public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public AttributeViewModel(Domain.Attribute data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator, IAttributesContainer parent) : base(data, settings)
+    public AttributeViewModel(Domain.Attribute data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings)
     {
         Guard.IsNotNull(csharpExpressionCreator);
-        Guard.IsNotNull(parent);
         _csharpExpressionCreator = csharpExpressionCreator;
-        Parent = parent;
     }
-
-    public IAttributesContainer Parent { get; }
-
-    public bool IsSingleLineAttributeContainer => Parent is Parameter;
 
     public string GetParametersText()
         => Data.Parameters.Count == 0
