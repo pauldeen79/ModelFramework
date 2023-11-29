@@ -23,5 +23,5 @@ public class ClassFieldViewModel : CsharpClassGeneratorViewModel<ClassField>
     public string GetDefaultValueExpression() => _csharpExpressionCreator.Create(Data.DefaultValue);
 
     public IEnumerable<AttributeViewModel> GetAttributeModels()
-        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator));
+        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator, Data));
 }
