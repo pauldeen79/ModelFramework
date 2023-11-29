@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Domain.Tests.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
 public class TypeContainerBuilderExtensionsTests
 {
