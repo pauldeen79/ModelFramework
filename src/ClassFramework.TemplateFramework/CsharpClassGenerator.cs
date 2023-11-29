@@ -49,11 +49,11 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         Guard.IsNotNull(Model);
 
-        Context.Engine.RenderCsharpChildTemplate(new CodeGenerationHeaderViewModel(Model.Settings), generationEnvironment, Context);
+        Context.Engine.RenderChildTemplateByModel(new CodeGenerationHeaderViewModel(Model.Settings), generationEnvironment, Context);
 
         if (Context.IsRootContext)
         {
-            Context.Engine.RenderCsharpChildTemplate(new UsingsViewModel(Model.Data, Model.Settings), generationEnvironment, Context);
+            Context.Engine.RenderChildTemplateByModel(new UsingsViewModel(Model.Data, Model.Settings), generationEnvironment, Context);
         }
     }
 
@@ -73,7 +73,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 .OrderBy(typeBase => typeBase.Name)
                 .Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings, _csharpExpressionCreator));
 
-            Context.Engine.RenderCsharpChildTemplates(typeBaseItems, generationEnvironment, Context);
+            Context.Engine.RenderChildTemplatesByModel(typeBaseItems, generationEnvironment, Context);
 
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
             {

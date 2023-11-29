@@ -8,7 +8,7 @@ public class ClassFieldTemplate : CsharpClassGeneratorBase<ClassFieldViewModel>,
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        Context.Engine.RenderCsharpChildTemplates(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
+        Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Data.GetModifiers());

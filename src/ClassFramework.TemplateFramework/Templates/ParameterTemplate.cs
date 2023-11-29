@@ -17,7 +17,7 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
         Guard.IsNotNull(Context);
 
         var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator));
-        Context.Engine.RenderCsharpChildTemplates(attributes, new StringBuilderEnvironment(builder), Context);
+        Context.Engine.RenderChildTemplatesByModel(attributes, new StringBuilderEnvironment(builder), Context);
 
         builder.AppendWithCondition("params ", Model.Data.IsParamArray);
         builder.AppendWithCondition("ref ", Model.Data.IsRef);

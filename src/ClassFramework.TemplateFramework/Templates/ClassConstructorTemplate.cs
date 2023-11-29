@@ -8,14 +8,14 @@ public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructo
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        Context.Engine.RenderCsharpChildTemplates(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
+        Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Data.GetModifiers());
         builder.Append(Model.Name);
         builder.Append("(");
 
-        Context.Engine.RenderCsharpChildTemplates(Model.GetParameterModels(), new StringBuilderEnvironment(builder), Context);
+        Context.Engine.RenderChildTemplatesByModel(Model.GetParameterModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(")");
         builder.Append(Model.ChainCall);
@@ -29,7 +29,7 @@ public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructo
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("{");
-            Context.Engine.RenderCsharpChildTemplates(Model.GetCodeStatementModels(), new StringBuilderEnvironment(builder), Context);
+            Context.Engine.RenderChildTemplatesByModel(Model.GetCodeStatementModels(), new StringBuilderEnvironment(builder), Context);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
         }
