@@ -14,7 +14,8 @@ public class ClassMethodViewModel : CsharpClassGeneratorViewModel<ClassMethod>
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public bool ShouldRenderModifiers => string.IsNullOrEmpty(Data.ExplicitInterfaceName) && !(_parent is Interface);
+    public bool ShouldRenderModifiers
+        => string.IsNullOrEmpty(Data.ExplicitInterfaceName) && !(_parent is Interface);
 
     public string ReturnTypeName => Data.TypeName
         .GetCsharpFriendlyTypeName()

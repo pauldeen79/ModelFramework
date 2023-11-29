@@ -34,6 +34,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .AddEnums(new EnumerationBuilder().WithName("MyEnumeration").AddMembers(new EnumerationMemberBuilder().WithName("Value1").WithValue(0), new EnumerationMemberBuilder().WithName("Value2").WithValue(1)).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .AddConstructors(new ClassConstructorBuilder().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddParameters(new ParameterBuilder().WithName("myField").WithType(typeof(string)).WithIsNullable().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))).AddStringCodeStatements("// code goes here"))
+            .AddMethods(new ClassMethodBuilder().WithName("Method1").WithType(typeof(string)).WithIsNullable().AddStringCodeStatements("// code goes here").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .Build();
         var codeGenerationProvider = new TestCodeGenerationProvider([typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
@@ -69,6 +70,12 @@ namespace MyNamespace
 
         [System.ComponentModel.DataAnnotations.RequiredAttribute]
         public MyClass([System.ComponentModel.DataAnnotations.RequiredAttribute] string? myField)
+        {
+            // code goes here
+        }
+
+        [System.ComponentModel.DataAnnotations.RequiredAttribute]
+        public string? Method1()
         {
             // code goes here
         }

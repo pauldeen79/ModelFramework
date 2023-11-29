@@ -11,7 +11,12 @@ public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel
         Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(Model.CreateIndentation(1));
-        builder.Append(Model.Data.GetModifiers());
+        
+        if (Model.ShouldRenderModifiers)
+        {
+            builder.Append(Model.Data.GetModifiers());
+        }
+
         builder.Append(Model.ReturnTypeName);
         builder.Append(" ");
         builder.Append(Model.ExplicitInterfaceName);
@@ -19,11 +24,27 @@ public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel
         builder.Append(Model.Data.GetGenericTypeArgumentsString());
         builder.Append("(");
 
-        /*        <# if (ViewModel.ShouldRenderModifiers) { #><#= Model.GetModifiers() #><# } #><#= ViewModel.ReturnTypeName #> <# if (ViewModel.ShouldRenderExplicitInterfaceName) { #><#= Model.ExplicitInterfaceName #>.<# } #><#= ViewModel.Name #><#= Model.GetGenericTypeArgumentsString() #>(<# if (Model.ExtensionMethod) { #>this <# } #><#@ renderChildTemplate name="CSharpClassGenerator.DefaultParameterTemplate" model="Model.Parameters" separatorTemplateName="CommaAndSpace" customResolverDelegate="ResolveFromMetadata" #>)<#= Model.GetGenericTypeArgumentConstraintsString() #><# if (ViewModel.OmitCode) { #>;<# } else { #>
+        if (Model.Data.ExtensionMethod)
+        {
+            builder.Append("this ");
+        }
 
-        {<# WriteLine("");if (ViewModel.ShouldRenderCodeStatements) { #><# RootTemplate.PushIndent("            "); #><#@ renderChildTemplate model="Model.CodeStatements" customResolverDelegate="ResolveFromMetadata" customRenderChildTemplateDelegate="RenderModel" #><# RootTemplate.PopIndent(); #>
-<# } #>        }<# } #>
+        Context.Engine.RenderChildTemplatesByModel(Model.GetParameterModels(), new StringBuilderEnvironment(builder), Context);
 
-    */
+        builder.Append(")");
+
+        if (Model.OmitCode)
+        {
+            builder.AppendLine(";");
+        }
+        else
+        {
+            builder.AppendLine();
+            builder.Append(Model.CreateIndentation(1));
+            builder.AppendLine("{");
+            Context.Engine.RenderChildTemplatesByModel(Model.GetCodeStatementModels(), new StringBuilderEnvironment(builder), Context);
+            builder.Append(Model.CreateIndentation(1));
+            builder.AppendLine("}");
+        }
     }
 }
