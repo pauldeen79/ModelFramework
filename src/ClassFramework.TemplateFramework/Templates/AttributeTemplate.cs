@@ -10,7 +10,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
 
         if (!Model.IsSingleLineAttributeContainer)
         {
-            builder.Append(Model.CreateIndentation(GetAdditionalIndents()));
+            builder.Append(Model.CreateIndentation(Model.GetAdditionalIndents()));
         }
 
         builder.Append("[");
@@ -26,18 +26,5 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         {
             builder.Append(" ");
         }
-    }
-
-    public int GetAdditionalIndents()
-    {
-        Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
-
-        if (Model.IsSingleLineAttributeContainer || Model.Parent is TypeBase)
-        {
-            return 0;
-        }
-
-        return 1;
     }
 }

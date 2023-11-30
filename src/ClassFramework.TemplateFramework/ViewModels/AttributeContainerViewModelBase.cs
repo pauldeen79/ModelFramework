@@ -1,0 +1,17 @@
+﻿namespace ClassFramework.TemplateFramework.ViewModels;
+
+public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorViewModel<T>
+    where T : IAttributesContainer
+{
+    protected ICsharpExpressionCreator CsharpExpressionCreator { get; }
+
+    protected AttributeContainerViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+
+        CsharpExpressionCreator = csharpExpressionCreator;
+    }
+
+    public IEnumerable<CsharpClassGeneratorViewModelBase> GetAttributeModels()
+        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, CsharpExpressionCreator, Data));
+}

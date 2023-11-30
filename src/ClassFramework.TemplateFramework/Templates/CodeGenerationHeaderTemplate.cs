@@ -7,7 +7,7 @@ public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<Code
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        if (!Model.CreateCodeGenerationHeader)
+        if (!Model.Settings.CreateCodeGenerationHeader)
         {
             return;
         }

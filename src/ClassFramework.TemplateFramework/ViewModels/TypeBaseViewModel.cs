@@ -1,13 +1,9 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
+public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings)
+    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(csharpExpressionCreator);
-        _csharpExpressionCreator = csharpExpressionCreator;
     }
 
     public bool ShouldRenderNullablePragmas
@@ -18,39 +14,39 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
 
     public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
 
-    public IEnumerable<CsharpClassGeneratorViewModel> GetMemberModels()
+    public IEnumerable<CsharpClassGeneratorViewModelBase> GetMemberModels()
     {
-        var items = new List<CsharpClassGeneratorViewModel>();
+        var items = new List<CsharpClassGeneratorViewModelBase>();
 
         var fieldsContainer = Data as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings, _csharpExpressionCreator)));
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings, CsharpExpressionCreator)));
 
         items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings)));
 
         var constructorsContainer = Data as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings, Data, _csharpExpressionCreator)));
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings, Data, CsharpExpressionCreator)));
 
-        items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings, Data, _csharpExpressionCreator)));
+        items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings, Data, CsharpExpressionCreator)));
 
         // Quirk, enums as items below a class. There is no interface for this right now.
         var cls = Data as Class;
-        if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(x, Settings)));
+        if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(x, Settings, CsharpExpressionCreator)));
 
         // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModel[] { item });
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
     }
 
-    public IEnumerable<CsharpClassGeneratorViewModel> GetSubClassModels()
+    public IEnumerable<CsharpClassGeneratorViewModelBase> GetSubClassModels()
     {
         var subClasses = (Data as Class)?.SubClasses;
         if (subClasses is null)
         {
-            return Enumerable.Empty<CsharpClassGeneratorViewModel>();
+            return Enumerable.Empty<CsharpClassGeneratorViewModelBase>();
         }
 
         return subClasses
-            .Select(typeBase => new TypeBaseViewModel(typeBase, Settings.ForSubclasses(), _csharpExpressionCreator))
-            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModel[] { item });
+            .Select(typeBase => new TypeBaseViewModel(typeBase, Settings.ForSubclasses(), CsharpExpressionCreator))
+            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
     }
 
     public string GetContainerType()
@@ -80,7 +76,4 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
             ? string.Empty
             : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
     }
-
-    public IEnumerable GetAttributeModels()
-        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator, Data));
 }

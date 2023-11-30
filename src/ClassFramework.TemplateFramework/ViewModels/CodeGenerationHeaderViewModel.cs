@@ -1,13 +1,10 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModel
+public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase
 {
     public CodeGenerationHeaderViewModel(CsharpClassGeneratorSettings settings) : base(settings)
     {
     }
-
-    public bool CreateCodeGenerationHeader
-        => Settings.CreateCodeGenerationHeader;
 
     public string Version
         => !string.IsNullOrEmpty(Settings.EnvironmentVersion)

@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class EnumerationViewModel : CsharpClassGeneratorViewModel<Enumeration>
+public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
 {
-    public EnumerationViewModel(Enumeration data, CsharpClassGeneratorSettings settings) : base(data, settings)
+    public EnumerationViewModel(Enumeration data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
     {
     }
 

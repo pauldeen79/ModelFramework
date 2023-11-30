@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class NewLineViewModel : CsharpClassGeneratorViewModel
+public class NewLineViewModel : CsharpClassGeneratorViewModelBase
 {
     public NewLineViewModel(CsharpClassGeneratorSettings settings) : base(settings)
     {

@@ -1,13 +1,9 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class ClassFieldViewModel : CsharpClassGeneratorViewModel<ClassField>
+public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public ClassFieldViewModel(ClassField data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings)
+    public ClassFieldViewModel(ClassField data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(csharpExpressionCreator);
-        _csharpExpressionCreator = csharpExpressionCreator;
     }
 
     public string TypeName
@@ -20,8 +16,5 @@ public class ClassFieldViewModel : CsharpClassGeneratorViewModel<ClassField>
 
     public bool ShouldRenderDefaultValue => Data.DefaultValue is not null;
 
-    public string GetDefaultValueExpression() => _csharpExpressionCreator.Create(Data.DefaultValue);
-
-    public IEnumerable<AttributeViewModel> GetAttributeModels()
-        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator, Data));
+    public string GetDefaultValueExpression() => CsharpExpressionCreator.Create(Data.DefaultValue);
 }

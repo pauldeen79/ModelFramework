@@ -8,6 +8,7 @@ public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute
     {
         Guard.IsNotNull(csharpExpressionCreator);
         Guard.IsNotNull(parent);
+
         _csharpExpressionCreator = csharpExpressionCreator;
         Parent = parent;
     }
@@ -24,4 +25,14 @@ public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute
                     ? _csharpExpressionCreator.Create(p.Value)
                     : string.Format("{0} = {1}", p.Name, _csharpExpressionCreator.Create(p.Value))
             )), ")");
+
+    public int GetAdditionalIndents()
+    {
+        if (IsSingleLineAttributeContainer || Parent is TypeBase)
+        {
+            return 0;
+        }
+
+        return 1;
+    }
 }
