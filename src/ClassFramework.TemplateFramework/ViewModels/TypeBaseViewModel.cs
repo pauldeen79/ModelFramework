@@ -80,4 +80,7 @@ public class TypeBaseViewModel : CsharpClassGeneratorViewModel<TypeBase>
             ? string.Empty
             : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
     }
+
+    public IEnumerable GetAttributeModels()
+        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, _csharpExpressionCreator, Data));
 }

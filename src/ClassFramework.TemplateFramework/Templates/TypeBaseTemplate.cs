@@ -2,14 +2,6 @@
 
 public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewModel>, IMultipleContentBuilderTemplate
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public TypeBaseTemplate(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-    
     public void Render(IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -53,8 +45,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        var attributes = Model.Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Model.Settings, _csharpExpressionCreator, Model.Data));
-        Context.Engine.RenderChildTemplatesByModel(attributes, generationEnvironment, Context);
+        Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment, Context);
 
         indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.GetContainerType()} {Model.Name}{Model.GetInheritedClasses()}");
         indentedBuilder.AppendLine("{"); // start class
