@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class CsharpClassGeneratorViewModel
+public abstract class CsharpClassGeneratorViewModel
 {
-    public CsharpClassGeneratorViewModel(CsharpClassGeneratorSettings settings)
+    protected CsharpClassGeneratorViewModel(CsharpClassGeneratorSettings settings)
     {
         Guard.IsNotNull(settings);
         Settings = settings;
