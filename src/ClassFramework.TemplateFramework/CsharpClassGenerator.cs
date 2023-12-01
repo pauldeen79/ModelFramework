@@ -2,14 +2,6 @@
 
 public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public CsharpClassGenerator(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
     public void Render(IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -49,11 +41,11 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         Guard.IsNotNull(Model);
 
-        Context.Engine.RenderChildTemplateByModel(new CodeGenerationHeaderViewModel(Model.Settings), generationEnvironment, Context);
+        Context.Engine.RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment, Context);
 
         if (Context.IsRootContext)
         {
-            Context.Engine.RenderChildTemplateByModel(new UsingsViewModel(Model.Data, Model.Settings, _csharpExpressionCreator), generationEnvironment, Context);
+            Context.Engine.RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment, Context);
         }
     }
 
@@ -61,24 +53,19 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         Guard.IsNotNull(Model);
 
-        foreach (var ns in Model.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
+        foreach (var @namespace in Model.Data.GroupBy(x => x.Namespace).OrderBy(x => x.Key))
         {
-            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
+            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {
-                singleStringBuilder.AppendLine($"namespace {ns.Key}");
+                singleStringBuilder.AppendLine($"namespace {@namespace.Key}");
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            var typeBaseItems = ns
-                .OrderBy(typeBase => typeBase.Name)
-                .Select(typeBase => new TypeBaseViewModel(typeBase, Model.Settings, _csharpExpressionCreator));
+            Context.Engine.RenderChildTemplatesByModel(Model.GetTypeBaseModels(@namespace), generationEnvironment, Context);
 
-            Context.Engine.RenderChildTemplatesByModel(typeBaseItems, generationEnvironment, Context);
-
-            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(ns.Key))
+            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {
                 singleStringBuilder.AppendLine("}"); // close namespace
             }
         }
-    }
-}
+    }}
