@@ -39,7 +39,7 @@ jobs:
         run: dotnet build ModelFramework.sln -c Release --no-restore
       - name: Test
         run: dotnet test ModelFramework.sln -c Release --no-restore
-      - name: Checking for external vulnerabilites
+      - name: Checking for external vulnerabilities
         run: |
           dotnet list ${{ github.workspace }}/ModelFramework.sln package --vulnerable --include-transitive 2>&1 | tee vuln.log
           echo "Analyze dotnet list package..."
