@@ -2,8 +2,8 @@
 
 public class UsingsViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<TypeBase>>
 {
-    public UsingsViewModel(IEnumerable<TypeBase> data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public UsingsViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 
@@ -17,7 +17,7 @@ public class UsingsViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<Typ
 
     public IEnumerable<string> Usings
         => DefaultUsings
-            .Union(Data.SelectMany(classItem => classItem.Metadata.GetStringValues(MetadataNames.CustomUsing)))
+            .Union(GetModel().SelectMany(classItem => classItem.Metadata.GetStringValues(MetadataNames.CustomUsing)))
             .OrderBy(ns => ns)
             .Distinct();
 }

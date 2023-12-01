@@ -2,8 +2,8 @@
 
 public class ClassPropertyViewModel : CsharpClassGeneratorViewModelBase<ClassProperty>
 {
-    public ClassPropertyViewModel(ClassProperty data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public ClassPropertyViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 }

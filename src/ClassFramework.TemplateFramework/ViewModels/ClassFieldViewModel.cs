@@ -2,20 +2,23 @@
 
 public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
 {
-    public ClassFieldViewModel(ClassField data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public ClassFieldViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 
     public string TypeName
-        => Data.TypeName
+        => GetModel().TypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Data.IsNullable, Settings.EnableNullableContext)
-            .AbbreviateNamespaces(Data.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate));
-    
-    public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
+            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
+            .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate));
 
-    public bool ShouldRenderDefaultValue => Data.DefaultValue is not null;
+    public string Name
+        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
-    public string GetDefaultValueExpression() => CsharpExpressionCreator.Create(Data.DefaultValue);
+    public bool ShouldRenderDefaultValue
+        => GetModel().DefaultValue is not null;
+
+    public string GetDefaultValueExpression()
+        => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }

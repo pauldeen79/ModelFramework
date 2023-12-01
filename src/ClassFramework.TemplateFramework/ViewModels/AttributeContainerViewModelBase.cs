@@ -4,11 +4,15 @@ public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorV
     where T : IAttributesContainer
 {
 
-    protected AttributeContainerViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    protected AttributeContainerViewModelBase(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetAttributeModels()
-        => Data.Attributes.Select(attribute => new AttributeViewModel(attribute, Settings, CsharpExpressionCreator, Data));
+        => GetModel().Attributes.Select((attribute, index) => new AttributeViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = attribute,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), attribute, index, Model!.Attributes.Count))
+        });
 }

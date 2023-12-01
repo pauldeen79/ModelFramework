@@ -2,8 +2,8 @@
 
 public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
 {
-    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public TypeBaseViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 
@@ -11,31 +11,55 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         => Settings.EnableNullableContext && Settings.IndentCount == 1; // note: only for root level, because it gets rendered in the same file
 
     public bool ShouldRenderNamespaceScope
-        => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(Data.Namespace);
+        => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(GetModel().Namespace);
 
-    public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
+    public string Name => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
     public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel() => new CodeGenerationHeaderViewModel(Settings);
 
-    public UsingsViewModel GetUsingsModel() => new UsingsViewModel(new[] { Data }, Settings, CsharpExpressionCreator);
+    public UsingsViewModel GetUsingsModel() => new UsingsViewModel(Settings, CsharpExpressionCreator)
+    {
+        Model = new[] { GetModel() },
+        Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), Model))
+    };
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetMemberModels()
     {
         var items = new List<CsharpClassGeneratorViewModelBase>();
 
-        var fieldsContainer = Data as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings, CsharpExpressionCreator)));
+        var fieldsContainer = GetModel() as IFieldsContainer;
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select((x, index) => new ClassFieldViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = x,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, fieldsContainer.Fields.Count))
+        }));
 
-        items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings, CsharpExpressionCreator)));
+        items.AddRange(Model!.Properties.Select((x, index) => new ClassPropertyViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = x,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, Model.Properties.Count))
+        }));
 
-        var constructorsContainer = Data as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings, Data, CsharpExpressionCreator)));
+        var constructorsContainer = Model as IConstructorsContainer;
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select((x, index) => new ClassConstructorViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = x,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, constructorsContainer.Constructors.Count))
+        }));
 
-        items.AddRange(Data.Methods.Select(x => new ClassMethodViewModel(x, Settings, Data, CsharpExpressionCreator)));
+        items.AddRange(Model.Methods.Select((x, index) => new ClassMethodViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = x,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, Model.Methods.Count))
+        }));
 
         // Quirk, enums as items below a class. There is no interface for this right now.
-        var cls = Data as Class;
-        if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(x, Settings, CsharpExpressionCreator)));
+        var cls = Model as Class;
+        if (cls is not null) items.AddRange(cls.Enums.Select((x, index) => new EnumerationViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = x,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, cls.Enums.Count))
+        }));
 
         // Add separators (empty lines) between each item
         return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
@@ -43,39 +67,43 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetSubClassModels()
     {
-        var subClasses = (Data as Class)?.SubClasses;
+        var subClasses = (GetModel() as Class)?.SubClasses;
         if (subClasses is null)
         {
             return Enumerable.Empty<CsharpClassGeneratorViewModelBase>();
         }
 
         return subClasses
-            .Select(typeBase => new TypeBaseViewModel(typeBase, Settings.ForSubclasses(), CsharpExpressionCreator))
+            .Select((typeBase, index) => new TypeBaseViewModel(Settings.ForSubclasses(), CsharpExpressionCreator)
+            {
+                Model = typeBase,
+                Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), typeBase, index, subClasses.Count))
+            })
             .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
     }
 
     public string GetContainerType()
-        => Data switch
+        => GetModel() switch
         {
             Class cls when cls.Record => "record",
             Class cls when !cls.Record => "class",
             Struct str when str.Record => "record struct",
             Struct str when !str.Record => "struct",
             Interface => "interface",
-            _ => throw new InvalidOperationException($"Unknown container type: [{Data.GetType().FullName}]")
+            _ => throw new InvalidOperationException($"Unknown container type: [{Model!.GetType().FullName}]")
         };
 
     public string GetInheritedClasses()
     {
         var lst = new List<string>();
 
-        var baseClassContainer = Data as IBaseClassContainer;
+        var baseClassContainer = GetModel() as IBaseClassContainer;
         if (!string.IsNullOrEmpty(baseClassContainer?.BaseClass))
         {
             lst.Add(baseClassContainer.BaseClass);
         }
 
-        lst.AddRange(Data.Interfaces);
+        lst.AddRange(Model!.Interfaces);
 
         return lst.Count == 0
             ? string.Empty

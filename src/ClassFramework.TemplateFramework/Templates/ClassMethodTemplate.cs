@@ -14,17 +14,17 @@ public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel
         
         if (Model.ShouldRenderModifiers)
         {
-            builder.Append(Model.Data.GetModifiers());
+            builder.Append(Model.GetModel().GetModifiers());
         }
 
         builder.Append(Model.ReturnTypeName);
         builder.Append(" ");
         builder.Append(Model.ExplicitInterfaceName);
         builder.Append(Model.Name);
-        builder.Append(Model.Data.GetGenericTypeArgumentsString());
+        builder.Append(Model.Model!.GetGenericTypeArgumentsString());
         builder.Append("(");
 
-        if (Model.Data.ExtensionMethod)
+        if (Model.Model!.ExtensionMethod)
         {
             builder.Append("this ");
         }

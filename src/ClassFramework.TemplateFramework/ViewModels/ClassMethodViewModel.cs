@@ -2,47 +2,52 @@
 
 public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
 {
-    private readonly TypeBase _parent;
-
-    public ClassMethodViewModel(ClassMethod data, CsharpClassGeneratorSettings settings, TypeBase parent, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public ClassMethodViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(parent);
-
-        _parent = parent;
     }
 
     public bool ShouldRenderModifiers
-        => string.IsNullOrEmpty(Data.ExplicitInterfaceName) && !(_parent is Interface);
+        => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && !(GetParentModel() is Interface);
 
-    public string ReturnTypeName => Data.TypeName
-        .GetCsharpFriendlyTypeName()
-        .AppendNullableAnnotation(Data.IsNullable, Settings.EnableNullableContext)
-        .AbbreviateNamespaces(Data.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate))
-        .WhenNullOrEmpty("void");
+    public string ReturnTypeName
+        => GetModel().TypeName
+            .GetCsharpFriendlyTypeName()
+            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
+            .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate))
+            .WhenNullOrEmpty("void");
 
     public string ExplicitInterfaceName
-        => !string.IsNullOrEmpty(Data.ExplicitInterfaceName) && !(_parent is Interface)
-            ? $"{Data.ExplicitInterfaceName}."
+        => Model is not null && !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(GetParentModel() is Interface)
+            ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 
     public string Name
     {
         get
         {
-            if (Data.Operator)
+            var model = GetModel();
+            if (model.Operator)
             {
-                return "operator " + Data.Name;
+                return "operator " + model.Name;
             }
             
-            if (Data.IsInterfaceMethod())
+            if (model.IsInterfaceMethod())
             {
-                return Data.Name.RemoveInterfacePrefix().Sanitize().GetCsharpFriendlyName();
+                return model.Name.RemoveInterfacePrefix().Sanitize().GetCsharpFriendlyName();
             }
             
-            return Data.Name.Sanitize().GetCsharpFriendlyName();
+            return model.Name.Sanitize().GetCsharpFriendlyName();
         }
     }
 
-    public bool OmitCode => _parent is Interface || Data.Abstract || Data.Partial;
+    public bool OmitCode
+    {
+        get
+        {
+            var model = GetModel();
+
+            return GetParentModel() is Interface || model.Abstract || model.Partial;
+        }
+    }
 }

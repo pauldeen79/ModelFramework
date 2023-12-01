@@ -2,20 +2,20 @@
 
 public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
 {
-    public ParameterViewModel(Parameter data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public ParameterViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 
     public string TypeName
-        => Data.TypeName
+        => GetModel().TypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Data.IsNullable, Settings.EnableNullableContext)
-            .AbbreviateNamespaces(Data.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate));
+            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
+            .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate));
 
-    public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
+    public string Name => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
-    public bool ShouldRenderDefaultValue => Data.DefaultValue is not null;
+    public bool ShouldRenderDefaultValue => GetModel().DefaultValue is not null;
 
-    public string GetDefaultValueExpression() => CsharpExpressionCreator.Create(Data.DefaultValue);
+    public string GetDefaultValueExpression() => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }

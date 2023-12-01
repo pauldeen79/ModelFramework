@@ -2,10 +2,10 @@
 
 public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
 {
-    public EnumerationViewModel(Enumeration data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public EnumerationViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
     }
 
-    public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
+    public string Name => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 }

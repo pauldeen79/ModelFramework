@@ -2,21 +2,29 @@
 
 public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
 {
-    private readonly TypeBase _parent;
-
-    public ClassConstructorViewModel(ClassConstructor data, CsharpClassGeneratorSettings settings, TypeBase parent, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(data, settings, csharpExpressionCreator)
+    public ClassConstructorViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(parent);
-
-        _parent = parent;
     }
 
-    public string Name => _parent.Name.Sanitize().GetCsharpFriendlyName();
+    public string Name
+    {
+        get
+        {
+            var nameContainer = GetParentModel() as INameContainer;
+            if (nameContainer is null)
+            {
+                throw new InvalidOperationException("Could not get name from parent context");
+            }
 
-    public string ChainCall => string.IsNullOrEmpty(Data.ChainCall)
+            return nameContainer.Name.Sanitize().GetCsharpFriendlyName();
+        }
+    }
+
+    public string ChainCall => string.IsNullOrEmpty(Model?.ChainCall)
         ? string.Empty
-        : $" : {Data.ChainCall}";
+        : $" : {Model.ChainCall}";
 
-    public bool OmitCode => _parent is Interface || Data.Abstract;
+    public bool OmitCode
+        => GetParentModel() is Interface || GetModel().Abstract;
 }

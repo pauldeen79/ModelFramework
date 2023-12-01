@@ -63,7 +63,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
 
     public object? CreateModel()
         => new CsharpClassGeneratorViewModel(
-            _model,
             new CsharpClassGeneratorSettingsBuilder()
                 .WithGenerateMultipleFiles(_generateMultipleFiles)
                 .WithSkipWhenFileExists(_skipWhenFileExists)
@@ -76,7 +75,11 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
                 .WithCultureInfo(_cultureInfo)
                 .Build(),
             _csharpExpressionCreator
-        );
+        )
+        {
+            Model = _model,
+            //Context is filled in base class, on the property setter of Context (propagated to Model)
+        };
 
     private string? FilenamePrefix
         => string.IsNullOrEmpty(Path)

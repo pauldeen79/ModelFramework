@@ -21,7 +21,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         }
         else
         {
-            var filename = $"{Model.Settings.FilenamePrefix}{Model.Data.Name}{Model.Settings.FilenameSuffix}.cs";
+            var filename = $"{Model.Settings.FilenamePrefix}{Model.GetModel().Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
 
@@ -30,14 +30,14 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
 
             if (Model.ShouldRenderNamespaceScope)
             {
-                contentBuilder.Builder.AppendLine($"namespace {Model.Data.Namespace}");
+                contentBuilder.Builder.AppendLine($"namespace {Model.Model!.Namespace}");
                 contentBuilder.Builder.AppendLine("{"); // start namespace
             }
         }
 
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
 
-        foreach (var suppression in Model.Data.SuppressWarningCodes)
+        foreach (var suppression in Model.GetModel().SuppressWarningCodes)
         {
             generationEnvironment.Builder.AppendLine($"#pragma warning disable {suppression}");
         }
@@ -47,7 +47,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
 
         Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment, Context);
 
-        indentedBuilder.AppendLine($"{Model.Data.GetModifiers()}{Model.GetContainerType()} {Model.Name}{Model.GetInheritedClasses()}");
+        indentedBuilder.AppendLine($"{Model.Model!.GetModifiers()}{Model.GetContainerType()} {Model.Name}{Model.GetInheritedClasses()}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
@@ -62,7 +62,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
 
         generationEnvironment.Builder.AppendLineWithCondition("#nullable restore", Model.ShouldRenderNullablePragmas);
 
-        foreach (var suppression in Model.Data.SuppressWarningCodes.Reverse())
+        foreach (var suppression in Model.Model!.SuppressWarningCodes.Reverse())
         {
             generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
         }
