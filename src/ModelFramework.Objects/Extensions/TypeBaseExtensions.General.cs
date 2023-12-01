@@ -73,7 +73,7 @@ public static partial class TypeBaseExtensions
 
     public static bool IsPoco(this ITypeBase instance)
         => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
-            && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
+            && (instance is not IClass || instance is IClass cls && cls.HasPublicParameterlessConstructor());
 
     public static string GetCustomValueForInheritedClass(this ITypeBase instance,
                                                          ImmutableBuilderClassSettings settings,
