@@ -4,7 +4,8 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
 {
     private readonly TypeBase _parent;
 
-    public ClassMethodViewModel(ClassMethod data, CsharpClassGeneratorSettings settings, TypeBase parent, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
+    public ClassMethodViewModel(ClassMethod data, CsharpClassGeneratorSettings settings, TypeBase parent, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
         Guard.IsNotNull(parent);
 

@@ -1,10 +1,11 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorViewModel<T>
+public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorViewModelBase<T>
     where T : IAttributesContainer
 {
 
-    protected AttributeContainerViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
+    protected AttributeContainerViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
     }
 

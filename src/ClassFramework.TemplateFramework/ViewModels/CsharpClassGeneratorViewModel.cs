@@ -1,17 +1,9 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class CsharpClassGeneratorViewModel<TModel> : CsharpClassGeneratorViewModelBase
+public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<TypeBase>>
 {
-    protected ICsharpExpressionCreator CsharpExpressionCreator { get; }
-
-    public CsharpClassGeneratorViewModel(TModel data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(settings)
+    public CsharpClassGeneratorViewModel(IEnumerable<TypeBase> data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(csharpExpressionCreator);
-        Guard.IsNotNull(data);
-
-        Data = data;
-        CsharpExpressionCreator = csharpExpressionCreator;
     }
-
-    public TModel Data { get; }
 }

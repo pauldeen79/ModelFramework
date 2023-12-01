@@ -2,7 +2,8 @@
 
 public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase
 {
-    public CodeGenerationHeaderViewModel(CsharpClassGeneratorSettings settings) : base(settings)
+    public CodeGenerationHeaderViewModel(CsharpClassGeneratorSettings settings)
+        : base(settings)
     {
     }
 

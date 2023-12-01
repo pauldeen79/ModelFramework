@@ -1,8 +1,9 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute>
+public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attribute>
 {
-    public AttributeViewModel(Domain.Attribute data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator, IAttributesContainer parent) : base(data, settings, csharpExpressionCreator)
+    public AttributeViewModel(Domain.Attribute data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator, IAttributesContainer parent)
+        : base(data, settings, csharpExpressionCreator)
     {
         Guard.IsNotNull(parent);
 

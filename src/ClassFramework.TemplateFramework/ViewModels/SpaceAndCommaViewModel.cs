@@ -2,7 +2,8 @@
 
 public class SpaceAndCommaViewModel : CsharpClassGeneratorViewModelBase
 {
-    public SpaceAndCommaViewModel(CsharpClassGeneratorSettings settings) : base(settings)
+    public SpaceAndCommaViewModel(CsharpClassGeneratorSettings settings)
+        : base(settings)
     {
     }
 }

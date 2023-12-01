@@ -2,7 +2,8 @@
 
 public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
 {
-    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
+    public TypeBaseViewModel(TypeBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
     }
 

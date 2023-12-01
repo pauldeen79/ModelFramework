@@ -2,7 +2,8 @@
 
 public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
 {
-    public ClassFieldViewModel(ClassField data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
+    public ClassFieldViewModel(ClassField data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
     }
 

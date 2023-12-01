@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework;
 
-public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
+public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 

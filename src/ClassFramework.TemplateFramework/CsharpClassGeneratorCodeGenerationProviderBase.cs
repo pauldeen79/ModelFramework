@@ -62,7 +62,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     public Type GetGeneratorType() => typeof(CsharpClassGenerator);
 
     public object? CreateModel()
-        => new CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>(
+        => new CsharpClassGeneratorViewModel(
             _model,
             new CsharpClassGeneratorSettingsBuilder()
                 .WithGenerateMultipleFiles(_generateMultipleFiles)

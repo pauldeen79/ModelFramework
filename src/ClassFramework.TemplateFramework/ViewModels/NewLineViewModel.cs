@@ -2,7 +2,8 @@
 
 public class NewLineViewModel : CsharpClassGeneratorViewModelBase
 {
-    public NewLineViewModel(CsharpClassGeneratorSettings settings) : base(settings)
+    public NewLineViewModel(CsharpClassGeneratorSettings settings)
+        : base(settings)
     {
     }
 }

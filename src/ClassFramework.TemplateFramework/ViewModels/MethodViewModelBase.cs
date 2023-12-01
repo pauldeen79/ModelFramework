@@ -3,7 +3,8 @@
 public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T>
     where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer
 {
-    protected MethodViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
+    protected MethodViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
     }
 

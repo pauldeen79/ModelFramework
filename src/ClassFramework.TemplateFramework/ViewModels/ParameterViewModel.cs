@@ -2,7 +2,8 @@
 
 public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
 {
-    public ParameterViewModel(Parameter data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
+    public ParameterViewModel(Parameter data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
+        : base(data, settings, csharpExpressionCreator)
     {
     }
 
