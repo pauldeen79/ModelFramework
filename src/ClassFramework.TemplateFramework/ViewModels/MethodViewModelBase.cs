@@ -9,7 +9,7 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetCodeStatementModels()
         => Data.CodeStatements
-            .Select(codeStatement => new CodeStatementViewModel(codeStatement, Settings))
+            .Select(codeStatement => new CodeStatementViewModel(codeStatement, Settings, CsharpExpressionCreator))
             .SelectMany((item, index) => index + 1 < Data.Parameters.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetParameterModels()

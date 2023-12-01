@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework.Tests;
+﻿using ClassFramework.Domain.Abstractions;
+
+namespace ClassFramework.TemplateFramework.Tests;
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
@@ -36,7 +38,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddConstructors(new ClassConstructorBuilder().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddParameters(new ParameterBuilder().WithName("myField").WithType(typeof(string)).WithIsNullable().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))).AddStringCodeStatements("// code goes here"))
             .AddMethods(new ClassMethodBuilder().WithName("Method1").WithType(typeof(string)).WithIsNullable().AddStringCodeStatements("// code goes here").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
             .Build();
-        var codeGenerationProvider = new TestCodeGenerationProvider([typeBase]);
+        var csharpExpressionCreator = _scope.ServiceProvider.GetRequiredService<ICsharpExpressionCreator>();
+        var codeGenerationProvider = new TestCodeGenerationProvider(csharpExpressionCreator, [typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
@@ -100,8 +103,9 @@ namespace MyNamespace
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public TestCodeGenerationProvider(IEnumerable<TypeBase> model)
+        public TestCodeGenerationProvider(ICsharpExpressionCreator csharpExpressionCreator, IEnumerable<TypeBase> model)
             : base(
+                  csharpExpressionCreator,
                   model,
                   path: string.Empty,
                   recurseOnDeleteGeneratedFiles: false,

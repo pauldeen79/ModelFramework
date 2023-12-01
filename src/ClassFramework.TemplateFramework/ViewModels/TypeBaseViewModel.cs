@@ -14,6 +14,10 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
 
     public string Name => Data.Name.Sanitize().GetCsharpFriendlyName();
 
+    public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel() => new CodeGenerationHeaderViewModel(Settings);
+
+    public UsingsViewModel GetUsingsModel() => new UsingsViewModel(new[] { Data }, Settings, CsharpExpressionCreator);
+
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetMemberModels()
     {
         var items = new List<CsharpClassGeneratorViewModelBase>();
@@ -21,7 +25,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         var fieldsContainer = Data as IFieldsContainer;
         if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(x, Settings, CsharpExpressionCreator)));
 
-        items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings)));
+        items.AddRange(Data.Properties.Select(x => new ClassPropertyViewModel(x, Settings, CsharpExpressionCreator)));
 
         var constructorsContainer = Data as IConstructorsContainer;
         if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(x, Settings, Data, CsharpExpressionCreator)));

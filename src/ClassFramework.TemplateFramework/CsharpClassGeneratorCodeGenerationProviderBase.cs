@@ -9,6 +9,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
 
 #pragma warning disable S107 // Methods should not have too many parameters
     protected CsharpClassGeneratorCodeGenerationProviderBase(
+        ICsharpExpressionCreator csharpExpressionCreator,
         IEnumerable<TypeBase> model,
         string path,
         bool recurseOnDeleteGeneratedFiles,
@@ -23,6 +24,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         string? environmentVersion = null)
 #pragma warning restore S107 // Methods should not have too many parameters
     {
+        Guard.IsNotNull(csharpExpressionCreator);
         Guard.IsNotNull(model);
         Guard.IsNotNull(path);
         Guard.IsNotNull(lastGeneratedFilesFilename);
@@ -30,6 +32,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         Guard.IsNotNull(cultureInfo);
         Guard.IsNotNull(filenameSuffix);
 
+        _csharpExpressionCreator = csharpExpressionCreator;
         _model = model;
         Path = path;
         RecurseOnDeleteGeneratedFiles = recurseOnDeleteGeneratedFiles;
@@ -52,6 +55,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     private readonly CultureInfo _cultureInfo;
     private readonly string? _environmentVersion;
     private readonly string _filenameSuffix;
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
     public object? CreateAdditionalParameters() => null;
 
@@ -70,7 +74,8 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
                 .WithEnableNullableContext(_enableNullableContext)
                 .WithIndentCount(1)
                 .WithCultureInfo(_cultureInfo)
-                .Build()
+                .Build(),
+            _csharpExpressionCreator
         );
 
     private string? FilenamePrefix

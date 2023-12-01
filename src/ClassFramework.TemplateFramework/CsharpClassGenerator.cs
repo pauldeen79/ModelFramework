@@ -53,7 +53,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
         if (Context.IsRootContext)
         {
-            Context.Engine.RenderChildTemplateByModel(new UsingsViewModel(Model.Data, Model.Settings), generationEnvironment, Context);
+            Context.Engine.RenderChildTemplateByModel(new UsingsViewModel(Model.Data, Model.Settings, _csharpExpressionCreator), generationEnvironment, Context);
         }
     }
 

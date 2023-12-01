@@ -2,7 +2,7 @@
 
 public class CodeStatementViewModel : CsharpClassGeneratorViewModel<CodeStatementBase>
 {
-    public CodeStatementViewModel(CodeStatementBase data, CsharpClassGeneratorSettings settings) : base(data, settings)
+    public CodeStatementViewModel(CodeStatementBase data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
     {
     }
 }

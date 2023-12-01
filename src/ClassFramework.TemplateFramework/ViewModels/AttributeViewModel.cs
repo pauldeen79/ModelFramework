@@ -2,14 +2,10 @@
 
 public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute>
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public AttributeViewModel(Domain.Attribute data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator, IAttributesContainer parent) : base(data, settings)
+    public AttributeViewModel(Domain.Attribute data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator, IAttributesContainer parent) : base(data, settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(csharpExpressionCreator);
         Guard.IsNotNull(parent);
 
-        _csharpExpressionCreator = csharpExpressionCreator;
         Parent = parent;
     }
 
@@ -22,8 +18,8 @@ public class AttributeViewModel : CsharpClassGeneratorViewModel<Domain.Attribute
             ? string.Empty
             : string.Concat("(", string.Join(", ", Data.Parameters.Select(p =>
                 string.IsNullOrEmpty(p.Name)
-                    ? _csharpExpressionCreator.Create(p.Value)
-                    : string.Format("{0} = {1}", p.Name, _csharpExpressionCreator.Create(p.Value))
+                    ? CsharpExpressionCreator.Create(p.Value)
+                    : string.Format("{0} = {1}", p.Name, CsharpExpressionCreator.Create(p.Value))
             )), ")");
 
     public int GetAdditionalIndents()

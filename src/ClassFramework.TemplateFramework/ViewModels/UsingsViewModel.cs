@@ -2,7 +2,7 @@
 
 public class UsingsViewModel : CsharpClassGeneratorViewModel<IEnumerable<TypeBase>>
 {
-    public UsingsViewModel(IEnumerable<TypeBase> data, CsharpClassGeneratorSettings settings) : base(data, settings)
+    public UsingsViewModel(IEnumerable<TypeBase> data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
     {
     }
 

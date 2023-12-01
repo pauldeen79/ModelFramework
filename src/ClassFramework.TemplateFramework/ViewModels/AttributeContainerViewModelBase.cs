@@ -3,13 +3,9 @@
 public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorViewModel<T>
     where T : IAttributesContainer
 {
-    protected ICsharpExpressionCreator CsharpExpressionCreator { get; }
 
-    protected AttributeContainerViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings)
+    protected AttributeContainerViewModelBase(T data, CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(data, settings, csharpExpressionCreator)
     {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        CsharpExpressionCreator = csharpExpressionCreator;
     }
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetAttributeModels()
