@@ -10,9 +10,7 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
 
         Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
-        builder.AppendWithCondition("params ", Model.GetModel().IsParamArray);
-        builder.AppendWithCondition("ref ", Model.Model!.IsRef);
-        builder.AppendWithCondition("out ", Model.Model!.IsOut);
+        builder.Append(Model.Prefix);
         builder.Append(Model.TypeName);
         builder.Append(" ");
         builder.Append(Model.Name);

@@ -18,9 +18,15 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
             .WhenNullOrEmpty("void");
 
     public string ExplicitInterfaceName
-        => Model is not null && !string.IsNullOrEmpty(Model.ExplicitInterfaceName) && !(GetParentModel() is Interface)
+        => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && !(GetParentModel() is Interface)
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
+
+    public string GenericTypeArguments
+        => GetModel().GetGenericTypeArgumentsString();
+
+    public bool ExtensionMethod
+        => GetModel().ExtensionMethod;
 
     public string Name
     {

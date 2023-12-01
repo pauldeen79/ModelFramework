@@ -7,6 +7,29 @@ public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
     {
     }
 
+    public string Prefix
+    {
+        get
+        {
+            var model = GetModel();
+
+            if (model.IsParamArray)
+            {
+                return "params ";
+            }
+            else if (model.IsRef)
+            {
+                return "ref ";
+            }
+            else if (model.IsOut)
+            {
+                return "out ";
+            }
+
+            return string.Empty;
+        }
+    }
+
     public string TypeName
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()

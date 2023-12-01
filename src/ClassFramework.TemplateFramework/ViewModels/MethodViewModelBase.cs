@@ -1,12 +1,15 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
 public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T>
-    where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer
+    where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer, IVisibilityContainer, IMetadataContainer
 {
     protected MethodViewModelBase(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
         : base(settings, csharpExpressionCreator)
     {
     }
+
+    public string Modifiers
+        => GetModel().GetModifiers();
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetCodeStatementModels()
         => GetModel().CodeStatements

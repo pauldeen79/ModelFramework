@@ -11,9 +11,9 @@ public class ClassFieldTemplate : CsharpClassGeneratorBase<ClassFieldViewModel>,
         Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(Model.CreateIndentation(1));
-        builder.Append(Model.GetModel().GetModifiers());
+        builder.Append(Model.Modifiers);
         
-        if (Model.Model!.Event)
+        if (Model.Event)
         {
             builder.Append("event ");
         }

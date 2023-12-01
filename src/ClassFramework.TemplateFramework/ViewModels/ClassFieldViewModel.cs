@@ -7,6 +7,12 @@ public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
     {
     }
 
+    public string Modifiers
+        => GetModel().GetModifiers();
+
+    public bool Event
+        => GetModel().Event;
+
     public string TypeName
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()

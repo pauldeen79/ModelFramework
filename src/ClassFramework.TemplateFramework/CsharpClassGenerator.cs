@@ -53,7 +53,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         Guard.IsNotNull(Model);
 
-        foreach (var @namespace in Model.GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key))
+        foreach (var @namespace in Model.Namespaces)
         {
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {

@@ -14,7 +14,7 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
         }
 
         builder.Append("[");
-        builder.Append(Model.GetModel().Name);
+        builder.Append(Model.Name);
         builder.Append(Model.GetParametersText());
         builder.Append("]");
 

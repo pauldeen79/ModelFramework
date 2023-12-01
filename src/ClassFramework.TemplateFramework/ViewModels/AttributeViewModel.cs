@@ -9,6 +9,9 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
 
     public bool IsSingleLineAttributeContainer => GetParentModel() is Parameter;
 
+    public string Name
+        => GetModel().Name;
+
     public string GetParametersText()
         => GetModel().Parameters.Count == 0
             ? string.Empty

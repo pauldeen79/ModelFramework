@@ -11,7 +11,7 @@ public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructo
         Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(Model.CreateIndentation(1));
-        builder.Append(Model.GetModel().GetModifiers());
+        builder.Append(Model.Modifiers);
         builder.Append(Model.Name);
         builder.Append("(");
 

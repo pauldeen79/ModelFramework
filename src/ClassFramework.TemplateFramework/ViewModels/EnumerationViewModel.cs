@@ -7,5 +7,12 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
     {
     }
 
-    public string Name => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+    public string Modifiers
+        => GetModel().GetModifiers();
+
+    public string Name
+        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+
+    public IReadOnlyCollection<EnumerationMember> Members
+        => GetModel().Members;
 }

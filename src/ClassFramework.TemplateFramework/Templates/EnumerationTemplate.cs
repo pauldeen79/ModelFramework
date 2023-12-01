@@ -19,13 +19,13 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
 
         builder.Append(Model.CreateIndentation(1));
-        builder.Append(Model.GetModel().GetModifiers());
+        builder.Append(Model.Modifiers);
         builder.Append("enum ");
         builder.AppendLine(Model.Name);
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        foreach (var member in Model.Model!.Members)
+        foreach (var member in Model.Members)
         {
             var valueExpression = member.Value is null
                 ? string.Empty

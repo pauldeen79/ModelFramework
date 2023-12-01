@@ -13,9 +13,20 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     public bool ShouldRenderNamespaceScope
         => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(GetModel().Namespace);
 
-    public string Name => GetModel().Name.Sanitize().GetCsharpFriendlyName();
+    public string Name
+        => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
-    public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel() => new CodeGenerationHeaderViewModel(Settings);
+    public string Namespace
+        => GetModel().Namespace;
+
+    public string Modifiers
+        => GetModel().GetModifiers();
+
+    public IReadOnlyCollection<string> SuppressWarningCodes
+        => GetModel().SuppressWarningCodes;
+
+    public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
+        => new CodeGenerationHeaderViewModel(Settings);
 
     public UsingsViewModel GetUsingsModel() => new UsingsViewModel(Settings, CsharpExpressionCreator)
     {
@@ -82,7 +93,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
             .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
     }
 
-    public string GetContainerType()
+    public string ContainerType
         => GetModel() switch
         {
             Class cls when cls.Record => "record",
@@ -93,20 +104,24 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
             _ => throw new InvalidOperationException($"Unknown container type: [{Model!.GetType().FullName}]")
         };
 
-    public string GetInheritedClasses()
+    public string InheritedClasses
     {
-        var lst = new List<string>();
-
-        var baseClassContainer = GetModel() as IBaseClassContainer;
-        if (!string.IsNullOrEmpty(baseClassContainer?.BaseClass))
+        get
         {
-            lst.Add(baseClassContainer.BaseClass);
+            var baseClassContainer = GetModel() as IBaseClassContainer;
+
+            var lst = new List<string>();
+
+            if (!string.IsNullOrEmpty(baseClassContainer?.BaseClass))
+            {
+                lst.Add(baseClassContainer.BaseClass);
+            }
+
+            lst.AddRange(Model!.Interfaces);
+
+            return lst.Count == 0
+                ? string.Empty
+                : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
         }
-
-        lst.AddRange(Model!.Interfaces);
-
-        return lst.Count == 0
-            ? string.Empty
-            : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
     }
 }
