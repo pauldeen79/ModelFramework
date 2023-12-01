@@ -8,7 +8,7 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
     }
 
     public bool ShouldRenderModifiers
-        => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && !(GetParentModel() is Interface);
+        => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface;
 
     public string ReturnTypeName
         => GetModel().TypeName
@@ -18,7 +18,7 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
             .WhenNullOrEmpty("void");
 
     public string ExplicitInterfaceName
-        => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && !(GetParentModel() is Interface)
+        => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 

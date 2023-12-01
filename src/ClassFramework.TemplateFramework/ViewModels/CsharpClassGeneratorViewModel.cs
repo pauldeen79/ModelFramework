@@ -14,15 +14,11 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
         => new CodeGenerationHeaderViewModel(Settings);
 
     public UsingsViewModel GetUsingsModel()
-    {
-        Guard.IsNotNull(Model);
-
-        return new UsingsViewModel(Settings, CsharpExpressionCreator)
+        => new UsingsViewModel(Settings, CsharpExpressionCreator)
         {
-            Model = Model,
+            Model = GetModel(),
             Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), Model))
         };
-    }
 
     public IEnumerable<TypeBaseViewModel> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
         => @namespace

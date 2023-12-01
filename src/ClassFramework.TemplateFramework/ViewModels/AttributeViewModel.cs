@@ -12,7 +12,7 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
     public string Name
         => GetModel().Name;
 
-    public string GetParametersText()
+    public string Parameters
         => GetModel().Parameters.Count == 0
             ? string.Empty
             : string.Concat("(", string.Join(", ", Model!.Parameters.Select(p =>
@@ -21,13 +21,16 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
                     : string.Format("{0} = {1}", p.Name, CsharpExpressionCreator.Create(p.Value))
             )), ")");
 
-    public int GetAdditionalIndents()
+    public int AdditionalIndents
     {
-        if (IsSingleLineAttributeContainer || GetParentModel() is TypeBase)
+        get
         {
-            return 0;
-        }
+            if (IsSingleLineAttributeContainer || GetParentModel() is TypeBase)
+            {
+                return 0;
+            }
 
-        return 1;
+            return 1;
+        }
     }
 }

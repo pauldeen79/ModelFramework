@@ -28,48 +28,49 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
         => new CodeGenerationHeaderViewModel(Settings);
 
-    public UsingsViewModel GetUsingsModel() => new UsingsViewModel(Settings, CsharpExpressionCreator)
-    {
-        Model = new[] { GetModel() },
-        Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), Model))
-    };
+    public UsingsViewModel GetUsingsModel()
+        => new UsingsViewModel(Settings, CsharpExpressionCreator)
+        {
+            Model = [GetModel()],
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), Model))
+        };
 
     public IEnumerable<CsharpClassGeneratorViewModelBase> GetMemberModels()
     {
         var items = new List<CsharpClassGeneratorViewModelBase>();
 
         var fieldsContainer = GetModel() as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select((x, index) => new ClassFieldViewModel(Settings, CsharpExpressionCreator)
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select((field, index) => new ClassFieldViewModel(Settings, CsharpExpressionCreator)
         {
-            Model = x,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, fieldsContainer.Fields.Count))
+            Model = field,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), field, index, fieldsContainer.Fields.Count))
         }));
 
-        items.AddRange(Model!.Properties.Select((x, index) => new ClassPropertyViewModel(Settings, CsharpExpressionCreator)
+        items.AddRange(Model!.Properties.Select((property, index) => new ClassPropertyViewModel(Settings, CsharpExpressionCreator)
         {
-            Model = x,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, Model.Properties.Count))
+            Model = property,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), property, index, Model.Properties.Count))
         }));
 
         var constructorsContainer = Model as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select((x, index) => new ClassConstructorViewModel(Settings, CsharpExpressionCreator)
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select((ctor, index) => new ClassConstructorViewModel(Settings, CsharpExpressionCreator)
         {
-            Model = x,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, constructorsContainer.Constructors.Count))
+            Model = ctor,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), ctor, index, constructorsContainer.Constructors.Count))
         }));
 
-        items.AddRange(Model.Methods.Select((x, index) => new ClassMethodViewModel(Settings, CsharpExpressionCreator)
+        items.AddRange(Model.Methods.Select((method, index) => new ClassMethodViewModel(Settings, CsharpExpressionCreator)
         {
-            Model = x,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, Model.Methods.Count))
+            Model = method,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), method, index, Model.Methods.Count))
         }));
 
         // Quirk, enums as items below a class. There is no interface for this right now.
         var cls = Model as Class;
-        if (cls is not null) items.AddRange(cls.Enums.Select((x, index) => new EnumerationViewModel(Settings, CsharpExpressionCreator)
+        if (cls is not null) items.AddRange(cls.Enums.Select((enumeration, index) => new EnumerationViewModel(Settings, CsharpExpressionCreator)
         {
-            Model = x,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), x, index, cls.Enums.Count))
+            Model = enumeration,
+            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), enumeration, index, cls.Enums.Count))
         }));
 
         // Add separators (empty lines) between each item

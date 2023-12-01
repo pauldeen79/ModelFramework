@@ -23,7 +23,7 @@ public class ClassFieldTemplate : CsharpClassGeneratorBase<ClassFieldViewModel>,
         if (Model.ShouldRenderDefaultValue)
         {
             builder.Append(" = ");
-            builder.Append(Model.GetDefaultValueExpression());
+            builder.Append(Model.DefaultValueExpression);
         }
         
         builder.AppendLine(";");

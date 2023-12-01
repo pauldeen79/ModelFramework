@@ -10,12 +10,12 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
 
         if (!Model.IsSingleLineAttributeContainer)
         {
-            builder.Append(Model.CreateIndentation(Model.GetAdditionalIndents()));
+            builder.Append(Model.CreateIndentation(Model.AdditionalIndents));
         }
 
         builder.Append("[");
         builder.Append(Model.Name);
-        builder.Append(Model.GetParametersText());
+        builder.Append(Model.Parameters);
         builder.Append("]");
 
         if (!Model.IsSingleLineAttributeContainer)

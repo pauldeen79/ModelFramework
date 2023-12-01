@@ -18,7 +18,7 @@ public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, I
         if (Model.ShouldRenderDefaultValue)
         {
             builder.Append(" = ");
-            builder.Append(Model.GetDefaultValueExpression());
+            builder.Append(Model.DefaultValueExpression);
         }
     }
 }

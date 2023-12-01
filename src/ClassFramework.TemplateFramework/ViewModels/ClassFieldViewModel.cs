@@ -25,6 +25,6 @@ public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
     public bool ShouldRenderDefaultValue
         => GetModel().DefaultValue is not null;
 
-    public string GetDefaultValueExpression()
+    public string DefaultValueExpression
         => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }
