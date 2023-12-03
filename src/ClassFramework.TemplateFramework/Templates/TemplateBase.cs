@@ -23,6 +23,7 @@ public abstract class TemplateBase : ITemplateContextContainer, ICsharpClassGene
             _context = value;
             if (value?.Model is CsharpClassGeneratorViewModelBase vmb)
             {
+                // Copy context from generator to ViewModel, so it can be used there
                 Settings = vmb.Settings;
             }
 

@@ -2,9 +2,10 @@
 
 public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer, IViewModel
 {
-    public CsharpClassGeneratorSettings Settings { get; set; } = default!;
+    public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateViewModel method
 
-    public string CreateIndentation(int additionalIndents = 0) => new string(' ', 4 * (Settings.IndentCount + 1 + additionalIndents));
+    public string CreateIndentation(int additionalIndents = 0)
+        => new string(' ', 4 * (Settings.IndentCount + 1 + additionalIndents));
 }
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
@@ -17,8 +18,9 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
     }
 
     public TModel? Model { get; set; }
-    public ITemplateContext Context { get; set; } = default!;
     public ICsharpExpressionCreator CsharpExpressionCreator { get; set; }
+    
+    public ITemplateContext Context { get; set; } = default!; // will always be injected in CreateViewModel method
 
     public TModel GetModel()
     {
@@ -27,16 +29,9 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
         return Model;
     }
 
-    private object? GetParent()
-    {
-        Guard.IsNotNull(Context);
-
-        return Context.ParentContext?.Model;
-    }
-
     protected object? GetParentModel()
     {
-        dynamic? d = GetParent();
+        dynamic? d = Context?.ParentContext?.Model;
         if (d is null)
         {
             throw new InvalidOperationException("Model of parent context is not set");

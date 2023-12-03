@@ -10,6 +10,7 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     {
         if (Model is ITemplateContextContainer container)
         {
+            // Copy context from generator to ViewModel, so it can be used there
             container.Context = value;
         }
     }
