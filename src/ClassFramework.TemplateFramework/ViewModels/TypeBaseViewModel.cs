@@ -25,73 +25,44 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     public IReadOnlyCollection<string> SuppressWarningCodes
         => GetModel().SuppressWarningCodes;
 
-    public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderViewModel(Settings);
+    public CodeGenerationHeaderModel GetCodeGenerationHeaderModel()
+        => new CodeGenerationHeaderModel();
 
-    public UsingsViewModel GetUsingsModel()
-        => new UsingsViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = [GetModel()],
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), Model))
-        };
+    public UsingsModel GetUsingsModel()
+        => new UsingsModel([GetModel()]);
 
-    public IEnumerable<CsharpClassGeneratorViewModelBase> GetMemberModels()
+    public IEnumerable GetMemberModels()
     {
-        var items = new List<CsharpClassGeneratorViewModelBase>();
+        var items = new List<object?>();
 
         var fieldsContainer = GetModel() as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select((field, index) => new ClassFieldViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = field,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), field, index, fieldsContainer.Fields.Count))
-        }));
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields);
 
-        items.AddRange(Model!.Properties.Select((property, index) => new ClassPropertyViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = property,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), property, index, Model.Properties.Count))
-        }));
+        items.AddRange(Model!.Properties);
 
         var constructorsContainer = Model as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select((ctor, index) => new ClassConstructorViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = ctor,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), ctor, index, constructorsContainer.Constructors.Count))
-        }));
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors);
 
-        items.AddRange(Model.Methods.Select((method, index) => new ClassMethodViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = method,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), method, index, Model.Methods.Count))
-        }));
+        items.AddRange(Model.Methods);
 
         // Quirk, enums as items below a class. There is no interface for this right now.
         var cls = Model as Class;
-        if (cls is not null) items.AddRange(cls.Enums.Select((enumeration, index) => new EnumerationViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = enumeration,
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), enumeration, index, cls.Enums.Count))
-        }));
+        if (cls is not null) items.AddRange(cls.Enums);
 
         // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineViewModel(Settings)] : new object[] { item! });
     }
 
-    public IEnumerable<CsharpClassGeneratorViewModelBase> GetSubClassModels()
+    public IEnumerable GetSubClassModels()
     {
         var subClasses = (GetModel() as Class)?.SubClasses;
         if (subClasses is null)
         {
-            return Enumerable.Empty<CsharpClassGeneratorViewModelBase>();
+            return Enumerable.Empty<object>();
         }
 
         return subClasses
-            .Select((typeBase, index) => new TypeBaseViewModel(Settings.ForSubclasses(), CsharpExpressionCreator)
-            {
-                Model = typeBase,
-                Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), typeBase, index, subClasses.Count))
-            })
-            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new CsharpClassGeneratorViewModelBase[] { item });
+            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new object[] { item });
     }
 
     public string ContainerType
@@ -125,4 +96,22 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
                 : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
         }
     }
+}
+
+public class TypeBaseViewModelCreator : IViewModelCreator
+{
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public TypeBaseViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+
+        _csharpExpressionCreator = csharpExpressionCreator;
+    }
+
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new TypeBaseViewModel(settings, _csharpExpressionCreator);
+
+    public bool Supports(object model)
+        => model is TypeBase;
 }

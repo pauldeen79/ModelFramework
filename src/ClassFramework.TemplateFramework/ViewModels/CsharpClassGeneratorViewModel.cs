@@ -13,19 +13,9 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
     public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
         => new CodeGenerationHeaderViewModel(Settings);
 
-    public UsingsViewModel GetUsingsModel()
-        => new UsingsViewModel(Settings, CsharpExpressionCreator)
-        {
-            Model = GetModel(),
-            Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), Model))
-        };
+    public UsingsModel GetUsingsModel()
+        => new UsingsModel(GetModel());
 
-    public IEnumerable<TypeBaseViewModel> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
-        => @namespace
-            .OrderBy(typeBase => typeBase.Name)
-            .Select((typeBase, index) => new TypeBaseViewModel(Settings, CsharpExpressionCreator)
-            {
-                Model = typeBase,
-                Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), typeBase, index, @namespace.Count()))
-            });
+    public IEnumerable<TypeBase> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
+        => @namespace.OrderBy(typeBase => typeBase.Name);
 }

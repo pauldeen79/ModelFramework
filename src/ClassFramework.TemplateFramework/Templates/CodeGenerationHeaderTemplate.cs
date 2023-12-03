@@ -2,6 +2,10 @@
 
 public sealed class CodeGenerationHeaderTemplate : CsharpClassGeneratorBase<CodeGenerationHeaderViewModel>, IStringBuilderTemplate
 {
+    public CodeGenerationHeaderTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
+    {
+    }
+
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);

@@ -45,3 +45,21 @@ public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
     public string DefaultValueExpression
         => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }
+
+public class ParameterViewModelCreator : IViewModelCreator
+{
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public ParameterViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+
+        _csharpExpressionCreator = csharpExpressionCreator;
+    }
+
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new ParameterViewModel(settings, _csharpExpressionCreator);
+
+    public bool Supports(object model)
+        => model is Parameter;
+}

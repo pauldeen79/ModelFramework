@@ -2,6 +2,10 @@
 
 public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassGeneratorViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
+    public CsharpClassGenerator(IViewModelFactory viewModelFactory) : base(viewModelFactory)
+    {
+    }
+
     public void Render(IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -41,11 +45,11 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         Guard.IsNotNull(Model);
 
-        Context.Engine.RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment, Context);
+        RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment);
 
         if (Context.IsRootContext)
         {
-            Context.Engine.RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment, Context);
+            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
         }
     }
 
@@ -61,7 +65,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
                 singleStringBuilder.AppendLine("{"); // open namespace
             }
 
-            Context.Engine.RenderChildTemplatesByModel(Model.GetTypeBaseModels(@namespace), generationEnvironment, Context);
+            RenderChildTemplatesByModel(Model.GetTypeBaseModels(@namespace), generationEnvironment);
 
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {

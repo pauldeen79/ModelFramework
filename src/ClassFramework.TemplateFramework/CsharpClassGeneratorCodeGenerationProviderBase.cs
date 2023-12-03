@@ -57,9 +57,11 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     private readonly string _filenameSuffix;
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public object? CreateAdditionalParameters() => null;
+    public object? CreateAdditionalParameters()
+        => null;
 
-    public Type GetGeneratorType() => typeof(CsharpClassGenerator);
+    public Type GetGeneratorType()
+        => typeof(CsharpClassGenerator);
 
     public object? CreateModel()
         => new CsharpClassGeneratorViewModel(

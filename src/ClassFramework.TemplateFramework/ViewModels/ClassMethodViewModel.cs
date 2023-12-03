@@ -57,3 +57,21 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
         }
     }
 }
+
+public class ClassMethodViewModelCreator : IViewModelCreator
+{
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public ClassMethodViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+
+        _csharpExpressionCreator = csharpExpressionCreator;
+    }
+
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new ClassMethodViewModel(settings, _csharpExpressionCreator);
+
+    public bool Supports(object model)
+        => model is ClassMethod;
+}

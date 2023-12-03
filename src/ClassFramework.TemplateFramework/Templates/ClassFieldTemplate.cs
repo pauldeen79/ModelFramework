@@ -2,13 +2,17 @@
 
 public class ClassFieldTemplate : CsharpClassGeneratorBase<ClassFieldViewModel>, IStringBuilderTemplate
 {
+    public ClassFieldTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
+    {
+    }
+
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);

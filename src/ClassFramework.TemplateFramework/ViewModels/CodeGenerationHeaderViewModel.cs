@@ -12,3 +12,12 @@ public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase
             ? Settings.EnvironmentVersion
             : Environment.Version.ToString();
 }
+
+public class CodeGenerationHeaderViewModelCreator : IViewModelCreator
+{
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new CodeGenerationHeaderViewModel(settings);
+
+    public bool Supports(object model)
+        => model is CodeGenerationHeaderModel;
+}

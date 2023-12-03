@@ -21,3 +21,21 @@ public class UsingsViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<Typ
             .OrderBy(ns => ns)
             .Distinct();
 }
+
+public class UsingsViewModelCreator : IViewModelCreator
+{
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public UsingsViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+
+        _csharpExpressionCreator = csharpExpressionCreator;
+    }
+
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new UsingsViewModel(settings, _csharpExpressionCreator);
+
+    public bool Supports(object model)
+        => model is UsingsModel;
+}

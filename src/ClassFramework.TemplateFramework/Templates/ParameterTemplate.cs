@@ -2,13 +2,17 @@
 
 public class ParameterTemplate : CsharpClassGeneratorBase<ParameterViewModel>, IStringBuilderTemplate
 {
+    public ParameterTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
+    {
+    }
+
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), new StringBuilderEnvironment(builder), Context);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
         builder.Append(Model.Prefix);
         builder.Append(Model.TypeName);

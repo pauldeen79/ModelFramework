@@ -2,6 +2,10 @@
 
 public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewModel>, IStringBuilderTemplate
 {
+    public AttributeTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
+    {
+    }
+
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);

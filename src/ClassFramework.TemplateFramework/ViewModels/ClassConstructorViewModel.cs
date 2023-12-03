@@ -28,3 +28,21 @@ public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
     public bool OmitCode
         => GetParentModel() is Interface || GetModel().Abstract;
 }
+
+public class ClassConstructorViewModelCreator : IViewModelCreator
+{
+    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
+
+    public ClassConstructorViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    {
+        Guard.IsNotNull(csharpExpressionCreator);
+
+        _csharpExpressionCreator = csharpExpressionCreator;
+    }
+
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new ClassConstructorViewModel(settings, _csharpExpressionCreator);
+
+    public bool Supports(object model)
+        => model is ClassConstructor;
+}

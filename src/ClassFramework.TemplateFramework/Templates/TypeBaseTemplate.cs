@@ -2,6 +2,10 @@
 
 public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewModel>, IMultipleContentBuilderTemplate
 {
+    public TypeBaseTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
+    {
+    }
+
     public void Render(IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -25,8 +29,8 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
 
-            Context.Engine.RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment, Context);
-            Context.Engine.RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment, Context);
+            RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment);
+            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
 
             if (Model.ShouldRenderNamespaceScope)
             {
@@ -45,16 +49,16 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        Context.Engine.RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment, Context);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment);
 
         indentedBuilder.AppendLine($"{Model.Modifiers}{Model.ContainerType} {Model.Name}{Model.InheritedClasses}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        Context.Engine.RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment, Context);
+        RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment);
 
         // Subclasses
-        Context.Engine.RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment, Context);
+        RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment);
 
         indentedBuilder.AppendLine("}"); // end class
 

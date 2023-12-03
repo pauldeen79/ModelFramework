@@ -7,3 +7,12 @@ public class NewLineViewModel : CsharpClassGeneratorViewModelBase
     {
     }
 }
+
+public class NewLineViewModelCreator : IViewModelCreator
+{
+    public object Create(object model, CsharpClassGeneratorSettings settings)
+        => new NewLineViewModel(settings);
+
+    public bool Supports(object model)
+        => model is NewLineViewModel;
+}

@@ -1,22 +1,18 @@
 ﻿namespace ClassFramework.TemplateFramework;
 
-public abstract class CsharpClassGeneratorBase<TModel> : IModelContainer<TModel>, ITemplateContextContainer
+public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
 {
-    private ITemplateContext _context = default!;
-    public ITemplateContext Context
+    protected CsharpClassGeneratorBase(IViewModelFactory viewModelFactory) : base(viewModelFactory)
     {
-        get
+    }
+
+    protected override void OnSetContext(ITemplateContext value)
+    {
+        if (Model is ITemplateContextContainer container)
         {
-            return _context;
-        }
-        set
-        {
-            _context = value;
-            if (Model is ITemplateContextContainer container)
-            {
-                container.Context = value;
-            }
+            container.Context = value;
         }
     }
+
     public TModel? Model { get; set; }
 }
