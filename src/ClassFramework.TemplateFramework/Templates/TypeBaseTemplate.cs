@@ -25,7 +25,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         }
         else
         {
-            var filename = $"{Model.Settings.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
+            var filename = $"{Model.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
 

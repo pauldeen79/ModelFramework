@@ -96,6 +96,11 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
                 : $" : {string.Join(", ", lst.Select(x => x.GetCsharpFriendlyTypeName()))}";
         }
     }
+
+    public string FilenamePrefix
+        => string.IsNullOrEmpty(Settings.Path)
+            ? string.Empty
+            : Settings.Path + Path.DirectorySeparatorChar;
 }
 
 public class TypeBaseViewModelFactoryComponent : IViewModel
