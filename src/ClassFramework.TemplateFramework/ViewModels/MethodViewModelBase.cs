@@ -12,8 +12,7 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
         => GetModel().GetModifiers();
 
     public IEnumerable GetCodeStatementModels()
-        => GetModel().CodeStatements
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new NewLineModel()] : new object[] { item });
+        => GetModel().CodeStatements;
 
     public IEnumerable GetParameterModels()
         => GetModel().Parameters

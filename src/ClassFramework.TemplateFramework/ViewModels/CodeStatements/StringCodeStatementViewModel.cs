@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels.CodeStatements;
 
-public class StringCodeStatementViewModel : CsharpClassGeneratorViewModelBase<StringCodeStatement>
+public class StringCodeStatementViewModel : CodeStatementViewModelBase<StringCodeStatement>
 {
     public StringCodeStatementViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
     {
