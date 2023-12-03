@@ -7,21 +7,3 @@ public class CodeStatementViewModel : CsharpClassGeneratorViewModelBase<CodeStat
     {
     }
 }
-
-public class CodeStatementViewModelFactoryComponent : IViewModelFactoryComponent
-{
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public CodeStatementViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
-    public object Create()
-        => new CodeStatementViewModel(_csharpExpressionCreator);
-
-    public bool Supports(object model)
-        => model is CodeStatementBase;
-}

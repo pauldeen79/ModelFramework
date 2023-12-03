@@ -1,6 +1,5 @@
 ﻿namespace ClassFramework.TemplateFramework.Abstractions;
 
-public interface ICustomModelProvider
+public interface IViewModel
 {
-    object Create();
 }

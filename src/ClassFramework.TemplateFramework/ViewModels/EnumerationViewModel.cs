@@ -16,21 +16,3 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
     public IReadOnlyCollection<EnumerationMember> Members
         => GetModel().Members;
 }
-
-public class EnumerationViewModelFactoryComponent : IViewModelFactoryComponent
-{
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public EnumerationViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
-    public object Create()
-        => new EnumerationViewModel(_csharpExpressionCreator);
-
-    public bool Supports(object model)
-        => model is Enumeration;
-}

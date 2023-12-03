@@ -62,11 +62,6 @@ public abstract class TemplateBase : ITemplateContextContainer, ICsharpClassGene
     {
         var viewModel = _viewModelFactory.Create(model);
 
-        if (model is ICustomModelProvider modelProvider)
-        {
-            model = modelProvider.Create();
-        }
-
         var modelProperty = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model));
         if (modelProperty is not null)
         {

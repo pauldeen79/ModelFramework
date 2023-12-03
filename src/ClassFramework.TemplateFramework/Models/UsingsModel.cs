@@ -1,15 +1,13 @@
 ﻿namespace ClassFramework.TemplateFramework.Models;
 
-public class UsingsModel : ICustomModelProvider
+public class UsingsModel
 {
-    private readonly IEnumerable<TypeBase> _types;
+    public IEnumerable<TypeBase> Types { get; }
 
     public UsingsModel(IEnumerable<TypeBase> types)
     {
         Guard.IsNotNull(types);
 
-        _types = types;
+        Types = types;
     }
-
-    public object Create() => _types;
 }

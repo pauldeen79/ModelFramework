@@ -1,14 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class NewLineViewModel : CsharpClassGeneratorViewModelBase
+public class NewLineViewModel : CsharpClassGeneratorViewModelBase<NewLineModel>
 {
-}
-
-public class NewLineViewModelFactoryComponent : IViewModelFactoryComponent
-{
-    public object Create()
-        => new NewLineViewModel();
-
-    public bool Supports(object model)
-        => model is NewLineViewModel;
+    public NewLineViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    {
+    }
 }

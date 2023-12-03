@@ -10,8 +10,8 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
     public IOrderedEnumerable<IGrouping<string, TypeBase>> Namespaces
         => GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key);
 
-    public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderViewModel();
+    public CodeGenerationHeaderModel GetCodeGenerationHeaderModel()
+        => new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
     public UsingsModel GetUsingsModel()
         => new UsingsModel(GetModel());

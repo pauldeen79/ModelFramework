@@ -26,7 +26,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         => GetModel().SuppressWarningCodes;
 
     public CodeGenerationHeaderModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderModel();
+        => new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
     public UsingsModel GetUsingsModel()
         => new UsingsModel([GetModel()]);
@@ -50,7 +50,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         if (cls is not null) items.AddRange(cls.Enums);
 
         // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineViewModel()] : new object[] { item! });
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineModel()] : new object[] { item! });
     }
 
     public IEnumerable GetSubClassModels()
@@ -62,7 +62,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         }
 
         return subClasses
-            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel()] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineModel()] : new object[] { item });
     }
 
     public string ContainerType
@@ -98,7 +98,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     }
 }
 
-public class TypeBaseViewModelFactoryComponent : IViewModelFactoryComponent
+public class TypeBaseViewModelFactoryComponent : IViewModel
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 

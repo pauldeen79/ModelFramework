@@ -2,23 +2,32 @@
 
 public class ViewModelFactory : IViewModelFactory
 {
-    private readonly IEnumerable<IViewModelFactoryComponent> _viewModelCreators;
+    private readonly IEnumerable<IViewModel> _viewModels;
 
-    public ViewModelFactory(IEnumerable<IViewModelFactoryComponent> viewModelCreators)
+    public ViewModelFactory(IEnumerable<IViewModel> viewModelCreators)
     {
         Guard.IsNotNull(viewModelCreators);
 
-        _viewModelCreators = viewModelCreators;
+        _viewModels = viewModelCreators;
     }
 
     public object Create(object model)
     {
-        var creator = _viewModelCreators.FirstOrDefault(x => x.Supports(model));
-        if (creator is null)
+        var viewModel = _viewModels.FirstOrDefault(x => Supports(x, model));
+        if (viewModel is null)
         {
             throw new NotSupportedException($"Model of type {model?.GetType().FullName ?? "NULL"} is not supported");
         }
 
-        return creator.Create();
+        return viewModel;
+    }
+
+    private bool Supports(object viewModel, object model)
+    {
+        var viewModelType = viewModel?.GetType();
+        var prop = viewModelType?.GetProperty(nameof(IModelContainer<object>.Model));
+
+        return prop is not null
+            && prop.PropertyType.IsInstanceOfType(model);
     }
 }

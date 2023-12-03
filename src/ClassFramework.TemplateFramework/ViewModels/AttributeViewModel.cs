@@ -34,21 +34,3 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
         }
     }
 }
-
-public class AttributeViewModelFactoryComponent : IViewModelFactoryComponent
-{
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public AttributeViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
-    public object Create()
-        => new AttributeViewModel(_csharpExpressionCreator);
-
-    public bool Supports(object model)
-        => model is Domain.Attribute;
-}

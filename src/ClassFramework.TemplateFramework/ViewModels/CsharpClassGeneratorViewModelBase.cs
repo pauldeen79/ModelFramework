@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer
+public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer, IViewModel
 {
     public CsharpClassGeneratorSettings Settings { get; set; } = default!;
 

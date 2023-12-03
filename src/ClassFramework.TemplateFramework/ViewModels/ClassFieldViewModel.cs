@@ -28,21 +28,3 @@ public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
     public string DefaultValueExpression
         => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }
-
-public class ClassFieldViewModelFactoryComponent : IViewModelFactoryComponent
-{
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public ClassFieldViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
-    public object Create()
-        => new ClassFieldViewModel(_csharpExpressionCreator);
-
-    public bool Supports(object model)
-        => model is ClassField;
-}

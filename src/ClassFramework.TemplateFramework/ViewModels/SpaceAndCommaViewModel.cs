@@ -1,14 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class SpaceAndCommaViewModel : CsharpClassGeneratorViewModelBase
+public class SpaceAndCommaViewModel : CsharpClassGeneratorViewModelBase<SpaceAndCommaModel>
 {
-}
-
-public class SpaceAndCommaViewModelLocatorComponent : IViewModelFactoryComponent
-{
-    public object Create()
-        => new SpaceAndCommaViewModel();
-
-    public bool Supports(object model)
-        => model is SpaceAndCommaViewModel;
+    public SpaceAndCommaViewModel(ICsharpExpressionCreator csharpExpressionCreator) : base(csharpExpressionCreator)
+    {
+    }
 }

@@ -57,21 +57,3 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
         }
     }
 }
-
-public class ClassMethodViewModelFactoryComponent : IViewModelFactoryComponent
-{
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public ClassMethodViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
-    public object Create()
-        => new ClassMethodViewModel(_csharpExpressionCreator);
-
-    public bool Supports(object model)
-        => model is ClassMethod;
-}

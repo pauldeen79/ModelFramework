@@ -13,9 +13,9 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
 
     public IEnumerable GetCodeStatementModels()
         => GetModel().CodeStatements
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new NewLineViewModel()] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new NewLineModel()] : new object[] { item });
 
     public IEnumerable GetParameterModels()
         => GetModel().Parameters
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaViewModel()] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
 }
