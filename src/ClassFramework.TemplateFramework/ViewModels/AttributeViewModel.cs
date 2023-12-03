@@ -18,7 +18,7 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
             : string.Concat("(", string.Join(", ", Model!.Parameters.Select(p =>
                 string.IsNullOrEmpty(p.Name)
                     ? CsharpExpressionCreator.Create(p.Value)
-                    : string.Format("{0} = {1}", p.Name, CsharpExpressionCreator.Create(p.Value))
+                    : $"{p.Name} = {CsharpExpressionCreator.Create(p.Value)}"
             )), ")");
 
     public int AdditionalIndents
