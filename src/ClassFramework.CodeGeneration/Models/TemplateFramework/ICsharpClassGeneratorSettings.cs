@@ -2,13 +2,13 @@
 
 internal interface ICsharpClassGeneratorSettings
 {
+    [Required(AllowEmptyStrings = true)] string Path { get; }
+    [Required] CultureInfo CultureInfo { get; }
     bool GenerateMultipleFiles { get; }
     bool SkipWhenFileExists { get; }
     bool CreateCodeGenerationHeader { get; }
     string? EnvironmentVersion { get; }
-    string? FilenamePrefix { get; }
     string? FilenameSuffix { get; }
     bool EnableNullableContext { get; }
     int IndentCount { get; }
-    [Required] CultureInfo CultureInfo { get; }
 }

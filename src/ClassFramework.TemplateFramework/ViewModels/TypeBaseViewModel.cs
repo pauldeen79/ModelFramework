@@ -8,7 +8,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     }
 
     public bool ShouldRenderNullablePragmas
-        => Settings.EnableNullableContext && Settings.IndentCount == 1; // note: only for root level, because it gets rendered in the same file
+        => Settings.EnableNullableContext && Settings.IndentCount == 0; // note: only for root level, because it gets rendered in the same file
 
     public bool ShouldRenderNamespaceScope
         => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(GetModel().Namespace);

@@ -3,5 +3,10 @@
 public partial record CsharpClassGeneratorSettings
 {
     public CsharpClassGeneratorSettings ForSubclasses()
-        => new(false, SkipWhenFileExists, false, null, null, null, false, IndentCount + 1, CultureInfo);
+        => new(Path, CultureInfo, GenerateMultipleFiles, SkipWhenFileExists, CreateCodeGenerationHeader, EnvironmentVersion, FilenameSuffix, EnableNullableContext, IndentCount + 1);
+    
+    public string? FilenamePrefix
+        => string.IsNullOrEmpty(Path)
+            ? string.Empty
+            : Path + "/";
 }

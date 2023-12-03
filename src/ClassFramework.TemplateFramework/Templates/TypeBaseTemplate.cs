@@ -78,7 +78,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
     {
         Guard.IsNotNull(Model);
 
-        for (int i = 0; i < Model.Settings.IndentCount; i++)
+        for (int i = 0; i <= Model.Settings.IndentCount; i++)
         {
             indentedBuilder.IncrementIndent();
         }
@@ -88,7 +88,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
     {
         Guard.IsNotNull(Model);
 
-        for (int i = 0; i < Model.Settings.IndentCount; i++)
+        for (int i = 0; i <= Model.Settings.IndentCount; i++)
         {
             indentedBuilder.DecrementIndent();
         }

@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Abstractions;
-
-namespace ClassFramework.TemplateFramework.Tests;
+﻿namespace ClassFramework.TemplateFramework.Tests;
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
@@ -107,16 +105,19 @@ namespace MyNamespace
             : base(
                   csharpExpressionCreator,
                   model,
-                  path: string.Empty,
                   recurseOnDeleteGeneratedFiles: false,
                   lastGeneratedFilesFilename: string.Empty,
                   encoding: Encoding.UTF8,
-                  generateMultipleFiles: true,
-                  skipWhenFileExists: false,
-                  createCodeGenerationHeader: true,
-                  enableNullableContext: true,
-                  cultureInfo: CultureInfo.InvariantCulture,
-                  environmentVersion: "1.0.0")
+                  settings: new CsharpClassGeneratorSettingsBuilder()
+                    .WithGenerateMultipleFiles(true)
+                    //.WithSkipWhenFileExists(false) // default value
+                    .WithCreateCodeGenerationHeader(true)
+                    .WithEnableNullableContext(true)
+                    .WithCultureInfo(CultureInfo.InvariantCulture)
+                    .WithEnvironmentVersion("1.0.0")
+                    ///.WithPath(string.Empty) // default value
+                    .Build()
+                  )
         {
         }
     }

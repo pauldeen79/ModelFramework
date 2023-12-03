@@ -4,7 +4,7 @@ public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorS
 {
     public CsharpClassGeneratorSettings Settings { get; set; } = default!;
 
-    public string CreateIndentation(int additionalIndents = 0) => new string(' ', 4 * (Settings.IndentCount + additionalIndents));
+    public string CreateIndentation(int additionalIndents = 0) => new string(' ', 4 * (Settings.IndentCount + 1 + additionalIndents));
 }
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
