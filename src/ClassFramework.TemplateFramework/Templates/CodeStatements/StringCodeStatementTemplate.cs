@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates.CodeStatements;
 
-public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeStatement>, IStringBuilderTemplate
+public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeStatementViewModel>, IStringBuilderTemplate
 {
     public StringCodeStatementTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
     {
