@@ -43,9 +43,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private void RenderHeader(IGenerationEnvironment generationEnvironment)
     {
-        Guard.IsNotNull(Model);
-
-        RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment);
+        RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
 
         if (Context.IsRootContext)
         {
@@ -55,9 +53,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
     private void RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder)
     {
-        Guard.IsNotNull(Model);
-
-        foreach (var @namespace in Model.Namespaces)
+        foreach (var @namespace in Model!.Namespaces)
         {
             if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {
