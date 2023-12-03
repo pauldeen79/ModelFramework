@@ -2,4 +2,7 @@
 
 public class NewLineModel
 {
+    public NewLineModel()
+    {
+    }
 }

@@ -2,4 +2,7 @@
 
 public class SpaceAndCommaModel
 {
+    public SpaceAndCommaModel()
+    {
+    }
 }
