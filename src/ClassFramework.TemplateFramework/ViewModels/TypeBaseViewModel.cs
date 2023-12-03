@@ -2,8 +2,8 @@
 
 public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
 {
-    public TypeBaseViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public TypeBaseViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -50,7 +50,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         if (cls is not null) items.AddRange(cls.Enums);
 
         // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineViewModel(Settings)] : new object[] { item! });
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineViewModel()] : new object[] { item! });
     }
 
     public IEnumerable GetSubClassModels()
@@ -62,7 +62,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         }
 
         return subClasses
-            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel(Settings)] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineViewModel()] : new object[] { item });
     }
 
     public string ContainerType
@@ -98,19 +98,19 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     }
 }
 
-public class TypeBaseViewModelCreator : IViewModelCreator
+public class TypeBaseViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public TypeBaseViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public TypeBaseViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new TypeBaseViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new TypeBaseViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is TypeBase;

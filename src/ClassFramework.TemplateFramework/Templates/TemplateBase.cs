@@ -60,7 +60,7 @@ public abstract class TemplateBase : ITemplateContextContainer, ICsharpClassGene
 
     private object CreateViewModel(object model)
     {
-        var viewModel = _viewModelFactory.Create(model, Settings);
+        var viewModel = _viewModelFactory.Create(model);
 
         if (model is ICustomModelProvider modelProvider)
         {

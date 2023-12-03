@@ -2,8 +2,8 @@
 
 public class UsingsViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<TypeBase>>
 {
-    public UsingsViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public UsingsViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -22,19 +22,19 @@ public class UsingsViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<Typ
             .Distinct();
 }
 
-public class UsingsViewModelCreator : IViewModelCreator
+public class UsingsViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public UsingsViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public UsingsViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new UsingsViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new UsingsViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is UsingsModel;

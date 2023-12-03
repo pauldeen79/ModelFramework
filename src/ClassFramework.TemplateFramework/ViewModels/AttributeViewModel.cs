@@ -2,8 +2,8 @@
 
 public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attribute>
 {
-    public AttributeViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public AttributeViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -35,19 +35,19 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
     }
 }
 
-public class AttributeViewModelCreator : IViewModelCreator
+public class AttributeViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public AttributeViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public AttributeViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new AttributeViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new AttributeViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is Domain.Attribute;

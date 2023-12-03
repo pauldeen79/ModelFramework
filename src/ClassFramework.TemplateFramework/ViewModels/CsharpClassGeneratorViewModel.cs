@@ -2,8 +2,8 @@
 
 public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<IEnumerable<TypeBase>>
 {
-    public CsharpClassGeneratorViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public CsharpClassGeneratorViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -11,7 +11,7 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
         => GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key);
 
     public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderViewModel(Settings);
+        => new CodeGenerationHeaderViewModel();
 
     public UsingsModel GetUsingsModel()
         => new UsingsModel(GetModel());

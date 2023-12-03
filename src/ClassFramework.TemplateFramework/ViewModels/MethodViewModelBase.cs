@@ -3,8 +3,8 @@
 public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T>
     where T : IAttributesContainer, IParametersContainer, ICodeStatementsContainer, IVisibilityContainer, IMetadataContainer
 {
-    protected MethodViewModelBase(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    protected MethodViewModelBase(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -13,9 +13,9 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
 
     public IEnumerable GetCodeStatementModels()
         => GetModel().CodeStatements
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new NewLineViewModel(Settings)] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new NewLineViewModel()] : new object[] { item });
 
     public IEnumerable GetParameterModels()
         => GetModel().Parameters
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaViewModel(Settings)] : new object[] { item });
+            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaViewModel()] : new object[] { item });
 }

@@ -2,5 +2,5 @@
 
 public interface IViewModelFactory
 {
-    object Create(object model, CsharpClassGeneratorSettings settings);
+    object Create(object model);
 }

@@ -11,6 +11,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     protected CsharpClassGeneratorCodeGenerationProviderBase(
         ICsharpExpressionCreator csharpExpressionCreator,
         IEnumerable<TypeBase> model,
+        //TODO: Refactor to inject CsharpClassGeneratorSettings instance instead of separate arguments, fixing S107. need to move FilenamePrefix to this class...
         string path,
         bool recurseOnDeleteGeneratedFiles,
         string lastGeneratedFilesFilename,
@@ -64,8 +65,10 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         => typeof(CsharpClassGenerator);
 
     public object? CreateModel()
-        => new CsharpClassGeneratorViewModel(
-            new CsharpClassGeneratorSettingsBuilder()
+        => new CsharpClassGeneratorViewModel(_csharpExpressionCreator)
+        {
+            Model = _model,
+            Settings = new CsharpClassGeneratorSettingsBuilder()
                 .WithGenerateMultipleFiles(_generateMultipleFiles)
                 .WithSkipWhenFileExists(_skipWhenFileExists)
                 .WithCreateCodeGenerationHeader(_createCodeGenerationHeader)
@@ -75,11 +78,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
                 .WithEnableNullableContext(_enableNullableContext)
                 .WithIndentCount(1)
                 .WithCultureInfo(_cultureInfo)
-                .Build(),
-            _csharpExpressionCreator
-        )
-        {
-            Model = _model,
+                .Build()
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };
 

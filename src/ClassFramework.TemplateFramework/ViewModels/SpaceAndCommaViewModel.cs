@@ -2,16 +2,12 @@
 
 public class SpaceAndCommaViewModel : CsharpClassGeneratorViewModelBase
 {
-    public SpaceAndCommaViewModel(CsharpClassGeneratorSettings settings)
-        : base(settings)
-    {
-    }
 }
 
-public class SpaceAndCommaViewModelCreator : IViewModelCreator
+public class SpaceAndCommaViewModelLocatorComponent : IViewModelFactoryComponent
 {
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new SpaceAndCommaViewModel(settings);
+    public object Create()
+        => new SpaceAndCommaViewModel();
 
     public bool Supports(object model)
         => model is SpaceAndCommaViewModel;

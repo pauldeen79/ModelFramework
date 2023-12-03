@@ -2,25 +2,25 @@
 
 public class CodeStatementViewModel : CsharpClassGeneratorViewModelBase<CodeStatementBase>
 {
-    public CodeStatementViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public CodeStatementViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 }
 
-public class CodeStatementViewModelCreator : IViewModelCreator
+public class CodeStatementViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public CodeStatementViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public CodeStatementViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new CodeStatementViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new CodeStatementViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is CodeStatementBase;

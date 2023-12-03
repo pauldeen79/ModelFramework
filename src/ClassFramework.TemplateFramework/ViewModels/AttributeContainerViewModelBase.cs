@@ -3,8 +3,8 @@
 public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorViewModelBase<T>
     where T : IAttributesContainer
 {
-    protected AttributeContainerViewModelBase(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    protected AttributeContainerViewModelBase(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 

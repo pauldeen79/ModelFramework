@@ -1,24 +1,15 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public abstract class CsharpClassGeneratorViewModelBase
+public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer
 {
-    protected CsharpClassGeneratorViewModelBase(CsharpClassGeneratorSettings settings)
-    {
-        Guard.IsNotNull(settings);
-
-        Settings = settings;
-    }
-
-    public CsharpClassGeneratorSettings Settings { get; }
+    public CsharpClassGeneratorSettings Settings { get; set; } = default!;
 
     public string CreateIndentation(int additionalIndents = 0) => new string(' ', 4 * (Settings.IndentCount + additionalIndents));
 }
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
 {
-    protected ICsharpExpressionCreator CsharpExpressionCreator { get; }
-
-    protected CsharpClassGeneratorViewModelBase(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator) : base(settings)
+    protected CsharpClassGeneratorViewModelBase(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
@@ -27,6 +18,7 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
 
     public TModel? Model { get; set; }
     public ITemplateContext Context { get; set; } = default!;
+    public ICsharpExpressionCreator CsharpExpressionCreator { get; set; }
 
     public TModel GetModel()
     {

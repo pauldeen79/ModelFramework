@@ -2,8 +2,8 @@
 
 public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
 {
-    public EnumerationViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public EnumerationViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -17,19 +17,19 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
         => GetModel().Members;
 }
 
-public class EnumerationViewModelCreator : IViewModelCreator
+public class EnumerationViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public EnumerationViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public EnumerationViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new EnumerationViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new EnumerationViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is Enumeration;

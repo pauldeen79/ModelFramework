@@ -2,16 +2,12 @@
 
 public class NewLineViewModel : CsharpClassGeneratorViewModelBase
 {
-    public NewLineViewModel(CsharpClassGeneratorSettings settings)
-        : base(settings)
-    {
-    }
 }
 
-public class NewLineViewModelCreator : IViewModelCreator
+public class NewLineViewModelFactoryComponent : IViewModelFactoryComponent
 {
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new NewLineViewModel(settings);
+    public object Create()
+        => new NewLineViewModel();
 
     public bool Supports(object model)
         => model is NewLineViewModel;

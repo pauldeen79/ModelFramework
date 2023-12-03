@@ -2,8 +2,8 @@
 
 public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
 {
-    public ClassMethodViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public ClassMethodViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -58,19 +58,19 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
     }
 }
 
-public class ClassMethodViewModelCreator : IViewModelCreator
+public class ClassMethodViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public ClassMethodViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public ClassMethodViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new ClassMethodViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new ClassMethodViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is ClassMethod;

@@ -2,8 +2,8 @@
 
 public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
 {
-    public ParameterViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public ParameterViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -46,19 +46,19 @@ public class ParameterViewModel : AttributeContainerViewModelBase<Parameter>
         => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }
 
-public class ParameterViewModelCreator : IViewModelCreator
+public class ParameterViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public ParameterViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public ParameterViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new ParameterViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new ParameterViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is Parameter;

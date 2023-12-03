@@ -2,8 +2,8 @@
 
 public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
 {
-    public ClassFieldViewModel(CsharpClassGeneratorSettings settings, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(settings, csharpExpressionCreator)
+    public ClassFieldViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+        : base(csharpExpressionCreator)
     {
     }
 
@@ -29,19 +29,19 @@ public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
         => CsharpExpressionCreator.Create(GetModel().DefaultValue);
 }
 
-public class ClassFieldViewModelCreator : IViewModelCreator
+public class ClassFieldViewModelFactoryComponent : IViewModelFactoryComponent
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public ClassFieldViewModelCreator(ICsharpExpressionCreator csharpExpressionCreator)
+    public ClassFieldViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
 
         _csharpExpressionCreator = csharpExpressionCreator;
     }
 
-    public object Create(object model, CsharpClassGeneratorSettings settings)
-        => new ClassFieldViewModel(settings, _csharpExpressionCreator);
+    public object Create()
+        => new ClassFieldViewModel(_csharpExpressionCreator);
 
     public bool Supports(object model)
         => model is ClassField;
