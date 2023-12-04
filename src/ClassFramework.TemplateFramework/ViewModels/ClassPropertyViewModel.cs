@@ -1,6 +1,4 @@
-﻿using TemplateFramework.Abstractions.Extensions;
-
-namespace ClassFramework.TemplateFramework.ViewModels;
+﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
 public class ClassPropertyViewModel : AttributeContainerViewModelBase<ClassProperty>
 {
@@ -33,56 +31,12 @@ public class ClassPropertyViewModel : AttributeContainerViewModelBase<ClassPrope
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 
-    public bool HasGetter
-        => GetModel().HasGetter;
-
-    public bool HasInitializer
-        => GetModel().HasInitializer;
-
-    public bool HasSetter
-        => GetModel().HasSetter;
-
-    public string GetterModifiers
-        => GetSubModifiers(GetModel().GetterVisibility);
-
-    public string SetterModifiers
-        => GetSubModifiers(GetModel().SetterVisibility);
-
-    public string InitializerModifiers
-        => GetSubModifiers(GetModel().InitializerVisibility);
-
-    public bool OmitGetterCode
-        => GetModel().GetterCodeStatements.Count == 0 || GetParentModel() is Interface;
-
-    public bool OmitInitializerCode
-        => GetModel().InitializerCodeStatements.Count == 0 || GetParentModel() is Interface;
-
-    public bool OmitSetterCode
-        => GetModel().SetterCodeStatements.Count == 0 || GetParentModel() is Interface;
-
-    public IEnumerable GetGetterCodeStatementModels()
-        => GetModel().GetterCodeStatements;
-
-    public IEnumerable GetInitializerCodeStatementModels()
-        => GetModel().InitializerCodeStatements;
-
-    public IEnumerable GetSetterCodeStatementModels()
-        => GetModel().SetterCodeStatements;
-
-    private string GetSubModifiers(Visibility? subVisibility)
+    public IEnumerable<PropertyCodeBodyModel> GetCodeBodyModels()
     {
-        var builder = new StringBuilder();
-
-        if (subVisibility is not null && subVisibility != GetModel().Visibility)
-        {
-            builder.Append(subVisibility.ToString()!.ToLower(Settings.CultureInfo));
-        }
-
-        if (builder.Length > 0)
-        {
-            builder.Append(" ");
-        }
-
-        return builder.ToString();
+        var model = GetModel();
+        var parentModel = GetParentModel();
+        yield return new PropertyCodeBodyModel(model.HasGetter, "get", model.Visibility, model.GetterVisibility, parentModel, model.GetterCodeStatements, Settings.CultureInfo);
+        yield return new PropertyCodeBodyModel(model.HasInitializer, "init", model.Visibility, model.InitializerVisibility, parentModel, model.InitializerCodeStatements, Settings.CultureInfo);
+        yield return new PropertyCodeBodyModel(model.HasSetter, "set", model.Visibility, model.SetterVisibility, parentModel, model.SetterCodeStatements, Settings.CultureInfo);
     }
 }

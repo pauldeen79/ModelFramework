@@ -24,36 +24,9 @@ public class ClassPropertyTemplate : CsharpClassGeneratorBase<ClassPropertyViewM
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        RenderCodeStatements(builder, Model.HasGetter, "get", Model.GetterModifiers, Model.OmitGetterCode, Model.GetGetterCodeStatementModels());
-        RenderCodeStatements(builder, Model.HasInitializer, "init", Model.InitializerModifiers, Model.OmitInitializerCode, Model.GetInitializerCodeStatementModels());
-        RenderCodeStatements(builder, Model.HasSetter, "set", Model.SetterModifiers, Model.OmitSetterCode, Model.GetSetterCodeStatementModels());
+        RenderChildTemplatesByModel(Model.GetCodeBodyModels(), builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("}");
-    }
-
-    private void RenderCodeStatements(StringBuilder builder, bool isAvailable, string verb, string modifiers, bool omitCode, IEnumerable codeStatementModels)
-    {
-        if (!isAvailable)
-        {
-            return;
-        }
-
-        builder.Append(Model!.CreateIndentation(2));
-        builder.Append(modifiers);
-        builder.Append(verb);
-        if (omitCode)
-        {
-            builder.AppendLine(";");
-        }
-        else
-        {
-            builder.AppendLine();
-            builder.Append(Model.CreateIndentation(2));
-            builder.AppendLine("{");
-            RenderChildTemplatesByModel(codeStatementModels, builder);
-            builder.Append(Model.CreateIndentation(2));
-            builder.AppendLine("}");
-        }
     }
 }
