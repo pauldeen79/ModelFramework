@@ -102,21 +102,3 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
             ? string.Empty
             : Settings.Path + Path.DirectorySeparatorChar;
 }
-
-public class TypeBaseViewModelFactoryComponent : IViewModel
-{
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public TypeBaseViewModelFactoryComponent(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
-    public object Create()
-        => new TypeBaseViewModel(_csharpExpressionCreator);
-
-    public bool Supports(object model)
-        => model is TypeBase;
-}
