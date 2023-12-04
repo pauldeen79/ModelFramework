@@ -2,10 +2,6 @@
 
 public sealed class UsingsTemplate : CsharpClassGeneratorBase<UsingsViewModel>, IStringBuilderTemplate
 {
-    public UsingsTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);

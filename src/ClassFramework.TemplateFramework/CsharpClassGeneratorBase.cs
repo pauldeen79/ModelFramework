@@ -2,10 +2,6 @@
 
 public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
 {
-    protected CsharpClassGeneratorBase(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     protected override void OnSetContext(ITemplateContext value)
     {
         if (Model is ITemplateContextContainer container)

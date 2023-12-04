@@ -4,8 +4,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public EnumerationTemplate(IViewModelFactory viewModelFactory, ICsharpExpressionCreator csharpExpressionCreator)
-        : base(viewModelFactory)
+    public EnumerationTemplate(ICsharpExpressionCreator csharpExpressionCreator)
     {
         Guard.IsNotNull(csharpExpressionCreator);
         _csharpExpressionCreator = csharpExpressionCreator;
@@ -17,7 +16,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder, Model.Settings);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);

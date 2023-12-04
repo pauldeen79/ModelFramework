@@ -2,16 +2,12 @@
 
 public class ClassPropertyTemplate : CsharpClassGeneratorBase<ClassPropertyViewModel>, IStringBuilderTemplate
 {
-    public ClassPropertyTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder, Model.Settings);
 
         builder.Append(Model.CreateIndentation(1));
 
@@ -55,7 +51,7 @@ public class ClassPropertyTemplate : CsharpClassGeneratorBase<ClassPropertyViewM
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(codeStatementModels, builder);
+            RenderChildTemplatesByModel(codeStatementModels, builder, Model.Settings);
             builder.Append(Model.CreateIndentation(2));
             builder.AppendLine("}");
         }

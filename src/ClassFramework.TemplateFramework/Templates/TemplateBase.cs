@@ -1,16 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public abstract class TemplateBase : ITemplateContextContainer, ICsharpClassGeneratorSettingsContainer
+public abstract class TemplateBase : ITemplateContextContainer
 {
-    private readonly IViewModelFactory _viewModelFactory;
-
-    protected TemplateBase(IViewModelFactory viewModelFactory)
-    {
-        Guard.IsNotNull(viewModelFactory);
-
-        _viewModelFactory = viewModelFactory;
-    }
-
     private ITemplateContext _context = default!;
     public ITemplateContext Context
     {
@@ -21,12 +12,6 @@ public abstract class TemplateBase : ITemplateContextContainer, ICsharpClassGene
         set
         {
             _context = value;
-            if (value?.Model is CsharpClassGeneratorViewModelBase vmb)
-            {
-                // Copy context from generator to ViewModel, so it can be used there
-                Settings = vmb.Settings;
-            }
-
             OnSetContext(value!);
         }
     }
@@ -35,50 +20,23 @@ public abstract class TemplateBase : ITemplateContextContainer, ICsharpClassGene
     {
     }
 
-    public CsharpClassGeneratorSettings Settings { get; set; } = default!;
-
-    protected void RenderChildTemplateByModel(object model, StringBuilder builder)
+    protected void RenderChildTemplateByModel(object model, StringBuilder builder, CsharpClassGeneratorSettings settings)
     {
-        RenderChildTemplateByModel(model, new StringBuilderEnvironment(builder));
+        RenderChildTemplateByModel(model, new StringBuilderEnvironment(builder), settings);
     }
 
-    protected void RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment)
+    protected void RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment, CsharpClassGeneratorSettings settings)
     {
-        var viewModel = CreateViewModel(model);
-
-        Context.Engine.RenderChildTemplate(viewModel, generationEnvironment, Context, new TemplateByModelIdentifier(viewModel));
+        Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new ViewModelTemplateByModelIdentifier(model, settings));
     }
 
-    protected void RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder)
+    protected void RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder, CsharpClassGeneratorSettings settings)
     {
-        RenderChildTemplatesByModel(models, new StringBuilderEnvironment(builder));
+        RenderChildTemplatesByModel(models, new StringBuilderEnvironment(builder), settings);
     }
 
-    protected void RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment)
+    protected void RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment, CsharpClassGeneratorSettings settings)
     {
-        Context.Engine.RenderChildTemplates(models.OfType<object>().Select(CreateViewModel), generationEnvironment, Context, model => new TemplateByModelIdentifier(model));
-    }
-
-    private object CreateViewModel(object model)
-    {
-        var viewModel = _viewModelFactory.Create(model);
-
-        var modelProperty = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model));
-        if (modelProperty is not null)
-        {
-            modelProperty.SetValue(viewModel, model);
-        }
-
-        if (viewModel is ITemplateContextContainer contextContainer)
-        {
-            contextContainer.Context = Context.CreateChildContext(new ChildTemplateContext(new EmptyTemplateIdentifier(), model));
-        }
-
-        if (viewModel is ICsharpClassGeneratorSettingsContainer settingsContainer)
-        {
-            settingsContainer.Settings = Settings;
-        }
-
-        return viewModel;
+        Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new ViewModelTemplateByModelIdentifier(model, settings));
     }
 }

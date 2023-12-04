@@ -2,10 +2,6 @@
 
 public class StringCodeStatementTemplate : CsharpClassGeneratorBase<StringCodeStatementViewModel>, IStringBuilderTemplate
 {
-    public StringCodeStatementTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);

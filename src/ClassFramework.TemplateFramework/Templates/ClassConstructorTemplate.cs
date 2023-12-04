@@ -2,24 +2,20 @@
 
 public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructorViewModel>, IStringBuilderTemplate
 {
-    public ClassConstructorTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder, Model.Settings);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);
         builder.Append(Model.Name);
         builder.Append("(");
 
-        RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
+        RenderChildTemplatesByModel(Model.GetParameterModels(), builder, Model.Settings);
 
         builder.Append(")");
         builder.Append(Model.ChainCall);
@@ -33,7 +29,7 @@ public class ClassConstructorTemplate : CsharpClassGeneratorBase<ClassConstructo
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
+            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder, Model.Settings);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
         }

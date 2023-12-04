@@ -2,17 +2,13 @@
 
 public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel>, IStringBuilderTemplate
 {
-    public ClassMethodTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder, Model.Settings);
 
         builder.Append(Model.CreateIndentation(1));
         
@@ -33,7 +29,7 @@ public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel
             builder.Append("this ");
         }
 
-        RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
+        RenderChildTemplatesByModel(Model.GetParameterModels(), builder, Model.Settings);
 
         builder.Append(")");
 
@@ -46,7 +42,7 @@ public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel
             builder.AppendLine();
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("{");
-            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder);
+            RenderChildTemplatesByModel(Model.GetCodeStatementModels(), builder, Model.Settings);
             builder.Append(Model.CreateIndentation(1));
             builder.AppendLine("}");
         }

@@ -2,10 +2,6 @@
 
 public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewModel>, IMultipleContentBuilderTemplate
 {
-    public TypeBaseTemplate(IViewModelFactory viewModelFactory) : base(viewModelFactory)
-    {
-    }
-
     public void Render(IMultipleContentBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -29,8 +25,8 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
 
-            RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment);
-            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+            RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment, Model.Settings);
+            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment, Model.Settings);
 
             if (Model.ShouldRenderNamespaceScope)
             {
@@ -49,16 +45,16 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment, Model.Settings);
 
         indentedBuilder.AppendLine($"{Model.Modifiers}{Model.ContainerType} {Model.Name}{Model.InheritedClasses}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment);
+        RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment, Model.Settings);
 
         // Subclasses
-        RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment);
+        RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment, Model.Settings);
 
         indentedBuilder.AppendLine("}"); // end class
 

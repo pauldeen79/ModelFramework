@@ -31,12 +31,8 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
 
     protected object? GetParentModel()
     {
-        dynamic? d = Context?.ParentContext?.Model;
-        if (d is null)
-        {
-            throw new InvalidOperationException("Model of parent context is not set");
-        }
-
-        return d.Model;
+        Guard.IsNotNull(Context);
+        
+        return Context.ParentContext?.Model;
     }
 }

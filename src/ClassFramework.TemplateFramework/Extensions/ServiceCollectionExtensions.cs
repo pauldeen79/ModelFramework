@@ -4,8 +4,11 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddClassFrameworkTemplates(this IServiceCollection services)
         => services
+            // Add support for viewmodels in TemplateFramework
+            .AddScoped<ITemplateParameterConverter, ViewModelTemplateParameterConverter>()
+            .AddScoped<ITemplateProviderComponent, ViewModelTemplateProviderComponent>()
+
             .AddScoped<CsharpClassGenerator>()
-            .AddScoped<IViewModelFactory, ViewModelFactory>()
             .AddScoped<IViewModel, AttributeViewModel>()
             .AddScoped<IViewModel, ClassConstructorViewModel>()
             .AddScoped<IViewModel, ClassFieldViewModel>()
