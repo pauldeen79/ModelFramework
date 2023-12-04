@@ -1,6 +1,7 @@
 ﻿namespace ClassFramework.TemplateFramework;
 
 public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
+    where TModel : ICsharpClassGeneratorSettingsContainer
 {
     protected override void OnSetContext(ITemplateContext value)
     {
@@ -12,4 +13,28 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     }
 
     public TModel? Model { get; set; }
+
+    protected void RenderChildTemplateByModel(object model, StringBuilder builder)
+    {
+        RenderChildTemplateByModel(model, new StringBuilderEnvironment(builder));
+    }
+
+    protected void RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment)
+    {
+        Guard.IsNotNull(Context);
+        Guard.IsNotNull(Model);
+        Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new ViewModelTemplateByModelIdentifier(model, Model.Settings));
+    }
+
+    protected void RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder)
+    {
+        RenderChildTemplatesByModel(models, new StringBuilderEnvironment(builder));
+    }
+
+    protected void RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment)
+    {
+        Guard.IsNotNull(Context);
+        Guard.IsNotNull(Model);
+        Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new ViewModelTemplateByModelIdentifier(model, Model.Settings));
+    }
 }

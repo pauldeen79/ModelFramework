@@ -25,8 +25,8 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
 
-            RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment, Model.Settings);
-            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment, Model.Settings);
+            RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment);
+            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
 
             if (Model.ShouldRenderNamespaceScope)
             {
@@ -45,16 +45,16 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         var indentedBuilder = new IndentedStringBuilder(generationEnvironment.Builder);
         PushIndent(indentedBuilder);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment, Model.Settings);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), generationEnvironment);
 
         indentedBuilder.AppendLine($"{Model.Modifiers}{Model.ContainerType} {Model.Name}{Model.InheritedClasses}");
         indentedBuilder.AppendLine("{"); // start class
 
         // Fields, Properties, Methods, Constructors, Enumerations
-        RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment, Model.Settings);
+        RenderChildTemplatesByModel(Model.GetMemberModels(), generationEnvironment);
 
         // Subclasses
-        RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment, Model.Settings);
+        RenderChildTemplatesByModel(Model.GetSubClassModels(), generationEnvironment);
 
         indentedBuilder.AppendLine("}"); // end class
 

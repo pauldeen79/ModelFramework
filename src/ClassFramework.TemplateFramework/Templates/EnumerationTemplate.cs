@@ -16,7 +16,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         Guard.IsNotNull(Model);
         Guard.IsNotNull(Context);
 
-        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder, Model.Settings);
+        RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.Append(Model.Modifiers);
