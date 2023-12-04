@@ -8,7 +8,7 @@ public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
     }
 
     public string Modifiers
-        => GetModel().GetModifiers();
+        => GetModel().GetModifiers(Settings.CultureInfo);
 
     public bool Event
         => GetModel().Event;

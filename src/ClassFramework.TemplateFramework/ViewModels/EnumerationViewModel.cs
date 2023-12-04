@@ -8,7 +8,7 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
     }
 
     public string Modifiers
-        => GetModel().GetModifiers();
+        => GetModel().GetModifiers(Settings.CultureInfo);
 
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();

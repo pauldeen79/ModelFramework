@@ -20,7 +20,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         => GetModel().Namespace;
 
     public string Modifiers
-        => GetModel().GetModifiers();
+        => GetModel().GetModifiers(Settings.CultureInfo);
 
     public IReadOnlyCollection<string> SuppressWarningCodes
         => GetModel().SuppressWarningCodes;

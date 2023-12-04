@@ -24,7 +24,7 @@ public class ClassPropertyViewModel : AttributeContainerViewModelBase<ClassPrope
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
     public string Modifiers
-        => GetModel().GetModifiers();
+        => GetModel().GetModifiers(Settings.CultureInfo);
 
     public string ExplicitInterfaceName
         => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface

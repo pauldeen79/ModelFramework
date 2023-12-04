@@ -9,7 +9,7 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
     }
 
     public string Modifiers
-        => GetModel().GetModifiers();
+        => GetModel().GetModifiers(Settings.CultureInfo);
 
     public IEnumerable<CodeStatementBase> GetCodeStatementModels()
         => GetModel().CodeStatements;

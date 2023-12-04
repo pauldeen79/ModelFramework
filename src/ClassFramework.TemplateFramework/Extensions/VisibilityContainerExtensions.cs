@@ -2,7 +2,7 @@
 
 public static class VisibilityContainerExtensions
 {
-    public static string GetModifiers<T>(this T instance)
+    public static string GetModifiers<T>(this T instance, CultureInfo cultureInfo)
         where T : IMetadataContainer, IVisibilityContainer
     {
         var customModifiers = instance.Metadata.GetStringValue(MetadataNames.CustomModifiers);
@@ -19,7 +19,7 @@ public static class VisibilityContainerExtensions
             if (classMethod is null || !classMethod.Partial)
             {
                 builder.AppendWithCondition("protected", extendedVisibilityContainer.Protected);
-                builder.AppendWithCondition(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture), !(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal));
+                builder.AppendWithCondition(instance.Visibility.ToString().ToLower(cultureInfo), !(extendedVisibilityContainer.Protected && instance.Visibility != Visibility.Internal));
                 builder.AppendWithCondition("static", extendedVisibilityContainer.Static);
                 builder.AppendWithCondition("abstract", extendedVisibilityContainer.Abstract);
                 builder.AppendWithCondition("virtual", extendedVisibilityContainer.Virtual);
@@ -35,7 +35,7 @@ public static class VisibilityContainerExtensions
         }
         else
         {
-            builder.Append(instance.Visibility.ToString().ToLower(CultureInfo.InvariantCulture));
+            builder.Append(instance.Visibility.ToString().ToLower(cultureInfo));
 
             var cls = instance as Class;
             builder.AppendWithCondition("sealed", cls?.Sealed == true);
