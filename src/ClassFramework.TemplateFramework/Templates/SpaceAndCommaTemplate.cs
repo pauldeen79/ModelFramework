@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class SpaceAndCommaTemplate : CsharpClassGeneratorBase<NewLineViewModel>, IStringBuilderTemplate
+public class SpaceAndCommaTemplate : CsharpClassGeneratorBase<SpaceAndCommaViewModel>, IStringBuilderTemplate
 {
     public void Render(StringBuilder builder)
     {
