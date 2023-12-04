@@ -2,14 +2,6 @@
 
 public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel>, IStringBuilderTemplate
 {
-    private readonly ICsharpExpressionCreator _csharpExpressionCreator;
-
-    public EnumerationTemplate(ICsharpExpressionCreator csharpExpressionCreator)
-    {
-        Guard.IsNotNull(csharpExpressionCreator);
-        _csharpExpressionCreator = csharpExpressionCreator;
-    }
-
     public void Render(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
@@ -25,17 +17,7 @@ public class EnumerationTemplate : CsharpClassGeneratorBase<EnumerationViewModel
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("{");
 
-        foreach (var member in Model.Members)
-        {
-            var valueExpression = member.Value is null
-                ? string.Empty
-                : $" = {_csharpExpressionCreator.Create(member.Value)}";
-
-            builder.Append(Model.CreateIndentation(2));
-            builder.Append(member.Name.Sanitize().GetCsharpFriendlyName());
-            builder.Append(valueExpression);
-            builder.AppendLine(",");
-        }
+        RenderChildTemplatesByModel(Model.GetMemberModels(), builder);
 
         builder.Append(Model.CreateIndentation(1));
         builder.AppendLine("}");

@@ -13,6 +13,6 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
-    public IReadOnlyCollection<EnumerationMember> Members
+    public IReadOnlyCollection<EnumerationMember> GetMemberModels()
         => GetModel().Members;
 }
