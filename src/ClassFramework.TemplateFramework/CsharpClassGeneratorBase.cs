@@ -14,11 +14,6 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
 
     public TModel? Model { get; set; }
 
-    protected void RenderChildTemplateByModel(object model, StringBuilder builder)
-    {
-        RenderChildTemplateByModel(model, new StringBuilderEnvironment(builder));
-    }
-
     protected void RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment)
     {
         Guard.IsNotNull(Context);
