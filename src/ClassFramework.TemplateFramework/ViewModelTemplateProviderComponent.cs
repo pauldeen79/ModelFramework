@@ -38,7 +38,7 @@ public class ViewModelTemplateProviderComponent : ITemplateProviderComponent
         var viewModel = _viewModels.FirstOrDefault(x => Supports(x, model, out prop) && _childTemplateCreators.Any(y => y.SupportsModel(x)));
         if (viewModel is null)
         {
-            throw new NotSupportedException($"There is no viewmodel which supports a model of type {model?.GetType()}");
+            throw new NotSupportedException($"There is no viewmodel which supports a model of type {model?.GetType().FullName}");
         }
         
         // Copy Model to ViewModel
@@ -62,8 +62,8 @@ public class ViewModelTemplateProviderComponent : ITemplateProviderComponent
 
     private bool Supports(object viewModel, object model, out PropertyInfo? prop)
     {
-        var viewModelType = viewModel?.GetType();
-        prop = viewModelType?.GetProperty(nameof(IModelContainer<object>.Model));
+        var viewModelType = viewModel.GetType();
+        prop = viewModelType.GetProperty(nameof(IModelContainer<object>.Model));
 
         return prop is not null
             && prop.PropertyType.IsInstanceOfType(model);

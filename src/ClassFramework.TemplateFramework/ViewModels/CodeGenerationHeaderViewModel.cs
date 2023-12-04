@@ -11,5 +11,6 @@ public class CodeGenerationHeaderViewModel : CsharpClassGeneratorViewModelBase<C
             ? Model!.EnvironmentVersion!
             : Environment.Version.ToString();
 
-    public bool CreateCodeGenerationHeader => GetModel().CreateCodeGenerationHeader;
+    public bool CreateCodeGenerationHeader
+        => GetModel().CreateCodeGenerationHeader;
 }

@@ -32,8 +32,8 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
 
     private bool Supports(object viewModel, object? model)
     {
-        var viewModelType = viewModel?.GetType();
-        var prop = viewModelType?.GetProperty(nameof(IModelContainer<object>.Model));
+        var viewModelType = viewModel.GetType();
+        var prop = viewModelType.GetProperty(nameof(IModelContainer<object>.Model));
 
         return prop is not null
             && prop.PropertyType.IsInstanceOfType(model);

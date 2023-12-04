@@ -31,7 +31,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     public UsingsModel GetUsingsModel()
         => new UsingsModel([GetModel()]);
 
-    public IEnumerable GetMemberModels()
+    public IEnumerable<object> GetMemberModels()
     {
         var items = new List<object?>();
 
@@ -53,7 +53,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineModel()] : new object[] { item! });
     }
 
-    public IEnumerable GetSubClassModels()
+    public IEnumerable<object> GetSubClassModels()
     {
         var subClasses = (GetModel() as Class)?.SubClasses;
         if (subClasses is null)

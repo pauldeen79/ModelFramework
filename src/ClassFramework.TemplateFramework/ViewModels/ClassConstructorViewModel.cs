@@ -21,9 +21,10 @@ public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
         }
     }
 
-    public string ChainCall => string.IsNullOrEmpty(Model?.ChainCall)
-        ? string.Empty
-        : $" : {Model.ChainCall}";
+    public string ChainCall
+        => string.IsNullOrEmpty(GetModel().ChainCall)
+            ? string.Empty
+            : $" : {Model!.ChainCall}";
 
     public bool OmitCode
         => GetParentModel() is Interface || GetModel().Abstract;

@@ -11,10 +11,10 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
     public string Modifiers
         => GetModel().GetModifiers();
 
-    public IEnumerable GetCodeStatementModels()
+    public IEnumerable<CodeStatementBase> GetCodeStatementModels()
         => GetModel().CodeStatements;
 
-    public IEnumerable GetParameterModels()
+    public IEnumerable<object> GetParameterModels()
         => GetModel().Parameters
             .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
 }
