@@ -10,5 +10,4 @@ internal interface ICsharpClassGeneratorSettings
     string? EnvironmentVersion { get; }
     string? FilenameSuffix { get; }
     bool EnableNullableContext { get; }
-    int IndentCount { get; }
 }

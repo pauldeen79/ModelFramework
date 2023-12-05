@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewModel>, IMultipleContentBuilderTemplate
+public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
     public void Render(IMultipleContentBuilder builder)
     {
@@ -24,18 +24,28 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             var filename = $"{Model.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-
-            RenderChildTemplateByModel(Model.GetCodeGenerationHeaderModel(), generationEnvironment);
+            RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
             RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
 
             if (Model.ShouldRenderNamespaceScope)
             {
-                contentBuilder.Builder.AppendLine($"namespace {Model.Namespace}");
-                contentBuilder.Builder.AppendLine("{"); // start namespace
+                generationEnvironment.Builder.AppendLine($"namespace {Model.Namespace}");
+                generationEnvironment.Builder.AppendLine("{"); // start namespace
             }
         }
 
-        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model.ShouldRenderNullablePragmas);
+        RenderRemainder(generationEnvironment);
+    }
+
+    public void Render(StringBuilder builder)
+    {
+        var generationEnvironment = new StringBuilderEnvironment(builder);
+        RenderRemainder(generationEnvironment);
+    }
+
+    private void RenderRemainder(StringBuilderEnvironment generationEnvironment)
+    {
+        generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model!.ShouldRenderNullablePragmas);
 
         foreach (var suppression in Model.SuppressWarningCodes)
         {
@@ -74,7 +84,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
     {
         Guard.IsNotNull(Model);
 
-        for (int i = 0; i <= Model.Settings.IndentCount; i++)
+        for (int i = 0; i < Context.GetIndentCount(); i++)
         {
             indentedBuilder.IncrementIndent();
         }
@@ -84,7 +94,7 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
     {
         Guard.IsNotNull(Model);
 
-        for (int i = 0; i <= Model.Settings.IndentCount; i++)
+        for (int i = 0; i < Context.GetIndentCount(); i++)
         {
             indentedBuilder.DecrementIndent();
         }

@@ -8,7 +8,8 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     }
 
     public bool ShouldRenderNullablePragmas
-        => Settings.EnableNullableContext && Settings.IndentCount == 0; // note: only for root level, because it gets rendered in the same file
+        => Settings.EnableNullableContext
+        && Context.GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
 
     public bool ShouldRenderNamespaceScope
         => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(GetModel().Namespace);
@@ -61,8 +62,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
             return Enumerable.Empty<object>();
         }
 
-        return subClasses
-            .SelectMany((item, index) => index + 1 < subClasses.Count ? [item, new NewLineModel()] : new object[] { item });
+        return subClasses.SelectMany(item => new object[] { new NewLineModel(), item });
     }
 
     public string ContainerType
