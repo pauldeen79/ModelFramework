@@ -159,7 +159,7 @@ namespace MyNamespace
                   lastGeneratedFilesFilename: string.Empty,
                   encoding: Encoding.UTF8,
                   settings: new CsharpClassGeneratorSettingsBuilder()
-                    .WithGenerateMultipleFiles(true)
+                    //.WithGenerateMultipleFiles(true)
                     //.WithSkipWhenFileExists(false) // default value
                     .WithCreateCodeGenerationHeader(true)
                     .WithEnableNullableContext(true)
