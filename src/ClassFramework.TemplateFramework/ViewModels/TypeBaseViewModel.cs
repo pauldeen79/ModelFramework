@@ -12,7 +12,8 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         && Context.GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
 
     public bool ShouldRenderNamespaceScope
-        => Settings.GenerateMultipleFiles && !string.IsNullOrEmpty(GetModel().Namespace);
+        => Settings.GenerateMultipleFiles
+        && !string.IsNullOrEmpty(GetModel().Namespace);
 
     public string Name
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();

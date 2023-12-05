@@ -34,16 +34,18 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             }
         }
 
-        RenderRemainder(generationEnvironment);
+        RenderTypeBase(generationEnvironment);
+
+        generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope); // end namespace
     }
 
     public void Render(StringBuilder builder)
     {
         var generationEnvironment = new StringBuilderEnvironment(builder);
-        RenderRemainder(generationEnvironment);
+        RenderTypeBase(generationEnvironment);
     }
 
-    private void RenderRemainder(StringBuilderEnvironment generationEnvironment)
+    private void RenderTypeBase(StringBuilderEnvironment generationEnvironment)
     {
         generationEnvironment.Builder.AppendLineWithCondition("#nullable enable", Model!.ShouldRenderNullablePragmas);
 
@@ -76,8 +78,6 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
         {
             generationEnvironment.Builder.AppendLine($"#pragma warning restore {suppression}");
         }
-
-        generationEnvironment.Builder.AppendLineWithCondition("}", Model.ShouldRenderNamespaceScope); // end namespace
     }
 
     private void PushIndent(IndentedStringBuilder indentedBuilder)
