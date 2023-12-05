@@ -139,6 +139,7 @@ namespace MyNamespace
             }
         }
     }
+}
 ");
     }
 
