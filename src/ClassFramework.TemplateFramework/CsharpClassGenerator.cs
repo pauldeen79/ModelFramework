@@ -47,7 +47,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     {
         foreach (var @namespace in Model!.Namespaces)
         {
-            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
+            if (singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {
                 singleStringBuilder.AppendLine($"namespace {@namespace.Key}");
                 singleStringBuilder.AppendLine("{"); // open namespace
@@ -55,7 +55,7 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
 
             RenderChildTemplatesByModel(Model.GetTypeBaseModels(@namespace), generationEnvironment);
 
-            if (Context.IsRootContext && singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
+            if (singleStringBuilder is not null && !string.IsNullOrEmpty(@namespace.Key))
             {
                 singleStringBuilder.AppendLine("}"); // close namespace
             }
