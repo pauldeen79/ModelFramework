@@ -11,11 +11,11 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
         => GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key);
 
     public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderViewModel(CsharpExpressionCreator) { Model = new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion), Settings = Settings };
+        => new CodeGenerationHeaderViewModel(CsharpExpressionCreator) { Model = new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion) };
 
     public UsingsViewModel GetUsingsModel()
-        => new UsingsViewModel(CsharpExpressionCreator) { Model = new UsingsModel(GetModel()), Settings = Settings };
+        => new UsingsViewModel(CsharpExpressionCreator) { Model = new UsingsModel(GetModel()) };
 
     public IEnumerable<TypeBaseViewModel> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
-        => @namespace.OrderBy(typeBase => typeBase.Name).Select(x => new TypeBaseViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings });
+        => @namespace.OrderBy(typeBase => typeBase.Name).Select(x => new TypeBaseViewModel(CsharpExpressionCreator) { Model = x });
 }

@@ -28,31 +28,31 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         => GetModel().SuppressWarningCodes;
 
     public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderViewModel(CsharpExpressionCreator) { Model = new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion), Settings = Settings };
+        => new CodeGenerationHeaderViewModel(CsharpExpressionCreator) { Model = new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion) };
 
     public UsingsViewModel GetUsingsModel()
-        => new UsingsViewModel(CsharpExpressionCreator) { Model = new UsingsModel([GetModel()]), Settings = Settings };
+        => new UsingsViewModel(CsharpExpressionCreator) { Model = new UsingsModel([GetModel()]) };
 
     public IEnumerable<object> GetMemberModels()
     {
         var items = new List<object?>();
 
         var fieldsContainer = GetModel() as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings }));
+        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields.Select(x => new ClassFieldViewModel(CsharpExpressionCreator) { Model = x }));
 
-        items.AddRange(Model!.Properties.Select(x => new ClassPropertyViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings }));
+        items.AddRange(Model!.Properties.Select(x => new ClassPropertyViewModel(CsharpExpressionCreator) { Model = x }));
 
         var constructorsContainer = Model as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings }));
+        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors.Select(x => new ClassConstructorViewModel(CsharpExpressionCreator) { Model = x }));
 
-        items.AddRange(Model.Methods.Select(x => new ClassMethodViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings }));
+        items.AddRange(Model.Methods.Select(x => new ClassMethodViewModel(CsharpExpressionCreator) { Model = x }));
 
         // Quirk, enums as items below a class. There is no interface for this right now.
         var cls = Model as Class;
-        if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings }));
+        if (cls is not null) items.AddRange(cls.Enums.Select(x => new EnumerationViewModel(CsharpExpressionCreator) { Model = x }));
 
         // Add separators (empty lines) between each item
-        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineViewModel(CsharpExpressionCreator) { Model = new NewLineModel(), Settings = Settings }] : new object[] { item! });
+        return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineViewModel(CsharpExpressionCreator) { Model = new NewLineModel() }] : new object[] { item! });
     }
 
     public IEnumerable<object> GetSubClassModels()
@@ -64,8 +64,8 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         }
 
         return subClasses
-            .Select(x => new TypeBaseViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings })
-            .SelectMany(item => new object[] { new NewLineViewModel(CsharpExpressionCreator) { Model = new NewLineModel(), Settings = Settings }, item });
+            .Select(x => new TypeBaseViewModel(CsharpExpressionCreator) { Model = x })
+            .SelectMany(item => new object[] { new NewLineViewModel(CsharpExpressionCreator) { Model = new NewLineModel() }, item });
     }
 
     public string ContainerType

@@ -9,5 +9,5 @@ public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorV
     }
 
     public IEnumerable<AttributeViewModel> GetAttributeModels()
-        => GetModel().Attributes.Select(x => new AttributeViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings });
+        => GetModel().Attributes.Select(x => new AttributeViewModel(CsharpExpressionCreator) { Model = x });
 }

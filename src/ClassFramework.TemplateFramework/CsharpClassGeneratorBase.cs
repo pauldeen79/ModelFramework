@@ -9,22 +9,23 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     {
         if (Model is ITemplateContextContainer container)
         {
-            // Copy context from generator to ViewModel, so it can be used there
+            // Copy Context from template context to ViewModel
             container.Context = value;
         }
 
-        //if (Model is not null && Model.Settings is null)
-        //{
-        //    var settings = value.GetCsharpClassGeneratorSettings();
-        //    if (settings is not null)
-        //    {
-        //        Model.Settings = settings;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidOperationException("Could not get Settings from context");
-        //    }
-        //}
+        if (Model is not null && Model.Settings is null)
+        {
+            // Copy Settings from template context to ViewModel
+            var settings = value.GetCsharpClassGeneratorSettings();
+            if (settings is not null)
+            {
+                Model.Settings = settings;
+            }
+            else
+            {
+                throw new InvalidOperationException("Could not get Settings from context");
+            }
+        }
     }
 
     public TModel? Model { get; set; }

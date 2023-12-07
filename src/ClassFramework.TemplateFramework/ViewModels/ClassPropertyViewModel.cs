@@ -35,8 +35,8 @@ public class ClassPropertyViewModel : AttributeContainerViewModelBase<ClassPrope
     {
         var model = GetModel();
         var parentModel = GetParentModel();
-        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasGetter, "get", model.Visibility, model.GetterVisibility, parentModel, model.GetterCodeStatements, Settings.CultureInfo), Settings = Settings };
-        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasInitializer, "init", model.Visibility, model.InitializerVisibility, parentModel, model.InitializerCodeStatements, Settings.CultureInfo), Settings = Settings };
-        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasSetter, "set", model.Visibility, model.SetterVisibility, parentModel, model.SetterCodeStatements, Settings.CultureInfo), Settings = Settings };
+        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasGetter, "get", model.Visibility, model.GetterVisibility, parentModel, model.GetterCodeStatements, Settings.CultureInfo) };
+        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasInitializer, "init", model.Visibility, model.InitializerVisibility, parentModel, model.InitializerCodeStatements, Settings.CultureInfo) };
+        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasSetter, "set", model.Visibility, model.SetterVisibility, parentModel, model.SetterCodeStatements, Settings.CultureInfo) };
     }
 }

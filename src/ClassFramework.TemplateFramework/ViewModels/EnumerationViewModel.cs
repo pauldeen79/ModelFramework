@@ -14,5 +14,5 @@ public class EnumerationViewModel : AttributeContainerViewModelBase<Enumeration>
         => GetModel().Name.Sanitize().GetCsharpFriendlyName();
 
     public IEnumerable<EnumerationMemberViewModel> GetMemberModels()
-        => GetModel().Members.Select(x => new EnumerationMemberViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings });
+        => GetModel().Members.Select(x => new EnumerationMemberViewModel(CsharpExpressionCreator) { Model = x });
 }
