@@ -40,12 +40,24 @@ public sealed class IntegrationTests : TestBase, IDisposable
             //.AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddProperties(new ClassPropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))))
             .Build();
         var csharpExpressionCreator = _scope.ServiceProvider.GetRequiredService<ICsharpExpressionCreator>();
-        var codeGenerationProvider = new TestCodeGenerationProvider(csharpExpressionCreator, [typeBase]);
+        var csharpClassGeneratorSettings = new CsharpClassGeneratorSettingsBuilder()
+            .WithRecurseOnDeleteGeneratedFiles(false)
+            .WithLastGeneratedFilesFilename(string.Empty)
+            .WithEncoding(Encoding.UTF8)
+            .WithGenerateMultipleFiles(true)
+            //.WithSkipWhenFileExists(false) // default value
+            .WithCreateCodeGenerationHeader(true)
+            .WithEnableNullableContext(true)
+            .WithCultureInfo(CultureInfo.InvariantCulture)
+            .WithEnvironmentVersion("1.0.0")
+            ///.WithPath(string.Empty) // default value
+            .Build();
+        var codeGenerationProvider = new TestCodeGenerationProvider(csharpExpressionCreator, csharpClassGeneratorSettings, [typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
-        var settings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, settings);
+        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
@@ -153,23 +165,8 @@ namespace MyNamespace
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
-        public TestCodeGenerationProvider(ICsharpExpressionCreator csharpExpressionCreator, IEnumerable<TypeBase> model)
-            : base(
-                  csharpExpressionCreator,
-                  model,
-                  recurseOnDeleteGeneratedFiles: false,
-                  lastGeneratedFilesFilename: string.Empty,
-                  encoding: Encoding.UTF8,
-                  settings: new CsharpClassGeneratorSettingsBuilder()
-                    .WithGenerateMultipleFiles(true)
-                    //.WithSkipWhenFileExists(false) // default value
-                    .WithCreateCodeGenerationHeader(true)
-                    .WithEnableNullableContext(true)
-                    .WithCultureInfo(CultureInfo.InvariantCulture)
-                    .WithEnvironmentVersion("1.0.0")
-                    ///.WithPath(string.Empty) // default value
-                    .Build()
-                  )
+        public TestCodeGenerationProvider(ICsharpExpressionCreator csharpExpressionCreator, CsharpClassGeneratorSettings settings, IEnumerable<TypeBase> model)
+            : base(csharpExpressionCreator, model, settings)
         {
         }
     }
