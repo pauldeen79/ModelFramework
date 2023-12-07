@@ -8,6 +8,6 @@ public abstract class AttributeContainerViewModelBase<T> : CsharpClassGeneratorV
     {
     }
 
-    public IEnumerable<Domain.Attribute> GetAttributeModels()
-        => GetModel().Attributes;
+    public IEnumerable<AttributeViewModel> GetAttributeModels()
+        => GetModel().Attributes.Select(x => new AttributeViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings });
 }

@@ -18,6 +18,7 @@ public class PropertyCodeBodyViewModel : CsharpClassGeneratorViewModelBase<Prope
     public bool OmitCode
         => GetModel().OmitCode;
 
-    public IEnumerable<CodeStatementBase> CodeStatementModels
-        => GetModel().CodeStatementModels;
+    //TODO: Fix open/close principle violation
+    public IEnumerable<StringCodeStatementViewModel> CodeStatementModels
+        => GetModel().CodeStatementModels.OfType<StringCodeStatement>().Select(x => new StringCodeStatementViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings });
 }

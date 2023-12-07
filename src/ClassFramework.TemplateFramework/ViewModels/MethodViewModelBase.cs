@@ -11,10 +11,11 @@ public abstract class MethodViewModelBase<T> : AttributeContainerViewModelBase<T
     public string Modifiers
         => GetModel().GetModifiers(Settings.CultureInfo);
 
-    public IEnumerable<CodeStatementBase> GetCodeStatementModels()
-        => GetModel().CodeStatements;
+    public IEnumerable<StringCodeStatementViewModel> GetCodeStatementModels()
+        => GetModel().CodeStatements.OfType<StringCodeStatement>().Select(x => new StringCodeStatementViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings });
 
     public IEnumerable<object> GetParameterModels()
         => GetModel().Parameters
-            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaModel()] : new object[] { item });
+            .Select(x => new ParameterViewModel(CsharpExpressionCreator) { Model = x, Settings = Settings })
+            .SelectMany((item, index) => index + 1 < Model!.Parameters.Count ? [item, new SpaceAndCommaViewModel(CsharpExpressionCreator) { Model = new SpaceAndCommaModel(), Settings = Settings }] : new object[] { item });
 }

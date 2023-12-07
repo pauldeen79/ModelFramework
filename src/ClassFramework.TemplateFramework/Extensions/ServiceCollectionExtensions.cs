@@ -5,8 +5,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddClassFrameworkTemplates(this IServiceCollection services)
         => services
             // Add support for viewmodels in TemplateFramework
-            .AddTransient<ITemplateParameterConverter, ViewModelTemplateParameterConverter>()
-            .AddTransient<ITemplateProviderComponent, ViewModelTemplateProviderComponent>()
+            //.AddTransient<ITemplateParameterConverter, ViewModelTemplateParameterConverter>()
+            //.AddTransient<ITemplateProviderComponent, ViewModelTemplateProviderComponent>()
 
             .AddTransient<CsharpClassGenerator>()
             .AddTransient<IViewModel, AttributeViewModel>()

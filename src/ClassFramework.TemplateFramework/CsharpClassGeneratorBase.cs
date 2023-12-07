@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.TemplateFramework;
+﻿using TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers;
+
+namespace ClassFramework.TemplateFramework;
 
 public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
     where TModel : ICsharpClassGeneratorSettingsContainer
@@ -11,18 +13,18 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
             container.Context = value;
         }
 
-        if (Model is not null && Model.Settings is null)
-        {
-            var settings = value.GetCsharpClassGeneratorSettings();
-            if (settings is not null)
-            {
-                Model.Settings = settings;
-            }
-            else
-            {
-                throw new InvalidOperationException("Could not get Settings from context");
-            }
-        }
+        //if (Model is not null && Model.Settings is null)
+        //{
+        //    var settings = value.GetCsharpClassGeneratorSettings();
+        //    if (settings is not null)
+        //    {
+        //        Model.Settings = settings;
+        //    }
+        //    else
+        //    {
+        //        throw new InvalidOperationException("Could not get Settings from context");
+        //    }
+        //}
     }
 
     public TModel? Model { get; set; }
@@ -31,7 +33,7 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     {
         Guard.IsNotNull(Context);
         Guard.IsNotNull(Model);
-        Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new ViewModelTemplateByModelIdentifier(model, Model.Settings));
+        Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new TemplateByModelIdentifier(model));
     }
 
     protected void RenderChildTemplatesByModel(IEnumerable models, StringBuilder builder)
@@ -43,6 +45,6 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     {
         Guard.IsNotNull(Context);
         Guard.IsNotNull(Model);
-        Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new ViewModelTemplateByModelIdentifier(model, Model.Settings));
+        Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model));
     }
 }

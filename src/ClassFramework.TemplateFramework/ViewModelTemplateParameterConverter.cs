@@ -36,7 +36,6 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
         }
         
         // Copy Settings to ViewUodel
-        //TODO: Do something so we can get the settings from the context, or something...
         if (viewModel is ICsharpClassGeneratorSettingsContainer container && container.Settings is null && context?.AdditionalParameters is ICsharpClassGeneratorSettingsContainer container2)
         {
             container.Settings = container2.Settings;

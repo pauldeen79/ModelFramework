@@ -11,7 +11,14 @@ public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
     {
         get
         {
-            var nameContainer = GetParentModel() as INameContainer;
+            var parentModel = GetParentModel();
+            var modelProperty = parentModel?.GetType().GetProperty(nameof(IModelContainer<object>.Model));
+            if (modelProperty is not null)
+            {
+                parentModel = modelProperty.GetValue(parentModel);
+            }
+
+            var nameContainer = parentModel as INameContainer;
             if (nameContainer is null)
             {
                 throw new InvalidOperationException("Could not get name from parent context");
@@ -27,5 +34,5 @@ public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
             : $" : {Model!.ChainCall}";
 
     public bool OmitCode
-        => GetParentModel() is Interface || GetModel().Abstract;
+        => GetParentModel() is TypeBaseViewModel vm && vm.Model is Interface || GetModel().Abstract;
 }
