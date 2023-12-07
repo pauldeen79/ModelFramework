@@ -11,7 +11,7 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
         _viewModels = viewModels;
     }
 
-    public bool TryConvert(object? value, Type type, out object? convertedValue)
+    public bool TryConvert(object? value, Type type, ITemplateEngineContext context, out object? convertedValue)
     {
         if (value is null)
         {
@@ -27,6 +27,21 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
         }
 
         convertedValue = viewModel;
+
+        // Copy Model to ViewModel
+        var prop = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model));
+        if (prop is not null && prop.GetValue(viewModel) is null && prop.PropertyType.IsInstanceOfType(value))
+        {
+            prop.SetValue(viewModel, value);
+        }
+        
+        // Copy Settings to ViewUodel
+        //TODO: Do something so we can get the settings from the context, or something...
+        if (viewModel is ICsharpClassGeneratorSettingsContainer container && container.Settings is null && context?.AdditionalParameters is ICsharpClassGeneratorSettingsContainer container2)
+        {
+            container.Settings = container2.Settings;
+        }
+
         return true;
     }
 
