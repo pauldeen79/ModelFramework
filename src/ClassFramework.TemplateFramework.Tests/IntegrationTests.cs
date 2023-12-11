@@ -22,36 +22,16 @@ public sealed class IntegrationTests : TestBase, IDisposable
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
     }
 
-    [Fact]
-    public void Can_Generate_Code_For_Class()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void Can_Generate_Code_For_Class(bool generateMultipleFiles)
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var typeBase = new ClassBuilder()
-            .WithNamespace("MyNamespace")
-            .WithName("MyClass")
-            .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))
-            .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
-            .AddEnums(new EnumerationBuilder().WithName("MyEnumeration").AddMembers(new EnumerationMemberBuilder().WithName("Value1").WithValue(0), new EnumerationMemberBuilder().WithName("Value2").WithValue(1)).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
-            .AddConstructors(new ClassConstructorBuilder().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddParameters(new ParameterBuilder().WithName("myField").WithType(typeof(string)).WithIsNullable().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)), new ParameterBuilder().WithName("second").WithType(typeof(bool))).AddStringCodeStatements("// code goes here", "// second line"))
-            .AddMethods(new ClassMethodBuilder().WithName("Method1").WithType(typeof(string)).WithIsNullable().AddStringCodeStatements("// code goes here", "// second line").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
-            .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("return _myField;")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("_myField = value;")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
-            .AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddProperties(new ClassPropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))).AddSubClasses(new ClassBuilder().WithName("MySubSubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddProperties(new ClassPropertyBuilder().WithName("MySubSubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))))
-            //.AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddProperties(new ClassPropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))))
-            .Build();
+        var typeBase = CreateModel();
         var csharpExpressionCreator = _scope.ServiceProvider.GetRequiredService<ICsharpExpressionCreator>();
-        var csharpClassGeneratorSettings = new CsharpClassGeneratorSettingsBuilder()
-            .WithRecurseOnDeleteGeneratedFiles(false)
-            .WithLastGeneratedFilesFilename(string.Empty)
-            .WithEncoding(Encoding.UTF8)
-            .WithGenerateMultipleFiles(true)
-            //.WithSkipWhenFileExists(false) // default value
-            .WithCreateCodeGenerationHeader(true)
-            .WithEnableNullableContext(true)
-            .WithCultureInfo(CultureInfo.InvariantCulture)
-            .WithEnvironmentVersion("1.0.0")
-            ///.WithPath(string.Empty) // default value
-            .Build();
+        var csharpClassGeneratorSettings = CreateCsharpClassGeneratorSettings(generateMultipleFiles);
         var codeGenerationProvider = new TestCodeGenerationProvider(csharpExpressionCreator, csharpClassGeneratorSettings, [typeBase]);
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
@@ -162,6 +142,33 @@ namespace MyNamespace
         _scope.Dispose();
         _serviceProvider.Dispose();
     }
+
+    private static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles)
+        => new CsharpClassGeneratorSettingsBuilder()
+            .WithRecurseOnDeleteGeneratedFiles(false)
+            .WithLastGeneratedFilesFilename(string.Empty)
+            .WithEncoding(Encoding.UTF8)
+            .WithGenerateMultipleFiles(generateMultipleFiles)
+            //.WithSkipWhenFileExists(false) // default value
+            .WithCreateCodeGenerationHeader(true)
+            .WithEnableNullableContext(true)
+            .WithCultureInfo(CultureInfo.InvariantCulture)
+            .WithEnvironmentVersion("1.0.0")
+            ///.WithPath(string.Empty) // default value
+            .Build();
+
+    private static TypeBase CreateModel()
+        => new ClassBuilder()
+            .WithNamespace("MyNamespace")
+            .WithName("MyClass")
+            .AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))
+            .AddFields(new ClassFieldBuilder().WithName("_myField").WithType(typeof(string)).WithIsNullable().WithReadOnly().WithDefaultValue("default value").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
+            .AddEnums(new EnumerationBuilder().WithName("MyEnumeration").AddMembers(new EnumerationMemberBuilder().WithName("Value1").WithValue(0), new EnumerationMemberBuilder().WithName("Value2").WithValue(1)).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
+            .AddConstructors(new ClassConstructorBuilder().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddParameters(new ParameterBuilder().WithName("myField").WithType(typeof(string)).WithIsNullable().AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)), new ParameterBuilder().WithName("second").WithType(typeof(bool))).AddStringCodeStatements("// code goes here", "// second line"))
+            .AddMethods(new ClassMethodBuilder().WithName("Method1").WithType(typeof(string)).WithIsNullable().AddStringCodeStatements("// code goes here", "// second line").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
+            .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("return _myField;")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("_myField = value;")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))
+            .AddSubClasses(new ClassBuilder().WithName("MySubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddProperties(new ClassPropertyBuilder().WithName("MySubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!))).AddSubClasses(new ClassBuilder().WithName("MySubSubClass").AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)).AddProperties(new ClassPropertyBuilder().WithName("MySubSubProperty").WithType(typeof(string)).AddGetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddSetterCodeStatements(new StringCodeStatementBuilder().WithStatement("// sub code statement")).AddAttributes(new AttributeBuilder().WithName(typeof(RequiredAttribute).FullName!)))))
+            .Build();
 
     private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
     {
