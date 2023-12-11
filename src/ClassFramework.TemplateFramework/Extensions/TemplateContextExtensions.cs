@@ -23,7 +23,7 @@ public static class TemplateContextExtensions
 
     private static int GetCount(ITemplateContext context, int recursionLevel)
     {
-        var count = context.Model is TypeBaseViewModel
+        var count = context.Model is TypeBase
             ? 1
             : 0;
 

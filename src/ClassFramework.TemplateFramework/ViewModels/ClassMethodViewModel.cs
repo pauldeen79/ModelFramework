@@ -53,7 +53,7 @@ public class ClassMethodViewModel : MethodViewModelBase<ClassMethod>
         {
             var model = GetModel();
 
-            return GetParentModel() is TypeBaseViewModel vm && vm.Model is Interface || model.Abstract || model.Partial;
+            return GetParentModel() is Interface || model.Abstract || model.Partial;
         }
     }
 }

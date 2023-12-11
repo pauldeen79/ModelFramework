@@ -10,12 +10,12 @@ public class CsharpClassGeneratorViewModel : CsharpClassGeneratorViewModelBase<I
     public IOrderedEnumerable<IGrouping<string, TypeBase>> Namespaces
         => GetModel().GroupBy(x => x.Namespace).OrderBy(x => x.Key);
 
-    public CodeGenerationHeaderViewModel GetCodeGenerationHeaderModel()
-        => new CodeGenerationHeaderViewModel(CsharpExpressionCreator) { Model = new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion) };
+    public CodeGenerationHeaderModel GetCodeGenerationHeaderModel()
+        => new CodeGenerationHeaderModel(Settings.CreateCodeGenerationHeader, Settings.EnvironmentVersion);
 
-    public UsingsViewModel GetUsingsModel()
-        => new UsingsViewModel(CsharpExpressionCreator) { Model = new UsingsModel(GetModel()) };
+    public UsingsModel GetUsingsModel()
+        => new UsingsModel(GetModel());
 
-    public IEnumerable<TypeBaseViewModel> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
-        => @namespace.OrderBy(typeBase => typeBase.Name).Select(x => new TypeBaseViewModel(CsharpExpressionCreator) { Model = x });
+    public IEnumerable<TypeBase> GetTypeBaseModels(IEnumerable<TypeBase> @namespace)
+        => @namespace.OrderBy(typeBase => typeBase.Name);
 }

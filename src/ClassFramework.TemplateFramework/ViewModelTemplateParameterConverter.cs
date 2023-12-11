@@ -1,55 +1,55 @@
-﻿//namespace ClassFramework.TemplateFramework;
+﻿namespace ClassFramework.TemplateFramework;
 
-//public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
-//{
-//    private readonly IEnumerable<IViewModel> _viewModels;
+public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
+{
+    private readonly Func<IEnumerable<IViewModel>> _factory;
 
-//    public ViewModelTemplateParameterConverter(IEnumerable<IViewModel> viewModels)
-//    {
-//        Guard.IsNotNull(viewModels);
+    public ViewModelTemplateParameterConverter(Func<IEnumerable<IViewModel>> factory)
+    {
+        Guard.IsNotNull(factory);
 
-//        _viewModels = viewModels;
-//    }
+        _factory = factory;
+    }
 
-//    public bool TryConvert(object? value, Type type, ITemplateEngineContext context, out object? convertedValue)
-//    {
-//        if (value is null)
-//        {
-//            convertedValue = null;
-//            return false;
-//        }
+    public bool TryConvert(object? value, Type type, ITemplateEngineContext context, out object? convertedValue)
+    {
+        if (value is null)
+        {
+            convertedValue = null;
+            return false;
+        }
 
-//        var viewModel = _viewModels.FirstOrDefault(x => Supports(x, value));
-//        if (viewModel is null)
-//        {
-//            convertedValue = null;
-//            return false;
-//        }
+        var viewModel = _factory.Invoke().FirstOrDefault(x => Supports(x, value));
+        if (viewModel is null)
+        {
+            convertedValue = null;
+            return false;
+        }
 
-//        convertedValue = viewModel;
+        convertedValue = viewModel;
 
-//        // Copy Model to ViewModel
-//        var prop = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model));
-//        if (prop is not null && prop.GetValue(viewModel) is null && prop.PropertyType.IsInstanceOfType(value))
-//        {
-//            prop.SetValue(viewModel, value);
-//        }
-        
-//        // Copy Settings to ViewUodel
-//        if (viewModel is ICsharpClassGeneratorSettingsContainer container && container.Settings is null && context?.AdditionalParameters is ICsharpClassGeneratorSettingsContainer container2)
-//        {
-//            container.Settings = container2.Settings;
-//        }
+        // Copy Model to ViewModel
+        var prop = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model));
+        if (prop is not null && prop.GetValue(viewModel) is null && prop.PropertyType.IsInstanceOfType(value))
+        {
+            prop.SetValue(viewModel, value);
+        }
 
-//        return true;
-//    }
+        // Copy Settings to ViewUodel
+        if (viewModel is ICsharpClassGeneratorSettingsContainer container && container.Settings is null && context?.AdditionalParameters is ICsharpClassGeneratorSettingsContainer container2)
+        {
+            container.Settings = container2.Settings;
+        }
 
-//    private bool Supports(object viewModel, object? model)
-//    {
-//        var viewModelType = viewModel.GetType();
-//        var prop = viewModelType.GetProperty(nameof(IModelContainer<object>.Model));
+        return true;
+    }
 
-//        return prop is not null
-//            && prop.PropertyType.IsInstanceOfType(model);
-//    }
-//}
+    private bool Supports(object viewModel, object? model)
+    {
+        var viewModelType = viewModel.GetType();
+        var prop = viewModelType.GetProperty(nameof(IModelContainer<object>.Model));
+
+        return prop is not null
+            && prop.PropertyType.IsInstanceOfType(model);
+    }
+}

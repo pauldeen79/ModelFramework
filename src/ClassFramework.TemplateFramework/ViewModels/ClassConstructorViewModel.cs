@@ -34,5 +34,5 @@ public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
             : $" : {Model!.ChainCall}";
 
     public bool OmitCode
-        => GetParentModel() is TypeBaseViewModel vm && vm.Model is Interface || GetModel().Abstract;
+        => GetParentModel() is Interface || GetModel().Abstract;
 }

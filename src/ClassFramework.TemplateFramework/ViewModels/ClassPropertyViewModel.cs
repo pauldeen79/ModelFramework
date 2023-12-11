@@ -31,12 +31,12 @@ public class ClassPropertyViewModel : AttributeContainerViewModelBase<ClassPrope
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 
-    public IEnumerable<PropertyCodeBodyViewModel> GetCodeBodyModels()
+    public IEnumerable<PropertyCodeBodyModel> GetCodeBodyModels()
     {
         var model = GetModel();
         var parentModel = GetParentModel();
-        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasGetter, "get", model.Visibility, model.GetterVisibility, parentModel, model.GetterCodeStatements, Settings.CultureInfo) };
-        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasInitializer, "init", model.Visibility, model.InitializerVisibility, parentModel, model.InitializerCodeStatements, Settings.CultureInfo) };
-        yield return new PropertyCodeBodyViewModel(CsharpExpressionCreator) { Model = new PropertyCodeBodyModel(model.HasSetter, "set", model.Visibility, model.SetterVisibility, parentModel, model.SetterCodeStatements, Settings.CultureInfo) };
+        yield return new PropertyCodeBodyModel(model.HasGetter, "get", model.Visibility, model.GetterVisibility, parentModel, model.GetterCodeStatements, Settings.CultureInfo);
+        yield return new PropertyCodeBodyModel(model.HasInitializer, "init", model.Visibility, model.InitializerVisibility, parentModel, model.InitializerCodeStatements, Settings.CultureInfo);
+        yield return new PropertyCodeBodyModel(model.HasSetter, "set", model.Visibility, model.SetterVisibility, parentModel, model.SetterCodeStatements, Settings.CultureInfo);
     }
 }
