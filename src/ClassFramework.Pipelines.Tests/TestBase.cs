@@ -188,10 +188,34 @@ public abstract class TestBase : IDisposable
                 copyInterfacePredicate: copyInterfacePredicate)
         );
 
-    protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings()
+    protected static Pipelines.Reflection.PipelineBuilderSettings CreateReflectionSettings(
+        bool copyAttributes = false,
+        bool copyInterfaces = false,
+        bool allowGenerationWithoutProperties = false,
+        string namespaceFormatString = "{Namespace}",
+        string nameFormatString = "{Class.Name}",
+        IEnumerable<NamespaceMapping>? namespaceMappings = null,
+        IEnumerable<TypenameMapping>? typenameMappings = null,
+        Predicate<Domain.Attribute>? copyAttributePredicate = null,
+        Predicate<string>? copyInterfacePredicate = null)
+        => new Pipelines.Reflection.PipelineBuilderSettings(
+            generationSettings: new Pipelines.Reflection.PipelineBuilderGenerationSettings(
+                allowGenerationWithoutProperties: allowGenerationWithoutProperties),
+            nameSettings: new Pipelines.Reflection.PipelineBuilderNameSettings(namespaceFormatString, nameFormatString),
+            typeSettings: new Pipelines.Reflection.PipelineBuilderTypeSettings(
+                namespaceMappings,
+                typenameMappings),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
+                copyAttributes: copyAttributes,
+                copyInterfaces: copyInterfaces,
+                copyAttributePredicate: copyAttributePredicate,
+                copyInterfacePredicate: copyInterfacePredicate)
+        );
+
+    protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         => new[]
         {
-            new NamespaceMappingBuilder().WithSourceNamespace("MySourceNamespace").WithTargetNamespace("MyNamespace")
+            new NamespaceMappingBuilder().WithSourceNamespace(sourceNamespace).WithTargetNamespace("MyNamespace")
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderNamespace).WithValue("MyNamespace.Builders"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
