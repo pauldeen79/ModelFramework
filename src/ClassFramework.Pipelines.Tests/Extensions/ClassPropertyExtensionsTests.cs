@@ -1,6 +1,4 @@
-﻿using CrossCutting.Utilities.Parsers;
-
-namespace ClassFramework.Pipelines.Tests.Extensions;
+﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
 public class ClassPropertyExtensionsTests : TestBase
 {

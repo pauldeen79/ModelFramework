@@ -1,6 +1,4 @@
-﻿using ModelFramework.Objects.CodeStatements;
-
-namespace ModelFramework.Generators.Objects.Tests;
+﻿namespace ModelFramework.Generators.Objects.Tests;
 
 public class Method_DefaultClassTests
 {

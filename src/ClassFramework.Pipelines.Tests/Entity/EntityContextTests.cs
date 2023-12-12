@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.Tests.Builder;
-
-namespace ClassFramework.Pipelines.Tests.Entity;
+﻿namespace ClassFramework.Pipelines.Tests.Entity;
 
 public class EntityContextTests : TestBase
 {

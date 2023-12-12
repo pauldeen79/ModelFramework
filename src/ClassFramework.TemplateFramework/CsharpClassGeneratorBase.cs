@@ -1,6 +1,4 @@
-﻿using TemplateFramework.TemplateProviders.ChildTemplateProvider.TemplateIdentifiers;
-
-namespace ClassFramework.TemplateFramework;
+﻿namespace ClassFramework.TemplateFramework;
 
 public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelContainer<TModel>
     where TModel : ICsharpClassGeneratorSettingsContainer

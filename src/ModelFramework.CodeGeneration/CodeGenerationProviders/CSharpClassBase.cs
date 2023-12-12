@@ -1,6 +1,4 @@
-﻿using ModelFramework.Common.Contracts;
-
-namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
+﻿namespace ModelFramework.CodeGeneration.CodeGenerationProviders;
 
 #pragma warning disable IDE0079 // Remove unnecessary suppression
 #pragma warning disable CA1062 // false positive because I've added null guards but code analysis doesn't understand this
