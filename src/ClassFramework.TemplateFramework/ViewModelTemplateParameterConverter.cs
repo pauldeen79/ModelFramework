@@ -19,37 +19,23 @@ public class ViewModelTemplateParameterConverter : ITemplateParameterConverter
             return false;
         }
 
-        var viewModel = _factory.Invoke().FirstOrDefault(x => Supports(x, value));
-        if (viewModel is null)
+        var viewModelItem = _factory.Invoke()
+            .Select(viewModel => new { ViewModel = viewModel, ModelProperty = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model)) })
+            .FirstOrDefault(x => x.ModelProperty is not null && x.ModelProperty.PropertyType.IsInstanceOfType(value));
+
+        if (viewModelItem is null)
         {
             convertedValue = null;
             return false;
         }
 
-        convertedValue = viewModel;
-
         // Copy Model to ViewModel
-        var prop = viewModel.GetType().GetProperty(nameof(IModelContainer<object>.Model));
-        if (prop is not null && prop.GetValue(viewModel) is null && prop.PropertyType.IsInstanceOfType(value))
+        if (viewModelItem.ModelProperty!.GetValue(viewModelItem.ViewModel) is null)
         {
-            prop.SetValue(viewModel, value);
+            viewModelItem.ModelProperty.SetValue(viewModelItem.ViewModel, value);
         }
 
-        // Copy Settings to ViewUodel
-        if (viewModel is ICsharpClassGeneratorSettingsContainer container && container.Settings is null && context?.AdditionalParameters is ICsharpClassGeneratorSettingsContainer container2)
-        {
-            container.Settings = container2.Settings;
-        }
-
+        convertedValue = viewModelItem.ViewModel;
         return true;
-    }
-
-    private bool Supports(object viewModel, object? model)
-    {
-        var viewModelType = viewModel.GetType();
-        var prop = viewModelType.GetProperty(nameof(IModelContainer<object>.Model));
-
-        return prop is not null
-            && prop.PropertyType.IsInstanceOfType(model);
     }
 }
