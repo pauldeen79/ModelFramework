@@ -25,7 +25,10 @@ public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewMode
             var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
             generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
             RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
-            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+            if (!Model.Settings.EnableGlobalUsings)
+            {
+                RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+            }
 
             if (Model.ShouldRenderNamespaceScope)
             {

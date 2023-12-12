@@ -40,7 +40,10 @@ public sealed class CsharpClassGenerator : CsharpClassGeneratorBase<CsharpClassG
     private void RenderHeader(IGenerationEnvironment generationEnvironment)
     {
         RenderChildTemplateByModel(Model!.GetCodeGenerationHeaderModel(), generationEnvironment);
-        RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+        if (!Model.Settings.EnableGlobalUsings)
+        {
+            RenderChildTemplateByModel(Model.GetUsingsModel(), generationEnvironment);
+        }
     }
 
     private void RenderNamespaceHierarchy(IGenerationEnvironment generationEnvironment, StringBuilder? singleStringBuilder)

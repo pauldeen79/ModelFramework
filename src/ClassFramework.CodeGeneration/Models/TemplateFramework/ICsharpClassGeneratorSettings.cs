@@ -14,4 +14,5 @@ internal interface ICsharpClassGeneratorSettings
     string? EnvironmentVersion { get; }
     string? FilenameSuffix { get; }
     bool EnableNullableContext { get; }
+    bool EnableGlobalUsings { get; }
 }
