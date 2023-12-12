@@ -4,11 +4,22 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddPipelines(this IServiceCollection services)
         => services
-            .AddScoped<IPipeline<ClassBuilder, BuilderContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>().Build())
-            .AddScoped<IPipeline<ClassBuilder, EntityContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, EntityContext>>().Build())
-            .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, Builder.PipelineBuilder>()
-            .AddScoped<IPipelineBuilder<ClassBuilder, EntityContext>, Entity.PipelineBuilder>()
+            .AddBuilderPipeline()
+            .AddEntityPipeline()
+            .AddReflectionPipeline()
+            .AddSharedPipelineComponents()
+            .AddParserComponents();
+
+    private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
+        => services
             .AddScoped<ISharedFeatureBuilder, Shared.Features.PartialFeatureBuilder>()
+            .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
+            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
+
+    private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
+        => services
+            .AddScoped<IPipeline<ClassBuilder, BuilderContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, BuilderContext>>().Build())
+            .AddScoped<IPipelineBuilder<ClassBuilder, BuilderContext>, Builder.PipelineBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AbstractBuilderFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddAttributesFeatureBuilder>()
@@ -23,7 +34,13 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.BaseClassFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.GenericsFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.SetNameFeatureBuilder>()
-            .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidatableObjectFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidatableObjectFeatureBuilder>();
+
+    private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
+        => services
+            .AddScoped<IPipeline<ClassBuilder, EntityContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, EntityContext>>().Build())
+            .AddScoped<IPipelineBuilder<ClassBuilder, EntityContext>, Entity.PipelineBuilder>()
+            .AddScoped<IEntityFeatureBuilder, Entity.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AbstractEntityFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddAttributesFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddConstructorFeatureBuilder>()
@@ -34,10 +51,15 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityFeatureBuilder, Entity.Features.BaseClassFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.ObservableFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.SetRecordFeatureBuilder>()
-            .AddScoped<IEntityFeatureBuilder, Entity.Features.ValidationFeatureBuilder>()
+            .AddScoped<IEntityFeatureBuilder, Entity.Features.SetRecordFeatureBuilder>();
+
+    private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
+        => services
+            .AddScoped<IPipeline<ClassBuilder, ReflectionContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, ReflectionContext>>().Build())
+            .AddScoped<IPipelineBuilder<ClassBuilder, ReflectionContext>, Reflection.PipelineBuilder>();
+
+    private static IServiceCollection AddParserComponents(this IServiceCollection services)
+        => services
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
+            .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>();
 }
