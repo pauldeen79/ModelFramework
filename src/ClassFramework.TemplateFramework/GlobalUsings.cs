@@ -1,6 +1,5 @@
 ﻿global using System.Collections;
 global using System.Globalization;
-global using System.Reflection;
 global using System.Text;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
@@ -26,5 +25,4 @@ global using TemplateFramework.Core;
 global using TemplateFramework.Core.Abstractions;
 global using TemplateFramework.Core.Extensions;
 global using TemplateFramework.Core.GenerationEnvironments;
-global using TemplateFramework.TemplateProviders.ChildTemplateProvider.Abstractions;
 global using TemplateFramework.TemplateProviders.ChildTemplateProvider.Extensions;
