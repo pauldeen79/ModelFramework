@@ -11,7 +11,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             var model = new ClassBuilder();
             var sourceModel = typeof(MyClass);
             var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
-            var settings = CreateReflectionSettings(namespaceMappings: namespaceMappings, copyAttributes: true);
+            var settings = CreateReflectionSettings(namespaceMappings: namespaceMappings, copyAttributes: true, copyInterfaces: true);
             var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
 
             var sut = CreateSut().Build();
@@ -25,6 +25,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             result.Value!.Attributes.Should().ContainSingle();
             result.Value.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
+
+            result.Value.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
         }
 
         [Fact]
@@ -47,6 +49,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             result.Value.Should().NotBeNull();
 
             result.Value!.Attributes.Should().BeEmpty();
+            result.Value.Interfaces.Should().BeEmpty();
         }
     }
 }
