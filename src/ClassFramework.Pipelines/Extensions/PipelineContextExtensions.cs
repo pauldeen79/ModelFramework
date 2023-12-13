@@ -43,7 +43,7 @@ public static class PipelineContextExtensions
         return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
 
-    public static string CreateEntityChainCall(this PipelineContext<ClassBuilder, EntityContext> context, bool baseClass)
+    public static string CreateEntityChainCall<TModel>(this PipelineContext<TModel, EntityContext> context, bool baseClass)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -58,8 +58,8 @@ public static class PipelineContextExtensions
             cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
-    public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters(
-        this PipelineContext<ClassBuilder, EntityContext> context)
+    public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters<TModel>(
+        this PipelineContext<TModel, EntityContext> context)
         => context.Context.SourceModel.Properties
             .Select
             (
@@ -81,11 +81,11 @@ public static class PipelineContextExtensions
     private static string GetPropertyNamesConcatenated(IEnumerable<ClassProperty> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
-    private static string CreateImmutableClassCtorParameterNames(
-        PipelineContext<ClassBuilder, EntityContext> context)
+    private static string CreateImmutableClassCtorParameterNames<TModel>(
+        PipelineContext<TModel, EntityContext> context)
         => string.Join(", ", context.CreateImmutableClassCtorParameters().Select(x => x.Name.GetCsharpFriendlyName()));
 
-    private static Result<string> GetConstructionMethodParameters(PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
+    private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
         var properties = context.Context.SourceModel.GetBuilderConstructorProperties(context.Context);
 
@@ -101,7 +101,7 @@ public static class PipelineContextExtensions
                         .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                         .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
-                    new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                    new ParentChildContext<TModel, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
                 ),
                 Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
             }

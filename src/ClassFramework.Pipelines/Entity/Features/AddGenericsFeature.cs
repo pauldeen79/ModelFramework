@@ -2,23 +2,22 @@
 
 public class AddGenericsFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new AddGenericsFeature();
 }
 
-public class AddGenericsFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class AddGenericsFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model
-            .AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments)
-            .AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
+        context.Model.GenericTypeArguments.AddRange(context.Context.SourceModel.GenericTypeArguments);
+        context.Model.GenericTypeArgumentConstraints.AddRange(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new AddGenericsFeatureBuilder();
 }

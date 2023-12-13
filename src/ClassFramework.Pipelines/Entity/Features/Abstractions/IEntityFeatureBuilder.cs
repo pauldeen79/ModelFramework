@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Features.Abstractions;
 
-public interface IEntityFeatureBuilder : IBuilder<IPipelineFeature<ClassBuilder, EntityContext>>
+public interface IEntityFeatureBuilder : IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>>
 {
 }

@@ -20,7 +20,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        if (context is ParentChildContext<BuilderContext, ClassProperty> parentChildContext)
+        if (context is ParentChildContext<ClassBuilder, BuilderContext, ClassProperty> parentChildContext)
         {
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
@@ -39,7 +39,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ?? Result.Continue<string>()
         };
 
-    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<BuilderContext, ClassProperty> parentChildContext)
+    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<ClassBuilder, BuilderContext, ClassProperty> parentChildContext)
         => value switch
         {
             "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.EntitySettings.AddValidationCode == ArgumentValidationType.None && !parentChildContext.ChildContext.IsNullable && !parentChildContext.ChildContext.IsValueType // only if the source entity does not use validation...

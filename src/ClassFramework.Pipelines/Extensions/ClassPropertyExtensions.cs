@@ -62,9 +62,9 @@ public static class ClassPropertyExtensions
         && !property.IsNullable(enableNullableReferenceTypes)
         && argumentValidation != ArgumentValidationType.Shared;
 
-    public static Result<string> GetBuilderClassConstructorInitializer(
+    public static Result<string> GetBuilderClassConstructorInitializer<TModel>(
         this ClassProperty property,
-        PipelineContext<ClassBuilder, BuilderContext> context,
+        PipelineContext<TModel, BuilderContext> context,
         IFormattableStringParser formattableStringParser,
         string typeName)
     {
@@ -76,7 +76,7 @@ public static class ClassPropertyExtensions
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(typeName)),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<TModel, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
         );
 
         if (!builderArgumentTypeResult.IsSuccessful())

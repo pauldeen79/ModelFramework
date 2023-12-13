@@ -9,11 +9,11 @@ public class AddConstructorFeatureBuilder : IEntityFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new AddConstructorFeature(_formattableStringParser);
 }
 
-public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class AddConstructorFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,30 +22,34 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
         {
-            return Result.FromExistingResult<ClassBuilder>(ctorResult);
+            return Result.FromExistingResult<TypeBaseBuilder>(ctorResult);
         }
 
-        context.Model.AddConstructors(ctorResult.Value!);
+        var constructorContainerBuilder = context.Model as IConstructorsContainerBuilder;
+        if (constructorContainerBuilder is not null)
+        {
+            constructorContainerBuilder.Constructors.Add(ctorResult.Value!);
+        }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 
-    private Result<ClassConstructorBuilder> CreateEntityConstructor(PipelineContext<ClassBuilder, EntityContext> context)
+    private Result<ClassConstructorBuilder> CreateEntityConstructor(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         var initializationResults = context.Context.SourceModel.Properties
             .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<EntityContext, ClassProperty>(context, property, context.Context.Settings)))
+            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<TypeBaseBuilder, EntityContext, ClassProperty>(context, property, context.Context.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
@@ -70,7 +74,7 @@ public class AddConstructorFeature : IPipelineFeature<ClassBuilder, EntityContex
             .WithChainCall(context.CreateEntityChainCall(false)));
     }
 
-    private static IEnumerable<string> CreateValidationCode(PipelineContext<ClassBuilder, EntityContext> context, bool baseClass)
+    private static IEnumerable<string> CreateValidationCode(PipelineContext<TypeBaseBuilder, EntityContext> context, bool baseClass)
 
     {
         var needValidation =

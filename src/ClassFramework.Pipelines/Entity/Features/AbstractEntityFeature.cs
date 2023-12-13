@@ -2,21 +2,25 @@
 
 public class AbstractEntityFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new AbstractEntityFeature();
 }
 
-public class AbstractEntityFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class AbstractEntityFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.WithAbstract(context.Context.IsAbstract);
+        var cls = context.Model as ClassBuilder;
+        if (cls is not null)
+        {
+            cls.WithAbstract(context.Context.IsAbstract);
+        }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new AbstractEntityFeatureBuilder();
 }

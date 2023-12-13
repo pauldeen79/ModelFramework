@@ -2,13 +2,13 @@
 
 public class AddPropertiesFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new AddPropertiesFeature();
 }
 
-public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,7 +17,7 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
                 .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
                 .ToArray();
 
-        context.Model.AddProperties(
+        context.Model.Properties.AddRange(
                 properties.Select
                 (
                     property => new ClassPropertyBuilder()
@@ -50,9 +50,9 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
                         .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
                 ));
 
-        if (context.Context.Settings.GenerationSettings.AddBackingFields)
+        if (context.Context.Settings.GenerationSettings.AddBackingFields && context.Model is IFieldsContainerBuilder fieldsContainerBuilder)
         {
-            context.Model.AddFields(
+            fieldsContainerBuilder.Fields.AddRange(
                     properties
                         .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()) // only non-collection properties to prevent CA2227 warning - convert to read-only property
                         .Select
@@ -67,10 +67,10 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, EntityContext
                         ));
         }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder();
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(

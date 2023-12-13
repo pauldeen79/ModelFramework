@@ -186,7 +186,7 @@ public class ClassPropertyExtensionsTests : TestBase
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context: null!, formattableStringParser, sut.TypeName))
+            sut.Invoking(x => x.GetBuilderClassConstructorInitializer(context: default(PipelineContext<TypeBaseBuilder, BuilderContext>)!, formattableStringParser, sut.TypeName))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 

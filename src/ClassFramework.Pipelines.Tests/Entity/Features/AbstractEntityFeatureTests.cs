@@ -25,7 +25,7 @@ public class AbstractEntityFeatureTests : TestBase<Pipelines.Entity.Features.Abs
             var settings = CreateEntitySettings(
                 enableEntityInheritance: true,
                 isAbstract: true);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -45,7 +45,7 @@ public class AbstractEntityFeatureTests : TestBase<Pipelines.Entity.Features.Abs
             var settings = CreateEntitySettings(
                 enableEntityInheritance: true,
                 isAbstract: false);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

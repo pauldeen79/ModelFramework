@@ -2,28 +2,28 @@
 
 public class AddInterfacesFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new AddInterfacesFeature();
 }
 
-public class AddInterfacesFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class AddInterfacesFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopySettings.CopyInterfaces)
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
+        context.Model.Interfaces.AddRange(context.Context.SourceModel.Interfaces
             .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x => context.Context.MapTypeName(x.FixTypeName())));
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new AddInterfacesFeatureBuilder();
 }

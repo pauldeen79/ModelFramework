@@ -9,11 +9,11 @@ public class SetNameFeatureBuilder : IEntityFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new SetNameFeature(_formattableStringParser);
 }
 
-public class SetNameFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, EntityContext>
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -36,15 +36,15 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, EntityContext>
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<ClassBuilder>(error.LazyResult.Value);
+            return Result.FromExistingResult<TypeBaseBuilder>(error.LazyResult.Value);
         }
 
         context.Model.Name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
         context.Model.Namespace = context.Context.MapNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!);
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 }

@@ -24,7 +24,7 @@ public class ObservableFeatureTests : TestBase<Pipelines.Entity.Features.Observa
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(createAsObservable: false);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -44,7 +44,7 @@ public class ObservableFeatureTests : TestBase<Pipelines.Entity.Features.Observa
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(createAsObservable: true);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

@@ -1,6 +1,8 @@
-﻿namespace ClassFramework.Pipelines.Tests.Entity;
+﻿using ClassFramework.Domain.Builders.Abstractions;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBuilder, EntityContext>>
+namespace ClassFramework.Pipelines.Tests.Entity;
+
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBaseBuilder, EntityContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -93,8 +95,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEmpty();
 
-            result.Value.Constructors.Should().ContainSingle();
-            var copyConstructor = result.Value.Constructors.Single();
+            var ctors = (result.Value as IConstructorsContainerBuilder)?.Constructors;
+            ctors.Should().ContainSingle();
+            var copyConstructor = ctors!.Single();
             copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -111,7 +114,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property8);"
             );
 
-            result.Value.Fields.Should().BeEmpty();
+            var fields = (result.Value as IFieldsContainerBuilder)?.Fields;
+            fields.Should().BeEmpty();
 
             result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
@@ -185,8 +189,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
 
-            result.Value.Constructors.Should().ContainSingle();
-            var copyConstructor = result.Value.Constructors.Single();
+            var ctors = (result.Value as IConstructorsContainerBuilder)?.Constructors;
+            ctors.Should().ContainSingle();
+            var copyConstructor = ctors!.Single();
             copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -203,8 +208,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property8);"
             );
 
+            var fields = (result.Value as IFieldsContainerBuilder)?.Fields;
+            fields.Should().NotBeNull();
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
-            result.Value.Fields.Select(x => x.Name).Should().BeEquivalentTo
+            fields!.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "_property1",
                 "_property2",
@@ -214,7 +221,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "_property6",
                 "PropertyChanged"
             );
-            result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
+            fields!.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -224,7 +231,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 "MyNamespace.MyClass",
                 "System.ComponentModel.PropertyChangedEventHandler"
             );
-            result.Value.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
+            fields!.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {

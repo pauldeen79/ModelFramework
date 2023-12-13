@@ -126,7 +126,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<ClassBuilder, BuilderC
                         : "{BuilderMemberName} = source.[SourceExpression]" // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
                 ),
             context.Context.FormatProvider,
-            new ParentChildContext<BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<ClassBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
         );
 
     private static string CreateCollectionInitialization(PipelineBuilderSettings settings)

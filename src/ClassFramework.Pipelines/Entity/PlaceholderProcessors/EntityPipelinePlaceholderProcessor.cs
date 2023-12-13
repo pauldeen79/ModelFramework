@@ -15,12 +15,12 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<ClassBuilder, EntityContext> pipelineContext)
+        if (context is PipelineContext<TypeBaseBuilder, EntityContext> pipelineContext)
         {
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        if (context is ParentChildContext<EntityContext, ClassProperty> parentChildContext)
+        if (context is ParentChildContext<TypeBaseBuilder, EntityContext, ClassProperty> parentChildContext)
         {
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
@@ -28,7 +28,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         return Result.Continue<string>();
     }
 
-    private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<ClassBuilder, EntityContext> pipelineContext)
+    private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<TypeBaseBuilder, EntityContext> pipelineContext)
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
@@ -39,7 +39,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ?? Result.Continue<string>()
         };
 
-    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<EntityContext, ClassProperty> parentChildContext)
+    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<TypeBaseBuilder, EntityContext, ClassProperty> parentChildContext)
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.EntityNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),

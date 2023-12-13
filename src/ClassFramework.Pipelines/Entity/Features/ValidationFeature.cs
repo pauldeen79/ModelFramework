@@ -2,12 +2,12 @@
 
 public class ValidationFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build() => new ValidationFeature();
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build() => new ValidationFeature();
 }
 
-public class ValidationFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class ValidationFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -15,12 +15,12 @@ public class ValidationFeature : IPipelineFeature<ClassBuilder, EntityContext>
             && context.Context.SourceModel.Properties.Count == 0
             && !context.Context.Settings.InheritanceSettings.EnableInheritance)
         {
-            return Result.Invalid<ClassBuilder>("To create an entity class, there must be at least one property");
+            return Result.Invalid<TypeBaseBuilder>("To create an entity class, there must be at least one property");
         }
         
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new ValidationFeatureBuilder();
 }

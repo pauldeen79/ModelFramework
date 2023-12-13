@@ -2,28 +2,28 @@
 
 public class AddAttributesFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new AddAttributesFeature();
 }
 
-public class AddAttributesFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopySettings.CopyAttributes)
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.AddAttributes(context.Context.SourceModel.Attributes
+        context.Model.Attributes.AddRange(context.Context.SourceModel.Attributes
             .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))));
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new AddAttributesFeatureBuilder();
 }

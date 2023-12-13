@@ -23,7 +23,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -41,7 +41,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(copyAttributePredicate: null, copyAttributes: true);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -59,7 +59,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(copyAttributes: false);
-            var context = new PipelineContext<ClassBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

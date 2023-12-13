@@ -2,25 +2,28 @@
 
 public class BaseClassFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, EntityContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
         => new BaseClassFeature();
 }
 
-public class BaseClassFeature : IPipelineFeature<ClassBuilder, EntityContext>
+public class BaseClassFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, EntityContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.BaseClass = GetEntityBaseClass(context.Context.SourceModel, context);
+        if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
+        {
+            baseClassContainerBuilder.BaseClass = GetEntityBaseClass(context.Context.SourceModel, context);
+        }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
         => new BaseClassFeatureBuilder();
 
-    private string GetEntityBaseClass(TypeBase instance, PipelineContext<ClassBuilder, EntityContext> context)
+    private string GetEntityBaseClass(TypeBase instance, PipelineContext<TypeBaseBuilder, EntityContext> context)
         => context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()
             : instance.GetCustomValueForInheritedClass(context.Context.Settings, cls => Result.Success(cls.BaseClass!)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
