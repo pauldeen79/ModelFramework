@@ -1,31 +1,34 @@
 ﻿namespace ClassFramework.Pipelines.Shared.Features;
 
-public class PartialFeatureBuilder : ISharedFeatureBuilder
+public class PartialFeatureBuilder<TModel> : ISharedFeatureBuilder<TModel>
+    where TModel : TypeBaseBuilder
 {
-    public IPipelineFeature<ClassBuilder> Build()
-        => new PartialFeature();
+    public IPipelineFeature<TModel> Build()
+        => new PartialFeature<TModel>();
 
-    public IBuilder<IPipelineFeature<ClassBuilder, TContext>> BuildFor<TContext>()
-        => new PartialFeatureBuilder<TContext>();
+    public IBuilder<IPipelineFeature<TModel, TContext>> BuildFor<TContext>()
+        => new PartialFeatureBuilder<TModel, TContext>();
 }
 
-public class PartialFeature : IPipelineFeature<ClassBuilder>
+public class PartialFeature<TModel> : IPipelineFeature<TModel>
+    where TModel : TypeBaseBuilder
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder> context)
+    public Result<TModel> Process(PipelineContext<TModel> context)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.Partial = true;
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TModel>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder>> ToBuilder()
-        => new PartialFeatureBuilder();
+    public IBuilder<IPipelineFeature<TModel>> ToBuilder()
+        => new PartialFeatureBuilder<TModel>();
 }
 
-public class PartialFeatureBuilder<TContext> : IBuilder<IPipelineFeature<ClassBuilder, TContext>>
+public class PartialFeatureBuilder<TModel, TContext> : IBuilder<IPipelineFeature<TModel, TContext>>
+    where TModel : TypeBaseBuilder
 {
-    public IPipelineFeature<ClassBuilder, TContext> Build()
-        => new PipelineFeatureWrapper<TContext>(() => new PartialFeature());
+    public IPipelineFeature<TModel, TContext> Build()
+        => new PipelineFeatureWrapper<TModel, TContext>(() => new PartialFeature<TModel>());
 }

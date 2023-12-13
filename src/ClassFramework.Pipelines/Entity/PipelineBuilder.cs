@@ -3,7 +3,7 @@
 public class PipelineBuilder : PipelineBuilder<ClassBuilder, EntityContext>
 {
     public PipelineBuilder(
-        IEnumerable<ISharedFeatureBuilder> sharedFeatureBuilders,
+        IEnumerable<ISharedFeatureBuilder<ClassBuilder>> sharedFeatureBuilders,
         IEnumerable<IEntityFeatureBuilder> entityFeatureBuilders)
     {
         AddFeatures(entityFeatureBuilders);

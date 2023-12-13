@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<ISharedFeatureBuilder, Shared.Features.PartialFeatureBuilder>()
+            .AddScoped<ISharedFeatureBuilder<ClassBuilder>, Shared.Features.PartialFeatureBuilder<ClassBuilder>>()
             .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
 
@@ -55,8 +55,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
-            .AddScoped<IPipeline<ClassBuilder, ReflectionContext>>(services => services.GetRequiredService<IPipelineBuilder<ClassBuilder, ReflectionContext>>().Build())
-            .AddScoped<IPipelineBuilder<ClassBuilder, ReflectionContext>, Reflection.PipelineBuilder>()
+            .AddScoped<IPipeline<TypeBaseBuilder, ReflectionContext>>(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>>().Build())
+            .AddScoped<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>, Reflection.PipelineBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddAttributesFeatureBuilder>();
 

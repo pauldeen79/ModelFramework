@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Shared.Features;
 
-public class PartialFeatureTests : TestBase<PartialFeature>
+public class PartialFeatureTests : TestBase<PartialFeature<TypeBaseBuilder>>
 {
     public class Process : PartialFeatureTests
     {
@@ -22,7 +22,7 @@ public class PartialFeatureTests : TestBase<PartialFeature>
             var sut = CreateSut();
             var model = new ClassBuilder();
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, BuilderContext>(model, new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act
             sut.Process(context);

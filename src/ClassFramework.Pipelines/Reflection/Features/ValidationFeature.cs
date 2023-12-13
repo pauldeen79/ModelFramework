@@ -2,24 +2,24 @@
 
 public class ValidationFeatureBuilder : IReflectionFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, ReflectionContext> Build() => new ValidationFeature();
+    public IPipelineFeature<TypeBaseBuilder, ReflectionContext> Build() => new ValidationFeature();
 }
 
-public class ValidationFeature : IPipelineFeature<ClassBuilder, ReflectionContext>
+public class ValidationFeature : IPipelineFeature<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, ReflectionContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.GenerationSettings.AllowGenerationWithoutProperties
             && context.Context.SourceModel.GetProperties().Length == 0)
         {
-            return Result.Invalid<ClassBuilder>("To create a class, there must be at least one property");
+            return Result.Invalid<TypeBaseBuilder>("To create a class, there must be at least one property");
         }
         
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, ReflectionContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, ReflectionContext>> ToBuilder()
         => new ValidationFeatureBuilder();
 }

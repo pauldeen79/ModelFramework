@@ -1,30 +1,30 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public class PipelineFeatureWrapper<TContext> : IPipelineFeature<ClassBuilder, TContext>
+public class PipelineFeatureWrapper<TModel, TContext> : IPipelineFeature<TModel, TContext>
 {
-    private readonly Func<IPipelineFeature<ClassBuilder>> _featureCreateDelegate;
+    private readonly Func<IPipelineFeature<TModel>> _featureCreateDelegate;
 
-    public PipelineFeatureWrapper(Func<IPipelineFeature<ClassBuilder>> featureCreateDelegate)
+    public PipelineFeatureWrapper(Func<IPipelineFeature<TModel>> featureCreateDelegate)
         => _featureCreateDelegate = featureCreateDelegate.IsNotNull(nameof(featureCreateDelegate));
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, TContext> context)
+    public Result<TModel> Process(PipelineContext<TModel, TContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        return _featureCreateDelegate().Process(new PipelineContext<ClassBuilder>(context.Model));
+        return _featureCreateDelegate().Process(new PipelineContext<TModel>(context.Model));
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, TContext>> ToBuilder()
-        => new PipelineFeatureWrapperBuilder<TContext>(_featureCreateDelegate);
+    public IBuilder<IPipelineFeature<TModel, TContext>> ToBuilder()
+        => new PipelineFeatureWrapperBuilder<TModel, TContext>(_featureCreateDelegate);
 }
 
-public class PipelineFeatureWrapperBuilder<TContext> : IBuilder<IPipelineFeature<ClassBuilder, TContext>>
+public class PipelineFeatureWrapperBuilder<TModel, TContext> : IBuilder<IPipelineFeature<TModel, TContext>>
 {
-    private readonly Func<IPipelineFeature<ClassBuilder>> _featureCreateDelegate;
+    private readonly Func<IPipelineFeature<TModel>> _featureCreateDelegate;
 
-    public PipelineFeatureWrapperBuilder(Func<IPipelineFeature<ClassBuilder>> featureCreateDelegate)
+    public PipelineFeatureWrapperBuilder(Func<IPipelineFeature<TModel>> featureCreateDelegate)
         => _featureCreateDelegate = featureCreateDelegate.IsNotNull(nameof(featureCreateDelegate));
 
-    public IPipelineFeature<ClassBuilder, TContext> Build()
-        => new PipelineFeatureWrapper<TContext>(_featureCreateDelegate);
+    public IPipelineFeature<TModel, TContext> Build()
+        => new PipelineFeatureWrapper<TModel, TContext>(_featureCreateDelegate);
 }

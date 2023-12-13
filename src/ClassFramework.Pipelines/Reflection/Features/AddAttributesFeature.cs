@@ -2,22 +2,22 @@
 
 public class AddAttributesFeatureBuilder : IReflectionFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, ReflectionContext> Build()
+    public IPipelineFeature<TypeBaseBuilder, ReflectionContext> Build()
         => new AddAttributesFeature();
 }
 
-public class AddAttributesFeature : IPipelineFeature<ClassBuilder, ReflectionContext>
+public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, ReflectionContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, ReflectionContext> context)
+    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.CopySettings.CopyAttributes)
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true)
+        context.Model.Attributes.AddRange(context.Context.SourceModel.GetCustomAttributes(true)
             .OfType<System.Attribute>()
             .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                      && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
@@ -25,13 +25,13 @@ public class AddAttributesFeature : IPipelineFeature<ClassBuilder, ReflectionCon
             .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => new AttributeBuilder(x)));
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<TypeBaseBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, ReflectionContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<TypeBaseBuilder, ReflectionContext>> ToBuilder()
         => new AddAttributesFeatureBuilder();
 
-    private Domain.Attribute ConvertToDomainAttribute(System.Attribute source, PipelineContext<ClassBuilder, ReflectionContext> context)
+    private Domain.Attribute ConvertToDomainAttribute(System.Attribute source, PipelineContext<TypeBaseBuilder, ReflectionContext> context)
     {
         var prefilled = context.Context.Settings.GenerationSettings.InitializeDelegate is not null
             ? context.Context.Settings.GenerationSettings.InitializeDelegate(source)
