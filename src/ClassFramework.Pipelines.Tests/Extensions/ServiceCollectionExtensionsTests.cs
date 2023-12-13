@@ -87,5 +87,39 @@ public class ServiceCollectionExtensionsTests : TestBase
             // Assert
             builder.Should().BeOfType<Pipeline<TypeBaseBuilder, EntityContext>>();
         }
+
+        [Fact]
+        public void Can_Resolve_ReflectionPipelineBuilder()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection()
+                .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
+                .AddPipelines();
+            using var provider = serviceCollection.BuildServiceProvider();
+            using var scope = provider.CreateScope();
+
+            // Act
+            var builder = scope.ServiceProvider.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>>();
+
+            // Assert
+            builder.Should().BeOfType<Pipelines.Reflection.PipelineBuilder>();
+        }
+
+        [Fact]
+        public void Can_Resolve_ReflectionPipeline()
+        {
+            // Arrange
+            var serviceCollection = new ServiceCollection()
+                .AddScoped(_ => Fixture.Freeze<IFormattableStringParser>()) // note that normally, you would probably use AddParsers from the CrossCutting.Utilities.Parsers package...
+                .AddPipelines();
+            using var provider = serviceCollection.BuildServiceProvider();
+            using var scope = provider.CreateScope();
+
+            // Act
+            var builder = scope.ServiceProvider.GetRequiredService<IPipeline<TypeBaseBuilder, ReflectionContext>>();
+
+            // Assert
+            builder.Should().BeOfType<Pipeline<TypeBaseBuilder, ReflectionContext>>();
+        }
     }
 }
