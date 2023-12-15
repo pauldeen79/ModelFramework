@@ -30,6 +30,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             result.Value.Name.Should().Be(nameof(MyClass));
             result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+
+            result.Value.Visibility.Should().Be(Visibility.Public);
         }
 
         [Fact]
@@ -56,6 +58,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             result.Value.Name.Should().Be(nameof(IMyInterface));
             result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+
+            result.Value.Visibility.Should().Be(Visibility.Public);
         }
     }
 }
