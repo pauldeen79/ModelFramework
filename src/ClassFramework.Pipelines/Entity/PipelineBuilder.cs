@@ -1,16 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public class PipelineBuilder : PipelineBuilder<TypeBaseBuilder, EntityContext>
+public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, EntityContext>
 {
     public PipelineBuilder(
-        IEnumerable<ISharedFeatureBuilder<TypeBaseBuilder>> sharedFeatureBuilders,
+        IEnumerable<ISharedFeatureBuilder<IConcreteTypeBuilder>> sharedFeatureBuilders,
         IEnumerable<IEntityFeatureBuilder> entityFeatureBuilders)
     {
         AddFeatures(entityFeatureBuilders);
         AddFeatures(sharedFeatureBuilders.Select(x => x.BuildFor<EntityContext>()));
     }
 
-    public PipelineBuilder(Pipeline<TypeBaseBuilder, EntityContext> source) : base(source)
+    public PipelineBuilder(Pipeline<IConcreteTypeBuilder, EntityContext> source) : base(source)
     {
     }
 }

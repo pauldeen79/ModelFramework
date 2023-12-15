@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Types;
 
-internal interface IClass : ITypeBase, IFieldsContainer, IConstructorsContainer, IRecordContainer, IBaseClassContainer
+internal interface IClass : ITypeBase, IConcreteType
 {
     bool Static { get; }
     bool Sealed { get; }

@@ -50,7 +50,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<TypeBase>(CreateModel());
+            var context = new PipelineContext<IType>(CreateModel());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

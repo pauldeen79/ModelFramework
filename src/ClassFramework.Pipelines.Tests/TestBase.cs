@@ -47,7 +47,7 @@ public abstract class TestBase : IDisposable
         return parser;
     }
 
-    protected static TypeBase CreateModel(string baseClass = "", params MetadataBuilder[] propertyMetadataBuilders)
+    protected static IConcreteType CreateModel(string baseClass = "", params MetadataBuilder[] propertyMetadataBuilders)
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
@@ -56,9 +56,9 @@ public abstract class TestBase : IDisposable
             .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddMetadata(new MetadataBuilder().WithName("MyMetadataName").WithValue("MyMetadataValue"))
-            .Build();
+            .BuildTyped();
 
-    protected static TypeBase CreateGenericModel(bool addProperties)
+    protected static IConcreteType CreateGenericModel(bool addProperties)
         => new ClassBuilder()
             .WithName("MyClass")
             .WithNamespace("MyNamespace")
@@ -72,9 +72,9 @@ public abstract class TestBase : IDisposable
                     new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
                 }.Where(_ => addProperties)
             )
-            .Build();
+            .BuildTyped();
 
-    protected static TypeBase CreateModelWithCustomTypeProperties()
+    protected static IConcreteType CreateModelWithCustomTypeProperties()
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("MySourceNamespace")
@@ -86,7 +86,7 @@ public abstract class TestBase : IDisposable
             .AddProperties(new ClassPropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
             .AddProperties(new ClassPropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
             .AddProperties(new ClassPropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
-            .Build();
+            .BuildTyped();
 
     protected static Pipelines.Builder.PipelineBuilderSettings CreateBuilderSettings(
         bool enableBuilderInheritance = false,
@@ -112,7 +112,7 @@ public abstract class TestBase : IDisposable
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
         Class? baseClass = null,
-        Func<IParentTypeContainer, TypeBase, bool>? inheritanceComparisonDelegate = null,
+        Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Builder.PipelineBuilderSettings(

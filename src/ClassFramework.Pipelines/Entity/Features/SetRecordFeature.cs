@@ -2,13 +2,13 @@
 
 public class SetRecordFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, EntityContext> Build()
         => new SetRecordFeature();
 }
 
-public class SetRecordFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
+public class SetRecordFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -17,9 +17,9 @@ public class SetRecordFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
             recordContainerBuilder.Record = context.Context.Settings.GenerationSettings.CreateRecord;
         }
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new SetRecordFeatureBuilder();
 }

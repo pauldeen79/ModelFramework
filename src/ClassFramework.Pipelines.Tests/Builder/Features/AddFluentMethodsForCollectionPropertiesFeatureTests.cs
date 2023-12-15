@@ -24,7 +24,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addMethodNameFormatString: string.Empty);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -43,7 +43,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -74,7 +74,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -107,7 +107,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -145,7 +145,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var settings = CreateBuilderSettings(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -179,7 +179,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var settings = CreateBuilderSettings(
                 newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
                 addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -214,7 +214,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
                 addNullChecks: true,
                 validateArguments: ArgumentValidationType.Shared,
                 addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -249,7 +249,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var settings = CreateBuilderSettings(
                 enableEntityInheritance: true,
                 addMethodNameFormatString: "Add{Name}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -284,7 +284,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addNullChecks: addNullChecks, validateArguments: validateArguments);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -303,7 +303,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(builderNameFormatString: "{Error}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -322,7 +322,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addMethodNameFormatString: "{Error}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -341,7 +341,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addNullChecks: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -360,7 +360,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -369,5 +369,8 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("Kaboom");
         }
+
+        private static PipelineContext<ClassBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

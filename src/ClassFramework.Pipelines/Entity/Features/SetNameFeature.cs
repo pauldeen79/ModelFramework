@@ -9,11 +9,11 @@ public class SetNameFeatureBuilder : IEntityFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, EntityContext> Build()
         => new SetNameFeature(_formattableStringParser);
 }
 
-public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
+public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -36,15 +36,15 @@ public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<TypeBaseBuilder>(error.LazyResult.Value);
+            return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
         }
 
         context.Model.Name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
         context.Model.Namespace = context.Context.MapNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!);
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 }

@@ -12,8 +12,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<ISharedFeatureBuilder<TypeBaseBuilder>, Shared.Features.PartialFeatureBuilder<TypeBaseBuilder>>()
             .AddScoped<ISharedFeatureBuilder<ClassBuilder>, Shared.Features.PartialFeatureBuilder<ClassBuilder>>()
+            .AddScoped<ISharedFeatureBuilder<IConcreteTypeBuilder>, Shared.Features.PartialFeatureBuilder<IConcreteTypeBuilder>>()
             .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
 
@@ -39,8 +39,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
-            .AddScoped<IPipeline<TypeBaseBuilder, EntityContext>>(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, EntityContext>>().Build())
-            .AddScoped<IPipelineBuilder<TypeBaseBuilder, EntityContext>, Entity.PipelineBuilder>()
+            .AddScoped<IPipeline<IConcreteTypeBuilder, EntityContext>>(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>>().Build())
+            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>, Entity.PipelineBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AbstractEntityFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddAttributesFeatureBuilder>()

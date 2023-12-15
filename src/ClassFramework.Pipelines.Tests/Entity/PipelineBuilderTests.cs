@@ -1,8 +1,6 @@
-﻿using ClassFramework.Domain.Builders.Abstractions;
+﻿namespace ClassFramework.Pipelines.Tests.Entity;
 
-namespace ClassFramework.Pipelines.Tests.Entity;
-
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBaseBuilder, EntityContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcreteTypeBuilder, EntityContext>>
 {
     public class Process : PipelineBuilderTests
     {
@@ -80,7 +78,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 enableNullableReferenceTypes: true,
                 newCollectionTypeName: typeof(IReadOnlyCollection<>).WithoutGenerics(),
                 collectionTypeName: typeof(ReadOnlyValueCollection<>).WithoutGenerics());
-            var context = new EntityContext(model, settings, CultureInfo.InvariantCulture);
+            var context = CreateContext(model, settings);
 
             var sut = CreateSut().Build();
 
@@ -114,8 +112,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property8);"
             );
 
-            var fields = (result.Value as IFieldsContainerBuilder)?.Fields;
-            fields.Should().BeEmpty();
+            result.Value.Fields.Should().BeEmpty();
 
             result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
@@ -174,7 +171,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 createAsObservable: true,
                 newCollectionTypeName: typeof(ObservableCollection<>).WithoutGenerics(),
                 collectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
-            var context = new EntityContext(model, settings, CultureInfo.InvariantCulture);
+            var context = CreateContext(model, settings);
 
             var sut = CreateSut().Build();
 
@@ -208,10 +205,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property8);"
             );
 
-            var fields = (result.Value as IFieldsContainerBuilder)?.Fields;
-            fields.Should().NotBeNull();
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
-            fields!.Select(x => x.Name).Should().BeEquivalentTo
+            result.Value.Fields.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "_property1",
                 "_property2",
@@ -221,7 +216,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 "_property6",
                 "PropertyChanged"
             );
-            fields!.Select(x => x.TypeName).Should().BeEquivalentTo
+            result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
@@ -231,7 +226,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 "MyNamespace.MyClass",
                 "System.ComponentModel.PropertyChangedEventHandler"
             );
-            fields!.Select(x => x.IsNullable).Should().BeEquivalentTo
+            result.Value.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
                 new[]
                 {
@@ -322,5 +317,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
                 "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property6)));"
             );
         }
+
+        private static EntityContext CreateContext(IConcreteType model, Pipelines.Entity.PipelineBuilderSettings settings)
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

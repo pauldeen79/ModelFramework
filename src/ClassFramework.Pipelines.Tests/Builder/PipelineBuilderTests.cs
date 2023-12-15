@@ -236,7 +236,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var settings = CreateBuilderSettings(addCopyConstructor: true, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
-            var context = new BuilderContext(model, settings, CultureInfo.InvariantCulture);
+            var context = CreateContext(model, settings);
 
             var sut = CreateSut().Build();
 
@@ -249,7 +249,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
 
             result.Value!.Name.Should().Be("SomeClassBuilder");
             result.Value.Namespace.Should().Be("MyNamespace.Builders");
-            
+
             result.Value.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var buildMethod = result.Value.Methods.Single(x => x.Name == "Build");
             buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
@@ -326,5 +326,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBu
                 }
             );
         }
+
+        private static BuilderContext CreateContext(IConcreteType model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

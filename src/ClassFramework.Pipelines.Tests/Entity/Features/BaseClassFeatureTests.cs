@@ -26,7 +26,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Entity.Features.BaseClas
             var settings = CreateEntitySettings(
                 baseClass:  null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -49,7 +49,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Entity.Features.BaseClas
             var settings = CreateEntitySettings(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -70,7 +70,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Entity.Features.BaseClas
             var settings = CreateEntitySettings(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

@@ -2,24 +2,24 @@
 
 public class ObservableFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, EntityContext> Build()
         => new ObservableFeature();
 }
 
-public class ObservableFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
+public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.GenerationSettings.CreateAsObservable)
         {
-            return Result.Continue<TypeBaseBuilder>();
+            return Result.Continue<IConcreteTypeBuilder>();
         }
 
         if (context.Model is not IFieldsContainerBuilder fieldsContainerBuilder)
         {
-            return Result.Invalid<TypeBaseBuilder>("Context model must implement IFieldsContainerBuilder");
+            return Result.Invalid<IConcreteTypeBuilder>("Context model must implement IFieldsContainerBuilder");
         }
 
         context.Model.Interfaces.Add(typeof(INotifyPropertyChanged).FullName!);
@@ -31,9 +31,9 @@ public class ObservableFeature : IPipelineFeature<TypeBaseBuilder, EntityContext
             .WithVisibility(Visibility.Public)
             );
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new ObservableFeatureBuilder();
 }

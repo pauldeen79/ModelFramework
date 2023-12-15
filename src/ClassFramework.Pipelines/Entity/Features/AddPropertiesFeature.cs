@@ -2,13 +2,13 @@
 
 public class AddPropertiesFeatureBuilder : IEntityFeatureBuilder
 {
-    public IPipelineFeature<TypeBaseBuilder, EntityContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, EntityContext> Build()
         => new AddPropertiesFeature();
 }
 
-public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, EntityContext>
+public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
 {
-    public Result<TypeBaseBuilder> Process(PipelineContext<TypeBaseBuilder, EntityContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -67,10 +67,10 @@ public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, EntityCont
                         ));
         }
 
-        return Result.Continue<TypeBaseBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<TypeBaseBuilder, EntityContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder();
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(

@@ -68,4 +68,6 @@ public static class TypeExtensions
         builder.Append(">");
         return builder.ToString();
     }
+
+    public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
 }

@@ -1,7 +1,7 @@
 ﻿namespace ClassFramework.Pipelines.Shared.Features;
 
 public class PartialFeatureBuilder<TModel> : ISharedFeatureBuilder<TModel>
-    where TModel : TypeBaseBuilder
+    where TModel : ITypeBuilder
 {
     public IPipelineFeature<TModel> Build()
         => new PartialFeature<TModel>();
@@ -11,7 +11,7 @@ public class PartialFeatureBuilder<TModel> : ISharedFeatureBuilder<TModel>
 }
 
 public class PartialFeature<TModel> : IPipelineFeature<TModel>
-    where TModel : TypeBaseBuilder
+    where TModel : ITypeBuilder
 {
     public Result<TModel> Process(PipelineContext<TModel> context)
     {
@@ -27,7 +27,7 @@ public class PartialFeature<TModel> : IPipelineFeature<TModel>
 }
 
 public class PartialFeatureBuilder<TModel, TContext> : IBuilder<IPipelineFeature<TModel, TContext>>
-    where TModel : TypeBaseBuilder
+    where TModel : ITypeBuilder
 {
     public IPipelineFeature<TModel, TContext> Build()
         => new PipelineFeatureWrapper<TModel, TContext>(() => new PartialFeature<TModel>());

@@ -40,7 +40,7 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
     public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
         => new BaseClassFeatureBuilder(_formattableStringParser);
 
-    private Result<string> GetBuilderBaseClass(TypeBase instance, PipelineContext<ClassBuilder, BuilderContext> context)
+    private Result<string> GetBuilderBaseClass(IType instance, PipelineContext<ClassBuilder, BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 

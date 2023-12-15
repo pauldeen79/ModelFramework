@@ -23,7 +23,7 @@ public class AddGenericsFeatureTests : TestBase<Pipelines.Entity.Features.AddGen
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings();
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

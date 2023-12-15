@@ -19,11 +19,11 @@ public class AddInterfacesFeatureTests : TestBase<Pipelines.Entity.Features.AddI
         public void Adds_Interfaces_When_CopyInterfacePredicate_Setting_Is_Not_Null_And_CopyAttributes_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(copyInterfacePredicate: _ => true, copyInterfaces: true);
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -37,11 +37,11 @@ public class AddInterfacesFeatureTests : TestBase<Pipelines.Entity.Features.AddI
         public void Adds_Interfaces_When_CopyInterfacePredicate_Setting_Is_Null_And_CopyAttributes_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(copyInterfacePredicate: null, copyInterfaces: true);
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -55,11 +55,11 @@ public class AddInterfacesFeatureTests : TestBase<Pipelines.Entity.Features.AddI
         public void Does_Not_Add_Interfaces_When_And_CopyAttributes_Is_False()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddInterfaces("IMyInterface").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings(copyInterfaces: false);
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

@@ -24,7 +24,7 @@ public class AddMetadataFeatureTests : TestBase<Pipelines.Entity.Features.AddMet
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateEntitySettings();
-            var context = new PipelineContext<TypeBaseBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

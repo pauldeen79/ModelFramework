@@ -14,7 +14,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     bool IPipelineGenerationSettings.AddBackingFields => default;
     string IPipelineGenerationSettings.CollectionTypeName => string.Empty;
     ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => default;
-    Func<IParentTypeContainer, TypeBase, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => null;
+    Func<IParentTypeContainer, IType, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => null;
 
     public PipelineBuilderSettings(
     PipelineBuilderNameSettings? nameSettings = null,

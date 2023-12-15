@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Types;
 
-internal interface IStruct : ITypeBase, IFieldsContainer, IConstructorsContainer, IRecordContainer, IValueType
+internal interface IStruct : ITypeBase, IValueType, IConcreteType
 {
 }

@@ -3,7 +3,7 @@
 public static class TypeBaseExtensions
 {
     public static bool IsMemberValidForBuilderClass(
-        this TypeBase parent,
+        this IType parent,
         IParentTypeContainer parentTypeContainer,
         IPipelineGenerationSettings settings)
     {
@@ -20,7 +20,7 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static string GetGenericTypeArgumentConstraintsString(this TypeBase instance)
+    public static string GetGenericTypeArgumentConstraintsString(this IType instance)
         => instance.GenericTypeArgumentConstraints.Count != 0
             ? string.Concat
             (
@@ -31,7 +31,7 @@ public static class TypeBaseExtensions
             : string.Empty;
 
     public static Result<string> GetCustomValueForInheritedClass(
-        this TypeBase instance,
+        this IType instance,
         Entity.PipelineBuilderSettings settings,
         Func<IBaseClassContainer, Result<string>> customValue)
     {
@@ -61,7 +61,7 @@ public static class TypeBaseExtensions
     }
 
     public static IEnumerable<ClassProperty> GetBuilderConstructorProperties(
-        this TypeBase instance,
+        this IType instance,
         BuilderContext context)
     {
         context = context.IsNotNull(nameof(context));
@@ -101,7 +101,7 @@ public static class TypeBaseExtensions
     }
 
     public static IEnumerable<Result<ClassFieldBuilder>> GetBuilderClassFields(
-        this TypeBase instance,
+        this IType instance,
         PipelineContext<ClassBuilder, BuilderContext> context,
         IFormattableStringParser formattableStringParser)
     {
@@ -140,7 +140,9 @@ public static class TypeBaseExtensions
         }
     }
 
-    public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(this TypeBase instance, Builder.PipelineBuilderSettings settings)
+    public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(
+        this IType instance,
+        Builder.PipelineBuilderSettings settings)
     {
         settings = settings.IsNotNull(nameof(settings));
 

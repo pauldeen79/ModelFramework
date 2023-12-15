@@ -16,7 +16,7 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     bool IPipelineGenerationSettings.AddBackingFields => GenerationSettings.AddBackingFields;
     string IPipelineGenerationSettings.CollectionTypeName => ConstructorSettings.CollectionTypeName;
     ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => ConstructorSettings.ValidateArguments;
-    Func<IParentTypeContainer, TypeBase, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
+    Func<IParentTypeContainer, IType, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
 
     public ArgumentValidationType AddValidationCode
     {

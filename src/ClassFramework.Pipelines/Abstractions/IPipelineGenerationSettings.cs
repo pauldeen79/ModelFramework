@@ -8,5 +8,5 @@ public interface IPipelineGenerationSettings
     bool AddBackingFields { get; }
     string CollectionTypeName { get; }
     ArgumentValidationType ValidateArguments { get; }
-    Func<IParentTypeContainer, TypeBase, bool>? InheritanceComparisonDelegate { get; }
+    Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate { get; }
 }
