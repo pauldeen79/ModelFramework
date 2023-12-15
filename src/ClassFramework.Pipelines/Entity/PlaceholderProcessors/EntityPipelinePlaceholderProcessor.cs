@@ -20,7 +20,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        if (context is ParentChildContext<IConcreteTypeBuilder, EntityContext, ClassProperty> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, ClassProperty> parentChildContext)
         {
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
@@ -47,7 +47,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         string value,
         IFormatProvider formatProvider,
         IFormattableStringParser formattableStringParser,
-        ParentChildContext<IConcreteTypeBuilder, EntityContext, ClassProperty> parentChildContext)
+        ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, ClassProperty> parentChildContext)
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.EntityNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),

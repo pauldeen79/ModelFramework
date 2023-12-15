@@ -13,7 +13,7 @@ public class ParentChildContextTests : TestBase
             var settings = Fixture.Freeze<IPipelineGenerationSettings>();
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<ClassBuilder, TypeBase, ClassProperty>(parentContext!, childContext, settings))
+            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, ClassProperty>(parentContext!, childContext, settings))
                 .Should().Throw<ArgumentNullException>().WithParameterName("parentContext");
         }
 
@@ -26,7 +26,7 @@ public class ParentChildContextTests : TestBase
             var settings = Fixture.Freeze<IPipelineGenerationSettings>();
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<ClassBuilder, TypeBase, ClassProperty>(parentContext, childContext!, settings))
+            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, ClassProperty>(parentContext, childContext!, settings))
                 .Should().Throw<ArgumentNullException>().WithParameterName("childContext");
         }
 
@@ -39,7 +39,7 @@ public class ParentChildContextTests : TestBase
             var settings = default(IPipelineGenerationSettings);
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<ClassBuilder, TypeBase, ClassProperty>(parentContext, childContext, settings!))
+            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, ClassProperty>(parentContext, childContext, settings!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
     }

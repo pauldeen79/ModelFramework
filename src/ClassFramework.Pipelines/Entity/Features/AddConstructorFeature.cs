@@ -45,7 +45,7 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     {
         var initializationResults = context.Context.SourceModel.Properties
             .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<IConcreteTypeBuilder, EntityContext, ClassProperty>(context, property, context.Context.Settings)))
+            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, ClassProperty>(context, property, context.Context.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 

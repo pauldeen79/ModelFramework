@@ -154,7 +154,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
-                new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
             );
             yield return argumentNullCheckResult;
             
@@ -171,7 +171,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                 .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
-            new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
         );
 
         yield return builderAddExpressionResult;
@@ -199,6 +199,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         return "this";
     }
 
-    private static ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, ClassProperty property)
+    private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, ClassProperty property)
         => new(context, property, context.Context.Settings);
 }

@@ -101,7 +101,7 @@ public static class PipelineContextExtensions
                         .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                         .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
-                    new ParentChildContext<TModel, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                    new ParentChildContext<PipelineContext<TModel, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
                 ),
                 Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
             }

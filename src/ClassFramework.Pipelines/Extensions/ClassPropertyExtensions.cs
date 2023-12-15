@@ -76,7 +76,7 @@ public static class ClassPropertyExtensions
         (
             property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(typeName)),
             context.Context.FormatProvider,
-            new ParentChildContext<TModel, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<PipelineContext<TModel, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
         );
 
         if (!builderArgumentTypeResult.IsSuccessful())

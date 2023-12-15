@@ -39,7 +39,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                     .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                     .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
-                new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
             );
 
             if (!typeNameResult.IsSuccessful())

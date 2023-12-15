@@ -108,7 +108,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
         (
             "{BuilderMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
-            new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
         );
 
     private static ClassConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
