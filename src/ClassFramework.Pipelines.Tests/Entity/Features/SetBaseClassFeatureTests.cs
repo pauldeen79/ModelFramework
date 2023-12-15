@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Features;
 
-public class BaseClassFeatureTests : TestBase<Pipelines.Entity.Features.BaseClassFeature>
+public class SetBaseClassFeatureTests : TestBase<Pipelines.Entity.Features.SetBaseClassFeature>
 {
-    public class Process : BaseClassFeatureTests
+    public class Process : SetBaseClassFeatureTests
     {
         [Fact]
         public void Throws_On_Null_Context()

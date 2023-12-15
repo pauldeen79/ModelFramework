@@ -1,12 +1,12 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Features;
 
-public class BaseClassFeatureBuilder : IEntityFeatureBuilder
+public class SetBaseClassFeatureBuilder : IEntityFeatureBuilder
 {
     public IPipelineFeature<IConcreteTypeBuilder, EntityContext> Build()
-        => new BaseClassFeature();
+        => new SetBaseClassFeature();
 }
 
-public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
+public class SetBaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
 {
     public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
@@ -21,7 +21,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCon
     }
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
-        => new BaseClassFeatureBuilder();
+        => new SetBaseClassFeatureBuilder();
 
     private string GetEntityBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, EntityContext> context)
         => context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
