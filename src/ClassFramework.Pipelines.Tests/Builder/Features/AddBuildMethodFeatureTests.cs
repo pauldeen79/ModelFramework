@@ -23,7 +23,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(enableBuilderInheritance: true, isAbstract: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -42,7 +42,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -68,7 +68,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -103,7 +103,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -112,5 +112,8 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("Kaboom");
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

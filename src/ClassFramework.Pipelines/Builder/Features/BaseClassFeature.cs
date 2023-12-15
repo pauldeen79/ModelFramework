@@ -9,11 +9,11 @@ public class BaseClassFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new BaseClassFeature(_formattableStringParser);
 }
 
-public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,25 +22,25 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         var baseClassResult = GetBuilderBaseClass(context.Context.SourceModel, context);
         if (!baseClassResult.IsSuccessful())
         {
-            return Result.FromExistingResult<ClassBuilder>(baseClassResult);
+            return Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult);
         }
 
         context.Model.BaseClass = baseClassResult.Value!;
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new BaseClassFeatureBuilder(_formattableStringParser);
 
-    private Result<string> GetBuilderBaseClass(IType instance, PipelineContext<ClassBuilder, BuilderContext> context)
+    private Result<string> GetBuilderBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
@@ -75,7 +75,12 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
                 ? string.Empty
                 : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
 
-            var inheritanceNameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, new PipelineContext<ClassBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider)));
+            var inheritanceNameResult = _formattableStringParser.Parse
+            (
+                context.Context.Settings.NameSettings.BuilderNameFormatString,
+                context.Context.FormatProvider,
+                new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))
+            );
             if (!inheritanceNameResult.IsSuccessful())
             {
                 return inheritanceNameResult;
@@ -102,9 +107,9 @@ public class BaseClassFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         );
     }
 
-    private Result<string> GetBaseClassName(PipelineContext<ClassBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
+    private Result<string> GetBaseClassName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IBaseClassContainer baseClassContainer)
     {
-        var newContext = new PipelineContext<ClassBuilder, BuilderContext>
+        var newContext = new PipelineContext<IConcreteTypeBuilder, BuilderContext>
         (
             context.Model,
             new BuilderContext(CreateTypeBase(context.Context.MapTypeName(baseClassContainer.BaseClass!)), context.Context.Settings, context.Context.FormatProvider)

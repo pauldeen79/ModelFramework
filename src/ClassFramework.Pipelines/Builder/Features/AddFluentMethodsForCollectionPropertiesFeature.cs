@@ -9,11 +9,11 @@ public class AddFluentMethodsForCollectionPropertiesFeatureBuilder : IBuilderFea
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new AddFluentMethodsForCollectionPropertiesFeature(_formattableStringParser);
 }
 
-public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,18 +22,18 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.AddMethodNameFormatString))
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<IConcreteTypeBuilder>();
         }
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<ClassBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings);
+            var childContext = new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings);
 
             var typeNameResult = _formattableStringParser.Parse
             (
@@ -46,7 +46,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
             if (!typeNameResult.IsSuccessful())
             {
-                return Result.FromExistingResult<ClassBuilder>(typeNameResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
             var namespaceResult = _formattableStringParser.Parse
@@ -58,7 +58,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
 
             if (!namespaceResult.IsSuccessful())
             {
-                return Result.FromExistingResult<ClassBuilder>(namespaceResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(namespaceResult);
             }
 
             var returnType = context.Context.IsBuilderForAbstractEntity
@@ -72,7 +72,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             var errorResult = Array.Find(enumerableOverloadResults, x => !x.IsSuccessful());
             if (errorResult is not null)
             {
-                return Result.FromExistingResult<ClassBuilder>(errorResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(errorResult);
             }
 
             var arrayOverloadResults = GetCodeStatementsForArrayOverload(context, property)
@@ -82,16 +82,16 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             errorResult = Array.Find(arrayOverloadResults, x => !x.IsSuccessful());
             if (errorResult is not null)
             {
-                return Result.FromExistingResult<ClassBuilder>(errorResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(errorResult);
             }
 
             var addMethodNameFormatStringResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.AddMethodNameFormatString, context.Context.FormatProvider, childContext);
             if (!addMethodNameFormatStringResult.IsSuccessful())
             {
-                return Result.FromExistingResult<ClassBuilder>(addMethodNameFormatStringResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(addMethodNameFormatStringResult);
             }
 
-            context.Model.AddMethods(new ClassMethodBuilder()
+            context.Model.Methods.Add(new ClassMethodBuilder()
                 .WithName(addMethodNameFormatStringResult.Value!)
                 .WithTypeName(returnType)
                 .AddParameters
@@ -105,7 +105,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
                 .AddStringCodeStatements(enumerableOverloadResults.Select(x => x.Value!))
             );
 
-            context.Model.AddMethods(new ClassMethodBuilder()
+            context.Model.Methods.Add(new ClassMethodBuilder()
                 .WithName(addMethodNameFormatStringResult.Value!)
                 .WithTypeName(returnType)
                 .AddParameters
@@ -120,10 +120,10 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             );
         }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    private IEnumerable<Result<string>> GetCodeStatementsForEnumerableOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
+    private IEnumerable<Result<string>> GetCodeStatementsForEnumerableOverload(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, ClassProperty property)
     {
         if (context.Context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
@@ -143,7 +143,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}.ToArray());");
     }
 
-    private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<ClassBuilder, BuilderContext> context, ClassProperty property)
+    private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, ClassProperty property)
     {
         if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
         {
@@ -151,7 +151,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
-                new ParentChildContext<ClassBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
             );
             yield return argumentNullCheckResult;
             
@@ -168,7 +168,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
                 .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
             context.Context.FormatProvider,
-            new ParentChildContext<ClassBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
         );
 
         yield return builderAddExpressionResult;
@@ -176,7 +176,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<C
         yield return Result.Success($"return {GetReturnValue(context.Context)};");
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddFluentMethodsForCollectionPropertiesFeatureBuilder(_formattableStringParser);
 
     private static string CreateBuilderCollectionPropertyAddExpression(ClassProperty property, BuilderContext context)

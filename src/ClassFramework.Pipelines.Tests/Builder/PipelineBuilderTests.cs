@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Builder;
 
-public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<ClassBuilder, BuilderContext>>
+public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcreteTypeBuilder, BuilderContext>>
 {
     public class Constructor : PipelineBuilderTests
     {

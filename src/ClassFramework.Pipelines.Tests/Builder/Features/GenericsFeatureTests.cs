@@ -23,7 +23,7 @@ public class GenericsFeatureTests : TestBase<Pipelines.Builder.Features.Generics
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(validateArguments: ArgumentValidationType.Shared);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -41,7 +41,7 @@ public class GenericsFeatureTests : TestBase<Pipelines.Builder.Features.Generics
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(validateArguments: ArgumentValidationType.Shared);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -50,5 +50,8 @@ public class GenericsFeatureTests : TestBase<Pipelines.Builder.Features.Generics
             result.IsSuccessful().Should().BeTrue();
             model.GenericTypeArgumentConstraints.Should().BeEquivalentTo("where T : class");
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

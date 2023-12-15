@@ -30,7 +30,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null,
                 addCopyConstructor: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -70,7 +70,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -105,7 +105,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -139,7 +139,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 addCopyConstructor: false,
                 newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -172,7 +172,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 enableBuilderInheritance: false,
                 addCopyConstructor: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -206,7 +206,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 addCopyConstructor: false,
                 setDefaultValues: false,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -234,7 +234,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(setDefaultValues: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -257,7 +257,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(setDefaultValues: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -279,7 +279,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -301,7 +301,7 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -310,5 +310,8 @@ public class AddDefaultConstructorFeatureTests : TestBase<Pipelines.Builder.Feat
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("Kaboom");
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

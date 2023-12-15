@@ -15,12 +15,12 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<ClassBuilder, BuilderContext> pipelineContext)
+        if (context is PipelineContext<IConcreteTypeBuilder, BuilderContext> pipelineContext)
         {
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        if (context is ParentChildContext<ClassBuilder, BuilderContext, ClassProperty> parentChildContext)
+        if (context is ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty> parentChildContext)
         {
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
@@ -28,7 +28,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
         return Result.Continue<string>();
     }
 
-    private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<ClassBuilder, BuilderContext> pipelineContext)
+    private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<IConcreteTypeBuilder, BuilderContext> pipelineContext)
         => value switch
         {
             "NullCheck.Source" => Result.Success(pipelineContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks
@@ -39,7 +39,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
                 ?? Result.Continue<string>()
         };
 
-    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<ClassBuilder, BuilderContext, ClassProperty> parentChildContext)
+    private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty> parentChildContext)
         => value switch
         {
             "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.EntitySettings.AddValidationCode == ArgumentValidationType.None && !parentChildContext.ChildContext.IsNullable && !parentChildContext.ChildContext.IsValueType // only if the source entity does not use validation...

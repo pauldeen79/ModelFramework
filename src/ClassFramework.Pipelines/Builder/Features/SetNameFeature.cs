@@ -9,11 +9,11 @@ public class SetNameFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new SetNameFeature(_formattableStringParser);
 }
 
-public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -36,15 +36,15 @@ public class SetNameFeature : IPipelineFeature<ClassBuilder, BuilderContext>
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<ClassBuilder>(error.LazyResult.Value);
+            return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
         }
 
         context.Model.Name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
         context.Model.Namespace = results.First(x => x.Name == "Namespace").LazyResult.Value.Value!;
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 }

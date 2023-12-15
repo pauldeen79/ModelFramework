@@ -9,11 +9,11 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureBuilder : IBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new AddFluentMethodsForNonCollectionPropertiesFeature(_formattableStringParser);
 }
 
-public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,18 +22,18 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.SetMethodNameFormatString))
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<IConcreteTypeBuilder>();
         }
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<ClassBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings);
+            var childContext = new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings);
             var typeName = context.Context.MapTypeName(property.TypeName.FixTypeName());
 
             var results = new[]
@@ -49,7 +49,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Result.FromExistingResult<ClassBuilder>(error.LazyResult.Value);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
             }
 
             var builder = new ClassMethodBuilder()
@@ -78,13 +78,13 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                 $"return {GetReturnValue(context.Context)};"
             );
 
-            context.Model.AddMethods(builder);
+            context.Model.Methods.Add(builder);
         }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddFluentMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
 
     private static string GetReturnValue(BuilderContext context)

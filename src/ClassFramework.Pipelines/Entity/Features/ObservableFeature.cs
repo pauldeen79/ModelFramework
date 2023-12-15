@@ -22,7 +22,7 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCo
             return Result.Invalid<IConcreteTypeBuilder>("Context model must implement IFieldsContainerBuilder");
         }
 
-        context.Model.Interfaces.Add(typeof(INotifyPropertyChanged).FullName!);
+        context.Model.Interfaces.Add(typeof(INotifyPropertyChanged).FullName);
         fieldsContainerBuilder.Fields.Add(new ClassFieldBuilder()
             .WithName(nameof(INotifyPropertyChanged.PropertyChanged))
             .WithType(typeof(PropertyChangedEventHandler))

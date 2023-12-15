@@ -370,7 +370,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<ClassBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
             => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

@@ -9,11 +9,11 @@ public class AddBuildMethodFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new AddBuildMethodFeature(_formattableStringParser);
 }
 
-public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,22 +22,22 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<IConcreteTypeBuilder>();
         }
 
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, string.Empty);
         if (!instanciationResult.IsSuccessful())
         {
-            return Result.FromExistingResult<ClassBuilder>(instanciationResult);
+            return Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult);
         }
 
-        context.Model.AddMethods(new ClassMethodBuilder()
+        context.Model.Methods.Add(new ClassMethodBuilder()
             .WithName(GetName(context))
             .WithAbstract(context.Context.IsBuilderForAbstractEntity)
             .WithOverride(context.Context.IsBuilderForOverrideEntity)
@@ -54,20 +54,20 @@ public class AddBuildMethodFeature : IPipelineFeature<ClassBuilder, BuilderConte
         if (context.Context.IsBuilderForAbstractEntity)
         {
             var baseClass = context.Context.Settings.InheritanceSettings.BaseClass ?? context.Context.SourceModel;
-            context.Model.AddMethods(new ClassMethodBuilder()
+            context.Model.Methods.Add(new ClassMethodBuilder()
                 .WithName(context.Context.Settings.NameSettings.BuildMethodName)
                 .WithOverride()
                 .WithTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
                 .AddStringCodeStatements($"return {context.Context.Settings.NameSettings.BuildTypedMethodName}();"));
         }
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddBuildMethodFeatureBuilder(_formattableStringParser);
 
-    private static string GetName(PipelineContext<ClassBuilder, BuilderContext> context)
+    private static string GetName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => context.Context.IsBuilderForAbstractEntity || context.Context.IsBuilderForOverrideEntity
             ? context.Context.Settings.NameSettings.BuildTypedMethodName
             : context.Context.Settings.NameSettings.BuildMethodName;

@@ -102,7 +102,7 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<Result<ClassFieldBuilder>> GetBuilderClassFields(
         this IType instance,
-        PipelineContext<ClassBuilder, BuilderContext> context,
+        PipelineContext<IConcreteTypeBuilder, BuilderContext> context,
         IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));

@@ -357,7 +357,7 @@ public class TypeBaseExtensionsTests : TestBase
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass").Build();
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, CreateBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, CreateBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderClassFields(context, formattableStringParser: null!).ToArray())
@@ -383,7 +383,7 @@ public class TypeBaseExtensionsTests : TestBase
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -412,7 +412,7 @@ public class TypeBaseExtensionsTests : TestBase
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -441,7 +441,7 @@ public class TypeBaseExtensionsTests : TestBase
                 validateArguments: ArgumentValidationType.Shared
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -471,7 +471,7 @@ public class TypeBaseExtensionsTests : TestBase
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -504,7 +504,7 @@ public class TypeBaseExtensionsTests : TestBase
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act

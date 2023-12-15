@@ -31,7 +31,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 isAbstract: hasBaseClass,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -61,7 +61,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -98,7 +98,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -136,7 +136,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -175,7 +175,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 addCopyConstructor: true,
                 newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -212,7 +212,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -234,7 +234,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -243,5 +243,8 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("Kaboom");
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

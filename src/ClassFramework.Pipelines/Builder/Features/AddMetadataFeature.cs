@@ -2,21 +2,21 @@
 
 public class AddMetadataFeatureBuilder : IBuilderFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new AddMetadataFeature();
 }
 
-public class AddMetadataFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class AddMetadataFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.AddMetadata(context.Context.SourceModel.Metadata.Select(x => new MetadataBuilder(x)));
+        context.Model.Metadata.AddRange(context.Context.SourceModel.Metadata.Select(x => new MetadataBuilder(x)));
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddMetadataFeatureBuilder();
 }

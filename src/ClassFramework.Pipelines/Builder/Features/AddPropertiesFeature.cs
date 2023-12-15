@@ -9,11 +9,11 @@ public class AddPropertiesFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new AddPropertiesFeature(_formattableStringParser);
 }
 
-public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,13 +22,13 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.IsAbstractBuilder)
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<IConcreteTypeBuilder>();
         }
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
@@ -39,15 +39,15 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
                     .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                     .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
-                new ParentChildContext<ClassBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
+                new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings)
             );
 
             if (!typeNameResult.IsSuccessful())
             {
-                return Result.FromExistingResult<ClassBuilder>(typeNameResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
-            context.Model.AddProperties(new ClassPropertyBuilder()
+            context.Model.Properties.Add(new ClassPropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(typeNameResult.Value!
                     .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
@@ -65,14 +65,14 @@ public class AddPropertiesFeature : IPipelineFeature<ClassBuilder, BuilderContex
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
-        context.Model.AddFields(context.Context.SourceModel
+        context.Model.Fields.AddRange(context.Context.SourceModel
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(

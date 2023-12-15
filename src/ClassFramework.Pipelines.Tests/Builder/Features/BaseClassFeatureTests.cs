@@ -27,7 +27,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
                 enableBuilderInheritance: true,
                 baseClass:  null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -50,7 +50,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: true,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -73,7 +73,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -97,7 +97,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
                 isAbstract: false,
                 baseClassBuilderNameSpace: "BaseBuilders",
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -118,7 +118,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             var settings = CreateBuilderSettings(
                 enableBuilderInheritance: true,
                 enableEntityInheritance: true).ForAbstractBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -139,7 +139,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             var settings = CreateBuilderSettings(
                 enableBuilderInheritance: false,
                 enableEntityInheritance: true).ForAbstractBuilder();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -162,7 +162,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
                 baseClass: null,
                 enableEntityInheritance: true,
                 builderNameFormatString: "{Error}");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -171,5 +171,8 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             result.Status.Should().Be(ResultStatus.Error);
             result.ErrorMessage.Should().Be("Kaboom");
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

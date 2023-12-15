@@ -9,11 +9,11 @@ public class ValidatableObjectFeatureBuilder : IBuilderFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new ValidatableObjectFeature(_formattableStringParser);
 }
 
-public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,23 +22,23 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
         if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
         {
-            return Result.Continue<ClassBuilder>();
+            return Result.Continue<IConcreteTypeBuilder>();
         }
 
         var instanciationResult = context.CreateEntityInstanciation(_formattableStringParser, "Base");
         if (!instanciationResult.IsSuccessful())
         {
-            return Result.FromExistingResult<ClassBuilder>(instanciationResult);
+            return Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult);
         }
 
-        context.Model.AddInterfaces(typeof(IValidatableObject));
-        context.Model.AddMethods(new ClassMethodBuilder()
+        context.Model.Interfaces.Add(typeof(IValidatableObject).FullName);
+        context.Model.Methods.Add(new ClassMethodBuilder()
             .WithName(nameof(IValidatableObject.Validate))
             .WithType(typeof(IEnumerable<ValidationResult>))
             .AddParameter("validationContext", typeof(ValidationContext))
@@ -57,9 +57,9 @@ public class ValidatableObjectFeature : IPipelineFeature<ClassBuilder, BuilderCo
             )
         );
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new ValidatableObjectFeatureBuilder(_formattableStringParser);
 }

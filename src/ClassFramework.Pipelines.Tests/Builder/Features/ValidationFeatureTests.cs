@@ -23,7 +23,7 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -36,11 +36,11 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
         public void Returns_Continue_When_Properties_Are_Not_Found_But_AllowGenerationWithoutProperties_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("MyClass").Build();
+            var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -53,13 +53,13 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
         public void Returns_Continue_When_Properties_Are_Not_Found_But_EnableInheritance_Is_True()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("MyClass").Build();
+            var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(
                 allowGenerationWithoutProperties: false,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -67,5 +67,8 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             // Assert
             result.Status.Should().Be(ResultStatus.Continue);
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

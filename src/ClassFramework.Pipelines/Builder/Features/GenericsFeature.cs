@@ -2,23 +2,22 @@
 
 public class GenericsFeatureBuilder : IBuilderFeatureBuilder
 {
-    public IPipelineFeature<ClassBuilder, BuilderContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
         => new GenericsFeature();
 }
 
-public class GenericsFeature : IPipelineFeature<ClassBuilder, BuilderContext>
+public class GenericsFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
 {
-    public Result<ClassBuilder> Process(PipelineContext<ClassBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model
-            .AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments)
-            .AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
+        context.Model.GenericTypeArguments.AddRange(context.Context.SourceModel.GenericTypeArguments);
+        context.Model.GenericTypeArgumentConstraints.AddRange(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
-        return Result.Continue<ClassBuilder>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<ClassBuilder, BuilderContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new GenericsFeatureBuilder();
 }

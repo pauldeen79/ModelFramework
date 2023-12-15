@@ -2,7 +2,7 @@
 
 public static class PipelineContextExtensions
 {
-    public static Result<string> CreateEntityInstanciation(this PipelineContext<ClassBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
+    public static Result<string> CreateEntityInstanciation(this PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser, string classNameSuffix)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 

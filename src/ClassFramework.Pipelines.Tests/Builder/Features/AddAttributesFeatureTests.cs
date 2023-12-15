@@ -23,7 +23,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(copyAttributes: true);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -47,7 +47,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(copyAttributes: true, copyAttributePredicate: x => x.Name == "MyAttribute2");
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -65,7 +65,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sut = CreateSut();
             var model = new ClassBuilder();
             var settings = CreateBuilderSettings(copyAttributes: false);
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = CreateContext(sourceModel, model, settings);
 
             // Act
             var result = sut.Process(context);
@@ -74,5 +74,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             result.IsSuccessful().Should().BeTrue();
             model.Attributes.Should().BeEmpty();
         }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

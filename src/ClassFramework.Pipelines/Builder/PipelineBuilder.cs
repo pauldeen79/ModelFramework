@@ -1,16 +1,16 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class PipelineBuilder : PipelineBuilder<ClassBuilder, BuilderContext>
+public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, BuilderContext>
 {
     public PipelineBuilder(
-        IEnumerable<ISharedFeatureBuilder<ClassBuilder>> sharedFeatureBuilders,
+        IEnumerable<ISharedFeatureBuilder<IConcreteTypeBuilder>> sharedFeatureBuilders,
         IEnumerable<IBuilderFeatureBuilder> builderFeatureBuilders)
     {
         AddFeatures(builderFeatureBuilders);
         AddFeatures(sharedFeatureBuilders.Select(x => x.BuildFor<BuilderContext>()));
     }
 
-    public PipelineBuilder(Pipeline<ClassBuilder, BuilderContext> source) : base(source)
+    public PipelineBuilder(Pipeline<IConcreteTypeBuilder, BuilderContext> source) : base(source)
     {
     }
 }
