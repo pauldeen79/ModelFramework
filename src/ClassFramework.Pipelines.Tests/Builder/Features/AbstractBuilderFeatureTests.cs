@@ -75,7 +75,26 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+        [Fact]
+        public void Returns_Invalid_When_Model_Is_Not_Of_Type_ClassBuilder()
+        {
+            // Arrange
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
+            InitializeParser();
+            var sut = CreateSut();
+            var model = new StructBuilder();
+            var settings = CreateBuilderSettings(enableEntityInheritance: true);
+            var context = CreateContext(sourceModel, model, settings);
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("You can only create abstract classes. The type of model (ClassFramework.Domain.Builders.Types.StructBuilder) is not a ClassBuilder");
+        }
+
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, IConcreteTypeBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
             => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }
