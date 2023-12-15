@@ -3,7 +3,7 @@
 public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, BuilderContext>
 {
     public PipelineBuilder(
-        IEnumerable<ISharedFeatureBuilder<IConcreteTypeBuilder>> sharedFeatureBuilders,
+        IEnumerable<ISharedFeatureBuilder> sharedFeatureBuilders,
         IEnumerable<IBuilderFeatureBuilder> builderFeatureBuilders)
     {
         AddFeatures(builderFeatureBuilders);

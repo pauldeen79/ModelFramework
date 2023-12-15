@@ -1,34 +1,31 @@
 ﻿namespace ClassFramework.Pipelines.Shared.Features;
 
-public class PartialFeatureBuilder<TModel> : ISharedFeatureBuilder<TModel>
-    where TModel : ITypeBuilder
+public class PartialFeatureBuilder : ISharedFeatureBuilder
 {
-    public IPipelineFeature<TModel> Build()
-        => new PartialFeature<TModel>();
+    public IPipelineFeature<IConcreteTypeBuilder> Build()
+        => new PartialFeature();
 
-    public IBuilder<IPipelineFeature<TModel, TContext>> BuildFor<TContext>()
-        => new PartialFeatureBuilder<TModel, TContext>();
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, TContext>> BuildFor<TContext>()
+        => new PartialFeatureBuilder<TContext>();
 }
 
-public class PartialFeature<TModel> : IPipelineFeature<TModel>
-    where TModel : ITypeBuilder
+public class PartialFeature : IPipelineFeature<IConcreteTypeBuilder>
 {
-    public Result<TModel> Process(PipelineContext<TModel> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder> context)
     {
         context = context.IsNotNull(nameof(context));
 
         context.Model.Partial = true;
 
-        return Result.Continue<TModel>();
+        return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<TModel>> ToBuilder()
-        => new PartialFeatureBuilder<TModel>();
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder>> ToBuilder()
+        => new PartialFeatureBuilder();
 }
 
-public class PartialFeatureBuilder<TModel, TContext> : IBuilder<IPipelineFeature<TModel, TContext>>
-    where TModel : ITypeBuilder
+public class PartialFeatureBuilder<TContext> : IBuilder<IPipelineFeature<IConcreteTypeBuilder, TContext>>
 {
-    public IPipelineFeature<TModel, TContext> Build()
-        => new PipelineFeatureWrapper<TModel, TContext>(() => new PartialFeature<TModel>());
+    public IPipelineFeature<IConcreteTypeBuilder, TContext> Build()
+        => new PipelineFeatureWrapper<IConcreteTypeBuilder, TContext>(() => new PartialFeature());
 }

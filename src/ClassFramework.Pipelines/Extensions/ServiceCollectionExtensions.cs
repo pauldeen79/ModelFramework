@@ -12,7 +12,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSharedPipelineComponents(this IServiceCollection services)
         => services
-            .AddScoped<ISharedFeatureBuilder<IConcreteTypeBuilder>, Shared.Features.PartialFeatureBuilder<IConcreteTypeBuilder>>()
+            .AddScoped<ISharedFeatureBuilder, Shared.Features.PartialFeatureBuilder>()
             .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
             .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
 

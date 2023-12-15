@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Shared.Features.Abstractions;
 
-public interface ISharedFeatureBuilder<TModel> : IBuilder<IPipelineFeature<TModel>>
+public interface ISharedFeatureBuilder : IBuilder<IPipelineFeature<IConcreteTypeBuilder>>
 {
-    IBuilder<IPipelineFeature<TModel, TContext>> BuildFor<TContext>();
+    IBuilder<IPipelineFeature<IConcreteTypeBuilder, TContext>> BuildFor<TContext>();
 }
