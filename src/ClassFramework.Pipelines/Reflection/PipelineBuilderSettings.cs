@@ -17,11 +17,11 @@ public sealed record PipelineBuilderSettings : IPipelineGenerationSettings
     Func<IParentTypeContainer, IType, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => null;
 
     public PipelineBuilderSettings(
-    PipelineBuilderNameSettings? nameSettings = null,
-    PipelineBuilderInheritanceSettings? inheritanceSettings = null,
-    PipelineBuilderTypeSettings? typeSettings = null,
-    PipelineBuilderCopySettings? copySettings = null,
-    PipelineBuilderGenerationSettings? generationSettings = null)
+        PipelineBuilderNameSettings? nameSettings = null,
+        PipelineBuilderInheritanceSettings? inheritanceSettings = null,
+        PipelineBuilderTypeSettings? typeSettings = null,
+        PipelineBuilderCopySettings? copySettings = null,
+        PipelineBuilderGenerationSettings? generationSettings = null)
     {
         NameSettings = nameSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
