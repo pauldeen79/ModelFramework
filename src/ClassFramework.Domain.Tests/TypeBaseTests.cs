@@ -18,6 +18,7 @@ public class TypeBaseTests
                 "MyNamespace",
                 default,
                 Enumerable.Empty<string>(),
+                Enumerable.Empty<ClassField>(),
                 Enumerable.Empty<ClassProperty>(),
                 Enumerable.Empty<ClassMethod>(),
                 Enumerable.Empty<string>(),
@@ -27,7 +28,6 @@ public class TypeBaseTests
                 Enumerable.Empty<Attribute>(),
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
-                Enumerable.Empty<ClassField>(),
                 Enumerable.Empty<ClassConstructor>(),
                 default,
                 default
@@ -54,6 +54,7 @@ public class TypeBaseTests
                 string.Empty,
                 default,
                 Enumerable.Empty<string>(),
+                Enumerable.Empty<ClassField>(),
                 Enumerable.Empty<ClassProperty>(),
                 Enumerable.Empty<ClassMethod>(),
                 Enumerable.Empty<string>(),
@@ -63,7 +64,6 @@ public class TypeBaseTests
                 Enumerable.Empty<Attribute>(),
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
-                Enumerable.Empty<ClassField>(),
                 Enumerable.Empty<ClassConstructor>(),
                 default,
                 default

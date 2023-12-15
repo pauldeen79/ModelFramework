@@ -37,10 +37,8 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     {
         var items = new List<object?>();
 
-        var fieldsContainer = GetModel() as IFieldsContainer;
-        if (fieldsContainer is not null) items.AddRange(fieldsContainer.Fields);
-
-        items.AddRange(Model!.Properties);
+        items.AddRange(Model!.Fields);
+        items.AddRange(Model.Properties);
 
         var constructorsContainer = Model as IConstructorsContainer;
         if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors);

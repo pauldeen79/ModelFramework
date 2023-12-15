@@ -50,9 +50,9 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                         .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
                 ));
 
-        if (context.Context.Settings.GenerationSettings.AddBackingFields && context.Model is IFieldsContainerBuilder fieldsContainerBuilder)
+        if (context.Context.Settings.GenerationSettings.AddBackingFields)
         {
-            fieldsContainerBuilder.Fields.AddRange(
+            context.Model.Fields.AddRange(
                     properties
                         .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()) // only non-collection properties to prevent CA2227 warning - convert to read-only property
                         .Select
