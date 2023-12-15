@@ -54,5 +54,24 @@ public class AbstractEntityFeatureTests : TestBase<Pipelines.Entity.Features.Abs
             result.IsSuccessful().Should().BeTrue();
             model.Abstract.Should().BeFalse();
         }
+
+        [Fact]
+        public void Returns_Success_When_Context_Model_Is_Not_Of_Type_ClassBuilder()
+        {
+            // Arrange
+            var sourceModel = CreateModel(baseClass: string.Empty);
+            var sut = CreateSut();
+            var model = new StructBuilder(); // no ClassBuilder, so can't set Abstract
+            var settings = CreateEntitySettings(
+                enableEntityInheritance: true,
+                isAbstract: true);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+        }
     }
 }
