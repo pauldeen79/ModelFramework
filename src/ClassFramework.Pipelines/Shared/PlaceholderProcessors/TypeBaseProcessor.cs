@@ -10,6 +10,10 @@ public class TypeBaseProcessor : IPipelinePlaceholderProcessor
         }
 
         var name = pipelineContext.Model.Name;
+        var nameNoInterfacePrefix = pipelineContext.Model is Interface && pipelineContext.Model.Name.StartsWith("I")
+            ? name.Substring(1)
+            : name;
+
         var fullName = pipelineContext.Model.GetFullName();
         var ns = pipelineContext.Model.Namespace;
 
@@ -21,6 +25,7 @@ public class TypeBaseProcessor : IPipelinePlaceholderProcessor
             $"{nameof(IType.Name)}Pascal" or $"Class.{nameof(IType.Name)}Pascal" => Result.Success(name.ToPascalCase(formatProvider.ToCultureInfo())),
             $"{nameof(IType.Namespace)}" or $"Class.{nameof(IType.Namespace)}" => Result.Success(ns),
             $"FullName" or "Class.FullName" => Result.Success(fullName),
+            $"{nameof(IType.Name)}NoInterfacePrefix" or $"Class.{nameof(IType.Name)}NoInterfacePrefix" => Result.Success(nameNoInterfacePrefix),
             _ => Result.Continue<string>()
         };
     }

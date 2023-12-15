@@ -35,6 +35,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
 
         [Theory]
         [InlineData("Name", "SomeClass")]
+        [InlineData("NameNoInterfacePrefix", "SomeClass")]
         [InlineData("NameLower", "someclass")]
         [InlineData("NameUpper", "SOMECLASS")]
         [InlineData("NamePascal", "someClass")]
@@ -46,11 +47,29 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         [InlineData("Class.NamePascal", "someClass")]
         [InlineData("Class.Namespace", "SomeNamespace")]
         [InlineData("Class.FullName", "SomeNamespace.SomeClass")]
+        [InlineData("Class.NameNoInterfacePrefix", "SomeClass")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value(string value, string expectedValue)
         {
             // Arrange
             var sut = CreateSut();
             var context = new PipelineContext<IType>(CreateModel());
+
+            // Act
+            var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Ok);
+            result.Value.Should().Be(expectedValue);
+        }
+
+        [Theory]
+        [InlineData("NameNoInterfacePrefix", "MyInterface")]
+        [InlineData("Class.NameNoInterfacePrefix", "MyInterface")]
+        public void Returns_Ok_With_NoInterfacePrefix_When_Model_Is_Interface(string value, string expectedValue)
+        {
+            // Arrange
+            var sut = CreateSut();
+            var context = new PipelineContext<IType>(new InterfaceBuilder().WithName("IMyInterface").Build());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
