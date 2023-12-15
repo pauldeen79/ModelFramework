@@ -61,6 +61,33 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             result.Value.Visibility.Should().Be(Visibility.Public);
         }
+
+        [Fact]
+        public void Creates_Internal_Interface()
+        {
+            // Arrange
+            var model = new InterfaceBuilder();
+            var sourceModel = typeof(IMyInternalInterface);
+            var namespaceMappings = CreateNamespaceMappings("ClassFramework.Pipelines.Tests.Reflection");
+            var settings = CreateReflectionSettings(namespaceMappings: namespaceMappings, copyAttributes: true);
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(model, context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            result.Value.Should().NotBeNull();
+            result.Value!.Attributes.Should().BeEmpty();
+            result.Value.Interfaces.Should().BeEmpty();
+
+            result.Value.Name.Should().Be(nameof(IMyInternalInterface));
+            result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+
+            result.Value.Visibility.Should().Be(Visibility.Internal);
+        }
     }
 }
 
@@ -78,4 +105,10 @@ public interface IMyInterface
 {
     string? MyProperty { get; set; }
     void DoSomething(int myParameter);
+}
+
+internal interface IMyInternalInterface
+{
+    int MyProperty { get; set; }
+    int MyField { get; }
 }

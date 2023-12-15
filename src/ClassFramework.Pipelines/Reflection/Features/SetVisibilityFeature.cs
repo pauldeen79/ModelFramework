@@ -17,9 +17,16 @@ public class SetVisibilityFeature : IPipelineFeature<TypeBaseBuilder, Reflection
             return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.Visibility = context.Context.SourceModel.IsPublic
-            ? Visibility.Public
-            : Visibility.Private;
+        if (context.Context.SourceModel.IsPublic)
+        {
+            context.Model.Visibility = Visibility.Public;
+        }
+        else
+        {
+            context.Model.Visibility = context.Context.SourceModel.IsNotPublic
+                ? Visibility.Internal
+                : Visibility.Private;
+        }
 
         return Result.Continue<TypeBaseBuilder>();
     }
