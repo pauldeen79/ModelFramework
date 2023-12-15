@@ -33,7 +33,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty>(context, property, context.Context.Settings);
+            var childContext = CreateParentChildContext(context, property);
 
             var typeNameResult = _formattableStringParser.Parse
             (
@@ -123,6 +123,9 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
+        => new AddFluentMethodsForCollectionPropertiesFeatureBuilder(_formattableStringParser);
+
     private IEnumerable<Result<string>> GetCodeStatementsForEnumerableOverload(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, ClassProperty property)
     {
         if (context.Context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
@@ -176,9 +179,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         yield return Result.Success($"return {GetReturnValue(context.Context)};");
     }
 
-    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
-        => new AddFluentMethodsForCollectionPropertiesFeatureBuilder(_formattableStringParser);
-
     private static string CreateBuilderCollectionPropertyAddExpression(ClassProperty property, BuilderContext context)
     {
         if (context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
@@ -198,4 +198,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
         return "this";
     }
+
+    private static ParentChildContext<IConcreteTypeBuilder, BuilderContext, ClassProperty> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, ClassProperty property)
+        => new(context, property, context.Context.Settings);
 }
