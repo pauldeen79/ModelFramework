@@ -27,6 +27,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             result.Value.Attributes.Single().Name.Should().Be("System.ComponentModel.DisplayNameAttribute");
 
             result.Value.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
+
+            result.Value.Name.Should().Be(nameof(MyClass));
+            result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
         }
 
         [Fact]
@@ -50,6 +53,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             result.Value!.Attributes.Should().BeEmpty();
             result.Value.Interfaces.Should().BeEmpty();
+
+            result.Value.Name.Should().Be(nameof(IMyInterface));
+            result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
         }
     }
 }

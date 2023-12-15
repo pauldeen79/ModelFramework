@@ -14,7 +14,8 @@ public static class ServiceCollectionExtensions
         => services
             .AddScoped<ISharedFeatureBuilder, Shared.Features.PartialFeatureBuilder>()
             .AddScoped<IPipelinePlaceholderProcessor, ClassPropertyProcessor>()
-            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>();
+            .AddScoped<IPipelinePlaceholderProcessor, TypeBaseProcessor>()
+            .AddScoped<IPipelinePlaceholderProcessor, TypeProcessor>();
 
     private static IServiceCollection AddBuilderPipeline(this IServiceCollection services)
         => services
@@ -59,10 +60,12 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>, Reflection.PipelineBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddAttributesFeatureBuilder>()
-            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddInterfacesFeatureBuilder>();
+            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddInterfacesFeatureBuilder>()
+            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetNameFeatureBuilder>();
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
-            .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>();
+            .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
 }
