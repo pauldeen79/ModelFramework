@@ -1,6 +1,4 @@
-﻿using CrossCutting.ProcessingPipeline;
-
-namespace ClassFramework.Pipelines.Builder.PlaceholderProcessors;
+﻿namespace ClassFramework.Pipelines.Builder.PlaceholderProcessors;
 
 public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
 {
