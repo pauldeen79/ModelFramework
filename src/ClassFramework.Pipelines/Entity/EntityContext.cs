@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record EntityContext : ContextBase<IConcreteType, PipelineBuilderSettings>
+public record EntityContext : ContextBase<IType, PipelineBuilderSettings>
 {
-    public EntityContext(IConcreteType sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+    public EntityContext(IType sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }
