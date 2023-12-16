@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class ClassFieldViewModel : AttributeContainerViewModelBase<ClassField>
+public class FieldViewModel : AttributeContainerViewModelBase<Field>
 {
-    public ClassFieldViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+    public FieldViewModel(ICsharpExpressionCreator csharpExpressionCreator)
         : base(csharpExpressionCreator)
     {
     }

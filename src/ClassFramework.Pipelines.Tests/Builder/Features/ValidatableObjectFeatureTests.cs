@@ -19,7 +19,7 @@ public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features
         public void Adds_IValidatableObject_Interface_When_IsBuilderForAbstractEntity_Is_False_And_Validation_Is_Shared_Between_Builder_And_Entity()
         {
             // Arrange
-            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
@@ -76,7 +76,7 @@ public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .AddMetadata(MetadataNames.CustomBuilderValidationCode, "// here goes some custom validation code")
                 .AddMetadata(MetadataNames.CustomBuilderValidationCode, "return Enumerable.Empty<ValidationResult>();")
                 .Build();
@@ -127,7 +127,7 @@ public class ValidatableObjectFeatureTests : TestBase<Pipelines.Builder.Features
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("{Error}"))
                 .Build();
             InitializeParser();

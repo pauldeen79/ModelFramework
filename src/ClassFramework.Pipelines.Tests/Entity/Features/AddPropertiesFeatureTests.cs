@@ -112,7 +112,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
                 .WithNamespace("SomeNamespace")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder()
+                    new PropertyBuilder()
                         .WithName("MyProperty")
                         .WithType(typeof(int))
                         .AddAttributes(

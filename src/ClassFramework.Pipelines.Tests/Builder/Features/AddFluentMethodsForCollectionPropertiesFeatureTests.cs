@@ -137,7 +137,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(List<int>)))
+                .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(typeof(List<int>)))
                 .Build();
             InitializeParser();
             var sut = CreateSut();

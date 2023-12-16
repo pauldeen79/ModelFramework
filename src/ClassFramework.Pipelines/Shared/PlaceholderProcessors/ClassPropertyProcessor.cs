@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Shared.PlaceholderProcessors;
 
-public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
+public class PropertyProcessor : IPipelinePlaceholderProcessor
 {
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public ClassPropertyProcessor(ICsharpExpressionCreator csharpExpressionCreator)
+    public PropertyProcessor(ICsharpExpressionCreator csharpExpressionCreator)
     {
         _csharpExpressionCreator = csharpExpressionCreator.IsNotNull(nameof(csharpExpressionCreator));
     }
@@ -13,31 +13,31 @@ public class ClassPropertyProcessor : IPipelinePlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is not ClassPropertyContext classPropertyContext)
+        if (context is not PropertyContext PropertyContext)
         {
             return Result.Continue<string>();
         }
 
-        var typeName = classPropertyContext.TypeName.FixTypeName();
+        var typeName = PropertyContext.TypeName.FixTypeName();
 
         return value switch
         {
-            nameof(ClassProperty.Name) => Result.Success(classPropertyContext.SourceModel.Name),
-            $"{nameof(ClassProperty.Name)}Lower" => Result.Success(classPropertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(ClassProperty.Name)}Upper" => Result.Success(classPropertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(ClassProperty.Name)}Pascal" => Result.Success(classPropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(ClassProperty.Name)}PascalCsharpFriendlyName" => Result.Success(classPropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            "BuilderMemberName" => Result.Success(classPropertyContext.SourceModel.GetBuilderMemberName(classPropertyContext.Settings.AddNullChecks, classPropertyContext.Settings.EnableNullableReferenceTypes, classPropertyContext.Settings.ValidateArguments, classPropertyContext.FormatProvider.ToCultureInfo())),
-            "EntityMemberName" => Result.Success(classPropertyContext.SourceModel.GetEntityMemberName(classPropertyContext.Settings.AddBackingFields, classPropertyContext.FormatProvider.ToCultureInfo())),
-            "InitializationExpression" => Result.Success(classPropertyContext.SourceModel.GetInitializationExpression(classPropertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo())),
-            nameof(ClassProperty.TypeName) => Result.Success(typeName),
-            $"{nameof(ClassProperty.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
-            $"{nameof(ClassProperty.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),
-            $"{nameof(ClassProperty.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetGenericArguments().GetClassName()),
-            $"{nameof(ClassProperty.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
-            $"{nameof(ClassProperty.TypeName)}.Namespace" => Result.Success(typeName.GetNamespaceWithDefault()),
-            $"{nameof(ClassProperty.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
-            "DefaultValue" => formattableStringParser.Parse(classPropertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, classPropertyContext.Settings.EnableNullableReferenceTypes, typeName), formatProvider, context),
+            nameof(Property.Name) => Result.Success(PropertyContext.SourceModel.Name),
+            $"{nameof(Property.Name)}Lower" => Result.Success(PropertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}Upper" => Result.Success(PropertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}Pascal" => Result.Success(PropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success(PropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
+            "BuilderMemberName" => Result.Success(PropertyContext.SourceModel.GetBuilderMemberName(PropertyContext.Settings.AddNullChecks, PropertyContext.Settings.EnableNullableReferenceTypes, PropertyContext.Settings.ValidateArguments, PropertyContext.FormatProvider.ToCultureInfo())),
+            "EntityMemberName" => Result.Success(PropertyContext.SourceModel.GetEntityMemberName(PropertyContext.Settings.AddBackingFields, PropertyContext.FormatProvider.ToCultureInfo())),
+            "InitializationExpression" => Result.Success(PropertyContext.SourceModel.GetInitializationExpression(PropertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo())),
+            nameof(Property.TypeName) => Result.Success(typeName),
+            $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
+            $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),
+            $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetGenericArguments().GetClassName()),
+            $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
+            $"{nameof(Property.TypeName)}.Namespace" => Result.Success(typeName.GetNamespaceWithDefault()),
+            $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
+            "DefaultValue" => formattableStringParser.Parse(PropertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, PropertyContext.Settings.EnableNullableReferenceTypes, typeName), formatProvider, context),
             _ => Result.Continue<string>()
         };
     }

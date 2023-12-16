@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class ClassFieldTemplate : CsharpClassGeneratorBase<ClassFieldViewModel>, IStringBuilderTemplate
+public class FieldTemplate : CsharpClassGeneratorBase<FieldViewModel>, IStringBuilderTemplate
 {
     public void Render(StringBuilder builder)
     {

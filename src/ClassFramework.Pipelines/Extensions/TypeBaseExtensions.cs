@@ -60,7 +60,7 @@ public static class TypeBaseExtensions
         return customValue(baseClassContainer);
     }
 
-    public static IEnumerable<ClassProperty> GetBuilderConstructorProperties(
+    public static IEnumerable<Property> GetBuilderConstructorProperties(
         this IType instance,
         BuilderContext context)
     {
@@ -81,7 +81,7 @@ public static class TypeBaseExtensions
         if (ctor is null)
         {
             // No public constructor, so we can't add properties to initialization.
-            return Enumerable.Empty<ClassProperty>();
+            return Enumerable.Empty<Property>();
         }
 
         if (context.IsBuilderForOverrideEntity && context.Settings.InheritanceSettings.BaseClass is not null)
@@ -100,7 +100,7 @@ public static class TypeBaseExtensions
             .Where(x => x is not null);
     }
 
-    public static IEnumerable<Result<ClassFieldBuilder>> GetBuilderClassFields(
+    public static IEnumerable<Result<FieldBuilder>> GetBuilderClassFields(
         this IType instance,
         PipelineContext<IConcreteTypeBuilder, BuilderContext> context,
         IFormattableStringParser formattableStringParser)
@@ -128,11 +128,11 @@ public static class TypeBaseExtensions
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {
-                yield return Result.FromExistingResult<ClassFieldBuilder>(builderArgumentTypeResult);
+                yield return Result.FromExistingResult<FieldBuilder>(builderArgumentTypeResult);
                 yield break;
             }
 
-            yield return Result.Success(new ClassFieldBuilder()
+            yield return Result.Success(new FieldBuilder()
                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
                 .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
@@ -140,7 +140,7 @@ public static class TypeBaseExtensions
         }
     }
 
-    public static IEnumerable<ClassProperty> GetPropertiesFromClassAndBaseClass(
+    public static IEnumerable<Property> GetPropertiesFromClassAndBaseClass(
         this IType instance,
         Builder.PipelineBuilderSettings settings)
     {

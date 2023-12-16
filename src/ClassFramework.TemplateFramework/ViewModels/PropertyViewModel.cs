@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class ClassPropertyViewModel : AttributeContainerViewModelBase<ClassProperty>
+public class PropertyViewModel : AttributeContainerViewModelBase<Property>
 {
-    public ClassPropertyViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+    public PropertyViewModel(ICsharpExpressionCreator csharpExpressionCreator)
         : base(csharpExpressionCreator)
     {
     }

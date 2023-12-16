@@ -8,7 +8,7 @@ public class ClassFieldBuilderTests
         public void Sets_Visibilty_To_Private()
         {
             // Act
-            var sut = new ClassFieldBuilder();
+            var sut = new FieldBuilder();
 
             // Assert
             sut.Visibility.Should().Be(Domains.Visibility.Private);

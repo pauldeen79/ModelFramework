@@ -33,7 +33,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
         foreach (var property in context.Context.SourceModel.GetPropertiesFromClassAndBaseClass(context.Context.Settings).Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings);
+            var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings);
             var typeName = context.Context.MapTypeName(property.TypeName.FixTypeName());
 
             var results = new[]
@@ -52,7 +52,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                 return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
             }
 
-            var builder = new ClassMethodBuilder()
+            var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
                 .WithTypeName(context.Context.IsBuilderForAbstractEntity
                       ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()

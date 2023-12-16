@@ -49,14 +49,14 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddDefaultConstructorFeatureBuilder(_formattableStringParser);
 
-    private Result<ClassConstructorBuilder> CreateDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<ConstructorBuilder> CreateDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         var constructorInitializerResults = context.Context.SourceModel.Properties
             .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new
             {
                 Name = x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
-                Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
+                Result = x.GetBuilderConstructorInitializer(context, _formattableStringParser, x.TypeName)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
@@ -64,10 +64,10 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
         var errorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
         if (errorResult is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(errorResult.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(errorResult.Result);
         }
 
-        var ctor = new ClassConstructorBuilder()
+        var ctor = new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"));
@@ -89,12 +89,12 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
             var defaultValueErrorResult = Array.Find(defaultValueResults, x => !x.IsSuccessful());
             if (defaultValueErrorResult is not null)
             {
-                return Result.FromExistingResult<ClassConstructorBuilder>(defaultValueErrorResult);
+                return Result.FromExistingResult<ConstructorBuilder>(defaultValueErrorResult);
             }
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!));
             ctor.AddStringCodeStatements("SetDefaultValues();");
-            context.Model.Methods.Add(new ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
+            context.Model.Methods.Add(new MethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
         }
 
         return Result.Success(ctor);
@@ -103,16 +103,16 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
     private static string CreateBuilderClassConstructorChainCall(IType instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base()")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private Result<string> GenerateDefaultValueStatement(ClassProperty property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<string> GenerateDefaultValueStatement(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
             "{BuilderMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );
 
-    private static ClassConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
-        => new ClassConstructorBuilder()
+    private static ConstructorBuilder CreateInheritanceDefaultConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+        => new ConstructorBuilder()
             .WithChainCall("base()")
             .WithProtected(context.Context.IsBuilderForAbstractEntity);
 }

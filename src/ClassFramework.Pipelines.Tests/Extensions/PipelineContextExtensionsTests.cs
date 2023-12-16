@@ -9,7 +9,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var model = new ClassBuilder();
-            var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").WithAbstract().AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").WithAbstract().AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
@@ -28,7 +28,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var model = new ClassBuilder();
-            var sourceModel = new InterfaceBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = new InterfaceBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
@@ -47,7 +47,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var model = new ClassBuilder();
-            var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
@@ -66,7 +66,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var model = new ClassBuilder();
-            var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).AddConstructors(new ClassConstructorBuilder().AddParameter("myProperty", typeof(string))).Build();
+            var sourceModel = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).AddConstructors(new ConstructorBuilder().AddParameter("myProperty", typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
@@ -85,7 +85,7 @@ public class PipelineContextExtensionsTests : TestBase
         {
             // Arrange
             var model = new ClassBuilder();
-            var sourceModel = new StructBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
+            var sourceModel = new StructBuilder().WithNamespace("MyNamespace").WithName("MyClass").AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string))).Build();
             InitializeParser();
             var builderContext = new BuilderContext(sourceModel, new Pipelines.Builder.PipelineBuilderSettings(), Fixture.Freeze<IFormatProvider>());
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, builderContext);
@@ -107,7 +107,7 @@ public class PipelineContextExtensionsTests : TestBase
             var sourceModel = new ClassBuilder()
                 .WithNamespace("MyNamespace")
                 .WithName("MyClass")
-                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderEntityInstanciation).WithValue("Factory.DoSomething(this)"))
                 .Build();
             InitializeParser();

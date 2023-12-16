@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class ClassConstructorViewModel : MethodViewModelBase<ClassConstructor>
+public class ConstructorViewModel : MethodViewModelBase<Constructor>
 {
-    public ClassConstructorViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+    public ConstructorViewModel(ICsharpExpressionCreator csharpExpressionCreator)
         : base(csharpExpressionCreator)
     {
     }

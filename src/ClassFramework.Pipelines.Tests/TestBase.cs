@@ -52,9 +52,9 @@ public abstract class TestBase : IDisposable
             .WithName("SomeClass")
             .WithNamespace("SomeNamespace")
             .WithBaseClass(baseClass)
-            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(string)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
+            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(List<int>)).AddMetadata(propertyMetadataBuilders).AddAttributes(new AttributeBuilder().WithName("MyAttribute")))
             .AddMetadata(new MetadataBuilder().WithName("MyMetadataName").WithValue("MyMetadataValue"))
             .BuildTyped();
 
@@ -68,8 +68,8 @@ public abstract class TestBase : IDisposable
             .AddProperties(
                 new[]
                 {
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasSetter(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasSetter(false),
+                    new PropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
                 }.Where(_ => addProperties)
             )
             .BuildTyped();
@@ -78,14 +78,14 @@ public abstract class TestBase : IDisposable
         => new ClassBuilder()
             .WithName("SomeClass")
             .WithNamespace("MySourceNamespace")
-            .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
-            .AddProperties(new ClassPropertyBuilder().WithName("Property3").WithType(typeof(string)))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
-            .AddProperties(new ClassPropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
-            .AddProperties(new ClassPropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
-            .AddProperties(new ClassPropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
+            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(string)))
+            .AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.MyClass"))
+            .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
+            .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
             .BuildTyped();
 
     protected static Pipelines.Builder.PipelineBuilderSettings CreateBuilderSettings(

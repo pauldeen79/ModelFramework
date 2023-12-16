@@ -73,7 +73,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(int)))
+                .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(typeof(int)))
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();

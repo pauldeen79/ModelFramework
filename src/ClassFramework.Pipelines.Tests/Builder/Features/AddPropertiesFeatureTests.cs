@@ -44,7 +44,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var settings = CreateBuilderSettings(
                 enableBuilderInheritance: true,
                 isAbstract: false,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
+                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -69,7 +69,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var settings = CreateBuilderSettings(
                 enableBuilderInheritance: true,
                 isAbstract: false,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
+                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -92,7 +92,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var settings = CreateBuilderSettings(
                 enableBuilderInheritance: true,
                 isAbstract: false,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped(),
+                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped(),
                 newCollectionTypeName: typeof(ReadOnlyCollection<>).WithoutGenerics());
             var context = CreateContext(sourceModel, model, settings);
 
@@ -214,8 +214,8 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("MyOptionalProperty").WithType(typeof(string)).WithIsNullable())
-                .AddProperties(new ClassPropertyBuilder().WithName("MyRequiredProperty").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("MyOptionalProperty").WithType(typeof(string)).WithIsNullable())
+                .AddProperties(new PropertyBuilder().WithName("MyRequiredProperty").WithType(typeof(string)))
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
@@ -248,7 +248,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(typeof(string)))
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();
@@ -281,7 +281,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sourceModel = new ClassBuilder()
                 .WithName("SomeClass")
                 .WithNamespace("SomeNamespace")
-                .AddProperties(new ClassPropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
+                .AddProperties(new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)))
                 .BuildTyped();
             InitializeParser();
             var sut = CreateSut();

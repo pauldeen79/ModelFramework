@@ -1,10 +1,9 @@
 ﻿namespace ClassFramework.Domain.Builders;
 
-public partial class ClassPropertyBuilder
+public partial class FieldBuilder
 {
     partial void SetDefaultValues()
     {
-        HasGetter = true;
-        HasSetter = true;
+        Visibility = Visibility.Private;
     }
 }

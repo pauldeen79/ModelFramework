@@ -14,7 +14,7 @@ public static class VisibilityContainerExtensions
         var builder = new StringBuilder();
         if (instance is IExtendedVisibilityContainer extendedVisibilityContainer)
         {
-            var classMethod = instance as ClassMethod;
+            var classMethod = instance as Method;
 
             if (classMethod is null || !classMethod.Partial)
             {
@@ -25,7 +25,7 @@ public static class VisibilityContainerExtensions
                 builder.AppendWithCondition("virtual", extendedVisibilityContainer.Virtual);
                 builder.AppendWithCondition("override", extendedVisibilityContainer.Override);
 
-                var classField = instance as ClassField;
+                var classField = instance as Field;
                 builder.AppendWithCondition("readonly", classField?.ReadOnly == true);
                 builder.AppendWithCondition("const", classField?.Constant == true);
             }

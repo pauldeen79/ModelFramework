@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain;
 
-public partial record ClassMethod
+public partial record Method
 {
     public bool IsInterfaceMethod()
         => Name.StartsWith("I", StringComparison.Ordinal)

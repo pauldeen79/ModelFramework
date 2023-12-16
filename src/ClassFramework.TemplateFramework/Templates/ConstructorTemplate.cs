@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel>, IStringBuilderTemplate
+public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel>, IStringBuilderTemplate
 {
     public void Render(StringBuilder builder)
     {
@@ -11,27 +11,14 @@ public class ClassMethodTemplate : CsharpClassGeneratorBase<ClassMethodViewModel
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
         builder.Append(Model.CreateIndentation(1));
-        
-        if (Model.ShouldRenderModifiers)
-        {
-            builder.Append(Model.Modifiers);
-        }
-
-        builder.Append(Model.ReturnTypeName);
-        builder.Append(" ");
-        builder.Append(Model.ExplicitInterfaceName);
+        builder.Append(Model.Modifiers);
         builder.Append(Model.Name);
-        builder.Append(Model.GenericTypeArguments);
         builder.Append("(");
-
-        if (Model.ExtensionMethod)
-        {
-            builder.Append("this ");
-        }
 
         RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
 
         builder.Append(")");
+        builder.Append(Model.ChainCall);
 
         if (Model.OmitCode)
         {

@@ -18,7 +18,7 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCo
         }
 
         context.Model.Interfaces.Add(typeof(INotifyPropertyChanged).FullName);
-        context.Model.Fields.Add(new ClassFieldBuilder()
+        context.Model.Fields.Add(new FieldBuilder()
             .WithName(nameof(INotifyPropertyChanged.PropertyChanged))
             .WithType(typeof(PropertyChangedEventHandler))
             .WithEvent()

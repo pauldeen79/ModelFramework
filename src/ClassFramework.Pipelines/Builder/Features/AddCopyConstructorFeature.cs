@@ -54,7 +54,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddCopyConstructorFeatureBuilder(_formattableStringParser);
 
-    private Result<ClassConstructorBuilder> CreateCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
         var initializationCodeResults = context.Context.SourceModel.Properties
             .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings))
@@ -70,7 +70,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Result.IsSuccessful());
         if (initializationCodeErrorResult is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(initializationCodeErrorResult.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Result);
         }
 
         var constructorInitializerResults = context.Context.SourceModel.Properties
@@ -78,7 +78,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .Select(x => new
             {
                 Name = x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
-                Result = x.GetBuilderClassConstructorInitializer(context, _formattableStringParser, x.TypeName)
+                Result = x.GetBuilderConstructorInitializer(context, _formattableStringParser, x.TypeName)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();
@@ -86,16 +86,16 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
         if (initializerErrorResult is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(initializerErrorResult.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Result);
         }
 
         var nullCheckResult = _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context);
         if (!nullCheckResult.IsSuccessful())
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(nullCheckResult);
+            return Result.FromExistingResult<ConstructorBuilder>(nullCheckResult);
         }
 
-        return Result.Success(new ClassConstructorBuilder()
+        return Result.Success(new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
@@ -113,7 +113,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         );
     }
 
-    private Result<string> CreateBuilderInitializationCode(ClassProperty property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Result<string> CreateBuilderInitializationCode(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => _formattableStringParser.Parse
         (
             property.Metadata
@@ -126,7 +126,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                         : "{BuilderMemberName} = source.[SourceExpression]" // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
                 ),
             context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );
 
     private static string CreateCollectionInitialization(PipelineBuilderSettings settings)
@@ -139,7 +139,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         return "{NullCheck.Source.Argument}{Name}.AddRange(source.[SourceExpression])";
     }
 
-    private static string? GetSourceExpression(string? value, ClassProperty sourceProperty, PipelineBuilderTypeSettings typeSettings, bool enableNullableReferenceTypes)
+    private static string? GetSourceExpression(string? value, Property sourceProperty, PipelineBuilderTypeSettings typeSettings, bool enableNullableReferenceTypes)
     {
         if (value is null || !value.Contains("[SourceExpression]"))
         {
@@ -160,8 +160,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineBuilderSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
-    private static ClassConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
-        => new ClassConstructorBuilder()
+    private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+        => new ConstructorBuilder()
             .WithChainCall("base(source)")
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddParameters

@@ -9,11 +9,11 @@ public class ParentChildContextTests : TestBase
         {
             // Arrange
             var parentContext = default(PipelineContext<ClassBuilder, TypeBase>);
-            var childContext = new ClassPropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
+            var childContext = new PropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
             var settings = Fixture.Freeze<IPipelineGenerationSettings>();
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, ClassProperty>(parentContext!, childContext, settings))
+            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext!, childContext, settings))
                 .Should().Throw<ArgumentNullException>().WithParameterName("parentContext");
         }
 
@@ -22,11 +22,11 @@ public class ParentChildContextTests : TestBase
         {
             // Arrange
             var parentContext = new PipelineContext<ClassBuilder, TypeBase>(new ClassBuilder(), new ClassBuilder().WithName("MyClass").Build());
-            var childContext = default(ClassProperty);
+            var childContext = default(Property);
             var settings = Fixture.Freeze<IPipelineGenerationSettings>();
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, ClassProperty>(parentContext, childContext!, settings))
+            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext!, settings))
                 .Should().Throw<ArgumentNullException>().WithParameterName("childContext");
         }
 
@@ -35,11 +35,11 @@ public class ParentChildContextTests : TestBase
         {
             // Arrange
             var parentContext = new PipelineContext<ClassBuilder, TypeBase>(new ClassBuilder(), new ClassBuilder().WithName("MyClass").Build());
-            var childContext = new ClassPropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
+            var childContext = new PropertyBuilder().WithName("Property").WithType(typeof(int)).Build();
             var settings = default(IPipelineGenerationSettings);
 
             // Act & Assert
-            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, ClassProperty>(parentContext, childContext, settings!))
+            this.Invoking(_ => new ParentChildContext<PipelineContext<ClassBuilder, TypeBase>, Property>(parentContext, childContext, settings!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
     }

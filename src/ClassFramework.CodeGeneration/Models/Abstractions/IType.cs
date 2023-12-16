@@ -5,8 +5,8 @@ internal interface IType : IMetadataContainer, IVisibilityContainer, INameContai
     [Required(AllowEmptyStrings = true)] string Namespace { get; }
     bool Partial { get; }
     [Required] IReadOnlyCollection<string> Interfaces { get; }
-    [Required] IReadOnlyCollection<IClassField> Fields { get; }
-    [Required] IReadOnlyCollection<IClassProperty> Properties { get; }
-    [Required] IReadOnlyCollection<IClassMethod> Methods { get; }
+    [Required] IReadOnlyCollection<IField> Fields { get; }
+    [Required] IReadOnlyCollection<IProperty> Properties { get; }
+    [Required] IReadOnlyCollection<IMethod> Methods { get; }
     [Required] IReadOnlyCollection<string> SuppressWarningCodes { get; }
 }

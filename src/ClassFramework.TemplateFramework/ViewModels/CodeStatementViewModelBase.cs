@@ -15,7 +15,7 @@ public abstract class CodeStatementViewModelBase<T> : CsharpClassGeneratorViewMo
             return parentModel switch
             {
                 PropertyCodeBodyModel => 3,
-                ClassMethod or ClassConstructor => 2,
+                Method or Constructor => 2,
                 _ => throw new NotSupportedException($"Don't know how {parentModel?.GetType().FullName ?? "NULL"} should be indented")
             };
         }

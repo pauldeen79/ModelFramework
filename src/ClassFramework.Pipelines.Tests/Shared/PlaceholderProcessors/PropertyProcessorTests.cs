@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Shared.PlaceholderProcessors;
 
-public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
+public class PropertyProcessorTests : TestBase<PropertyProcessor>
 {
-    public class Process : ClassPropertyProcessorTests
+    public class Process : PropertyProcessorTests
     {
-        private ClassProperty CreateModel() => new ClassPropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).Build();
+        private Property CreateModel() => new PropertyBuilder().WithName("Delegate").WithType(typeof(List<string>)).Build();
 
         [Fact]
         public void Throws_On_Null_FormattableStringParser()
@@ -35,7 +35,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassProperty>(CreateModel());
+            var context = new PipelineContext<Property>(CreateModel());
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -65,7 +65,7 @@ public class ClassPropertyProcessorTests : TestBase<ClassPropertyProcessor>
             var sut = CreateSut();
             var settings = Fixture.Freeze<IPipelineGenerationSettings>();
             var model = CreateModel();
-            var context = new ClassPropertyContext(model, settings, CultureInfo.InvariantCulture, model.TypeName);
+            var context = new PropertyContext(model, settings, CultureInfo.InvariantCulture, model.TypeName);
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, formattableStringParser);

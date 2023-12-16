@@ -20,7 +20,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         context.Model.Properties.AddRange(
                 properties.Select
                 (
-                    property => new ClassPropertyBuilder()
+                    property => new PropertyBuilder()
                         .WithName(property.Name)
                         .WithTypeName(context.Context.MapTypeName(property.TypeName
                             .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
@@ -57,7 +57,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                         .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()) // only non-collection properties to prevent CA2227 warning - convert to read-only property
                         .Select
                         (
-                            property => new ClassFieldBuilder()
+                            property => new FieldBuilder()
                                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
                                 .WithTypeName(context.Context.MapTypeName(property.TypeName
                                     .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
@@ -74,7 +74,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         => new AddPropertiesFeatureBuilder();
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
-        ClassProperty property,
+        Property property,
         EntityContext context)
     {
         if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
@@ -84,7 +84,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
     }
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
-        ClassProperty property,
+        Property property,
         EntityContext context)
     {
         if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())

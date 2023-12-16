@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public class ClassPropertyTemplate : CsharpClassGeneratorBase<ClassPropertyViewModel>, IStringBuilderTemplate
+public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, IStringBuilderTemplate
 {
     public void Render(StringBuilder builder)
     {

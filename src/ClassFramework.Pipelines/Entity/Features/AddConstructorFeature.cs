@@ -41,21 +41,21 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 
-    private Result<ClassConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
+    private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         var initializationResults = context.Context.SourceModel.Properties
             .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, ClassProperty>(context, property, context.Context.Settings)))
+            .Select(property => _formattableStringParser.Parse("this.{EntityMemberName} = {InitializationExpression}{NullableRequiredSuffix};", context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Context.Settings)))
             .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
         var error = Array.Find(initializationResults, x => !x.IsSuccessful());
         if (error is not null)
         {
-            return Result.FromExistingResult<ClassConstructorBuilder>(error);
+            return Result.FromExistingResult<ConstructorBuilder>(error);
         }
 
-        return Result.Success(new ClassConstructorBuilder()
+        return Result.Success(new ConstructorBuilder()
             .WithProtected(context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
             .AddParameters(context.CreateImmutableClassCtorParameters())
             .AddStringCodeStatements

@@ -39,7 +39,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                     .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                     .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
                 context.Context.FormatProvider,
-                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
+                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
             );
 
             if (!typeNameResult.IsSuccessful())
@@ -47,7 +47,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                 return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
-            context.Model.Properties.Add(new ClassPropertyBuilder()
+            context.Model.Properties.Add(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(typeNameResult.Value!
                     .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
@@ -76,7 +76,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
-        ClassProperty property,
+        Property property,
         BuilderContext context)
     {
         if (context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
@@ -86,7 +86,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
     }
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
-        ClassProperty property,
+        Property property,
         BuilderContext context)
     {
         if (context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))

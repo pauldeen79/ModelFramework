@@ -220,9 +220,9 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).WithHasSetter(true).WithHasInitializer(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(true),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(false) // this property should be skipped, because it does not have a setter or initializer
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithHasSetter(true).WithHasInitializer(false),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(true),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(false) // this property should be skipped, because it does not have a setter or initializer
                 )
                 .Build();
             var settings = CreateBuilderSettings();
@@ -242,11 +242,11 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).WithHasSetter(true).WithHasInitializer(false),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(true),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(false) // this property should be skipped, because it does not have a setter or initializer
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithHasSetter(true).WithHasInitializer(false),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(true),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(false) // this property should be skipped, because it does not have a setter or initializer
                 )
-                .AddConstructors(new ClassConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
+                .AddConstructors(new ConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
                 .Build();
             var settings = CreateBuilderSettings();
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
@@ -262,15 +262,15 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Properties_From_Instance_And_BaseClass_When_IsBuilderForOverrideEntity_Is_True_And_BaseClass_Is_Filled()
         {
             var sut = new ClassBuilder().WithName("MyClass")
-                .AddProperties(new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)))
-                .AddConstructors(new ClassConstructorBuilder()
+                .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
+                .AddConstructors(new ConstructorBuilder()
                     .AddParameter("property1", typeof(int))
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
             var settings = CreateBuilderSettings(
                 enableBuilderInheritance: true,
-                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped(),
+                baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped(),
                 enableEntityInheritance: true
             );
             var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
@@ -287,10 +287,10 @@ public class TypeBaseExtensionsTests : TestBase
         {
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int))
                 )
-                .AddConstructors(new ClassConstructorBuilder()
+                .AddConstructors(new ConstructorBuilder()
                     .AddParameter("property1", typeof(int))
                     .AddParameter("property2", typeof(int))
                 )
@@ -314,10 +314,10 @@ public class TypeBaseExtensionsTests : TestBase
         {
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int))
                 )
-                .AddConstructors(new ClassConstructorBuilder()
+                .AddConstructors(new ConstructorBuilder()
                     .AddParameter("property1", typeof(int))
                     .AddParameter("property2", typeof(int))
                 )
@@ -371,9 +371,9 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
             var settings = CreateBuilderSettings(
@@ -400,9 +400,9 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
             var settings = CreateBuilderSettings(
@@ -429,9 +429,9 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
             var settings = CreateBuilderSettings(
@@ -459,8 +459,8 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)).WithIsNullable()
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(string)),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(string)).WithIsNullable()
                 )
                 .Build();
             var settings = CreateBuilderSettings(
@@ -491,9 +491,9 @@ public class TypeBaseExtensionsTests : TestBase
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties
                 (
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType"),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(string)),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(string)).WithIsNullable()
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType"),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(string)),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(string)).WithIsNullable()
                 )
                 .Build();
             var settings = CreateBuilderSettings(
@@ -536,9 +536,9 @@ public class TypeBaseExtensionsTests : TestBase
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
                 .Build();
             var settings = CreateBuilderSettings(
                 enableEntityInheritance: true,
@@ -560,14 +560,14 @@ public class TypeBaseExtensionsTests : TestBase
             // Arrange
             var sut = new ClassBuilder().WithName("MyClass")
                 .AddProperties(
-                    new ClassPropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
-                    new ClassPropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
-                    new ClassPropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
+                    new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
+                    new PropertyBuilder().WithName("Property3").WithType(typeof(int)).WithParentTypeFullName("1"))
                 .Build();
             var settings = CreateBuilderSettings(
                 enableEntityInheritance: true,
                 enableBuilderInheritance: true,
-                baseClass: new ClassBuilder().WithName("MyBaseClassBuilder").AddProperties(new ClassPropertyBuilder().WithName("Property4").WithType(typeof(int)).WithParentTypeFullName("3")).BuildTyped(),
+                baseClass: new ClassBuilder().WithName("MyBaseClassBuilder").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int)).WithParentTypeFullName("3")).BuildTyped(),
                 inheritanceComparisonDelegate: (parent, type) => parent.ParentTypeFullName == "1" || parent.ParentTypeFullName == "3"
             );
 

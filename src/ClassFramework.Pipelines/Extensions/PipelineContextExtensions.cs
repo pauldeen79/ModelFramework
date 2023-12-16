@@ -78,7 +78,7 @@ public static class PipelineContextExtensions
                     .WithIsValueType(property.IsValueType)
             );
     
-    private static string GetPropertyNamesConcatenated(IEnumerable<ClassProperty> properties, CultureInfo cultureInfo)
+    private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
     private static string CreateImmutableClassCtorParameterNames<TModel>(
@@ -101,7 +101,7 @@ public static class PipelineContextExtensions
                         .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                         .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
-                    new ParentChildContext<PipelineContext<TModel, BuilderContext>, ClassProperty>(context, property, context.Context.Settings)
+                    new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
                 ),
                 Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
             }
@@ -118,7 +118,7 @@ public static class PipelineContextExtensions
             : GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix))));
     }
 
-    private static string? GetBuilderPropertyExpression(this string? value, ClassProperty sourceProperty, string suffix)
+    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string suffix)
     {
         if (value is null || !value.Contains("[Name]"))
         {

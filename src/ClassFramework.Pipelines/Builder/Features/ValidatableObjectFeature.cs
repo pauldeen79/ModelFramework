@@ -38,7 +38,7 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
         }
 
         context.Model.Interfaces.Add(typeof(IValidatableObject).FullName);
-        context.Model.Methods.Add(new ClassMethodBuilder()
+        context.Model.Methods.Add(new MethodBuilder()
             .WithName(nameof(IValidatableObject.Validate))
             .WithType(typeof(IEnumerable<ValidationResult>))
             .AddParameter("validationContext", typeof(ValidationContext))

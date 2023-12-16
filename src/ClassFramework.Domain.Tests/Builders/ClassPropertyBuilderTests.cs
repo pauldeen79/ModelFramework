@@ -8,7 +8,7 @@ public class ClassPropertyBuilderTests
         public void Sets_HasGetter_To_True()
         {
             // Act
-            var sut = new ClassPropertyBuilder();
+            var sut = new PropertyBuilder();
 
             // Assert
             sut.HasGetter.Should().BeTrue();
@@ -18,7 +18,7 @@ public class ClassPropertyBuilderTests
         public void Sets_HasSetter_To_True()
         {
             // Act
-            var sut = new ClassPropertyBuilder();
+            var sut = new PropertyBuilder();
 
             // Assert
             sut.HasSetter.Should().BeTrue();
