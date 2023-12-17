@@ -200,6 +200,7 @@ public abstract class TestBase : IDisposable
         bool copyInterfaces = false,
         bool allowGenerationWithoutProperties = false,
         bool useBaseClassFromSourceModel = true,
+        bool partial = true,
         string namespaceFormatString = "{Namespace}",
         string nameFormatString = "{Class.Name}",
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
@@ -209,7 +210,8 @@ public abstract class TestBase : IDisposable
         => new Pipelines.Reflection.PipelineBuilderSettings(
             generationSettings: new Pipelines.Reflection.PipelineBuilderGenerationSettings(
                 allowGenerationWithoutProperties: allowGenerationWithoutProperties,
-                useBaseClassFromSourceModel: useBaseClassFromSourceModel),
+                useBaseClassFromSourceModel: useBaseClassFromSourceModel,
+                partial: partial),
             nameSettings: new Pipelines.Reflection.PipelineBuilderNameSettings(namespaceFormatString, nameFormatString),
             typeSettings: new Pipelines.Reflection.PipelineBuilderTypeSettings(
                 namespaceMappings,

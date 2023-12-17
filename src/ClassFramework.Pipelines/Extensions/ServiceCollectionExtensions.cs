@@ -62,6 +62,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddAttributesFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddInterfacesFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetBaseClassFeatureBuilder>()
+            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetModifiersFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetNameFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetVisibilityFeatureBuilder>();
 
