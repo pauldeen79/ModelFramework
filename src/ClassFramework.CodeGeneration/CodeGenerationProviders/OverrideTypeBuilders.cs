@@ -10,6 +10,10 @@ public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
     protected override ModelFramework.Objects.Contracts.IClass? BaseClass => CreateBaseclass(typeof(ITypeBase), Constants.Namespaces.Domain);
     protected override string BaseClassBuilderNamespace => Constants.Namespaces.DomainBuilders;
 
+    // Do nog generate 'With' methods. Do this on the interfaces instead.
+    protected override string SetMethodNameFormatString => string.Empty;
+    protected override string AddMethodNameFormatString => string.Empty;
+
     public override object CreateModel()
         => GetImmutableBuilderClasses(
             GetOverrideModels(typeof(ITypeBase)),

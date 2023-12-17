@@ -88,6 +88,13 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
             .BuildTyped();
 
+    protected static IConcreteType CreateModelWithPropertyThatHasAReservedName(Type propertyType)
+        => new ClassBuilder()
+            .WithName("SomeClass")
+            .WithNamespace("SomeNamespace")
+            .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(propertyType))
+            .BuildTyped();
+
     protected static Pipelines.Builder.PipelineBuilderSettings CreateBuilderSettings(
         bool enableBuilderInheritance = false,
         bool isAbstract = false,

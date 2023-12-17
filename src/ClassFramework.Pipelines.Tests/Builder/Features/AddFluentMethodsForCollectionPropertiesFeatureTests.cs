@@ -134,11 +134,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         public void Adds_Methods_With_ArgumentNullChecks_CsharpFriendlyName()
         {
             // Arrange
-            var sourceModel = new ClassBuilder()
-                .WithName("SomeClass")
-                .WithNamespace("SomeNamespace")
-                .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(typeof(List<int>)))
-                .Build();
+            var sourceModel = CreateModelWithPropertyThatHasAReservedName(typeof(List<int>));
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();

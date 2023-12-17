@@ -10,11 +10,6 @@ public class TypeBaseTests
             // Arrange
             var sut = new Class
             (
-                default,
-                default,
-                default,
-                Enumerable.Empty<Class>(),
-                Enumerable.Empty<Enumeration>(),
                 "MyNamespace",
                 default,
                 Enumerable.Empty<string>(),
@@ -28,6 +23,11 @@ public class TypeBaseTests
                 Enumerable.Empty<Attribute>(),
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
+                default,
+                default,
+                default,
+                Enumerable.Empty<Class>(),
+                Enumerable.Empty<Enumeration>(),
                 Enumerable.Empty<Constructor>(),
                 default,
                 default
@@ -46,11 +46,6 @@ public class TypeBaseTests
             // Arrange
             var sut = new Class
             (
-                default,
-                default,
-                default,
-                Enumerable.Empty<Class>(),
-                Enumerable.Empty<Enumeration>(),
                 string.Empty,
                 default,
                 Enumerable.Empty<string>(),
@@ -64,6 +59,11 @@ public class TypeBaseTests
                 Enumerable.Empty<Attribute>(),
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
+                default,
+                default,
+                default,
+                Enumerable.Empty<Class>(),
+                Enumerable.Empty<Enumeration>(),
                 Enumerable.Empty<Constructor>(),
                 default,
                 default

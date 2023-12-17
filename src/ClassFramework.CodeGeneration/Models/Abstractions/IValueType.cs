@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.CodeGeneration.Models.Abstractions;
 
-internal interface IValueType
+internal interface IValueType : IType
 {
 }

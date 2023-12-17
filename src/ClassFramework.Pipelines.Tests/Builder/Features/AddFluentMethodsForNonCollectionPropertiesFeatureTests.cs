@@ -70,11 +70,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
         public void Adds_Method_When_SetMethodNameFormatString_Is_Not_Empty_CsharpFriendlyName()
         {
             // Arrange
-            var sourceModel = new ClassBuilder()
-                .WithName("SomeClass")
-                .WithNamespace("SomeNamespace")
-                .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(typeof(int)))
-                .BuildTyped();
+            var sourceModel = CreateModelWithPropertyThatHasAReservedName(typeof(int));
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();

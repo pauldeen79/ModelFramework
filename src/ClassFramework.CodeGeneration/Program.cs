@@ -15,7 +15,7 @@ internal static class Program
         var multipleContentBuilder = new MultipleContentBuilder { BasePath = basePath };
 
         // Generate code
-        var generationTypeNames = new[] { "Entities", "Builders", "Models", "BuilderFactory", "ModelFactory", "Interfaces" };
+        var generationTypeNames = new[] { "Entities", "Builders", "Models", "BuilderFactory", "ModelFactory", "Interfaces", "Extensions" };
         var generators = typeof(ClassFrameworkCSharpClassBase).Assembly.GetExportedTypes().Where(x => !x.IsAbstract && x.BaseType == typeof(ClassFrameworkCSharpClassBase)).ToArray();
         var generationTypes = generators.Where(x => x.Name.EndsWithAny(generationTypeNames));
         _ = generationTypes.Select(x => (ClassFrameworkCSharpClassBase)Activator.CreateInstance(x)!).Select(x => GenerateCode.For(new(basePath, generateMultipleFiles, false, dryRun), multipleContentBuilder, x)).ToArray();
