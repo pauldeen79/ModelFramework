@@ -39,8 +39,9 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCont
             return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
         }
 
-        context.Model.Name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
-        context.Model.Namespace = results.First(x => x.Name == "Namespace").LazyResult.Value.Value!;
+        context.Model
+            .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
+            .WithNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!);
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

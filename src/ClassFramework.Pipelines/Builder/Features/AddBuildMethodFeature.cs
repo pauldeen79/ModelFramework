@@ -37,7 +37,7 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
             return Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult);
         }
 
-        context.Model.Methods.Add(new MethodBuilder()
+        context.Model.AddMethods(new MethodBuilder()
             .WithName(GetName(context))
             .WithAbstract(context.Context.IsBuilderForAbstractEntity)
             .WithOverride(context.Context.IsBuilderForOverrideEntity)
@@ -54,7 +54,7 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
         if (context.Context.IsBuilderForAbstractEntity)
         {
             var baseClass = context.Context.Settings.InheritanceSettings.BaseClass ?? context.Context.SourceModel;
-            context.Model.Methods.Add(new MethodBuilder()
+            context.Model.AddMethods(new MethodBuilder()
                 .WithName(context.Context.Settings.NameSettings.BuildMethodName)
                 .WithOverride()
                 .WithTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")

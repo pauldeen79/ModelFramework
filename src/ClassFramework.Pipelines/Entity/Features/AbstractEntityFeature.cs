@@ -14,7 +14,7 @@ public class AbstractEntityFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
 
         if (context.Model is ClassBuilder cls)
         {
-            cls.Abstract = context.Context.IsAbstract;
+            cls.WithAbstract(context.Context.IsAbstract);
         }
 
         return Result.Continue<IConcreteTypeBuilder>();

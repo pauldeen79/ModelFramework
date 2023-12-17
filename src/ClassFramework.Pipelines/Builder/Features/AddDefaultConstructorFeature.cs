@@ -30,7 +30,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
             && context.Context.IsAbstractBuilder
             && !context.Context.Settings.IsForAbstractBuilder)
         {
-            context.Model.Constructors.Add(CreateInheritanceDefaultConstructor(context));
+            context.Model.AddConstructors(CreateInheritanceDefaultConstructor(context));
         }
         else
         {
@@ -40,7 +40,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
                 return Result.FromExistingResult<IConcreteTypeBuilder>(defaultConstructorResult);
             }
 
-            context.Model.Constructors.Add(defaultConstructorResult.Value!);
+            context.Model.AddConstructors(defaultConstructorResult.Value!);
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
@@ -94,7 +94,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!));
             ctor.AddStringCodeStatements("SetDefaultValues();");
-            context.Model.Methods.Add(new MethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
+            context.Model.AddMethods(new MethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
         }
 
         return Result.Success(ctor);

@@ -37,25 +37,26 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
             return Result.FromExistingResult<IConcreteTypeBuilder>(instanciationResult);
         }
 
-        context.Model.Interfaces.Add(typeof(IValidatableObject).FullName);
-        context.Model.Methods.Add(new MethodBuilder()
-            .WithName(nameof(IValidatableObject.Validate))
-            .WithType(typeof(IEnumerable<ValidationResult>))
-            .AddParameter("validationContext", typeof(ValidationContext))
-            .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
-            .AddStringCodeStatements($"var instance = {instanciationResult.Value};")
-            .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
-            .AddStringCodeStatements
-            (
-                context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
-                new[]
-                {
-                    $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
-                    $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
-                    "return results;"
-                })
-            )
-        );
+        context.Model
+            .AddInterfaces(typeof(IValidatableObject).FullName)
+            .AddMethods(new MethodBuilder()
+                .WithName(nameof(IValidatableObject.Validate))
+                .WithType(typeof(IEnumerable<ValidationResult>))
+                .AddParameter("validationContext", typeof(ValidationContext))
+                .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
+                .AddStringCodeStatements($"var instance = {instanciationResult.Value};")
+                .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements())
+                .AddStringCodeStatements
+                (
+                    context.Context.SourceModel.Metadata.GetStringValues(MetadataNames.CustomBuilderValidationCode).WhenEmpty(() =>
+                    new[]
+                    {
+                        $"var results = new {typeof(List<>).ReplaceGenericTypeName(typeof(ValidationResult))}();",
+                        $"{typeof(Validator).FullName}.{nameof(Validator.TryValidateObject)}(instance, new {typeof(ValidationContext).FullName}(instance), results, true);",
+                        "return results;"
+                    })
+                )
+            );
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

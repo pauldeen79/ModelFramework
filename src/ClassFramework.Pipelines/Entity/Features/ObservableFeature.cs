@@ -17,13 +17,14 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCo
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        context.Model.Interfaces.Add(typeof(INotifyPropertyChanged).FullName);
-        context.Model.Fields.Add(new FieldBuilder()
-            .WithName(nameof(INotifyPropertyChanged.PropertyChanged))
-            .WithType(typeof(PropertyChangedEventHandler))
-            .WithEvent()
-            .WithIsNullable()
-            .WithVisibility(Visibility.Public)
+        context.Model
+            .AddInterfaces(typeof(INotifyPropertyChanged).FullName)
+            .AddFields(new FieldBuilder()
+                .WithName(nameof(INotifyPropertyChanged.PropertyChanged))
+                .WithType(typeof(PropertyChangedEventHandler))
+                .WithEvent()
+                .WithIsNullable()
+                .WithVisibility(Visibility.Public)
             );
 
         return Result.Continue<IConcreteTypeBuilder>();

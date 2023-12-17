@@ -55,8 +55,8 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
                 .WithTypeName(context.Context.IsBuilderForAbstractEntity
-                      ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
-                      : results.First(x => x.Name == "BuilderName").LazyResult.Value.Value! + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                      ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
+                      : $"{results.First(x => x.Name == "BuilderName").LazyResult.Value.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -78,7 +78,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                 $"return {GetReturnValue(context.Context)};"
             );
 
-            context.Model.Methods.Add(builder);
+            context.Model.AddMethods(builder);
         }
 
         return Result.Continue<IConcreteTypeBuilder>();

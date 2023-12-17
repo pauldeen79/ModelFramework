@@ -17,10 +17,12 @@ public class AddInterfacesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
             return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.Interfaces.AddRange(context.Context.SourceModel.GetInterfaces()
-            .Select(x => x.FullName.FixTypeName())
-            .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
-            .Select(x => context.Context.MapTypeName(x)));
+        context.Model.AddInterfaces(
+            context.Context.SourceModel.GetInterfaces()
+                .Select(x => x.FullName.FixTypeName())
+                .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                .Select(context.Context.MapTypeName)
+        );
 
         return Result.Continue<TypeBaseBuilder>();
     }

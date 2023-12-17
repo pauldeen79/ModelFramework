@@ -17,7 +17,7 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        context.Model.Interfaces.AddRange(context.Context.SourceModel.Interfaces
+        context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
             .Where(x => context.Context.Settings.EntitySettings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x => context.Context.MapTypeName(x.FixTypeName())));
 

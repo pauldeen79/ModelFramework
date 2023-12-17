@@ -17,7 +17,7 @@ public class AddAttributesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        context.Model.Attributes.AddRange(context.Context.SourceModel.Attributes
+        context.Model.AddAttributes(context.Context.SourceModel.Attributes
             .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))));
 

@@ -14,7 +14,7 @@ public class SetRecordFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCon
 
         if (context.Model is IRecordContainerBuilder recordContainerBuilder)
         {
-            recordContainerBuilder.Record = context.Context.Settings.GenerationSettings.CreateRecord;
+            recordContainerBuilder.WithRecord(context.Context.Settings.GenerationSettings.CreateRecord);
         }
 
         return Result.Continue<IConcreteTypeBuilder>();

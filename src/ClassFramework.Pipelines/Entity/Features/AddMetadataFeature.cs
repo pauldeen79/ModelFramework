@@ -12,7 +12,7 @@ public class AddMetadataFeature : IPipelineFeature<IConcreteTypeBuilder, EntityC
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.Metadata.AddRange(context.Context.SourceModel.Metadata.Select(x => new MetadataBuilder(x)));
+        context.Model.AddMetadata(context.Context.SourceModel.Metadata.Select(x => new MetadataBuilder(x)));
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

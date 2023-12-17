@@ -35,7 +35,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             && context.Context.IsAbstractBuilder
             && !context.Context.Settings.IsForAbstractBuilder)
         {
-            context.Model.Constructors.Add(CreateInheritanceCopyConstructor(context));
+            context.Model.AddConstructors(CreateInheritanceCopyConstructor(context));
         }
         else
         {
@@ -45,7 +45,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                 return Result.FromExistingResult<IConcreteTypeBuilder>(copyConstructorResult);
             }
 
-            context.Model.Constructors.Add(copyConstructorResult.Value!);
+            context.Model.AddConstructors(copyConstructorResult.Value!);
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
@@ -106,7 +106,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                    .WithTypeName($"{context.Context.SourceModel.GetFullName()}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
             .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context.Context.Settings.TypeSettings, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)};"))
@@ -168,6 +168,6 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName(context.Context.SourceModel.GetFullName() + context.Context.SourceModel.GetGenericTypeArgumentsString())
+                    .WithTypeName($"{context.Context.SourceModel.GetFullName()}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             );
 }

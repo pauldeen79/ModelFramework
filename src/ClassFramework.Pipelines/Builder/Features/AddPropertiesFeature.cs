@@ -47,7 +47,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                 return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
-            context.Model.Properties.Add(new PropertyBuilder()
+            context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(typeNameResult.Value!
                     .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
@@ -65,7 +65,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         // Note that we are not checking the result, because the same formattable string (CustomBuilderArgumentType) has already been checked earlier in this class
         // We can simple use GetValueOrThrow to keep the compiler happy (the value should be a string, and not be null)
-        context.Model.Fields.AddRange(context.Context.SourceModel
+        context.Model.AddFields(context.Context.SourceModel
             .GetBuilderClassFields(context, _formattableStringParser)
             .Select(x => x.GetValueOrThrow()));
 

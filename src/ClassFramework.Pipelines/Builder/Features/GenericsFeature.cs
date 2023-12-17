@@ -12,8 +12,8 @@ public class GenericsFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCon
     {
         context = context.IsNotNull(nameof(context));
 
-        context.Model.GenericTypeArguments.AddRange(context.Context.SourceModel.GenericTypeArguments);
-        context.Model.GenericTypeArgumentConstraints.AddRange(context.Context.SourceModel.GenericTypeArgumentConstraints);
+        context.Model.AddGenericTypeArguments(context.Context.SourceModel.GenericTypeArguments);
+        context.Model.AddGenericTypeArgumentConstraints(context.Context.SourceModel.GenericTypeArgumentConstraints);
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

@@ -32,7 +32,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
             return Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult);
         }
 
-        context.Model.BaseClass = baseClassResult.Value!;
+        context.Model.WithBaseClass(baseClassResult.Value);
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

@@ -17,13 +17,14 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
             return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.Attributes.AddRange(context.Context.SourceModel.GetCustomAttributes(true)
+        context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true)
             .OfType<System.Attribute>()
             .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                      && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
             .Select(x => ConvertToDomainAttribute(x, context))
             .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-            .Select(x => new AttributeBuilder(x)));
+            .Select(x => new AttributeBuilder(x))
+        );
 
         return Result.Continue<TypeBaseBuilder>();
     }
@@ -41,13 +42,14 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
         
         if (prefilled is not null)
         {
-            builder.Name = prefilled.Name;
-            builder.Parameters = prefilled.Parameters;
-            builder.Metadata = prefilled.Metadata;
+            builder
+                .WithName(prefilled.Name)
+                .AddParameters(prefilled.Parameters)
+                .AddMetadata(prefilled.Metadata);
         }
         else
         {
-            builder.Name = source.GetType().FullName;
+            builder.WithName(source.GetType().FullName);
         }
 
         return context.Context.MapAttribute(builder.Build());

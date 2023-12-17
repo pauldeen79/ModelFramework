@@ -17,42 +17,43 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                 .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
                 .ToArray();
 
-        context.Model.Properties.AddRange(
-                properties.Select
-                (
-                    property => new PropertyBuilder()
-                        .WithName(property.Name)
-                        .WithTypeName(context.Context.MapTypeName(property.TypeName
-                            .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-                            .FixNullableTypeName(property)))
-                        .WithIsNullable(property.IsNullable)
-                        .WithIsValueType(property.IsValueType)
-                        .AddAttributes(property.Attributes
-                            .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-                            .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
-                        .WithStatic(property.Static)
-                        .WithVirtual(property.Virtual)
-                        .WithAbstract(property.Abstract)
-                        .WithProtected(property.Protected)
-                        .WithOverride(property.Override)
-                        .WithHasGetter(property.HasGetter)
-                        .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.GenerationSettings.AddSetters || (context.Context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())))
-                        .WithHasSetter(context.Context.Settings.GenerationSettings.AddSetters || (context.Context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName()))
-                        .WithIsNullable(property.IsNullable)
-                        .WithIsValueType(property.IsValueType)
-                        .WithVisibility(property.Visibility)
-                        .WithGetterVisibility(property.GetterVisibility)
-                        .WithSetterVisibility(context.Context.Settings.GenerationSettings.SetterVisibility)
-                        .WithInitializerVisibility(property.InitializerVisibility)
-                        .WithExplicitInterfaceName(property.ExplicitInterfaceName)
-                        .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
-                        .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
-                        .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
-                ));
+        context.Model.AddProperties(
+            properties.Select
+            (
+                property => new PropertyBuilder()
+                    .WithName(property.Name)
+                    .WithTypeName(context.Context.MapTypeName(property.TypeName
+                        .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                        .FixNullableTypeName(property)))
+                    .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType)
+                    .AddAttributes(property.Attributes
+                        .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
+                        .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
+                    .WithStatic(property.Static)
+                    .WithVirtual(property.Virtual)
+                    .WithAbstract(property.Abstract)
+                    .WithProtected(property.Protected)
+                    .WithOverride(property.Override)
+                    .WithHasGetter(property.HasGetter)
+                    .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.GenerationSettings.AddSetters || (context.Context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())))
+                    .WithHasSetter(context.Context.Settings.GenerationSettings.AddSetters || (context.Context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName()))
+                    .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType)
+                    .WithVisibility(property.Visibility)
+                    .WithGetterVisibility(property.GetterVisibility)
+                    .WithSetterVisibility(context.Context.Settings.GenerationSettings.SetterVisibility)
+                    .WithInitializerVisibility(property.InitializerVisibility)
+                    .WithExplicitInterfaceName(property.ExplicitInterfaceName)
+                    .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
+                    .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
+                    .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
+            )
+        );
 
         if (context.Context.Settings.GenerationSettings.AddBackingFields)
         {
-            context.Model.Fields.AddRange(
+            context.Model.AddFields(
                     properties
                         .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()) // only non-collection properties to prevent CA2227 warning - convert to read-only property
                         .Select
@@ -64,7 +65,8 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                                     .FixNullableTypeName(property)))
                                 .WithIsNullable(property.IsNullable)
                                 .WithIsValueType(property.IsValueType)
-                        ));
+                        )
+            );
         }
 
         return Result.Continue<IConcreteTypeBuilder>();

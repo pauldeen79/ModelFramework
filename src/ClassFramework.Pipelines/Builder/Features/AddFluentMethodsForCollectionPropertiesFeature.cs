@@ -62,8 +62,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
             }
 
             var returnType = context.Context.IsBuilderForAbstractEntity
-                ? "TBuilder" + context.Context.SourceModel.GetGenericTypeArgumentsString()
-                : namespaceResult.Value! + context.Context.SourceModel.GetGenericTypeArgumentsString();
+                ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
+                : $"{namespaceResult.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
 
             var enumerableOverloadResults = GetCodeStatementsForEnumerableOverload(context, property)
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
@@ -91,7 +91,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                 return Result.FromExistingResult<IConcreteTypeBuilder>(addMethodNameFormatStringResult);
             }
 
-            context.Model.Methods.Add(new MethodBuilder()
+            context.Model.AddMethods(new MethodBuilder()
                 .WithName(addMethodNameFormatStringResult.Value!)
                 .WithTypeName(returnType)
                 .AddParameters
@@ -105,7 +105,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                 .AddStringCodeStatements(enumerableOverloadResults.Select(x => x.Value!))
             );
 
-            context.Model.Methods.Add(new MethodBuilder()
+            context.Model.AddMethods(new MethodBuilder()
                 .WithName(addMethodNameFormatStringResult.Value!)
                 .WithTypeName(returnType)
                 .AddParameters

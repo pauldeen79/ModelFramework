@@ -32,7 +32,7 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
             return Result.FromExistingResult<IConcreteTypeBuilder>(ctorResult);
         }
 
-        context.Model.Constructors.Add(ctorResult.Value!);
+        context.Model.AddConstructors(ctorResult.Value!);
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
