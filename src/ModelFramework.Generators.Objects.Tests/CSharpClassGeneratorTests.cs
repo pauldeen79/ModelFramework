@@ -2854,13 +2854,15 @@ namespace MyNamespace
 
     public static partial class MyRecordBuilderExtensions
     {
-        public static MyRecordBuilder WithProperty1(this MyRecordBuilder instance, string property1)
+        public static T WithProperty1<T>(this T instance, string property1)
+            where T : MyRecordBuilder
         {
             instance.Property1 = property1;
             return instance;
         }
 
-        public static MyRecordBuilder WithProperty2(this MyRecordBuilder instance, bool property2)
+        public static T WithProperty2<T>(this T instance, bool property2)
+            where T : MyRecordBuilder
         {
             instance.Property2 = property2;
             return instance;

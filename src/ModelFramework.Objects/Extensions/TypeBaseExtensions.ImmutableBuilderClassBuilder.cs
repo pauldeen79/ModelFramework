@@ -784,18 +784,32 @@ public static partial class TypeBaseEtensions
                                                                   ITypeBase instance,
                                                                   ImmutableBuilderClassSettings settings,
                                                                   bool extensionMethod)
-        => builder.WithTypeName(settings.IsBuilderForAbstractEntity
-                      ? "TBuilder" + instance.GetGenericTypeArgumentsString()
-                      : string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString())
+        => builder.WithTypeName(CreateTypeName(instance, settings, extensionMethod && !settings.IsBuilderForAbstractEntity))
+                  .AddGenericTypeArguments(new[] { "T" }.Where(_ => extensionMethod && !settings.IsBuilderForAbstractEntity))
+                  .AddGenericTypeArgumentConstraints(new[] { $"where T : {string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name)}" }.Where(_ => extensionMethod && !settings.IsBuilderForAbstractEntity))
                   .WithStatic(extensionMethod)
                   .WithExtensionMethod(extensionMethod)
-                  .AddParameters(new[]
+                  .AddParameters((new[]
                   {
-                      new ParameterBuilder().WithName("instance")
-                                            .WithTypeName(settings.IsBuilderForAbstractEntity
-                                                ? "TBuilder" + instance.GetGenericTypeArgumentsString()
-                                                : string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString())
-                  }.Where(_ => extensionMethod));
+                      new ParameterBuilder()
+                        .WithName("instance")
+                        .WithTypeName(CreateTypeName(instance, settings, extensionMethod && !settings.IsBuilderForAbstractEntity))
+                  }).Where(_ => extensionMethod));
+
+    private static string CreateTypeName(ITypeBase instance, ImmutableBuilderClassSettings settings, bool extensionMethod)
+    {
+        if (extensionMethod)
+        {
+            return "T";
+        }
+
+        if (settings.IsBuilderForAbstractEntity)
+        {
+            return "TBuilder" + instance.GetGenericTypeArgumentsString();
+        }
+
+        return string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString();
+    }
 
     private static string GetCallPrefix(bool extensionMethod, bool lazyInitialization)
         => extensionMethod
@@ -840,7 +854,7 @@ public static partial class TypeBaseEtensions
             statements.Add($"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\");");
             if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
-                statements.Add($"if ({property.Name} == null) {GetInitializationName(property.Name, settings)} = {GetImmutableBuilderClassConstructorInitializer(settings, property)};");
+                statements.Add($"if ({GetCallPrefix(extensionMethod, false)}{property.Name} == null) {GetCallPrefix(extensionMethod, false)}{GetInitializationName(property.Name, settings)} = {GetImmutableBuilderClassConstructorInitializer(settings, property)};");
             }
         }
         statements.Add(string.Format
@@ -1024,7 +1038,7 @@ public static partial class TypeBaseEtensions
                                                  p.Name,                           // 0
                                                  p.Name.ToPascalCase(),            // 1
                                                  p.IsNullable
-                                                    ? "?" 
+                                                    ? "?"
                                                     : string.Empty,                // 2
                                                  p.TypeName,                       // 3
                                                  p.TypeName.GetGenericArguments(), // 4

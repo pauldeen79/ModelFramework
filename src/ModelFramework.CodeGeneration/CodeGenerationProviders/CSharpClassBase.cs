@@ -238,11 +238,8 @@ public abstract class CSharpClassBase : ClassBase
                 .With
                 (
                     x => x.Methods.ForEach(y => y.AddGenericTypeArguments("T")
-                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
-                )
-                .With
-                (
-                    x => x.Methods.ForEach(y => y.WithTypeName("T")
+                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}")
+                                                 .WithTypeName("T")
                                                  .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
                 )
                 .With(x => Visit(x))
@@ -360,7 +357,31 @@ public abstract class CSharpClassBase : ClassBase
     {
         Guard.IsNotNull(typeBase);
 
-        return typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
+        TypeBaseBuilder builder = typeBase switch
+        {
+            IInterface i => new InterfaceBuilder(i),
+            IClass c => new ClassBuilder(c),
+            _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
+        };
+
+        return 
+            builder
+            .WithAll(y => y.Properties, z =>
+            {
+                z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
+                    .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
+
+                if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
+                {
+                    FixPropertyInterfacesNamespaces(z);
+                }
+
+                z.HasSetter = true;
+                z.Attributes.Clear();
+            })
+            .Chain(FixInterfacesNamespaces)
+            .Build()
+            .ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
     }
 
     protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
@@ -704,7 +725,7 @@ public abstract class CSharpClassBase : ClassBase
         }
     }
 
-    private void FixInterfacesNamespaces(InterfaceBuilder interfaceBuilder)
+    private void FixInterfacesNamespaces(TypeBaseBuilder interfaceBuilder)
     {
         for (int i = 0; i < interfaceBuilder.Interfaces.Count; i++)
         {
