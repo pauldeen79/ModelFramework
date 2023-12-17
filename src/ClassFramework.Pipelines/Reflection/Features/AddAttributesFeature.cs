@@ -49,7 +49,7 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
         }
         else
         {
-            builder.WithName(source.GetType().FullName);
+            builder.WithName(source.GetType());
         }
 
         return context.Context.MapAttribute(builder.Build());

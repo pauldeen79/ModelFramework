@@ -12,4 +12,7 @@ public partial class AttributeBuilder
                 new AttributeParameterBuilder().WithValue(generatorName),
                 new AttributeParameterBuilder().WithValue(generatorVersion)
             );
+
+    public AttributeBuilder WithName(Type sourceType)
+        => WithName(sourceType.IsNotNull(nameof(sourceType)).FullName.FixTypeName());
 }
