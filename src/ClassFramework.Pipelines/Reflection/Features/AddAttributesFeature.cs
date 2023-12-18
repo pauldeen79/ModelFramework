@@ -34,24 +34,12 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
 
     private Domain.Attribute ConvertToDomainAttribute(System.Attribute source, PipelineContext<TypeBaseBuilder, ReflectionContext> context)
     {
-        var prefilled = context.Context.Settings.GenerationSettings.InitializeDelegate is not null
-            ? context.Context.Settings.GenerationSettings.InitializeDelegate(source)
-            : null;
+        var prefilled = context.Context.Settings.GenerationSettings.InitializeDelegate(source);
 
-        var builder = new AttributeBuilder();
-        
-        if (prefilled is not null)
-        {
-            builder
-                .WithName(prefilled.Name)
-                .AddParameters(prefilled.Parameters)
-                .AddMetadata(prefilled.Metadata);
-        }
-        else
-        {
-            builder.WithName(source.GetType());
-        }
-
-        return context.Context.MapAttribute(builder.Build());
+        return context.Context.MapAttribute(new AttributeBuilder()
+            .WithName(prefilled.Name)
+            .AddParameters(prefilled.Parameters)
+            .AddMetadata(prefilled.Metadata)
+            .Build());
     }
 }
