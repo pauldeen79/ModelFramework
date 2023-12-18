@@ -13,6 +13,6 @@ public class AbstractionsBuilderExtensions : ClassFrameworkCSharpClassBase
                 y.Properties.RemoveAll(z => z.ParentTypeFullName != x.FullName);
                 FixImmutableBuilderProperties(y);
             }))
-            .Select(x => CreateBuilderExtensions(x.Build(), CurrentNamespace).BuildTyped())
+            .Select(x => CreateBuilderExtensions(x.Build(), CurrentNamespace).WithName($"{x.Name[1..]}Extensions").BuildTyped())
             .ToArray();
 }
