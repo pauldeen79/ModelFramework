@@ -56,10 +56,11 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
-            .AddScoped<IPipeline<TypeBaseBuilder, ReflectionContext>>(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>>().Build())
-            .AddScoped<IPipelineBuilder<TypeBaseBuilder, ReflectionContext>, Reflection.PipelineBuilder>()
+            .AddScoped<IPipeline<TypeBaseBuilder, Reflection.ReflectionContext>>(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>>().Build())
+            .AddScoped<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>, Reflection.PipelineBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddAttributesFeatureBuilder>()
+            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddGenericTypeArgumentsFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddInterfacesFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetBaseClassFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetModifiersFeatureBuilder>()
