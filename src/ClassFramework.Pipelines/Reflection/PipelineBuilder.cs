@@ -6,8 +6,4 @@ public class PipelineBuilder : PipelineBuilder<TypeBaseBuilder, ReflectionContex
     {
         AddFeatures(reflectionFeatureBuilders);
     }
-
-    public PipelineBuilder(Pipeline<TypeBaseBuilder, ReflectionContext> source) : base(source)
-    {
-    }
 }

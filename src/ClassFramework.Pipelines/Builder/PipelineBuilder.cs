@@ -9,8 +9,4 @@ public class PipelineBuilder : PipelineBuilder<IConcreteTypeBuilder, BuilderCont
         AddFeatures(builderFeatureBuilders);
         AddFeatures(sharedFeatureBuilders.Select(x => x.BuildFor<BuilderContext>()));
     }
-
-    public PipelineBuilder(Pipeline<IConcreteTypeBuilder, BuilderContext> source) : base(source)
-    {
-    }
 }

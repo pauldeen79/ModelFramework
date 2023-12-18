@@ -8,10 +8,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         public void Allows_Altering_Existing_Pipeline()
         {
             // Arrange
-            var sourcePipeline = CreateSut().Build();
+            var sharedFeatureBuilders = Scope!.ServiceProvider.GetServices<ISharedFeatureBuilder>();
+            var builderFeatureBuilders = Scope.ServiceProvider.GetServices<IBuilderFeatureBuilder>();
 
             // Act
-            var pipeline = new Pipelines.Builder.PipelineBuilder(sourcePipeline)
+            var pipeline = new Pipelines.Builder.PipelineBuilder(sharedFeatureBuilders, builderFeatureBuilders)
                 .With(x => x.Features.Clear())
                 .Build();
 
