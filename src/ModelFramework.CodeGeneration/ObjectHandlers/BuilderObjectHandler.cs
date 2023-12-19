@@ -60,7 +60,7 @@ public class BuilderObjectHandler : IObjectHandler
 
         var addedSomething = false;
         if (methodPrefix == "Add"
-            && !(propertyValue is string)
+            && propertyValue is not string
             && propertyValue is IEnumerable enumerable)
         {
             var firstVal = true;

@@ -1,0 +1,134 @@
+﻿namespace ClassFramework.CodeGeneration.CodeGenerationProviders;
+
+[ExcludeFromCodeCoverage]
+public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
+{
+    public override bool RecurseOnDeleteGeneratedFiles => false;
+    public override string DefaultFileName => string.Empty; // not used because we're using multiple files, but it's abstract so we need to fill it
+
+    protected override bool CreateCodeGenerationHeader => true;
+    protected override bool EnableNullableContext => true;
+    protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+    protected override Type RecordConcreteCollectionType => typeof(List<>);
+    protected override string FileNameSuffix => Constants.TemplateGenerated;
+    protected override string ProjectName => Constants.ProjectName;
+    protected override bool UseLazyInitialization => false; // we don't want lazy stuff, just getters and setters
+    protected override bool AddBackingFieldsForCollectionProperties => false; // we just want static stuff - else you need to choose builders or models instead of entities
+    protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
+    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
+    protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
+    protected override bool AddNullChecks => true;
+
+    protected override void Visit<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+    {
+        Guard.IsNotNull(typeBaseBuilder);
+
+        if (typeBaseBuilder.Name.EndsWith(BuilderName))
+        {
+            FixBuilder(typeBaseBuilder);
+        }
+        else
+        {
+            FixEntity(typeBaseBuilder);
+        }
+    }
+
+    protected ModelFramework.Objects.Contracts.ITypeBase[] GetPipelinesModels()
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetTypes()
+                .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Pipelines" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
+
+    protected ModelFramework.Objects.Contracts.ITypeBase[] GetTemplateFrameworkModels()
+        => MapCodeGenerationModelsToDomain(
+            GetType().Assembly.GetTypes()
+                .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.TemplateFramework" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
+
+    protected ModelFramework.Objects.Contracts.IClass FixOverrideEntity(ModelFramework.Objects.Contracts.IClass cls, string entityName, string buildersNamespace)
+    {
+        cls = cls.IsNotNull(nameof(cls));
+
+        return new ModelFramework.Objects.Builders.ClassBuilder(cls)
+            .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                .WithName("ToBuilder")
+                .WithOverride()
+                .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{entityName}BaseBuilder")
+                .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
+                    ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
+                    : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
+            ).BuildTyped();
+    }
+
+    private void FixBuilder<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        if (typeBaseBuilder is ModelFramework.Objects.Builders.ClassBuilder classBuilder)
+        {
+            classBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(ModelFramework.Objects.Contracts.Visibility.Private));
+            classBuilder.Constructors.First(x => x.Parameters.Count == 0).CodeStatements.Add(new ModelFramework.Objects.CodeStatements.Builders.LiteralCodeStatementBuilder("SetDefaultValues();"));
+        }
+
+        var sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name.ReplaceSuffix(BuilderName, string.Empty, StringComparison.Ordinal)}");
+        if (sourceModel is not null)
+        {
+            var interfaces = sourceModel.GetInterfaces();
+            foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
+            {
+                typeBaseBuilder.AddInterfaces(i.FullName!.Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName);
+            }
+        }
+    }
+
+    private void FixEntity<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        ConvertBuilderFactoriesToToBuilderMethod(typeBaseBuilder);
+        AddAbstractionsInterfaces(typeBaseBuilder);
+    }
+
+    private void AddAbstractionsInterfaces<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        var sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name}");
+        if (sourceModel is null)
+        {
+            return;
+        }
+
+        var interfaces = sourceModel.GetInterfaces();
+        foreach (var i in interfaces.Where(x => x.FullName is not null && x.FullName.Contains($"{CodeGenerationRootNamespace}.Models.Abstractions.", StringComparison.Ordinal)))
+        {
+            typeBaseBuilder.AddInterfaces(i.FullName!
+                .Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.", StringComparison.Ordinal)
+                .Replace($"{CodeGenerationRootNamespace}.Models.", $"{RootNamespace}.", StringComparison.Ordinal));
+        }
+    }
+
+    private void ConvertBuilderFactoriesToToBuilderMethod<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
+        where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ModelFramework.Objects.Contracts.ITypeBase
+    {
+        foreach (var property in typeBaseBuilder.Properties)
+        {
+            if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName)))
+            {
+                var value = property.IsNullable
+                    ? "if (source.{0} is not null) {0} = source.{0}.ToBuilder()"
+                    : "{0} = source.{0}.ToBuilder()";
+
+                property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
+            }
+
+            if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName.GetGenericArguments())))
+            {
+                var value = property.IsNullable
+                    ? "if (source.{0} is not null) {0}.AddRange(source.{0}.Select(x => x.ToBuilder()))"
+                    : "{0}.AddRange(source.{0}.Select(x => x.ToBuilder()))";
+
+                property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
+            }
+        }
+    }
+}

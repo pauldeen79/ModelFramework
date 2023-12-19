@@ -30,15 +30,19 @@ public abstract class CSharpClassBase : ClassBase
     protected virtual bool RemoveDuplicateWithMethods => true;
     protected virtual bool AllowGenerationWithoutProperties => true;
     protected virtual bool AddBackingFieldsForCollectionProperties => false;
+    protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual IClass? BaseClass => null;
+    protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
-    protected virtual bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
-        => parent is not null
+    protected virtual bool IsMemberValid(IParentTypeContainer parentNameContainer, INameContainer nameContainer, ITypeBase typeBase)
+        => parentNameContainer is not null
         && typeBase is not null
-        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
-            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parent.ParentTypeFullName.GetClassName())
-            || (BaseClass is not null && BaseClass.Name.In(typeBase.Name, $"I{typeBase.Name}")));
+        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+            || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == nameContainer.Name))
+            || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+            || (parentNameContainer.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
+        );
 
     protected abstract string ProjectName { get; }
     protected virtual string RootNamespace => InheritFromInterfaces
@@ -101,15 +105,16 @@ public abstract class CSharpClassBase : ClassBase
         var result = new Dictionary<string, string>();
         var suffix = InheritFromInterfaces ? "I" : string.Empty;
         result.Add($"{CodeGenerationRootNamespace}.Models.I", $"{RootNamespace}.{suffix}");
-        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName()}s.I", $"{RootNamespace}.{x.GetEntityClassName()}s.")));
+        result.AddRange(GetPureAbstractModels().Select(x => new KeyValuePair<string, string>($"{CodeGenerationRootNamespace}.Models.{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}s.I", $"{RootNamespace}.{x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}s.")));
         result.Add($"{CodeGenerationRootNamespace}.Models.Domains.", $"{RootNamespace}.Domains.");
         result.Add($"{CodeGenerationRootNamespace}.Models.Contracts.", $"{RootNamespace}.Contracts.");
+        result.Add($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.Abstractions.");
         result.Add($"{CodeGenerationRootNamespace}.I", $"{RootNamespace}.I");
         return result;
     }
 
     protected virtual string[] GetNonDomainTypes()
-        => GetType().Assembly.GetExportedTypes()
+        => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == CodeGenerationRootNamespace)
             .Select(x => $"{RootNamespace}.{x.Name}")
             .ToArray();
@@ -122,7 +127,7 @@ public abstract class CSharpClassBase : ClassBase
 
     protected ITypeBase[] GetCoreModels()
         => MapCodeGenerationModelsToDomain(
-            GetType().Assembly.GetExportedTypes()
+            GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName())));
 
     protected ITypeBase[] GetAbstractModels()
@@ -133,7 +138,7 @@ public abstract class CSharpClassBase : ClassBase
         Guard.IsNotNull(abstractType);
 
         return MapCodeGenerationModelsToDomain(
-            GetType().Assembly.GetExportedTypes()
+            GetType().Assembly.GetTypes()
                 .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType)));
     }
 
@@ -233,12 +238,9 @@ public abstract class CSharpClassBase : ClassBase
                 .With
                 (
                     x => x.Methods.ForEach(y => y.AddGenericTypeArguments("T")
-                                                    .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}"))
-                )
-                .With
-                (
-                    x => x.Methods.ForEach(y => y.WithTypeName("T")
-                                                    .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
+                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}")
+                                                 .WithTypeName("T")
+                                                 .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
                 )
                 .With(x => Visit(x))
                 .BuildTyped()
@@ -252,8 +254,8 @@ public abstract class CSharpClassBase : ClassBase
         Guard.IsNotNull(entitiesNamespace);
 
         return GetImmutableClasses(types.Select(x => x.IsInterface
-                ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
-                : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
+            ? x.ToInterfaceBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()
+            : x.ToClassBuilder().With(x => FixImmutableClassProperties(x)).With(x => Visit(x)).Build()).ToArray(), entitiesNamespace);
     }
 
     protected ITypeBase[] GetImmutableClasses(ITypeBase[] models, string entitiesNamespace)
@@ -294,7 +296,7 @@ public abstract class CSharpClassBase : ClassBase
             throw new ArgumentException("Can't get classes from same namespace when the FullName of this type is null. Could not determine namespace.");
         }
 
-        return type.Assembly.GetExportedTypes()
+        return type.Assembly.GetTypes()
             .Where
             (
                 t => t.FullName is not null
@@ -304,11 +306,11 @@ public abstract class CSharpClassBase : ClassBase
             .Select
             (
                 t => t.ToClassBuilder(CreateClassSettings())
-                    .WithName(t.Name)
-                    .WithNamespace(t.FullName.GetNamespaceWithDefault())
-                .With(x => FixImmutableBuilderProperties(x))
-                .With(x => Visit(x))
-                .BuildTyped()
+                      .WithName(t.Name)
+                      .WithNamespace(t.FullName.GetNamespaceWithDefault())
+                      .With(x => FixImmutableBuilderProperties(x))
+                      .With(x => Visit(x))
+                      .BuildTyped()
             )
             .ToArray();
     }
@@ -325,7 +327,9 @@ public abstract class CSharpClassBase : ClassBase
             constructorSettings: new(
                 validateArguments: ValidateArgumentsInConstructor,
                 addNullChecks: AddNullChecks),
-            addPrivateSetters: AddPrivateSetters)
+            addPrivateSetters: AddPrivateSetters,
+            enableNullableReferenceTypes: EnableNullableContext,
+            inheritanceSettings: new(isAbstract: true))
         )
         .WithNamespace(@namespace)
         .WithName(type.GetEntityClassName())
@@ -353,7 +357,31 @@ public abstract class CSharpClassBase : ClassBase
     {
         Guard.IsNotNull(typeBase);
 
-        return typeBase.ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
+        TypeBaseBuilder builder = typeBase switch
+        {
+            IInterface i => new InterfaceBuilder(i),
+            IClass c => new ClassBuilder(c),
+            _ => throw new NotSupportedException("Type of class should be IClass or IInterface")
+        };
+
+        return 
+            builder
+            .WithAll(y => y.Properties, z =>
+            {
+                z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
+                    .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
+
+                if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
+                {
+                    FixPropertyInterfacesNamespaces(z);
+                }
+
+                z.HasSetter = true;
+                z.Attributes.Clear();
+            })
+            .Chain(FixInterfacesNamespaces)
+            .Build()
+            .ToBuilderExtensionsClassBuilder(CreateImmutableBuilderClassSettings(@namespace, ArgumentValidationType.None));
     }
 
     protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
@@ -372,13 +400,13 @@ public abstract class CSharpClassBase : ClassBase
 
         foreach (var property in typeBaseBuilder.Properties)
         {
-            var typeName = property.TypeName.ToString().FixTypeName();
+            var typeName = property.TypeName.FixTypeName();
             FixImmutableBuilderProperty(property, typeName);
 
             if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
                 && AddBackingFieldsForCollectionProperties)
             {
-                property.AddCollectionBackingFieldOnImmutableClass(BuilderClassCollectionType);
+                property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType, CollectionPropertyGetStatement, forceNullCheck: ValidateArgumentsInConstructor != ArgumentValidationType.None);
             }
         }
     }
@@ -390,8 +418,8 @@ public abstract class CSharpClassBase : ClassBase
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <param name="typeBaseBuilder">Builder instance to visit.</param>
     protected virtual void Visit<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
-    where TEntity : ITypeBase
-    where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+        where TEntity : ITypeBase
+        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
     {
     }
 
@@ -424,13 +452,24 @@ public abstract class CSharpClassBase : ClassBase
     {
         Guard.IsNotNull(types);
 
-        return types.Select(x => x.ToClassBuilder(new ClassSettings())
+        return types
+            .Select(x => x.ToClassBuilder(new ClassSettings())
             .AddMetadata("CSharpClassBase.ModelType", x)
             .WithNamespace(RootNamespace)
             .WithName(x.GetEntityClassName())
-            .With(y => y.Properties.ForEach(z => GetModelMappings().Where(x => !x.Key.EndsWith(".Contracts", StringComparison.InvariantCulture)).ToList().ForEach(m => z.TypeName = z.TypeName.Replace(m.Key, m.Value))))
+            .With(y => y.Properties.ForEach(z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)))
             .Build())
         .ToArray();
+    }
+
+    protected string MapCodeGenerationNamespacesToDomain(string typeName)
+    {
+        foreach (var mapping in GetModelMappings().Where(x => !x.Key.EndsWith(".Contracts", StringComparison.InvariantCulture)))
+        {
+            typeName = typeName.Replace(mapping.Key, mapping.Value);
+        }
+
+        return typeName;
     }
 
     protected string GetBuilderNamespace(string typeName)
@@ -510,13 +549,13 @@ public abstract class CSharpClassBase : ClassBase
                 removeDuplicateWithMethods: RemoveDuplicateWithMethods,
                 baseClass: BaseClass,
                 baseClassBuilderNameSpace: BaseClassBuilderNamespace,
-                inheritanceComparisonFunction: EnableBuilderInhericance
+                inheritanceComparisonDelegate: EnableBuilderInhericance
                     ? IsMemberValid
-                    : (_, _) => true),
+                    : (_, _, _) => true),
             classSettings: CreateImmutableClassSettings(forceValidateArgumentsInConstructor ?? ArgumentValidationType.None)
         );
 
-    protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null)
+    protected ImmutableClassSettings CreateImmutableClassSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new
         (
             newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
@@ -524,16 +563,18 @@ public abstract class CSharpClassBase : ClassBase
             constructorSettings: new(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
-                addNullChecks: AddNullChecks),
+                addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false)),
             addPrivateSetters: AddPrivateSetters,
             inheritanceSettings: new(
                 enableInheritance: EnableEntityInheritance,
                 baseClass: BaseClass,
+                isAbstract: IsAbstract,
                 inheritFromInterfaces: InheritFromInterfaces,
                 formatInstanceTypeNameDelegate: FormatInstanceTypeName,
-                inheritanceComparisonFunction: EnableEntityInheritance
+                inheritanceComparisonDelegate: EnableEntityInheritance
                     ? IsMemberValid
-                    : (_, _) => true)
+                    : (_, _, _) => true),
+                enableNullableReferenceTypes : EnableNullableContext
         );
 
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
@@ -594,7 +635,7 @@ public abstract class CSharpClassBase : ClassBase
         };
     }
 
-    protected ITypeBase[] CreateBuilderFactoryModels(
+    protected ITypeBase[] CreateBuilderFactories(
         ITypeBase[] models,
         BuilderFactoryNamespaceSettings namespaceSettings,
         string? createLiteralCodeStatement = null)
@@ -602,8 +643,8 @@ public abstract class CSharpClassBase : ClassBase
         Guard.IsNotNull(models);
         Guard.IsNotNull(namespaceSettings);
 
-        return new[]
-        {
+        return
+        [
             new ClassBuilder()
                 .WithName(namespaceSettings.ClassName)
                 .WithNamespace(namespaceSettings.ClassNamespace)
@@ -637,7 +678,78 @@ public abstract class CSharpClassBase : ClassBase
                         .AddLiteralCodeStatements("registeredTypes.Add(type, createDelegate);")
                 )
                 .Build()
-        };
+        ];
+    }
+
+    protected ITypeBase CreateBuilderInterface(InterfaceBuilder interfaceBuilder)
+    {
+        Guard.IsNotNull(interfaceBuilder);
+
+        return interfaceBuilder
+            .WithNamespace(CurrentNamespace)
+            .WithVisibility(Visibility.Public)
+            .WithName($"{interfaceBuilder.Name}{BuilderName}")
+            .WithAll(y => y.Properties, z =>
+            {
+                z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName)
+                    .Replace(RecordCollectionType.WithoutGenerics(), BuilderClassCollectionType.WithoutGenerics(), StringComparison.Ordinal);
+
+                if (!z.TypeName.Contains(".Domains", StringComparison.Ordinal))
+                {
+                    FixPropertyInterfacesNamespaces(z);
+                }
+
+                z.HasSetter = true;
+                z.Attributes.Clear();
+            })
+            .Chain(FixInterfacesNamespaces)
+            .Build();
+    }
+
+    private void FixPropertyInterfacesNamespaces(ClassPropertyBuilder classPropertyBuilder)
+    {
+        foreach (var mapping in GetBuilderNamespaceMappings())
+        {
+            if (classPropertyBuilder.TypeName.IndexOf($"{mapping.Key}.", StringComparison.Ordinal) > -1)
+            {
+                classPropertyBuilder.TypeName = classPropertyBuilder.TypeName.Replace($"{mapping.Key}.", $"{mapping.Value}.", StringComparison.Ordinal);
+                if (classPropertyBuilder.TypeName.EndsWith('>'))
+                {
+                    classPropertyBuilder.TypeName = classPropertyBuilder.TypeName.ReplaceSuffix(">", $"{BuilderName}>", StringComparison.Ordinal);
+                }
+                else
+                {
+                    classPropertyBuilder.TypeName += BuilderName;
+                }
+            }
+        }
+    }
+
+    private void FixInterfacesNamespaces(TypeBaseBuilder interfaceBuilder)
+    {
+        for (int i = 0; i < interfaceBuilder.Interfaces.Count; i++)
+        {
+            interfaceBuilder.Interfaces[i] = interfaceBuilder.Interfaces[i].Replace($"{CodeGenerationRootNamespace}.Models.Abstractions.", $"{RootNamespace}.{BuildersName}.Abstractions.", StringComparison.Ordinal) + BuilderName;
+        }
+    }
+
+    protected ITypeBase CreateInterface(InterfaceBuilder interfaceBuilder)
+    {
+        Guard.IsNotNull(interfaceBuilder);
+
+        return interfaceBuilder
+            .WithNamespace(CurrentNamespace)
+            .WithVisibility(Visibility.Public)
+            .WithAll(y => y.Properties, z => z.TypeName = MapCodeGenerationNamespacesToDomain(z.TypeName))
+            .Chain(y =>
+            {
+                y.Interfaces.RemoveAll(x => x.StartsWith($"{CodeGenerationRootNamespace}.Abstractions."));
+                for (int i = 0; i < y.Interfaces.Count; i++)
+                {
+                    y.Interfaces[i] = MapCodeGenerationNamespacesToDomain(y.Interfaces[i]);
+                }
+            })
+            .Build();
     }
 
     private void FixCollectionDomainProperty(ClassPropertyBuilder property, string typeName)
@@ -648,7 +760,7 @@ public abstract class CSharpClassBase : ClassBase
             return;
         }
 
-        property.ConvertCollectionOnBuilderToEnumerable(false, RecordConcreteCollectionType.WithoutGenerics());
+        property.ConvertCollectionOnBuilderToEnumerable(AddNullChecks, ValidateArgumentsInConstructor, RecordConcreteCollectionType.WithoutGenerics());
         if (TypeNameNeedsSpecialTreatmentForBuilderInCollection(typeName))
         {
             property.ConvertCollectionPropertyToBuilderOnBuilder
@@ -682,8 +794,8 @@ public abstract class CSharpClassBase : ClassBase
         }
 
         var argumentType = !string.IsNullOrEmpty(typeName.GetGenericArguments())
-                ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
-                : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
+            ? $"{GetBuilderNamespace(typeName.WithoutProcessedGenerics())}.{typeName.WithoutProcessedGenerics().GetClassName()}{BuilderName}<{typeName.GetGenericArguments()}>"
+            : $"{GetBuilderNamespace(typeName)}.{typeName.GetClassName()}{BuilderName}";
 
         property.WithCustomBuilderConstructorInitializeExpressionSingleProperty(argumentType, GetCustomBuilderConstructorInitializeExpressionForSingleProperty(property, typeName));
         property.WithCustomBuilderArgumentTypeSingleProperty(argumentType, BuilderName);
@@ -701,9 +813,18 @@ public abstract class CSharpClassBase : ClassBase
             : BuilderClassCollectionType.WithoutGenerics();
 
     private string? GetCustomBuilderMethodParameterExpressionForCollectionProperty(string typeName)
-        => !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
+    {
+        if (AddNullChecks && ValidateArgumentsInConstructor == ArgumentValidationType.Shared)
+        {
+            return !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
+                ? "{0}?.Select(x => x." + BuilderBuildTypedMethodName + "()) ?? " + typeof(Enumerable).FullName + ".Empty<" + typeName.GetGenericArguments() + ">()"
+                : "{0}?.Select(x => x." + BuilderBuildMethodName + "()) ?? " + typeof(Enumerable).FullName + ".Empty<" + typeName.GetGenericArguments() + ">()";
+        }
+
+        return !string.IsNullOrEmpty(GetEntityClassName(typeName.GetGenericArguments())) || typeName.GetGenericArguments().GetNamespaceWithDefault().StartsWith($"{ProjectName}.Domain.")
             ? "{0}.Select(x => x." + BuilderBuildTypedMethodName + "())"
             : null;
+    }
 
     private IClass CreateImmutableEntity(string entitiesNamespace, ITypeBase typeBase)
         => new ClassBuilder(typeBase.ToClass())
@@ -723,7 +844,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(overrideAddNullChecks: AddNullChecks && ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
@@ -736,7 +857,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(overrideAddNullChecks: true))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
@@ -748,7 +869,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassBuilder(CreateImmutableClassSettings())
+            .ToImmutableClassBuilder(CreateImmutableClassSettings(overrideAddNullChecks: AddNullChecks && ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
@@ -760,7 +881,7 @@ public abstract class CSharpClassBase : ClassBase
             .With(x => FixImmutableClassProperties(x))
             .With(x => Visit(x))
             .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor))
+            .ToImmutableClassValidateOverrideBuilder(CreateImmutableClassSettings(ValidateArgumentsInConstructor, true))
             .WithRecord()
             .WithPartial()
             .With(x => Visit(x))
@@ -777,6 +898,10 @@ public abstract class CSharpClassBase : ClassBase
 
     private string GetCustomBuilderConstructorInitializeExpressionForSingleProperty(ClassPropertyBuilder property, string typeName)
     {
+        var placeholder = AddNullChecks
+            ? "_{1}"
+            : "{0}";
+
         if (TypeNameNeedsSpecialTreatmentForBuilderConstructorInitializeExpression(typeName))
         {
             if (UseLazyInitialization)
@@ -787,8 +912,8 @@ public abstract class CSharpClassBase : ClassBase
             }
 
             return property.IsNullable
-                ? "{0} = source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})"
-                : "{0} = " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})";
+                ? placeholder + " = source.{0} == null ? null : " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})"
+                : placeholder + " = " + GetBuilderNamespace(typeName) + "." + GetEntityClassName(typeName) + BuilderFactoryName + ".Create(source.{0})";
         }
 
         if (UseLazyInitialization)
@@ -799,8 +924,8 @@ public abstract class CSharpClassBase : ClassBase
         }
 
         return property.IsNullable
-            ? "{0} = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})"
-            : "{0} = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})";
+            ? placeholder + " = source.{0} == null ? null : new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})"
+            : placeholder + " = new " + ReplaceWithBuilderNamespaces(typeName.WithoutProcessedGenerics()).GetNamespaceWithDefault() + ".{10}" + BuilderName + "{9}(source.{0})";
     }
 
     private string GetCustomBuilderConstructorInitializeExpressionForCollectionProperty(string typeName)
@@ -831,9 +956,9 @@ public abstract class CSharpClassBase : ClassBase
     }
 
     protected virtual IEnumerable<Type> GetPureAbstractModels()
-        => GetType().Assembly.GetExportedTypes()
-            .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Length == 1)
-            .Select(x => x.GetInterfaces()[0])
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models.") == true && x.GetInterfaces().Count(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models") == 1)
+            .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
             .Distinct();
 
     private Literal GetBuilderFactoryModelDefaultValue(

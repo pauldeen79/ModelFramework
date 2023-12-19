@@ -110,10 +110,11 @@ public static partial class TypeBaseEtensions
             return $"{ns}{string.Format(settings.NameSettings.BuilderNameFormatString, settings.InheritanceSettings.BaseClass.Name)}<{string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name)}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>";
         }
 
-        var instanceNameBuilder = string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name);
+        var builderName = string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name);
+
         return instance.GetCustomValueForInheritedClass(settings, cls => settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.BaseClass != null
             ? $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}{genericTypeArgumentsString}"
-            : $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}<{instanceNameBuilder}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
+            : $"{string.Format(settings.NameSettings.BuilderNameFormatString, cls.BaseClass.GetClassName())}<{builderName}{genericTypeArgumentsString}, {FormatInstanceName(instance, false, settings.TypeSettings.FormatInstanceTypeNameDelegate)}{genericTypeArgumentsString}>");
     }
 
     private static IEnumerable<ClassFieldBuilder> GetImmutableBuilderClassFields(ITypeBase instance, ImmutableBuilderClassSettings settings, bool isForWithStatement)
@@ -139,11 +140,33 @@ public static partial class TypeBaseEtensions
                 .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement))
                 .Where(x => !x.TypeName.IsCollectionTypeName()))
             {
-
                 yield return new ClassFieldBuilder()
                     .WithName($"_{property.Name.ToPascalCase()}Delegate")
-                    .WithTypeName($"{typeof(Lazy<>).WithoutGenerics()}<{CreateLazyPropertyTypeName(property, settings)}>")
+                    .WithTypeName($"{typeof(Lazy<>).WithoutGenerics()}<{CreatePropertyTypeName(property, settings)}>")
                     .WithProtected();
+            }
+        }
+
+        if (settings.ConstructorSettings.AddNullChecks && settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            foreach (var property in instance.Properties
+                .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement)))
+            {
+                yield return new ClassFieldBuilder()
+                    .WithName($"_{property.Name.ToPascalCase()}")
+                    .WithTypeName
+                    (
+                        string.Format
+                        (
+                            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
+                            property.TypeName,                                     // 0
+                            property.TypeName.GetGenericArguments(),               // 1
+                            property.TypeName.GetClassName(),                      // 2
+                            property.TypeName.GetGenericArguments().GetClassName() // 3
+                        ).FixCollectionTypeName(settings.TypeSettings.NewCollectionTypeName)
+                    )
+                    .WithIsNullable(property.IsNullable)
+                    .WithIsValueType(property.IsValueType);
             }
         }
     }
@@ -151,7 +174,7 @@ public static partial class TypeBaseEtensions
     private static IEnumerable<ClassConstructorBuilder> GetImmutableBuilderClassConstructors(ITypeBase instance,
                                                                                              ImmutableBuilderClassSettings settings)
     {
-        if (settings.IsAbstractBuilder && !settings.InheritanceSettings.EnableBuilderInheritance)
+        if (!settings.NeedsConstructors)
         {
             yield break;
         }
@@ -194,29 +217,18 @@ public static partial class TypeBaseEtensions
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => x.TypeName.IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {GetImmutableBuilderClassConstructorInitializer(settings, x)};")
+                    .Select(x => $"{GetInitializationName(x.Name, settings)} = {GetImmutableBuilderClassConstructorInitializer(settings, x)};")
             )
-            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
-                ? new[]
-                {
-                    "#pragma warning disable CS8603 // Possible null reference return.",
-                }
-                : Array.Empty<string>())
             .AddLiteralCodeStatements
             (
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => settings.ConstructorSettings.SetDefaultValues
                         && !x.TypeName.IsCollectionTypeName()
-                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization))
+                        && (!x.IsNullable || settings.GenerationSettings.UseLazyInitialization)
+                        && (!IsNoNullableDefault(settings, x) || settings.GenerationSettings.UseLazyInitialization))
                     .Select(x => GenerateDefaultValueStatement(x, settings))
-            )
-            .AddLiteralCodeStatements(settings.TypeSettings.EnableNullableReferenceTypes
-                ? new[]
-                {
-                    "#pragma warning restore CS8603 // Possible null reference return.",
-                }
-                : Array.Empty<string>());
+            );
 
         if (settings.ConstructorSettings.AddCopyConstructor)
         {
@@ -228,6 +240,12 @@ public static partial class TypeBaseEtensions
 
             yield return CreateConstructorWithAllProperties(instance, settings);
         }
+    }
+
+    private static bool IsNoNullableDefault(ImmutableBuilderClassSettings settings, IClassProperty x)
+    {
+        var value = x.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes);
+        return value.StartsWith("default(", StringComparison.Ordinal) && !value.EndsWith("!");
     }
 
     private static ClassConstructorBuilder CreateConstructorWithAllProperties(ITypeBase instance, ImmutableBuilderClassSettings settings)
@@ -253,7 +271,7 @@ public static partial class TypeBaseEtensions
                     (
                         x => x.TypeName.IsCollectionTypeName()
                             ? CreateConstructorStatementForCollection(x, settings)
-                            : $"{x.Name} = {x.Name.ToPascalCase().GetCsharpFriendlyName()};"
+                            : $"{GetInitializationName(x.Name, settings)} = {x.Name.ToPascalCase().GetCsharpFriendlyName()};"
                     )
             );
     }
@@ -306,7 +324,7 @@ public static partial class TypeBaseEtensions
                 instance.Properties
                     .Where(x => instance.IsMemberValidForImmutableBuilderClass(x, settings.InheritanceSettings, isForWithStatement: false))
                     .Where(x => x.TypeName.IsCollectionTypeName())
-                    .Select(x => $"{x.Name} = {GetCopyConstructorInitializeExpression(settings, x)};")
+                    .Select(x => $"{GetInitializationName(x.Name, settings)} = {GetCopyConstructorInitializeExpression(settings, x)};")
             )
             .AddLiteralCodeStatements
             (
@@ -322,9 +340,24 @@ public static partial class TypeBaseEtensions
         => instance.GetCustomValueForInheritedClass(settings, _ => "base(source)");
 
     private static string GenerateDefaultValueStatement(IClassProperty property, ImmutableBuilderClassSettings settings)
-        => settings.GenerationSettings.UseLazyInitialization
-            ? $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {GetNewBuilderExpression(property, settings)});"
-            : $"{property.Name} = {property.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes)};";
+    {
+        if (settings.GenerationSettings.UseLazyInitialization)
+        {
+            return $"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => {GetNewBuilderExpression(property, settings)});";
+        }
+
+        return $"{GetInitializationName(property.Name, settings)} = {property.GetDefaultValue(settings.TypeSettings.EnableNullableReferenceTypes)};";
+    }
+
+    private static string GetInitializationName(string name, ImmutableBuilderClassSettings settings)
+    {
+        if (settings.ConstructorSettings.AddNullChecks && settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            return $"_{name.ToPascalCase()}";
+        }
+
+        return name;
+    }
 
     private static string GetNewBuilderExpression(IClassProperty property, ImmutableBuilderClassSettings settings)
     {
@@ -338,16 +371,16 @@ public static partial class TypeBaseEtensions
             return md.Value.CsharpFormat();
         }
 
-        return CreateLazyPropertyTypeName(property, settings)
-            .GetDefaultValue(property.IsNullable, settings.TypeSettings.EnableNullableReferenceTypes);
+        return CreatePropertyTypeName(property, settings)
+            .GetDefaultValue(property.IsNullable, property.IsValueType, settings.TypeSettings.EnableNullableReferenceTypes);
     }
 
     internal static string GetNewExpression(this IClassProperty property, ImmutableBuilderClassSettings settings)
         => settings.TypeSettings.UseTargetTypeNewExpressions
             ? string.Empty
-            : $"{typeof(Lazy<>).WithoutGenerics()}<{CreateLazyPropertyTypeName(property, settings)}>";
+            : $"{typeof(Lazy<>).WithoutGenerics()}<{CreatePropertyTypeName(property, settings)}>";
 
-    private static string CreateLazyPropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
+    private static string CreatePropertyTypeName(IClassProperty property, ImmutableBuilderClassSettings settings)
         => string.Format
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, property.TypeName),
@@ -441,7 +474,7 @@ public static partial class TypeBaseEtensions
     {
         if (!(settings.InheritanceSettings.EnableBuilderInheritance && settings.InheritanceSettings.IsAbstract))
         {
-            yield return FillMethod(instance, new ClassMethodBuilder()
+            yield return FillBuildMethod(instance, new ClassMethodBuilder()
                 .WithName(settings.IsBuilderForAbstractEntity || settings.IsBuilderForOverrideEntity
                     ? settings.NameSettings.BuildTypedMethodName
                     : settings.NameSettings.BuildMethodName)
@@ -487,24 +520,24 @@ public static partial class TypeBaseEtensions
             );
 
     private static string[] CreatePragmaWarningDisableStatements(ImmutableBuilderClassSettings settings)
-        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-            ? new[]
-            {
+        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity && !settings.ConstructorSettings.AddNullChecks
+            ?
+            [
                 "#pragma warning disable CS8604 // Possible null reference argument.",
                 "#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.",
-            }
+            ]
             : Array.Empty<string>();
 
     private static string[] CreatePragmaWarningRestoreStatements(ImmutableBuilderClassSettings settings)
-        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity
-            ? new[]
-            {
+        => settings.TypeSettings.EnableNullableReferenceTypes && !settings.IsBuilderForAbstractEntity && !settings.ConstructorSettings.AddNullChecks
+            ?
+            [
                 "#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.",
                 "#pragma warning restore CS8604 // Possible null reference argument.",
-            }
+            ]
             : Array.Empty<string>();
 
-    private static ClassMethodBuilder FillMethod(
+    private static ClassMethodBuilder FillBuildMethod(
         ITypeBase instance,
         ClassMethodBuilder classMethodBuilder,
         ImmutableBuilderClassSettings settings)
@@ -513,7 +546,7 @@ public static partial class TypeBaseEtensions
             .AddLiteralCodeStatements
             (
                 !settings.IsBuilderForAbstractEntity
-                    ? new[] { $"return {CreateEntityInstanciation(instance, settings, string.Empty)};" }
+                    ? [$"return {CreateEntityInstanciation(instance, settings, string.Empty)};"]
                     : Array.Empty<string>()
             )
             .AddLiteralCodeStatements(CreatePragmaWarningRestoreStatements(settings));
@@ -556,7 +589,7 @@ public static partial class TypeBaseEtensions
                     yield return CreateCollectionPropertyOverload(instance, settings, extensionMethod, property, overload);
                 }
             }
-            else if (ShouldCreateSingleProperty(settings))
+            else if (ShouldCreateSingleProperty(settings, property))
             {
                 yield return CreateSingleProperty(instance, settings, extensionMethod, false, property);
                 if (settings.GenerationSettings.UseLazyInitialization)
@@ -579,8 +612,8 @@ public static partial class TypeBaseEtensions
                                                                        settings.InheritanceSettings,
                                                                        isForWithStatement: true));
 
-    private static bool ShouldCreateSingleProperty(ImmutableBuilderClassSettings settings)
-        => !string.IsNullOrEmpty(settings.NameSettings.SetMethodNameFormatString);
+    private static bool ShouldCreateSingleProperty(ImmutableBuilderClassSettings settings, IClassProperty property)
+        => !string.IsNullOrEmpty(settings.NameSettings.SetMethodNameFormatString) && !property.TypeName.IsCollectionTypeName();
 
     private static bool ShouldCreateCollectionProperty(ImmutableBuilderClassSettings settings, IClassProperty property)
         => property.TypeName.IsCollectionTypeName()
@@ -625,7 +658,9 @@ public static partial class TypeBaseEtensions
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
             )
-            .AddLiteralCodeStatements($"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
+            .AddLiteralCodeStatements(settings.ConstructorSettings.AddNullChecks
+                ? $"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\"));"
+                : $"return {GetCallPrefix(extensionMethod, false)}Add{property.Name}({property.Name.ToPascalCase()}.ToArray());");
 
     private static ClassMethodBuilder CreateCollectionPropertyWithArrayParameter(ITypeBase instance,
                                                                                  ImmutableBuilderClassSettings settings,
@@ -691,7 +726,7 @@ public static partial class TypeBaseEtensions
             (
                 string.Format
                 (
-                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod, useLazyInitialization)}{GetCallPropertyName(property.Name, useLazyInitialization)}{GetCallSuffix(useLazyInitialization)} = {GetExpressionPrefix(property, settings, useLazyInitialization)}{property.Name.ToPascalCase().GetCsharpFriendlyName()}{GetExpressionSuffix(useLazyInitialization)};"),
+                    property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, $"{GetCallPrefix(extensionMethod, useLazyInitialization)}{GetCallPropertyName(property.Name, useLazyInitialization)}{GetCallSuffix(useLazyInitialization)} = {GetExpressionPrefix(property, settings, useLazyInitialization)}{property.Name.ToPascalCase().GetCsharpFriendlyName()}{GetExpressionSuffix(useLazyInitialization)}{GetNullCheckSuffix(property, property.Name.ToPascalCase(), settings.ConstructorSettings.AddNullChecks)};"),
                     property.Name,                                                                   // 0
                     property.Name.ToPascalCase(),                                                    // 1
                     useLazyInitialization                                                            // 2
@@ -704,6 +739,21 @@ public static partial class TypeBaseEtensions
                 ),
                 $"return {GetReturnValue(settings, extensionMethod)};"
             );
+    }
+
+    private static string GetNullCheckSuffix(IClassProperty property, string name, bool addNullChecks)
+    {
+        if (!addNullChecks)
+        {
+            return string.Empty;
+        }
+
+        if (property.IsNullable || property.IsValueType)
+        {
+            return string.Empty;
+        }
+
+        return $" ?? throw new {typeof(ArgumentNullException).FullName}(\"{name}\")";
     }
 
     private static ClassMethodBuilder CreateSinglePropertyOverload(ITypeBase instance,
@@ -734,18 +784,32 @@ public static partial class TypeBaseEtensions
                                                                   ITypeBase instance,
                                                                   ImmutableBuilderClassSettings settings,
                                                                   bool extensionMethod)
-        => builder.WithTypeName(settings.IsBuilderForAbstractEntity
-                      ? "TBuilder" + instance.GetGenericTypeArgumentsString()
-                      : string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString())
+        => builder.WithTypeName(CreateTypeName(instance, settings, extensionMethod && !settings.IsBuilderForAbstractEntity))
+                  .AddGenericTypeArguments(new[] { "T" }.Where(_ => extensionMethod && !settings.IsBuilderForAbstractEntity))
+                  .AddGenericTypeArgumentConstraints(new[] { $"where T : {string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name)}" }.Where(_ => extensionMethod && !settings.IsBuilderForAbstractEntity))
                   .WithStatic(extensionMethod)
                   .WithExtensionMethod(extensionMethod)
-                  .AddParameters(new[]
+                  .AddParameters((new[]
                   {
-                      new ParameterBuilder().WithName("instance")
-                                            .WithTypeName(settings.IsBuilderForAbstractEntity
-                                                ? "TBuilder" + instance.GetGenericTypeArgumentsString()
-                                                : string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString())
-                  }.Where(_ => extensionMethod));
+                      new ParameterBuilder()
+                        .WithName("instance")
+                        .WithTypeName(CreateTypeName(instance, settings, extensionMethod && !settings.IsBuilderForAbstractEntity))
+                  }).Where(_ => extensionMethod));
+
+    private static string CreateTypeName(ITypeBase instance, ImmutableBuilderClassSettings settings, bool extensionMethod)
+    {
+        if (extensionMethod)
+        {
+            return "T";
+        }
+
+        if (settings.IsBuilderForAbstractEntity)
+        {
+            return "TBuilder" + instance.GetGenericTypeArgumentsString();
+        }
+
+        return string.Format(settings.NameSettings.BuilderNameFormatString, instance.Name) + instance.GetGenericTypeArgumentsString();
+    }
 
     private static string GetCallPrefix(bool extensionMethod, bool lazyInitialization)
         => extensionMethod
@@ -783,32 +847,27 @@ public static partial class TypeBaseEtensions
     private static List<string> GetImmutableBuilderAddMethodStatements(ImmutableBuilderClassSettings settings,
                                                                        IClassProperty property,
                                                                        bool extensionMethod)
-        => settings.ConstructorSettings.AddNullChecks
-            ? (new[]
-                {
-                    $"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} != null)",
-                    "{",
-                    string.Format
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, $"    {CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)}"),
-                        property.Name.ToPascalCase(),           // 0
-                        property.TypeName,                      // 1
-                        property.TypeName.GetGenericArguments() // 2
-                    ),
-                    "}",
-                    $"return {GetReturnValue(settings, extensionMethod)};"
-                }).ToList()
-            : (new[]
-                {
-                    string.Format
-                    (
-                        property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
-                        property.Name.ToPascalCase(),           // 0
-                        property.TypeName,                      // 1
-                        property.TypeName.GetGenericArguments() // 2
-                    ),
-                    $"return {GetReturnValue(settings, extensionMethod)};"
-                }).ToList();
+    {
+        var statements = new List<string>();
+        if (settings.ConstructorSettings.AddNullChecks)
+        {
+            statements.Add($"if ({property.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(\"{property.Name.ToPascalCase()}\");");
+            if (settings.ClassSettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+            {
+                statements.Add($"if ({GetCallPrefix(extensionMethod, false)}{property.Name} == null) {GetCallPrefix(extensionMethod, false)}{GetInitializationName(property.Name, settings)} = {GetImmutableBuilderClassConstructorInitializer(settings, property)};");
+            }
+        }
+        statements.Add(string.Format
+        (
+            property.Metadata.GetStringValue(MetadataNames.CustomBuilderAddExpression, CreateImmutableBuilderCollectionPropertyAddExpression(property, extensionMethod, settings)),
+            property.Name.ToPascalCase(),           // 0
+            property.TypeName,                      // 1
+            property.TypeName.GetGenericArguments() // 2
+        ));
+        statements.Add($"return {GetReturnValue(settings, extensionMethod)};");
+
+        return statements;
+    }
 
     private static string CreateImmutableBuilderCollectionPropertyAddExpression(IClassProperty property, bool extensionMethod, ImmutableBuilderClassSettings settings)
     {
@@ -930,6 +989,10 @@ public static partial class TypeBaseEtensions
         {
             yield return new LiteralCodeStatementBuilder($"return _{property.Name.ToPascalCase()}Delegate.Value;");
         }
+        else if (settings.ConstructorSettings.AddNullChecks && settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            yield return new LiteralCodeStatementBuilder($"return _{property.Name.ToPascalCase()};");
+        }
         else if (settings.GenerationSettings.CopyPropertyCode)
         {
             foreach (var statement in property.GetterCodeStatements.Select(x => x.CreateBuilder()))
@@ -945,6 +1008,10 @@ public static partial class TypeBaseEtensions
         if (settings.GenerationSettings.UseLazyInitialization && !property.TypeName.IsCollectionTypeName())
         {
             yield return new LiteralCodeStatementBuilder($"_{property.Name.ToPascalCase()}Delegate = new {GetNewExpression(property, settings)}(() => value);");
+        }
+        else if (settings.ConstructorSettings.AddNullChecks && settings.ClassSettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        {
+            yield return new LiteralCodeStatementBuilder($"_{property.Name.ToPascalCase()} = value{GetNullCheckSuffix(property, "value", settings.ConstructorSettings.AddNullChecks)};");
         }
         else if (settings.GenerationSettings.CopyPropertyCode)
         {
@@ -968,11 +1035,16 @@ public static partial class TypeBaseEtensions
         (
             ", ",
             properties.Select(p => string.Format(p.Metadata.GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, defaultValueDelegate(p)),
-                                                 p.Name,                            // 0
-                                                 p.Name.ToPascalCase(),             // 1
-                                                 p.IsNullable ? "?" : string.Empty, // 2
-                                                 p.TypeName,                        // 3
-                                                 p.TypeName.GetGenericArguments())) // 4
+                                                 p.Name,                           // 0
+                                                 p.Name.ToPascalCase(),            // 1
+                                                 p.IsNullable
+                                                    ? "?"
+                                                    : string.Empty,                // 2
+                                                 p.TypeName,                       // 3
+                                                 p.TypeName.GetGenericArguments(), // 4
+                                                 p.IsNullable || !settings.TypeSettings.EnableNullableReferenceTypes
+                                                    ? string.Empty
+                                                    : "!"))                        // 5
         );
     }
 }

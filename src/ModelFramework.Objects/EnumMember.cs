@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace ModelFramework.Objects
+﻿namespace ModelFramework.Objects
 {
     public partial record EnumMember : IValidatableObject
     {

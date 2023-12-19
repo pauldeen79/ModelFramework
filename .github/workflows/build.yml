@@ -30,11 +30,20 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore ModelFramework.sln
+      # - name: Build code generation
+      #   run: dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
+      # - name: Run code generation
+      #   run: dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build ModelFramework.sln -c Release --no-restore
       - name: Test
-        run: dotnet test -c Release
+        run: dotnet test ModelFramework.sln -c Release --no-restore
+      - name: Checking for external vulnerabilities
+        run: |
+          dotnet list ${{ github.workspace }}/ModelFramework.sln package --vulnerable --include-transitive 2>&1 | tee vuln.log
+          echo "Analyze dotnet list package..."
+          ! grep -q -i "has the following vulnerable packages" vuln.log
   #    - name: Pack
   #      if: matrix.os == 'ubuntu-latest'
   #      run: dotnet pack -v normal -c Release -o ./artifacts --no-restore --include-symbols --include-source -p:PackageVersion=$GITHUB_RUN_ID
@@ -78,7 +87,9 @@ jobs:
           echo Version: $VERSION
           VERSION="${VERSION//v}"
           echo Clean Version: $VERSION
-          dotnet pack -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
+          # dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
+          # dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
+          dotnet pack ModelFramework.sln -v normal -c Release --include-symbols --include-source -p:PackageVersion=$VERSION -p:Version=$VERSION -o nupkg
       - name: Push to GitHub Feed
         run: |
           for f in ./nupkg/*.nupkg

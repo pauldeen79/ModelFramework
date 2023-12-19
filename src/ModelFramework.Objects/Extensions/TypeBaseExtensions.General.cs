@@ -73,7 +73,7 @@ public static partial class TypeBaseExtensions
 
     public static bool IsPoco(this ITypeBase instance)
         => (!instance.Properties.Any() || instance.Properties.All(p => p.HasSetter || p.HasInitializer))
-            && (!(instance is IClass) || instance is IClass cls && cls.HasPublicParameterlessConstructor());
+            && (instance is not IClass || instance is IClass cls && cls.HasPublicParameterlessConstructor());
 
     public static string GetCustomValueForInheritedClass(this ITypeBase instance,
                                                          ImmutableBuilderClassSettings settings,
@@ -111,33 +111,33 @@ public static partial class TypeBaseExtensions
         return customValue(cls);
     }
 
-    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
-                                                             IParentTypeContainer parentTypeContainer,
-                                                             ImmutableClassInheritanceSettings inheritanceSettings)
+    public static bool IsMemberValidForImmutableBuilderClass<T>(this ITypeBase parent,
+                                                                T container,
+                                                                ImmutableClassInheritanceSettings inheritanceSettings) where T : IParentTypeContainer, INameContainer
         => parent.IsMemberValidForImmutableBuilderClass(
-            parentTypeContainer,
+            container,
             inheritanceSettings.EnableInheritance,
             false,
             false,
-            inheritanceSettings.InheritanceComparisonFunction);
+            inheritanceSettings.InheritanceComparisonDelegate);
 
-    public static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
-                                                             IParentTypeContainer parentTypeContainer,
-                                                             ImmutableBuilderClassInheritanceSettings inheritanceSettings,
-                                                             bool isForWithStatement)
+    public static bool IsMemberValidForImmutableBuilderClass<T>(this ITypeBase parent,
+                                                                T container,
+                                                                ImmutableBuilderClassInheritanceSettings inheritanceSettings,
+                                                                bool isForWithStatement) where T : IParentTypeContainer, INameContainer
         => parent.IsMemberValidForImmutableBuilderClass(
-            parentTypeContainer,
+            container,
             inheritanceSettings.EnableEntityInheritance,
             inheritanceSettings.EnableBuilderInheritance,
             isForWithStatement && !inheritanceSettings.RemoveDuplicateWithMethods, // only when duplicate methods need to be removed...
-            inheritanceSettings.InheritanceComparisonFunction);
+            inheritanceSettings.InheritanceComparisonDelegate);
 
-    private static bool IsMemberValidForImmutableBuilderClass(this ITypeBase parent,
-                                                              IParentTypeContainer parentTypeContainer,
-                                                              bool enableEntityInheritance,
-                                                              bool enableBuilderInhericance,
-                                                              bool isForWithStatement,
-                                                              Func<IParentTypeContainer, ITypeBase, bool>? comparisonFunction = null)
+    private static bool IsMemberValidForImmutableBuilderClass<T>(this ITypeBase parent,
+                                                                 T container,
+                                                                 bool enableEntityInheritance,
+                                                                 bool enableBuilderInhericance,
+                                                                 bool isForWithStatement,
+                                                                 Func<IParentTypeContainer, INameContainer, ITypeBase, bool>? comparisonFunction = null) where T : IParentTypeContainer, INameContainer
     {
         if (!enableEntityInheritance)
         {
@@ -152,7 +152,7 @@ public static partial class TypeBaseExtensions
         }
 
         // If inheritance is enabled, then include the members if it's defined on the parent class
-        return parentTypeContainer.IsDefinedOn(parent, comparisonFunction);
+        return container.IsDefinedOn(parent, container, comparisonFunction);
     }
 
     public static string GetEntityClassName(this ITypeBase instance)

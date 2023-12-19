@@ -20,12 +20,12 @@ public partial class TypeBaseBuilder<TBuilder, TEntity>
     public TBuilder WithCustomValidationCode(string customValidationCode)
         => AddMetadata(MetadataNames.CustomValidateCode, customValidationCode);
 
-    public override string ToString() => string.IsNullOrEmpty(Namespace.ToString())
-        ? Name.ToString()
+    public override string ToString() => string.IsNullOrEmpty(Namespace)
+        ? Name
         : $"{Namespace}.{Name}";
 }
 
 public partial class TypeBaseBuilder
 {
-    public string GetFullName() => $"{Namespace.ToString().GetNamespacePrefix()}{Name}";
+    public string GetFullName() => $"{Namespace.GetNamespacePrefix()}{Name}";
 }

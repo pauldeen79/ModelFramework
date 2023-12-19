@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace ModelFramework.Database
+﻿namespace ModelFramework.Database
 {
     public partial record ForeignKeyConstraintField : IValidatableObject
     {

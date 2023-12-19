@@ -4,9 +4,9 @@ public record ImmutableClassSettings
 {
     public string NewCollectionTypeName { get; }
     public bool CreateWithMethod { get; }
-    public bool ImplementIEquatable { get; }
     public bool AddPrivateSetters { get; }
     public bool AllowGenerationWithoutProperties { get; }
+    public bool EnableNullableReferenceTypes { get; }
     public ImmutableClassConstructorSettings ConstructorSettings { get; }
     public ImmutableClassInheritanceSettings InheritanceSettings { get; }
     public ArgumentValidationType AddValidationCode
@@ -42,19 +42,19 @@ public record ImmutableClassSettings
         }
     }
 
-    public ImmutableClassSettings(string newCollectionTypeName = "System.Collections.Immutable.IImmutableList",
+    public ImmutableClassSettings(string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
                                   bool createWithMethod = false,
-                                  bool implementIEquatable = false,
                                   bool addPrivateSetters = false,
                                   bool allowGenerationWithoutProperties = false,
+                                  bool enableNullableReferenceTypes = false,
                                   ImmutableClassConstructorSettings? constructorSettings = null,
                                   ImmutableClassInheritanceSettings? inheritanceSettings = null)
     {
         NewCollectionTypeName = newCollectionTypeName;
         CreateWithMethod = createWithMethod;
-        ImplementIEquatable = implementIEquatable;
         AddPrivateSetters = addPrivateSetters;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
+        EnableNullableReferenceTypes = enableNullableReferenceTypes;
         ConstructorSettings = constructorSettings ?? new();
         InheritanceSettings = inheritanceSettings ?? new();
     }

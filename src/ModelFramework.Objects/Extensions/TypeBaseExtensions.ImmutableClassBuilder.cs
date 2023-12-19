@@ -20,16 +20,10 @@ public static partial class TypeBaseExtensions
                 : instance.Name)
             .WithNamespace(instance.Namespace)
             .WithBaseClass(GetImmutableClassBaseClass(instance, settings))
-            .WithAbstract(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
+            .WithAbstract(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.IsAbstract)
             .AddProperties(CreateImmutableClassProperties(instance, settings))
             .AddConstructors(CreateImmutableClassConstructor(instance, settings))
             .AddMethods(GetImmutableClassMethods(instance, settings, false))
-            .AddInterfaces
-            (
-                settings.ImplementIEquatable
-                    ? new[] { $"IEquatable<{instance.Name}>" }
-                    : Enumerable.Empty<string>()
-            )
             .AddInterfaces
             (
                 settings.InheritanceSettings.InheritFromInterfaces
@@ -71,6 +65,15 @@ public static partial class TypeBaseExtensions
                         : $"base(({instance.Name}Base)original)"),
                 new ClassConstructorBuilder()
                     .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
+                    .AddLiteralCodeStatements
+                    (
+                        instance.Properties
+                            .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
+                            .Select
+                            (
+                                p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(""{p.Name.ToPascalCase()}"");"
+                            )
+                    )
                     .AddLiteralCodeStatements(CreateValidationCode(instance, settings, false))
                     .WithChainCall(GenerateImmutableClassChainCall(instance, settings, true))
             )
@@ -82,7 +85,7 @@ public static partial class TypeBaseExtensions
         ITypeBase instance,
         ImmutableClassSettings settings)
         => new ClassConstructorBuilder()
-            .WithProtected(settings.InheritanceSettings.EnableInheritance && (settings.InheritanceSettings.BaseClass == null || settings.InheritanceSettings.IsAbstract))
+            .WithProtected(settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.IsAbstract)
             .AddParameters(CreateImmutableClassCtorParameters(instance, settings))
             .AddLiteralCodeStatements
             (
@@ -91,7 +94,7 @@ public static partial class TypeBaseExtensions
                     .Where(p => settings.ConstructorSettings.AddNullChecks && p.Metadata.GetValue(NullCheckMetadataValue, () => !p.IsNullable && !p.IsValueType))
                     .Select
                     (
-                        p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new System.ArgumentNullException(""{p.Name.ToPascalCase()}"");"
+                        p => @$"if ({p.Name.ToPascalCase().GetCsharpFriendlyName()} == null) throw new {typeof(ArgumentNullException).FullName}(""{p.Name.ToPascalCase()}"");"
                     )
             )
             .AddLiteralCodeStatements
@@ -103,8 +106,9 @@ public static partial class TypeBaseExtensions
                         p => string.Format
                         (
                             GetFormatStringForInitialization(p, settings),
-                            p.Name.ToPascalCase().GetCsharpFriendlyName(),
-                            p.TypeName.GetGenericArguments()
+                            p.Name.ToPascalCase().GetCsharpFriendlyName(),             // 0
+                            p.TypeName.GetGenericArguments(),                          // 1
+                            settings.EnableNullableReferenceTypes ? "!" : string.Empty // 2
                         )
                     )
             )
@@ -187,8 +191,8 @@ public static partial class TypeBaseExtensions
             ArgumentValidationType.Shared =>
                 baseClass
                     ? Array.Empty<string>()
-                    : new[]
-                    {
+                    :
+                    [
                         string.Format
                         (
                             instance.Metadata.GetStringValue(MetadataNames.CustomValidateCode, "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"),
@@ -196,7 +200,7 @@ public static partial class TypeBaseExtensions
                             instance.Name,          // 1
                             instance.Namespace      // 2
                         )
-                    },
+                    ],
             ArgumentValidationType.None => Array.Empty<string>(),
             _ => throw new ArgumentOutOfRangeException(nameof(settings), $"Unsupported ArgumentValidationType: {settings.AddValidationCode}")
         };
@@ -204,7 +208,7 @@ public static partial class TypeBaseExtensions
     private static string CreateImmutableClassCtorParameterNames(
         ITypeBase instance,
         ImmutableClassSettings settings)
-        => string.Join(", ", CreateImmutableClassCtorParameters(instance, settings).Select(x => x.Name.ToString().GetCsharpFriendlyName()));
+        => string.Join(", ", CreateImmutableClassCtorParameters(instance, settings).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static string GetFormatStringForInitialization(IClassProperty p, ImmutableClassSettings settings)
         => p.Metadata.GetStringValue(MetadataNames.CustomImmutableConstructorInitialization,
@@ -217,10 +221,10 @@ public static partial class TypeBaseExtensions
             ? GetCollectionFormatStringForInitialization(p)
             : p.Name.ToPascalCase().GetCsharpFriendlyName();
 
-    private static string GetCollectionFormatStringForInitialization(IClassProperty p)
-        => p.IsNullable
-            ? $"{p.Name.ToPascalCase()} == null ? null : new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})"
-            : $"new {typeof(List<>).WithoutGenerics()}<{p.TypeName.GetGenericArguments()}>({p.Name.ToPascalCase().GetCsharpFriendlyName()})";
+    private static string GetCollectionFormatStringForInitialization(IClassProperty property)
+        => property.IsNullable
+            ? $"{property.Name.ToPascalCase()} == null ? null : new {typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase().GetCsharpFriendlyName()})"
+            : $"new {typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase().GetCsharpFriendlyName()})";
 
     private static string GetImmutableClassBaseClass(ITypeBase instance, ImmutableClassSettings settings)
         => settings.InheritanceSettings.EnableInheritance && settings.InheritanceSettings.BaseClass != null
@@ -259,8 +263,7 @@ public static partial class TypeBaseExtensions
                 instance,
                 settings: new ImmutableClassSettings(
                     settings.NewCollectionTypeName,
-                    createWithMethod: true,
-                    implementIEquatable: false),
+                    createWithMethod: true),
                 extensionMethod: true
             ))
             .WithStatic();
@@ -326,78 +329,12 @@ public static partial class TypeBaseExtensions
                             )
                     );
         }
-
-        if (settings.ImplementIEquatable)
-        {
-            // note that we don't use a filter for inherited types here... Just generate a full IEquatable method
-            yield return new ClassMethodBuilder()
-                .WithName("Equals")
-                .WithType(typeof(bool))
-                .WithOverride()
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("obj").WithType(typeof(object))
-                )
-                .AddLiteralCodeStatements
-                (
-                    $"return Equals(obj as {instance.Name});"
-                );
-            yield return new ClassMethodBuilder()
-                .WithName($"IEquatable<{instance.Name}>.Equals")
-                .WithType(typeof(bool))
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("other").WithTypeName(instance.Name)
-                )
-                .AddLiteralCodeStatements
-                (
-                    $"return other != null &&{Environment.NewLine}       {GetEqualsProperties(instance)};"
-                );
-            yield return new ClassMethodBuilder()
-                .WithName("GetHashCode")
-                .WithType(typeof(int))
-                .WithOverride()
-                .AddLiteralCodeStatements("int hashCode = 235838129;")
-                .AddLiteralCodeStatements
-                (
-                    instance.Properties.Select(p => p.IsValueType
-                        ? $"hashCode = hashCode * -1521134295 + {p.Name}.GetHashCode();"
-                        : $"hashCode = hashCode * -1521134295 + EqualityComparer<{p.TypeName}>.Default.GetHashCode({p.Name});")
-                )
-                .AddLiteralCodeStatements("return hashCode;");
-            yield return new ClassMethodBuilder()
-                .WithName("==")
-                .WithType(typeof(bool))
-                .WithStatic()
-                .WithOperator()
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
-                    new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
-                )
-                .AddLiteralCodeStatements($"return EqualityComparer<{instance.Name}>.Default.Equals(left, right);");
-            yield return new ClassMethodBuilder()
-                .WithName("!=")
-                .WithType(typeof(bool))
-                .WithStatic()
-                .WithOperator()
-                .AddParameters
-                (
-                    new ParameterBuilder().WithName("left").WithTypeName(instance.Name),
-                    new ParameterBuilder().WithName("right").WithTypeName(instance.Name)
-                )
-                .AddLiteralCodeStatements("return !(left == right);");
-        }
     }
 
     private static string GetInstanceName(bool extensionMethod)
         => extensionMethod
             ? "instance"
             : "this";
-
-    private static string GetEqualsProperties(ITypeBase instance)
-        => string.Join(" &&" + Environment.NewLine + "       ",
-                       instance.Properties.Select(p => $"{p.Name} == other.{p.Name}"));
 
     private static string GetPropertyNamesConcatenated(IEnumerable<IClassProperty> properties)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));

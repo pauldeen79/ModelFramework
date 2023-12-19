@@ -12,7 +12,7 @@ public class SharedValidationTests
         var results = builder.Validate(new ValidationContext(builder));
 
         // Assert
-        results.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "The Age field must be between 1 and 100.");
+        results.Select(x => x.ErrorMessage).Should().BeEquivalentTo("The Name field is required.", "The Age field must be between 1 and 100.", "The PhoneNumber field is not a valid phone number.", "The EmailAddress field is not a valid e-mail address.");
     }
 
     [Fact]
@@ -51,6 +51,18 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         [System.ComponentModel.DataAnnotations.RangeAttribute(1, 100, ErrorMessage = @""The Age field must be between 1 and 100."")]
         public int Age
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.PhoneAttribute(ErrorMessage = @""The {0} field is not a valid phone number."")]
+        public string PhoneNumber
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.EmailAddressAttribute(ErrorMessage = @""The {0} field is not a valid e-mail address."")]
+        public string EmailAddress
         {
             get;
         }
@@ -102,10 +114,24 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             get;
         }
 
-        public MySharedValidationDomainEntity1Base(string name, int age)
+        [System.ComponentModel.DataAnnotations.PhoneAttribute(ErrorMessage = @""The {0} field is not a valid phone number."")]
+        public string PhoneNumber
+        {
+            get;
+        }
+
+        [System.ComponentModel.DataAnnotations.EmailAddressAttribute(ErrorMessage = @""The {0} field is not a valid e-mail address."")]
+        public string EmailAddress
+        {
+            get;
+        }
+
+        public MySharedValidationDomainEntity1Base(string name, int age, string phoneNumber, string emailAddress)
         {
             this.Name = name;
             this.Age = age;
+            this.PhoneNumber = phoneNumber;
+            this.EmailAddress = emailAddress;
             new MyNamespace.Validator<ModelFramework.Generators.Objects.Tests.POC.MySharedValidationDomainEntity1Base>().Validate(this);
         }
     }

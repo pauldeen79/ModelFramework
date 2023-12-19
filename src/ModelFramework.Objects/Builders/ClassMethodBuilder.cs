@@ -4,7 +4,7 @@ public partial class ClassMethodBuilder
 {
     public ClassMethodBuilder AddNotImplementedException() => AddLiteralCodeStatements("throw new System.NotImplementedException();");
 
-    public override string ToString() => !string.IsNullOrEmpty(ParentTypeFullName.ToString())
+    public override string ToString() => !string.IsNullOrEmpty(ParentTypeFullName)
         ? $"{TypeName} {ParentTypeFullName}.{Name}({GetParametersString()})"
         : $"{TypeName} {Name}({GetParametersString()})";
 

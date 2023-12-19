@@ -11,6 +11,6 @@
         : Model.IsInterfaceMethod()
             ? Model.Name.RemoveInterfacePrefix().Sanitize().GetCsharpFriendlyName()
             : Model.Name.Sanitize().GetCsharpFriendlyName();
-    public bool OmitCode => TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface || Model.Abstract;
+    public bool OmitCode => TemplateContext.GetModelFromContextByType<ITypeBase>() is IInterface || Model.Abstract || Model.Partial;
     public bool ShouldRenderCodeStatements => Model.CodeStatements.Any();
 #>

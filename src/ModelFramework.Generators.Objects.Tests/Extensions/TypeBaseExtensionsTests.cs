@@ -122,7 +122,7 @@ namespace MyNamespace
                     .AddGetterCodeStatements(new[] { "return _test;" }.ToLiteralCodeStatementBuilders())
                     .AddSetterCodeStatements(new[] { "_test = value;" }.ToLiteralCodeStatementBuilders())
             ).Build()
-            .ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true));
+            .ToImmutableClass(new ImmutableClassSettings());
 
         // Act
         var actual = input.ToInterfaceClass(new InterfaceSettings());
@@ -137,7 +137,7 @@ using System.Text;
 
 namespace MyNamespace
 {
-    public interface ITest : IEquatable<Test>
+    public interface ITest
     {
         string Test
         {

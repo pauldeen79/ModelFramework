@@ -15,6 +15,6 @@ public class ClassConstructorBuilderTests
         var actual = sut.ChainCallToBaseUsingParameters();
 
         // Assert
-        actual.ChainCall.ToString().Should().Be("base(param1, param2, param3)");
+        actual.ChainCall.Should().Be("base(param1, param2, param3)");
     }
 }

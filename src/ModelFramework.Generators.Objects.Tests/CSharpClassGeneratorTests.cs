@@ -108,18 +108,18 @@ namespace MyNamespace
             get;
         }
 
-        public System.Collections.Immutable.IImmutableList<string> Property3
+        public System.Collections.Generic.IReadOnlyCollection<string> Property3
         {
             get;
         }
 
-        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Immutable.IImmutableList<string> property3 = default(System.Collections.Immutable.IImmutableList<string>))
+        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Generic.IReadOnlyCollection<string> property3 = default(System.Collections.Generic.IReadOnlyCollection<string>))
         {
             return new MyRecord
             (
                 property1 == default(string) ? this.Property1 : property1,
                 property2 == default(bool) ? this.Property2 : property2,
-                property3 == default(System.Collections.Immutable.IImmutableList<string>) ? this.Property3 : property3
+                property3 == default(System.Collections.Generic.IReadOnlyCollection<string>) ? this.Property3 : property3
             );
         }
 
@@ -127,7 +127,7 @@ namespace MyNamespace
         {
             this.Property1 = property1;
             this.Property2 = property2;
-            this.Property3 = property3;
+            this.Property3 = new System.Collections.Generic.List<System.String>(property3);
         }
     }
 }
@@ -151,18 +151,18 @@ namespace MyNamespace
             get;
         }
 
-        public System.Collections.Immutable.IImmutableList<string> Property3
+        public System.Collections.Generic.IReadOnlyCollection<string> Property3
         {
             get;
         }
 
-        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Immutable.IImmutableList<string> property3 = default(System.Collections.Immutable.IImmutableList<string>))
+        public MyRecord With(string property1 = default(string), bool property2 = default(bool), System.Collections.Generic.IReadOnlyCollection<string> property3 = default(System.Collections.Generic.IReadOnlyCollection<string>))
         {
             return new MyRecord
             (
                 property1 == default(string) ? this.Property1 : property1,
                 property2 == default(bool) ? this.Property2 : property2,
-                property3 == default(System.Collections.Immutable.IImmutableList<string>) ? this.Property3 : property3
+                property3 == default(System.Collections.Generic.IReadOnlyCollection<string>) ? this.Property3 : property3
             );
         }
 
@@ -170,7 +170,7 @@ namespace MyNamespace
         {
             this.Property1 = property1;
             this.Property2 = property2;
-            this.Property3 = property3;
+            this.Property3 = new System.Collections.Generic.List<System.String>(property3);
         }
     }
 }
@@ -206,10 +206,14 @@ namespace MyNamespace
 
         public MyRecord(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
         {
+            if (property1 == null) throw new System.ArgumentNullException(""property1"");
+            if (property2 == null) throw new System.ArgumentNullException(""property2"");
+            if (property3 == null) throw new System.ArgumentNullException(""property3"");
+            if (property4 == null) throw new System.ArgumentNullException(""property4"");
             this.Property1 = property1;
-            this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? Enumerable.Empty<System.String>());
+            this.Property2 = new System.Collections.Generic.List<System.String>(property2);
             this.Property3 = property3;
-            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
+            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4);
         }
     }
 
@@ -217,26 +221,50 @@ namespace MyNamespace
     {
         public string Property1
         {
-            get;
-            set;
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public System.Collections.Generic.List<string> Property2
         {
-            get;
-            set;
+            get
+            {
+                return _property2;
+            }
+            set
+            {
+                _property2 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public MyCustomTypeBuilder Property3
         {
-            get;
-            set;
+            get
+            {
+                return _property3;
+            }
+            set
+            {
+                _property3 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public System.Collections.Generic.List<MyCustomTypeBuilder> Property4
         {
-            get;
-            set;
+            get
+            {
+                return _property4;
+            }
+            set
+            {
+                _property4 = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public MyNamespace.MyRecord Build()
@@ -246,50 +274,45 @@ namespace MyNamespace
 
         public MyRecordBuilder WithProperty1(string property1)
         {
-            Property1 = property1;
+            Property1 = property1 ?? throw new System.ArgumentNullException(""property1"");
             return this;
         }
 
         public MyRecordBuilder AddProperty2(System.Collections.Generic.IEnumerable<string> property2)
         {
-            return AddProperty2(property2.ToArray());
+            return AddProperty2(property2?.ToArray() ?? throw new System.ArgumentNullException(""property2""));
         }
 
         public MyRecordBuilder AddProperty2(params string[] property2)
         {
-            if (property2 != null)
-            {
-                Property2.AddRange(property2);
-            }
+            if (property2 == null) throw new System.ArgumentNullException(""property2"");
+            Property2.AddRange(property2);
             return this;
         }
 
         public MyRecordBuilder WithProperty3(MyCustomTypeBuilder property3)
         {
-            Property3 = property3;
+            Property3 = property3 ?? throw new System.ArgumentNullException(""property3"");
             return this;
         }
 
         public MyRecordBuilder AddProperty4(System.Collections.Generic.IEnumerable<MyCustomTypeBuilder> property4)
         {
-            return AddProperty4(property4.ToArray());
+            return AddProperty4(property4?.ToArray() ?? throw new System.ArgumentNullException(""property4""));
         }
 
         public MyRecordBuilder AddProperty4(params MyCustomTypeBuilder[] property4)
         {
-            if (property4 != null)
-            {
-                Property4.AddRange(property4);
-            }
+            if (property4 == null) throw new System.ArgumentNullException(""property4"");
+            Property4.AddRange(property4);
             return this;
         }
 
         public MyRecordBuilder()
         {
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = string.Empty;
-            Property3 = default(MyCustomType);
+            _property2 = new System.Collections.Generic.List<string>();
+            _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            _property1 = string.Empty;
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -298,13 +321,21 @@ namespace MyNamespace
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            Property2 = new System.Collections.Generic.List<string>();
-            Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
-            Property1 = source.Property1;
-            if (source.Property2 != null) Property2.AddRange(source.Property2);
+            _property2 = new System.Collections.Generic.List<string>();
+            _property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
+            _property1 = source.Property1;
+            Property2.AddRange(source.Property2);
             Property3 = new MyCustomTypeBuilder(source.Property3);
-            if (source.Property4 != null) Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
+            Property4.AddRange(source.Property4.Select(x => new MyCustomTypeBuilder(x)));
         }
+
+        private string _property1;
+
+        private System.Collections.Generic.List<string> _property2;
+
+        private MyCustomTypeBuilder _property3;
+
+        private System.Collections.Generic.List<MyCustomTypeBuilder> _property4;
     }
 }
 ";
@@ -340,9 +371,9 @@ namespace MyNamespace
         public MyRecord(string property1, System.Collections.Generic.IEnumerable<string> property2, MyCustomType property3, System.Collections.Generic.IEnumerable<MyCustomType> property4)
         {
             this.Property1 = property1;
-            this.Property2 = new System.Collections.Generic.List<System.String>(property2 ?? Enumerable.Empty<System.String>());
+            this.Property2 = new System.Collections.Generic.List<System.String>(property2);
             this.Property3 = property3;
-            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4 ?? Enumerable.Empty<MyCustomType>());
+            this.Property4 = new System.Collections.Generic.List<MyCustomType>(property4);
         }
     }
 
@@ -416,7 +447,6 @@ namespace MyNamespace
             Property2 = new System.Collections.Generic.List<string>();
             Property4 = new System.Collections.Generic.List<MyCustomTypeBuilder>();
             Property1 = string.Empty;
-            Property3 = default(MyCustomType);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -1486,90 +1516,6 @@ namespace Namespace2
     }
 
     [Fact]
-    public void GeneratesImmutableClassWithIEquatable()
-    {
-        // Arrange
-        var properties = new[]
-        {
-            new ClassPropertyBuilder().WithName("Property1").WithType(typeof(string)),
-            new ClassPropertyBuilder().WithName("Property2").WithType(typeof(bool))
-        };
-
-        var model = new[]
-        {
-            new ClassBuilder()
-                .WithName("MyRecord")
-                .WithNamespace("MyNamespace")
-                .AddProperties(properties)
-                .Build()
-                .ToImmutableClass(new ImmutableClassSettings(implementIEquatable: true))
-        };
-        var sut = new CSharpClassGenerator();
-
-        // Act
-        var actual = TemplateRenderHelper.GetTemplateOutput(sut, model);
-
-        // Assert
-        actual.NormalizeLineEndings().Should().Be(@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MyNamespace
-{
-    public class MyRecord : IEquatable<MyRecord>
-    {
-        public string Property1
-        {
-            get;
-        }
-
-        public bool Property2
-        {
-            get;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as MyRecord);
-        }
-
-        public bool Equals(MyRecord other)
-        {
-            return other != null &&
-                   Property1 == other.Property1 &&
-                   Property2 == other.Property2;
-        }
-
-        public override int GetHashCode()
-        {
-            int hashCode = 235838129;
-            hashCode = hashCode * -1521134295 + EqualityComparer<System.String>.Default.GetHashCode(Property1);
-            hashCode = hashCode * -1521134295 + Property2.GetHashCode();
-            return hashCode;
-        }
-
-        public static bool operator ==(MyRecord left, MyRecord right)
-        {
-            return EqualityComparer<MyRecord>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(MyRecord left, MyRecord right)
-        {
-            return !(left == right);
-        }
-
-        public MyRecord(string property1, bool property2)
-        {
-            this.Property1 = property1;
-            this.Property2 = property2;
-        }
-    }
-}
-");
-    }
-
-    [Fact]
     public void GeneratesImmutableClassWithInjectedTemplates_Model_No_With_Method()
     {
         // Arrange
@@ -1613,7 +1559,7 @@ namespace MyNamespace
             .WithNamespace("MyNamespace")
             .AddProperties(properties)
             .Build()
-            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
+            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection", constructorSettings: new ImmutableClassConstructorSettings(addNullChecks: true)));
         var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: true));
         var model = new[]
         {
@@ -1645,7 +1591,7 @@ namespace MyNamespace
             .WithNamespace("MyNamespace")
             .AddProperties(properties)
             .Build()
-            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection"));
+            .ToImmutableClass(new ImmutableClassSettings("System.Collections.Generic.IReadOnlyCollection", constructorSettings : new ImmutableClassConstructorSettings(addNullChecks: false)));
         var settings = new ImmutableBuilderClassSettings(constructorSettings: new ImmutableBuilderClassConstructorSettings(addCopyConstructor: true, addNullChecks: false));
         var model = new[]
         {
@@ -1724,7 +1670,6 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            Static = default(System.Boolean);
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -2203,8 +2148,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string AdditionalProperty
         {
-            get;
-            set;
+            get
+            {
+                return _additionalProperty;
+            }
+            set
+            {
+                _additionalProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
@@ -2214,13 +2165,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
-            AdditionalProperty = additionalProperty;
+            AdditionalProperty = additionalProperty ?? throw new System.ArgumentNullException(""additionalProperty"");
             return this;
         }
 
         public InheritedClassBuilder() : base()
         {
-            AdditionalProperty = string.Empty;
+            _additionalProperty = string.Empty;
         }
 
         public InheritedClassBuilder(ModelFramework.Generators.Objects.Tests.POC.InheritedClass source) : base(source)
@@ -2229,8 +2180,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            AdditionalProperty = source.AdditionalProperty;
+            _additionalProperty = source.AdditionalProperty;
         }
+
+        private string _additionalProperty;
     }
 }
 ");
@@ -2293,8 +2246,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string AdditionalProperty
         {
-            get;
-            set;
+            get
+            {
+                return _additionalProperty;
+            }
+            set
+            {
+                _additionalProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public override ModelFramework.Generators.Objects.Tests.POC.InheritedClass BuildTyped()
@@ -2304,19 +2263,19 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public InheritedClassBuilder WithAdditionalProperty(string additionalProperty)
         {
-            AdditionalProperty = additionalProperty;
+            AdditionalProperty = additionalProperty ?? throw new System.ArgumentNullException(""additionalProperty"");
             return this;
         }
 
         public InheritedClassBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return this;
         }
 
         public InheritedClassBuilder() : base()
         {
-            AdditionalProperty = string.Empty;
+            _additionalProperty = string.Empty;
         }
 
         public InheritedClassBuilder(ModelFramework.Generators.Objects.Tests.POC.InheritedClass source) : base(source)
@@ -2325,8 +2284,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            AdditionalProperty = source.AdditionalProperty;
+            _additionalProperty = source.AdditionalProperty;
         }
+
+        private string _additionalProperty;
     }
 }
 ");
@@ -2338,7 +2299,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly, addNullChecks: true),
-            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, isAbstract: true),
             addPrivateSetters: true
         );
         var cls = typeof(BaseClass)
@@ -2389,8 +2350,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string BaseProperty
         {
-            get;
-            set;
+            get
+            {
+                return _baseProperty;
+            }
+            set
+            {
+                _baseProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract TEntity BuildTyped();
@@ -2402,13 +2369,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return (TBuilder)this;
         }
 
         protected BaseClassBuilder()
         {
-            BaseProperty = string.Empty;
+            _baseProperty = string.Empty;
         }
 
         protected BaseClassBuilder(ModelFramework.Generators.Objects.Tests.POC.BaseClass source)
@@ -2417,8 +2384,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            BaseProperty = source.BaseProperty;
+            _baseProperty = source.BaseProperty;
         }
+
+        private string _baseProperty;
     }
 }
 ");
@@ -2482,8 +2451,14 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string MiddleProperty
         {
-            get;
-            set;
+            get
+            {
+                return _middleProperty;
+            }
+            set
+            {
+                _middleProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract override TEntity BuildTyped();
@@ -2495,13 +2470,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithMiddleProperty(string middleProperty)
         {
-            MiddleProperty = middleProperty;
+            MiddleProperty = middleProperty ?? throw new System.ArgumentNullException(""middleProperty"");
             return (TBuilder)this;
         }
 
         protected MiddleClassBuilder() : base()
         {
-            MiddleProperty = string.Empty;
+            _middleProperty = string.Empty;
         }
 
         protected MiddleClassBuilder(ModelFramework.Generators.Objects.Tests.POC.MiddleClass source) : base(source)
@@ -2510,8 +2485,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            MiddleProperty = source.MiddleProperty;
+            _middleProperty = source.MiddleProperty;
         }
+
+        private string _middleProperty;
     }
 }
 ");
@@ -2523,7 +2500,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
         // Arrange
         var immutableClassSettings = new ImmutableClassSettings(
             constructorSettings: new ImmutableClassConstructorSettings(validateArguments: ArgumentValidationType.DomainOnly, addNullChecks: true),
-            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true),
+            inheritanceSettings: new ImmutableClassInheritanceSettings(enableInheritance: true, isAbstract: true),
             addPrivateSetters: true
         );
         var cls = typeof(BaseClass)
@@ -2573,15 +2550,21 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string BaseProperty
         {
-            get;
-            set;
+            get
+            {
+                return _baseProperty;
+            }
+            set
+            {
+                _baseProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract ModelFramework.Generators.Objects.Tests.POC.BaseClass Build();
 
         protected BaseClassBuilder()
         {
-            BaseProperty = string.Empty;
+            _baseProperty = string.Empty;
         }
 
         protected BaseClassBuilder(ModelFramework.Generators.Objects.Tests.POC.BaseClass source)
@@ -2590,8 +2573,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            BaseProperty = source.BaseProperty;
+            _baseProperty = source.BaseProperty;
         }
+
+        private string _baseProperty;
     }
 
     public abstract partial class BaseClassBuilder<TBuilder, TEntity> : BaseClassBuilder
@@ -2607,7 +2592,7 @@ namespace ModelFramework.Generators.Objects.Tests.POC
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return (TBuilder)this;
         }
 
@@ -2680,15 +2665,21 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public string MiddleProperty
         {
-            get;
-            set;
+            get
+            {
+                return _middleProperty;
+            }
+            set
+            {
+                _middleProperty = value ?? throw new System.ArgumentNullException(""value"");
+            }
         }
 
         public abstract ModelFramework.Generators.Objects.Tests.POC.MiddleClass Build();
 
         protected MiddleClassBuilder() : base()
         {
-            MiddleProperty = string.Empty;
+            _middleProperty = string.Empty;
         }
 
         protected MiddleClassBuilder(ModelFramework.Generators.Objects.Tests.POC.MiddleClass source) : base(source)
@@ -2697,8 +2688,10 @@ namespace ModelFramework.Generators.Objects.Tests.POC
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            MiddleProperty = source.MiddleProperty;
+            _middleProperty = source.MiddleProperty;
         }
+
+        private string _middleProperty;
     }
 
     public abstract partial class MiddleClassBuilder<TBuilder, TEntity> : MiddleClassBuilder
@@ -2707,13 +2700,13 @@ namespace ModelFramework.Generators.Objects.Tests.POC
     {
         public TBuilder WithMiddleProperty(string middleProperty)
         {
-            MiddleProperty = middleProperty;
+            MiddleProperty = middleProperty ?? throw new System.ArgumentNullException(""middleProperty"");
             return (TBuilder)this;
         }
 
         public TBuilder WithBaseProperty(string baseProperty)
         {
-            BaseProperty = baseProperty;
+            BaseProperty = baseProperty ?? throw new System.ArgumentNullException(""baseProperty"");
             return (TBuilder)this;
         }
 
@@ -2817,7 +2810,7 @@ namespace MyNamespace
         {
             cls.ToImmutableClass(new ImmutableClassSettings(createWithMethod: false))
                 .ToImmutableBuilderClassBuilder(new ImmutableBuilderClassSettings())
-                .With(x => x.Methods.RemoveAll(x => x.Name.ToString() != "Build"))
+                .With(x => x.Methods.RemoveAll(x => x.Name != "Build"))
                 .Build(),
             cls.ToBuilderExtensionsClass(new ImmutableBuilderClassSettings())
         };
@@ -2856,19 +2849,20 @@ namespace MyNamespace
         public MyRecordBuilder()
         {
             Property1 = string.Empty;
-            Property2 = default(System.Boolean);
         }
     }
 
     public static partial class MyRecordBuilderExtensions
     {
-        public static MyRecordBuilder WithProperty1(this MyRecordBuilder instance, string property1)
+        public static T WithProperty1<T>(this T instance, string property1)
+            where T : MyRecordBuilder
         {
             instance.Property1 = property1;
             return instance;
         }
 
-        public static MyRecordBuilder WithProperty2(this MyRecordBuilder instance, bool property2)
+        public static T WithProperty2<T>(this T instance, bool property2)
+            where T : MyRecordBuilder
         {
             instance.Property2 = property2;
             return instance;
@@ -3698,8 +3692,14 @@ namespace MyNamespace
     {
         public string? Property1
         {
-            get;
-            set;
+            get
+            {
+                return _property1;
+            }
+            set
+            {
+                _property1 = value;
+            }
         }
 
         public MyNamespace.MyRecord Build()
@@ -3723,8 +3723,10 @@ namespace MyNamespace
             {
                 throw new System.ArgumentNullException(""source"");
             }
-            Property1 = source.Property1;
+            _property1 = source.Property1;
         }
+
+        private string? _property1;
     }
 }
 ");
@@ -3838,20 +3840,12 @@ namespace MyNamespace
 
         public MyNamespace.MyRecord Build()
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new MyNamespace.MyRecord(Property1);
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var instance = new MyNamespace.MyRecordBase(Property1);
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
             return results;
@@ -3865,8 +3859,6 @@ namespace MyNamespace
 
         public MyRecordBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyRecordBuilder(MyNamespace.MyRecord source)
@@ -3931,20 +3923,12 @@ namespace Models
 
         public Entities.MyClass ToEntity()
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             return new Entities.MyClass { Property1 = Property1, Property2 = Property2 };
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
         }
 
         public System.Collections.Generic.IEnumerable<System.ComponentModel.DataAnnotations.ValidationResult> Validate(System.ComponentModel.DataAnnotations.ValidationContext validationContext)
         {
-            #pragma warning disable CS8604 // Possible null reference argument.
-            #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             var instance = new Entities.MyClassBase { Property1 = Property1, Property2 = Property2 };
-            #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            #pragma warning restore CS8604 // Possible null reference argument.
             var results = new System.Collections.Generic.List<System.ComponentModel.DataAnnotations.ValidationResult>();
             System.ComponentModel.DataAnnotations.Validator.TryValidateObject(instance, new System.ComponentModel.DataAnnotations.ValidationContext(instance), results, true);
             return results;
@@ -3952,10 +3936,7 @@ namespace Models
 
         public MyClassModel()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             Property1 = string.Empty;
-            Property2 = default(System.Int32);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyClassModel(Entities.MyClass source)

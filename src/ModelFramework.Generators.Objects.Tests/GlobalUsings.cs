@@ -1,4 +1,4 @@
-global using System;
+﻿global using System;
 global using System.Collections.Generic;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
@@ -18,6 +18,7 @@ global using ModelFramework.Generators.Objects.Tests.POC;
 global using ModelFramework.Generators.Shared;
 global using ModelFramework.Generators.Tests.POC;
 global using ModelFramework.Objects.Builders;
+global using ModelFramework.Objects.CodeStatements;
 global using ModelFramework.Objects.CodeStatements.Builders;
 global using ModelFramework.Objects.Contracts;
 global using ModelFramework.Objects.Extensions;

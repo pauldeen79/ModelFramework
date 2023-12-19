@@ -3,7 +3,7 @@
 public class TestCSharpClassBaseModelTransformationOverrideBuilderFactory : TestCSharpClassBaseModelTransformationBase
 {
     public override object CreateModel()
-        => CreateBuilderFactoryModels(
+        => CreateBuilderFactories(
             GetOverrideModelTransformationTypes(),
             new("MyNamespace.Domain.Builders",
             "MyClassBuilderFactory",

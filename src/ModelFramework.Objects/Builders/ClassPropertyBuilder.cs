@@ -3,10 +3,11 @@
 public partial class ClassPropertyBuilder
 {
     public ClassPropertyBuilder ConvertCollectionOnBuilderToEnumerable(bool addNullChecks,
+                                                                       ArgumentValidationType argumentValidationType = ArgumentValidationType.None,
                                                                        string collectionType = "System.Collections.Generic.List")
         => AddMetadata(MetadataNames.CustomImmutableArgumentType, "System.Collections.Generic.IEnumerable<{1}>")
           .AddMetadata(MetadataNames.CustomBuilderDefaultValue, CreateImmutableBuilderDefaultValue(addNullChecks, collectionType))
-          .AddMetadata(MetadataNames.CustomImmutableDefaultValue, CreateImmutableDefaultValue(addNullChecks, collectionType));
+          .AddMetadata(MetadataNames.CustomImmutableDefaultValue, CreateImmutableDefaultValue(addNullChecks, argumentValidationType, collectionType));
 
     public ClassPropertyBuilder ConvertSinglePropertyToBuilderOnBuilder(string? argumentType = null,
                                                                         string? customBuilderConstructorInitializeExpression = null,
@@ -17,8 +18,8 @@ public partial class ClassPropertyBuilder
                                                                         string? buildersNamespace = null)
     => AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace) ? "{0}Builder" : buildersNamespace + ".{2}Builder"))
       .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
-            ? "{0}?.Build()"
-            : "{0}{2}.Build()"))
+            ? "{0}?.Build(){5}"
+            : "{0}{2}.Build(){5}"))
       .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorSinglePropertyInitializeExpression(argumentType, useLazyInitialization, useTargetTypeNewExpressions, buildersNamespace)));
 
     public ClassPropertyBuilder WithCustomBuilderConstructorInitializeExpressionSingleProperty(string? argumentType = null,
@@ -38,8 +39,8 @@ public partial class ClassPropertyBuilder
                                                                            string buildMethodName = "Build",
                                                                            bool addNullableCheck = true)
         => ReplaceMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty(() => IsNullable || addNullableCheck
-                ? "{0}?." + buildMethodName + "()"
-                : "{0}{2}." + buildMethodName + "()"));
+            ? "{0}?." + buildMethodName + "(){5}"
+            : "{0}{2}." + buildMethodName + "(){5}"));
 
     public ClassPropertyBuilder ConvertStringPropertyToStringBuilderPropertyOnBuilder(bool useLazyInitialization)
     {
@@ -68,7 +69,7 @@ public partial class ClassPropertyBuilder
                                                                             string? buildersNamespace = null,
                                                                             string? customBuilderMethodParameterExpression = null,
                                                                             string? builderCollectionTypeName = null)
-        => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType)
+        => ConvertCollectionOnBuilderToEnumerable(addNullChecks, collectionType: collectionType)
           .AddMetadata(MetadataNames.CustomBuilderArgumentType, argumentType.WhenNullOrEmpty(() => string.IsNullOrEmpty(buildersNamespace)
             ? "System.Collections.Generic.IEnumerable<{1}Builder>"
             : "System.Collections.Generic.IEnumerable<" + buildersNamespace + ".{3}Builder>"))
@@ -88,13 +89,16 @@ public partial class ClassPropertyBuilder
           .AddMetadata(MetadataNames.CustomBuilderMethodParameterExpression, customBuilderMethodParameterExpression.WhenNullOrEmpty("{0}.Select(x => x." + buildMethodName + "())"))
           .AddMetadata(MetadataNames.CustomBuilderConstructorInitializeExpression, customBuilderConstructorInitializeExpression.WhenNullOrEmpty(() => CreateDefaultCustomBuilderConstructorCollectionPropertyInitializeExpression(argumentType, buildersNamespace, builderCollectionTypeName)));
 
-    public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType)
+    public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType, string? propertyGetStatement = null, bool forceNullCheck = false)
     {
-        AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement($"return _{Name.ToString().ToPascalCase()};", Enumerable.Empty<IMetadata>()));
-        AddMetadata(MetadataNames.CustomImmutableConstructorInitialization, IsNullable
-            ? $"_{Name.ToString().ToPascalCase()} = {Name.ToString().ToPascalCase()} == null ? null : _{Name.ToString().ToPascalCase()} = new {typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});"
-            : $"_{Name.ToString().ToPascalCase()} = new {typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>({Name.ToString().ToPascalCase()});");
-        AddMetadata(MetadataNames.CustomImmutableBackingField, new ClassFieldBuilder().WithName($"_{Name.ToString().ToPascalCase()}").WithTypeName($"{typeof(ValueCollection<>).WithoutGenerics()}<{TypeName.ToString().GetGenericArguments()}>").WithIsNullable(IsNullable).Build());
+        AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement(propertyGetStatement?.Replace("[Name]", Name).Replace("[NamePascal]", Name.ToPascalCase()) ?? $"return _{Name};", Enumerable.Empty<IMetadata>()));
+        var nullSuffix = IsNullable
+            ? string.Empty
+            : "!";
+        AddMetadata(MetadataNames.CustomImmutableConstructorInitialization, IsNullable || forceNullCheck
+            ? $"_{Name.ToPascalCase()} = {Name.ToPascalCase()} == null ? null{nullSuffix} : _{Name.ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>({Name.ToPascalCase()});"
+            : $"_{Name.ToPascalCase()} = new {collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>({Name.ToPascalCase()});");
+        AddMetadata(MetadataNames.CustomImmutableBackingField, new ClassFieldBuilder().WithName($"_{Name.ToPascalCase()}").WithTypeName($"{collectionType.WithoutGenerics()}<{TypeName.GetGenericArguments()}>").WithIsNullable(IsNullable).Build());
         AddMetadata(MetadataNames.CustomImmutableHasSetter, false);
 
         return this;
@@ -145,16 +149,16 @@ public partial class ClassPropertyBuilder
     public ClassPropertyBuilder ReplaceMetadata(string name, object? newValue)
         => this.Chain(() => Metadata.Replace(name, newValue));
 
-    public override string ToString() => !string.IsNullOrEmpty(ParentTypeFullName.ToString())
+    public override string ToString() => !string.IsNullOrEmpty(ParentTypeFullName)
         ? $"{TypeName} {ParentTypeFullName}.{Name}"
         : $"{TypeName} {Name}";
 
-    private static string CreateImmutableDefaultValue(bool addNullChecks, string collectionType)
+    private static string CreateImmutableDefaultValue(bool addNullChecks, ArgumentValidationType argumentValidationType, string collectionType)
         => collectionType switch
         {
             "System.Collections.Generic.IEnumerable" => "{0} ?? Enumerable.Empty<{1}>()",
-            _ => addNullChecks
-                ? "new " + collectionType + "<{1}>({0} ?? Enumerable.Empty<{1}>())"
+            _ => addNullChecks && (argumentValidationType == ArgumentValidationType.Shared || argumentValidationType == ArgumentValidationType.DomainOnly)
+                ? "{0} == null ? null{2} : new " + collectionType + "<{1}>({0})"
                 : "new " + collectionType + "<{1}>({0})"
         };
 

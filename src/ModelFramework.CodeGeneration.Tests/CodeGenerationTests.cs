@@ -287,9 +287,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => new System.Text.StringBuilder());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass source)
@@ -386,7 +384,7 @@ namespace Test.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new Test.TestClass(TestProperty?.Build());
+            return new Test.TestClass(TestProperty?.Build()!);
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -405,9 +403,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => default(TestClassBuilder)!);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass source)
@@ -523,9 +519,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => default(T)!);
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass<T> source)
@@ -600,9 +594,7 @@ namespace Test.Builders
 
         public TestClassBuilder()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _testPropertyDelegate = new (() => new ModelFramework.Builders.Domain.MyGenericTypeBuilder<T>());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public TestClassBuilder(Test.TestClass<T> source)
@@ -708,9 +700,7 @@ namespace MyNamespace.Domain.Builders
         public MyClassBuilder()
         {
             SubTypes = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             _parentTypeDelegate = new (() => default(MyNamespace.Domain.Builders.MyClassBuilder?));
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyClassBuilder(MyNamespace.Domain.MyClass source)
@@ -767,6 +757,88 @@ namespace MyNamespace.Domain
             this.SubTypes = new System.Collections.ObjectModel.ReadOnlyCollection<MyNamespace.Domain.MyClass>(subTypes);
             this.ParentType = parentType;
             System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Core_Interface_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreInterfaces>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NotUsed
+{
+    public interface IMyClass
+    {
+        System.Collections.Generic.IReadOnlyCollection<MyNamespace.Domain.MyClass> SubTypes
+        {
+            get;
+        }
+
+        MyNamespace.Domain.MyClass? ParentType
+        {
+            get;
+        }
+    }
+}
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Core_Builder_Interface_Using_ModelTransformation_And_Automatic_Builder_Properties()
+    {
+        // Arrange
+        var settings = new CodeGenerationSettings
+        (
+            basePath: @"C:\Temp\ModelFramework",
+            generateMultipleFiles: false,
+            skipWhenFileExists: false,
+            dryRun: true
+        );
+
+        // Act
+        var generatedCode = GenerateCode.For<TestCSharpClassBaseModelTransformationCoreBuilderInterfaces>(settings);
+        var actual = generatedCode.TemplateFileManager.MultipleContentBuilder.Contents.First().Builder.ToString();
+
+        // Assert
+        actual.NormalizeLineEndings().Should().Be(@"using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace NotUsed
+{
+    public interface IMyClassBuilder
+    {
+        System.Collections.Generic.List<MyNamespace.Domain.Builders.MyClassBuilder> SubTypes
+        {
+            get;
+            set;
+        }
+
+        MyNamespace.Domain.Builders.MyClassBuilder? ParentType
+        {
+            get;
+            set;
         }
     }
 }
@@ -916,9 +988,7 @@ namespace MyNamespace.Domain.Builders
         protected MyBaseClassBuilder()
         {
             Children = new System.Collections.Generic.List<MyNamespace.Domain.Builders.MyBaseClassBuilder>();
-            #pragma warning disable CS8603 // Possible null reference return.
             _basePropertyDelegate = new (() => new System.Text.StringBuilder());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         protected MyBaseClassBuilder(MyNamespace.Domain.MyBaseClass source)
@@ -1022,7 +1092,7 @@ namespace MyNamespace.Domain.Builders
         {
             #pragma warning disable CS8604 // Possible null reference argument.
             #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build(), BaseProperty?.ToString(), Children.Select(x => x.Build()));
+            return new MyNamespace.Domain.MyDerivedClass(RequiredDomainProperty?.Build()!, BaseProperty?.ToString(), Children.Select(x => x.Build()));
             #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             #pragma warning restore CS8604 // Possible null reference argument.
         }
@@ -1041,9 +1111,7 @@ namespace MyNamespace.Domain.Builders
 
         public MyDerivedClassBuilder() : base()
         {
-            #pragma warning disable CS8603 // Possible null reference return.
             _requiredDomainPropertyDelegate = new (() => new MyNamespace.Domain.Builders.MyClassBuilder());
-            #pragma warning restore CS8603 // Possible null reference return.
         }
 
         public MyDerivedClassBuilder(MyNamespace.Domain.MyDerivedClass source) : base(source)
@@ -1241,6 +1309,7 @@ namespace MyNamespace.Domain.Builders
             new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.I", "MyNamespace."),
             new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Domains.", "MyNamespace.Domains."),
             new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Contracts.", "MyNamespace.Contracts."),
+            new KeyValuePair<string, string>("MyProject.CodeGeneration.Models.Abstractions.", "MyNamespace.Abstractions."),
             new KeyValuePair<string, string>("MyProject.CodeGeneration.I", "MyNamespace.I"),
         });
     }
@@ -1379,7 +1448,7 @@ namespace MyNamespace.Domain.Builders
 
         private static void FixImmutableBuilderProperty(ClassPropertyBuilder property, bool forBuilder)
         {
-            var typeName = property.TypeName.ToString();
+            var typeName = property.TypeName;
             if (typeName.StartsWith("Test.Contracts.", StringComparison.InvariantCulture))
             {
                 if (forBuilder)
@@ -1395,7 +1464,11 @@ namespace MyNamespace.Domain.Builders
             {
                 if (forBuilder)
                 {
-                    property.ConvertCollectionPropertyToBuilderOnBuilder(addNullChecks: false, argumentType: typeName.Replace("Test.Contracts.", string.Empty, StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture));
+                    property.ConvertCollectionPropertyToBuilderOnBuilder
+                    (
+                        addNullChecks: false,
+                        argumentType: typeName.Replace("Test.Contracts.", string.Empty, StringComparison.InvariantCulture).ReplaceSuffix(">", "Builder>", StringComparison.InvariantCulture)
+                    );
                 }
                 else
                 {

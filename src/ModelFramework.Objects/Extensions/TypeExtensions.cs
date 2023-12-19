@@ -25,6 +25,7 @@ public static class TypeExtensions
             .WithSealed(instance.IsSealed)
             .WithPartial(settings.Partial)
             .WithRecord(instance.IsRecord())
+            .WithAbstract(instance.IsAbstract)
             .AddInterfaces(GetInterfaces(instance))
             .AddFields(GetFields(instance, settings.AttributeInitializeDelegate).ToList())
             .AddProperties(GetProperties(instance, settings.AttributeInitializeDelegate))
@@ -141,15 +142,6 @@ public static class TypeExtensions
                 .WithIsNullable(p.IsNullable())
                 .WithIsValueType(p.PropertyType.IsValueType || p.PropertyType.IsEnum)
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic)
-                    ? Visibility.Public
-                    : Visibility.Private)
-                .WithGetterVisibility(p.GetGetMethod()?.IsPublic ?? false
-                    ? Visibility.Public
-                    : Visibility.Private)
-                .WithSetterVisibility(p.GetSetMethod()?.IsPublic ?? false
-                    ? Visibility.Public
-                    : Visibility.Private)
-                .WithInitializerVisibility(p.GetSetMethod()?.IsPublic ?? false
                     ? Visibility.Public
                     : Visibility.Private)
                 .AddAttributes(GetAttributes(p.GetCustomAttributes(false), attributeInitializeDelegate))

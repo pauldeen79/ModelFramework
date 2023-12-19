@@ -24,7 +24,7 @@ public static class EnumerableOfMetadataExtensions
             return defaultValueDelegate();
         }
 
-        return CreateMetadata(metadataItem, defaultValueDelegate);
+        return GetValue(metadataItem, defaultValueDelegate);
     }
 
     public static IEnumerable<string> GetStringValues(this IEnumerable<IMetadata> metadata, string metadataName)
@@ -36,7 +36,7 @@ public static class EnumerableOfMetadataExtensions
             .Select(md => md.Value)
             .OfType<T>();
 
-    private static T CreateMetadata<T>(IMetadata metadataItem, Func<T> defaultValueDelegate)
+    private static T GetValue<T>(IMetadata metadataItem, Func<T> defaultValueDelegate)
     {
         if (metadataItem.Value is T t)
         {

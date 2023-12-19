@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace ModelFramework.Objects.Tests.Extensions;
+﻿namespace ModelFramework.Objects.Tests.Extensions;
 
 public class TypeExtensionsTests
 {

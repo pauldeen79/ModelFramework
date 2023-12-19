@@ -18,12 +18,12 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             ? System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"src/")
             : System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
 
-    protected override bool IsMemberValid(IParentTypeContainer parent, ITypeBase typeBase)
-        => parent != null
+    protected override bool IsMemberValid(IParentTypeContainer parentNameContainer, INameContainer nameContainer, ITypeBase typeBase)
+        => parentNameContainer != null
         && typeBase != null
-        && (string.IsNullOrEmpty(parent.ParentTypeFullName)
-            || parent.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
-            || parent.ParentTypeFullName.GetClassName() == nameof(IEnumsContainer)
+        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+            || parentNameContainer.ParentTypeFullName.GetClassName() == $"I{typeBase.Name}"
+            || parentNameContainer.ParentTypeFullName.GetClassName() == nameof(IEnumsContainer)
             || $"I{typeBase.Name}" == nameof(ITypeBase));
 
     protected override string FormatInstanceTypeName(ITypeBase instance, bool forCreate)
@@ -69,7 +69,7 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             return;
         }
 
-        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name.ToString(), x));
+        typeBaseBuilder.Properties.ForEach(x => FixImmutableBuilderProperty(typeBaseBuilder.Name, x));
     }
 
     protected static Type[] GetCommonModelTypes()
@@ -140,16 +140,16 @@ public abstract partial class ModelFrameworkCSharpClassBase : CSharpClassBase
             (
                 c => CreateBuilder(c, buildersNamespace)
                     .AddInterfaces(codeStatementBuilderInterfaceType)
-                    .With(x => x.Methods.First(x => x.Name.ToString().In("Build", "ToEntity")).WithType(codeStatementInterfaceType))
+                    .With(x => x.Methods.First(x => x.Name.In("Build", "ToEntity")).WithType(codeStatementInterfaceType))
                     .BuildTyped()
             ).ToArray();
 
     protected virtual void FixImmutableBuilderProperty(string name, ClassPropertyBuilder property)
     {
-        property = ArgumentGuard.IsNotNull(property, nameof(property));
+        property = property.IsNotNull(nameof(property));
 
-        var typeName = property.TypeName.ToString();
-        var propertyName = property.Name.ToString();
+        var typeName = property.TypeName;
+        var propertyName = property.Name;
         if (typeName.StartsWithAny(StringComparison.InvariantCulture, "ModelFramework.Objects.Contracts.I",
                                                                       "ModelFramework.Database.Contracts.I",
                                                                       "ModelFramework.Common.Contracts.I"))
