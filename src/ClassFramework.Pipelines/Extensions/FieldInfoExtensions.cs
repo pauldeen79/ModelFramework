@@ -3,5 +3,5 @@
 public static class FieldInfoExtensions
 {
     public static bool IsNullable(this FieldInfo fieldInfo)
-        => NullableHelper.IsNullable(fieldInfo.FieldType, fieldInfo.DeclaringType, fieldInfo.CustomAttributes, 0);
+        => fieldInfo.FieldType.IsNullable(fieldInfo.DeclaringType, fieldInfo.CustomAttributes, 0);
 }

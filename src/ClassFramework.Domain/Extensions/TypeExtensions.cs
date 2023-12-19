@@ -59,8 +59,8 @@ public static class TypeExtensions
 
             index++;
             builder.Append(arg.GetTypeName(type));
-            if ((!arg.IsGenericParameter && NullableHelper.IsNullable(arg, arg, declaringType.CustomAttributes, index))
-                || (arg.IsGenericParameter && NullableHelper.IsNullable(arg, declaringType, declaringType.CustomAttributes, index)))
+            if ((!arg.IsGenericParameter && arg.IsNullable(arg, declaringType.CustomAttributes, index))
+                || (arg.IsGenericParameter && arg.IsNullable(declaringType, declaringType.CustomAttributes, index)))
             {
                 builder.Append("?");
             }
@@ -73,4 +73,50 @@ public static class TypeExtensions
 
     public static bool IsRecord(this Type type)
         => type.GetMethod("<Clone>$") != null;
+
+    public static bool IsNullable(this Type memberType, MemberInfo declaringType, IEnumerable<CustomAttributeData> customAttributes, int index)
+    {
+        memberType = memberType.IsNotNull(nameof(memberType));
+        declaringType = declaringType.IsNotNull(nameof(declaringType));
+        customAttributes = customAttributes.IsNotNull(nameof(customAttributes));
+
+        if (memberType.IsValueType)
+        {
+            return Nullable.GetUnderlyingType(memberType) is not null;
+        }
+
+        var nullable = customAttributes
+            .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute");
+        if (nullable is not null && nullable.ConstructorArguments.Count == 1)
+        {
+            var attributeArgument = nullable.ConstructorArguments[0];
+            if (attributeArgument.ArgumentType == typeof(byte[]))
+            {
+                var args = (ReadOnlyCollection<CustomAttributeTypedArgument>)attributeArgument.Value!;
+                if (args.Count > index && args[index].ArgumentType == typeof(byte))
+                {
+                    return (byte)args[index].Value! == 2;
+                }
+            }
+            else if (attributeArgument.ArgumentType == typeof(byte))
+            {
+                return (byte)attributeArgument.Value! == 2;
+            }
+        }
+
+        for (var type = declaringType; type is not null; type = type.DeclaringType)
+        {
+            var context = type.CustomAttributes
+                .FirstOrDefault(x => x.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute");
+            if (context is not null &&
+                context.ConstructorArguments.Count == 1 &&
+                context.ConstructorArguments[0].ArgumentType == typeof(byte))
+            {
+                return (byte)context.ConstructorArguments[0].Value! == 2;
+            }
+        }
+
+        // Couldn't find a suitable attribute
+        return false;
+    }
 }
