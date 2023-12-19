@@ -88,6 +88,24 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
 
             result.Value.Visibility.Should().Be(Visibility.Internal);
         }
+
+        [Fact]
+        public void Returns_Invalid_When_SourceModel_Does_Not_Have_Properties_And_AllowGenerationWithoutProperties_Is_False()
+        {
+            // Arrange
+            var model = new ClassBuilder();
+            var sourceModel = GetType(); // this unit test class does not have properties
+            var settings = CreateReflectionSettings();
+            var context = new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture);
+            var sut = CreateSut().Build();
+
+            // Act
+            var result = sut.Process(model, context);
+
+            // Assert
+            result.Status.Should().Be(ResultStatus.Invalid);
+            result.ErrorMessage.Should().Be("To create a class, there must be at least one property");
+        }
     }
 }
 
