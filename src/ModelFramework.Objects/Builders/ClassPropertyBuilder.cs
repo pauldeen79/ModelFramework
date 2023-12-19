@@ -91,7 +91,7 @@ public partial class ClassPropertyBuilder
 
     public ClassPropertyBuilder AddCollectionBackingFieldOnImmutableClass(Type collectionType, string? propertyGetStatement = null, bool forceNullCheck = false)
     {
-        AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement(propertyGetStatement?.Replace("[Name]", Name).Replace("[NamePascal]", Name.ToPascalCase()) ?? $"return _{Name};", Enumerable.Empty<IMetadata>()));
+        AddMetadata(MetadataNames.CustomImmutablePropertyGetterStatement, new LiteralCodeStatement(propertyGetStatement?.Replace("[Name]", Name).Replace("[NamePascal]", Name.ToPascalCase()) ?? $"return _{Name.ToString().ToPascalCase()};", Enumerable.Empty<IMetadata>()));
         var nullSuffix = IsNullable
             ? string.Empty
             : "!";
