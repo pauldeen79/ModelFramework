@@ -21,7 +21,7 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
             .OfType<System.Attribute>()
             .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                      && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-            .Select(x => ConvertToDomainAttribute(x, context))
+            .Select(x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate)))
             .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
             .Select(x => new AttributeBuilder(x))
         );
@@ -31,15 +31,4 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
 
     public IBuilder<IPipelineFeature<TypeBaseBuilder, ReflectionContext>> ToBuilder()
         => new AddAttributesFeatureBuilder();
-
-    private Domain.Attribute ConvertToDomainAttribute(System.Attribute source, PipelineContext<TypeBaseBuilder, ReflectionContext> context)
-    {
-        var prefilled = context.Context.Settings.GenerationSettings.InitializeDelegate(source);
-
-        return context.Context.MapAttribute(new AttributeBuilder()
-            .WithName(prefilled.Name)
-            .AddParameters(prefilled.Parameters)
-            .AddMetadata(prefilled.Metadata)
-            .Build());
-    }
 }

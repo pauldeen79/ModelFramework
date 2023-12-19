@@ -1,24 +1,22 @@
-﻿using System.Text.RegularExpressions;
-
-namespace ClassFramework.Pipelines.Reflection;
+﻿namespace ClassFramework.Pipelines.Reflection;
 
 public record PipelineBuilderGenerationSettings
 {
     public bool AllowGenerationWithoutProperties { get; }
     public bool UseBaseClassFromSourceModel { get; }
     public bool Partial { get; }
-    public Func<System.Attribute, AttributeBuilder> InitializeDelegate { get; }
+    public Func<System.Attribute, AttributeBuilder> AttributeInitializeDelegate { get; }
 
     public PipelineBuilderGenerationSettings(
         bool allowGenerationWithoutProperties = false,
         bool useBaseClassFromSourceModel = true,
         bool partial = true,
-        Func<System.Attribute, AttributeBuilder>? initializeDelegate = null)
+        Func<System.Attribute, AttributeBuilder>? attributeInitializeDelegate = null)
     {
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
         UseBaseClassFromSourceModel = useBaseClassFromSourceModel;
         Partial = partial;
-        InitializeDelegate = initializeDelegate ?? DefaultInitializer;
+        AttributeInitializeDelegate = attributeInitializeDelegate ?? DefaultInitializer;
     }
 
     private static AttributeBuilder DefaultInitializer(System.Attribute sourceAttribute)
