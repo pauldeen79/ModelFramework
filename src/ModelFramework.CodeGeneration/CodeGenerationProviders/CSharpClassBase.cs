@@ -235,13 +235,6 @@ public abstract class CSharpClassBase : ClassBase
         return models.Select
         (
             x => CreateBuilderExtensions(CreateImmutableEntity(entitiesNamespace, x), buildersNamespace)
-                .With
-                (
-                    x => x.Methods.ForEach(y => y.AddGenericTypeArguments("T")
-                                                 .AddGenericTypeArgumentConstraints($"where T : {builderInterfacesNamespace}.I{y.TypeName}")
-                                                 .WithTypeName("T")
-                                                 .With(z => z.Parameters[0].WithTypeName(z.TypeName)))
-                )
                 .With(x => Visit(x))
                 .BuildTyped()
         )
