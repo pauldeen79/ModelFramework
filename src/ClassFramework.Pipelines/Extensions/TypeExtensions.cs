@@ -5,32 +5,14 @@ public static class TypeExtensions
     public static IEnumerable<MethodInfo> GetMethodsRecursively(this Type instance)
     {
         var results = new List<MethodInfo>();
-        foreach (var mi in instance.GetMethods(BindingFlags.Public | BindingFlags.Instance))
+        results.AddRange(instance.GetMethods(BindingFlags.Public | BindingFlags.Instance));
+
+        if (instance.BaseType is not null && instance.BaseType != typeof(object))
         {
-            results.Add(mi);
+            results.AddRange(instance.BaseType.GetMethodsRecursively().Where(mi => !results.Contains(mi)));
         }
 
-        if (instance.BaseType != null && instance.BaseType != typeof(object))
-        {
-            foreach (var mi in instance.BaseType.GetMethodsRecursively())
-            {
-                if (!results.Contains(mi))
-                {
-                    results.Add(mi);
-                }
-            }
-        }
-
-        foreach (var i in instance.GetInterfaces())
-        {
-            foreach (var mi in i.GetMethodsRecursively())
-            {
-                if (!results.Contains(mi))
-                {
-                    results.Add(mi);
-                }
-            }
-        }
+        results.AddRange(instance.GetInterfaces().SelectMany(i => i.GetMethodsRecursively().Where(mi => !results.Contains(mi))));
 
         return results;
     }
@@ -38,32 +20,14 @@ public static class TypeExtensions
     public static IEnumerable<PropertyInfo> GetPropertiesRecursively(this Type instance)
     {
         var results = new List<PropertyInfo>();
-        foreach (var pi in instance.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        results.AddRange(instance.GetProperties(BindingFlags.Public | BindingFlags.Instance));
+
+        if (instance.BaseType is not null)
         {
-            results.Add(pi);
+            results.AddRange(instance.BaseType.GetPropertiesRecursively().Where(pi => !results.Exists(x => x.Name == pi.Name)));
         }
 
-        if (instance.BaseType != null)
-        {
-            foreach (var pi in instance.BaseType.GetPropertiesRecursively())
-            {
-                if (!results.Exists(x => x.Name == pi.Name))
-                {
-                    results.Add(pi);
-                }
-            }
-        }
-
-        foreach (var i in instance.GetInterfaces())
-        {
-            foreach (var pi in i.GetPropertiesRecursively())
-            {
-                if (!results.Exists(x => x.Name == pi.Name))
-                {
-                    results.Add(pi);
-                }
-            }
-        }
+        results.AddRange(instance.GetInterfaces().SelectMany(i => i.GetPropertiesRecursively().Where(pi => !results.Exists(x => x.Name == pi.Name))));
 
         return results;
     }
@@ -71,32 +35,14 @@ public static class TypeExtensions
     public static IEnumerable<FieldInfo> GetFieldsRecursively(this Type instance)
     {
         var results = new List<FieldInfo>();
-        foreach (var fi in instance.GetFields(BindingFlags.Public | BindingFlags.Instance))
+        results.AddRange(instance.GetFields(BindingFlags.Public | BindingFlags.Instance));
+
+        if (instance.BaseType is not null)
         {
-            results.Add(fi);
+            results.AddRange(instance.BaseType.GetFieldsRecursively().Where(fi => !results.Exists(x => x.Name == fi.Name)));
         }
 
-        if (instance.BaseType != null)
-        {
-            foreach (var fi in instance.BaseType.GetFieldsRecursively())
-            {
-                if (!results.Exists(x => x.Name == fi.Name))
-                {
-                    results.Add(fi);
-                }
-            }
-        }
-
-        foreach (var i in instance.GetInterfaces())
-        {
-            foreach (var fi in i.GetFieldsRecursively())
-            {
-                if (!results.Exists(x => x.Name == fi.Name))
-                {
-                    results.Add(fi);
-                }
-            }
-        }
+        results.AddRange(instance.GetInterfaces().SelectMany(i => i.GetFieldsRecursively().Where(fi => !results.Exists(x => x.Name == fi.Name))));
 
         return results;
     }
