@@ -60,6 +60,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>, Reflection.PipelineBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddAttributesFeatureBuilder>()
+            .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddConstructorsFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddFieldsFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddGenericTypeArgumentsFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.AddInterfacesFeatureBuilder>()

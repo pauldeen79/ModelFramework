@@ -201,6 +201,7 @@ public abstract class TestBase : IDisposable
         bool allowGenerationWithoutProperties = false,
         bool useBaseClassFromSourceModel = true,
         bool partial = true,
+        bool createConstructors = true,
         string namespaceFormatString = "{Namespace}",
         string nameFormatString = "{Class.Name}",
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
@@ -211,7 +212,8 @@ public abstract class TestBase : IDisposable
             generationSettings: new Pipelines.Reflection.PipelineBuilderGenerationSettings(
                 allowGenerationWithoutProperties: allowGenerationWithoutProperties,
                 useBaseClassFromSourceModel: useBaseClassFromSourceModel,
-                partial: partial),
+                partial: partial,
+                createConstructors: createConstructors),
             nameSettings: new Pipelines.Reflection.PipelineBuilderNameSettings(namespaceFormatString, nameFormatString),
             typeSettings: new Pipelines.Reflection.PipelineBuilderTypeSettings(
                 namespaceMappings,
