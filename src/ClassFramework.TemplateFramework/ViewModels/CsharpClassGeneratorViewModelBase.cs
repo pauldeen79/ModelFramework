@@ -2,7 +2,7 @@
 
 public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer, IViewModel
 {
-    public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateViewModel method
+    public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateModel (root viewmodel) or OnSetContext (child viewmodels) method
 }
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
@@ -17,7 +17,7 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
     public TModel? Model { get; set; }
     public ICsharpExpressionCreator CsharpExpressionCreator { get; set; }
     
-    public ITemplateContext Context { get; set; } = default!; // will always be injected in CreateViewModel method
+    public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
 
     public TModel GetModel()
     {
