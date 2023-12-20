@@ -31,6 +31,12 @@ public class PropertyViewModel : AttributeContainerViewModelBase<Property>
             ? $"{Model!.ExplicitInterfaceName}."
             : string.Empty;
 
+    public bool ShouldRenderDefaultValue
+        => GetModel().DefaultValue is not null;
+
+    public string DefaultValueExpression
+        => CsharpExpressionCreator.Create(GetModel().DefaultValue);
+
     public IEnumerable<PropertyCodeBodyModel> GetCodeBodyModels()
     {
         var model = GetModel();
