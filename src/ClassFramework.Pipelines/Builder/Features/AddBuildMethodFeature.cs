@@ -41,7 +41,7 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
             .WithName(GetName(context))
             .WithAbstract(context.Context.IsBuilderForAbstractEntity)
             .WithOverride(context.Context.IsBuilderForOverrideEntity)
-            .WithTypeName($"{GetBuilderBuildMethodReturnType(context.Context)}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+            .WithReturnTypeName($"{GetBuilderBuildMethodReturnType(context.Context)}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
             .AddStringCodeStatements
             (
@@ -57,7 +57,7 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(context.Context.Settings.NameSettings.BuildMethodName)
                 .WithOverride()
-                .WithTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
+                .WithReturnTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
                 .AddStringCodeStatements($"return {context.Context.Settings.NameSettings.BuildTypedMethodName}();"));
         }
 

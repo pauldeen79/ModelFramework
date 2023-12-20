@@ -80,7 +80,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var buildMethod = model.Methods.SingleOrDefault(x => x.Name == "Build");
             buildMethod.Should().NotBeNull(because: "Build method should exist");
             buildMethod!.Abstract.Should().BeFalse();
-            buildMethod.TypeName.Should().Be("SomeNamespace.SomeClass");
+            buildMethod.ReturnTypeName.Should().Be("SomeNamespace.SomeClass");
             buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
@@ -90,7 +90,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var buildTypedMethod = model.Methods.SingleOrDefault(x => x.Name == "BuildTyped");
             buildTypedMethod.Should().NotBeNull(because: "BuildTyped method should exist");
             buildTypedMethod!.Abstract.Should().BeTrue();
-            buildTypedMethod.TypeName.Should().Be("TEntity");
+            buildTypedMethod.ReturnTypeName.Should().Be("TEntity");
             buildTypedMethod.CodeStatements.Should().BeEmpty();
         }
 

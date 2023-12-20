@@ -27,7 +27,7 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
             (
                 m => new MethodBuilder()
                     .WithName(m.Name)
-                    .WithTypeName(m.ReturnType.GetTypeName(m))
+                    .WithReturnTypeName(m.ReturnType.GetTypeName(m))
                     .WithVisibility(m.IsPublic
                         ? Visibility.Public
                         : Visibility.Private)
@@ -37,8 +37,8 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
                     .WithParentTypeFullName(m.DeclaringType.FullName == "System.Object"
                         ? string.Empty
                         : m.DeclaringType.FullName)
-                    .WithIsNullable(m.ReturnTypeIsNullable())
-                    .WithIsValueType(m.ReturnType.IsValueType || m.ReturnType.IsEnum)
+                    .WithReturnTypeIsNullable(m.ReturnTypeIsNullable())
+                    .WithReturnTypeIsValueType(m.ReturnType.IsValueType || m.ReturnType.IsEnum)
                     .AddParameters(m.GetParameters().Select
                     (
                         p => new ParameterBuilder()

@@ -52,7 +52,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -83,7 +83,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<MyCustomType>", "MyCustomType[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -116,7 +116,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -150,7 +150,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddDelegate", "AddDelegate");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate", "delegate");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -184,7 +184,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -219,7 +219,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -254,7 +254,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("TBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("TBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));

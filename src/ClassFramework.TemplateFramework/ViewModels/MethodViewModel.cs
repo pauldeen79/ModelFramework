@@ -11,9 +11,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
         => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface;
 
     public string ReturnTypeName
-        => GetModel().TypeName
+        => GetModel().ReturnTypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
+            .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext)
             .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate))
             .WhenNullOrEmpty("void");
 

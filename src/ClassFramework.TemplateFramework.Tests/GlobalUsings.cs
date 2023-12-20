@@ -12,6 +12,8 @@ global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.TemplateFramework.Builders;
 global using ClassFramework.TemplateFramework.Extensions;
+global using ClassFramework.TemplateFramework.Models;
+global using ClassFramework.TemplateFramework.ViewModels;
 global using FluentAssertions;
 global using Microsoft.Extensions.DependencyInjection;
 global using NSubstitute;

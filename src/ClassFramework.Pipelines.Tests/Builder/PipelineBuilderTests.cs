@@ -160,7 +160,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Should().NotBeNull();
             result.Value!.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var method = result.Value.Methods.Single(x => x.Name == "Build");
-            method.TypeName.Should().Be("MyNamespace.MyClass<T>");
+            method.ReturnTypeName.Should().Be("MyNamespace.MyClass<T>");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("return new MyNamespace.MyClass<T> { Property2 = Property2 };");
         }
@@ -179,7 +179,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Should().NotBeNull();
             result.Value!.Methods.Where(x => x.Name == "WithProperty1").Should().ContainSingle();
             var method = result.Value.Methods.Single(x => x.Name == "WithProperty1");
-            method.TypeName.Should().Be("MyClassBuilder<T>");
+            method.ReturnTypeName.Should().Be("MyClassBuilder<T>");
             method.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
             method.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo("Property1 = property1;", "return this;");
 
@@ -200,7 +200,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Should().NotBeNull();
             var methods = result.Value!.Methods.Where(x => x.Name == "AddProperty2");
             methods.Where(x => x.Name == "AddProperty2").Should().HaveCount(2);
-            methods.Select(x => x.TypeName).Should().BeEquivalentTo("MyClassBuilder<T>", "MyClassBuilder<T>");
+            methods.Select(x => x.ReturnTypeName).Should().BeEquivalentTo("MyClassBuilder<T>", "MyClassBuilder<T>");
             methods.SelectMany(x => x.Parameters.Select(y => y.TypeName)).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.String>", "System.String[]");
             methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo

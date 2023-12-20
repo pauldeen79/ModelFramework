@@ -93,7 +93,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(addMethodNameFormatStringResult.Value!)
-                .WithTypeName(returnType)
+                .WithReturnTypeName(returnType)
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -107,7 +107,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(addMethodNameFormatStringResult.Value!)
-                .WithTypeName(returnType)
+                .WithReturnTypeName(returnType)
                 .AddParameters
                 (
                     new ParameterBuilder()

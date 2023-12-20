@@ -25,7 +25,7 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
     {
         get
         {
-            if (IsSingleLineAttributeContainer || GetParentModel() is TypeBase)
+            if (IsSingleLineAttributeContainer || GetParentModel() is IType)
             {
                 return 0;
             }
