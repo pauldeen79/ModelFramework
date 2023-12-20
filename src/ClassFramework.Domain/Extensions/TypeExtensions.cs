@@ -72,7 +72,7 @@ public static class TypeExtensions
     public static string GetFullName(this IType type) => $"{type.Namespace.GetNamespacePrefix()}{type.Name}";
 
     public static bool IsRecord(this Type type)
-        => type.GetMethod("<Clone>$") != null;
+        => type.GetMethod("<Clone>$") is not null;
 
     public static bool IsNullable(this Type memberType, MemberInfo declaringType, IEnumerable<CustomAttributeData> customAttributes, int index)
     {
