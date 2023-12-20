@@ -41,6 +41,7 @@ public class AttributeBuilderTests
         }
     }
 
+    // Note that this is actually generated code, but I want to prove that this is working correctly
     public class AddParameters
     {
         [Fact]
@@ -65,6 +66,33 @@ public class AttributeBuilderTests
             // Act & Assert
             sut.Invoking(x => x.AddParameters(parameters: parameters))
                .Should().Throw<ArgumentNullException>().WithParameterName("parameters");
+        }
+    }
+
+    public class WithName
+    {
+        [Fact]
+        public void Throws_On_Null_Type()
+        {
+            // Arrange
+            var sut = new AttributeBuilder();
+
+            // Act & Assert
+            sut.Invoking(x => _ = x.WithName(sourceType: null!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("sourceType");
+        }
+
+        [Fact]
+        public void Sets_Name_Correctly_When_SourceType_Is_Not_Null()
+        {
+            // Arrange
+            var sut = new AttributeBuilder();
+
+            // Act
+            var result = sut.WithName(typeof(AttributeBuilderTests));
+
+            // Assert
+            result.Name.Should().Be("ClassFramework.Domain.Builders.Tests.AttributeBuilderTests");
         }
     }
 }
