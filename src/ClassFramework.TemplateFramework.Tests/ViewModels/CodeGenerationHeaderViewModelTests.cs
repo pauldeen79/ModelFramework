@@ -22,7 +22,7 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
         {
             // Arrange
             var sut = CreateSut();
-            sut.Model = new Models.CodeGenerationHeaderModel(default, environmentVersion: "1.2.3.4");
+            sut.Model = new CodeGenerationHeaderModel(default, environmentVersion: "1.2.3.4");
 
             // Act
             var result = sut.Version;
@@ -36,7 +36,7 @@ public class CodeGenerationHeaderViewModelTests : TestBase<CodeGenerationHeaderV
         {
             // Arrange
             var sut = CreateSut();
-            sut.Model = new Models.CodeGenerationHeaderModel(default, environmentVersion: default);
+            sut.Model = new CodeGenerationHeaderModel(default, environmentVersion: default);
 
             // Act
             var result = sut.Version;

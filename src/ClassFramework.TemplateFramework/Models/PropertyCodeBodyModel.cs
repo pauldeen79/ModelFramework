@@ -6,6 +6,7 @@ public class PropertyCodeBodyModel
     {
         Guard.IsNotNull(verb);
         Guard.IsNotNull(codeStatementModels);
+        Guard.IsNotNull(cultureInfo);
 
         IsAvailable = isAvailable;
         Verb = verb;
