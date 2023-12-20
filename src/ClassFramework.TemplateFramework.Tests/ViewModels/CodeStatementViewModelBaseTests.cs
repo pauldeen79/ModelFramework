@@ -11,7 +11,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             var sut = CreateSut();
             sut.Context = null!;
 
-            // Act
+            // Act & Assert
             sut.Invoking(x => _ = x.AdditionalIndents)
                .Should().Throw<ArgumentNullException>()
                .WithParameterName("Context");
@@ -78,7 +78,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             context.Model.Returns(new EnumerationBuilder().WithName("MyEnumeration").Build());
             sut.Context = context;
 
-            // Act
+            // Act & Assert
             sut.Invoking(x => _ = x.AdditionalIndents)
                .Should().Throw<NotSupportedException>();
         }
@@ -93,7 +93,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             context.Model.Returns(null);
             sut.Context = context;
 
-            // Act
+            // Act & Assert
             sut.Invoking(x => _ = x.AdditionalIndents)
                .Should().Throw<NotSupportedException>();
         }
