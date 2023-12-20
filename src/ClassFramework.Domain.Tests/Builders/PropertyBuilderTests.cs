@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Builders.Tests;
 
-public class ClassPropertyBuilderTests
+public class PropertyBuilderTests
 {
     public class Constructor
     {

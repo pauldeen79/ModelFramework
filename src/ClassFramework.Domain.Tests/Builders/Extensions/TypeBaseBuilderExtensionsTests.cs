@@ -1,6 +1,6 @@
-﻿namespace ClassFramework.Domain.Builders.Tests;
+﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class TypeBaseBuilderTests
+public class TypeBaseBuilderExtensionsTests
 {
     public class GetFullName
     {

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Builders.Tests;
 
-public class ClassFieldBuilderTests
+public class FieldBuilderTests
 {
     public class Constructor
     {
