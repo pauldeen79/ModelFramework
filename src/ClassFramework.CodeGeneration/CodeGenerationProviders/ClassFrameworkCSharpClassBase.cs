@@ -48,13 +48,21 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         cls = cls.IsNotNull(nameof(cls));
 
         return new ModelFramework.Objects.Builders.ClassBuilder(cls)
-            .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                .WithName("ToBuilder")
-                .WithOverride()
-                .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{entityName}BaseBuilder")
-                .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
-                    ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
-                    : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
+            .AddMethods
+            (
+                new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                    .WithName("ToBuilder")
+                    .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{entityName}BaseBuilder")
+                    .WithOverride()
+                    .AddLiteralCodeStatements("return ToTypedBuilder();"),
+                new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                    .WithName("ToTypedBuilder")
+                    .WithTypeName($"{buildersNamespace}.{cls.Name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
+                    .WithOverride(!cls.Name.EndsWith("Base"))
+                    .WithVirtual(cls.Name.EndsWith("Base"))
+                    .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
+                        ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
+                        : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
             ).BuildTyped();
     }
 
