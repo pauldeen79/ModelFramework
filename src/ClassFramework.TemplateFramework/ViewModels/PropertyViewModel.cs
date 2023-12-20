@@ -10,10 +10,6 @@ public class PropertyViewModel : AttributeContainerViewModelBase<Property>
     public bool ShouldRenderModifiers
         => GetParentModel() is not Interface;
     
-    public bool ShouldRenderExplicitInterfaceName
-        => !string.IsNullOrEmpty(GetModel().ExplicitInterfaceName)
-        && GetParentModel() is not Interface;
-
     public string TypeName
         => GetModel().TypeName
             .GetCsharpFriendlyTypeName()
