@@ -158,4 +158,79 @@ public class TypeExtensionsTests
 #pragma warning restore S2094 // Classes should not be empty
 #pragma warning restore S1144 // Unused private types or members should be removed
     }
+
+    public class GetFullName
+    {
+        [Fact]
+        public void Returns_Full_Name_When_Namespace_Is_Present()
+        {
+            // Arrange
+            var sut = new Class
+            (
+                "MyNamespace",
+                default,
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Field>(),
+                Enumerable.Empty<Property>(),
+                Enumerable.Empty<Method>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Metadata>(),
+                default,
+                "MyClass",
+                Enumerable.Empty<Attribute>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                default,
+                default,
+                default,
+                Enumerable.Empty<Class>(),
+                Enumerable.Empty<Enumeration>(),
+                Enumerable.Empty<Constructor>(),
+                default,
+                default
+            );
+
+            // Act
+            var result = sut.GetFullName();
+
+            // Assert
+            result.Should().Be("MyNamespace.MyClass");
+        }
+
+        [Fact]
+        public void Returns_Name_When_Namespace_Is_Not_Present()
+        {
+            // Arrange
+            var sut = new Class
+            (
+                string.Empty,
+                default,
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Field>(),
+                Enumerable.Empty<Property>(),
+                Enumerable.Empty<Method>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Metadata>(),
+                default,
+                "MyClass",
+                Enumerable.Empty<Attribute>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                default,
+                default,
+                default,
+                Enumerable.Empty<Class>(),
+                Enumerable.Empty<Enumeration>(),
+                Enumerable.Empty<Constructor>(),
+                default,
+                default
+            );
+
+            // Act
+            var result = sut.GetFullName();
+
+            // Assert
+            result.Should().Be("MyClass");
+        }
+    }
 }

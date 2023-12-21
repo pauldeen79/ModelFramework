@@ -1,14 +1,14 @@
-﻿namespace ClassFramework.Domain.Builders.Tests;
+﻿namespace ClassFramework.Domain.Tests.Builders;
 
-public class AttributeBuilderTests
+public class AttributeBuilderTests : TestBase<AttributeBuilder>
 {
-    public class AddNameAndParameter
+    public class AddNameAndParameter : AttributeBuilderTests
     {
         [Fact]
         public void Sets_Name_And_Parameter_Correctly()
         {
             // Arrange
-            var sut = new AttributeBuilder();
+            var sut = CreateSut();
 
             // Act
             var actual = sut.AddNameAndParameter("System.ComponentModel.ReadOnly", true);
@@ -20,13 +20,13 @@ public class AttributeBuilderTests
         }
     }
 
-    public class ForCodeGenerator
+    public class ForCodeGenerator : AttributeBuilderTests
     {
         [Fact]
         public void Adds_Parameters_Correctly()
         {
             // Arrange
-            var sut = new AttributeBuilder();
+            var sut = CreateSut();
 
             // Act
             var actual = sut.ForCodeGenerator("MyGenerator", "1.0.0.0");
@@ -42,13 +42,13 @@ public class AttributeBuilderTests
     }
 
     // Note that this is actually generated code, but I want to prove that this is working correctly
-    public class AddParameters
+    public class AddParameters : AttributeBuilderTests
     {
         [Fact]
         public void Throws_On_Null_Parameters_As_Array()
         {
             // Arrange
-            var sut = new AttributeBuilder();
+            var sut = CreateSut();
             AttributeParameterBuilder[] parameters = default!;
 
             // Act & Assert
@@ -60,7 +60,7 @@ public class AttributeBuilderTests
         public void Throws_On_Null_Parameters_As_Enumerable()
         {
             // Arrange
-            var sut = new AttributeBuilder();
+            var sut = CreateSut();
             IEnumerable<AttributeParameterBuilder> parameters = default!;
 
             // Act & Assert
@@ -69,13 +69,13 @@ public class AttributeBuilderTests
         }
     }
 
-    public class WithName
+    public class WithName : AttributeBuilderTests
     {
         [Fact]
         public void Throws_On_Null_Type()
         {
             // Arrange
-            var sut = new AttributeBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => _ = x.WithName(sourceType: null!))
@@ -86,13 +86,13 @@ public class AttributeBuilderTests
         public void Sets_Name_Correctly_When_SourceType_Is_Not_Null()
         {
             // Arrange
-            var sut = new AttributeBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.WithName(typeof(AttributeBuilderTests));
 
             // Assert
-            result.Name.Should().Be("ClassFramework.Domain.Builders.Tests.AttributeBuilderTests");
+            result.Name.Should().Be("ClassFramework.Domain.Tests.Builders.AttributeBuilderTests");
         }
     }
 }

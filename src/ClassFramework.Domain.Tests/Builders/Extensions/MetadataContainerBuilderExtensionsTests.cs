@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class MetadataContainerBuilderExtensionsTests
+public class MetadataContainerBuilderExtensionsTests : TestBase<ClassBuilder>
 {
-    public class AddMetadata
+    public class AddMetadata : MetadataContainerBuilderExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Name()
         {
             // Arrange
-            var sut = new ClassBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.AddMetadata(name: null!, value: null))
@@ -19,7 +19,7 @@ public class MetadataContainerBuilderExtensionsTests
         public void Adds_Metadata_Correctly()
         {
             // Arrange
-            var sut = new ClassBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddMetadata(name: "Name", value: "Value");

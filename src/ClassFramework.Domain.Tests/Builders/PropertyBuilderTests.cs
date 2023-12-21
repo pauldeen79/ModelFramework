@@ -1,14 +1,14 @@
-﻿namespace ClassFramework.Domain.Builders.Tests;
+﻿namespace ClassFramework.Domain.Tests.Builders;
 
-public class PropertyBuilderTests
+public class PropertyBuilderTests : TestBase<PropertyBuilder>
 {
-    public class Constructor
+    public class Constructor : PropertyBuilderTests
     {
         [Fact]
         public void Sets_HasGetter_To_True()
         {
             // Act
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
 
             // Assert
             sut.HasGetter.Should().BeTrue();
@@ -18,7 +18,7 @@ public class PropertyBuilderTests
         public void Sets_HasSetter_To_True()
         {
             // Act
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
 
             // Assert
             sut.HasSetter.Should().BeTrue();

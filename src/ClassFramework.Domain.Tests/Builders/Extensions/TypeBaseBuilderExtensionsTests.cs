@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class TypeBaseBuilderExtensionsTests
+public class TypeBaseBuilderExtensionsTests : TestBase<ClassBuilder>
 {
-    public class GetFullName
+    public class GetFullName : TypeBaseBuilderExtensionsTests
     {
         [Fact]
         public void Returns_Full_Name_When_Namespace_Is_Present()
         {
             // Arrange
-            var sut = new ClassBuilder().WithNamespace("MyNamespace").WithName("MyClass");
+            var sut = CreateSut().WithNamespace("MyNamespace").WithName("MyClass");
 
             // Act
             var result = sut.GetFullName();
@@ -21,7 +21,7 @@ public class TypeBaseBuilderExtensionsTests
         public void Returns_Name_When_Namespace_Is_Not_Present()
         {
             // Arrange
-            var sut = new ClassBuilder().WithNamespace(string.Empty).WithName("MyClass");
+            var sut = CreateSut().WithNamespace(string.Empty).WithName("MyClass");
 
             // Act
             var result = sut.GetFullName();
@@ -31,13 +31,13 @@ public class TypeBaseBuilderExtensionsTests
         }
     }
 
-    public class AddInterfaces
+    public class AddInterfaces : TypeBaseBuilderExtensionsTests
     {
         [Fact]
         public void Can_Add_Interfaces_Using_Types_In_Array()
         {
             // Arrange
-            var sut = new ClassBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddInterfaces(typeof(INotifyPropertyChanged));
@@ -50,7 +50,7 @@ public class TypeBaseBuilderExtensionsTests
         public void Can_Add_Interfaces_Using_Types_In_Enumerable()
         {
             // Arrange
-            var sut = new ClassBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddInterfaces(new[] { typeof(INotifyPropertyChanged) }.AsEnumerable());
@@ -63,7 +63,7 @@ public class TypeBaseBuilderExtensionsTests
         public void Throws_On_Null_Interfaces_Using_Array()
         {
             // Arrange
-            var sut = new ClassBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.AddInterfaces(interfaces: (Type[])null!))
@@ -74,7 +74,7 @@ public class TypeBaseBuilderExtensionsTests
         public void Throws_On_Null_Interfaces_Using_Enumerable()
         {
             // Arrange
-            var sut = new ClassBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.AddInterfaces(interfaces: (IEnumerable<Type>)null!))

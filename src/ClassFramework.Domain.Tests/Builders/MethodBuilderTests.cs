@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Domain.Tests.Builders;
 
-public class MethodBuilderTests
+public class MethodBuilderTests : TestBase<MethodBuilder>
 {
-    public class WithReturnType_Type
+    public class WithReturnType_Type : MethodBuilderTests
     {
         [Fact]
         public void Throws_On_Null_Type()
         {
             // Arrange
-            var sut = new MethodBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.WithReturnType(type: default(Type)!))
@@ -19,7 +19,7 @@ public class MethodBuilderTests
         public void Fills_Properties_Correctly_On_Non_Null_Type()
         {
             // Arrange
-            var sut = new MethodBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.WithReturnType(typeof(MethodBuilderTests));
@@ -30,13 +30,13 @@ public class MethodBuilderTests
         }
     }
 
-    public class WithReturnType_IType
+    public class WithReturnType_IType : MethodBuilderTests
     {
         [Fact]
         public void Throws_On_Null_Type()
         {
             // Arrange
-            var sut = new MethodBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.WithReturnType(type: default(IType)!))
@@ -47,7 +47,7 @@ public class MethodBuilderTests
         public void Fills_Properties_Correctly_On_Non_Null_Type()
         {
             // Arrange
-            var sut = new MethodBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.WithReturnType(new StructBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build());

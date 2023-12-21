@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class TypeContainerBuilderExtensionsTests
+public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
 {
-    public class WithType_Type
+    public class WithType_Type : TypeContainerBuilderExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Type()
         {
             // Arrange
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.WithType(type: null!))
@@ -19,7 +19,7 @@ public class TypeContainerBuilderExtensionsTests
         public void Adds_Correct_Information()
         {
             // Arrange
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.WithType(typeof(int));
@@ -29,13 +29,13 @@ public class TypeContainerBuilderExtensionsTests
         }
     }
 
-    public class WithType_TypeBase
+    public class WithType_TypeBase : TypeContainerBuilderExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Type()
         {
             // Arrange
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.WithType(typeBase: null!))
@@ -46,7 +46,7 @@ public class TypeContainerBuilderExtensionsTests
         public void Adds_Correct_Information_For_Class()
         {
             // Arrange
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
             var typeBase = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
 
             // Act
@@ -61,7 +61,7 @@ public class TypeContainerBuilderExtensionsTests
         public void Adds_Correct_Information_For_Struct()
         {
             // Arrange
-            var sut = new PropertyBuilder();
+            var sut = CreateSut();
             var typeBase = new StructBuilder().WithName("MyStruct").WithNamespace("MyNamespace").Build();
 
             // Act
