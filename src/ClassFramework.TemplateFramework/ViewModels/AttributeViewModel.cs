@@ -10,7 +10,7 @@ public class AttributeViewModel : CsharpClassGeneratorViewModelBase<Domain.Attri
     public bool IsSingleLineAttributeContainer => GetParentModel() is Parameter;
 
     public string Name
-        => GetModel().Name;
+        => GetModel().Name.GetCsharpFriendlyName(); // do not sanitize, as the name may contain dots (.) for namesapce separators
 
     public string Parameters
         => GetModel().Parameters.Count == 0
