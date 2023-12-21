@@ -143,20 +143,6 @@ namespace MyNamespace
         _serviceProvider.Dispose();
     }
 
-    private static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles)
-        => new CsharpClassGeneratorSettingsBuilder()
-            .WithRecurseOnDeleteGeneratedFiles(false)
-            .WithLastGeneratedFilesFilename(string.Empty)
-            .WithEncoding(Encoding.UTF8)
-            .WithGenerateMultipleFiles(generateMultipleFiles)
-            //.WithSkipWhenFileExists(false) // default value
-            .WithCreateCodeGenerationHeader(true)
-            .WithEnableNullableContext(true)
-            .WithCultureInfo(CultureInfo.InvariantCulture)
-            .WithEnvironmentVersion("1.0.0")
-            ///.WithPath(string.Empty) // default value
-            .Build();
-
     private static TypeBase CreateModel()
         => new ClassBuilder()
             .WithNamespace("MyNamespace")
