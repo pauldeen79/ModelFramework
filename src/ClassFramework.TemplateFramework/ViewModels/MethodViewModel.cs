@@ -40,7 +40,7 @@ public class MethodViewModel : MethodViewModelBase<Method>
             
             if (model.IsInterfaceMethod())
             {
-                return model.Name.RemoveInterfacePrefix().Sanitize().GetCsharpFriendlyName();
+                return model.Name.RemoveInterfacePrefix().Sanitize();
             }
             
             return model.Name.Sanitize().GetCsharpFriendlyName();
