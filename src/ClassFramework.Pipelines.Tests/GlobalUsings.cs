@@ -3,6 +3,7 @@ global using System.ComponentModel;
 global using System.Globalization;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
+global using AutoFixture.Kernel;
 global using ClassFramework.CsharpExpressionCreator.Extensions;
 global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;

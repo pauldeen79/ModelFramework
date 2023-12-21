@@ -3,8 +3,10 @@ global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
+global using System.Reflection;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
+global using AutoFixture.Kernel;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders;
 global using ClassFramework.Domain.Builders.CodeStatements;
@@ -17,4 +19,3 @@ global using CrossCutting.Common;
 global using FluentAssertions;
 global using NSubstitute;
 global using Xunit;
-
