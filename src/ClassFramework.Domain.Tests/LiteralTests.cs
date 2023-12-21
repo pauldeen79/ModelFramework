@@ -1,5 +1,7 @@
 ﻿namespace ClassFramework.Domain.Tests;
 
+// note that this class is now actually generated code.
+// but let's keep these tests, as a kind of integration test of the code generation process
 public class LiteralTests
 {
     [Fact]
