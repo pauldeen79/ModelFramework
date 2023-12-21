@@ -17,7 +17,7 @@ public class LiteralTests
     public void Constucts_Correclty_Without_OriginalValue()
     {
         // Act
-        var sut = new Literal("value");
+        var sut = new Literal("value", null);
 
         // Assert
         sut.Value.Should().Be("value");

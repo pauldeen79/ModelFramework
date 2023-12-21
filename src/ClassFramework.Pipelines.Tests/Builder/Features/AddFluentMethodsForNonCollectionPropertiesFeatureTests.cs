@@ -241,7 +241,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             // Note that this doesn't seem logical for this unit test, but in code generation the Literal is needed for correct formatting of literal values.
             // If you would use a string without wrapping it in a Literal, then it will get formatted to "customDefaultValue" which may not be what you want.
             // Or, in case you just want a default boolean value, you might also use true and false directly, without wrapping it in a Literal...
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue")));
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue", null)));
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();

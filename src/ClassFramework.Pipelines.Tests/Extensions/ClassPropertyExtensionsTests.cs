@@ -36,7 +36,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Gets_Value_From_MetadataValue_Literal_When_Found()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value")).Build();
+            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null)).Build();
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
