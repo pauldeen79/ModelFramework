@@ -1,6 +1,4 @@
-﻿using static ClassFramework.TemplateFramework.Tests.ViewModels.MethodViewModelTests;
-
-namespace ClassFramework.TemplateFramework.Tests.ViewModels;
+﻿namespace ClassFramework.TemplateFramework.Tests.ViewModels;
 
 public class MethodViewModelTests : TestBase<MethodViewModel>
 {
