@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
-public class TypeBaseExtensionsTests : TestBase
+public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
 {
     public class IsMemberValidForBuilderClass : TypeBaseExtensionsTests
     {
@@ -8,7 +8,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Throws_On_Null_ParentTypeContainer()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
             sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateBuilderSettings()))
@@ -19,7 +19,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Throws_On_Null_Settings()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
 
             // Act & Assert
@@ -31,7 +31,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_True_When_Entity_Inheritance_Is_Disabled()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
             var settings = CreateBuilderSettings(enableBuilderInheritance: false);
 
@@ -46,7 +46,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Correct_Result_When_ParentTypeContainer_Is_Defined_On_TypeBase()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
             var settings = CreateBuilderSettings(
                 inheritanceComparisonDelegate: (_, _) => false,
@@ -61,13 +61,13 @@ public class TypeBaseExtensionsTests : TestBase
         }
     }
 
-    public class GetGenericTypeArgumentConstraintsString
+    public class GetGenericTypeArgumentConstraintsString : TypeBaseExtensionsTests
     {
         [Fact]
         public void Returns_Empty_String_When_No_GenericArguments_Are_Present()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
 
             // Act
             var result = sut.GetGenericTypeArgumentConstraintsString();
@@ -80,7 +80,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Empty_String_When_No_GenericArgumentConstraints_Are_Present()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").AddGenericTypeArguments("T").Build();
+            var sut = CreateSut().WithName("MyClass").AddGenericTypeArguments("T").Build();
 
             // Act
             var result = sut.GetGenericTypeArgumentConstraintsString();
@@ -93,7 +93,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Correct_Result_When_GenericArguments_Are_Present()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
+            var sut = CreateSut().WithName("MyClass").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
 
             // Act
             var result = sut.GetGenericTypeArgumentConstraintsString();
@@ -104,13 +104,13 @@ public class TypeBaseExtensionsTests : TestBase
         }
     }
 
-    public class GetCustomValueForInheritedClass
+    public class GetCustomValueForInheritedClass : TypeBaseExtensionsTests
     {
         [Fact]
         public void Throws_When_Settings_Is_Null()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
             sut.Invoking(x => x.GetCustomValueForInheritedClass(settings: null!, _ => Result.Success(string.Empty)))
@@ -121,7 +121,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Throws_When_CustomValue_Is_Null()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
             sut.Invoking(x => x.GetCustomValueForInheritedClass(new Pipelines.Entity.PipelineBuilderSettings(), customValue: null!))
@@ -132,7 +132,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Empty_String_When_Entity_Inheritance_Is_Disabled()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: false));
 
             // Act
@@ -160,7 +160,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Empty_String_When_BaseClass_Is_Empty()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true));
 
             // Act
@@ -174,7 +174,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_CustomValue_When_BaseClass_Is_Not_Empty()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
+            var sut = CreateSut().WithName("MyClass").WithBaseClass("SomeBaseClass").Build();
             var settings = new Pipelines.Entity.PipelineBuilderSettings(inheritanceSettings: new Pipelines.Entity.PipelineBuilderInheritanceSettings(enableInheritance: true));
 
             // Act
@@ -185,13 +185,13 @@ public class TypeBaseExtensionsTests : TestBase
         }
     }
 
-    public class GetBuilderConstructorProperties
+    public class GetBuilderConstructorProperties : TypeBaseExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Context()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderConstructorProperties(context: null!))
@@ -217,7 +217,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_All_Properties_With_Setter_Or_Initializer_When_Type_Has_Public_Parameterless_Constructor()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithHasSetter(true).WithHasInitializer(false),
@@ -239,7 +239,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_No_Properties_When_There_Is_No_Public_Constructor_With_Any_Parameters()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithHasSetter(true).WithHasInitializer(false),
@@ -261,7 +261,7 @@ public class TypeBaseExtensionsTests : TestBase
         [Fact]
         public void Returns_Properties_From_Instance_And_BaseClass_When_IsBuilderForOverrideEntity_Is_True_And_BaseClass_Is_Filled()
         {
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
                 .AddConstructors(new ConstructorBuilder()
                     .AddParameter("property1", typeof(int))
@@ -285,7 +285,7 @@ public class TypeBaseExtensionsTests : TestBase
         [Fact]
         public void Returns_Properties_From_Instance_When_IsBuilderForOverrideEntity_Is_True_But_BaseClass_Is_Not_Filled()
         {
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties(
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
                     new PropertyBuilder().WithName("Property2").WithType(typeof(int))
@@ -312,7 +312,7 @@ public class TypeBaseExtensionsTests : TestBase
         [Fact]
         public void Returns_Properties_From_Instance_When_IsBuilderForOverrideEntity_Is_False()
         {
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties(
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
                     new PropertyBuilder().WithName("Property2").WithType(typeof(int))
@@ -343,7 +343,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Throws_On_Null_Context()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
@@ -355,7 +355,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Throws_On_Null_FormattableStringParser()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
             var model = new ClassBuilder();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, CreateBuilderSettings(), CultureInfo.InvariantCulture));
 
@@ -368,7 +368,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Empty_Sequence_For_Abstract_Builder()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
@@ -397,7 +397,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Empty_Sequence_When_Not_Using_NullChecks()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
@@ -426,7 +426,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Empty_Sequence_When_OriginalValidateArguments_Is_Shared()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)),
@@ -456,7 +456,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             InitializeParser();
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(string)),
@@ -488,7 +488,7 @@ public class TypeBaseExtensionsTests : TestBase
         {
             // Arrange
             InitializeParser();
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties
                 (
                     new PropertyBuilder().WithName("Property1").WithType(typeof(string)).AddMetadata(MetadataNames.CustomBuilderArgumentType, "MyCustomType"),
@@ -517,13 +517,13 @@ public class TypeBaseExtensionsTests : TestBase
         }
     }
 
-    public class GetPropertiesFromClassAndBaseClass
+    public class GetPropertiesFromClassAndBaseClass : TypeBaseExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Settings()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass").Build();
+            var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
             sut.Invoking(x => x.GetPropertiesFromClassAndBaseClass(settings: null!))
@@ -534,7 +534,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Valid_Properties_From_Instance()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties(
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
                     new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),
@@ -558,7 +558,7 @@ public class TypeBaseExtensionsTests : TestBase
         public void Returns_Merged_Properties_From_Instance_And_BaseClass_When_Present()
         {
             // Arrange
-            var sut = new ClassBuilder().WithName("MyClass")
+            var sut = CreateSut().WithName("MyClass")
                 .AddProperties(
                     new PropertyBuilder().WithName("Property1").WithType(typeof(int)).WithParentTypeFullName("1"),
                     new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithParentTypeFullName("2"),

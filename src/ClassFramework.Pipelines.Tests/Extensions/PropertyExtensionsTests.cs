@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Extensions;
 
-public class ClassPropertyExtensionsTests : TestBase
+public class PropertyExtensionsTests : TestBase<PropertyBuilder>
 {
-    public class GetDefaultValue : ClassPropertyExtensionsTests
+    public class GetDefaultValue : PropertyExtensionsTests
     {
         [Fact]
         public void Gets_Value_From_TypeName_When_Metadata_Is_Not_Found()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
@@ -22,7 +22,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Gets_Value_From_TypeName_When_Metadata_Is_Found_But_Value_Is_Null()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, null).Build();
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
@@ -36,7 +36,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Gets_Value_From_MetadataValue_Literal_When_Found()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null)).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, new Literal("custom value", null)).Build();
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
 
             // Act
@@ -50,7 +50,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Gets_Value_From_MetadataValue_Non_Literal_When_Found()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value").Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().AddMetadata(MetadataNames.CustomBuilderDefaultValue, "custom value").Build();
             var csharpExpressionCreator = Fixture.Freeze<ICsharpExpressionCreator>();
             csharpExpressionCreator.Create(Arg.Any<object?>()).Returns(x => x.ArgAt<object?>(0).ToStringWithNullCheck());
 
@@ -62,13 +62,13 @@ public class ClassPropertyExtensionsTests : TestBase
         }
     }
 
-    public class GetNullCheckSuffix
+    public class GetNullCheckSuffix : PropertyExtensionsTests
     {
         [Fact]
         public void Returns_Empty_String_When_AddNullChecks_Is_False()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).Build();
 
             // Act
             var result = sut.GetNullCheckSuffix("myProperty", false);
@@ -81,7 +81,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Returns_Empty_String_When_AddNullChecks_Is_True_But_Property_Is_Nullable()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act
             var result = sut.GetNullCheckSuffix("myProperty", true);
@@ -94,7 +94,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Returns_Empty_String_When_AddNullChecks_Is_True_But_Property_Is_ValueType()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(int)).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).Build();
 
             // Act
             var result = sut.GetNullCheckSuffix("myProperty", true);
@@ -107,7 +107,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Returns_NullThrowingExpression_When_AddNullChecks_Is_True_And_Property_Is_Not_ValueType_And_Not_Nullable()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).Build();
 
             // Act
             var result = sut.GetNullCheckSuffix("myProperty", true);
@@ -117,13 +117,13 @@ public class ClassPropertyExtensionsTests : TestBase
         }
     }
 
-    public class EnsureParentTypeFullName
+    public class EnsureParentTypeFullName : PropertyExtensionsTests
     {
         [Fact]
         public void Returns_ClassProperty_With_Original_ParentTypeFullName_When_Filled()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName("Original").Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName("Original").Build();
             var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").BuildTyped();
 
             // Act
@@ -137,7 +137,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Returns_ClassProperty_With_ParentTypeFullName_From_ParentClass_When_Original_ParentTypeFullName_Is_Empty()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
             var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").BuildTyped();
 
             // Act
@@ -151,7 +151,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Returns_ClassProperty_With_ParentTypeFullName_From_ParentClass_Without_Generics_When_Original_ParentTypeFullName_Is_Empty()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
             var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").AddGenericTypeArguments("T").BuildTyped();
 
             // Act
@@ -162,13 +162,13 @@ public class ClassPropertyExtensionsTests : TestBase
         }
     }
 
-    public class GetInitializationName
+    public class GetInitializationName : PropertyExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_CultureInfo()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderMemberName(default, default, default, cultureInfo: null!))
@@ -176,13 +176,13 @@ public class ClassPropertyExtensionsTests : TestBase
         }
     }
 
-    public class GetBuilderClassConstructorInitializer : ClassPropertyExtensionsTests
+    public class GetBuilderClassConstructorInitializer : PropertyExtensionsTests
     {
         [Fact]
         public void Throws_On_Null_Context()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
@@ -194,7 +194,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Throws_On_Null_FormatStringParser()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
@@ -206,7 +206,7 @@ public class ClassPropertyExtensionsTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var sut = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
             var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
