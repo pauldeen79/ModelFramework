@@ -58,7 +58,7 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
                 new ModelFramework.Objects.Builders.ClassMethodBuilder()
                     .WithName("ToTypedBuilder")
                     .WithTypeName($"{buildersNamespace}.{cls.Name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
-                    .WithOverride(!cls.Name.EndsWith("Base"))
+                    .WithOverride(!cls.Name.EndsWith("Base") && ValidateArgumentsInConstructor == ArgumentValidationType.Shared)
                     .WithVirtual(cls.Name.EndsWith("Base"))
                     .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
                         ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
