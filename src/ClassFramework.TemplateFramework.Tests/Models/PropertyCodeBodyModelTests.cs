@@ -64,7 +64,7 @@ public class PropertyCodeBodyModelTests : TestBase
                 "class" => new TypeBaseViewModel(Fixture.Freeze<ICsharpExpressionCreator>()) { Model = new ClassBuilder().WithName("MyClass").Build() },
                 "interface" => new TypeBaseViewModel(Fixture.Freeze<ICsharpExpressionCreator>()) { Model = new InterfaceBuilder().WithName("IMyInterface").Build() },
                 "wrong_type" => new object(),
-                _ => throw new NotSupportedException("Only 'class' and 'interface' are supported as parentModelType")
+                _ => throw new NotSupportedException("Only 'class', 'interface' and 'wrong_type' are supported as parentModelType")
             };
             var sut = new PropertyCodeBodyModel(default, "get", default, default, parentModel, codeStatementsList, CultureInfo.InvariantCulture);
 

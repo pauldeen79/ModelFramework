@@ -12,12 +12,12 @@ public partial class MethodBuilder
         return this;
     }
 
-    public MethodBuilder WithReturnType(IType type)
+    public MethodBuilder WithReturnType(ITypeBuilder typeBuilder)
     {
-        type = type.IsNotNull(nameof(type));
+        typeBuilder = typeBuilder.IsNotNull(nameof(typeBuilder));
 
-        ReturnTypeName = type.GetFullName();
-        ReturnTypeIsValueType = type is IValueType;
+        ReturnTypeName = typeBuilder.GetFullName();
+        ReturnTypeIsValueType = typeBuilder is IValueTypeBuilder;
 
         return this;
     }

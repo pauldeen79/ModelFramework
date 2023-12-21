@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
+﻿using ClassFramework.Domain.Builders.Abstractions;
+
+namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
 public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
 {
@@ -11,7 +13,7 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithType(type: null!))
+            sut.Invoking(x => x.WithType(type: default!))
                .Should().Throw<ArgumentNullException>().WithParameterName("type");
         }
 
@@ -38,8 +40,8 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithType(typeBase: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("typeBase");
+            sut.Invoking(x => x.WithType(typeBuilder: default!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("typeBuilder");
         }
 
         [Fact]
@@ -47,10 +49,10 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut();
-            var typeBase = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build();
+            ITypeBuilder typeBuilder = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace");
 
             // Act
-            var result = sut.WithType(typeBase);
+            var result = sut.WithType(typeBuilder);
 
             // Assert
             result.TypeName.Should().Be("MyNamespace.MyClass");
@@ -62,10 +64,10 @@ public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut();
-            var typeBase = new StructBuilder().WithName("MyStruct").WithNamespace("MyNamespace").Build();
+            ITypeBuilder typeBuilder = new StructBuilder().WithName("MyStruct").WithNamespace("MyNamespace");
 
             // Act
-            var result = sut.WithType(typeBase);
+            var result = sut.WithType(typeBuilder);
 
             // Assert
             result.TypeName.Should().Be("MyNamespace.MyStruct");

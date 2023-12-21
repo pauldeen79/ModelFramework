@@ -12,12 +12,12 @@ public static class TypeContainerBuilderExtensions
         return instance;
     }
 
-    public static T WithType<T>(this T instance, TypeBase typeBase) where T : ITypeContainerBuilder
+    public static T WithType<T>(this T instance, ITypeBuilder typeBuilder) where T : ITypeContainerBuilder
     {
-        typeBase = typeBase.IsNotNull(nameof(typeBase));
+        typeBuilder = typeBuilder.IsNotNull(nameof(typeBuilder));
 
-        instance.TypeName = typeBase.GetFullName();
-        instance.IsValueType = typeBase is IValueType;
+        instance.TypeName = typeBuilder.GetFullName();
+        instance.IsValueType = typeBuilder is IValueTypeBuilder;
 
         return instance;
     }

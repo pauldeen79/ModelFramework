@@ -11,7 +11,7 @@ public class MethodBuilderTests : TestBase<MethodBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithReturnType(type: default(Type)!))
+            sut.Invoking(x => x.WithReturnType(type: default!))
                .Should().Throw<ArgumentNullException>().WithParameterName("type");
         }
 
@@ -39,8 +39,8 @@ public class MethodBuilderTests : TestBase<MethodBuilder>
             var sut = CreateSut();
 
             // Act & Assert
-            sut.Invoking(x => x.WithReturnType(type: default(IType)!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("type");
+            sut.Invoking(x => x.WithReturnType(typeBuilder: default!))
+               .Should().Throw<ArgumentNullException>().WithParameterName("typeBuilder");
         }
 
         [Fact]
@@ -50,7 +50,7 @@ public class MethodBuilderTests : TestBase<MethodBuilder>
             var sut = CreateSut();
 
             // Act
-            var result = sut.WithReturnType(new StructBuilder().WithName("MyClass").WithNamespace("MyNamespace").Build());
+            var result = sut.WithReturnType(new StructBuilder().WithName("MyClass").WithNamespace("MyNamespace"));
 
             // Assert
             result.ReturnTypeName.Should().Be("MyNamespace.MyClass");
