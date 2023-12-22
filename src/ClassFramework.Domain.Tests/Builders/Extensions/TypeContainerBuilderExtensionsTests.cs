@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Builders.Abstractions;
-
-namespace ClassFramework.Domain.Tests.Builders.Extensions;
+﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
 public class TypeContainerBuilderExtensionsTests : TestBase<PropertyBuilder>
 {
