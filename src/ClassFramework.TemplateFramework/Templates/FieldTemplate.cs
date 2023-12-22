@@ -6,7 +6,6 @@ public class FieldTemplate : CsharpClassGeneratorBase<FieldViewModel>, IStringBu
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
 
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 

@@ -85,8 +85,6 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
 
     private void PushIndent(IndentedStringBuilder indentedBuilder)
     {
-        Guard.IsNotNull(Model);
-
         for (int i = 0; i < Context.GetIndentCount(); i++)
         {
             indentedBuilder.IncrementIndent();
@@ -95,8 +93,6 @@ public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMul
 
     private void PopIndent(IndentedStringBuilder indentedBuilder)
     {
-        Guard.IsNotNull(Model);
-
         for (int i = 0; i < Context.GetIndentCount(); i++)
         {
             indentedBuilder.DecrementIndent();

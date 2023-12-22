@@ -15,14 +15,12 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
         {
             // Copy Settings from template context to ViewModel
             var settings = value.GetCsharpClassGeneratorSettings();
-            if (settings is not null)
-            {
-                Model.Settings = settings;
-            }
-            else
+            if (settings is null)
             {
                 throw new InvalidOperationException("Could not get Settings from context");
             }
+
+            Model.Settings = settings;
         }
     }
 
@@ -31,7 +29,6 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     protected void RenderChildTemplateByModel(object model, IGenerationEnvironment generationEnvironment)
     {
         Guard.IsNotNull(Context);
-        Guard.IsNotNull(Model);
         Context.Engine.RenderChildTemplate(model, generationEnvironment, Context, new TemplateByModelIdentifier(model));
     }
 
@@ -43,7 +40,6 @@ public abstract class CsharpClassGeneratorBase<TModel> : TemplateBase, IModelCon
     protected void RenderChildTemplatesByModel(IEnumerable models, IGenerationEnvironment generationEnvironment)
     {
         Guard.IsNotNull(Context);
-        Guard.IsNotNull(Model);
         Context.Engine.RenderChildTemplates(models, generationEnvironment, Context, model => new TemplateByModelIdentifier(model));
     }
 }

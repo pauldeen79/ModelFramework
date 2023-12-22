@@ -6,7 +6,6 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
 
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 

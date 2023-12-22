@@ -6,7 +6,6 @@ public class ConstructorTemplate : CsharpClassGeneratorBase<ConstructorViewModel
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
 
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
