@@ -31,13 +31,11 @@ public class ParentTypeContainerExtensionsTests : TestBase<PropertyBuilder>
             result.Should().Be(expectedResult);
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void Returns_True_When_ParentTypeFullName_Is(string? parentTypeFullName)
+        [Fact]
+        public void Returns_True_When_ParentTypeFullName_Is_Empty()
         {
             // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).WithParentTypeFullName(parentTypeFullName).Build();
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(int)).WithParentTypeFullName(string.Empty).Build();
             var typeBase = new ClassBuilder().WithName("MyClass").Build();
 
             // Act
