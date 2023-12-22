@@ -1,5 +1,6 @@
 ﻿global using System.Collections.ObjectModel;
 global using System.ComponentModel;
+global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using AutoFixture;
 global using AutoFixture.AutoNSubstitute;
