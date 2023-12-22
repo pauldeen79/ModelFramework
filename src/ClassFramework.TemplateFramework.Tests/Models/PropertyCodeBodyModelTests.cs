@@ -8,7 +8,7 @@ public class PropertyCodeBodyModelTests : TestBase
         public void Throws_On_Null_Verb()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel(default, verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new PropertyCodeBodyModel( verb: null!, default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("verb");
         }
 
@@ -16,7 +16,7 @@ public class PropertyCodeBodyModelTests : TestBase
         public void Throws_On_Null_CodeStatementModels()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel(default, "get", default, default, default, codeStatementModels: null!, CultureInfo.InvariantCulture))
+            this.Invoking(_ => new PropertyCodeBodyModel("get", default, default, default, codeStatementModels: null!, CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("codeStatementModels");
         }
 
@@ -24,7 +24,7 @@ public class PropertyCodeBodyModelTests : TestBase
         public void Throws_On_Null_CultureInfo()
         {
             // Act & Assert
-            this.Invoking(_ => new PropertyCodeBodyModel(default, "get", default, default, default, Array.Empty<CodeStatementBase>(), cultureInfo: null!))
+            this.Invoking(_ => new PropertyCodeBodyModel("get", default, default, default, Array.Empty<CodeStatementBase>(), cultureInfo: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("cultureInfo");
         }
 
@@ -35,7 +35,7 @@ public class PropertyCodeBodyModelTests : TestBase
         public void Sets_Modifiers_Correctly(Visibility visibility, Visibility? subVisibility, string expectedResult)
         {
             // Arrange
-            var sut = new PropertyCodeBodyModel(default, "get", visibility, subVisibility, null, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture);
+            var sut = new PropertyCodeBodyModel("get", visibility, subVisibility, null, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.Modifiers;
@@ -66,7 +66,7 @@ public class PropertyCodeBodyModelTests : TestBase
                 "wrong_type" => new object(),
                 _ => throw new NotSupportedException("Only 'class', 'interface' and 'wrong_type' are supported as parentModelType")
             };
-            var sut = new PropertyCodeBodyModel(default, "get", default, default, parentModel, codeStatementsList, CultureInfo.InvariantCulture);
+            var sut = new PropertyCodeBodyModel("get", default, default, parentModel, codeStatementsList, CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.OmitCode;

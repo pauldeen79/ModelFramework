@@ -6,9 +6,6 @@ public class PropertyCodeBodyViewModel : CsharpClassGeneratorViewModelBase<Prope
     {
     }
 
-    public bool IsAvailable
-        => GetModel().IsAvailable;
-
     public string Modifiers
         => GetModel().Modifiers;
 

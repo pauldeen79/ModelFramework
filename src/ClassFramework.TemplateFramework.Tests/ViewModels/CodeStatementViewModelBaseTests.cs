@@ -24,7 +24,7 @@ public class CodeStatementViewModelBaseTests : TestBase<CodeStatementViewModelBa
             var sut = CreateSut();
             var context = Fixture.Freeze<ITemplateContext>();
             context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
-            context.Model.Returns(new PropertyCodeBodyModel(default, "some verb", default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture));
+            context.Model.Returns(new PropertyCodeBodyModel("some verb", default, default, default, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture));
             sut.Context = context;
 
             // Act
