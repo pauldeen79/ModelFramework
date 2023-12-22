@@ -2,6 +2,6 @@
 
 internal interface ILiteral
 {
-    string? Value { get; }
+    [Required(AllowEmptyStrings = true)] string Value { get; }
     object? OriginalValue { get; }
 }

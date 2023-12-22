@@ -35,13 +35,11 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
         }
 
         [Theory]
-        [InlineData(null, "class", true)]
-        [InlineData(null, "interface", false)]
         [InlineData("", "class", true)]
         [InlineData("", "interface", false)]
         [InlineData("IMyInterface", "class", false)]
         [InlineData("IMyInterface", "interface", false)]
-        public void Returns_Correct_Result(string? explicitInterfaceName, string parentModelType, bool expectedResult)
+        public void Returns_Correct_Result(string explicitInterfaceName, string parentModelType, bool expectedResult)
         {
             // Arrange
             object? parentModel = parentModelType switch
@@ -184,13 +182,11 @@ public class MethodViewModelTests : TestBase<MethodViewModel>
         }
 
         [Theory]
-        [InlineData(null, "class", "")]
-        [InlineData(null, "interface", "")]
         [InlineData("", "class", "")]
         [InlineData("", "interface", "")]
         [InlineData("IMyInterface", "class", "IMyInterface.")]
         [InlineData("IMyInterface", "interface", "")]
-        public void Returns_Correct_Result(string? explicitInterfaceName, string parentModelType, string expectedResult)
+        public void Returns_Correct_Result(string explicitInterfaceName, string parentModelType, string expectedResult)
         {
             // Arrange
             object? parentModel = parentModelType switch

@@ -2,5 +2,5 @@
 
 internal interface IExplicitInterfaceNameContainer
 {
-    string? ExplicitInterfaceName { get; }
+    [Required(AllowEmptyStrings = true)] string ExplicitInterfaceName { get; }
 }

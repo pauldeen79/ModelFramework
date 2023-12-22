@@ -11,8 +11,8 @@ internal interface ICsharpClassGeneratorSettings
     bool GenerateMultipleFiles { get; }
     bool SkipWhenFileExists { get; }
     bool CreateCodeGenerationHeader { get; }
-    string? EnvironmentVersion { get; }
-    string? FilenameSuffix { get; }
+    [Required(AllowEmptyStrings = true)] string EnvironmentVersion { get; }
+    [Required(AllowEmptyStrings = true)] string FilenameSuffix { get; }
     bool EnableNullableContext { get; }
     bool EnableGlobalUsings { get; }
 }

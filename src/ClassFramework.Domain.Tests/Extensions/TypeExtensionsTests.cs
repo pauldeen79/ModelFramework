@@ -187,7 +187,7 @@ public class TypeExtensionsTests
                 Enumerable.Empty<Enumeration>(),
                 Enumerable.Empty<Constructor>(),
                 default,
-                default
+                string.Empty
             );
 
             // Act
@@ -223,7 +223,7 @@ public class TypeExtensionsTests
                 Enumerable.Empty<Enumeration>(),
                 Enumerable.Empty<Constructor>(),
                 default,
-                default
+                string.Empty
             );
 
             // Act

@@ -71,6 +71,90 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
         }
     }
 
+    public class ExplicitInterfaceName : PropertyViewModelTests
+    {
+        [Fact]
+        public void Throws_When_Model_Is_Null()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = null!;
+
+            // Act & Assert
+            sut.Invoking(x => _ = x.ExplicitInterfaceName)
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("Model");
+        }
+
+        [Fact]
+        public void Throws_When_Context_Is_Null()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithExplicitInterfaceName("ISomething").Build();
+            sut.Context = null!;
+
+            // Act & Assert
+            sut.Invoking(x => _ = x.ExplicitInterfaceName)
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("Context");
+        }
+
+        [Fact]
+        public void Returns_Empty_String_When_ExplicitInterfaceName_Is_Empty()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithExplicitInterfaceName(string.Empty).Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new InterfaceBuilder().WithName("IMyInterface").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.ExplicitInterfaceName;
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Empty_String_When_ParentModel_Is_Interface()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithExplicitInterfaceName("ISomething").Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new InterfaceBuilder().WithName("IMyInterface").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.ExplicitInterfaceName;
+
+            // Assert
+            result.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Returns_Correct_Result_When_ExplicitInterfaceName_Is_Not_Empty_And_ParentModel_Is_Class()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithExplicitInterfaceName("ISomething").Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.ExplicitInterfaceName;
+
+            // Assert
+            result.Should().Be("ISomething.");
+        }
+    }
+
     public class ShouldRenderDefaultValue : PropertyViewModelTests
     {
         [Fact]
