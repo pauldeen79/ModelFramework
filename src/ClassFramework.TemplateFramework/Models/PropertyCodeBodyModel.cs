@@ -2,7 +2,7 @@
 
 public class PropertyCodeBodyModel
 {
-    public PropertyCodeBodyModel(string verb, Visibility visibilty, Visibility? subVisibility, object? parentModel, IReadOnlyCollection<CodeStatementBase> codeStatementModels, CultureInfo cultureInfo)
+    public PropertyCodeBodyModel(string verb, Visibility visibilty, SubVisibility subVisibility, object? parentModel, IReadOnlyCollection<CodeStatementBase> codeStatementModels, CultureInfo cultureInfo)
     {
         Guard.IsNotNull(verb);
         Guard.IsNotNull(codeStatementModels);
@@ -19,13 +19,13 @@ public class PropertyCodeBodyModel
     public bool OmitCode { get; }
     public IReadOnlyCollection<CodeStatementBase> CodeStatementModels { get; }
 
-    private static string GetModifiers(Visibility visibility, Visibility? subVisibility, CultureInfo cultureInfo)
+    private static string GetModifiers(Visibility visibility, SubVisibility subVisibility, CultureInfo cultureInfo)
     {
         var builder = new StringBuilder();
 
-        if (subVisibility is not null && subVisibility != visibility)
+        if (subVisibility != SubVisibility.InheritFromParent && subVisibility.ToString() != visibility.ToString())
         {
-            builder.Append(subVisibility.ToString()!.ToLower(cultureInfo));
+            builder.Append(subVisibility.ToString().ToLower(cultureInfo));
         }
 
         if (builder.Length > 0)

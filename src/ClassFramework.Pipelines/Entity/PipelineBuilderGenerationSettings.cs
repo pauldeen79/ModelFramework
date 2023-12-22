@@ -6,7 +6,7 @@ public record PipelineBuilderGenerationSettings
     public bool AddBackingFields { get; }
     public bool CreateRecord { get; }
     public bool CreateAsObservable { get; }
-    public Visibility? SetterVisibility { get; }
+    public SubVisibility SetterVisibility { get; }
     public bool AllowGenerationWithoutProperties { get; }
 
     public PipelineBuilderGenerationSettings(
@@ -14,7 +14,7 @@ public record PipelineBuilderGenerationSettings
         bool addBackingFields = false,
         bool createRecord = false,
         bool createAsObservable = false,
-        Visibility? setterVisibility = null,
+        SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         bool allowGenerationWithoutProperties = false)
     {
         AddSetters = addSetters;

@@ -29,10 +29,10 @@ public class PropertyCodeBodyModelTests : TestBase
         }
 
         [Theory]
-        [InlineData(Visibility.Public, null, "")]
-        [InlineData(Visibility.Public, Visibility.Public, "")]
-        [InlineData(Visibility.Public, Visibility.Internal, "internal ")]
-        public void Sets_Modifiers_Correctly(Visibility visibility, Visibility? subVisibility, string expectedResult)
+        [InlineData(Visibility.Public, SubVisibility.InheritFromParent, "")]
+        [InlineData(Visibility.Public, SubVisibility.Public, "")]
+        [InlineData(Visibility.Public, SubVisibility.Internal, "internal ")]
+        public void Sets_Modifiers_Correctly(Visibility visibility, SubVisibility subVisibility, string expectedResult)
         {
             // Arrange
             var sut = new PropertyCodeBodyModel("get", visibility, subVisibility, null, Array.Empty<CodeStatementBase>(), CultureInfo.InvariantCulture);

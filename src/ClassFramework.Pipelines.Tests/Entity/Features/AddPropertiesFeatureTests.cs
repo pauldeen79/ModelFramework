@@ -82,11 +82,11 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData(Visibility.Public)]
-        [InlineData(Visibility.Internal)]
-        [InlineData(Visibility.Private)]
-        public void Sets_SetterVisibility_From_Settings(Visibility? setterVisibility)
+        [InlineData(SubVisibility.InheritFromParent)]
+        [InlineData(SubVisibility.Public)]
+        [InlineData(SubVisibility.Internal)]
+        [InlineData(SubVisibility.Private)]
+        public void Sets_SetterVisibility_From_Settings(SubVisibility setterVisibility)
         {
             // Arrange
             var sourceModel = CreateModel();

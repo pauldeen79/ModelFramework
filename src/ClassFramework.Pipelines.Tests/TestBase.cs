@@ -168,7 +168,7 @@ public abstract class TestBase : IDisposable
         bool createRecord = false,
         bool addBackingFields = false,
         bool createAsObservable = false,
-        Visibility? setterVisibility = null,
+        SubVisibility setterVisibility = SubVisibility.InheritFromParent,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
