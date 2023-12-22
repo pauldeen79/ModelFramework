@@ -157,4 +157,109 @@ public class PropertyViewModelTests : TestBase<PropertyViewModel>
             result.Should().Be("formatted value");
         }
     }
+
+    public class GetCodeBodyModels : PropertyViewModelTests
+    {
+        [Fact]
+        public void Throws_When_Model_Is_Null()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = null!;
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            sut.Context = context;
+
+            // Act & Assert
+            sut.Invoking(x => _ = x.GetCodeBodyModels().ToArray())
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("Model");
+        }
+
+        [Fact]
+        public void Throws_When_Context_Is_Null()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).Build();
+            sut.Context = null!;
+
+            // Act & Assert
+            sut.Invoking(x => _ = x.GetCodeBodyModels().ToArray())
+               .Should().Throw<ArgumentNullException>()
+               .WithParameterName("Context");
+        }
+
+        [Fact]
+        public void Returns_Model_For_Getter_When_HasGetter_Is_True()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithHasGetter(true).WithHasSetter(false).WithHasInitializer(false).Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.GetCodeBodyModels().ToArray();
+
+            // Assert
+            result.Select(x => x.Verb).Should().BeEquivalentTo("get");
+        }
+
+        [Fact]
+        public void Returns_Model_For_Setter_When_HasSetter_Is_True()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithHasGetter(false).WithHasSetter(true).WithHasInitializer(false).Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.GetCodeBodyModels().ToArray();
+
+            // Assert
+            result.Select(x => x.Verb).Should().BeEquivalentTo("set");
+        }
+
+        [Fact]
+        public void Returns_Model_For_Initializer_When_HasInitializer_Is_True()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithHasGetter(false).WithHasSetter(false).WithHasInitializer(true).Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.GetCodeBodyModels().ToArray();
+
+            // Assert
+            result.Select(x => x.Verb).Should().BeEquivalentTo("init");
+        }
+
+        [Fact]
+        public void Returns_Model_For_Getter_And_Setter_When_HasGetter_And_HasSetter_Are_True()
+        {
+            // Arrange
+            var sut = CreateSut();
+            sut.Model = new PropertyBuilder().WithName("MyProperty").WithType(typeof(string)).WithHasGetter(true).WithHasSetter(true).WithHasInitializer(false).Build();
+            var context = Fixture.Freeze<ITemplateContext>();
+            context.ParentContext.Returns(context); // note that we're using short-circuit here 8-) but who cares, we're just calling ParentContext.Model so it works.
+            context.Model.Returns(new ClassBuilder().WithName("MyClass").Build());
+            sut.Context = context;
+
+            // Act
+            var result = sut.GetCodeBodyModels().ToArray();
+
+            // Assert
+            result.Select(x => x.Verb).Should().BeEquivalentTo("get", "set");
+        }
+    }
 }
