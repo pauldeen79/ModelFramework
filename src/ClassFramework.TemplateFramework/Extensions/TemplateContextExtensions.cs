@@ -29,9 +29,9 @@ public static class TemplateContextExtensions
 
         if (context.ParentContext is not null)
         {
-            if (recursionLevel == 24)
+            if (recursionLevel == 11)
             {
-                throw new NotSupportedException("Only 25 nested levels of sub classes are supported");
+                throw new NotSupportedException("Only 10 nested levels of sub classes are supported");
             }
             
             count += GetCount(context.ParentContext, recursionLevel + 1);

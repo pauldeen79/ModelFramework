@@ -11,7 +11,7 @@ public class TestBase
         Fixture.Register(() => CreateCsharpClassGeneratorSettings(true));
     }
 
-    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles)
+    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles = true, bool enableNullableContext = true)
         => new CsharpClassGeneratorSettingsBuilder()
             .WithRecurseOnDeleteGeneratedFiles(false)
             .WithLastGeneratedFilesFilename(string.Empty)
@@ -19,11 +19,14 @@ public class TestBase
             .WithGenerateMultipleFiles(generateMultipleFiles)
             //.WithSkipWhenFileExists(false) // default value
             .WithCreateCodeGenerationHeader(true)
-            .WithEnableNullableContext(true)
+            .WithEnableNullableContext(enableNullableContext)
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithEnvironmentVersion("1.0.0")
             ///.WithPath(string.Empty) // default value
             .Build();
+
+    protected ITemplateContext CreateTemplateContext()
+        => new TemplateContext(Fixture.Freeze<ITemplateEngine>(), Fixture.Freeze<ITemplateComponentRegistry>(), "default.cs", Fixture.Freeze<ITemplateIdentifier>(), new object());
 }
 
 public abstract class TestBase<T> : TestBase

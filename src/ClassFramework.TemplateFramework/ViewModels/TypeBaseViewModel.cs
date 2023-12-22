@@ -8,11 +8,11 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     }
 
     public bool ShouldRenderNullablePragmas
-        => Settings.EnableNullableContext
-        && Context.GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
+        => GetSettings().EnableNullableContext
+        && GetContext().GetIndentCount() == 1; // note: only for root level, because it gets rendered in the same file
 
     public bool ShouldRenderNamespaceScope
-        => Settings.GenerateMultipleFiles
+        => GetSettings().GenerateMultipleFiles
         && !string.IsNullOrEmpty(GetModel().Namespace);
 
     public string Name
@@ -22,7 +22,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
         => GetModel().Namespace;
 
     public string Modifiers
-        => GetModel().GetModifiers(Settings.CultureInfo);
+        => GetModel().GetModifiers(GetSettings().CultureInfo);
 
     public IReadOnlyCollection<string> SuppressWarningCodes
         => GetModel().SuppressWarningCodes;

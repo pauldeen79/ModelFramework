@@ -15,6 +15,7 @@ global using ClassFramework.TemplateFramework.Templates.CodeStatements;
 global using ClassFramework.TemplateFramework.ViewModels;
 global using ClassFramework.TemplateFramework.ViewModels.CodeStatements;
 global using CommunityToolkit.Diagnostics;
+global using CrossCutting.Common;
 global using CrossCutting.Common.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
 global using TemplateFramework.Abstractions;

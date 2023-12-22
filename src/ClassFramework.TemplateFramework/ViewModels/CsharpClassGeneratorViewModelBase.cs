@@ -3,6 +3,13 @@
 public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer, IViewModel
 {
     public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateModel (root viewmodel) or OnSetContext (child viewmodels) method
+
+    public CsharpClassGeneratorSettings GetSettings()
+    {
+        Guard.IsNotNull(Settings);
+
+        return Settings;
+    }
 }
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
@@ -18,6 +25,13 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
     public ICsharpExpressionCreator CsharpExpressionCreator { get; set; }
     
     public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
+
+    public ITemplateContext GetContext()
+    {
+        Guard.IsNotNull(Context);
+
+        return Context;
+    }
 
     public TModel GetModel()
     {
@@ -37,6 +51,6 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
     {
         Guard.IsNotNull(Context);
 
-        return new string(' ', 4 * (Context.GetIndentCount() + additionalIndents));
+        return new string(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));
     }
 }
