@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<IViewModel, ParameterViewModel>()
             .AddTransient<IViewModel, PropertyCodeBodyViewModel>()
             .AddTransient<IViewModel, SpaceAndCommaViewModel>()
-            .AddTransient<IViewModel, TypeBaseViewModel>()
+            .AddTransient<IViewModel, TypeViewModel>()
             .AddTransient<IViewModel, UsingsViewModel>()
             .AddTransient<IViewModel, StringCodeStatementViewModel>()
             .AddChildTemplate<AttributeTemplate>(typeof(Domain.Attribute))
@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<ParameterTemplate>(typeof(Parameter))
             .AddChildTemplate<PropertyCodeBodyTemplate>(typeof(PropertyCodeBodyModel))
             .AddChildTemplate<SpaceAndCommaTemplate>(typeof(SpaceAndCommaModel))
-            .AddChildTemplate<TypeBaseTemplate>(typeof(TypeBase))
+            .AddChildTemplate<TypeTemplate>(typeof(IType))
             .AddChildTemplate<UsingsTemplate>(typeof(UsingsModel))
             .AddChildTemplate<StringCodeStatementTemplate>(typeof(StringCodeStatement));
 }

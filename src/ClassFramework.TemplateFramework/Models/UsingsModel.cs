@@ -2,9 +2,9 @@
 
 public class UsingsModel
 {
-    public IEnumerable<TypeBase> Types { get; }
+    public IEnumerable<IType> Types { get; }
 
-    public UsingsModel(IEnumerable<TypeBase> types)
+    public UsingsModel(IEnumerable<IType> types)
     {
         Guard.IsNotNull(types);
 

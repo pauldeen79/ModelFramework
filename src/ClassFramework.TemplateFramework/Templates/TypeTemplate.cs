@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.TemplateFramework.Templates;
 
-public sealed class TypeBaseTemplate : CsharpClassGeneratorBase<TypeBaseViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
+public sealed class TypeTemplate : CsharpClassGeneratorBase<TypeViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
 {
     public void Render(IMultipleContentBuilder builder)
     {

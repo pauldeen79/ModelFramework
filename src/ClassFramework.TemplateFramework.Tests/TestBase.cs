@@ -11,7 +11,7 @@ public class TestBase
         Fixture.Register(() => CreateCsharpClassGeneratorSettings(true));
     }
 
-    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles = true, bool enableNullableContext = true)
+    protected static CsharpClassGeneratorSettings CreateCsharpClassGeneratorSettings(bool generateMultipleFiles = true, bool enableNullableContext = true, string path = "")
         => new CsharpClassGeneratorSettingsBuilder()
             .WithRecurseOnDeleteGeneratedFiles(false)
             .WithLastGeneratedFilesFilename(string.Empty)
@@ -22,7 +22,7 @@ public class TestBase
             .WithEnableNullableContext(enableNullableContext)
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithEnvironmentVersion("1.0.0")
-            ///.WithPath(string.Empty) // default value
+            .WithPath(path)
             .Build();
 
     protected ITemplateContext CreateTemplateContext()

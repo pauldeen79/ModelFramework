@@ -4,7 +4,7 @@ public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorS
 {
     public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateModel (root viewmodel) or OnSetContext (child viewmodels) method
 
-    public CsharpClassGeneratorSettings GetSettings()
+    protected CsharpClassGeneratorSettings GetSettings()
     {
         Guard.IsNotNull(Settings);
 
@@ -23,17 +23,16 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
 
     public TModel? Model { get; set; }
     public ICsharpExpressionCreator CsharpExpressionCreator { get; set; }
-    
     public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
 
-    public ITemplateContext GetContext()
+    protected ITemplateContext GetContext()
     {
         Guard.IsNotNull(Context);
 
         return Context;
     }
 
-    public TModel GetModel()
+    protected TModel GetModel()
     {
         Guard.IsNotNull(Model);
 
@@ -41,16 +40,8 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
     }
 
     protected object? GetParentModel()
-    {
-        Guard.IsNotNull(Context);
-        
-        return Context.ParentContext?.Model;
-    }
+        => GetContext().ParentContext?.Model;
 
     public string CreateIndentation(int additionalIndents = 0)
-    {
-        Guard.IsNotNull(Context);
-
-        return new string(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));
-    }
+        => new string(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));
 }

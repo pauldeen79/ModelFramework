@@ -11,6 +11,7 @@ global using ClassFramework.Domain.Builders.CodeStatements;
 global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Builders.Types;
 global using ClassFramework.Domain.Domains;
+global using ClassFramework.Domain.Types;
 global using ClassFramework.TemplateFramework.Builders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Models;

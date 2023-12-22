@@ -10,7 +10,7 @@ public class PropertyCodeBodyModel
 
         Verb = verb;
         Modifiers = GetModifiers(visibilty, subVisibility, cultureInfo);
-        OmitCode = codeStatementModels.Count == 0 || parentModel is TypeBaseViewModel vm && vm.Model is Interface;
+        OmitCode = codeStatementModels.Count == 0 || parentModel is TypeViewModel vm && vm.Model is Interface;
         CodeStatementModels = codeStatementModels;
     }
 

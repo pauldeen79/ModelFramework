@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.TemplateFramework.ViewModels;
 
-public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
+public class TypeViewModel : AttributeContainerViewModelBase<IType>
 {
-    public TypeBaseViewModel(ICsharpExpressionCreator csharpExpressionCreator)
+    public TypeViewModel(ICsharpExpressionCreator csharpExpressionCreator)
         : base(csharpExpressionCreator)
     {
     }
@@ -36,18 +36,25 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     public IEnumerable<object> GetMemberModels()
     {
         var items = new List<object?>();
+        var model = GetModel();
 
-        items.AddRange(Model!.Fields);
-        items.AddRange(Model.Properties);
+        items.AddRange(model.Fields);
+        items.AddRange(model.Properties);
 
         var constructorsContainer = Model as IConstructorsContainer;
-        if (constructorsContainer is not null) items.AddRange(constructorsContainer.Constructors);
+        if (constructorsContainer is not null)
+        {
+            items.AddRange(constructorsContainer.Constructors);
+        }
 
-        items.AddRange(Model.Methods);
+        items.AddRange(model.Methods);
 
         // Quirk, enums as items below a class. There is no interface for this right now.
-        var cls = Model as Class;
-        if (cls is not null) items.AddRange(cls.Enums);
+        var cls = model as Class;
+        if (cls is not null)
+        {
+            items.AddRange(cls.Enums);
+        }
 
         // Add separators (empty lines) between each item
         return items.SelectMany((item, index) => index + 1 < items.Count ? [item!, new NewLineModel()] : new object[] { item! });
@@ -61,8 +68,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
             return Enumerable.Empty<object>();
         }
 
-        return subClasses
-            .SelectMany(item => new object[] { new NewLineModel(), item });
+        return subClasses.SelectMany(item => new object[] { new NewLineModel(), item });
     }
 
     public string ContainerType
@@ -73,7 +79,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
             Struct str when str.Record => "record struct",
             Struct str when !str.Record => "struct",
             Interface => "interface",
-            _ => throw new InvalidOperationException($"Unknown container type: [{Model!.GetType().FullName}]")
+            _ => throw new NotSupportedException($"Unknown container type: [{Model!.GetType().FullName}]")
         };
 
     public string InheritedClasses
@@ -98,7 +104,7 @@ public class TypeBaseViewModel : AttributeContainerViewModelBase<TypeBase>
     }
 
     public string FilenamePrefix
-        => string.IsNullOrEmpty(Settings.Path)
+        => string.IsNullOrEmpty(GetSettings().Path)
             ? string.Empty
-            : Settings.Path + Path.DirectorySeparatorChar;
+            : $"{Settings.Path}{Path.DirectorySeparatorChar}";
 }
