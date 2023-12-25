@@ -48,12 +48,8 @@ internal sealed class MyFieldTestClass
 #pragma warning restore CA1812 // Avoid uninstantiated internal classes
 {
     [Required]
+#pragma warning disable CS0649 // Field 'MyFieldTestClass.myField' is never assigned to, and will always have its default value 0 / null
     public int myField;
-#pragma warning disable CA1823 // Avoid unused private fields
-#pragma warning disable S1144 // Unused private types or members should be removed
-#pragma warning disable IDE0051 // Remove unused private members
     public readonly string? myReadOnlyField;
-#pragma warning restore IDE0051 // Remove unused private members
-#pragma warning restore S1144 // Unused private types or members should be removed
-#pragma warning restore CA1823 // Avoid unused private fields
+#pragma warning restore CS0649 // Field 'MyFieldTestClass.myField' is never assigned to, and will always have its default value 0 / null
 }
