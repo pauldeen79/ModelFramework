@@ -39,23 +39,15 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
-                            .AddAttributes(p.GetCustomAttributes(true)
-                                .OfType<System.Attribute>()
-                                .Where(x => context.Context.Settings.CopySettings.CopyAttributes
-                                         && x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                         && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                                .Select(x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))
-                                .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-                                .Select(x => x.ToBuilder()))
+                            .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
+                                x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
+                                context.Context.Settings.CopySettings.CopyAttributes,
+                                context.Context.Settings.CopySettings.CopyAttributePredicate))
                     )
                 )
-                .AddAttributes(x.GetCustomAttributes(true)
-                    .OfType<System.Attribute>()
-                    .Where(x => context.Context.Settings.CopySettings.CopyAttributes
-                                && x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                    .Select(x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))
-                    .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-                    .Select(x => x.ToBuilder()))
+                .AddAttributes(x.GetCustomAttributes(true).ToAttributes(
+                    x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
+                    context.Context.Settings.CopySettings.CopyAttributes,
+                    context.Context.Settings.CopySettings.CopyAttributePredicate))
         );
 }

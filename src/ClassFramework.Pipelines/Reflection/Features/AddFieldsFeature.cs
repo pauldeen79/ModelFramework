@@ -1,6 +1,4 @@
-﻿using ClassFramework.Domain.Builders.Extensions;
-
-namespace ClassFramework.Pipelines.Reflection.Features;
+﻿namespace ClassFramework.Pipelines.Reflection.Features;
 
 public class AddFieldsFeatureBuilder : IReflectionFeatureBuilder
 {
@@ -38,13 +36,9 @@ public class AddFieldsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCont
                 .WithVisibility(f.IsPublic
                     ? Visibility.Public
                     : Visibility.Private)
-                .AddAttributes(f.GetCustomAttributes(true)
-                    .OfType<System.Attribute>()
-                    .Where(x => context.Context.Settings.CopySettings.CopyAttributes
-                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                    .Select(x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))
-                    .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-                .Select(x => x.ToBuilder()))
+                .AddAttributes(f.GetCustomAttributes(true).ToAttributes(
+                    x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
+                    context.Context.Settings.CopySettings.CopyAttributes,
+                    context.Context.Settings.CopySettings.CopyAttributePredicate))
         );
 }
