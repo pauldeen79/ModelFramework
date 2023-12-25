@@ -67,6 +67,9 @@ public class AddConstructorsFeatureTests : TestBase<Pipelines.Reflection.Feature
             // Assert
             result.IsSuccessful().Should().BeTrue();
             model.Constructors.Should().HaveCount(2);
+            model.Constructors[0].Parameters.Should().BeEmpty();
+            model.Constructors[model.Constructors.Count - 1].Parameters.Select(x => x.Name).Should().BeEquivalentTo("value");
+            model.Constructors[model.Constructors.Count - 1].Parameters.Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
         }
     }
 }
