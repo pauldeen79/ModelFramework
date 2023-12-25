@@ -23,7 +23,7 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
                      && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
             .Select(x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate)))
             .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-            .Select(x => new AttributeBuilder(x))
+            .Select(x => x.ToBuilder())
         );
 
         return Result.Continue<TypeBaseBuilder>();

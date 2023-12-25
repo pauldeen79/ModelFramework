@@ -39,8 +39,11 @@ public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
                     : Visibility.Private)
                 .AddAttributes(p.GetCustomAttributes(true)
                     .OfType<System.Attribute>()
-                    .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
+                    .Where(x => context.Context.Settings.CopySettings.CopyAttributes
+                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                              && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                    .Select(x => new AttributeBuilder(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))))
+                    .Select(x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))
+                    .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
+                    .Select(x => x.ToBuilder()))
         );
 }

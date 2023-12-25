@@ -121,7 +121,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
                 ).BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(copyAttributePredicate: a => a.Name.EndsWith('2'));
+            var settings = CreateEntitySettings(copyAttributes: true, copyAttributePredicate: a => a.Name.EndsWith('2'));
             var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

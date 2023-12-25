@@ -56,8 +56,8 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                 .WithIsValueType(property.IsValueType)
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Context.Settings.EntitySettings.CopySettings.CopyAttributes)
-                    .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
-                .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
+                    .Select(x => context.Context.MapAttribute(x).ToBuilder()))
+                .AddMetadata(property.Metadata.Select(x => x.ToBuilder()))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
             );

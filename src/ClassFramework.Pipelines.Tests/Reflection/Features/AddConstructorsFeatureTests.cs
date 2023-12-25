@@ -50,6 +50,24 @@ public class AddConstructorsFeatureTests : TestBase<Pipelines.Reflection.Feature
             result.IsSuccessful().Should().BeTrue();
             // can't even check constructors on model, because an interface does not have constructors
         }
+
+        [Fact]
+        public void Adds_Constructors_When_CreateConstructors_Is_Set_To_True_And_SourceModel_Has_Constructors()
+        {
+            // Arrange
+            var sut = CreateSut();
+            var sourceModel = typeof(MyConstructorTestClass);
+            var model = new ClassBuilder();
+            var settings = CreateReflectionSettings(createConstructors: true);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+
+            // Act
+            var result = sut.Process(context);
+
+            // Assert
+            result.IsSuccessful().Should().BeTrue();
+            model.Constructors.Should().HaveCount(2);
+        }
     }
 }
 

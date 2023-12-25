@@ -13,7 +13,7 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
         context = context.IsNotNull(nameof(context));
 
         if (!context.Context.Settings.GenerationSettings.CreateConstructors
-            || context.Context.SourceModel is not IConstructorsContainerBuilder constructorsContainerBuilder)
+            || context.Model is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
             return Result.Continue<TypeBaseBuilder>();
         }
@@ -41,11 +41,21 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
                             .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
                             .AddAttributes(p.GetCustomAttributes(true)
                                 .OfType<System.Attribute>()
-                                .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
+                                .Where(x => context.Context.Settings.CopySettings.CopyAttributes
+                                         && x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
                                          && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                                .Select(x => new AttributeBuilder(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))))
-
+                                .Select(x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))
+                                .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
+                                .Select(x => x.ToBuilder()))
                     )
                 )
+                .AddAttributes(x.GetCustomAttributes(true)
+                    .OfType<System.Attribute>()
+                    .Where(x => context.Context.Settings.CopySettings.CopyAttributes
+                                && x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
+                                && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
+                    .Select(x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))
+                    .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
+                    .Select(x => x.ToBuilder()))
         );
 }
