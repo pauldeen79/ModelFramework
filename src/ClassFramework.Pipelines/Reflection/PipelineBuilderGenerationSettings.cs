@@ -59,7 +59,7 @@ public record PipelineBuilderGenerationSettings
         };
 
     private static IEnumerable<AttributeParameterBuilder> ErrorMessage(ValidationAttribute validationAttribute)
-        => CreateConditional(() => !string.IsNullOrEmpty(validationAttribute.ErrorMessage), new AttributeParameterBuilder().WithValue(validationAttribute.ErrorMessage).WithName(nameof(ValidationAttribute.ErrorMessage)));
+        => CreateConditional(() => !string.IsNullOrEmpty(validationAttribute.ErrorMessage), new AttributeParameterBuilder().WithValue(validationAttribute.ErrorMessage ?? string.Empty).WithName(nameof(ValidationAttribute.ErrorMessage)));
 
     private static IEnumerable<AttributeParameterBuilder> CreateConditional(Func<bool> condition, AttributeParameterBuilder result)
     {
