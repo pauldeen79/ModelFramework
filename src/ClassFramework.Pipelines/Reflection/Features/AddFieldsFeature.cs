@@ -28,14 +28,10 @@ public class AddFieldsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCont
                 .WithTypeName(f.FieldType.GetTypeName(f))
                 .WithStatic(f.IsStatic)
                 .WithConstant(f.IsLiteral)
-                .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object"
-                    ? string.Empty
-                    : f.DeclaringType.FullName)
+                .WithParentTypeFullName(f.DeclaringType.GetParentTypeFullName())
                 .WithIsNullable(f.IsNullable())
-                .WithIsValueType(f.FieldType.IsValueType || f.FieldType.IsEnum)
-                .WithVisibility(f.IsPublic
-                    ? Visibility.Public
-                    : Visibility.Private)
+                .WithIsValueType(f.FieldType.IsValueType())
+                .WithVisibility(f.IsPublic.ToVisibility())
                 .AddAttributes(f.GetCustomAttributes(true).ToAttributes(
                     x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
                     context.Context.Settings.CopySettings.CopyAttributes,

@@ -26,17 +26,13 @@ public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
             p => new PropertyBuilder()
                 .WithName(p.Name)
                 .WithTypeName(p.PropertyType.GetTypeName(p))
-                .WithHasGetter(p.GetGetMethod() != null)
-                .WithHasSetter(p.GetSetMethod() != null)
+                .WithHasGetter(p.GetGetMethod() is not null)
+                .WithHasSetter(p.GetSetMethod() is not null)
                 .WithHasInitializer(p.IsInitOnly())
-                .WithParentTypeFullName(p.DeclaringType.FullName == "System.Object"
-                    ? string.Empty
-                    : p.DeclaringType.FullName.WithoutGenerics())
+                .WithParentTypeFullName(p.DeclaringType.GetParentTypeFullName())
                 .WithIsNullable(p.IsNullable())
-                .WithIsValueType(p.PropertyType.IsValueType || p.PropertyType.IsEnum)
-                .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic)
-                    ? Visibility.Public
-                    : Visibility.Private)
+                .WithIsValueType(p.PropertyType.IsValueType())
+                .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
                 .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
                     x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
                     context.Context.Settings.CopySettings.CopyAttributes,

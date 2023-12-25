@@ -38,7 +38,7 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
                             .WithIsNullable(p.IsNullable())
-                            .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
+                            .WithIsValueType(p.ParameterType.IsValueType())
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
                                 x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
                                 context.Context.Settings.CopySettings.CopyAttributes,

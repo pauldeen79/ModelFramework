@@ -28,24 +28,20 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
                 m => new MethodBuilder()
                     .WithName(m.Name)
                     .WithReturnTypeName(m.ReturnType.GetTypeName(m))
-                    .WithVisibility(m.IsPublic
-                        ? Visibility.Public
-                        : Visibility.Private)
+                    .WithVisibility(m.IsPublic.ToVisibility())
                     .WithStatic(m.IsStatic)
                     .WithVirtual(m.IsVirtual)
                     .WithAbstract(m.IsAbstract)
-                    .WithParentTypeFullName(m.DeclaringType.FullName == "System.Object"
-                        ? string.Empty
-                        : m.DeclaringType.FullName)
+                    .WithParentTypeFullName(m.DeclaringType.GetParentTypeFullName())
                     .WithReturnTypeIsNullable(m.ReturnTypeIsNullable())
-                    .WithReturnTypeIsValueType(m.ReturnType.IsValueType || m.ReturnType.IsEnum)
+                    .WithReturnTypeIsValueType(m.ReturnType.IsValueType())
                     .AddParameters(m.GetParameters().Select
                     (
                         p => new ParameterBuilder()
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.GetTypeName(m))
                             .WithIsNullable(p.IsNullable())
-                            .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
+                            .WithIsValueType(p.ParameterType.IsValueType())
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
                                 x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
                                 context.Context.Settings.CopySettings.CopyAttributes,

@@ -46,4 +46,12 @@ public static class TypeExtensions
 
         return results;
     }
+
+    public static string GetParentTypeFullName(this Type declaringType)
+        => declaringType.FullName == "System.Object"
+            ? string.Empty
+            : declaringType.FullName;
+
+    public static bool IsValueType(this Type type)
+        => type.IsValueType || type.IsEnum;
 }
