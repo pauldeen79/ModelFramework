@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Builders.Extensions;
 
-public static class ParametersContainerBuilderExtensions
+public static partial class ParametersContainerBuilderExtensions
 {
     public static T AddParameter<T>(this T instance, string name, Type type) where T : IParametersContainerBuilder
     {

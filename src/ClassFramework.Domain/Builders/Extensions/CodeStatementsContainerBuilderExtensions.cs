@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Builders.Extensions;
 
-public static class CodeStatementsContainerBuilderExtensions
+public static partial class CodeStatementsContainerBuilderExtensions
 {
     public static T AddStringCodeStatements<T>(this T instance, params string[] statements) where T : ICodeStatementsContainerBuilder
     {

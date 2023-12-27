@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Builders.Extensions;
 
-public static class BaseClassContainerBuilderExtensions
+public static partial class BaseClassContainerBuilderExtensions
 {
     public static IBaseClassContainerBuilder WithBaseClass<T>(this T instance, Type baseClassType)
         where T : IBaseClassContainerBuilder
