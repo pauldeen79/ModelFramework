@@ -33,14 +33,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = _formattableStringParser.Parse
-            (
-                property.Metadata
-                    .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                    .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
-                context.Context.FormatProvider,
-                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-            );
+            var typeNameResult = GetTypeName(context, property);
 
             if (!typeNameResult.IsSuccessful())
             {
@@ -75,6 +68,16 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
+    private Result<string> GetTypeName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
+        => _formattableStringParser.Parse
+        (
+            property.Metadata
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
+                .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
+            context.Context.FormatProvider,
+            CreateParentChildContext(context, property)
+        );
+
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
         Property property,
         BuilderContext context)
@@ -94,4 +97,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)};");
         }
     }
+
+    private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
+        => new(context, property, context.Context.Settings);
 }
