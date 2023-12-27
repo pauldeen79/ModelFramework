@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Domain.Builders.Extensions;
 
-public static class TypeBaseBuilderExtensions
+public static class TypeBuilderExtensions
 {
     public static string GetFullName(this ITypeBuilder instance) => $"{instance.Namespace.GetNamespacePrefix()}{instance.Name}";
 

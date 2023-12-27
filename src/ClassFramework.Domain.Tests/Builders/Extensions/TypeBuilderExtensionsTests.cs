@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class TypeBaseBuilderExtensionsTests : TestBase<ClassBuilder>
+public class TypeBuilderExtensionsTests : TestBase<ClassBuilder>
 {
-    public class GetFullName : TypeBaseBuilderExtensionsTests
+    public class GetFullName : TypeBuilderExtensionsTests
     {
         [Fact]
         public void Returns_Full_Name_When_Namespace_Is_Present()
@@ -31,7 +31,7 @@ public class TypeBaseBuilderExtensionsTests : TestBase<ClassBuilder>
         }
     }
 
-    public class AddInterfaces : TypeBaseBuilderExtensionsTests
+    public class AddInterfaces : TypeBuilderExtensionsTests
     {
         [Fact]
         public void Can_Add_Interfaces_Using_Types_In_Array()
