@@ -45,6 +45,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                     .WithSetterVisibility(context.Context.Settings.GenerationSettings.SetterVisibility)
                     .WithInitializerVisibility(property.InitializerVisibility)
                     .WithExplicitInterfaceName(property.ExplicitInterfaceName)
+                    .WithParentTypeFullName(property.ParentTypeFullName)
                     .AddMetadata(property.Metadata.Select(x => x.ToBuilder()))
                     .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
                     .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
