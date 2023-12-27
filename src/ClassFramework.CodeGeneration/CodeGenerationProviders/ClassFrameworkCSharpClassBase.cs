@@ -67,6 +67,12 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             ).BuildTyped();
     }
 
+    protected static bool IsInterfacedMethod(string methodName, ModelFramework.Objects.Builders.ClassBuilder classBuilder)
+        => classBuilder.IsNotNull(nameof(classBuilder)).Properties
+            .Where(x => x.ParentTypeFullName.StartsWith("ClassFramework.CodeGeneration.Models.Abstractions.", StringComparison.Ordinal))
+            .Select(x => x.Name)
+            .Any(x => methodName == $"Set{x}" || methodName == $"Add{x}");
+
     private void FixBuilder<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
         where TEntity : ModelFramework.Objects.Contracts.ITypeBase
@@ -75,7 +81,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         {
             classBuilder.AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(ModelFramework.Objects.Contracts.Visibility.Private));
             classBuilder.Constructors.First(x => x.Parameters.Count == 0).CodeStatements.Add(new ModelFramework.Objects.CodeStatements.Builders.LiteralCodeStatementBuilder("SetDefaultValues();"));
-            classBuilder.Methods.RemoveAll(x => IsInterfacedName(x.Name));
         }
 
         var sourceModel = Array.Find(GetType().Assembly.GetTypes(), x => x.Name == $"I{typeBaseBuilder.Name.ReplaceSuffix(BuilderName, string.Empty, StringComparison.Ordinal)}");
@@ -88,13 +93,6 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             }
         }
     }
-
-    private bool IsInterfacedName(string methodName)
-        => GetType().Assembly.GetTypes()
-            .Where(x => x.Namespace == "ClassFramework.CodeGeneration.Models.Abstractions")
-            .SelectMany(x => x.GetProperties().Select(y => y.Name))
-            .Where(x => x != "Parameters")
-            .Any(x => methodName == $"Set{x}" || methodName == $"Add{x}");
 
     private void FixEntity<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>

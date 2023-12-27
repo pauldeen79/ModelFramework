@@ -17,5 +17,10 @@ public class AbstractBuilders : ClassFrameworkCSharpClassBase
         => GetImmutableBuilderClasses(
             GetAbstractModels(),
             Constants.Namespaces.Domain,
-            Constants.Namespaces.DomainBuilders);
+            Constants.Namespaces.DomainBuilders)
+        .OfType<ModelFramework.Objects.Contracts.IClass>()
+        .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
+            .Chain(y => y.Methods.RemoveAll(z => IsInterfacedMethod(z.Name, y)))
+            .Build()
+        ).ToArray();
 }

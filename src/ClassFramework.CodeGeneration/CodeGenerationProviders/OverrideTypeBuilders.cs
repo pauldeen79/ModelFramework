@@ -18,5 +18,10 @@ public class OverrideTypeBuilders : ClassFrameworkCSharpClassBase
         => GetImmutableBuilderClasses(
             GetOverrideModels(typeof(ITypeBase)),
             $"{Constants.Namespaces.Domain}.Types",
-            $"{Constants.Namespaces.DomainBuilders}.Types");
+            $"{Constants.Namespaces.DomainBuilders}.Types")
+        .OfType<ModelFramework.Objects.Contracts.IClass>()
+        .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
+            .Chain(y => y.Methods.RemoveAll(z => IsInterfacedMethod(z.Name, y)))
+            .Build()
+        ).ToArray();
 }
