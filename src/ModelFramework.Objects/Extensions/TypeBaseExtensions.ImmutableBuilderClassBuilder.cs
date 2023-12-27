@@ -976,6 +976,7 @@ public static partial class TypeBaseEtensions
                 )
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
+                .WithParentTypeFullName(property.ParentTypeFullName)
                 .AddAttributes(property.Attributes.Where(_ => settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))

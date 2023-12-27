@@ -143,6 +143,7 @@ public static partial class TypeBaseExtensions
                         : p.SetterVisibility)
                     .WithInitializerVisibility(p.InitializerVisibility)
                     .WithExplicitInterfaceName(p.ExplicitInterfaceName)
+                    .WithParentTypeFullName(p.ParentTypeFullName)
                     .AddMetadata
                     (
                         p.Metadata
