@@ -22,7 +22,12 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
 
     private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
         => context.Context.SourceModel.GetMethodsRecursively()
-            .Where(m => m.Name != "<Clone>$" && !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
+            .Where(m =>
+                m.Name != "<Clone>$"
+                && !m.Name.StartsWith("get_")
+                && !m.Name.StartsWith("set_")
+                && m.DeclaringType != typeof(object)
+                && m.DeclaringType == context.Context.SourceModel)
             .Select
             (
                 m => new MethodBuilder()
