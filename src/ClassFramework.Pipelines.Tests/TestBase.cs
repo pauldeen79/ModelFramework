@@ -209,8 +209,11 @@ public abstract class TestBase : IDisposable
         bool useBaseClassFromSourceModel = true,
         bool partial = true,
         bool createConstructors = true,
+        bool enableEntityInheritance = false,
+        bool isAbstract = false,
         string namespaceFormatString = "{Namespace}",
         string nameFormatString = "{Class.Name}",
+        Class? baseClass = null,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
@@ -225,6 +228,10 @@ public abstract class TestBase : IDisposable
             typeSettings: new Pipelines.Reflection.PipelineBuilderTypeSettings(
                 namespaceMappings,
                 typenameMappings),
+            inheritanceSettings: new Pipelines.Reflection.PipelineBuilderInheritanceSettings(
+                enableInheritance: enableEntityInheritance,
+                isAbstract: isAbstract,
+                baseClass: baseClass),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
                 copyAttributes: copyAttributes,
                 copyInterfaces: copyInterfaces,
