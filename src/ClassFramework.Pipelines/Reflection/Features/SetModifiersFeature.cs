@@ -12,11 +12,6 @@ public class SetModifiersFeature : IPipelineFeature<TypeBaseBuilder, ReflectionC
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyAttributes)
-        {
-            return Result.Continue<TypeBaseBuilder>();
-        }
-
         if (context.Model is IReferenceTypeBuilder referenceTypeBuilder)
         {
             referenceTypeBuilder

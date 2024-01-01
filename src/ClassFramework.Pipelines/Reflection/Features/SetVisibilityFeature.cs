@@ -12,11 +12,6 @@ public class SetVisibilityFeature : IPipelineFeature<TypeBaseBuilder, Reflection
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyAttributes)
-        {
-            return Result.Continue<TypeBaseBuilder>();
-        }
-
         if (context.Context.SourceModel.IsPublic)
         {
             context.Model.WithVisibility(Visibility.Public);
