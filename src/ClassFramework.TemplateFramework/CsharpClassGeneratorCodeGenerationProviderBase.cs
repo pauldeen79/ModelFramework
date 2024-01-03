@@ -2,11 +2,6 @@
 
 public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGenerationProvider
 {
-    public string Path { get; }
-    public bool RecurseOnDeleteGeneratedFiles { get; }
-    public string LastGeneratedFilesFilename { get; }
-    public Encoding Encoding { get; }
-
     protected CsharpClassGeneratorCodeGenerationProviderBase(
         ICsharpExpressionCreator csharpExpressionCreator,
         IEnumerable<TypeBase> model,
@@ -19,22 +14,20 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         _csharpExpressionCreator = csharpExpressionCreator;
         _model = model;
         _settings = settings;
-
-        Path = _settings.Path;
-        RecurseOnDeleteGeneratedFiles = settings.RecurseOnDeleteGeneratedFiles;
-        LastGeneratedFilesFilename = settings.LastGeneratedFilesFilename;
-        Encoding = settings.Encoding;
     }
 
     private readonly IEnumerable<TypeBase> _model;
     private readonly CsharpClassGeneratorSettings _settings;
     private readonly ICsharpExpressionCreator _csharpExpressionCreator;
 
-    public object? CreateAdditionalParameters()
-        => null;
+    public string Path => _settings.Path;
+    public bool RecurseOnDeleteGeneratedFiles => _settings.RecurseOnDeleteGeneratedFiles;
+    public string LastGeneratedFilesFilename => _settings.LastGeneratedFilesFilename;
+    public Encoding Encoding => _settings.Encoding;
 
-    public Type GetGeneratorType()
-        => typeof(CsharpClassGenerator);
+    public object? CreateAdditionalParameters() => null;
+
+    public Type GetGeneratorType() => typeof(CsharpClassGenerator);
 
     public object? CreateModel()
         => new CsharpClassGeneratorViewModel(_csharpExpressionCreator)
