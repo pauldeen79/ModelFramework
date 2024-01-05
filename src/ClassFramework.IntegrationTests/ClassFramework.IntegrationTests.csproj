@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -11,8 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.18.1" />
     <PackageReference Include="FluentAssertions" Version="6.12.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="pauldeen79.TemplateFramework.Core.CodeGeneration" Version="0.8.6" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
@@ -32,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClassFramework.Pipelines.Tests\ClassFramework.Pipelines.Tests.csproj" />
+    <ProjectReference Include="..\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj" />
     <ProjectReference Include="..\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj" />
   </ItemGroup>
 

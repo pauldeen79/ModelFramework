@@ -36,6 +36,11 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             .WithRecurseOnDeleteGeneratedFiles(RecurseOnDeleteGeneratedFiles)
             .WithLastGeneratedFilesFilename(LastGeneratedFilesFilename)
             .WithEncoding(Encoding)
+            .WithCultureInfo(CultureInfo.InvariantCulture)
+            .WithGenerateMultipleFiles()
+            .WithCreateCodeGenerationHeader()
+            .WithEnableNullableContext()
+            .WithEnvironmentVersion("1.0.0")
             .Build();
 
     public object? CreateAdditionalParameters() => null;
@@ -59,7 +64,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual bool InheritFromInterfaces => false;
-    protected virtual bool AddBackingFieldsForCollectionProperties => false;
     protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
 
@@ -88,11 +92,12 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             var typeName = property.TypeName.FixTypeName();
             FixImmutableBuilderProperty(property, typeName);
 
-            if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
-                && AddBackingFieldsForCollectionProperties)
-            {
-                property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType, CollectionPropertyGetStatement, forceNullCheck: ValidateArgumentsInConstructor != ArgumentValidationType.None);
-            }
+            //TODO: Move to Entity pipeline
+            //if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
+            //    && AddBackingFieldsForCollectionProperties)
+            //{
+            //    property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType, CollectionPropertyGetStatement, forceNullCheck: ValidateArgumentsInConstructor != ArgumentValidationType.None);
+            //}
         }
     }
 
@@ -101,7 +106,7 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
         Guard.IsNotNull(property);
         Guard.IsNotNull(typeName);
 
-        //TODO: Move to pipelines itself
+        //TODO: Move to Builder pipeline
         if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
         {
             property.AddMetadata(new MetadataBuilder().WithName(Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(true));
@@ -160,34 +165,69 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
     private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings()
         => new(); //TODO: Add properties
 
+    private TypeBase CreateImmutableClassFromInterface(Interface iinterface, string entitiesNamespace)
+    {
+        var builder = new ClassBuilder();
+        _ = _entityPipeline.Process(builder, new EntityContext(new InterfaceBuilder(iinterface)
+                .WithName(iinterface.GetEntityClassName())
+                .WithNamespace(entitiesNamespace)
+                .With(x => FixImmutableClassProperties(x))
+                //.BuildTyped()
+                //.ToImmutableClassBuilder(CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
+                //.WithRecord()
+                //.WithPartial()
+                .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+            .GetValueOrThrow();
+
+        return builder.Build();
+    }
+
     private TypeBase CreateImmutableOverrideClassFromInterface(Interface iinterface, string entitiesNamespace)
-        => new InterfaceBuilder(iinterface)
+    {
+        var builder = new ClassBuilder();
+        _ = _entityPipeline.Process(builder, new EntityContext(new InterfaceBuilder(iinterface)
             .WithName(iinterface.GetEntityClassName())
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
-            .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateEntityPipelineSettings(overrideAddNullChecks: true))
-            .WithRecord()
-            .WithPartial()
-            .Build();
+            //.Build()
+            //.ToImmutableClassValidateOverrideBuilder(CreateEntityPipelineSettings(overrideAddNullChecks: true))
+            //.WithRecord()
+            //.WithPartial()
+            .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+            .GetValueOrThrow();
+
+        return builder.Build();
+    }
 
     private TypeBase CreateImmutableClassFromClass(Class cls, string entitiesNamespace)
-        => new ClassBuilder(cls)
+    {
+        var builder = new ClassBuilder();
+        _ = _entityPipeline.Process(builder, new EntityContext(new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
-            .Build()
-            .ToImmutableClassBuilder(CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
-            .WithRecord()
-            .WithPartial()
-            .Build();
+            //.Build()
+            //.ToImmutableClassBuilder(CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null))
+            //.WithRecord()
+            //.WithPartial()
+            .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+            .GetValueOrThrow();
+
+        return builder.Build();
+    }
 
     private TypeBase CreateImmutableOverrideClassFromClass(Class cls, string entitiesNamespace)
-        => new ClassBuilder(cls)
+    {
+        var builder = new ClassBuilder();
+        _ = _entityPipeline.Process(builder, new EntityContext(new ClassBuilder(cls)
             .WithNamespace(entitiesNamespace)
             .With(x => FixImmutableClassProperties(x))
-            .Build()
-            .ToImmutableClassValidateOverrideBuilder(CreateEntityPipelineSettings(ValidateArgumentsInConstructor, true))
-            .WithRecord()
-            .WithPartial()
-            .Build();
+            //.Build()
+            //.ToImmutableClassValidateOverrideBuilder(CreateEntityPipelineSettings(ValidateArgumentsInConstructor, true))
+            //.WithRecord()
+            //.WithPartial()
+            .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+            .GetValueOrThrow();
+
+        return builder.Build();
+    }
 }

@@ -15,6 +15,8 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddTemplateFrameworkCodeGeneration()
             .AddCsharpExpressionCreator()
             .AddClassFrameworkTemplates()
+            .AddParsers()
+            .AddPipelines()
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
@@ -28,10 +30,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        //var typeBase = CreateModel();
-        var csharpExpressionCreator = _scope.ServiceProvider.GetRequiredService<ICsharpExpressionCreator>();
-        //var csharpClassGeneratorSettings = CreateCsharpClassGeneratorSettings(generateMultipleFiles);
-        //var codeGenerationProvider = new TestCodeGenerationProvider(csharpExpressionCreator);
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TestCodeGenerationProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
@@ -164,11 +162,13 @@ namespace MyNamespace
                 .Build()
         ];
 
-        //public override CsharpClassGeneratorSettings Settings => CreateCsharpClassGeneratorSettings();
-
         public override string Path => string.Empty;
         public override bool RecurseOnDeleteGeneratedFiles => false;
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
+
+        protected override string ProjectName => "UnitTest";
+        protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
     }
 }

@@ -16,4 +16,5 @@ public class CoreEntities : CsharpClassGeneratorCodeGenerationProviderBase
     protected override string ProjectName => "ClassFramework";
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+    protected override string CodeGenerationRootNamespace => "ClassFramework.IntegrationTests";
 }

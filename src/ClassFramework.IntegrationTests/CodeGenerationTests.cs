@@ -13,6 +13,8 @@ public class CodeGenerationTests
         var templateFactory = _fixture.Freeze<ITemplateFactory>();
         var templateProviderPluginFactory = _fixture.Freeze<ITemplateComponentRegistryPluginFactory>();
         var services = new ServiceCollection()
+            .AddParsers()
+            .AddPipelines()
             .AddTemplateFramework()
             .AddTemplateFrameworkChildTemplateProvider()
             .AddTemplateFrameworkCodeGeneration()
