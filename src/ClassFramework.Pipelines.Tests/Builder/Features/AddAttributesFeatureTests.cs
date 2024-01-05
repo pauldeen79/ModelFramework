@@ -75,7 +75,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             model.Attributes.Should().BeEmpty();
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
             => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

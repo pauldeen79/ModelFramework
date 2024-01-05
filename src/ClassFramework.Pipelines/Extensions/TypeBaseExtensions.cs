@@ -32,7 +32,7 @@ public static class TypeBaseExtensions
 
     public static Result<string> GetCustomValueForInheritedClass(
         this IType instance,
-        Entity.PipelineBuilderSettings settings,
+        Entity.PipelineSettings settings,
         Func<IBaseClassContainer, Result<string>> customValue)
     {
         settings = settings.IsNotNull(nameof(settings));
@@ -142,7 +142,7 @@ public static class TypeBaseExtensions
 
     public static IEnumerable<Property> GetPropertiesFromClassAndBaseClass(
         this IType instance,
-        Builder.PipelineBuilderSettings settings)
+        Builder.PipelineSettings settings)
     {
         settings = settings.IsNotNull(nameof(settings));
 

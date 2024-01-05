@@ -21,7 +21,6 @@ global using ClassFramework.Pipelines.Entity;
 global using ClassFramework.Pipelines.Entity.Features.Abstractions;
 global using ClassFramework.Pipelines.Entity.PlaceholderProcessors;
 global using ClassFramework.Pipelines.Extensions;
-global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.Pipelines.Reflection.Features.Abstractions;
 global using ClassFramework.Pipelines.Reflection.PlaceholderProcessors;
 global using ClassFramework.Pipelines.Shared;

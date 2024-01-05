@@ -319,7 +319,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             result.ErrorMessage.Should().Be("Kaboom");
         }
         
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
             => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

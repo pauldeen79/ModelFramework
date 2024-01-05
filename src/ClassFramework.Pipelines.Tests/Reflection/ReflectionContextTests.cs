@@ -8,7 +8,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: null!, new Pipelines.Reflection.PipelineBuilderSettings(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new ReflectionContext(sourceModel: null!, new Pipelines.Reflection.PipelineSettings(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
         }
 
@@ -24,7 +24,7 @@ public class ReflectionContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new ReflectionContext(sourceModel: GetType(), new Pipelines.Reflection.PipelineBuilderSettings(), formatProvider: null!))
+            this.Invoking(_ => new ReflectionContext(sourceModel: GetType(), new Pipelines.Reflection.PipelineSettings(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }

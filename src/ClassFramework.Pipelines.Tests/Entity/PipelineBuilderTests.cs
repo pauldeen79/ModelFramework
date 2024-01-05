@@ -318,7 +318,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             );
         }
 
-        private static EntityContext CreateContext(IConcreteType model, Pipelines.Entity.PipelineBuilderSettings settings)
+        private static EntityContext CreateContext(IConcreteType model, Pipelines.Entity.PipelineSettings settings)
             => new(model, settings, CultureInfo.InvariantCulture);
     }
 }

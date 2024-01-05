@@ -68,7 +68,7 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             result.Status.Should().Be(ResultStatus.Continue);
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
             => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

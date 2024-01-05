@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Reflection;
 
-public record ReflectionContext : ContextBase<Type, PipelineBuilderSettings>
+public record ReflectionContext : ContextBase<Type, PipelineSettings>
 {
-    public ReflectionContext(Type sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+    public ReflectionContext(Type sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }

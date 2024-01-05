@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClassFramework.Domain\ClassFramework.Domain.csproj" />
+    <ProjectReference Include="..\ClassFramework.Pipelines\ClassFramework.Pipelines.csproj" />
   </ItemGroup>
 
 </Project>

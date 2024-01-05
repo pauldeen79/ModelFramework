@@ -91,7 +91,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Reflection.Features.SetNam
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<TypeBaseBuilder, ReflectionContext> CreateContext(Type sourceModel, ClassBuilder model, Pipelines.Reflection.PipelineBuilderSettings settings)
+        private static PipelineContext<TypeBaseBuilder, ReflectionContext> CreateContext(Type sourceModel, ClassBuilder model, Pipelines.Reflection.PipelineSettings settings)
             => new(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
     }
 }

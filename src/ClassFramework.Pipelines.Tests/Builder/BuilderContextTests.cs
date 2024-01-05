@@ -8,7 +8,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: null!, new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new BuilderContext(sourceModel: null!, new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
         }
 
@@ -24,7 +24,7 @@ public class BuilderContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new BuilderContext(sourceModel: CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), formatProvider: null!))
+            this.Invoking(_ => new BuilderContext(sourceModel: CreateModel(), new Pipelines.Builder.PipelineSettings(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }

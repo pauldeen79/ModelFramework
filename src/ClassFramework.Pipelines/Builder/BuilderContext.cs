@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record BuilderContext : ContextBase<IType, PipelineBuilderSettings>
+public record BuilderContext : ContextBase<IType, PipelineSettings>
 {
-    public BuilderContext(IType sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+    public BuilderContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }

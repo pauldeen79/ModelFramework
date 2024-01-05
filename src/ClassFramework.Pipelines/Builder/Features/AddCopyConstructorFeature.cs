@@ -129,7 +129,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );
 
-    private static string CreateCollectionInitialization(PipelineBuilderSettings settings)
+    private static string CreateCollectionInitialization(PipelineSettings settings)
     {
         if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
@@ -139,7 +139,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         return "{NullCheck.Source.Argument}{Name}.AddRange(source.[SourceExpression])";
     }
 
-    private static string? GetSourceExpression(string? value, Property sourceProperty, PipelineBuilderTypeSettings typeSettings, bool enableNullableReferenceTypes)
+    private static string? GetSourceExpression(string? value, Property sourceProperty, PipelineTypeSettings typeSettings, bool enableNullableReferenceTypes)
     {
         if (value is null || !value.Contains("[SourceExpression]"))
         {
@@ -157,7 +157,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? value.Replace("[SourceExpression]", $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty)
             : value.Replace("[SourceExpression]", sourceExpression).Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", sourceProperty.GetSuffix(enableNullableReferenceTypes));
     }
-    private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineBuilderSettings settings)
+    private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
         => instance.GetCustomValueForInheritedClass(settings.EntitySettings, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)

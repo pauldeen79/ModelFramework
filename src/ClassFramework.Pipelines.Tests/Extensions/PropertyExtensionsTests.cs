@@ -195,7 +195,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderConstructorInitializer(context, formattableStringParser: null!, sut.TypeName))
@@ -207,7 +207,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineBuilderSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
