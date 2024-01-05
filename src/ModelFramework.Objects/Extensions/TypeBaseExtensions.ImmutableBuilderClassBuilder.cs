@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Objects.Extensions;
 
-public static partial class TypeBaseEtensions
+public static partial class TypeBaseExtensions
 {
     public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
         => instance.ToImmutableBuilderClassBuilder(settings).BuildTyped();
@@ -937,22 +937,6 @@ public static partial class TypeBaseEtensions
         => poco
             ? " { "
             : "(";
-
-    private static string FormatInstanceName(ITypeBase instance,
-                                             bool forCreate,
-                                             Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
-    {
-        if (formatInstanceTypeNameDelegate != null)
-        {
-            var retVal = formatInstanceTypeNameDelegate(instance, forCreate);
-            if (!string.IsNullOrEmpty(retVal))
-            {
-                return retVal;
-            }
-        }
-
-        return instance.GetFullName().GetCsharpFriendlyTypeName();
-    }
 
     private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance,
                                                                                         ImmutableBuilderClassSettings settings)

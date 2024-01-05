@@ -339,20 +339,4 @@ public static partial class TypeBaseExtensions
 
     private static string GetPropertyNamesConcatenated(IEnumerable<IClassProperty> properties)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase().GetCsharpFriendlyName()));
-
-    private static string FormatInstanceName(ITypeBase instance,
-                                             bool forCreate,
-                                             Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
-    {
-        if (formatInstanceTypeNameDelegate != null)
-        {
-            var retVal = formatInstanceTypeNameDelegate(instance, forCreate);
-            if (!string.IsNullOrEmpty(retVal))
-            {
-                return retVal;
-            }
-        }
-
-        return instance.GetFullName().GetCsharpFriendlyTypeName();
-    }
 }
