@@ -5,7 +5,9 @@ public class CodeGenerationTests
     private readonly ServiceProvider _serviceProvider;
     private readonly IServiceScope _scope;
     private readonly IFixture _fixture;
-    private readonly Type[] _generationTypes = typeof(CodeGenerationTests).Assembly.GetExportedTypes().Where(x => !x.IsAbstract && x.BaseType == typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase)).ToArray();
+    private readonly Type[] _generationTypes = typeof(CodeGenerationTests).Assembly.GetExportedTypes()
+        .Where(x => !x.IsAbstract && x.BaseType == typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase))
+        .ToArray();
 
     public CodeGenerationTests()
     {
@@ -42,15 +44,18 @@ public class CodeGenerationTests
             .Select(x => (CsharpClassGeneratorPipelineCodeGenerationProviderBase)_scope.ServiceProvider.GetRequiredService(x))
             .ToArray();
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);
+        var basePath = Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
+        var codeGenerationSettings = new CodeGenerationSettings(basePath, "GeneratedCode.cs", dryRun: false);
 
         // Act
         foreach (var instance in instances)
         {
             engine.Generate(instance, generationEnvironment, codeGenerationSettings);
+            generationEnvironment.SaveContents(instance, codeGenerationSettings.BasePath, codeGenerationSettings.DefaultFilename);
         }
 
         // Assert
         generationEnvironment.Builder.Contents.Should().NotBeEmpty();
+
     }
 }

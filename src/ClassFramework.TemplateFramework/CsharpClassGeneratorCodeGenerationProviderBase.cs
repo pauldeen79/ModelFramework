@@ -30,4 +30,6 @@ public abstract class CsharpClassGeneratorCodeGenerationProviderBase : ICodeGene
             Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };
+
+    protected virtual string CurrentNamespace => Path.Replace('/', '.');
 }

@@ -52,7 +52,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFram
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFramework.Tests", "src\ClassFramework.TemplateFramework.Tests\ClassFramework.TemplateFramework.Tests.csproj", "{A64F2CE5-6275-4255-9845-420ECF50D786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.IntegrationTests", "src\ClassFramework.IntegrationTests\ClassFramework.IntegrationTests.csproj", "{533B3E27-06DC-4298-99EB-50C53ED420F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.IntegrationTests", "src\ClassFramework.IntegrationTests\ClassFramework.IntegrationTests.csproj", "{533B3E27-06DC-4298-99EB-50C53ED420F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.Domain.POC", "src\ClassFramework.Domain.POC\ClassFramework.Domain.POC.csproj", "{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,6 +154,10 @@ Global
 		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
