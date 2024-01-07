@@ -141,7 +141,7 @@ namespace MyNamespace
         _serviceProvider.Dispose();
     }
 
-    private sealed class TestCodeGenerationProvider : CsharpClassGeneratorCodeGenerationProviderBase
+    private sealed class TestCodeGenerationProvider : CsharpClassGeneratorPipelineCodeGenerationProviderBase
     {
         public TestCodeGenerationProvider(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline) : base(csharpExpressionCreator, builderPipeline, entityPipeline, reflectionPipeline)
         {

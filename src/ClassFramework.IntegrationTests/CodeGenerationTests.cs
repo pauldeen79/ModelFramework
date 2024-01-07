@@ -5,7 +5,7 @@ public class CodeGenerationTests
     private readonly ServiceProvider _serviceProvider;
     private readonly IServiceScope _scope;
     private readonly IFixture _fixture;
-    private readonly Type[] _generationTypes = typeof(CodeGenerationTests).Assembly.GetExportedTypes().Where(x => !x.IsAbstract && x.BaseType == typeof(CsharpClassGeneratorCodeGenerationProviderBase)).ToArray();
+    private readonly Type[] _generationTypes = typeof(CodeGenerationTests).Assembly.GetExportedTypes().Where(x => !x.IsAbstract && x.BaseType == typeof(CsharpClassGeneratorPipelineCodeGenerationProviderBase)).ToArray();
 
     public CodeGenerationTests()
     {
@@ -39,7 +39,7 @@ public class CodeGenerationTests
         // Arrange
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var instances = _generationTypes
-            .Select(x => (CsharpClassGeneratorCodeGenerationProviderBase)_scope.ServiceProvider.GetRequiredService(x))
+            .Select(x => (CsharpClassGeneratorPipelineCodeGenerationProviderBase)_scope.ServiceProvider.GetRequiredService(x))
             .ToArray();
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.cs", dryRun: true);

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
 
-public class CoreEntities : CsharpClassGeneratorCodeGenerationProviderBase
+public class CoreEntities : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
     public CoreEntities(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline) : base(csharpExpressionCreator, builderPipeline, entityPipeline, reflectionPipeline)
     {
