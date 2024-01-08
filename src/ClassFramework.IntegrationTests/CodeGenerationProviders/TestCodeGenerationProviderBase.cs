@@ -10,5 +10,6 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
     protected override string CodeGenerationRootNamespace => "ClassFramework.IntegrationTests";
+    protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
 }
