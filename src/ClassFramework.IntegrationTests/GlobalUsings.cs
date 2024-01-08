@@ -9,6 +9,7 @@ global using ClassFramework.Domain;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders;
 global using ClassFramework.Domain.Builders.Abstractions;
+global using ClassFramework.IntegrationTests.CodeGenerationProviders;
 global using ClassFramework.IntegrationTests.Models.Domains;
 global using ClassFramework.IntegrationTests.Models.Types;
 global using ClassFramework.Pipelines.Builder;
