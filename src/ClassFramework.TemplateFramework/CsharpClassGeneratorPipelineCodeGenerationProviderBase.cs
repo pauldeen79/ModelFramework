@@ -139,11 +139,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private Pipelines.Reflection.PipelineSettings CreateReflectionPipelineSettings()
         => new(); //TODO: Add properties
 
-    private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(string ns, ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
+    private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(string entitiesNamespace, ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new(
             nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
-            typeSettings: new Pipelines.Entity.PipelineTypeSettings(newCollectionTypeName: RecordConcreteCollectionType.FullName.FixTypeName(), enableNullableReferenceTypes: true, namespaceMappings: new[] { new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models", ns, Enumerable.Empty<Metadata>()) } )
+            typeSettings: new Pipelines.Entity.PipelineTypeSettings(newCollectionTypeName: RecordConcreteCollectionType.FullName.FixTypeName(), enableNullableReferenceTypes: true, typenameMappings: CreateTypeNameMappings(entitiesNamespace)),
+            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(validateArguments: forceValidateArgumentsInConstructor ?? ValidateArgumentsInConstructor, forceValidateArgumentsInConstructor, RecordConcreteCollectionType.FullName.FixTypeName())
             ); //TODO: Add properties
+
+    private Pipelines.TypenameMapping[] CreateTypeNameMappings(string entitiesNamespace)
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && x.FullName is not null)
+            .Select(x => new Pipelines.TypenameMapping(x.FullName!, $"{entitiesNamespace}.{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()))
+            .ToArray();
 
     private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings()
         => new(); //TODO: Add properties
