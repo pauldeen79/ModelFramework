@@ -128,8 +128,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
-        [InlineData("NullableRequiredSuffix", true, "")]
-        [InlineData("NullableRequiredSuffix", false, "!")]
+        [InlineData("NullableRequiredSuffix", true, "!")]
+        [InlineData("NullableRequiredSuffix", false, "")]
         [InlineData("NullableSuffix", true, "?")]
         [InlineData("NullableSuffix", false, "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
