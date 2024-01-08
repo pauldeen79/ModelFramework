@@ -48,9 +48,9 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
             "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks
                 ? parentChildContext.ParentContext.Context.CreateArgumentNullException(parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
-            "NullableRequiredSuffix" => Result.Success(parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks || parentChildContext.ChildContext.IsValueType || parentChildContext.ChildContext.IsNullable || !parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes
-                ? string.Empty
-                : "!"),
+            "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes
+                ? "!"
+                : string.Empty),
             "NullableSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable && (parentChildContext.ChildContext.IsValueType || parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
                 ? "?"
                 : string.Empty),
