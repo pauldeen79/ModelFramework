@@ -108,8 +108,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "this.Property4 = property4;",
                 "this.Property5 = property5;",
                 "this.Property6 = property6;",
-                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property8);"
+                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property7);",
+                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property8);"
             );
 
             result.Value.Fields.Should().BeEmpty();
@@ -201,8 +201,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "this._property4 = property4;",
                 "this._property5 = property5;",
                 "this._property6 = property6;",
-                "this.Property7 = new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property8);"
+                "this.Property7 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property7);",
+                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property8);"
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged

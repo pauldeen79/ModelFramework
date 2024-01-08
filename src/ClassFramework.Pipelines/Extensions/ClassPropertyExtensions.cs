@@ -99,23 +99,4 @@ public static class PropertyExtensions
         => !source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType
             ? "?"
             : string.Empty;
-
-    public static string GetInitializationExpression(this Property property, string collectionTypeName, CultureInfo cultureInfo)
-    {
-        collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
-
-        return property.TypeName.FixTypeName().IsCollectionTypeName()
-            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
-                ? GetCollectionFormatStringForInitialization(property, cultureInfo, collectionTypeName)
-                : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
-    }
-
-    private static string GetCollectionFormatStringForInitialization(Property property, CultureInfo cultureInfo, string collectionTypeName)
-    {
-        collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
-
-        return property.IsNullable
-            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null : new {collectionTypeName}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
-            : $"new {collectionTypeName}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
-    }
 }

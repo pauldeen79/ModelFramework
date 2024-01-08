@@ -42,7 +42,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
             (
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<>(property3);"
+                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
             );
         }
 
@@ -75,7 +75,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<>(property3);"
+                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
             );
         }
 
@@ -108,7 +108,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "System.ArgumentNullException.ThrowIfNull(property3);",
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<>(property3);"
+                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
             );
         }
 
@@ -141,7 +141,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "this._property1 = property1;",
                 "this._property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<>(property3);"
+                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
             );
         }
 
@@ -172,7 +172,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
             (
                 "this.Property1 = property1;",
                 "this.Property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<>(property3);",
+                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);",
                 "System.ComponentModel.DataAnnotations.Validator.ValidateObject(this, new System.ComponentModel.DataAnnotations.ValidationContext(this, null, null), true);"
             );
         }
@@ -228,8 +228,8 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "this.Property4 = property4;",
                 "this.Property5 = property5;",
                 "this.Property6 = property6;",
-                "this.Property7 = new System.Collections.Generic.List<MySourceNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new System.Collections.Generic.List<MySourceNamespace.MyClass>(property8);"
+                "this.Property7 = new System.Collections.Generic.List<MyNamespace.MyClass>(property7);",
+                "this.Property8 = property8 is null ? null : new System.Collections.Generic.List<MyNamespace.MyClass>(property8);"
             );
         }
     }

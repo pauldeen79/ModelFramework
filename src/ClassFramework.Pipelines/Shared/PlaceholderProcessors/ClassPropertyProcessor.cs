@@ -29,7 +29,7 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success(PropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
             "BuilderMemberName" => Result.Success(PropertyContext.SourceModel.GetBuilderMemberName(PropertyContext.Settings.AddNullChecks, PropertyContext.Settings.EnableNullableReferenceTypes, PropertyContext.Settings.ValidateArguments, PropertyContext.FormatProvider.ToCultureInfo())),
             "EntityMemberName" => Result.Success(PropertyContext.SourceModel.GetEntityMemberName(PropertyContext.Settings.AddBackingFields, PropertyContext.FormatProvider.ToCultureInfo())),
-            "InitializationExpression" => Result.Success(PropertyContext.SourceModel.GetInitializationExpression(PropertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo())),
+            "InitializationExpression" => Result.Success(GetInitializationExpression(PropertyContext.SourceModel, typeName, PropertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo())),
             nameof(Property.TypeName) => Result.Success(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
             $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),
@@ -40,5 +40,26 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             "DefaultValue" => formattableStringParser.Parse(PropertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, PropertyContext.Settings.EnableNullableReferenceTypes, typeName), formatProvider, context),
             _ => Result.Continue<string>()
         };
+    }
+
+    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, CultureInfo cultureInfo)
+    {
+        collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
+
+        return typeName.IsCollectionTypeName()
+            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
+                ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName)
+                : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
+    }
+
+    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName)
+    {
+        collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
+
+        var genericTypeName = typeName.GetGenericArguments();
+
+        return property.IsNullable
+            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
+            : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
     }
 }
