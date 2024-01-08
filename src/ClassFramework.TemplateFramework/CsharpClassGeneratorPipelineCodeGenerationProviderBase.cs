@@ -166,7 +166,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ToArray();
 
     private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings()
-        => new(); //TODO: Add properties
+        => new(
+            entitySettings: CreateEntityPipelineSettings()
+            ); //TODO: Add properties
 
     private TypeBase CreateImmutableClassFromInterface(Interface iinterface, string entitiesNamespace)
     {
