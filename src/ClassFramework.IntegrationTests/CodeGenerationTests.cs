@@ -51,7 +51,10 @@ public class CodeGenerationTests
         foreach (var instance in instances)
         {
             engine.Generate(instance, generationEnvironment, codeGenerationSettings);
-            generationEnvironment.SaveContents(instance, codeGenerationSettings.BasePath, codeGenerationSettings.DefaultFilename);
+            if (!codeGenerationSettings.DryRun)
+            {
+                generationEnvironment.SaveContents(instance, codeGenerationSettings.BasePath, codeGenerationSettings.DefaultFilename);
+            }
         }
 
         // Assert
