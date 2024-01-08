@@ -44,6 +44,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
     protected virtual bool InheritFromInterfaces => false;
+    protected virtual bool CopyAttributes => false;
+    protected virtual bool CopyInterfaces => false;
     protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
 
@@ -137,10 +139,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .ToArray();
 
     private Pipelines.Reflection.PipelineSettings CreateReflectionPipelineSettings()
-        => new(); //TODO: Add properties
+        => new(
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces)
+            ); //TODO: Add properties
 
     private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(string entitiesNamespace, ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new(
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(newCollectionTypeName: RecordConcreteCollectionType.FullName.FixTypeName(), enableNullableReferenceTypes: true, typenameMappings: CreateTypeNameMappings(entitiesNamespace)),
             constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(validateArguments: forceValidateArgumentsInConstructor ?? ValidateArgumentsInConstructor, forceValidateArgumentsInConstructor, RecordConcreteCollectionType.FullName.FixTypeName())
