@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
+﻿using ClassFramework.Pipelines.Domains;
+
+namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
 
 public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {

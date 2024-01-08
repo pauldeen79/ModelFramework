@@ -48,6 +48,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CopyInterfaces => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
+    protected virtual bool CreateRecord => true;
+    protected virtual bool AddBackingFields => false;
+    protected virtual bool AddSetters => false;
     protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
 
@@ -147,6 +150,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new(
+            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(addSetters: AddSetters, addBackingFields: AddBackingFields, createRecord: CreateRecord),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(newCollectionTypeName: RecordConcreteCollectionType.FullName.FixTypeName(), enableNullableReferenceTypes: true, typenameMappings: CreateTypenameMappings(), namespaceMappings: CreateNamespaceMappings()),
