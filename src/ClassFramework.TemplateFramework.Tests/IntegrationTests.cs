@@ -169,6 +169,6 @@ namespace MyNamespace
 
         protected override string ProjectName => "UnitTest";
         protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
-        protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+        protected override Type RecordConcreteCollectionType => typeof(List<>);
     }
 }

@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.Domains;
-
-namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
+﻿namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
 
 public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
@@ -10,7 +8,7 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
 
     protected override string ProjectName => "ClassFramework";
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
-    protected override Type RecordConcreteCollectionType => typeof(ReadOnlyCollection<>);
+    protected override Type RecordConcreteCollectionType => typeof(List<>);
     protected override string CodeGenerationRootNamespace => "ClassFramework.IntegrationTests";
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;

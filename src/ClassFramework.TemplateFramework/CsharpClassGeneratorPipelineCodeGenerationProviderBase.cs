@@ -53,6 +53,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool AddSetters => false;
     protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
+    protected virtual bool EnableEntityInheritance => false;
+    protected virtual bool EnableBuilderInhericance => false;
+    protected virtual Class? BaseClass => null;
+    protected virtual bool IsAbstract => false;
+    protected virtual string BaseClassBuilderNamespace => string.Empty;
+    protected virtual bool AllowGenerationWithoutProperties => true;
 
     protected virtual string[] GetExternalCustomBuilderTypes() => Array.Empty<string>();
 
@@ -143,19 +149,28 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
             .ToArray();
 
+    protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
+        => secondCondition
+            ? validateArgumentsInConstructor
+            : ArgumentValidationType.None;
+
     private Pipelines.Reflection.PipelineSettings CreateReflectionPipelineSettings()
         => new(
+            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces)
             );
 
     private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new(
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(addSetters: AddSetters, addBackingFields: AddBackingFields, createRecord: CreateRecord),
+            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(addSetters: AddSetters, addBackingFields: AddBackingFields, createRecord: CreateRecord, allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(newCollectionTypeName: RecordConcreteCollectionType.FullName.FixTypeName(), enableNullableReferenceTypes: true, typenameMappings: CreateTypenameMappings(), namespaceMappings: CreateNamespaceMappings()),
-            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(validateArguments: forceValidateArgumentsInConstructor ?? ValidateArgumentsInConstructor, forceValidateArgumentsInConstructor, RecordConcreteCollectionType.FullName.FixTypeName()),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: overrideAddNullChecks ?? AddNullChecks, UseExceptionThrowIfNull)
+            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
+                validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
+                originalValidateArguments: ValidateArgumentsInConstructor,
+                collectionTypeName: RecordCollectionType.WithoutGenerics()),
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false), UseExceptionThrowIfNull)
             );
 
     private IEnumerable<Pipelines.NamespaceMapping>? CreateNamespaceMappings()
