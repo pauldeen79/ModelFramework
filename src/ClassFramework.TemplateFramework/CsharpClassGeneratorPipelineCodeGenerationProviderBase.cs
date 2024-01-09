@@ -193,6 +193,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private IEnumerable<Pipelines.NamespaceMapping>? CreateNamespaceMappings()
     {
         yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Domains", $"{CoreNamespace}.Domains", Enumerable.Empty<Metadata>());
+        yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{CoreNamespace}.Abstractions", Enumerable.Empty<Metadata>());
     }
 
     private Pipelines.TypenameMapping[] CreateTypenameMappings()
