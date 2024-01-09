@@ -160,7 +160,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces)
             );
 
-    private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
+    private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(
+        string entitiesNamespace,
+        ArgumentValidationType? forceValidateArgumentsInConstructor = null,
+        bool? overrideAddNullChecks = null)
         => new(
             generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
                 addSetters: AddSetters,
@@ -171,7 +174,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 copyAttributes: CopyAttributes,
                 copyInterfaces: CopyInterfaces),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(
-                entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
+                entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}",
+                entityNamespaceFormatString: entitiesNamespace),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
@@ -197,9 +201,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => new Pipelines.TypenameMapping(x.FullName!, $"{CoreNamespace}.{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()))
             .ToArray();
 
-    private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings()
+    private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings(string entitiesNamespace)
         => new(
-            entitySettings: CreateEntityPipelineSettings()
+            entitySettings: CreateEntityPipelineSettings(entitiesNamespace)
             ); //TODO: Add properties
 
     private TypeBase CreateImmutableClassFromInterface(Interface iinterface, string entitiesNamespace)
@@ -207,9 +211,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(new InterfaceBuilder(iinterface)
                 .WithName(iinterface.GetEntityClassName())
-                .WithNamespace(entitiesNamespace)
                 .With(x => FixImmutableClassProperties(x))
-                .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -220,10 +223,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(new InterfaceBuilder(iinterface)
-            .WithName(iinterface.GetEntityClassName())
-            .WithNamespace(entitiesNamespace)
-            .With(x => FixImmutableClassProperties(x))
-            .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+                .WithName(iinterface.GetEntityClassName())
+                .With(x => FixImmutableClassProperties(x))
+                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -233,9 +235,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(new ClassBuilder(cls)
-            .WithNamespace(entitiesNamespace)
-            .With(x => FixImmutableClassProperties(x))
-            .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+                .With(x => FixImmutableClassProperties(x))
+                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -246,9 +247,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(new ClassBuilder(cls)
-            .WithNamespace(entitiesNamespace)
-            .With(x => FixImmutableClassProperties(x))
-            .Build(), CreateEntityPipelineSettings(overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+                .With(x => FixImmutableClassProperties(x))
+                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
