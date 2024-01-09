@@ -173,14 +173,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             nameSettings: new Pipelines.Entity.PipelineNameSettings(
                 entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
-                newCollectionTypeName: RecordConcreteCollectionType.WithoutGenerics(),
+                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
                 typenameMappings: CreateTypenameMappings(),
                 namespaceMappings: CreateNamespaceMappings()),
             constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
-                collectionTypeName: RecordCollectionType.WithoutGenerics()),
+                collectionTypeName: RecordConcreteCollectionType.WithoutGenerics()),
             nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
                 addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
                 useExceptionThrowIfNull: UseExceptionThrowIfNull)
