@@ -12,4 +12,5 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     protected override string CodeGenerationRootNamespace => "ClassFramework.IntegrationTests";
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
+    protected override bool CopyInterfaces => true;
 }
