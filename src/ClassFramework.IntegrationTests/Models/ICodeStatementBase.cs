@@ -1,5 +1,5 @@
 ﻿namespace ClassFramework.IntegrationTests.Models;
 
-internal interface ICodeStatementBase : IMetadataContainer
+internal interface ICodeStatementBase : Abstractions.IMetadataContainer
 {
 }

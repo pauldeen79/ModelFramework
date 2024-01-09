@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.IntegrationTests.Models;
 
-internal interface IMetadata : INameContainer
+internal interface IMetadata : Abstractions.INameContainer
 {
     object? Value { get; }
 }

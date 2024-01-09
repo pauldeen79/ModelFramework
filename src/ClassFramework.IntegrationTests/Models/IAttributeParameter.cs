@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.IntegrationTests.Models;
 
-internal interface IAttributeParameter : IMetadataContainer
+internal interface IAttributeParameter : Abstractions.IMetadataContainer
 {
     [Required(AllowEmptyStrings = true)] string Name { get; }
     object Value { get; }
