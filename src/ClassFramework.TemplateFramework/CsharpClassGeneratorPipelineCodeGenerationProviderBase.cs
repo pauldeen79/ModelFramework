@@ -162,15 +162,28 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(ArgumentValidationType? forceValidateArgumentsInConstructor = null, bool? overrideAddNullChecks = null)
         => new(
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(addSetters: AddSetters, addBackingFields: AddBackingFields, createRecord: CreateRecord, allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces),
-            nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
-            typeSettings: new Pipelines.Entity.PipelineTypeSettings(newCollectionTypeName: RecordConcreteCollectionType.FullName.FixTypeName(), enableNullableReferenceTypes: true, typenameMappings: CreateTypenameMappings(), namespaceMappings: CreateNamespaceMappings()),
+            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
+                addSetters: AddSetters,
+                addBackingFields: AddBackingFields,
+                createRecord: CreateRecord,
+                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
+                copyAttributes: CopyAttributes,
+                copyInterfaces: CopyInterfaces),
+            nameSettings: new Pipelines.Entity.PipelineNameSettings(
+                entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"),
+            typeSettings: new Pipelines.Entity.PipelineTypeSettings(
+                newCollectionTypeName: RecordConcreteCollectionType.WithoutGenerics(),
+                enableNullableReferenceTypes: true,
+                typenameMappings: CreateTypenameMappings(),
+                namespaceMappings: CreateNamespaceMappings()),
             constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
                 collectionTypeName: RecordCollectionType.WithoutGenerics()),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false), UseExceptionThrowIfNull)
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
+                addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
+                useExceptionThrowIfNull: UseExceptionThrowIfNull)
             );
 
     private IEnumerable<Pipelines.NamespaceMapping>? CreateNamespaceMappings()

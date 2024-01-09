@@ -37,7 +37,6 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 
