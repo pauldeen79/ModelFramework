@@ -149,6 +149,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
             .ToArray();
 
+    protected TypeBase[] GetAbstractionsInterfaces()
+        => GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models.Abstractions")
+            .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
+            .ToArray();
+
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
             ? validateArgumentsInConstructor
@@ -156,8 +162,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private Pipelines.Reflection.PipelineSettings CreateReflectionPipelineSettings()
         => new(
-            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(copyAttributes: CopyAttributes, copyInterfaces: CopyInterfaces)
+            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(
+                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
+                copyAttributes: CopyAttributes,
+                copyInterfaces: CopyInterfaces),
+            typeSettings: new Pipelines.Reflection.PipelineTypeSettings(
+                namespaceMappings: CreateNamespaceMappings(),
+                typenameMappings: CreateTypenameMappings())
             );
 
     private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(
