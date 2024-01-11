@@ -74,9 +74,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
             .Distinct();
 
-    protected virtual void FixImmutableClassProperties<TBuilder, TEntity>(TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
-        where TEntity : TypeBase
-        where TBuilder : TypeBaseBuilder<TBuilder, TEntity>
+    protected virtual void FixImmutableClassProperties(TypeBaseBuilder typeBaseBuilder)
     {
         Guard.IsNotNull(typeBaseBuilder);
 
@@ -123,23 +121,13 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             return models.SelectMany
             (
-                x => x switch
-                {
-                    Class cls => new[] { CreateImmutableClassFromClass(cls, entitiesNamespace), CreateImmutableOverrideClassFromClass(cls, entitiesNamespace) },
-                    Interface iinterface => new[] { CreateImmutableClassFromInterface(iinterface, entitiesNamespace), CreateImmutableOverrideClassFromInterface(iinterface, entitiesNamespace) },
-                    _ => throw new NotSupportedException("Type should be Class or Interface")
-                }
+                x => new[] { CreateImmutableClass(x, entitiesNamespace), CreateImmutableOverrideClass(x, entitiesNamespace) }
             ).ToArray();
         }
 
         return models.Select
         (
-            x => x switch
-            {
-                Class cls => CreateImmutableClassFromClass(cls, entitiesNamespace),
-                Interface iinterface => CreateImmutableClassFromInterface(iinterface, entitiesNamespace),
-                _ => throw new NotSupportedException("Type should be Class or Interface")
-            }
+            x => CreateImmutableClass(x, entitiesNamespace)
         ).ToArray();
     }
 
@@ -219,11 +207,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             entitySettings: CreateEntityPipelineSettings(entitiesNamespace)
             ); //TODO: Add properties
 
-    private TypeBase CreateImmutableClassFromInterface(Interface iinterface, string entitiesNamespace)
+    private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _entityPipeline.Process(builder, new EntityContext(new InterfaceBuilder(iinterface)
-                .WithName(iinterface.GetEntityClassName())
+        _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
+                .WithName(typeBase.GetEntityClassName())
                 .With(x => FixImmutableClassProperties(x))
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
@@ -232,34 +220,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     //TODO: Generate override entity here, instead of normal entity
-    private TypeBase CreateImmutableOverrideClassFromInterface(Interface iinterface, string entitiesNamespace)
+    private TypeBase CreateImmutableOverrideClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _entityPipeline.Process(builder, new EntityContext(new InterfaceBuilder(iinterface)
-                .WithName(iinterface.GetEntityClassName())
-                .With(x => FixImmutableClassProperties(x))
-                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
-            .GetValueOrThrow();
-
-        return builder.Build();
-    }
-
-    private TypeBase CreateImmutableClassFromClass(Class cls, string entitiesNamespace)
-    {
-        var builder = new ClassBuilder();
-        _ = _entityPipeline.Process(builder, new EntityContext(new ClassBuilder(cls)
-                .With(x => FixImmutableClassProperties(x))
-                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
-            .GetValueOrThrow();
-
-        return builder.Build();
-    }
-
-    //TODO: Generate override entity here, instead of normal entity
-    private TypeBase CreateImmutableOverrideClassFromClass(Class cls, string entitiesNamespace)
-    {
-        var builder = new ClassBuilder();
-        _ = _entityPipeline.Process(builder, new EntityContext(new ClassBuilder(cls)
+        _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
+                .WithName(typeBase.GetEntityClassName())
                 .With(x => FixImmutableClassProperties(x))
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
