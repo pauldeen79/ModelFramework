@@ -6,20 +6,24 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         ICsharpExpressionCreator csharpExpressionCreator,
         IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline,
         IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline,
-        IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline) : base(csharpExpressionCreator)
+        IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline,
+        IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator)
     {
         Guard.IsNotNull(builderPipeline);
         Guard.IsNotNull(entityPipeline);
         Guard.IsNotNull(reflectionPipeline);
+        Guard.IsNotNull(interfacePipeline);
 
         _builderPipeline = builderPipeline;
         _entityPipeline = entityPipeline;
         _reflectionPipeline = reflectionPipeline;
+        _interfacePipeline = interfacePipeline;
     }
 
     private readonly IPipeline<IConcreteTypeBuilder, BuilderContext> _builderPipeline;
     private readonly IPipeline<IConcreteTypeBuilder, EntityContext> _entityPipeline;
     private readonly IPipeline<TypeBaseBuilder, ReflectionContext> _reflectionPipeline;
+    private readonly IPipeline<InterfaceBuilder, InterfaceContext> _interfacePipeline;
 
     public override CsharpClassGeneratorSettings Settings
         => new CsharpClassGeneratorSettingsBuilder()
@@ -32,12 +36,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithCreateCodeGenerationHeader()
             .WithEnableNullableContext()
             .WithFilenameSuffix(".template.generated")
+            .WithEnvironmentVersion(EnvironmentVersion)
             .Build();
 
     protected abstract string ProjectName { get; }
     protected abstract Type RecordCollectionType { get; }
     protected abstract Type RecordConcreteCollectionType { get; }
 
+    protected virtual string EnvironmentVersion => string.Empty;
     protected virtual string RootNamespace => InheritFromInterfaces
         ? $"{ProjectName}.Abstractions"
         : $"{ProjectName}.Domain";
@@ -131,6 +137,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         ).ToArray();
     }
 
+    protected TypeBase[] GetInterfaces(TypeBase[] models, string interfacesNamespace)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(interfacesNamespace);
+
+        return models.Select(x => CreateInterface(x, interfacesNamespace)).ToArray();
+    }
+
     protected TypeBase[] GetCoreModels()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
@@ -190,6 +204,26 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 useExceptionThrowIfNull: UseExceptionThrowIfNull)
             );
 
+    private Pipelines.Interface.PipelineSettings CreateInterfacePipelineSettings(string interfacesNamespace)
+        => new(
+            nameSettings: new Pipelines.Interface.PipelineNameSettings(
+                namespaceFormatString: interfacesNamespace),
+            typeSettings: new Pipelines.Interface.PipelineTypeSettings(
+                typenameMappings: CreateTypenameMappings(),
+                namespaceMappings: CreateNamespaceMappings()),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
+                copyAttributes: CopyAttributes,
+                copyInterfaces: CopyInterfaces),
+            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
+                addSetters: AddSetters,
+                addBackingFields: AddBackingFields,
+                createRecord: CreateRecord,
+                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
+                addNullChecks: default,
+                useExceptionThrowIfNull: default)
+        );
+
     private IEnumerable<Pipelines.NamespaceMapping>? CreateNamespaceMappings()
     {
         yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Domains", $"{CoreNamespace}.Domains", Enumerable.Empty<Metadata>());
@@ -214,6 +248,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .WithName(typeBase.GetEntityClassName())
                 .With(x => FixImmutableClassProperties(x))
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+            .GetValueOrThrow();
+
+        return builder.Build();
+    }
+
+    private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace)
+    {
+        var builder = new InterfaceBuilder();
+        _ = _interfacePipeline.Process(builder, new InterfaceContext(typeBase.ToBuilder()
+                //.WithName(typeBase.GetEntityClassName())
+                .With(x => FixImmutableClassProperties(x))
+                .Build(), CreateInterfacePipelineSettings(interfacesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();

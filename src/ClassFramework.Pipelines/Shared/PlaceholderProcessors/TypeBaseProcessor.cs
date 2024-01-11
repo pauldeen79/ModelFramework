@@ -10,7 +10,7 @@ public class TypeBaseProcessor : IPipelinePlaceholderProcessor
         }
 
         var name = pipelineContext.Model.Name;
-        var nameNoInterfacePrefix = pipelineContext.Model is Interface && pipelineContext.Model.Name.StartsWith("I")
+        var nameNoInterfacePrefix = pipelineContext.Model is Domain.Types.Interface && pipelineContext.Model.Name.StartsWith("I")
             ? name.Substring(1)
             : name;
 

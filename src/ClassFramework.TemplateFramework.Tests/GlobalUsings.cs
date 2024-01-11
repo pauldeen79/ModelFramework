@@ -1,5 +1,4 @@
-﻿global using System.Collections.ObjectModel;
-global using System.ComponentModel.DataAnnotations;
+﻿global using System.ComponentModel.DataAnnotations;
 global using System.Globalization;
 global using System.Text;
 global using AutoFixture;
@@ -17,6 +16,7 @@ global using ClassFramework.Domain.Types;
 global using ClassFramework.Pipelines.Builder;
 global using ClassFramework.Pipelines.Entity;
 global using ClassFramework.Pipelines.Extensions;
+global using ClassFramework.Pipelines.Interface;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.TemplateFramework.Builders;
 global using ClassFramework.TemplateFramework.Extensions;

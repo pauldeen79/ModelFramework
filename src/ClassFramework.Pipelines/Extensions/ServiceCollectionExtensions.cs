@@ -7,6 +7,7 @@ public static class ServiceCollectionExtensions
             .AddBuilderPipeline()
             .AddEntityPipeline()
             .AddReflectionPipeline()
+            .AddInterfacePipeline()
             .AddSharedPipelineComponents()
             .AddParserComponents();
 
@@ -70,6 +71,11 @@ public static class ServiceCollectionExtensions
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetModifiersFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetNameFeatureBuilder>()
             .AddScoped<IReflectionFeatureBuilder, Reflection.Features.SetVisibilityFeatureBuilder>();
+
+    private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
+        => services
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>>().Build())
+            .AddScoped<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>, Interface.PipelineBuilder>();
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
