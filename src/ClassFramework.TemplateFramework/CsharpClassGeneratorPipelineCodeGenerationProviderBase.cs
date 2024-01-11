@@ -246,7 +246,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
                 .WithName(typeBase.GetEntityClassName())
-                .With(x => FixImmutableClassProperties(x))
+                .With(FixImmutableClassProperties)
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
@@ -255,10 +255,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace)
     {
-        var builder = new InterfaceBuilder();
+        var builder = new InterfaceBuilder()
+            .WithNamespace(interfacesNamespace) //TODO: Remove after implementing
+            .WithName(typeBase.Name); //TODO: Remove after implementing
         _ = _interfacePipeline.Process(builder, new InterfaceContext(typeBase.ToBuilder()
-                //.WithName(typeBase.GetEntityClassName())
-                .With(x => FixImmutableClassProperties(x))
+                .With(FixImmutableClassProperties)
                 .Build(), CreateInterfacePipelineSettings(interfacesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
@@ -271,7 +272,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
                 .WithName(typeBase.GetEntityClassName())
-                .With(x => FixImmutableClassProperties(x))
+                .With(FixImmutableClassProperties)
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
