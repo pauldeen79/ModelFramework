@@ -29,7 +29,7 @@ public class EntityContextTests : TestBase
         }
     }
 
-    public class MapTypeName : BuilderContextTests
+    public class MapTypeName : EntityContextTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
@@ -45,7 +45,7 @@ public class EntityContextTests : TestBase
         }
     }
 
-    public class MapAttribute : BuilderContextTests
+    public class MapAttribute : EntityContextTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()

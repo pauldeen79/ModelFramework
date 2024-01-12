@@ -65,6 +65,20 @@ public abstract class TestBase : IDisposable
             .AddMetadata(new MetadataBuilder().WithName("MyMetadataName").WithValue("MyMetadataValue"))
             .BuildTyped();
 
+    protected static Domain.Types.Interface CreateInterfaceModel(bool addProperties)
+        => new InterfaceBuilder()
+            .WithName("IMyClass")
+            .WithNamespace("MyNamespace")
+            .AddAttributes(new AttributeBuilder().WithName("MyAttribute"))
+            .AddProperties(
+                new[]
+                {
+                    new PropertyBuilder().WithName("Property1").WithType(typeof(string)).WithHasSetter(false),
+                    new PropertyBuilder().WithName("Property2").WithTypeName(typeof(List<>).ReplaceGenericTypeName(typeof(string))).WithHasSetter(true)
+                }.Where(_ => addProperties)
+            )
+            .BuildTyped();
+
     protected static IConcreteType CreateGenericModel(bool addProperties)
         => new ClassBuilder()
             .WithName("MyClass")
@@ -93,6 +107,20 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.MyClass").WithIsNullable())
             .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")))
             .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.MyClass")).WithIsNullable())
+            .BuildTyped();
+
+    protected static Domain.Types.Interface CreateInterfaceModelWithCustomTypeProperties()
+        => new InterfaceBuilder()
+            .WithName("ISomeClass")
+            .WithNamespace("MySourceNamespace")
+            .AddProperties(new PropertyBuilder().WithName("Property1").WithType(typeof(int)))
+            .AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int)).WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property3").WithType(typeof(string)))
+            .AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(string)).WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property5").WithTypeName("MySourceNamespace.IMyClass"))
+            .AddProperties(new PropertyBuilder().WithName("Property6").WithTypeName("MySourceNamespace.IMyClass").WithIsNullable())
+            .AddProperties(new PropertyBuilder().WithName("Property7").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")))
+            .AddProperties(new PropertyBuilder().WithName("Property8").WithTypeName(typeof(List<>).ReplaceGenericTypeName("MySourceNamespace.IMyClass")).WithIsNullable())
             .BuildTyped();
 
     protected static IConcreteType CreateModelWithPropertyThatHasAReservedName(Type propertyType)
@@ -239,6 +267,32 @@ public abstract class TestBase : IDisposable
                 copyInterfacePredicate: copyInterfacePredicate)
         );
 
+    protected static Pipelines.Interface.PipelineSettings CreateInterfaceSettings(
+        bool copyAttributes = false,
+        bool copyInterfaces = false,
+        bool allowGenerationWithoutProperties = false,
+        string namespaceFormatString = "{Namespace}",
+        string nameFormatString = "{Class.Name}",
+        string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
+        IEnumerable<NamespaceMapping>? namespaceMappings = null,
+        IEnumerable<TypenameMapping>? typenameMappings = null,
+        Predicate<Domain.Attribute>? copyAttributePredicate = null,
+        Predicate<string>? copyInterfacePredicate = null)
+        => new Pipelines.Interface.PipelineSettings(
+            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
+                allowGenerationWithoutProperties: allowGenerationWithoutProperties),
+            nameSettings: new Pipelines.Interface.PipelineNameSettings(
+                namespaceFormatString,
+                nameFormatString),
+            typeSettings: new Pipelines.Interface.PipelineTypeSettings(
+                namespaceMappings,
+                typenameMappings),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
+                copyAttributes: copyAttributes,
+                copyInterfaces: copyInterfaces,
+                copyAttributePredicate: copyAttributePredicate,
+                copyInterfacePredicate: copyInterfacePredicate)
+        );
     protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         => new[]
         {

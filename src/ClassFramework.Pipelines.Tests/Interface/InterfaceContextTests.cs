@@ -29,7 +29,7 @@ public class InterfaceContextTests : TestBase
         }
     }
 
-    public class MapTypeName : BuilderContextTests
+    public class MapTypeName : InterfaceContextTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()
@@ -45,7 +45,7 @@ public class InterfaceContextTests : TestBase
         }
     }
 
-    public class MapAttribute : BuilderContextTests
+    public class MapAttribute : InterfaceContextTests
     {
         [Fact]
         public void Throws_On_Null_TypeName()

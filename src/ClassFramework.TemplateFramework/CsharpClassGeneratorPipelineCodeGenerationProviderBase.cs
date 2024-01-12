@@ -218,10 +218,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 addSetters: AddSetters,
                 addBackingFields: AddBackingFields,
                 createRecord: CreateRecord,
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
-                addNullChecks: default,
-                useExceptionThrowIfNull: default)
+                allowGenerationWithoutProperties: AllowGenerationWithoutProperties)
         );
 
     private IEnumerable<Pipelines.NamespaceMapping>? CreateNamespaceMappings()

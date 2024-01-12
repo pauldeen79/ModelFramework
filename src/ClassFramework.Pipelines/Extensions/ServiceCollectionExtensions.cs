@@ -75,11 +75,15 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddInterfacePipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>>().Build())
-            .AddScoped<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>, Interface.PipelineBuilder>();
+            .AddScoped<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>, Interface.PipelineBuilder>()
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.SetNameFeatureBuilder>()
+        ;
 
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
 }
