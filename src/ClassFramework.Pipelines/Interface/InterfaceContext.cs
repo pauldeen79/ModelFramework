@@ -7,11 +7,11 @@ public record InterfaceContext : ContextBase<IType, PipelineSettings>
     {
     }
 
-    public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
-
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings.TypeSettings);
+
+    public string MapTypeName(string typeName)
+        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
 
     public Domain.Attribute MapAttribute(Domain.Attribute attribute)
     {
