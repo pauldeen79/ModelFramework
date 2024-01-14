@@ -18,7 +18,9 @@ public class AddPropertiesFeature : IPipelineFeature<InterfaceBuilder, Interface
                 .ToArray();
 
         context.Model.AddProperties(
-            properties.Select
+            properties
+            .Where(property => string.IsNullOrEmpty(property.ParentTypeFullName) || property.ParentTypeFullName.GetClassName().RemoveInterfacePrefixI() == context.Context.SourceModel.Name.RemoveInterfacePrefixI())
+            .Select
             (
                 property => new PropertyBuilder()
                     .WithName(property.Name)
