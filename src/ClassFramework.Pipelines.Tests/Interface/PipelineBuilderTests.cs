@@ -76,7 +76,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
 
             result.Value.Fields.Should().BeEmpty();
 
-            /*result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
+            result.Value.Properties.Select(x => x.Name).Should().BeEquivalentTo
             (
                 "Property1",
                 "Property2",
@@ -116,7 +116,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             result.Value.Properties.SelectMany(x => x.GetterCodeStatements).Should().BeEmpty();
             result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
             result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();*/
+            result.Value.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
         private static InterfaceContext CreateContext(IType model, Pipelines.Interface.PipelineSettings settings)

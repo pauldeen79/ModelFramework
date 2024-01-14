@@ -268,6 +268,7 @@ public abstract class TestBase : IDisposable
         );
 
     protected static Pipelines.Interface.PipelineSettings CreateInterfaceSettings(
+        bool addSetters = false,
         bool copyAttributes = false,
         bool copyInterfaces = false,
         bool allowGenerationWithoutProperties = false,
@@ -279,12 +280,14 @@ public abstract class TestBase : IDisposable
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Interface.PipelineSettings(
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
+            generationSettings: new Pipelines.Interface.PipelineGenerationSettings(
+                addSetters: addSetters,
                 allowGenerationWithoutProperties: allowGenerationWithoutProperties),
             nameSettings: new Pipelines.Interface.PipelineNameSettings(
                 namespaceFormatString,
                 nameFormatString),
             typeSettings: new Pipelines.Interface.PipelineTypeSettings(
+                newCollectionTypeName,
                 namespaceMappings,
                 typenameMappings),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(

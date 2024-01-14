@@ -77,6 +77,10 @@ public static class ServiceCollectionExtensions
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>>().Build())
             .AddScoped<IPipelineBuilder<InterfaceBuilder, Interface.InterfaceContext>, Interface.PipelineBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddAttributesFeatureBuilder>()
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddInterfacesFeatureBuilder>()
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddMetadataFeatureBuilder>()
+            .AddScoped<IInterfaceFeatureBuilder, Interface.Features.AddPropertiesFeatureBuilder>()
             .AddScoped<IInterfaceFeatureBuilder, Interface.Features.SetNameFeatureBuilder>()
         ;
 

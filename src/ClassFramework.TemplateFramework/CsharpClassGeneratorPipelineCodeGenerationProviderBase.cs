@@ -209,15 +209,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             nameSettings: new Pipelines.Interface.PipelineNameSettings(
                 namespaceFormatString: interfacesNamespace),
             typeSettings: new Pipelines.Interface.PipelineTypeSettings(
+                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 typenameMappings: CreateTypenameMappings(),
                 namespaceMappings: CreateNamespaceMappings()),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
                 copyAttributes: CopyAttributes,
                 copyInterfaces: CopyInterfaces),
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
+            generationSettings: new Pipelines.Interface.PipelineGenerationSettings(
                 addSetters: AddSetters,
-                addBackingFields: AddBackingFields,
-                createRecord: CreateRecord,
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties)
         );
 
