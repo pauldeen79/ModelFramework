@@ -13,9 +13,9 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         context = context.IsNotNull(nameof(context));
 
         var properties = context.Context.SourceModel
-                .Properties
-                .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                .ToArray();
+            .Properties
+            .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
+            .ToArray();
 
         context.Model.AddProperties(
             properties.Select

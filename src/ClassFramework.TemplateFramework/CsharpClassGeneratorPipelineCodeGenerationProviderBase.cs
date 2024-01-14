@@ -65,6 +65,17 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
+    protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
+        => parentNameContainer is not null
+        && typeBase is not null
+        && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+            || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == /*nameContainer.Name*/ (parentNameContainer as INameContainer)?.Name))
+            || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+            || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+            || (parentNameContainer.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
+        ));
+
+    protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
 
     protected virtual string[] GetExternalCustomBuilderTypes() => Array.Empty<string>();
 
@@ -198,7 +209,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
                 EnableEntityInheritance,
                 IsAbstract,
-                BaseClass),
+                BaseClass,
+                InheritanceComparisonDelegate),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,

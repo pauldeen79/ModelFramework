@@ -59,6 +59,5 @@ public class CodeGenerationTests
 
         // Assert
         generationEnvironment.Builder.Contents.Should().NotBeEmpty();
-
     }
 }
