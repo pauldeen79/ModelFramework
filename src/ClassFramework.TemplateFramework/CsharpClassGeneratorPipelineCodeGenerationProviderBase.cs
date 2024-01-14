@@ -224,6 +224,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Domains", $"{CoreNamespace}.Domains", Enumerable.Empty<Metadata>());
         yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{CoreNamespace}.Abstractions", Enumerable.Empty<Metadata>());
+        foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
+        {
+            yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", Enumerable.Empty<Metadata>());
+        }
     }
 
     private Pipelines.TypenameMapping[] CreateTypenameMappings()
@@ -251,9 +255,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace)
     {
-        var builder = new InterfaceBuilder()
-            .WithNamespace(interfacesNamespace) //TODO: Remove after implementing
-            .WithName(typeBase.Name); //TODO: Remove after implementing
+        var builder = new InterfaceBuilder();
         _ = _interfacePipeline.Process(builder, new InterfaceContext(typeBase.ToBuilder()
                 .With(FixImmutableClassProperties)
                 .Build(), CreateInterfacePipelineSettings(interfacesNamespace), CultureInfo.InvariantCulture))
