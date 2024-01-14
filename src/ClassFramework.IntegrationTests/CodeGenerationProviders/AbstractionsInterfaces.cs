@@ -9,7 +9,4 @@ public class AbstractionsInterfaces : TestCodeGenerationProviderBase
     public override IEnumerable<TypeBase> Model => GetInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Abstractions");
 
     public override string Path => "ClassFramework.Domain.POC/Abstractions";
-    public override bool RecurseOnDeleteGeneratedFiles => false;
-    public override string LastGeneratedFilesFilename => string.Empty;
-    public override Encoding Encoding => Encoding.UTF8;
 }

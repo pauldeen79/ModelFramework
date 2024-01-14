@@ -44,12 +44,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract Type RecordConcreteCollectionType { get; }
 
     protected virtual string EnvironmentVersion => string.Empty;
-    protected virtual string RootNamespace => InheritFromInterfaces
+    protected virtual string RootNamespace => /*InheritFromInterfaces
         ? $"{ProjectName}.Abstractions"
-        : $"{ProjectName}.Domain";
+        : */$"{ProjectName}.Domain";
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
-    protected virtual bool InheritFromInterfaces => false;
+    //protected virtual bool InheritFromInterfaces => false;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool AddNullChecks => true;
@@ -157,6 +157,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
             .ToArray();
 
+    protected TypeBase[] GetAbstractModels()
+        => GetPureAbstractModels()
+            .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
+            .ToArray();
+
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
             ? validateArgumentsInConstructor
@@ -190,6 +195,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             nameSettings: new Pipelines.Entity.PipelineNameSettings(
                 entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}",
                 entityNamespaceFormatString: entitiesNamespace),
+            inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
+                EnableEntityInheritance,
+                IsAbstract,
+                BaseClass),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
