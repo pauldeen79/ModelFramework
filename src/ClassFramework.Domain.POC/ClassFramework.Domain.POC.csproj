@@ -19,7 +19,9 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="CodeStatements\" />
     <Folder Include="Domains\" />
+    <Folder Include="Types\" />
   </ItemGroup>
 
 </Project>

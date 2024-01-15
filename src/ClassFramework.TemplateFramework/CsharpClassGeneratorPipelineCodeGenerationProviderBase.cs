@@ -173,6 +173,64 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
             .ToArray();
 
+    protected TypeBase[] GetOverrideModels(Type abstractType)
+    {
+        Guard.IsNotNull(abstractType);
+
+        return GetType().Assembly.GetTypes()
+            .Where(x => x.IsInterface && Array.Exists(x.GetInterfaces(), y => y == abstractType))
+            .Select(x => _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(x, CreateReflectionPipelineSettings(), CultureInfo.InvariantCulture)).GetValueOrThrow().Build())
+            .ToArray();
+    }
+
+    protected Class CreateBaseclass(Type type, string @namespace)
+    {
+        Guard.IsNotNull(type);
+        Guard.IsNotNull(@namespace);
+
+        var reflectionSettings = new Pipelines.Reflection.PipelineSettings
+        (
+            typeSettings: new Pipelines.Reflection.PipelineTypeSettings(CreateNamespaceMappings(), CreateTypenameMappings()),
+            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(allowGenerationWithoutProperties: true)
+            //inheritanceSettings: new Pipelines.Reflection.PipelineInheritanceSettings(enableInheritance: true, isAbstract: true /*, inheritanceComparisonDelegate: InheritanceComparisonDelegate*/)
+        );
+        var typeBase = _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture)).GetValueOrThrow().Build();
+
+        var builder = new ClassBuilder();
+        var entitySettings = new Pipelines.Entity.PipelineSettings(
+            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
+                addSetters: AddSetters,
+                addBackingFields: AddBackingFields,
+                createRecord: CreateRecord,
+                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
+            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
+                copyAttributes: CopyAttributes,
+                copyInterfaces: CopyInterfaces),
+            nameSettings: new Pipelines.Entity.PipelineNameSettings(
+                entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}",
+                entityNamespaceFormatString: @namespace),
+            inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
+                true,
+                true,
+                null, //BaseClass,
+                null /*InheritanceComparisonDelegate*/),
+            typeSettings: new Pipelines.Entity.PipelineTypeSettings(
+                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+                enableNullableReferenceTypes: true,
+                typenameMappings: CreateTypenameMappings(),
+                namespaceMappings: CreateNamespaceMappings())
+            //constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
+            //    validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
+            //    originalValidateArguments: ValidateArgumentsInConstructor,
+            //    collectionTypeName: RecordConcreteCollectionType.WithoutGenerics()),
+            //nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
+            //    addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
+            //    useExceptionThrowIfNull: UseExceptionThrowIfNull)
+            );
+        _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
+        return builder.BuildTyped();
+    }
+
     protected ArgumentValidationType CombineValidateArguments(ArgumentValidationType validateArgumentsInConstructor, bool secondCondition)
         => secondCondition
             ? validateArgumentsInConstructor
