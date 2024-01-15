@@ -325,7 +325,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
-                .WithName(typeBase.GetEntityClassName())
                 .With(FixImmutableClassProperties)
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
@@ -349,7 +348,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
-                .WithName(typeBase.GetEntityClassName())
                 .With(FixImmutableClassProperties)
                 .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
