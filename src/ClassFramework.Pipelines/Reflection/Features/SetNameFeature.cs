@@ -41,7 +41,7 @@ public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, ReflectionContex
 
         context.Model
             .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
-            .WithNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!);
+            .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!));
 
         return Result.Continue<TypeBaseBuilder>();
     }

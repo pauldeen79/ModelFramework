@@ -29,7 +29,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             result.Value.Interfaces.Should().BeEquivalentTo("MyNamespace.IMyInterface");
 
             result.Value.Name.Should().Be(nameof(MyClass));
-            result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+            result.Value.Namespace.Should().Be("MyNamespace");
 
             result.Value.Visibility.Should().Be(Visibility.Public);
         }
@@ -57,7 +57,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             result.Value.Interfaces.Should().BeEmpty();
 
             result.Value.Name.Should().Be(nameof(IMyInterface));
-            result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+            result.Value.Namespace.Should().Be("MyNamespace");
 
             result.Value.Visibility.Should().Be(Visibility.Public);
         }
@@ -84,7 +84,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<TypeBas
             result.Value.Interfaces.Should().BeEmpty();
 
             result.Value.Name.Should().Be(nameof(IMyInternalInterface));
-            result.Value.Namespace.Should().Be("ClassFramework.Pipelines.Tests.Reflection");
+            result.Value.Namespace.Should().Be("MyNamespace");
 
             result.Value.Visibility.Should().Be(Visibility.Internal);
         }

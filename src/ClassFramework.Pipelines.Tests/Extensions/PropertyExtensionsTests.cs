@@ -117,51 +117,6 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         }
     }
 
-    public class EnsureParentTypeFullName : PropertyExtensionsTests
-    {
-        [Fact]
-        public void Returns_ClassProperty_With_Original_ParentTypeFullName_When_Filled()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName("Original").Build();
-            var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").BuildTyped();
-
-            // Act
-            var result = sut.EnsureParentTypeFullName(parentClass);
-
-            // Assert
-            result.ParentTypeFullName.Should().Be("Original");
-        }
-
-        [Fact]
-        public void Returns_ClassProperty_With_ParentTypeFullName_From_ParentClass_When_Original_ParentTypeFullName_Is_Empty()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
-            var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").BuildTyped();
-
-            // Act
-            var result = sut.EnsureParentTypeFullName(parentClass);
-
-            // Assert
-            result.ParentTypeFullName.Should().Be("MyNamespace.MyClass");
-        }
-
-        [Fact]
-        public void Returns_ClassProperty_With_ParentTypeFullName_From_ParentClass_Without_Generics_When_Original_ParentTypeFullName_Is_Empty()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithParentTypeFullName(string.Empty).Build();
-            var parentClass = new ClassBuilder().WithName("MyClass").WithNamespace("MyNamespace").AddGenericTypeArguments("T").BuildTyped();
-
-            // Act
-            var result = sut.EnsureParentTypeFullName(parentClass);
-
-            // Assert
-            result.ParentTypeFullName.Should().Be("MyNamespace.MyClass");
-        }
-    }
-
     public class GetInitializationName : PropertyExtensionsTests
     {
         [Fact]

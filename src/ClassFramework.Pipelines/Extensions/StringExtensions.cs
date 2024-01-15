@@ -63,11 +63,4 @@ public static class StringExtensions
 
         return typeName;
     }
-
-    public static string RemoveInterfacePrefixI(this string typeName)
-        => typeName.StartsWith("I")
-        && typeName.Length > 2
-        && typeName.Substring(1, 1).Equals(typeName.Substring(1, 1), StringComparison.OrdinalIgnoreCase)
-            ? typeName.Substring(1)
-            : typeName;
 }

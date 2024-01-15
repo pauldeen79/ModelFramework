@@ -72,7 +72,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == /*nameContainer.Name*/ (parentNameContainer as INameContainer)?.Name))
             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
-            || (parentNameContainer.ParentTypeFullName.StartsWith($"{CodeGenerationRootNamespace}.Models.Abstractions.") && typeBase.Namespace == RootNamespace)
+            || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
         ));
 
     protected virtual string[] GetModelAbstractBaseTyped() => Array.Empty<string>();
@@ -249,6 +249,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", Enumerable.Empty<Metadata>());
         }
+        yield return new Pipelines.NamespaceMapping($"{CodeGenerationRootNamespace}.Models", CoreNamespace, Enumerable.Empty<Metadata>());
     }
 
     private Pipelines.TypenameMapping[] CreateTypenameMappings()

@@ -29,7 +29,7 @@ public class AddPropertiesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
                 .WithHasGetter(p.GetGetMethod() is not null)
                 .WithHasSetter(p.GetSetMethod() is not null)
                 .WithHasInitializer(p.IsInitOnly())
-                .WithParentTypeFullName(p.DeclaringType.GetParentTypeFullName())
+                .WithParentTypeFullName(context.Context.MapTypeName(p.DeclaringType.GetParentTypeFullName()))
                 .WithIsNullable(p.IsNullable())
                 .WithIsValueType(p.PropertyType.IsValueType())
                 .WithVisibility(Array.Exists(p.GetAccessors(), m => m.IsPublic).ToVisibility())
