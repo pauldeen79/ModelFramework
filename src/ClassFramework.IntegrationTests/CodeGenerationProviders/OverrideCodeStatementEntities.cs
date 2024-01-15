@@ -8,6 +8,7 @@ public class OverrideCodeStatementEntities : TestCodeGenerationProviderBase
 
     public override string Path => "ClassFramework.Domain.POC/CodeStatements";
 
+    protected override bool EnableEntityInheritance => true;
     protected override Class? BaseClass => CreateBaseclass(typeof(ICodeStatementBase), "ClassFramework.Domain");
 
     public override IEnumerable<TypeBase> Model

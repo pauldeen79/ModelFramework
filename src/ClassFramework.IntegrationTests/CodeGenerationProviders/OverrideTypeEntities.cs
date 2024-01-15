@@ -8,6 +8,7 @@ public class OverrideTypeEntities : TestCodeGenerationProviderBase
 
     public override string Path => "ClassFramework.Domain.POC/Types";
 
+    protected override bool EnableEntityInheritance => true;
     protected override Class? BaseClass => CreateBaseclass(typeof(ITypeBase), "ClassFramework.Domain");
 
     public override IEnumerable<TypeBase> Model
