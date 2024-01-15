@@ -13,14 +13,12 @@ public class AddPropertiesFeature : IPipelineFeature<InterfaceBuilder, Interface
         context = context.IsNotNull(nameof(context));
 
         var properties = context.Context.SourceModel
-                .Properties
-                .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                .ToArray();
+            .Properties
+            .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
+            .ToArray();
 
         context.Model.AddProperties(
-            properties
-            .Where(property => string.IsNullOrEmpty(property.ParentTypeFullName) || property.ParentTypeFullName.GetClassName().In(context.Context.SourceModel.Name, $"I{context.Context.SourceModel.Name}"))
-            .Select
+            properties.Select
             (
                 property => new PropertyBuilder()
                     .WithName(property.Name)

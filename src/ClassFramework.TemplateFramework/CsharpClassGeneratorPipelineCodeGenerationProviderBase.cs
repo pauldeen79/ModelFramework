@@ -69,7 +69,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         => parentNameContainer is not null
         && typeBase is not null
         && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
-            || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == /*nameContainer.Name*/ (parentNameContainer as INameContainer)?.Name))
+            || (BaseClass is not null && !BaseClass.Properties.Any(x => x.Name == (parentNameContainer as INameContainer)?.Name))
             || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
             || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
             || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
@@ -188,12 +188,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(type);
         Guard.IsNotNull(@namespace);
 
-        var reflectionSettings = new Pipelines.Reflection.PipelineSettings
-        (
-            typeSettings: new Pipelines.Reflection.PipelineTypeSettings(CreateNamespaceMappings(), CreateTypenameMappings()),
-            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(allowGenerationWithoutProperties: true)
-            //inheritanceSettings: new Pipelines.Reflection.PipelineInheritanceSettings(enableInheritance: true, isAbstract: true /*, inheritanceComparisonDelegate: InheritanceComparisonDelegate*/)
-        );
+        var reflectionSettings = CreateReflectionPipelineSettings();
         var typeBase = _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture)).GetValueOrThrow().Build();
 
         var builder = new ClassBuilder();
@@ -213,19 +208,19 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 true,
                 true,
                 null, //BaseClass,
-                null /*InheritanceComparisonDelegate*/),
+                (parentNameContainer, typeBase)
+                    => parentNameContainer is not null
+                    && typeBase is not null
+                    && (string.IsNullOrEmpty(parentNameContainer.ParentTypeFullName)
+                        || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
+                        || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
+                        || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
+                    )),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
                 typenameMappings: CreateTypenameMappings(),
                 namespaceMappings: CreateNamespaceMappings())
-            //constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
-            //    validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
-            //    originalValidateArguments: ValidateArgumentsInConstructor,
-            //    collectionTypeName: RecordConcreteCollectionType.WithoutGenerics()),
-            //nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
-            //    addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
-            //    useExceptionThrowIfNull: UseExceptionThrowIfNull)
             );
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
         return builder.BuildTyped();
@@ -287,6 +282,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         => new(
             nameSettings: new Pipelines.Interface.PipelineNameSettings(
                 namespaceFormatString: interfacesNamespace),
+            inheritanceSettings: new Pipelines.Interface.PipelineInheritanceSettings(
+                EnableEntityInheritance,
+                IsAbstract,
+                BaseClass,
+                InheritanceComparisonDelegate),
             typeSettings: new Pipelines.Interface.PipelineTypeSettings(
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 typenameMappings: CreateTypenameMappings(),

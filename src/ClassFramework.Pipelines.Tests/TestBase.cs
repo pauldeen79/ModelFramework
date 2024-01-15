@@ -272,9 +272,12 @@ public abstract class TestBase : IDisposable
         bool copyAttributes = false,
         bool copyInterfaces = false,
         bool allowGenerationWithoutProperties = false,
+        bool enableEntityInheritance = false,
+        bool isAbstract = false,
         string namespaceFormatString = "{Namespace}",
         string nameFormatString = "{Class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
+        Class? baseClass = null,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
@@ -286,6 +289,10 @@ public abstract class TestBase : IDisposable
             nameSettings: new Pipelines.Interface.PipelineNameSettings(
                 namespaceFormatString,
                 nameFormatString),
+            inheritanceSettings: new Pipelines.Interface.PipelineInheritanceSettings(
+                enableInheritance: enableEntityInheritance,
+                isAbstract: isAbstract,
+                baseClass: baseClass),
             typeSettings: new Pipelines.Interface.PipelineTypeSettings(
                 newCollectionTypeName,
                 namespaceMappings,
