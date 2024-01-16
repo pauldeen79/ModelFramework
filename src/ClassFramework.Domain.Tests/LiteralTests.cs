@@ -5,7 +5,7 @@
 public class LiteralTests
 {
     [Fact]
-    public void Constucts_Correclty_With_OriginalValue()
+    public void Constructs_Correclty_With_OriginalValue()
     {
         // Act
         var sut = new Literal("value", "original value");
@@ -16,7 +16,7 @@ public class LiteralTests
     }
 
     [Fact]
-    public void Constucts_Correclty_Without_OriginalValue()
+    public void Constructs_Correclty_Without_OriginalValue()
     {
         // Act
         var sut = new Literal("value", null);
