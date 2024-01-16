@@ -44,12 +44,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract Type RecordConcreteCollectionType { get; }
 
     protected virtual string EnvironmentVersion => string.Empty;
-    protected virtual string RootNamespace => /*InheritFromInterfaces
-        ? $"{ProjectName}.Abstractions"
-        : */$"{ProjectName}.Domain";
+    protected virtual string RootNamespace => $"{ProjectName}.Domain";
     protected virtual string CodeGenerationRootNamespace => $"{ProjectName}.CodeGeneration";
     protected virtual string CoreNamespace => $"{ProjectName}.Core";
-    //protected virtual bool InheritFromInterfaces => false;
     protected virtual bool CopyAttributes => false;
     protected virtual bool CopyInterfaces => false;
     protected virtual bool AddNullChecks => true;
@@ -345,10 +342,20 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         var builder = new ClassBuilder();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
                 .With(FixImmutableClassProperties)
-                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: AddNullChecks ? true : ValidateArgumentsInConstructor == ArgumentValidationType.None ? true : null), CultureInfo.InvariantCulture))
+                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
+    }
+
+    private bool? GetOverrideAddNullChecks()
+    {
+        if (AddNullChecks || ValidateArgumentsInConstructor == ArgumentValidationType.None)
+        {
+            return true;
+        }
+
+        return null;
     }
 
     private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace)
