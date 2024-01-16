@@ -312,9 +312,28 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private Pipelines.TypenameMapping[] CreateTypenameMappings()
         => GetType().Assembly.GetTypes()
-            .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && x.FullName is not null)
-            .Select(x => new Pipelines.TypenameMapping(x.FullName!, $"{CoreNamespace}.{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()))
+            .Where(x => x.IsInterface
+                && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
+                && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
+                && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
+                && x.FullName is not null)
+            .Select(x => new Pipelines.TypenameMapping(x.FullName!, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()))
             .ToArray();
+
+    private string ReplaceStart(string fullNamespace, string baseNamespace)
+    {
+        if (fullNamespace.Length == 0)
+        {
+            return fullNamespace;
+        }
+
+        if (fullNamespace.StartsWith($"{baseNamespace}."))
+        {
+            return string.Concat(fullNamespace.AsSpan(baseNamespace.Length + 1), ".");
+        }
+
+        return string.Empty;
+    }
 
     private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings(string entitiesNamespace)
         => new(
