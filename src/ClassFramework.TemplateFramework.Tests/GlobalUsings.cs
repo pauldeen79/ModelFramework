@@ -19,6 +19,7 @@ global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.Pipelines.Interface;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.TemplateFramework.Builders;
+global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using ClassFramework.TemplateFramework.Models;
 global using ClassFramework.TemplateFramework.ViewModels;

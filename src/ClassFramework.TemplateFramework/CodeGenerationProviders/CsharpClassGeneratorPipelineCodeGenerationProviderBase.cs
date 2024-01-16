@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.TemplateFramework;
+﻿namespace ClassFramework.TemplateFramework.CodeGenerationProviders;
 
 public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : CsharpClassGeneratorCodeGenerationProviderBase
 {
