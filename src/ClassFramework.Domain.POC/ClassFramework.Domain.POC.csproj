@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="Builders\" />
     <Folder Include="CodeStatements\" />
     <Folder Include="Domains\" />
     <Folder Include="Types\" />

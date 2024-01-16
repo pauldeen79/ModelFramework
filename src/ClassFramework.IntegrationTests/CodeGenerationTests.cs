@@ -45,7 +45,7 @@ public class CodeGenerationTests
             .ToArray();
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var basePath = Path.Combine(Directory.GetCurrentDirectory(), @"../../../../");
-        var codeGenerationSettings = new CodeGenerationSettings(basePath, "GeneratedCode.cs", dryRun: true);
+        var codeGenerationSettings = new CodeGenerationSettings(basePath, "GeneratedCode.cs", dryRun: false);
 
         // Act
         foreach (var instance in instances)
