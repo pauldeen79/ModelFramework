@@ -72,7 +72,7 @@ public static class PipelineContextExtensions
                             property.Metadata
                                 .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
                                 .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName)
-                        ).FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))
+                        ).FixCollectionTypeName(/*context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(*/typeof(IEnumerable<>).WithoutGenerics()/*)*/)
                     )
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
