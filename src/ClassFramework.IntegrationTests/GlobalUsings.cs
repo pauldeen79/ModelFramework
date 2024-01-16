@@ -15,6 +15,7 @@ global using ClassFramework.IntegrationTests.Models;
 global using ClassFramework.IntegrationTests.Models.Domains;
 global using ClassFramework.IntegrationTests.Models.Types;
 global using ClassFramework.Pipelines.Builder;
+global using ClassFramework.Pipelines.Domains;
 global using ClassFramework.Pipelines.Entity;
 global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.Pipelines.Interface;
