@@ -13,23 +13,23 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is not PropertyContext PropertyContext)
+        if (context is not PropertyContext propertyContext)
         {
             return Result.Continue<string>();
         }
 
-        var typeName = PropertyContext.TypeName.FixTypeName();
+        var typeName = propertyContext.TypeName.FixTypeName();
 
         return value switch
         {
-            nameof(Property.Name) => Result.Success(PropertyContext.SourceModel.Name),
-            $"{nameof(Property.Name)}Lower" => Result.Success(PropertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}Upper" => Result.Success(PropertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}Pascal" => Result.Success(PropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success(PropertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
-            "BuilderMemberName" => Result.Success(PropertyContext.SourceModel.GetBuilderMemberName(PropertyContext.Settings.AddNullChecks, PropertyContext.Settings.EnableNullableReferenceTypes, PropertyContext.Settings.ValidateArguments, PropertyContext.FormatProvider.ToCultureInfo())),
-            "EntityMemberName" => Result.Success(PropertyContext.SourceModel.GetEntityMemberName(PropertyContext.Settings.AddBackingFields, PropertyContext.FormatProvider.ToCultureInfo())),
-            "InitializationExpression" => Result.Success(GetInitializationExpression(PropertyContext.SourceModel, typeName, PropertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo())),
+            nameof(Property.Name) => Result.Success(propertyContext.SourceModel.Name),
+            $"{nameof(Property.Name)}Lower" => Result.Success(propertyContext.SourceModel.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}Upper" => Result.Success(propertyContext.SourceModel.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}Pascal" => Result.Success(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"{nameof(Property.Name)}PascalCsharpFriendlyName" => Result.Success(propertyContext.SourceModel.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName()),
+            "BuilderMemberName" => Result.Success(propertyContext.SourceModel.GetBuilderMemberName(propertyContext.Settings.AddNullChecks, propertyContext.Settings.EnableNullableReferenceTypes, propertyContext.Settings.ValidateArguments, propertyContext.FormatProvider.ToCultureInfo())),
+            "EntityMemberName" => Result.Success(propertyContext.SourceModel.GetEntityMemberName(propertyContext.Settings.AddBackingFields, propertyContext.FormatProvider.ToCultureInfo())),
+            "InitializationExpression" => Result.Success(GetInitializationExpression(propertyContext.SourceModel, typeName, propertyContext.Settings.CollectionTypeName, formatProvider.ToCultureInfo(), propertyContext.Settings.AddNullChecks, propertyContext.Settings.ValidateArguments, propertyContext.Settings.EnableNullableReferenceTypes)),
             nameof(Property.TypeName) => Result.Success(typeName),
             $"{nameof(Property.TypeName)}.GenericArguments" => Result.Success(typeName.GetGenericArguments()),
             $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),
@@ -37,29 +37,32 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
             $"{nameof(Property.TypeName)}.Namespace" => Result.Success(typeName.GetNamespaceWithDefault()),
             $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
-            "DefaultValue" => formattableStringParser.Parse(PropertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, PropertyContext.Settings.EnableNullableReferenceTypes, typeName), formatProvider, context),
+            "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, propertyContext.Settings.EnableNullableReferenceTypes, typeName), formatProvider, context),
             _ => Result.Continue<string>()
         };
     }
 
-    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, CultureInfo cultureInfo)
+    private static string GetInitializationExpression(Property property, string typeName, string collectionTypeName, CultureInfo cultureInfo, bool addNullChecks, ArgumentValidationType validateArguments, bool enableNullableReferenceTypes)
     {
         collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
 
         return typeName.IsCollectionTypeName()
             && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
-                ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName)
+                ? GetCollectionFormatStringForInitialization(property, typeName, cultureInfo, collectionTypeName, addNullChecks, validateArguments, enableNullableReferenceTypes)
                 : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
     }
 
-    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName)
+    private static string GetCollectionFormatStringForInitialization(Property property, string typeName, CultureInfo cultureInfo, string collectionTypeName, bool addNullChecks, ArgumentValidationType validateArguments, bool enableNullableReferenceTypes)
     {
         collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
 
         var genericTypeName = typeName.GetGenericArguments();
+        var nullSuffix = enableNullableReferenceTypes && !property.IsNullable
+            ? "!"
+            : string.Empty;
 
-        return property.IsNullable
-            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
+        return property.IsNullable || (addNullChecks && validateArguments != ArgumentValidationType.None)
+            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
             : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
     }
 }
