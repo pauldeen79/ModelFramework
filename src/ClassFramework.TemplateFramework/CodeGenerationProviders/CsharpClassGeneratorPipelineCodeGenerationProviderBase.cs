@@ -217,7 +217,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
                 typenameMappings: CreateTypenameMappings(),
-                namespaceMappings: CreateNamespaceMappings())
+                namespaceMappings: CreateNamespaceMappings()),
+            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(ValidateArgumentsInConstructor),
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(AddNullChecks, UseExceptionThrowIfNull)
             );
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
         return builder.BuildTyped();
