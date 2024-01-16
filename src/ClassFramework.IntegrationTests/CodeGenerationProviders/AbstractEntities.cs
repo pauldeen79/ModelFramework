@@ -10,7 +10,6 @@ public class AbstractEntities : TestCodeGenerationProviderBase
 
     public override string Path => "ClassFramework.Domain.POC";
 
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
     protected override bool AddNullChecks => false; // not needed for abstract entities, because each derived class will do its own validation
 
     protected override bool EnableEntityInheritance => true;
