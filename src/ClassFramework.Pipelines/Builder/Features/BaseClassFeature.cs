@@ -91,7 +91,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
 
         return instance.GetCustomValueForInheritedClass
         (
-            context.Context.Settings.EntitySettings,
+            context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance,
             baseClassContainer =>
             {
                 var baseClassResult = GetBaseClassName(context, baseClassContainer);

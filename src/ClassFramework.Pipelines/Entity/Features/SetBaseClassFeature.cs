@@ -14,7 +14,7 @@ public class SetBaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, Entity
 
         if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
         {
-            baseClassContainerBuilder.WithBaseClass(GetEntityBaseClass(context.Context.SourceModel, context));
+            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.InheritanceSettings.EnableInheritance, context.Context.Settings.InheritanceSettings.BaseClass));
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
@@ -22,10 +22,4 @@ public class SetBaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, Entity
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new SetBaseClassFeatureBuilder();
-
-    private string GetEntityBaseClass(IType instance, PipelineContext<IConcreteTypeBuilder, EntityContext> context)
-        => context.Context.Settings.InheritanceSettings.EnableInheritance
-        && context.Context.Settings.InheritanceSettings.BaseClass is not null
-            ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()
-            : instance.GetCustomValueForInheritedClass(context.Context.Settings, cls => Result.Success(cls.BaseClass!)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
 }

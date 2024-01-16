@@ -9,7 +9,7 @@ public class AbstractEntities : TestCodeGenerationProviderBase
     public override IEnumerable<TypeBase> Model => GetImmutableClasses(GetAbstractModels(), "ClassFramework.Domain");
 
     public override string Path => "ClassFramework.Domain.POC";
-    
+
     protected override bool EnableEntityInheritance => true;
     protected override bool IsAbstract => true;
 }

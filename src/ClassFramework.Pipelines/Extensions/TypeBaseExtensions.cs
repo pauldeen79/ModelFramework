@@ -32,13 +32,12 @@ public static class TypeBaseExtensions
 
     public static Result<string> GetCustomValueForInheritedClass(
         this IType instance,
-        Entity.PipelineSettings settings,
+        bool enableInheritance,
         Func<IBaseClassContainer, Result<string>> customValue)
     {
-        settings = settings.IsNotNull(nameof(settings));
         customValue = customValue.IsNotNull(nameof(customValue));
 
-        if (!settings.InheritanceSettings.EnableInheritance)
+        if (!enableInheritance)
         {
             // Inheritance is not enabled
             return Result.Success(string.Empty);
@@ -154,4 +153,10 @@ public static class TypeBaseExtensions
 
         return properties.Where(x => instance.IsMemberValidForBuilderClass(x, settings));
     }
+
+    public static string GetEntityBaseClass(this IType instance, bool enableInheritance, Class? baseClass)
+        => enableInheritance
+        && baseClass is not null
+            ? baseClass.GetFullName()
+            : instance.GetCustomValueForInheritedClass(enableInheritance, cls => Result.Success(cls.BaseClass!)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
 }

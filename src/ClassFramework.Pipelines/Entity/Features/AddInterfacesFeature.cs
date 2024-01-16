@@ -17,8 +17,11 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
+        var baseClass = context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.InheritanceSettings.EnableInheritance, context.Context.Settings.InheritanceSettings.BaseClass);
+
         context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
             .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Where(x => x != baseClass)
             .Select(x => context.Context.MapTypeName(x.FixTypeName())));
 
         return Result.Continue<IConcreteTypeBuilder>();
