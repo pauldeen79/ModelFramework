@@ -11,6 +11,7 @@ global using ClassFramework.Domain.CodeStatements;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using ClassFramework.Domain.Types;
+global using ClassFramework.Pipelines;
 global using ClassFramework.Pipelines.Builder;
 global using ClassFramework.Pipelines.Domains;
 global using ClassFramework.Pipelines.Entity;

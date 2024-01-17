@@ -93,7 +93,7 @@ public static class PropertyExtensions
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{Class.Name}Builder");
+            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{Class.Name}");
             var newFullName = $"{ns}.{newTypeName}";
             if (property.TypeName.IsCollectionTypeName())
             {
