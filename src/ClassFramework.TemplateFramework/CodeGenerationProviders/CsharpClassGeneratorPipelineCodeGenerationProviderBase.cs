@@ -164,7 +164,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             var entityBuilder = new ClassBuilder();
             _ = _entityPipeline.Process(entityBuilder, new EntityContext(x.ToBuilder()
                     .With(FixImmutableClassProperties)
-                    .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), addMappings: false), CultureInfo.InvariantCulture))
+                    .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
             return CreateBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
@@ -263,8 +263,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
-        bool? overrideAddNullChecks = null,
-        bool addMappings = true)
+        bool? overrideAddNullChecks = null)
         => new(
             generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
                 addSetters: AddSetters,
@@ -285,8 +284,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
-                typenameMappings: addMappings ? CreateTypenameMappings() : Enumerable.Empty<TypenameMapping>(),
-                namespaceMappings: addMappings ? CreateNamespaceMappings() : Enumerable.Empty<NamespaceMapping>()),
+                typenameMappings: CreateTypenameMappings(),
+                namespaceMappings: CreateNamespaceMappings()),
             constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
@@ -319,15 +318,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private IEnumerable<NamespaceMapping>? CreateNamespaceMappings()
     {
-        yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models", CoreNamespace, new[] { new Metadata($"{CoreNamespace}.Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
-        yield return new NamespaceMapping(CoreNamespace, CoreNamespace, new[] { new Metadata($"{CoreNamespace}.Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName), new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression), new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression) });
+        // From models to domain entities
+        yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models", CoreNamespace, Enumerable.Empty<Metadata>());
         yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Domains", $"{CoreNamespace}.Domains", Enumerable.Empty<Metadata>());
         yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{CoreNamespace}.Abstractions", Enumerable.Empty<Metadata>());
+
+        // From domain entities to builders
+        yield return new NamespaceMapping(CoreNamespace, CoreNamespace, new[] { new Metadata($"{CoreNamespace}.Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName), new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression), new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression) });
         yield return new NamespaceMapping($"{CoreNamespace}.Abstractions", $"{CoreNamespace}.Abstractions", new[] { new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("I{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
 
         foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
         {
-            yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", new[] { new Metadata($"{CoreNamespace}.Builders.{entityClassName}s", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
+            yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", Enumerable.Empty<Metadata>());
             yield return new NamespaceMapping($"{CoreNamespace}.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", new[] { new Metadata($"{CoreNamespace}.Builders.{entityClassName}s", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName), new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression), new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression) });
         }
     }
@@ -339,7 +341,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
                 && x.FullName is not null)
-            .Select(x => new TypenameMapping(x.FullName!, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", new[] { new Metadata($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) }))
+            .SelectMany(x =>
+                new[]
+                {
+                    new TypenameMapping(x.FullName!, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()),
+                    new TypenameMapping($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", new[] { new Metadata($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) })
+                })
             .ToArray();
 
     private string ReplaceStart(string fullNamespace, string baseNamespace)
