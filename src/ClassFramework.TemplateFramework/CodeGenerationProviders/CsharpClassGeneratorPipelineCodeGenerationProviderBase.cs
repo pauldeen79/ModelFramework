@@ -320,6 +320,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private IEnumerable<NamespaceMapping>? CreateNamespaceMappings()
     {
         yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models", CoreNamespace, new[] { new Metadata($"{CoreNamespace}.Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
+        yield return new NamespaceMapping(CoreNamespace, CoreNamespace, new[] { new Metadata($"{CoreNamespace}.Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName), new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression), new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression) });
         yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Domains", $"{CoreNamespace}.Domains", Enumerable.Empty<Metadata>());
         yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{CoreNamespace}.Abstractions", Enumerable.Empty<Metadata>());
         yield return new NamespaceMapping($"{CoreNamespace}.Abstractions", $"{CoreNamespace}.Abstractions", new[] { new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("I{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
@@ -327,6 +328,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
         {
             yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", new[] { new Metadata($"{CoreNamespace}.Builders.{entityClassName}s", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
+            yield return new NamespaceMapping($"{CoreNamespace}.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", new[] { new Metadata($"{CoreNamespace}.Builders.{entityClassName}s", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName), new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression), new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression) });
         }
     }
 
