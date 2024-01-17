@@ -335,7 +335,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
                 && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Domains"
                 && x.FullName is not null)
-            .Select(x => new TypenameMapping(x.FullName!, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()))
+            .Select(x => new TypenameMapping(x.FullName!, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}{x.GetEntityClassName()}", new[] { new Metadata($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) }))
             .ToArray();
 
     private string ReplaceStart(string fullNamespace, string baseNamespace)
