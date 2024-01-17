@@ -73,6 +73,11 @@ public static class MetadataNames
     public const string CustomBuilderNamespace = "ClassFramework.Builder.Namespace";
 
     /// <summary>
+    /// Metadata name for defining a custom builder name. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderName = "ClassFramework.Builder.Name";
+
+    /// <summary>
     /// Metadata name for defining a custom entity namespace. Note that the value will be converted to string.
     /// </summary>
     public const string CustomEntityNamespace = "ClassFramework.Entity.Namespace";

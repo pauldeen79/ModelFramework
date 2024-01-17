@@ -141,7 +141,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context: default(PipelineContext<TypeBaseBuilder, BuilderContext>)!, formattableStringParser, sut.TypeName))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(context: default(PipelineContext<TypeBaseBuilder, BuilderContext>)!, formattableStringParser))
                .Should().Throw<ArgumentNullException>().WithParameterName("context");
         }
 
@@ -153,21 +153,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture));
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, formattableStringParser: null!, sut.TypeName))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
-        }
-
-        [Fact]
-        public void Throws_On_Null_TypeName()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture));
-            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
-
-            // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, formattableStringParser: formattableStringParser, typeName: null!))
-               .Should().Throw<ArgumentNullException>().WithParameterName("typeName");
         }
     }
 }

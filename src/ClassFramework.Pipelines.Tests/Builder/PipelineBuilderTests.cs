@@ -263,8 +263,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "if (source is null) throw new System.ArgumentNullException(nameof(source));",
-                "_property7 = new System.Collections.Generic.List<MyNamespace.MyClass>();",
-                "Property8 = new System.Collections.Generic.List<MyNamespace.MyClass>();",
+                "_property7 = new System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>();",
+                "Property8 = new System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
                 "_property3 = source.Property3;",
@@ -285,8 +285,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.String",
-                "MyNamespace.MyClass",
-                "System.Collections.Generic.List<MyNamespace.MyClass>"
+                "MyNamespace.Builders.SomeClassBuilder",
+                "System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>"
             );
             result.Value.Fields.Select(x => x.IsNullable).Should().AllBeEquivalentTo(false);
 
@@ -307,10 +307,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "System.Nullable<System.Int32>",
                 "System.String",
                 "System.String",
-                "MyNamespace.MyClass",
-                "MyNamespace.MyClass",
-                "System.Collections.Generic.List<MyNamespace.MyClass>",
-                "System.Collections.Generic.List<MyNamespace.MyClass>"
+                "MyNamespace.Builders.SomeClassBuilder",
+                "MyNamespace.Builders.SomeClassBuilder",
+                "System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>",
+                "System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>"
             );
             result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (

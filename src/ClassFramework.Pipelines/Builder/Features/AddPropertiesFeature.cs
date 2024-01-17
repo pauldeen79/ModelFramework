@@ -69,14 +69,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
     private Result<string> GetTypeName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
-        => _formattableStringParser.Parse
-        (
-            property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
-            context.Context.FormatProvider,
-            CreateParentChildContext(context, property)
-        );
+        => property.GetBuilderArgumentType(context, _formattableStringParser);
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
         Property property,
@@ -97,7 +90,4 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)};");
         }
     }
-
-    private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
-        => new(context, property, context.Context.Settings);
 }

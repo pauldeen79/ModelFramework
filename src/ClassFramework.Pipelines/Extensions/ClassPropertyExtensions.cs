@@ -65,19 +65,12 @@ public static class PropertyExtensions
     public static Result<string> GetBuilderConstructorInitializer<TModel>(
         this Property property,
         PipelineContext<TModel, BuilderContext> context,
-        IFormattableStringParser formattableStringParser,
-        string typeName)
+        IFormattableStringParser formattableStringParser)
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));
-        typeName = typeName.IsNotNull(nameof(typeName));
 
-        var builderArgumentTypeResult = formattableStringParser.Parse
-        (
-            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(typeName)),
-            context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
-        );
+        var builderArgumentTypeResult = GetBuilderArgumentType(property, context, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -88,6 +81,43 @@ public static class PropertyExtensions
             .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
             .GetCollectionInitializeStatement()
             .GetCsharpFriendlyTypeName());
+    }
+
+    public static Result<string> GetBuilderArgumentType<TModel>(this Property property, PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    {
+        context = context.IsNotNull(nameof(context));
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings);
+        var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
+
+        if (!string.IsNullOrEmpty(ns))
+        {
+            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{Class.Name}Builder");
+            var newFullName = $"{ns}.{newTypeName}";
+            if (property.TypeName.IsCollectionTypeName())
+            {
+                var idx = property.TypeName.IndexOf('<');
+                if (idx > -1)
+                {
+                    newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName}>";
+                }
+            }
+
+            return formattableStringParser.Parse
+            (
+                newFullName,
+                context.Context.FormatProvider,
+                new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
+            );
+        }
+
+        return formattableStringParser.Parse
+        (
+            metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(property.TypeName)),
+            context.Context.FormatProvider,
+            new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
+        );
     }
 
     public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)

@@ -116,14 +116,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
             && x.HasBackingFieldOnBuilder(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments)))
         {
-            var builderArgumentTypeResult = formattableStringParser.Parse
-            (
-                property.Metadata
-                    .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                    .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
-                context.Context.FormatProvider,
-                context
-            );
+            var builderArgumentTypeResult = property.GetBuilderArgumentType(context, formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {
