@@ -93,14 +93,14 @@ public static class PropertyExtensions
 
         if (!string.IsNullOrEmpty(ns))
         {
-            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{Class.Name}");
+            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{TypeName}");
             var newFullName = $"{ns}.{newTypeName}";
             if (property.TypeName.IsCollectionTypeName())
             {
                 var idx = property.TypeName.IndexOf('<');
                 if (idx > -1)
                 {
-                    newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName}>";
+                    newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}")}>";
                 }
             }
 

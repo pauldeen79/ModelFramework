@@ -70,7 +70,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             result.IsSuccessful().Should().BeTrue();
             result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("ISomeClass");
+            result.Value!.Name.Should().Be("IMyClass");
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEmpty();
 

@@ -41,7 +41,7 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
                 if (!string.IsNullOrEmpty(ns))
                 {
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{Class.Name}");
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{TypeName}");
                     var newFullName = $"{ns}.{newTypeName}";
 
                     return _formattableStringParser.Parse

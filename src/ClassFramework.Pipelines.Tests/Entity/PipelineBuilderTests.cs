@@ -89,7 +89,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.IsSuccessful().Should().BeTrue();
             result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("SomeClass");
+            result.Value!.Name.Should().Be("MyClass");
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEmpty();
 
@@ -182,7 +182,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.IsSuccessful().Should().BeTrue();
             result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("SomeClass");
+            result.Value!.Name.Should().Be("MyClass");
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
 

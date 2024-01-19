@@ -248,13 +248,13 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.IsSuccessful().Should().BeTrue();
             result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("SomeClassBuilder");
+            result.Value!.Name.Should().Be("MyClassBuilder");
             result.Value.Namespace.Should().Be("MyNamespace.Builders");
 
             result.Value.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var buildMethod = result.Value.Methods.Single(x => x.Name == "Build");
             buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            var expected = "return new MyNamespace.SomeClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build(), Property6 = Property6.Build(), Property7 = Property7?.Select(x => x.Build()), Property8 = Property8.Select(x => x.Build()) };";
+            var expected = "return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build(), Property6 = Property6.Build(), Property7 = Property7?.Select(x => x.Build()), Property8 = Property8.Select(x => x.Build()) };";
             buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo(expected);
 
             result.Value!.Constructors.Where(x => x.Parameters.Count == 1).Should().ContainSingle();
@@ -263,8 +263,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "if (source is null) throw new System.ArgumentNullException(nameof(source));",
-                "_property7 = new System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>();",
-                "Property8 = new System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>();",
+                "_property7 = new System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>();",
+                "Property8 = new System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
                 "_property3 = source.Property3;",
@@ -285,8 +285,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.String",
-                "MyNamespace.Builders.SomeClassBuilder",
-                "System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>"
+                "MyNamespace.Builders.MyClassBuilder",
+                "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>"
             );
             result.Value.Fields.Select(x => x.IsNullable).Should().AllBeEquivalentTo(false);
 
@@ -307,10 +307,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "System.Nullable<System.Int32>",
                 "System.String",
                 "System.String",
-                "MyNamespace.Builders.SomeClassBuilder",
-                "MyNamespace.Builders.SomeClassBuilder",
-                "System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>",
-                "System.Collections.Generic.List<MyNamespace.Builders.SomeClassBuilder>"
+                "MyNamespace.Builders.MyClassBuilder",
+                "MyNamespace.Builders.MyClassBuilder",
+                "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>",
+                "System.Collections.Generic.List<MyNamespace.Builders.MyClassBuilder>"
             );
             result.Value.Properties.Select(x => x.IsNullable).Should().BeEquivalentTo
             (
