@@ -325,7 +325,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         // From domain entities to builders
         yield return new NamespaceMapping(CoreNamespace, CoreNamespace, new[] { new Metadata($"{CoreNamespace}.Builders", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName), new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression), new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression) });
-        yield return new NamespaceMapping($"{CoreNamespace}.Abstractions", $"{CoreNamespace}.Abstractions", new[] { new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderNamespace), new Metadata("I{Class.Name}Builder", Pipelines.MetadataNames.CustomBuilderName) });
 
         foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
         {
@@ -397,6 +396,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return builder.Build();
     }
+
     private bool? GetOverrideAddNullChecks()
     {
         if (AddNullChecks || ValidateArgumentsInConstructor == ArgumentValidationType.None)
