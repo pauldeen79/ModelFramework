@@ -36,12 +36,12 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             .Select(x =>
             {
                 var metadata = Enumerable.Empty<Metadata>().WithMappingMetadata(x, context.Context.Settings.TypeSettings);
-                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
-                var property = new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build();
+                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
 
                 if (!string.IsNullOrEmpty(ns))
                 {
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{TypeName}");
+                    var property = new PropertyBuilder().WithName("Dummy").WithTypeName(x).Build();
+                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceName, "{TypeName}");
                     var newFullName = $"{ns}.{newTypeName}";
 
                     return _formattableStringParser.Parse
