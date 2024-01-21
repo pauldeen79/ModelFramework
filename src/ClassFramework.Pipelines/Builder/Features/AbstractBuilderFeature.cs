@@ -26,7 +26,7 @@ public class AbstractBuilderFeature : IPipelineFeature<IConcreteTypeBuilder, Bui
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsBuilderForAbstractEntity)
+        if (context.Context.IsBuilderForAbstractEntity /*&& context.Context.IsAbstractBuilder*/)
         {
             var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context);
             if (!nameResult.IsSuccessful())

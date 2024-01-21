@@ -35,7 +35,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithGenerateMultipleFiles()
             .WithCreateCodeGenerationHeader()
             .WithEnableNullableContext()
-            .WithFilenameSuffix(".template.generated")
+            .WithFilenameSuffix(FilenameSuffix)
             .WithEnvironmentVersion(EnvironmentVersion)
             .Build();
 
@@ -62,6 +62,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool IsAbstract => false;
     protected virtual string BaseClassBuilderNamespace => string.Empty;
     protected virtual bool AllowGenerationWithoutProperties => true;
+    protected virtual string SetMethodNameFormatString => "With{Name}";
+    protected virtual string AddMethodNameFormatString => "Add{Name}";
+    protected virtual string FilenameSuffix => ".template.generated";
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
         && typeBase is not null
@@ -168,6 +171,24 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .GetValueOrThrow();
 
             return CreateBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
+        }).ToArray();
+    }
+
+    protected TypeBase[] GetNonGenericBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(buildersNamespace);
+        Guard.IsNotNull(entitiesNamespace);
+
+        return models.Select(x =>
+        {
+            var entityBuilder = new ClassBuilder();
+            _ = _entityPipeline.Process(entityBuilder, new EntityContext(x.ToBuilder()
+                    .With(FixImmutableClassProperties)
+                    .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
+                .GetValueOrThrow();
+
+            return CreateNonGenericBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
         }).ToArray();
     }
 
@@ -393,7 +414,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 enableNullableReferenceTypes: true,
                 namespaceMappings: CreateNamespaceMappings(),
                 typenameMappings: CreateTypenameMappings()),
-            nameSettings: new Pipelines.Builder.PipelineNameSettings(builderNamespaceFormatString: buildersNamespace),
+            nameSettings: new Pipelines.Builder.PipelineNameSettings(
+                builderNamespaceFormatString: buildersNamespace,
+                setMethodNameFormatString: SetMethodNameFormatString,
+                addMethodNameFormatString: AddMethodNameFormatString),
             inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, BaseClass, BaseClassBuilderNamespace, InheritanceComparisonDelegate)
         );
 
@@ -415,6 +439,20 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .With(FixImmutableClassProperties)
                 .Build(), CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
+
+        return builder.Build();
+    }
+
+    private TypeBase CreateNonGenericBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
+    {
+        var builder = new ClassBuilder();
+        _ = _builderPipeline.Process(builder, new BuilderContext(typeBase.ToBuilder()
+                .With(FixImmutableClassProperties)
+                .Build(), CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ForAbstractBuilder(), CultureInfo.InvariantCulture))
+            .GetValueOrThrow()
+            //TODO: Make new pipeline for this, or make stuff configurable in either Settings or MetadataNames
+            .With(x => x.GenericTypeArguments.Clear())
+            .With(x => x.GenericTypeArgumentConstraints.Clear());
 
         return builder.Build();
     }
