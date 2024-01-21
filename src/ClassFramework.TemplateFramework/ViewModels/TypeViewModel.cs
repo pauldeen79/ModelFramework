@@ -103,6 +103,18 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
         }
     }
 
+    public string GenericTypeArguments
+        => GetModel().GenericTypeArguments.Count > 0
+            ? $"<{string.Join(", ", Model!.GenericTypeArguments)}>"
+            : string.Empty;
+
+    public string GenericTypeArgumentConstraints
+        => GetModel().GenericTypeArgumentConstraints.Count > 0
+            ? string.Concat(Environment.NewLine,
+                            "        ",
+                            string.Join(string.Concat(Environment.NewLine, "        "), Model!.GenericTypeArgumentConstraints))
+            : string.Empty;
+
     public string FilenamePrefix
         => string.IsNullOrEmpty(GetSettings().Path)
             ? string.Empty
