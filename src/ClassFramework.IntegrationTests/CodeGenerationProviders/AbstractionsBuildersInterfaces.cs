@@ -6,7 +6,7 @@ public class AbstractionsBuildersInterfaces : TestCodeGenerationProviderBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetInterfaces(GetBuilders(GetAbstractionsInterfaces(), "ClassFramework.Domain.Builders", "ClassFramework.Domain"), "ClassFramework.Domain.Builders.Abstractions");
+    public override IEnumerable<TypeBase> Model => GetBuilderInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Builders", "ClassFramework.Domain", "ClassFramework.Domain.Builders.Abstractions");
 
     public override string Path => "ClassFramework.Domain.POC/Builders/Abstractions";
 }

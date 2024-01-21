@@ -171,6 +171,27 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }).ToArray();
     }
 
+    protected TypeBase[] GetBuilderInterfaces(TypeBase[] models, string buildersNamespace, string entitiesNamespace, string interfacesNamespace)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(buildersNamespace);
+        Guard.IsNotNull(entitiesNamespace);
+        Guard.IsNotNull(interfacesNamespace);
+
+        return GetInterfaces(GetBuilders(models, buildersNamespace, entitiesNamespace)
+            //TODO: Make new pipeline for this, or make stuff configurable in either Settings or MetadataNames
+            .Select(x => x.ToBuilder()
+                .WithName($"I{x.Name}")
+                .Chain(y =>
+                {
+                    foreach (var property in y.Properties.Where(property => property.TypeName.IsCollectionTypeName()))
+                    {
+                        property.TypeName = $"{typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>";
+                    }
+                })
+                .Build()).ToArray(), interfacesNamespace);
+    }
+
     protected TypeBase[] GetCoreModels()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface && x.Namespace == $"{CodeGenerationRootNamespace}.Models" && !GetCustomBuilderTypes().Contains(x.GetEntityClassName()))
