@@ -153,7 +153,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(interfacesNamespace);
 
-        return models.Select(x => CreateInterface(x, interfacesNamespace)).ToArray();
+        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics())).ToArray();
     }
 
     protected TypeBase[] GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -199,18 +199,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(entitiesNamespace);
         Guard.IsNotNull(interfacesNamespace);
 
-        return GetInterfaces(GetBuilders(models, buildersNamespace, entitiesNamespace)
-            //TODO: Make new pipeline for this, or make stuff configurable in either Settings or MetadataNames
-            .Select(x => x.ToBuilder()
-                .WithName($"I{x.Name}")
-                .Chain(y =>
-                {
-                    foreach (var property in y.Properties.Where(property => property.TypeName.IsCollectionTypeName()))
-                    {
-                        property.TypeName = $"{typeof(List<>).WithoutGenerics()}<{property.TypeName.GetGenericArguments()}>";
-                    }
-                })
-                .Build()).ToArray(), interfacesNamespace);
+        return GetBuilders(models, buildersNamespace, entitiesNamespace)
+            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), "I{Class.Name}"))
+            .ToArray();
     }
 
     protected TypeBase[] GetCoreModels()
@@ -337,17 +328,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 useExceptionThrowIfNull: UseExceptionThrowIfNull)
             );
 
-    private Pipelines.Interface.PipelineSettings CreateInterfacePipelineSettings(string interfacesNamespace)
+    private Pipelines.Interface.PipelineSettings CreateInterfacePipelineSettings(string interfacesNamespace, string newCollectionTypeName, string nameFormatString = "{Class.Name}")
         => new(
             nameSettings: new Pipelines.Interface.PipelineNameSettings(
-                namespaceFormatString: interfacesNamespace),
+                namespaceFormatString: interfacesNamespace,
+                nameFormatString: nameFormatString),
             inheritanceSettings: new Pipelines.Interface.PipelineInheritanceSettings(
                 EnableEntityInheritance,
                 IsAbstract,
                 BaseClass,
                 InheritanceComparisonDelegate),
             typeSettings: new Pipelines.Interface.PipelineTypeSettings(
-                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
+                newCollectionTypeName: newCollectionTypeName,
                 typenameMappings: CreateTypenameMappings(),
                 namespaceMappings: CreateNamespaceMappings()),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
@@ -467,12 +459,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return null;
     }
 
-    private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace)
+    private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace, string newCollectionTypeName, string nameFormatString = "{Class.Name}")
     {
         var builder = new InterfaceBuilder();
         _ = _interfacePipeline.Process(builder, new InterfaceContext(typeBase.ToBuilder()
                 .With(FixImmutableClassProperties)
-                .Build(), CreateInterfacePipelineSettings(interfacesNamespace), CultureInfo.InvariantCulture))
+                .Build(), CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, nameFormatString), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
