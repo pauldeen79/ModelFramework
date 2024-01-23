@@ -47,6 +47,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
+                .WithParentTypeFullName(property.ParentTypeFullName)
                 .AddAttributes(property.Attributes
                     .Where(_ => context.Context.Settings.EntitySettings.CopySettings.CopyAttributes)
                     .Select(x => context.Context.MapAttribute(x).ToBuilder()))
