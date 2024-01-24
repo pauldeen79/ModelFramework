@@ -106,6 +106,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                     new ParameterBuilder()
                         .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
                         .WithTypeName(typeNameResult.Value!.FixTypeName().ConvertTypeNameToArray())
+                        .WithIsParamArray()
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
                 )
