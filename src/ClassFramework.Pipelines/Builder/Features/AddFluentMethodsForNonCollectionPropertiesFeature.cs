@@ -68,7 +68,11 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
             if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
             {
-                builder.AddStringCodeStatements(results.First(x => x.Name == "ArgumentNullCheck").LazyResult.Value.Value!);
+                var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").LazyResult.Value.Value!;
+                if (!string.IsNullOrEmpty(nullCheckStatement))
+                {
+                    builder.AddStringCodeStatements(nullCheckStatement);
+                }
             }
 
             builder.AddStringCodeStatements

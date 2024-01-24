@@ -123,7 +123,6 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "if (property1 is null) throw new System.ArgumentNullException(nameof(property1));",
                 "Property1 = property1;",
                 "return this;",
                 "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
