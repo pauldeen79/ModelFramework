@@ -167,7 +167,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             var entityBuilder = new ClassBuilder();
             _ = _entityPipeline.Process(entityBuilder, new EntityContext(x.ToBuilder()
                     .With(FixImmutableClassProperties)
-                    .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
+                    .Build(), CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
             return CreateBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
@@ -416,7 +416,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
         => new(
-            entitySettings: CreateEntityPipelineSettings(entitiesNamespace),
+            entitySettings: CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
             typeSettings: new Pipelines.Builder.PipelineTypeSettings(
                 newCollectionTypeName: typeof(List<>).WithoutGenerics(),
                 enableNullableReferenceTypes: true,
