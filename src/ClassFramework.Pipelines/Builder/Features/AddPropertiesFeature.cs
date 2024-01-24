@@ -33,7 +33,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = GetTypeName(context, property);
+            var typeNameResult = property.GetBuilderArgumentType(context, _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
@@ -68,9 +68,6 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
-
-    private Result<string> GetTypeName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
-        => property.GetBuilderArgumentType(context, _formattableStringParser);
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
         Property property,

@@ -35,7 +35,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         {
             var childContext = CreateParentChildContext(context, property);
 
-            var typeNameResult = GetTypeName(context, property, childContext);
+            var typeNameResult = property.GetBuilderArgumentType(context, _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
@@ -171,16 +171,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
         yield return Result.Success($"return {GetReturnValue(context.Context)};");
     }
-
-    private Result<string> GetTypeName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property, ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> childContext)
-        => _formattableStringParser.Parse
-        (
-            property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
-            context.Context.FormatProvider,
-            childContext
-        );
 
     private static string CreateBuilderCollectionPropertyAddExpression(Property property, BuilderContext context)
     {
