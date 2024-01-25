@@ -28,6 +28,27 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
 
         if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
         {
+            if (context.Context.Settings.IsForAbstractBuilder)
+            {
+                context.Model.AddMethods(new MethodBuilder()
+                    .WithName("Build")
+                    .WithAbstract()
+                    .WithReturnTypeName(context.Context.SourceModel.GetFullName()));
+            }
+            else
+            {
+                context.Model.AddMethods(new MethodBuilder()
+                    .WithName("Build")
+                    .WithOverride()
+                    .WithReturnTypeName(context.Context.SourceModel.GetFullName())
+                    .AddStringCodeStatements("return BuildTyped();"));
+
+                context.Model.AddMethods(new MethodBuilder()
+                    .WithName("BuildTyped")
+                    .WithAbstract()
+                    .WithReturnTypeName("TEntity"));
+            }
+
             return Result.Continue<IConcreteTypeBuilder>();
         }
 

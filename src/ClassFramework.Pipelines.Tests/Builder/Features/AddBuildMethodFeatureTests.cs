@@ -16,7 +16,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
         }
 
         [Fact]
-        public void Does_Not_Add_Methods_When_EnableBuilderInheritance_And_IsAbstract_Are_Both_True()
+        public void Adds_Build_Method_When_EnableBuilderInheritance_And_IsAbstract_Are_Both_True()
         {
             // Arrange
             var sourceModel = CreateModel();
@@ -30,7 +30,8 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().BeEmpty();
+            model.Methods.Should().HaveCount(2);
+            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("Build", "BuildTyped");
         }
 
         [Fact]
