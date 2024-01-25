@@ -394,7 +394,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         new Metadata($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models")}Builders", Pipelines.MetadataNames.CustomBuilderNamespace),
                         new Metadata("{TypeName.ClassName}Builder", Pipelines.MetadataNames.CustomBuilderName),
                         new Metadata("[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                        new Metadata("[Name][NullableSuffix].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
+                        new Metadata("[Name].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                     })
                 })
             .ToArray();

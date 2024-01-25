@@ -254,7 +254,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Methods.Where(x => x.Name == "Build").Should().ContainSingle();
             var buildMethod = result.Value.Methods.Single(x => x.Name == "Build");
             buildMethod.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            var expected = "return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build(), Property6 = Property6.Build(), Property7 = Property7?.Select(x => x.Build()), Property8 = Property8.Select(x => x.Build()) };";
+            var expected = "return new MyNamespace.MyClass { Property1 = Property1, Property2 = Property2, Property3 = Property3, Property4 = Property4, Property5 = Property5?.Build(), Property6 = Property6.Build(), Property7 = Property7.Select(x => x.Build()), Property8 = Property8.Select(x => x.Build()) };";
             buildMethod.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo(expected);
 
             result.Value!.Constructors.Where(x => x.Parameters.Count == 1).Should().ContainSingle();

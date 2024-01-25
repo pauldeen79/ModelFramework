@@ -121,7 +121,7 @@ public static class PropertyExtensions
     }
 
     public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)
-        => !source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType
+        => !source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.IsCollectionTypeName()
             ? "?"
             : string.Empty;
 }
