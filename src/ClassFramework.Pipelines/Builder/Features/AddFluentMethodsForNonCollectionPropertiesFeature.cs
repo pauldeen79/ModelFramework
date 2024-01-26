@@ -63,9 +63,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                         .WithTypeName(results.First(x => x.Name == "TypeName").LazyResult.Value.Value!)
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
-                        .WithDefaultValue(property.Metadata
-                            .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                            .GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
+                        .WithDefaultValue(GetMetadata(context, property).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
             if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
@@ -88,6 +86,9 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
+
+    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
+        => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings);
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddFluentMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
