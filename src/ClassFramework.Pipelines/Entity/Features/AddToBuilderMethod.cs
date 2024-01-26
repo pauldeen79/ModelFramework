@@ -34,7 +34,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         {
             new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context)) },
             new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context))) },
-            new { Name = "ToBuilderMethodName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToBuilderFormatString, context.Context.FormatProvider, context)) }
+            new { Name = "ToBuilderMethodName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToBuilderFormatString, context.Context.FormatProvider, context)) },
+            new { Name = "ToTypedBuilderMethodName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToTypedBuilderFormatString, context.Context.FormatProvider, context)) }
         }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
 
         var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
@@ -49,6 +50,8 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
+
+        var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").LazyResult.Value.Value!;
 
         var entityFullName = string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").LazyResult.Value.Value)
             ? results.First(x => x.Name == "Name").LazyResult.Value.Value!
@@ -72,13 +75,26 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.InheritanceSettings.BaseClass.Name}Builder"
             : builderConcreteTypeName;
 
+        var returnStatement = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName)
+            ? $"return {typedMethodName}();"
+            : $"return new {builderConcreteTypeName}(this);";
+
         context.Model
             .AddMethods(new MethodBuilder()
                 .WithName(methodName)
                 .WithAbstract(context.Context.IsAbstract)
                 .WithOverride(context.Context.Settings.InheritanceSettings.BaseClass is not null)
                 .WithReturnTypeName(builderTypeName)
-                .AddStringCodeStatements($"return new {builderConcreteTypeName}(this);"));
+                .AddStringCodeStatements(returnStatement));
+
+        if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName))
+        {
+            context.Model
+                .AddMethods(new MethodBuilder()
+                    .WithName(typedMethodName)
+                    .WithReturnTypeName(builderConcreteTypeName)
+                    .AddStringCodeStatements($"return new {builderConcreteTypeName}(this);"));
+        }
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
