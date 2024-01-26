@@ -49,11 +49,9 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
 
         items.AddRange(model.Methods);
 
-        // Quirk, enums as items below a class. There is no interface for this right now.
-        var cls = model as Class;
-        if (cls is not null)
+        if (model is IEnumsContainer enumsContainer)
         {
-            items.AddRange(cls.Enums);
+            items.AddRange(enumsContainer.Enums);
         }
 
         // Add separators (empty lines) between each item

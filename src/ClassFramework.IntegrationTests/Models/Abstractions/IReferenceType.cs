@@ -6,5 +6,4 @@ internal interface IReferenceType : IType
     bool Sealed { get; }
     bool Abstract { get; }
     [Required] IReadOnlyCollection<IClass> SubClasses { get; }
-    [Required] IReadOnlyCollection<IEnumeration> Enums { get; }
 }

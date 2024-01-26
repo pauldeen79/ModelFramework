@@ -184,10 +184,10 @@ public class TypeExtensionsTests
                 default,
                 default,
                 Enumerable.Empty<Class>(),
-                Enumerable.Empty<Enumeration>(),
                 Enumerable.Empty<Constructor>(),
                 default,
-                string.Empty
+                string.Empty,
+                Enumerable.Empty<Enumeration>()
             );
 
             // Act
@@ -220,10 +220,10 @@ public class TypeExtensionsTests
                 default,
                 default,
                 Enumerable.Empty<Class>(),
-                Enumerable.Empty<Enumeration>(),
                 Enumerable.Empty<Constructor>(),
                 default,
-                string.Empty
+                string.Empty,
+                Enumerable.Empty<Enumeration>()
             );
 
             // Act
