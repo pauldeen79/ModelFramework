@@ -40,11 +40,16 @@ public class AbstractBuilderFeature : IPipelineFeature<IConcreteTypeBuilder, Bui
                 return Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder");
             }
 
-            classBuilder
-                .AddGenericTypeArguments("TBuilder", "TEntity")
-                .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
-                .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
-                .WithAbstract();
+            classBuilder.WithAbstract();
+
+            if (!context.Context.Settings.IsForAbstractBuilder)
+            {
+                classBuilder
+                    .AddGenericTypeArguments("TBuilder", "TEntity")
+                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
+                    .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
+                    .WithAbstract();
+            }
         }
 
         return Result.Continue<IConcreteTypeBuilder>();

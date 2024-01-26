@@ -99,13 +99,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             var typeName = property.TypeName.FixTypeName();
             FixImmutableBuilderProperty(property, typeName);
-
-            //TODO: Move to Entity pipeline
-            //if (typeName.StartsWith($"{RecordCollectionType.WithoutGenerics()}<", StringComparison.InvariantCulture)
-            //    && AddBackingFieldsForCollectionProperties)
-            //{
-            //    property.AddCollectionBackingFieldOnImmutableClass(RecordConcreteCollectionType, CollectionPropertyGetStatement, forceNullCheck: ValidateArgumentsInConstructor != ArgumentValidationType.None);
-            //}
         }
     }
 
@@ -253,9 +246,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}",
                 entityNamespaceFormatString: @namespace),
             inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
-                true,
-                true,
-                null, //BaseClass,
+                enableInheritance: true,
+                isAbstract: true,
+                baseClass: null,
                 (parentNameContainer, typeBase)
                     => parentNameContainer is not null
                     && typeBase is not null
@@ -457,10 +450,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         _ = _builderPipeline.Process(builder, new BuilderContext(typeBase.ToBuilder()
                 .With(FixImmutableClassProperties)
                 .Build(), CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ForAbstractBuilder(), CultureInfo.InvariantCulture))
-            .GetValueOrThrow()
-            //TODO: Make new pipeline for this, or make stuff configurable in either Settings or MetadataNames
-            .With(x => x.GenericTypeArguments.Clear())
-            .With(x => x.GenericTypeArgumentConstraints.Clear());
+            .GetValueOrThrow();
 
         return builder.Build();
     }
@@ -486,7 +476,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return builder.Build();
     }
 
-    //TODO: Generate override entity here, instead of normal entity
     private TypeBase CreateImmutableOverrideClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
