@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿using ClassFramework.Domain.Builders.Extensions;
+
+namespace ClassFramework.Pipelines.Builder.Features;
 
 public class AddDefaultConstructorFeatureBuilder : IBuilderFeatureBuilder
 {
@@ -93,8 +95,18 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
             }
 
             ctor.AddStringCodeStatements(defaultValueResults.Select(x => x.Value!));
-            ctor.AddStringCodeStatements("SetDefaultValues();");
-            context.Model.AddMethods(new MethodBuilder().WithName("SetDefaultValues").WithPartial().WithVisibility(Visibility.Private));
+            
+            var setDefaultValuesMethodNameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetDefaultValuesMethodName, context.Context.FormatProvider, context);
+            if (!setDefaultValuesMethodNameResult.IsSuccessful())
+            {
+                return Result.FromExistingResult<ConstructorBuilder>(setDefaultValuesMethodNameResult);
+            }
+            
+            if (!string.IsNullOrEmpty(setDefaultValuesMethodNameResult.Value))
+            {
+                ctor.AddStringCodeStatements($"{setDefaultValuesMethodNameResult.Value}();");
+                context.Model.AddMethods(new MethodBuilder().WithName(setDefaultValuesMethodNameResult.Value!).WithPartial().WithVisibility(Visibility.Private));
+            }
         }
 
         return Result.Success(ctor);

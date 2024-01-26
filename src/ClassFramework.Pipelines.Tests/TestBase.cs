@@ -150,6 +150,7 @@ public abstract class TestBase : IDisposable
         string builderNameFormatString = "{Class.Name}Builder",
         string buildMethodName = "Build",
         string buildTypedMethodName = "BuildTyped",
+        string setDefaultValuesMethodName = "SetDefaultValues",
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
         string? baseClassBuilderNameSpace = null,
         bool allowGenerationWithoutProperties = false,
@@ -174,7 +175,7 @@ public abstract class TestBase : IDisposable
                 copyAttributePredicate: copyAttributePredicate,
                 copyInterfacePredicate: copyInterfacePredicate
             ),
-            nameSettings: new Pipelines.Builder.PipelineNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName)
+            nameSettings: new Pipelines.Builder.PipelineNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName, setDefaultValuesMethodName)
         );
 
     protected static Pipelines.Entity.PipelineSettings CreateEntitySettings(
