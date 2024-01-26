@@ -190,6 +190,7 @@ public abstract class TestBase : IDisposable
         Class? baseClass = null,
         string entityNamespaceFormatString = "{Namespace}",
         string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
+        string toBuilderFormatString = "ToBuilder",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         string collectionTypeName = "",
         bool addSetters = false,
@@ -217,7 +218,7 @@ public abstract class TestBase : IDisposable
                 isAbstract: isAbstract,
                 baseClass: baseClass),
             constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(validateArguments: validateArguments, collectionTypeName: collectionTypeName),
-            nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNamespaceFormatString, entityNameFormatString),
+            nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNamespaceFormatString, entityNameFormatString, toBuilderFormatString),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName,
                 enableNullableReferenceTypes,

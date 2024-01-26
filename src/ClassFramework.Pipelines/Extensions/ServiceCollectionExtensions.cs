@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddInterfacesFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddMetadataFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.AddPropertiesFeatureBuilder>()
+            .AddScoped<IEntityFeatureBuilder, Entity.Features.AddToBuilderMethodFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.ObservableFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetBaseClassFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
