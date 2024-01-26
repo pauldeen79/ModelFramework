@@ -6,7 +6,7 @@ public static partial class TypeContainerBuilderExtensions
     {
         type = type.IsNotNull(nameof(type));
 
-        instance.TypeName = type.FullName;
+        instance.TypeName = type.FullName.FixTypeName();
         instance.IsValueType = type.IsValueType;
 
         return instance;

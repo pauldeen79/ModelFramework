@@ -6,7 +6,7 @@ public partial class MethodBuilder
     {
         type = type.IsNotNull(nameof(type));
 
-        ReturnTypeName = type.FullName;
+        ReturnTypeName = type.FullName.FixTypeName();
         ReturnTypeIsValueType = type.IsValueType;
 
         return this;
