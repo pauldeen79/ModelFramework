@@ -271,7 +271,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "Property4 = source.Property4;",
                 "_property5 = source.Property5?.ToBuilder();",
                 "Property6 = source.Property6.ToBuilder();",
-                "if (source.Property7 is not null) Property7.AddRange(source.Property7.Select(x => x.ToBuilder()));",
+                "if (source.Property7 is not null) _property7.AddRange(source.Property7.Select(x => x.ToBuilder()));",
                 "Property8.AddRange(source.Property8.Select(x => x.ToBuilder()));"
             );
 

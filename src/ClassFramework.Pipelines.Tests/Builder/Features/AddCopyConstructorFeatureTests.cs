@@ -158,7 +158,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "_property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "_property2 = source.Property2;",
-                "if (source.Property3 is not null) Property3.AddRange(source.Property3);"
+                "if (source.Property3 is not null) _property3.AddRange(source.Property3);"
             );
         }
 
