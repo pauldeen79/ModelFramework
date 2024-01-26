@@ -3,7 +3,7 @@ $directoryPath = Get-Location
 $fileExtension = "*.cs"
 
 # Get all files with the specified extension in the directory
-$fileList = Get-ChildItem -Path $directoryPath -Filter $fileExtension -Recurse | Where-Object { $_.FullName -notlike '*\obj\*' -and $_.FullName -notlike '*.generated.cs' }
+$fileList = Get-ChildItem -Path $directoryPath -Filter $fileExtension -Recurse | Where-Object { $_.FullName -notlike '*\bin\*' -and $_.FullName -notlike '*\obj\*' -and $_.FullName -notlike '*.generated.cs' }
 
 # Loop through each file and read its contents line by line
 foreach ($file in $fileList) {

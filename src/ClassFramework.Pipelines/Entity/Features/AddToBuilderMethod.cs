@@ -1,8 +1,4 @@
-﻿using ClassFramework.Domain.Builders.Extensions;
-using ClassFramework.Domain.Extensions;
-using CrossCutting.Utilities.Parsers.Extensions;
-
-namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Features;
 
 public class AddToBuilderMethodFeatureBuilder : IEntityFeatureBuilder
 {
