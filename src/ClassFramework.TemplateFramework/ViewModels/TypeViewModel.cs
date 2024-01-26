@@ -60,13 +60,12 @@ public class TypeViewModel : AttributeContainerViewModelBase<IType>
 
     public IEnumerable<object> GetSubClassModels()
     {
-        var subClasses = (GetModel() as Class)?.SubClasses;
-        if (subClasses is null)
+        if (GetModel() is not ISubClassesContainer subClassesContainer)
         {
             return Enumerable.Empty<object>();
         }
 
-        return subClasses.SelectMany(item => new object[] { new NewLineModel(), item });
+        return subClassesContainer.SubClasses.SelectMany(item => new object[] { new NewLineModel(), item });
     }
 
     public string ContainerType

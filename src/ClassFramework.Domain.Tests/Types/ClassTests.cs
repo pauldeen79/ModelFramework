@@ -28,11 +28,11 @@ public class ClassTests
                 default,
                 default,
                 default,
-                Enumerable.Empty<Class>(),
                 Enumerable.Empty<Domain.Constructor>(),
                 default,
                 string.Empty,
-                Enumerable.Empty<Enumeration>()
+                Enumerable.Empty<Enumeration>(),
+                Enumerable.Empty<TypeBase>()
             ))
             .Should().Throw<ValidationException>();
         }
