@@ -63,7 +63,9 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                         .WithTypeName(results.First(x => x.Name == "TypeName").LazyResult.Value.Value!)
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
-                        .WithDefaultValue(property.Metadata.GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
+                        .WithDefaultValue(property.Metadata
+                            .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
+                            .GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
             if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)

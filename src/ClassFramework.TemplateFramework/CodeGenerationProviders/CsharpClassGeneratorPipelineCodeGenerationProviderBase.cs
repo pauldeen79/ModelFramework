@@ -91,29 +91,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Select(x => x.GetInterfaces().First(x => x.Namespace == $"{CodeGenerationRootNamespace}.Models"))
             .Distinct();
 
-    protected virtual void FixImmutableClassProperties(TypeBaseBuilder typeBaseBuilder)
-    {
-        Guard.IsNotNull(typeBaseBuilder);
-
-        foreach (var property in typeBaseBuilder.Properties)
-        {
-            var typeName = property.TypeName.FixTypeName();
-            FixImmutableBuilderProperty(property, typeName);
-        }
-    }
-
-    protected virtual void FixImmutableBuilderProperty(PropertyBuilder property, string typeName)
-    {
-        Guard.IsNotNull(property);
-        Guard.IsNotNull(typeName);
-
-        //TODO: Move to Builder pipeline
-        if (typeName.IsBooleanTypeName() || typeName.IsNullableBooleanTypeName())
-        {
-            property.AddMetadata(new MetadataBuilder().WithName(Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(true));
-        }
-    }
-
     /// <summary>
     /// Gets the base typename, based on a derived class.
     /// </summary>
@@ -158,9 +135,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return models.Select(x =>
         {
             var entityBuilder = new ClassBuilder();
-            _ = _entityPipeline.Process(entityBuilder, new EntityContext(x.ToBuilder()
-                    .With(FixImmutableClassProperties)
-                    .Build(), CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture))
+            _ = _entityPipeline
+                .Process(entityBuilder, new EntityContext(x, CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
             return CreateBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
@@ -176,9 +152,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return models.Select(x =>
         {
             var entityBuilder = new ClassBuilder();
-            _ = _entityPipeline.Process(entityBuilder, new EntityContext(x.ToBuilder()
-                    .With(FixImmutableClassProperties)
-                    .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
+            _ = _entityPipeline
+                .Process(entityBuilder, new EntityContext(x, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
             return CreateNonGenericBuilderClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
@@ -388,6 +363,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             : "[Name].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                     })
                 })
+            .Concat(new[] { new TypenameMapping(typeof(bool).FullName!, typeof(bool).FullName!, new[] { new Metadata(true, Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue) }) })
             .ToArray();
 
     private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)
@@ -425,9 +401,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
-                .With(FixImmutableClassProperties)
-                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
+        _ = _entityPipeline
+            .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks()), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -436,9 +411,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private TypeBase CreateBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _builderPipeline.Process(builder, new BuilderContext(typeBase.ToBuilder()
-                .With(FixImmutableClassProperties)
-                .Build(), CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
+        _ = _builderPipeline
+            .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -447,9 +421,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private TypeBase CreateNonGenericBuilderClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _builderPipeline.Process(builder, new BuilderContext(typeBase.ToBuilder()
-                .With(FixImmutableClassProperties)
-                .Build(), CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ForAbstractBuilder(), CultureInfo.InvariantCulture))
+        _ = _builderPipeline
+            .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ForAbstractBuilder(), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -468,9 +441,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private TypeBase CreateInterface(TypeBase typeBase, string interfacesNamespace, string newCollectionTypeName, string nameFormatString = "{Class.Name}")
     {
         var builder = new InterfaceBuilder();
-        _ = _interfacePipeline.Process(builder, new InterfaceContext(typeBase.ToBuilder()
-                .With(FixImmutableClassProperties)
-                .Build(), CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, nameFormatString), CultureInfo.InvariantCulture))
+        _ = _interfacePipeline
+            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, nameFormatString), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
@@ -479,9 +451,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private TypeBase CreateImmutableOverrideClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _entityPipeline.Process(builder, new EntityContext(typeBase.ToBuilder()
-                .With(FixImmutableClassProperties)
-                .Build(), CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
+        _ = _entityPipeline
+            .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
