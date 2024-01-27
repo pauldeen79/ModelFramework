@@ -94,6 +94,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return Result.FromExistingResult<ConstructorBuilder>(error.LazyResult.Value);
         }
 
+        var name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
+        if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared
+            && !name.EndsWith("Base", StringComparison.Ordinal))
+        {
+            name = $"{name}Base";
+        }
+
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
@@ -105,7 +112,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "Name").LazyResult.Value.Value!}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
             .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context)};"))
