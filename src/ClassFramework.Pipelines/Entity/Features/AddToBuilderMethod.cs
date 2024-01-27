@@ -26,6 +26,11 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         context = context.IsNotNull(nameof(context));
 
+        if (context.Context.IsSharedBaseClass)
+        {
+            return Result.Continue<IConcreteTypeBuilder>();
+        }
+
         var results = new[]
         {
             new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context)) },

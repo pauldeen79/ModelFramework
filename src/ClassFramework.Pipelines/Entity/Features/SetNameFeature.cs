@@ -43,6 +43,11 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, EntityConte
             .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
             .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!));
 
+        if (context.Context.IsSharedBaseClass)
+        {
+            context.Model.Name += "Base";
+        }
+
         return Result.Continue<IConcreteTypeBuilder>();
     }
 

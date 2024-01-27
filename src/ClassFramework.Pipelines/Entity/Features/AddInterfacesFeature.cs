@@ -12,7 +12,8 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyInterfaces)
+        if (!context.Context.Settings.CopySettings.CopyInterfaces
+            || (context.Context.IsSharedBaseClass))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }

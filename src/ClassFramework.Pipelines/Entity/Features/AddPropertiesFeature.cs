@@ -12,6 +12,11 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
     {
         context = context.IsNotNull(nameof(context));
 
+        if (context.Context.IsSharedNonBaseClass)
+        {
+            return Result.Continue<IConcreteTypeBuilder>();
+        }
+
         var properties = context.Context.SourceModel
             .Properties
             .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))

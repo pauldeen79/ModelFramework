@@ -56,24 +56,14 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
     private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
-        var initializationCodeResults = context.Context.SourceModel.Properties
-            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings))
-            .Select(x => new
-            {
-                x.Name,
-                Source = x,
-                Result = CreateBuilderInitializationCode(x, context)
-            })
-            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
-            .ToArray();
-
-        var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Result.IsSuccessful());
+        var initializationCodeResults = GetInitializationCodeResults(context);
+        var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Item2.IsSuccessful());
         if (initializationCodeErrorResult is not null)
         {
-            return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Item2);
         }
 
-        var constructorInitializerResults = GetConstructorInitialiaerResults(context);
+        var constructorInitializerResults = GetConstructorInitializerResults(context);
         var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Item2.IsSuccessful());
         if (initializerErrorResult is not null)
         {
@@ -94,13 +84,6 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return Result.FromExistingResult<ConstructorBuilder>(error.LazyResult.Value);
         }
 
-        var name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
-        if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared
-            && !name.EndsWith("Base", StringComparison.Ordinal))
-        {
-            name = $"{name}Base";
-        }
-
         return Result.Success(new ConstructorBuilder()
             .WithChainCall(CreateBuilderClassCopyConstructorChainCall(context.Context.SourceModel, context.Context.Settings))
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
@@ -112,14 +95,25 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "Name").LazyResult.Value.Value!}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
-            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context)};"))
+            .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Item2.Value, x.Item1, context)};"))
         );
     }
 
-    private Tuple<string, Result<string>>[] GetConstructorInitialiaerResults(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    private Tuple<Property, Result<string>>[] GetInitializationCodeResults(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+        => context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings))
+            .Select(x => new Tuple<Property, Result<string>>
+            (
+                x,
+                CreateBuilderInitializationCode(x, context)
+            ))
+            .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
+            .ToArray();
+
+    private Tuple<string, Result<string>>[] GetConstructorInitializerResults(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => context.Context.SourceModel.Properties
             .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new Tuple<string, Result<string>>
