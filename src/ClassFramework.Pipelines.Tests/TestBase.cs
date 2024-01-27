@@ -190,7 +190,7 @@ public abstract class TestBase : IDisposable
         bool isAbstract = false,
         Class? baseClass = null,
         string entityNamespaceFormatString = "{Namespace}",
-        string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
+        string entityNameFormatString = "{Class.Name}",
         string toBuilderFormatString = "ToBuilder",
         string toTypedBuilderFormatString = "ToTypedBuilder",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",

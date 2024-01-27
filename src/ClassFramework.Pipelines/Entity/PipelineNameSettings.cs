@@ -8,7 +8,7 @@ public record PipelineNameSettings
     public string ToTypedBuilderFormatString { get; }
 
     public PipelineNameSettings(string entityNamespaceFormatString = "{Namespace}",
-                                string entityNameFormatString = "{Class.Name}{EntityNameSuffix}",
+                                string entityNameFormatString = "{Class.Name}",
                                 string toBuilderFormatString = "ToBuilder",
                                 string toTypedBuilderFormatString = "ToTypedBuilder")
     {

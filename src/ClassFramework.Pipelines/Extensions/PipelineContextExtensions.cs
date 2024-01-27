@@ -36,9 +36,7 @@ public static class PipelineContextExtensions
         }
 
         var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
-        var ns = string.IsNullOrEmpty(entityNamespace)
-            ? string.Empty
-            : $"{context.Context.MapNamespace(entityNamespace)}.";
+        var ns = context.Context.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
         return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }

@@ -73,26 +73,25 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return Result.FromExistingResult<ConstructorBuilder>(initializationCodeErrorResult.Result);
         }
 
-        var constructorInitializerResults = context.Context.SourceModel.Properties
-            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
-            .Select(x => new
-            {
-                Name = x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
-                Result = x.GetBuilderConstructorInitializer(context, _formattableStringParser)
-            })
-            .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
-            .ToArray();
-
-        var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Result.IsSuccessful());
+        var constructorInitializerResults = GetConstructorInitialiaerResults(context);
+        var initializerErrorResult = Array.Find(constructorInitializerResults, x => !x.Item2.IsSuccessful());
         if (initializerErrorResult is not null)
         {
-            return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Result);
+            return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Item2);
         }
 
-        var nullCheckResult = _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context);
-        if (!nullCheckResult.IsSuccessful())
+        var results = new[]
         {
-            return Result.FromExistingResult<ConstructorBuilder>(nullCheckResult);
+            new { Name = "NullCheck.Source", LazyResult = new Lazy<Result<string>>(() =>_formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context)) },
+            new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context)) },
+            new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context))) }
+        }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
+
+        var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
+        if (error is not null)
+        {
+            // Error in formattable string parsing
+            return Result.FromExistingResult<ConstructorBuilder>(error.LazyResult.Value);
         }
 
         return Result.Success(new ConstructorBuilder()
@@ -100,18 +99,29 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
-                new[] { nullCheckResult.Value! }.Where(x => !string.IsNullOrEmpty(x))
+                new[] { results.First(x => x.Name == "NullCheck.Source").LazyResult.Value.Value! }.Where(x => !string.IsNullOrEmpty(x))
             )
             .AddParameters
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{context.Context.SourceModel.GetFullName()}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "Name").LazyResult.Value.Value!}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
-            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Name} = {x.Result.Value};"))
+            .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
             .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Result.Value, x.Source, context)};"))
         );
     }
+
+    private Tuple<string, Result<string>>[] GetConstructorInitialiaerResults(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+        => context.Context.SourceModel.Properties
+            .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
+            .Select(x => new Tuple<string, Result<string>>
+            (
+                x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.FormatProvider.ToCultureInfo()),
+                x.GetBuilderConstructorInitializer(context, _formattableStringParser)
+            ))
+            .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
+            .ToArray();
 
     private Result<string> CreateBuilderInitializationCode(Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => _formattableStringParser.Parse

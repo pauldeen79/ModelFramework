@@ -63,4 +63,14 @@ public static class StringExtensions
 
         return typeName;
     }
+
+    public static string AppendWhenNotNullOrEmpty(this string? instance, string valueToAppend)
+    {
+        if (string.IsNullOrEmpty(instance))
+        {
+            return string.Empty;
+        }
+
+        return string.Concat(instance!, valueToAppend);
+    }
 }

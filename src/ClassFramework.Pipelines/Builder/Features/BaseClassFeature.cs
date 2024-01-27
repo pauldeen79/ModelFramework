@@ -71,10 +71,6 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
             && context.Context.Settings.InheritanceSettings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
         {
-            var ns = string.IsNullOrEmpty(context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace)
-                ? string.Empty
-                : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
-
             var inheritanceNameResult = _formattableStringParser.Parse
             (
                 context.Context.Settings.NameSettings.BuilderNameFormatString,
@@ -86,7 +82,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
                 return inheritanceNameResult;
             }
 
-            return Result.Success($"{ns}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+            return Result.Success($"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
         return instance.GetCustomValueForInheritedClass

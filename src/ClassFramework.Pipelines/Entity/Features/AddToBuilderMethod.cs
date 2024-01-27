@@ -65,7 +65,11 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? "Builders"
             : $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value}.Builders"));
 
-        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{results.First(x => x.Name == "Name").LazyResult.Value.Value}Builder";
+        var name = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is null
+            ? results.First(x => x.Name == "Name").LazyResult.Value.Value!
+            : results.First(x => x.Name == "Name").LazyResult.Value.Value!.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
+
+        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{name}Builder";
 
         var builderTypeName = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.InheritanceSettings.BaseClass.Name}Builder"
