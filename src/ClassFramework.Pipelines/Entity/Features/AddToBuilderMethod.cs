@@ -53,6 +53,11 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? results.First(x => x.Name == "Name").LazyResult.Value.Value!
             : $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value}.{results.First(x => x.Name == "Name").LazyResult.Value.Value}";
 
+        if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null)
+        {
+            entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
+        }
+
         var entityConcreteFullName = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()
             : entityFullName;
@@ -87,7 +92,9 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
                 .WithReturnTypeName(builderTypeName)
                 .AddStringCodeStatements(returnStatement));
 
-        if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null && !string.IsNullOrEmpty(typedMethodName))
+        if (context.Context.Settings.InheritanceSettings.EnableInheritance
+            && context.Context.Settings.InheritanceSettings.BaseClass is not null
+            && !string.IsNullOrEmpty(typedMethodName))
         {
             context.Model
                 .AddMethods(new MethodBuilder()
