@@ -111,7 +111,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 x => new[]
                 {
                     CreateImmutableClass(x, entitiesNamespace),
-                    //CreateImmutableOverrideClass(x, entitiesNamespace)
+                    CreateImmutableOverrideClass(x, entitiesNamespace)
                 }
             ).ToArray();
         }
@@ -460,6 +460,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: true), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
+        builder.BaseClass = $"{builder.Name}Base";
+        builder.Properties.Clear();
+        builder.Attributes.Clear();
+        builder.Interfaces.Clear();
+        builder.Methods.Clear();
+        var parameters = string.Join(", ", builder.Constructors[0].Parameters.Select(x => x.Name.GetCsharpFriendlyName()));
+        var ctor = new ConstructorBuilder().AddParameters(builder.Constructors[0].Parameters).WithChainCall($"base({parameters})");
+        builder.Constructors.Clear();
+        builder.Constructors.Add(ctor);
         return builder.Build();
     }
 }
