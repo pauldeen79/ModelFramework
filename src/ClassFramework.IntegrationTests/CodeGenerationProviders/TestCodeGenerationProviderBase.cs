@@ -17,4 +17,5 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
+    //protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
 }

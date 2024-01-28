@@ -110,15 +110,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             (
                 x => new[]
                 {
-                    CreateImmutableClass(x, entitiesNamespace, true),
-                    CreateImmutableOverrideClass(x, entitiesNamespace)
+                    CreateImmutableClass(x, entitiesNamespace),
+                    //CreateImmutableOverrideClass(x, entitiesNamespace)
                 }
             ).ToArray();
         }
 
         return models.Select
         (
-            x => CreateImmutableClass(x, entitiesNamespace, false)
+            x => CreateImmutableClass(x, entitiesNamespace)
         ).ToArray();
     }
 
@@ -269,19 +269,18 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
-        bool baseClass = false)
+        string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
         => new(
             generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
                 addSetters: AddSetters,
                 addBackingFields: AddBackingFields,
                 createRecord: CreateRecord,
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties,
-                baseClass: baseClass),
+                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
                 copyAttributes: CopyAttributes,
                 copyInterfaces: CopyInterfaces),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(
-                entityNameFormatString: "{Class.NameNoInterfacePrefix}",
+                entityNameFormatString: entityNameFormatString,
                 entityNamespaceFormatString: entitiesNamespace),
             inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
                 EnableEntityInheritance,
@@ -404,11 +403,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, BaseClass, BaseClassBuilderNamespace, InheritanceComparisonDelegate)
         );
 
-    private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace, bool baseClass)
+    private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
         _ = _entityPipeline
-            .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), baseClass: baseClass), CultureInfo.InvariantCulture))
+            .Process(builder, new EntityContext(typeBase, CreateEntityPipelineSettings(entitiesNamespace, overrideAddNullChecks: GetOverrideAddNullChecks(), entityNameFormatString: "{Class.NameNoInterfacePrefix}{EntityNameSuffix}"), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();

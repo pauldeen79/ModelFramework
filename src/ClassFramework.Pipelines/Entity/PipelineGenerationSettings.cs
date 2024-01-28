@@ -8,7 +8,6 @@ public record PipelineGenerationSettings
     public bool CreateAsObservable { get; }
     public SubVisibility SetterVisibility { get; }
     public bool AllowGenerationWithoutProperties { get; }
-    public bool BaseClass { get; }
 
     public PipelineGenerationSettings(
         bool addSetters = false,
@@ -16,8 +15,7 @@ public record PipelineGenerationSettings
         bool createRecord = false,
         bool createAsObservable = false,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
-        bool allowGenerationWithoutProperties = false,
-        bool baseClass = false)
+        bool allowGenerationWithoutProperties = false)
     {
         AddSetters = addSetters;
         AddBackingFields = addBackingFields;
@@ -25,6 +23,5 @@ public record PipelineGenerationSettings
         CreateAsObservable = createAsObservable;
         SetterVisibility = setterVisibility;
         AllowGenerationWithoutProperties = allowGenerationWithoutProperties;
-        BaseClass = baseClass;
     }
 }

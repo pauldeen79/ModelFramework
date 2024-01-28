@@ -11,14 +11,6 @@ public record EntityContext : ContextBase<IType, PipelineSettings>
         => Settings.InheritanceSettings.EnableInheritance
         && Settings.InheritanceSettings.IsAbstract;
 
-    public bool IsSharedBaseClass
-        => Settings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared
-        && Settings.GenerationSettings.BaseClass;
-
-    public bool IsSharedNonBaseClass
-        => Settings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared
-        && !Settings.GenerationSettings.BaseClass;
-
     public string MapTypeName(string typeName)
         => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
 

@@ -26,11 +26,6 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsSharedBaseClass)
-        {
-            return Result.Continue<IConcreteTypeBuilder>();
-        }
-
         var results = new[]
         {
             new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context)) },
@@ -58,10 +53,10 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? results.First(x => x.Name == "Name").LazyResult.Value.Value!
             : $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value}.{results.First(x => x.Name == "Name").LazyResult.Value.Value}";
 
-        if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null)
-        {
-            entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
-        }
+        //if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null)
+        //{
+        //    entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
+        //}
 
         var entityConcreteFullName = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()

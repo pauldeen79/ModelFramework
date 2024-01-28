@@ -30,19 +30,7 @@ public class SetBaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, Entity
 
         if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
         {
-            if (context.Context.IsSharedNonBaseClass)
-            {
-                var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context);
-                if (!nameResult.IsSuccessful())
-                {
-                    return Result.FromExistingResult<IConcreteTypeBuilder>(nameResult);
-                }
-                baseClassContainerBuilder.WithBaseClass($"{nameResult.Value}Base");
-            }
-            else
-            {
-                baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.InheritanceSettings.EnableInheritance, context.Context.Settings.InheritanceSettings.BaseClass));
-            }
+            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.InheritanceSettings.EnableInheritance, context.Context.Settings.InheritanceSettings.BaseClass));
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
