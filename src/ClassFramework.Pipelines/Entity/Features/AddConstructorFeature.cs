@@ -26,16 +26,6 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     {
         context = context.IsNotNull(nameof(context));
 
-        //if (context.Context.IsSharedNonBaseClass)
-        //{
-        //    context.Model.AddConstructors(new ConstructorBuilder()
-        //        .WithProtected(context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
-        //        .AddParameters(context.CreateImmutableClassCtorParameters())
-        //        .WithChainCall(context.CreateEntityChainCall(true)));
-
-        //    return Result.Continue<IConcreteTypeBuilder>();
-        //}
-
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
         {
