@@ -54,24 +54,29 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
 
         if (context.Context.Settings.GenerationSettings.AddBackingFields)
         {
-            context.Model.AddFields(
-                    properties
-                        .Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()) // only non-collection properties to prevent CA2227 warning - convert to read-only property
-                        .Select
-                        (
-                            property => new FieldBuilder()
-                                .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                                .WithTypeName(context.Context.MapTypeName(property.TypeName
-                                    .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-                                    .FixNullableTypeName(property)))
-                                .WithIsNullable(property.IsNullable)
-                                .WithIsValueType(property.IsValueType)
-                        )
-            );
+            AddBackingFields(context, properties);
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
+
+    private static void AddBackingFields(PipelineContext<IConcreteTypeBuilder, EntityContext> context, Property[] properties)
+        => context.Model.AddFields
+        (
+            properties
+                .Select
+                (
+                    property =>new FieldBuilder()
+                            .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
+                            .WithTypeName(context.Context.MapTypeName(property.TypeName)
+                                .FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName
+                                    .WhenNullOrEmpty(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                                    .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))
+                            .FixNullableTypeName(property))
+                            .WithIsNullable(property.IsNullable)
+                            .WithIsValueType(property.IsValueType)
+                )
+        );
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder();
@@ -80,7 +85,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         Property property,
         EntityContext context)
     {
-        if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
+        if (context.Settings.GenerationSettings.AddBackingFields)
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -90,7 +95,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         Property property,
         EntityContext context)
     {
-        if (context.Settings.GenerationSettings.AddBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
+        if (context.Settings.GenerationSettings.AddBackingFields)
         {
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.NullCheckSettings.AddNullChecks)};");
             if (context.Settings.GenerationSettings.CreateAsObservable)

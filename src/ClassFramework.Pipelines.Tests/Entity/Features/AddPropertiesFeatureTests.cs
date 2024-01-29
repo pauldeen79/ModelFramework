@@ -201,7 +201,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
 
             // Assert
             result.IsSuccessful().Should().BeTrue();
-            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2");
+            model.Fields.Select(x => x.Name).Should().BeEquivalentTo("_property1", "_property2", "_property3");
         }
 
         [Fact]
@@ -222,12 +222,14 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return _property1;",
-                "return _property2;"
+                "return _property2;",
+                "return _property3;"
             );
             model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
-                "_property2 = value;"
+                "_property2 = value;",
+                "_property3 = value;"
             );
         }
 
@@ -249,14 +251,17 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             model.Properties.SelectMany(x => x.GetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return _property1;",
-                "return _property2;"
+                "return _property2;",
+                "return _property3;"
             );
             model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
                 "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property1)));",
                 "_property2 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property2)));"
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property2)));",
+                "_property3 = value;",
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property3)));"
             );
         }
 
@@ -278,7 +283,8 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
-                "_property2 = value;"
+                "_property2 = value;",
+                "_property3 = value;"
             );
         }
 
@@ -300,7 +306,8 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
-                "_property2 = value ?? throw new System.ArgumentNullException(nameof(value));"
+                "_property2 = value ?? throw new System.ArgumentNullException(nameof(value));",
+                "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));"
             );
         }
     }

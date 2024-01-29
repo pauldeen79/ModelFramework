@@ -201,8 +201,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "this._property4 = property4;",
                 "this._property5 = property5;",
                 "this._property6 = property6;",
-                "this.Property7 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property8);"
+                "this._property7 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property7);",
+                "this._property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property8);"
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
@@ -214,16 +214,19 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "_property4",
                 "_property5",
                 "_property6",
+                "_property7",
+                "_property8",
                 "PropertyChanged"
             );
             result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
-                "System.String",
-                "System.String",
+                "System.String", "System.String",
                 "MyNamespace.MyClass",
                 "MyNamespace.MyClass",
+                "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
+                "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
                 "System.ComponentModel.PropertyChangedEventHandler"
             );
             result.Value.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
@@ -236,6 +239,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                     true,
                     false,
                     true,
+                    true,
+                    false,
                     true
                 }
             );
@@ -284,7 +289,9 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "return _property3;",
                 "return _property4;",
                 "return _property5;",
-                "return _property6;"
+                "return _property6;",
+                "return _property7;",
+                "return _property8;"
             );
             result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
             result.Value.Properties.Select(x => x.HasSetter).Should().BeEquivalentTo
@@ -314,7 +321,11 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "_property5 = value ?? throw new System.ArgumentNullException(nameof(value));",
                 "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property5)));",
                 "_property6 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property6)));"
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property6)));",
+                "_property7 = value ?? throw new System.ArgumentNullException(nameof(value));",
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property7)));",
+                "_property8 = value;",
+                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property8)));"
             );
         }
 

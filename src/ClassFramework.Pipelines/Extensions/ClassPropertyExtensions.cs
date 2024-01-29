@@ -46,7 +46,7 @@ public static class PropertyExtensions
     {
         cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
 
-        if (addBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
+        if (addBackingFields)
         {
             return $"_{property.Name.ToPascalCase(cultureInfo)}";
         }

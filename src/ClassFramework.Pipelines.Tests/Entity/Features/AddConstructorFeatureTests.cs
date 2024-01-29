@@ -141,7 +141,7 @@ public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.Add
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "this._property1 = property1;",
                 "this._property2 = property2;",
-                "this.Property3 = new System.Collections.Generic.List<System.Int32>(property3);"
+                "this._property3 = new System.Collections.Generic.List<System.Int32>(property3);"
             );
         }
 
