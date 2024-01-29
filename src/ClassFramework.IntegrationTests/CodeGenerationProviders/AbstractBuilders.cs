@@ -11,6 +11,7 @@ public class AbstractBuilders : TestCodeGenerationProviderBase
     public override string Path => "ClassFramework.Domain.POC/Builders";
 
     protected override bool AddNullChecks => false; // not needed for abstract builders, because each derived class will do its own validation
+    protected override bool AddBackingFields => true; // backing fields are added when using null checks... so we need to add this explicitly
 
     protected override bool EnableEntityInheritance => true;
     protected override bool EnableBuilderInhericance => true;

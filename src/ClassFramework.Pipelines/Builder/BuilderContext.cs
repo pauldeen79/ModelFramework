@@ -47,7 +47,8 @@ public record BuilderContext : ContextBase<IType, PipelineSettings>
     public bool HasBackingFields()
         => !(IsAbstractBuilder
         || !Settings.EntitySettings.NullCheckSettings.AddNullChecks
-        || Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared);
+        || Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+        || Settings.EntitySettings.GenerationSettings.AddBackingFields;
 
     private bool NeedsPragmas()
         => Settings.TypeSettings.EnableNullableReferenceTypes

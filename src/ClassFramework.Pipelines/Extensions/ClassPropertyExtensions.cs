@@ -30,11 +30,11 @@ public static class PropertyExtensions
         return $" ?? throw new {typeof(ArgumentNullException).FullName}(nameof({name}))";
     }
 
-    public static string GetBuilderMemberName(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, CultureInfo cultureInfo)
+    public static string GetBuilderMemberName(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, bool addBackingFields, CultureInfo cultureInfo)
     {
         cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
 
-        if (property.HasBackingFieldOnBuilder(addNullChecks, enableNullableReferenceTypes, argumentValidation))
+        if (property.HasBackingFieldOnBuilder(addNullChecks, enableNullableReferenceTypes, argumentValidation, addBackingFields))
         {
             return $"_{property.Name.ToPascalCase(cultureInfo)}";
         }
@@ -56,11 +56,11 @@ public static class PropertyExtensions
 
     // For now, only add backing fields for non nullable fields.
     // Nullable fields can simply have auto properties, as null checks are not needed
-    public static bool HasBackingFieldOnBuilder(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation)
-        => addNullChecks
+    public static bool HasBackingFieldOnBuilder(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, bool addBackingFields)
+        => (addNullChecks
         && !property.IsValueType
         && !property.IsNullable(enableNullableReferenceTypes)
-        && argumentValidation != ArgumentValidationType.Shared;
+        && argumentValidation != ArgumentValidationType.Shared) || addBackingFields;
 
     public static Result<string> GetBuilderConstructorInitializer<TModel>(
         this Property property,
