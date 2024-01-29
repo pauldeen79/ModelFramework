@@ -104,7 +104,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(entitiesNamespace);
 
-        if (ValidateArgumentsInConstructor == ArgumentValidationType.Shared)
+        if (ValidateArgumentsInConstructor == ArgumentValidationType.Shared && !(EnableEntityInheritance && BaseClass is null))
         {
             return models.SelectMany
             (
