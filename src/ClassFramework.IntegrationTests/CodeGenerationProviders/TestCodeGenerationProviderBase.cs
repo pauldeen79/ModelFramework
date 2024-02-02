@@ -2,7 +2,7 @@
 
 public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipelineCodeGenerationProviderBase
 {
-    protected TestCodeGenerationProviderBase(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, entityPipeline, reflectionPipeline, interfacePipeline)
+    protected TestCodeGenerationProviderBase(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
@@ -17,6 +17,6 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     protected override string CoreNamespace => "ClassFramework.Domain";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
-    //protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
+    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     //protected override bool AddBackingFields => true;
 }

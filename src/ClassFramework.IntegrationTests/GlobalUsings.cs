@@ -18,6 +18,7 @@ global using ClassFramework.Pipelines.Domains;
 global using ClassFramework.Pipelines.Entity;
 global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.Pipelines.Interface;
+global using ClassFramework.Pipelines.OverrideEntity;
 global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;

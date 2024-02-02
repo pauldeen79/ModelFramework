@@ -1,6 +1,4 @@
-﻿using System.Runtime;
-
-namespace ClassFramework.Pipelines.Entity.Features;
+﻿namespace ClassFramework.Pipelines.Entity.Features;
 
 public class SetBaseClassFeatureBuilder : IEntityFeatureBuilder
 {

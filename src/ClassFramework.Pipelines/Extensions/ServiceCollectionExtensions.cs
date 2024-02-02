@@ -6,6 +6,7 @@ public static class ServiceCollectionExtensions
         => services
             .AddBuilderPipeline()
             .AddEntityPipeline()
+            .AddOverrideEntityPipeline()
             .AddReflectionPipeline()
             .AddInterfacePipeline()
             .AddSharedPipelineComponents()
@@ -56,6 +57,19 @@ public static class ServiceCollectionExtensions
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetNameFeatureBuilder>()
             .AddScoped<IEntityFeatureBuilder, Entity.Features.SetRecordFeatureBuilder>();
 
+    private static IServiceCollection AddOverrideEntityPipeline(this IServiceCollection services)
+        => services
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, OverrideEntityContext>>().Build())
+            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, OverrideEntityContext>, OverrideEntity.PipelineBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AbstractEntityFeatureBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AddConstructorFeatureBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AddGenericsFeatureBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.AddMetadataFeatureBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.SetBaseClassFeatureBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.SetNameFeatureBuilder>()
+            .AddScoped<IOverrideEntityFeatureBuilder, OverrideEntity.Features.SetRecordFeatureBuilder>();
+
     private static IServiceCollection AddReflectionPipeline(this IServiceCollection services)
         => services
             .AddScoped(services => services.GetRequiredService<IPipelineBuilder<TypeBaseBuilder, Reflection.ReflectionContext>>().Build())
@@ -90,5 +104,6 @@ public static class ServiceCollectionExtensions
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholderProcessor, OverrideEntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, ReflectionPipelinePlaceholderProcessor>();
 }

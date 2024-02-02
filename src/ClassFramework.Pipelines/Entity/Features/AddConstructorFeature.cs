@@ -38,7 +38,7 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     }
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
-        => new SetNameFeatureBuilder(_formattableStringParser);
+        => new AddConstructorFeatureBuilder(_formattableStringParser);
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
