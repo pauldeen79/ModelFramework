@@ -58,6 +58,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CreateRecord => true;
     protected virtual bool AddBackingFields => false;
     protected virtual bool AddSetters => false;
+    protected virtual bool CreateAsObservable => false;
     protected virtual string? CollectionPropertyGetStatement => null;
     protected virtual ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
     protected virtual bool EnableEntityInheritance => false;
@@ -220,6 +221,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
                 addSetters: AddSetters,
                 addBackingFields: AddBackingFields,
+                createAsObservable: CreateAsObservable,
                 createRecord: CreateRecord,
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
@@ -278,6 +280,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
                 addSetters: AddSetters,
                 addBackingFields: AddBackingFields,
+                createAsObservable: CreateAsObservable,
                 createRecord: CreateRecord,
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
             copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(

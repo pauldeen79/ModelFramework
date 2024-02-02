@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.AddPropertiesFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.BaseClassFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.GenericsFeatureBuilder>()
+            .AddScoped<IBuilderFeatureBuilder, Builder.Features.ObservableFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.SetNameFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidatableObjectFeatureBuilder>();
 

@@ -86,6 +86,10 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
         if (property.HasBackingFieldOnBuilder(context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Settings.EntitySettings.GenerationSettings.AddBackingFields))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)};");
+            if (context.Settings.EntitySettings.GenerationSettings.CreateAsObservable)
+            {
+                yield return new StringCodeStatementBuilder().WithStatement($"PropertyChanged?.Invoke(this, new {typeof(PropertyChangedEventArgs).FullName}(nameof({property.Name})));");
+            }
         }
     }
 }
