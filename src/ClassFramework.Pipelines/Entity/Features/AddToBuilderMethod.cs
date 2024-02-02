@@ -49,10 +49,7 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
         var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").LazyResult.Value.Value!;
 
-        var entityFullName = string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").LazyResult.Value.Value)
-            ? results.First(x => x.Name == "Name").LazyResult.Value.Value!
-            : $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value}.{results.First(x => x.Name == "Name").LazyResult.Value.Value}";
-
+        var entityFullName = $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "Name").LazyResult.Value.Value}";
         if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null)
         {
             entityFullName = entityFullName.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
@@ -62,19 +59,14 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
             ? context.Context.Settings.InheritanceSettings.BaseClass.GetFullName()
             : entityFullName;
 
-        var builderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityFullName.GetCollectionItemType().WhenNullOrEmpty(entityFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success(string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").LazyResult.Value.Value)
-            ? "Builders"
-            : $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value}.Builders"));
+        var builderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityFullName.GetCollectionItemType().WhenNullOrEmpty(entityFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}Builders"));
+        var concreteBuilderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityConcreteFullName.GetCollectionItemType().WhenNullOrEmpty(entityConcreteFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}Builders"));
 
-        var concreteBuilderNamespaceResult = context.Context.SourceModel.Metadata.WithMappingMetadata(entityConcreteFullName.GetCollectionItemType().WhenNullOrEmpty(entityConcreteFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => Result.Success(string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").LazyResult.Value.Value)
-            ? "Builders"
-            : $"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value}.Builders"));
-
-        var name = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is null
+        var builderConcreteName = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is null
             ? results.First(x => x.Name == "Name").LazyResult.Value.Value!
             : results.First(x => x.Name == "Name").LazyResult.Value.Value!.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal);
 
-        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{name}Builder";
+        var builderConcreteTypeName = $"{builderNamespaceResult.Value}.{builderConcreteName}Builder";
 
         var builderTypeName = context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
             ? $"{concreteBuilderNamespaceResult.Value}.{context.Context.Settings.InheritanceSettings.BaseClass.Name}Builder"
