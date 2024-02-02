@@ -12,13 +12,26 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCo
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.GenerationSettings.CreateAsObservable)
+        if (!context.Context.Settings.GenerationSettings.CreateAsObservable
+            && !context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
+        if (context.Context.Settings.InheritanceSettings.EnableInheritance
+            && context.Context.Settings.InheritanceSettings.BaseClass is not null)
+        {
+            // Already present in base class
+            return Result.Continue<IConcreteTypeBuilder>();
+        }
+
+        if (!context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
+        {
+            // Only add the interface when it's not present yet :)
+            context.Model.AddInterfaces(typeof(INotifyPropertyChanged));
+        }
+
         context.Model
-            .AddInterfaces(typeof(INotifyPropertyChanged))
             .AddFields(new FieldBuilder()
                 .WithName(nameof(INotifyPropertyChanged.PropertyChanged))
                 .WithType(typeof(PropertyChangedEventHandler))
