@@ -56,32 +56,12 @@ public static class PipelineContextExtensions
             cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
-    public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters<TModel>(
-        this PipelineContext<TModel, EntityContext> context)
-        => context.Context.SourceModel.Properties
-            .Select
-            (
-                property => new ParameterBuilder()
-                    .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                    .WithTypeName
-                    (
-                        context.Context.MapTypeName
-                        (
-                            property.Metadata
-                                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                                .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName)
-                        ).FixCollectionTypeName(/*context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(*/typeof(IEnumerable<>).WithoutGenerics()/*)*/)
-                    )
-                    .WithIsNullable(property.IsNullable)
-                    .WithIsValueType(property.IsValueType)
-            );
-    
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
     private static string CreateImmutableClassCtorParameterNames<TModel>(
         PipelineContext<TModel, EntityContext> context)
-        => string.Join(", ", context.CreateImmutableClassCtorParameters().Select(x => x.Name.GetCsharpFriendlyName()));
+        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings.TypeSettings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
