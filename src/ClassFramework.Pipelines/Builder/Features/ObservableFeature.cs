@@ -25,6 +25,12 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderC
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
+        if (context.Context.IsBuilderForAbstractEntity && context.Context.IsAbstractBuilder)
+        {
+            // Already present in non-generic base class
+            return Result.Continue<IConcreteTypeBuilder>();
+        }
+
         if (!context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
             // Only add the interface when it's not present yet :)
