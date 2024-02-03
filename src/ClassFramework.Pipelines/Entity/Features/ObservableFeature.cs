@@ -40,6 +40,14 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, EntityCo
                 .WithVisibility(Visibility.Public)
             );
 
+        context.Model
+            .AddMethods(new MethodBuilder()
+                .WithName("HandlePropertyChanged")
+                .AddParameter("propertyName", typeof(string))
+                .WithProtected()
+                .AddStringCodeStatements("PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));")
+            );
+
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
