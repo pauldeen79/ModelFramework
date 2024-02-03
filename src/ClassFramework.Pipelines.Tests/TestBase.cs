@@ -233,6 +233,39 @@ public abstract class TestBase : IDisposable
                 copyInterfacePredicate: copyInterfacePredicate)
         );
 
+    protected static Pipelines.OverrideEntity.PipelineSettings CreateOverrideEntitySettings(
+        bool enableEntityInheritance = false,
+        bool addNullChecks = false,
+        bool useExceptionThrowIfNull = false,
+        bool enableNullableReferenceTypes = false,
+        bool allowGenerationWithoutProperties = false,
+        bool isAbstract = false,
+        Class? baseClass = null,
+        string entityNamespaceFormatString = "{Namespace}",
+        string entityNameFormatString = "{Class.Name}",
+        string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
+        bool createRecord = false,
+        IEnumerable<NamespaceMapping>? namespaceMappings = null,
+        IEnumerable<TypenameMapping>? typenameMappings = null)
+        => new Pipelines.OverrideEntity.PipelineSettings(
+            generationSettings: new Pipelines.OverrideEntity.PipelineGenerationSettings(
+                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
+                createRecord: createRecord),
+            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
+                addNullChecks: addNullChecks,
+                useExceptionThrowIfNull: useExceptionThrowIfNull),
+            inheritanceSettings: new Pipelines.OverrideEntity.PipelineInheritanceSettings(
+                enableInheritance: enableEntityInheritance,
+                isAbstract: isAbstract,
+                baseClass: baseClass),
+            nameSettings: new Pipelines.OverrideEntity.PipelineNameSettings(entityNamespaceFormatString, entityNameFormatString),
+            typeSettings: new Pipelines.OverrideEntity.PipelineTypeSettings(
+                newCollectionTypeName,
+                enableNullableReferenceTypes,
+                namespaceMappings,
+                typenameMappings)
+        );
+
     protected static Pipelines.Reflection.PipelineSettings CreateReflectionSettings(
         bool copyAttributes = false,
         bool copyInterfaces = false,
