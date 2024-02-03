@@ -19,5 +19,6 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     protected override bool CopyInterfaces => true;
     protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
     //protected override bool AddBackingFields => true;
+    //protected override Domain.Domains.SubVisibility SetterVisibility => Domain.Domains.SubVisibility.Private;
     //protected override bool CreateAsObservable => true;
 }
