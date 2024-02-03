@@ -257,11 +257,11 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Entity.Features.AddP
             model.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property1)));",
+                "HandlePropertyChanged(nameof(Property1));",
                 "_property2 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property2)));",
+                "HandlePropertyChanged(nameof(Property2));",
                 "_property3 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property3)));"
+                "HandlePropertyChanged(nameof(Property3));"
             );
         }
 

@@ -311,21 +311,21 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property1)));",
+                "HandlePropertyChanged(nameof(Property1));",
                 "_property2 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property2)));",
+                "HandlePropertyChanged(nameof(Property2));",
                 "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property3)));",
+                "HandlePropertyChanged(nameof(Property3));",
                 "_property4 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property4)));",
+                "HandlePropertyChanged(nameof(Property4));",
                 "_property5 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property5)));",
+                "HandlePropertyChanged(nameof(Property5));",
                 "_property6 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property6)));",
+                "HandlePropertyChanged(nameof(Property6));",
                 "_property7 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property7)));",
+                "HandlePropertyChanged(nameof(Property7));",
                 "_property8 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property8)));"
+                "HandlePropertyChanged(nameof(Property8));"
             );
         }
 
