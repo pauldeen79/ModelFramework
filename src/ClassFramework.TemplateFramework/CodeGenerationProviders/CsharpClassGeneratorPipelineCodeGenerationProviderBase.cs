@@ -46,6 +46,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected abstract string ProjectName { get; }
     protected abstract Type RecordCollectionType { get; }
     protected abstract Type RecordConcreteCollectionType { get; }
+    protected abstract Type BuilderCollectionType { get; }
 
     protected virtual string EnvironmentVersion => string.Empty;
     protected virtual string RootNamespace => $"{ProjectName}.Domain";
@@ -429,7 +430,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         => new(
             entitySettings: CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
             typeSettings: new Pipelines.Builder.PipelineTypeSettings(
-                newCollectionTypeName: typeof(List<>).WithoutGenerics(),
+                newCollectionTypeName: BuilderCollectionType.WithoutGenerics(),
                 enableNullableReferenceTypes: true,
                 namespaceMappings: CreateNamespaceMappings(),
                 typenameMappings: CreateTypenameMappings()),

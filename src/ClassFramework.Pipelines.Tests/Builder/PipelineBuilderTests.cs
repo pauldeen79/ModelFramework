@@ -206,7 +206,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty2(property2.ToArray());",
-                "Property2.AddRange(property2);",
+                "foreach (var item in property2) Property2.Add(item);",
                 "return this;"
             );
         }
@@ -271,8 +271,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "Property4 = source.Property4;",
                 "_property5 = source.Property5?.ToBuilder();",
                 "Property6 = source.Property6.ToBuilder();",
-                "if (source.Property7 is not null) _property7.AddRange(source.Property7.Select(x => x.ToBuilder()));",
-                "Property8.AddRange(source.Property8.Select(x => x.ToBuilder()));"
+                "if (source.Property7 is not null) foreach (var item in source.Property7.Select(x => x.ToBuilder())) _property7.Add(item);",
+                "foreach (var item in source.Property8.Select(x => x.ToBuilder())) Property8.Add(item);"
             );
 
             // non-nullable non-value type properties have a backing field, so we can do null checks

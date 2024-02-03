@@ -60,7 +60,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3.ToArray());",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -91,7 +91,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3.ToArray());",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -125,7 +125,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             (
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -159,7 +159,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             (
                 "return AddDelegate(@delegate?.ToArray() ?? throw new System.ArgumentNullException(nameof(@delegate)));",
                 "if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));",
-                "Delegate.AddRange(@delegate);",
+                "foreach (var item in @delegate) Delegate.Add(item);",
                 "return this;"
             );
         }
@@ -229,7 +229,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "if (Property3 is null) Property3 = new System.Collections.Generic.List<int>();",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -262,7 +262,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3.ToArray());",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return (TBuilder)this;"
             );
         }

@@ -161,7 +161,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return "{NullCheck.Source.Argument}{BuilderMemberName} = {Name}.Concat(source.[SourceExpression])";
         }
 
-        return "{NullCheck.Source.Argument}{BuilderMemberName}.AddRange(source.[SourceExpression])";
+        //TODO: Check whether we want support for multiple types, i.e. List<> can just use AddRange instead of a foreach loop...
+        return "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
     }
 
     private static string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)

@@ -82,7 +82,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "Property3.AddRange(source.Property3);"
+                "foreach (var item in source.Property3) Property3.Add(item);"
             );
         }
 
@@ -119,7 +119,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "Property3.AddRange(source.Property3);"
+                "foreach (var item in source.Property3) Property3.Add(item);"
             );
         }
 
@@ -158,7 +158,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "_property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "_property2 = source.Property2;",
-                "if (source.Property3 is not null) _property3.AddRange(source.Property3);"
+                "if (source.Property3 is not null) foreach (var item in source.Property3) _property3.Add(item);"
             );
         }
 

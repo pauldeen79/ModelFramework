@@ -180,7 +180,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
             return $"{property.Name} = {property.Name}.Concat({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()});";
         }
 
-        return $"{property.Name}.AddRange({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()});";
+        //TODO: Check whether we want support for multiple types, i.e. List<> can just use AddRange instead of a foreach loop...
+        return $"foreach (var item in {property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}) {property.Name}.Add(item);";
     }
 
     private static string GetReturnValue(BuilderContext context)
