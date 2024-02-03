@@ -294,20 +294,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "return _property8;"
             );
             result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.Select(x => x.HasSetter).Should().BeEquivalentTo
-            (
-                new[]
-                {
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    false,
-                    false
-                }
-            );
+            result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
             result.Value.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
