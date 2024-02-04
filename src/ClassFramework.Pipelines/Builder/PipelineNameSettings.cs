@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record PipelineNameSettings
+public class PipelineNameSettings
 {
     public string SetMethodNameFormatString { get; }
     public string AddMethodNameFormatString { get; }

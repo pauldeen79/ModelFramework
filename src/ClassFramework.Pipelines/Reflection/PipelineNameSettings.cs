@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Reflection;
 
-public record PipelineNameSettings
+public class PipelineNameSettings
 {
     public string NamespaceFormatString { get; }
     public string NameFormatString { get; }

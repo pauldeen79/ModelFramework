@@ -1,4 +1,3 @@
-*Settings and Context classes from record to class
 *Add toggle for public parameterless constructor on entity pipeline
 *Change generated code in Domain.POC to use classes instead of records - do we really need value equality?
 *Fix TODO's for collection initialization in Pipelines project

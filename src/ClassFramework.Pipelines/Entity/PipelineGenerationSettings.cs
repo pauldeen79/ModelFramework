@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record PipelineGenerationSettings
+public class PipelineGenerationSettings
 {
     public bool AddSetters { get; }
     public bool AddBackingFields { get; }

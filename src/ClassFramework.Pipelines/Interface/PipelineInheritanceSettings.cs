@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Interface;
 
-public record PipelineInheritanceSettings
+public class PipelineInheritanceSettings
 {
     public bool EnableInheritance { get; }
     public bool IsAbstract { get; }

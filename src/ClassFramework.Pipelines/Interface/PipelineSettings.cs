@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Interface;
 
-public sealed record PipelineSettings : IPipelineGenerationSettings
+public sealed class PipelineSettings : IPipelineGenerationSettings
 {
     public PipelineNameSettings NameSettings { get; }
     public PipelineInheritanceSettings InheritanceSettings { get; }

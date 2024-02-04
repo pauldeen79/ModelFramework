@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.OverrideEntity;
 
-public record PipelineGenerationSettings
+public class PipelineGenerationSettings
 {
     public bool CreateRecord { get; }
     public bool AllowGenerationWithoutProperties { get; }

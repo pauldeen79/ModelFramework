@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public record ParentChildContext<TParentContext, TChild>
+public class ParentChildContext<TParentContext, TChild>
 {
     public ParentChildContext(TParentContext parentContext, TChild childContext, IPipelineGenerationSettings settings)
     {

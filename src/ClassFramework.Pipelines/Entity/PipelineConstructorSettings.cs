@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record PipelineConstructorSettings
+public class PipelineConstructorSettings
 {
     public ArgumentValidationType ValidateArguments { get; }
     public ArgumentValidationType OriginalValidateArguments { get; }

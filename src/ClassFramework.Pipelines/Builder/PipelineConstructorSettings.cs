@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record PipelineConstructorSettings
+public class PipelineConstructorSettings
 {
     public bool AddCopyConstructor { get; }
     public bool SetDefaultValues { get; }

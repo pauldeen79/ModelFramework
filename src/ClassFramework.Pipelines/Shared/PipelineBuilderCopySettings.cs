@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Shared;
 
-public record PipelineBuilderCopySettings
+public class PipelineBuilderCopySettings
 {
     public bool CopyAttributes { get; }
     public bool CopyInterfaces { get; }

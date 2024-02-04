@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Interface;
 
-public record PipelineGenerationSettings
+public class PipelineGenerationSettings
 {
     public bool AddSetters { get; }
     public bool AllowGenerationWithoutProperties { get; }

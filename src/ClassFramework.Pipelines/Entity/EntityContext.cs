@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record EntityContext : ContextBase<IType, PipelineSettings>
+public class EntityContext : ContextBase<IType, PipelineSettings>
 {
     public EntityContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)

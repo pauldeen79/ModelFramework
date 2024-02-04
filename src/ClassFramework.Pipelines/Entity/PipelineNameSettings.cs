@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Entity;
 
-public record PipelineNameSettings
+public class PipelineNameSettings
 {
     public string EntityNamespaceFormatString { get; }
     public string EntityNameFormatString { get; }

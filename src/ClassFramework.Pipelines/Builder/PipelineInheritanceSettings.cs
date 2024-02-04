@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record PipelineInheritanceSettings
+public class PipelineInheritanceSettings
 {
     public bool IsAbstract { get; }
     public bool EnableBuilderInheritance { get; }

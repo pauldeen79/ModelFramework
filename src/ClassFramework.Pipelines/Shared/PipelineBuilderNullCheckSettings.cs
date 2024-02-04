@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Shared;
 
-public record PipelineBuilderNullCheckSettings
+public class PipelineBuilderNullCheckSettings
 {
     public PipelineBuilderNullCheckSettings(bool addNullChecks = false, bool useExceptionThrowIfNull = false)
     {

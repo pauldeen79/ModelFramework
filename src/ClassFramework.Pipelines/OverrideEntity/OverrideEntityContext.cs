@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.OverrideEntity;
 
-public record OverrideEntityContext : ContextBase<IType, PipelineSettings>
+public class OverrideEntityContext : ContextBase<IType, PipelineSettings>
 {
     public OverrideEntityContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)

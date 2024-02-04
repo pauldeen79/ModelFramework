@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Interface;
 
-public record PipelineTypeSettings : PipelineBuilderTypeSettingsBase
+public class PipelineTypeSettings : PipelineBuilderTypeSettingsBase
 {
     public PipelineTypeSettings(
         string newCollectionTypeName = "System.Collections.Generic.List",

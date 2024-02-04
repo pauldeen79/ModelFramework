@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Shared;
 
-public abstract record PipelineBuilderTypeSettingsBase : IPipelineBuilderTypeSettings
+public abstract class PipelineBuilderTypeSettingsBase : IPipelineBuilderTypeSettings
 {
     public string NewCollectionTypeName { get; }
     public bool EnableNullableReferenceTypes { get; }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Reflection;
 
-public record PipelineTypeSettings : PipelineBuilderTypeSettingsBase
+public class PipelineTypeSettings : PipelineBuilderTypeSettingsBase
 {
     public PipelineTypeSettings(
         IEnumerable<NamespaceMapping>? namespaceMappings = null,

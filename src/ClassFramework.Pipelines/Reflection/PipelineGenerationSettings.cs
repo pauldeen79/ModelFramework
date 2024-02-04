@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Reflection;
 
-public record PipelineGenerationSettings
+public class PipelineGenerationSettings
 {
     public bool AllowGenerationWithoutProperties { get; }
     public bool UseBaseClassFromSourceModel { get; }

@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public abstract record ContextBase<TModel, TSettings>
+public abstract class ContextBase<TModel, TSettings>
 {
     protected ContextBase(TModel sourceModel, TSettings settings, IFormatProvider formatProvider)
     {
