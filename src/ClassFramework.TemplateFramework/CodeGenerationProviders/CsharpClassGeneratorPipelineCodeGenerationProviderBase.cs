@@ -56,7 +56,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool CopyInterfaces => false;
     protected virtual bool AddNullChecks => true;
     protected virtual bool UseExceptionThrowIfNull => false;
-    protected virtual bool CreateRecord => true;
+    protected virtual bool CreateRecord => false;
     protected virtual bool AddBackingFields => false;
     protected virtual SubVisibility SetterVisibility => SubVisibility.InheritFromParent;
     protected virtual bool AddSetters => false;
