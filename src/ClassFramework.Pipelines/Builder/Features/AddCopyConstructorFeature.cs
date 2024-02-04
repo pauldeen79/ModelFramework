@@ -147,23 +147,12 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                 (
                     MetadataNames.CustomBuilderConstructorInitializeExpression,
                     () => property.TypeName.FixTypeName().IsCollectionTypeName()
-                        ? CreateCollectionInitialization(context.Context.Settings)
-                        : "{BuilderMemberName} = source.[SourceExpression]" // note that we are not prefixing {NullCheck.Source.Argument}, because we can simply always copy the value, regardless if it's null :)
+                        ? context.Context.Settings.TypeSettings.CollectionInitializationStatementFormatString
+                        : context.Context.Settings.TypeSettings.NonCollectionInitializationStatementFormatString
                 ),
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );
-
-    private static string CreateCollectionInitialization(PipelineSettings settings)
-    {
-        if (settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
-        {
-            return "{NullCheck.Source.Argument}{BuilderMemberName} = {Name}.Concat(source.[SourceExpression])";
-        }
-
-        //TODO: Check whether we want support for multiple types, i.e. List<> can just use AddRange instead of a foreach loop...
-        return "{NullCheck.Source.Argument}foreach (var item in source.[SourceExpression]) {BuilderMemberName}.Add(item)";
-    }
 
     private static string? GetSourceExpression(string? value, Property sourceProperty, PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {

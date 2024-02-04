@@ -163,7 +163,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         (
             property.Metadata
                 .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                .GetStringValue(MetadataNames.CustomBuilderAddExpression, () => CreateBuilderCollectionPropertyAddExpression(property, context.Context)),
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Context.Settings.TypeSettings.CollectionCopyStatementFormatString),
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );
@@ -171,17 +171,6 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         yield return builderAddExpressionResult;
 
         yield return Result.Success($"return {GetReturnValue(context.Context)};");
-    }
-
-    private static string CreateBuilderCollectionPropertyAddExpression(Property property, BuilderContext context)
-    {
-        if (context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
-        {
-            return $"{property.Name} = {property.Name}.Concat({property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()});";
-        }
-
-        //TODO: Check whether we want support for multiple types, i.e. List<> can just use AddRange instead of a foreach loop...
-        return $"foreach (var item in {property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}) {property.Name}.Add(item);";
     }
 
     private static string GetReturnValue(BuilderContext context)

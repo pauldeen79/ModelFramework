@@ -165,40 +165,6 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
         }
 
         [Fact]
-        public void Adds_Methods_With_Enumerable()
-        {
-            // Arrange
-            var sourceModel = CreateModel();
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
-                newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
-                addMethodNameFormatString: "Add{Name}");
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().HaveCount(2);
-            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
-            (
-                "Property3 = Property3.Concat(property3);",
-                "return this;",
-                "Property3 = Property3.Concat(property3);",
-                "return this;"
-            );
-        }
-
-        [Fact]
         public void Adds_Methods_With_Shared_Validation()
         {
             // Arrange

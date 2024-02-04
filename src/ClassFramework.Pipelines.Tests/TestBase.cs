@@ -159,9 +159,18 @@ public abstract class TestBase : IDisposable
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
         => new Pipelines.Builder.PipelineSettings(
-            typeSettings: new Pipelines.Builder.PipelineTypeSettings(newCollectionTypeName: newCollectionTypeName, enableNullableReferenceTypes: enableNullableReferenceTypes, namespaceMappings, typenameMappings),
+            typeSettings: new Pipelines.Builder.PipelineTypeSettings(
+                newCollectionTypeName: newCollectionTypeName,
+                enableNullableReferenceTypes: enableNullableReferenceTypes,
+                namespaceMappings: namespaceMappings,
+                typenameMappings: typenameMappings),
             constructorSettings: new Pipelines.Builder.PipelineConstructorSettings(addCopyConstructor, setDefaultValues),
-            inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(enableBuilderInheritance: enableBuilderInheritance, isAbstract: isAbstract, baseClass: baseClass, baseClassBuilderNameSpace: baseClassBuilderNameSpace, inheritanceComparisonDelegate: inheritanceComparisonDelegate),
+            inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(
+                enableBuilderInheritance: enableBuilderInheritance,
+                isAbstract: isAbstract,
+                baseClass: baseClass,
+                baseClassBuilderNameSpace: baseClassBuilderNameSpace,
+                inheritanceComparisonDelegate: inheritanceComparisonDelegate),
             entitySettings: CreateEntitySettings
             (
                 enableEntityInheritance: enableEntityInheritance,

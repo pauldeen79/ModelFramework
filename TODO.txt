@@ -1,2 +1,2 @@
 *Add toggle for public parameterless constructor on entity pipeline
-*Fix TODO's for collection initialization in Pipelines project
+*Use deferred interpolation instead of [ ]
