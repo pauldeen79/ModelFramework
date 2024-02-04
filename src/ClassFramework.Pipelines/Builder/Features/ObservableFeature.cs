@@ -37,22 +37,7 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderC
             context.Model.AddInterfaces(typeof(INotifyPropertyChanged));
         }
 
-        context.Model
-            .AddFields(new FieldBuilder()
-                .WithName(nameof(INotifyPropertyChanged.PropertyChanged))
-                .WithType(typeof(PropertyChangedEventHandler))
-                .WithEvent()
-                .WithIsNullable()
-                .WithVisibility(Visibility.Public)
-            );
-
-        context.Model
-            .AddMethods(new MethodBuilder()
-                .WithName("HandlePropertyChanged")
-                .AddParameter("propertyName", typeof(string))
-                .WithProtected()
-                .AddStringCodeStatements("PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));")
-            );
+        context.Model.AddObservableMembers();
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
