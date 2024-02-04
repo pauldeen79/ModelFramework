@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB21E818-ACA6-4942-BBB6-51787189DF42}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelFramework.Database.Tests", "src\ModelFramework.Database.Tests\ModelFramework.Database.Tests.csproj", "{10480F4C-ABED-4B2C-9BF4-F721406D63E6}"
@@ -54,7 +55,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFram
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.IntegrationTests", "src\ClassFramework.IntegrationTests\ClassFramework.IntegrationTests.csproj", "{533B3E27-06DC-4298-99EB-50C53ED420F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.Domain.POC", "src\ClassFramework.Domain.POC\ClassFramework.Domain.POC.csproj", "{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Domain.POC", "src\ClassFramework.Domain.POC\ClassFramework.Domain.POC.csproj", "{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
