@@ -41,6 +41,7 @@ public class CodeGenerationTests
         // Arrange
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var instances = _generationTypes
+            //.Where(x => !x.Name.EndsWith("Builders", StringComparison.Ordinal))
             .Select(x => (ICodeGenerationProvider)_scope.ServiceProvider.GetRequiredService(x))
             .ToArray();
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();

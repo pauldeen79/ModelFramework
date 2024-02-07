@@ -1,23 +1,23 @@
 ﻿namespace ClassFramework.Pipelines.Entity.Features;
 
-public class AddConstructorFeatureBuilder : IEntityFeatureBuilder
+public class AddFullConstructorFeatureBuilder : IEntityFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
-    public AddConstructorFeatureBuilder(IFormattableStringParser formattableStringParser)
+    public AddFullConstructorFeatureBuilder(IFormattableStringParser formattableStringParser)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
     public IPipelineFeature<IConcreteTypeBuilder, EntityContext> Build()
-        => new AddConstructorFeature(_formattableStringParser);
+        => new AddFullConstructorFeature(_formattableStringParser);
 }
 
-public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
+public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, EntityContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
-    public AddConstructorFeature(IFormattableStringParser formattableStringParser)
+    public AddFullConstructorFeature(IFormattableStringParser formattableStringParser)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
@@ -25,6 +25,11 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
         context = context.IsNotNull(nameof(context));
+
+        if (!context.Context.Settings.ConstructorSettings.AddFullConstructor)
+        {
+            return Result.Continue<IConcreteTypeBuilder>();
+        }
 
         var ctorResult = CreateEntityConstructor(context);
         if (!ctorResult.IsSuccessful())
@@ -38,7 +43,7 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     }
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, EntityContext>> ToBuilder()
-        => new AddConstructorFeatureBuilder(_formattableStringParser);
+        => new AddFullConstructorFeatureBuilder(_formattableStringParser);
 
     private Result<ConstructorBuilder> CreateEntityConstructor(PipelineContext<IConcreteTypeBuilder, EntityContext> context)
     {
@@ -70,7 +75,6 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Enti
     }
 
     private static IEnumerable<string> CreateValidationCode(PipelineContext<IConcreteTypeBuilder, EntityContext> context, bool baseClass)
-
     {
         var needValidation =
             context.Context.Settings.AddValidationCode == ArgumentValidationType.DomainOnly

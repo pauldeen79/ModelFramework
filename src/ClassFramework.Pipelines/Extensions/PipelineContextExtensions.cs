@@ -29,7 +29,6 @@ public static class PipelineContextExtensions
         var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Count != 0);
 
         var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
-
         if (!parametersResult.IsSuccessful())
         {
             return parametersResult;
@@ -108,9 +107,67 @@ public static class PipelineContextExtensions
             return sourceProperty.Name;
         }
 
-        return sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
-            ? $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})"
-            : value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
+        if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
+        {
+            return GetCollectionBuilderPropertyExpression(value, sourceProperty, suffix);
+        }
+        else
+        {
+            return value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
+        }
+    }
+
+    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string suffix)
+    {
+        var concreteType = GetConcreteType(sourceProperty.TypeName.FixTypeName());
+        if (!string.IsNullOrEmpty(concreteType))
+        {
+            return $"new {concreteType}({sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)}))";
+        }
+
+        return $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})";
+    }
+
+    private static string GetConcreteType(string typeName)
+    {
+        //TODO: Fix open/closed violation, and add support to configure format string for this
+        var typeNameWithoutGenerics = typeName.WithoutProcessedGenerics();
+        if (typeNameWithoutGenerics == typeof(List<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        if (typeNameWithoutGenerics == typeof(Collection<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        if (typeNameWithoutGenerics == typeof(ReadOnlyCollection<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        if (typeNameWithoutGenerics == typeof(ObservableCollection<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        if (typeNameWithoutGenerics == typeof(ObservableValueCollection<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        if (typeNameWithoutGenerics == typeof(ReadOnlyValueCollection<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        if (typeNameWithoutGenerics == typeof(ReadOnlyObservableCollection<>).WithoutGenerics())
+        {
+            return typeName;
+        }
+
+        return string.Empty;
     }
 
     private static string GetBuilderPocoCloseSign(bool poco)

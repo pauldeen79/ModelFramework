@@ -1,8 +1,8 @@
 ﻿namespace ClassFramework.Pipelines.Tests.Entity.Features;
 
-public class AddConstructorFeatureTests : TestBase<Pipelines.Entity.Features.AddConstructorFeature>
+public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features.AddFullConstructorFeature>
 {
-    public class Process : AddConstructorFeatureTests
+    public class Process : AddFullConstructorFeatureTests
     {
         [Fact]
         public void Throws_On_Null_Context()

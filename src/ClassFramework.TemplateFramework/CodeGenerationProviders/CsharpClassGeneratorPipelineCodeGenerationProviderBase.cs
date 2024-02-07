@@ -71,6 +71,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual bool AllowGenerationWithoutProperties => true;
     protected virtual string SetMethodNameFormatString => "With{Name}";
     protected virtual string AddMethodNameFormatString => "Add{Name}";
+    protected virtual string ToBuilderFormatString => "ToBuilder";
+    protected virtual string ToTypedBuilderFormatString => "ToTypedBuilder";
+    protected virtual bool AddFullConstructor => true;
+    protected virtual bool AddPublicParameterlessConstructor => false;
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
@@ -292,7 +296,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 copyInterfaces: CopyInterfaces),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(
                 entityNameFormatString: entityNameFormatString,
-                entityNamespaceFormatString: entitiesNamespace),
+                entityNamespaceFormatString: entitiesNamespace,
+                toBuilderFormatString: ToBuilderFormatString,
+                toTypedBuilderFormatString: ToTypedBuilderFormatString),
             inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
                 EnableEntityInheritance,
                 IsAbstract,
@@ -306,7 +312,9 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
                 validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
                 originalValidateArguments: ValidateArgumentsInConstructor,
-                collectionTypeName: RecordConcreteCollectionType.WithoutGenerics()),
+                collectionTypeName: RecordConcreteCollectionType.WithoutGenerics(),
+                addFullConstructor: AddFullConstructor,
+                addPublicParameterlessConstructor: AddPublicParameterlessConstructor),
             nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
                 addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
                 useExceptionThrowIfNull: UseExceptionThrowIfNull)
