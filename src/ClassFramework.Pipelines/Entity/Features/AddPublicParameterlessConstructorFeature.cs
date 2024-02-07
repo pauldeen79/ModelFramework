@@ -66,7 +66,9 @@ public class AddPublicParameterlessConstructorFeature : IPipelineFeature<IConcre
     private Result<string> GenerateDefaultValueStatement(Property property, PipelineContext<IConcreteTypeBuilder, EntityContext> context)
         => _formattableStringParser.Parse
         (
-            "{EntityMemberName} = {DefaultValue};",
+            property.TypeName.FixTypeName().IsCollectionTypeName()
+                ? "{EntityMemberName} = new {TypeName}();"
+                : "{EntityMemberName} = {DefaultValue};",
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, EntityContext>, Property>(context, property, context.Context.Settings)
         );
