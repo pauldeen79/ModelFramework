@@ -195,6 +195,8 @@ public abstract class TestBase : IDisposable
         bool copyAttributes = false,
         bool copyInterfaces = false,
         ArgumentValidationType validateArguments = ArgumentValidationType.None,
+        bool addFullConstructor = true,
+        bool addPublicParameterlessConstructor = false,
         bool allowGenerationWithoutProperties = false,
         bool isAbstract = false,
         Class? baseClass = null,
@@ -228,7 +230,11 @@ public abstract class TestBase : IDisposable
                 enableInheritance: enableEntityInheritance,
                 isAbstract: isAbstract,
                 baseClass: baseClass),
-            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(validateArguments: validateArguments, collectionTypeName: collectionTypeName),
+            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
+                validateArguments: validateArguments,
+                collectionTypeName: collectionTypeName,
+                addFullConstructor: addFullConstructor,
+                addPublicParameterlessConstructor: addPublicParameterlessConstructor),
             nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNamespaceFormatString, entityNameFormatString, toBuilderFormatString, toTypedBuilderFormatString),
             typeSettings: new Pipelines.Entity.PipelineTypeSettings(
                 newCollectionTypeName,

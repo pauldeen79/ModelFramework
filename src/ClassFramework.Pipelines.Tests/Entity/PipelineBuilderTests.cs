@@ -168,7 +168,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 addBackingFields: true,
+                addSetters: true,
                 createAsObservable: true,
+                addPublicParameterlessConstructor: true,
+                addFullConstructor: false,
                 newCollectionTypeName: typeof(ObservableCollection<>).WithoutGenerics(),
                 collectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
             var context = CreateContext(model, settings);
@@ -188,21 +191,19 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
 
             var ctors = (result.Value as IConstructorsContainerBuilder)?.Constructors;
             ctors.Should().ContainSingle();
-            var copyConstructor = ctors!.Single();
-            copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            var publicParameterlessConstructor = ctors!.Single();
+            publicParameterlessConstructor.Parameters.Should().BeEmpty();
+            publicParameterlessConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            publicParameterlessConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "if (property5 is null) throw new System.ArgumentNullException(nameof(property5));",
-                "if (property7 is null) throw new System.ArgumentNullException(nameof(property7));",
-                "this._property1 = property1;",
-                "this._property2 = property2;",
-                "this._property3 = property3;",
-                "this._property4 = property4;",
-                "this._property5 = property5;",
-                "this._property6 = property6;",
-                "this._property7 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property7);",
-                "this._property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>(property8);"
+                "_property1 = default(System.Int32);",
+                "_property2 = default(System.Int32?);",
+                "_property3 = string.Empty;",
+                "_property4 = default(System.String?);",
+                "_property5 = default(MyNamespace.MyClass)!;",
+                "_property6 = default(MyNamespace.MyClass?);",
+                "_property7 = new System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>();",
+                "_property8 = new System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>();"
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
