@@ -13,9 +13,9 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     protected override Type RecordCollectionType => typeof(IReadOnlyCollection<>);
     protected override Type RecordConcreteCollectionType => typeof(List<>);
     protected override Type BuilderCollectionType => typeof(List<>);
-    //protected override Type RecordCollectionType => typeof(ObservableValueCollection<>);
-    //protected override Type RecordConcreteCollectionType => typeof(ObservableValueCollection<>);
-    //protected override Type BuilderCollectionType => typeof(ObservableValueCollection<>);
+    //protected override Type RecordCollectionType => typeof(ObservableCollection<>);
+    //protected override Type RecordConcreteCollectionType => typeof(ObservableCollection<>);
+    //protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "ClassFramework";
     protected override string CodeGenerationRootNamespace => "ClassFramework.IntegrationTests";

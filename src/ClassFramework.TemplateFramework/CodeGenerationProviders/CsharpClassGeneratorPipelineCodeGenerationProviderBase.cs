@@ -414,7 +414,16 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                             : "[Name].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
                     })
                 })
-            .Concat(new[] { new TypenameMapping(typeof(bool).FullName!, typeof(bool).FullName!, new[] { new Metadata(true, Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue) }) })
+            .Concat(new[]
+            {
+                new TypenameMapping(typeof(bool).FullName!, typeof(bool).FullName!, new[] { new Metadata(true, Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue) }),
+                new TypenameMapping(typeof(List<>).WithoutGenerics(), typeof(List<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+                new TypenameMapping(typeof(Collection<>).WithoutGenerics(), typeof(Collection<>).WithoutGenerics(), new[] { new Metadata("new [Type]<[Generics]>([Expression].ToList())", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+                new TypenameMapping(typeof(ObservableCollection<>).WithoutGenerics(), typeof(ObservableCollection<>).WithoutGenerics(), new[] { new Metadata("new [Type]<[Generics]>([Expression])", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+                new TypenameMapping(typeof(IReadOnlyCollection<>).WithoutGenerics(), typeof(IReadOnlyCollection<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList().AsReadOnly()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+                new TypenameMapping(typeof(IList<>).WithoutGenerics(), typeof(IList<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+                new TypenameMapping(typeof(ICollection<>).WithoutGenerics(), typeof(ICollection<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+            })
             .ToArray();
 
     private string ReplaceStart(string fullNamespace, string baseNamespace, bool appendDot)

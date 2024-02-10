@@ -75,11 +75,20 @@ public static class PipelineContextExtensions
                 Result = formattableStringParser.Parse
                 (
                     property.Metadata
-                        .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                        .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
+                        .WithMappingMetadata
+                        (
+                            property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName),
+                            context.Context.Settings.TypeSettings
+                        ).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
                     new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
                 ),
+                CollectionInitializer = property.Metadata
+                    .WithMappingMetadata
+                    (
+                        property.TypeName.FixTypeName().WithoutProcessedGenerics(), // i.e. List<> etc.
+                        context.Context.Settings.TypeSettings
+                    ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
                 Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
@@ -91,11 +100,11 @@ public static class PipelineContextExtensions
         }
 
         return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
-            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix)}"
-            : GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix))));
+            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value, x.Source, x.CollectionInitializer, x.Suffix)}"
+            : GetBuilderPropertyExpression(x.Result.Value, x.Source, x.CollectionInitializer, x.Suffix))));
     }
 
-    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string suffix)
+    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix)
     {
         if (value is null || !value.Contains("[Name]"))
         {
@@ -109,7 +118,7 @@ public static class PipelineContextExtensions
 
         if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
         {
-            return GetCollectionBuilderPropertyExpression(value, sourceProperty, suffix);
+            return GetCollectionBuilderPropertyExpression(value, sourceProperty, collectionInitializer, suffix);
         }
         else
         {
@@ -117,58 +126,11 @@ public static class PipelineContextExtensions
         }
     }
 
-    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string suffix)
-    {
-        var concreteType = GetConcreteType(sourceProperty.TypeName.FixTypeName());
-        if (!string.IsNullOrEmpty(concreteType))
-        {
-            return $"new {concreteType}({sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)}))";
-        }
-
-        return $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})";
-    }
-
-    private static string GetConcreteType(string typeName)
-    {
-        //TODO: Fix open/closed violation, and add support to configure format string for this
-        var typeNameWithoutGenerics = typeName.WithoutProcessedGenerics();
-        if (typeNameWithoutGenerics == typeof(List<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        if (typeNameWithoutGenerics == typeof(Collection<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        if (typeNameWithoutGenerics == typeof(ReadOnlyCollection<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        if (typeNameWithoutGenerics == typeof(ObservableCollection<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        if (typeNameWithoutGenerics == typeof(ObservableValueCollection<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        if (typeNameWithoutGenerics == typeof(ReadOnlyValueCollection<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        if (typeNameWithoutGenerics == typeof(ReadOnlyObservableCollection<>).WithoutGenerics())
-        {
-            return typeName;
-        }
-
-        return string.Empty;
-    }
+    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix)
+        => collectionInitializer
+            .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutProcessedGenerics())
+            .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments())
+            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})");
 
     private static string GetBuilderPocoCloseSign(bool poco)
         => poco

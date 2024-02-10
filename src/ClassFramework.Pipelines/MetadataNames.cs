@@ -96,4 +96,9 @@ public static class MetadataNames
     /// Metadata name for defining if the entity should be checked for null. Value needs to be a boolean.
     /// </summary>
     public const string EntityNullCheck = "ClassFramework.Entity.NullCheck";
+
+    /// <summary>
+    /// Metadata name for defining custom initialization of collections. Value will be converted to string.
+    /// </summary>
+    public const string CustomCollectionInitialization = "ClassFramework.Entity.Collection.Type.For.Initialization";
 }

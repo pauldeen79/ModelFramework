@@ -163,8 +163,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
+            var typenameMappings = CreateTypenameMappings();
             var settings = CreateEntitySettings(
                 namespaceMappings: namespaceMappings,
+                typenameMappings: typenameMappings,
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 addBackingFields: true,
@@ -202,8 +204,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "_property4 = default(System.String?);",
                 "_property5 = default(MyNamespace.MyClass)!;",
                 "_property6 = default(MyNamespace.MyClass?);",
-                "_property7 = new System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>();",
-                "_property8 = new System.Collections.ObjectModel.ObservableCollection<MyNamespace.MyClass>();"
+                "_property7 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>();",
+                "_property8 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>();"
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged

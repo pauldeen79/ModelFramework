@@ -354,6 +354,7 @@ public abstract class TestBase : IDisposable
                 copyAttributePredicate: copyAttributePredicate,
                 copyInterfacePredicate: copyInterfacePredicate)
         );
+
     protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         => new[]
         {
@@ -363,6 +364,13 @@ public abstract class TestBase : IDisposable
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
+        }.Select(x => x.Build());
+
+    protected static IEnumerable<TypenameMapping> CreateTypenameMappings()
+        => new[]
+        {
+            new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type]<[Generics]>([Expression])"), //"[Expression].ToList()"
+            new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
         }.Select(x => x.Build());
 
     protected virtual void Dispose(bool disposing)

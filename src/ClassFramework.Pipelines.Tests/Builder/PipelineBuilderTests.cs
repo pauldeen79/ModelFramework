@@ -236,7 +236,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
-            var settings = CreateBuilderSettings(addCopyConstructor: true, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
+            var typenameMappings = CreateTypenameMappings();
+            var settings = CreateBuilderSettings(addCopyConstructor: true, typenameMappings: typenameMappings, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
             var context = CreateContext(model, settings);
 
             var sut = CreateSut().Build();
