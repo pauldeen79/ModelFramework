@@ -1,2 +1,1 @@
-*Add toggle for public parameterless constructor on entity pipeline
 *Use deferred interpolation instead of [ ]
