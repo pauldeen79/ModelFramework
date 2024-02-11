@@ -9,26 +9,15 @@ public class TypeProcessor : IPipelinePlaceholderProcessor
             return Result.Continue<string>();
         }
 
-        var name = pipelineContext.Model.Name;
-        var nameNoInterfacePrefix = pipelineContext.Model.IsInterface
-            && pipelineContext.Model.Name.StartsWith("I")
-            && pipelineContext.Model.Name.Length >= 2
-            && pipelineContext.Model.Name.Substring(1, 1).Equals(pipelineContext.Model.Name.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
-            ? name.Substring(1)
-            : name;
-
-        var fullName = pipelineContext.Model.FullName;
-        var ns = pipelineContext.Model.Namespace;
-
         return value switch
         {
-            nameof(Type.Name) or $"Class.{nameof(Type.Name)}" => Result.Success(name),
-            $"{nameof(Type.Name)}Lower" or $"Class.{nameof(Type.Name)}Lower" => Result.Success(name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(Type.Name)}Upper" or $"Class.{nameof(Type.Name)}Upper" => Result.Success(name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(Type.Name)}Pascal" or $"Class.{nameof(Type.Name)}Pascal" => Result.Success(name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(Type.Namespace)}" or $"Class.{nameof(Type.Namespace)}" => Result.Success(ns),
-            $"{nameof(Type.FullName)}" or $"Class.{nameof(Type.FullName)}" => Result.Success(fullName),
-            $"{nameof(Type.Name)}NoInterfacePrefix" or $"Class.{nameof(Type.Name)}NoInterfacePrefix" => Result.Success(nameNoInterfacePrefix),
+            nameof(Type.Name) or $"Class.{nameof(Type.Name)}" => Result.Success(pipelineContext.Model.Name),
+            $"{nameof(Type.Name)}Lower" or $"Class.{nameof(Type.Name)}Lower" => Result.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"{nameof(Type.Name)}Upper" or $"Class.{nameof(Type.Name)}Upper" => Result.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"{nameof(Type.Name)}Pascal" or $"Class.{nameof(Type.Name)}Pascal" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"{nameof(Type.Namespace)}" or $"Class.{nameof(Type.Namespace)}" => Result.Success(pipelineContext.Model.Namespace),
+            $"{nameof(Type.FullName)}" or $"Class.{nameof(Type.FullName)}" => Result.Success(pipelineContext.Model.FullName),
+            $"{nameof(Type.Name)}NoInterfacePrefix" or $"Class.{nameof(Type.Name)}NoInterfacePrefix" => Result.Success(pipelineContext.Model.WithoutInterfacePrefix()),
             _ => Result.Continue<string>()
         };
     }
