@@ -75,6 +75,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected virtual string ToTypedBuilderFormatString => "ToTypedBuilder";
     protected virtual bool AddFullConstructor => true;
     protected virtual bool AddPublicParameterlessConstructor => false;
+    protected virtual bool AddCopyConstructor => true;
+    protected virtual bool SetDefaultValues => true;
     protected virtual string FilenameSuffix => ".template.generated";
     protected virtual Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => new Func<IParentTypeContainer, IType, bool>((parentNameContainer, typeBase)
         => parentNameContainer is not null
@@ -457,7 +459,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 builderNamespaceFormatString: buildersNamespace,
                 setMethodNameFormatString: SetMethodNameFormatString,
                 addMethodNameFormatString: AddMethodNameFormatString),
-            inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, BaseClass, BaseClassBuilderNamespace, InheritanceComparisonDelegate)
+            inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, BaseClass, BaseClassBuilderNamespace, InheritanceComparisonDelegate),
+            constructorSettings: new Pipelines.Builder.PipelineConstructorSettings(addCopyConstructor: AddCopyConstructor, setDefaultValues: SetDefaultValues)
         );
 
     private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)

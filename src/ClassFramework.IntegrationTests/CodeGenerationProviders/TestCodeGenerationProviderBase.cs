@@ -26,8 +26,9 @@ public abstract class TestCodeGenerationProviderBase : CsharpClassGeneratorPipel
     //protected override Domain.Domains.SubVisibility SetterVisibility => Domain.Domains.SubVisibility.Private;
     //protected override bool AddBackingFields => true;
     //protected override bool CreateAsObservable => true;
-    //protected override string ToBuilderFormatString => string.Empty;
-    //protected override string ToTypedBuilderFormatString => string.Empty;
+    protected override string ToBuilderFormatString => string.Empty;
+    protected override string ToTypedBuilderFormatString => string.Empty;
     //protected override bool AddFullConstructor => false;
     //protected override bool AddPublicParameterlessConstructor => true;
+    protected override bool AddCopyConstructor => false;
 }
