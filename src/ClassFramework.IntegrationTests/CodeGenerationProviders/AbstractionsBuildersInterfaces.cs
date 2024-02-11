@@ -1,4 +1,5 @@
-﻿namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
+﻿
+namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
 
 public class AbstractionsBuildersInterfaces : TestCodeGenerationProviderBase
 {
@@ -11,4 +12,6 @@ public class AbstractionsBuildersInterfaces : TestCodeGenerationProviderBase
     public override string Path => "ClassFramework.Domain.POC/Builders/Abstractions";
 
     protected override bool EnableEntityInheritance => true;
+
+    protected override Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => (_, _) => true;
 }
