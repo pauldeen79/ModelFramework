@@ -1,4 +1,6 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿using ClassFramework.Domain.Builders.Extensions;
+
+namespace ClassFramework.Pipelines.Builder.Features;
 
 public class AddCopyConstructorFeatureBuilder : IBuilderFeatureBuilder
 {
@@ -100,6 +102,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                     .WithName("source")
                     .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
+            .AddParameters
+            (
+                context.Context.SourceModel.Metadata
+                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings)
+                    .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
+                    .Select(x => x.ToBuilder())
+            )
             .AddStringCodeStatements(constructorInitializerResults.Select(x => $"{x.Item1} = {x.Item2.Value};"))
             .AddStringCodeStatements(initializationCodeResults.Select(x => $"{GetSourceExpression(x.Item2.Value, x.Item1, context)};"))
         );
@@ -184,5 +193,12 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
                 new ParameterBuilder()
                     .WithName("source")
                     .WithTypeName($"{context.Context.SourceModel.GetFullName()}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+            )
+            .AddParameters
+            (
+                context.Context.SourceModel.Metadata
+                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings)
+                    .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
+                    .Select(x => x.ToBuilder())
             );
 }
