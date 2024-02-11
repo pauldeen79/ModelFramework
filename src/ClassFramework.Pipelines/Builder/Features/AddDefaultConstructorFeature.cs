@@ -1,6 +1,4 @@
-﻿using ClassFramework.Pipelines.Extensions;
-
-namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.Builder.Features;
 
 public class AddDefaultConstructorFeatureBuilder : IBuilderFeatureBuilder
 {
