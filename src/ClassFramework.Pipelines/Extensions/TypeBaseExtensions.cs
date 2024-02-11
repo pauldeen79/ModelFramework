@@ -152,4 +152,12 @@ public static class TypeBaseExtensions
         && baseClass is not null
             ? baseClass.GetFullName()
             : instance.GetCustomValueForInheritedClass(enableInheritance, cls => Result.Success(cls.BaseClass!)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
+
+    public static string WithoutInterfacePrefix(this IType instance)
+        => instance is Domain.Types.Interface
+            && instance.Name.StartsWith("I")
+            && instance.Name.Length >= 2
+            && instance.Name.Substring(1, 1).Equals(instance.Name.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
+                ? instance.Name.Substring(1)
+                : instance.Name;
 }
