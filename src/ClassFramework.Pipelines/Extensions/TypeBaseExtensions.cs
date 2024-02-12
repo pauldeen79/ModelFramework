@@ -132,21 +132,6 @@ public static class TypeBaseExtensions
         }
     }
 
-    public static IEnumerable<Property> GetPropertiesFromClassAndBaseClass(
-        this IType instance,
-        Builder.PipelineSettings settings)
-    {
-        settings = settings.IsNotNull(nameof(settings));
-
-        var properties = instance.Properties.AsEnumerable();
-        if (settings.InheritanceSettings.BaseClass is not null)
-        {
-            properties = properties.Concat(settings.InheritanceSettings.BaseClass.Properties);
-        }
-
-        return properties.Where(x => instance.IsMemberValidForBuilderClass(x, settings));
-    }
-
     public static string GetEntityBaseClass(this IType instance, bool enableInheritance, Class? baseClass)
         => enableInheritance
         && baseClass is not null
