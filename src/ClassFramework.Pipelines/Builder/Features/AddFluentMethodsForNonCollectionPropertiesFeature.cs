@@ -37,7 +37,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
             var results = new[]
             {
-                new { Name = "TypeName", LazyResult = new Lazy<Result<string>>(() => property.GetBuilderArgumentType(context, _formattableStringParser)) },
+                new { Name = "TypeName", LazyResult = new Lazy<Result<string>>(() => property.GetBuilderArgumentTypeName(context, _formattableStringParser)) },
                 new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext)) },
                 new { Name = "BuilderName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext)) },
                 new { Name = "ArgumentNullCheck", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext)) },

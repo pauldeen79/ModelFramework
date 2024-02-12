@@ -33,14 +33,14 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = property.GetBuilderArgumentType(context, _formattableStringParser);
+            var typeNameResult = property.GetBuilderArgumentTypeName(context, _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
-            var parentTypeNameResult = GetParentTypeNameResult(context, property);
+            var parentTypeNameResult = property.GetBuilderParentTypeName(context, _formattableStringParser);
 
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
@@ -71,41 +71,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
-    private Result<string> GetParentTypeNameResult(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
-    {
-        if (string.IsNullOrEmpty(property.ParentTypeFullName))
-        {
-            return Result.Success(property.ParentTypeFullName);
-        }
-
-        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings.TypeSettings);
-        var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
-
-        if (string.IsNullOrEmpty(ns))
-        {
-            return Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
-        }
-
-        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
-
-        if (property.TypeName.IsCollectionTypeName())
-        {
-            newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
-        }
-
-        var newFullName = $"{ns}.{newTypeName}";
-
-        return _formattableStringParser.Parse
-        (
-            newFullName,
-            context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-        );
-    }
-
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
-        Property property,
-        BuilderContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)
     {
         if (property.HasBackingFieldOnBuilder(context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Settings.EntitySettings.GenerationSettings.AddBackingFields))
         {
@@ -113,9 +79,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
         }
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
-        Property property,
-        BuilderContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, BuilderContext context)
     {
         if (property.HasBackingFieldOnBuilder(context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Settings.EntitySettings.GenerationSettings.AddBackingFields))
         {

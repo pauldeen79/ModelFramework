@@ -70,7 +70,7 @@ public static class PropertyExtensions
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
         context = context.IsNotNull(nameof(context));
 
-        var builderArgumentTypeResult = GetBuilderArgumentType(property, context, formattableStringParser);
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -83,7 +83,7 @@ public static class PropertyExtensions
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<string> GetBuilderArgumentType<TModel>(this Property property, PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<string> GetBuilderArgumentTypeName<TModel>(this Property property, PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser)
     {
         context = context.IsNotNull(nameof(context));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
@@ -117,6 +117,41 @@ public static class PropertyExtensions
             metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(property.TypeName)),
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
+        );
+    }
+
+    public static Result<string> GetBuilderParentTypeName(this Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    {
+        context = context.IsNotNull(nameof(context));
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        {
+            return Result.Success(property.ParentTypeFullName);
+        }
+
+        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings.TypeSettings);
+        var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
+
+        if (string.IsNullOrEmpty(ns))
+        {
+            return Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+        }
+
+        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
+
+        if (property.TypeName.IsCollectionTypeName())
+        {
+            newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
+        }
+
+        var newFullName = $"{ns}.{newTypeName}";
+
+        return formattableStringParser.Parse
+        (
+            newFullName,
+            context.Context.FormatProvider,
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );
     }
 

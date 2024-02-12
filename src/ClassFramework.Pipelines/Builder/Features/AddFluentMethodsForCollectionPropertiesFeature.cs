@@ -35,7 +35,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         {
             var childContext = CreateParentChildContext(context, property);
 
-            var typeNameResult = property.GetBuilderArgumentType(context, _formattableStringParser);
+            var typeNameResult = property.GetBuilderArgumentTypeName(context, _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
