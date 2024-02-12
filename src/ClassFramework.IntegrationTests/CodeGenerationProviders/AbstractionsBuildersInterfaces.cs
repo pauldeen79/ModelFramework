@@ -7,11 +7,9 @@ public class AbstractionsBuildersInterfaces : TestCodeGenerationProviderBase
     {
     }
 
-    public override IEnumerable<TypeBase> Model => GetBuilderInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Builders", "ClassFramework.Domain", "ClassFramework.Domain.Builders.Abstractions");
+    public override IEnumerable<TypeBase> Model => GetBuilderInterfaces(GetAbstractionsInterfaces(), "ClassFramework.Domain.Builders.Abstractions", "ClassFramework.Domain.Abstractions", "ClassFramework.Domain.Builders.Abstractions");
 
     public override string Path => "ClassFramework.Domain.POC/Builders/Abstractions";
 
     protected override bool EnableEntityInheritance => true;
-
-    protected override Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => (_, _) => true;
 }

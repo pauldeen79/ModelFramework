@@ -36,8 +36,11 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             $"{nameof(Property.TypeName)}.GenericArgumentsWithBrackets" => Result.Success(typeName.GetGenericArguments(addBrackets: true)),
             $"{nameof(Property.TypeName)}.GenericArguments.ClassName" => Result.Success(typeName.GetGenericArguments().GetClassName()),
             $"{nameof(Property.TypeName)}.ClassName" => Result.Success(typeName.GetClassName()),
+            $"{nameof(Property.TypeName)}.ClassName.NoInterfacePrefix" => Result.Success(WithoutInterfacePrefix(typeName.GetClassName())),
             $"{nameof(Property.TypeName)}.Namespace" => Result.Success(typeName.GetNamespaceWithDefault()),
             $"{nameof(Property.TypeName)}.NoGenerics" => Result.Success(typeName.WithoutProcessedGenerics()),
+            "ParentTypeName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName),
+            "ParentTypeName.ClassName" => Result.Success(propertyContext.SourceModel.ParentTypeFullName.GetClassName()),
             "DefaultValue" => formattableStringParser.Parse(propertyContext.SourceModel.GetDefaultValue(_csharpExpressionCreator, propertyContext.Settings.EnableNullableReferenceTypes, typeName), formatProvider, context),
             "NullableSuffix" => Result.Success(propertyContext.SourceModel.GetSuffix(propertyContext.Settings.EnableNullableReferenceTypes)),
             _ => Result.Continue<string>()
@@ -67,4 +70,12 @@ public class PropertyProcessor : IPipelinePlaceholderProcessor
             ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null{nullSuffix} : new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
             : $"new {collectionTypeName}<{genericTypeName}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
     }
+
+    private static string WithoutInterfacePrefix(string className)
+        => className.StartsWith("I")
+        && className.Length >= 2
+        && className.Substring(1, 1).Equals(className.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
+            ? className.Substring(1)
+            : className;
+
 }

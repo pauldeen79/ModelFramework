@@ -88,6 +88,16 @@ public static class MetadataNames
     public const string CustomBuilderInterfaceName = "ClassFramework.Builder.Interface.Name";
 
     /// <summary>
+    /// Metadata name for defining a custom builder parent type namespace. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderParentTypeNamespace = "ClassFramework.Builder.ParentType.Namespace";
+
+    /// <summary>
+    /// Metadata name for defining a custom builder parent type name. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderParentTypeName = "ClassFramework.Builder.ParentType.Name";
+
+    /// <summary>
     /// Metadata name for defining a custom entity namespace. Note that the value will be converted to string.
     /// </summary>
     public const string CustomEntityNamespace = "ClassFramework.Entity.Namespace";
