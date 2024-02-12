@@ -7,6 +7,9 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
     {
     }
 
+    public IEnumerable<Property> GetSourceProperties()
+        => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+
     public bool IsBuilderForAbstractEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
     public bool IsBuilderForOverrideEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && Settings.InheritanceSettings.BaseClass is not null;
     public bool IsAbstractBuilder => Settings.InheritanceSettings.EnableBuilderInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract) && !Settings.IsForAbstractBuilder;
@@ -59,7 +62,7 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
     {
         if (Settings.EntitySettings.NullCheckSettings.UseExceptionThrowIfNull)
         {
-            return $"System.ArgumentNullException.ThrowIfNull({argumentName});";
+            return $"{typeof(ArgumentNullException).FullName}.ThrowIfNull({argumentName});";
         }
         
         return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";

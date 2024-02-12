@@ -31,7 +31,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Context.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings);
 
