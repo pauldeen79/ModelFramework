@@ -40,55 +40,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                 return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
-            /*var parentTypeNameResult = string.IsNullOrEmpty(property.ParentTypeFullName)
-                ? Result.Success(string.Empty)
-                : new PropertyBuilder().WithName("Dummy").WithTypeName(property.ParentTypeFullName).Build().GetBuilderArgumentType(context, _formattableStringParser);
-
-            if (!parentTypeNameResult.IsSuccessful())
-            {
-                return Result.FromExistingResult<IConcreteTypeBuilder>(parentTypeNameResult);
-            }*/
-
-            Result<string> parentTypeNameResult;
-            if (!string.IsNullOrEmpty(property.ParentTypeFullName))
-            {
-                var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings.TypeSettings);
-                var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
-
-                if (!string.IsNullOrEmpty(ns))
-                {
-                    var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
-
-                    if (property.TypeName.IsCollectionTypeName())
-                    {
-                        newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
-                    }
-                    var newFullName = $"{ns}.{newTypeName}";
-                    /*if (property.TypeName.IsCollectionTypeName())
-                    {
-                        var idx = property.TypeName.IndexOf('<');
-                        if (idx > -1)
-                        {
-                            newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}")}>";
-                        }
-                    }*/
-
-                    parentTypeNameResult = _formattableStringParser.Parse
-                    (
-                        newFullName,
-                        context.Context.FormatProvider,
-                        new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-                    );
-                }
-                else
-                {
-                    parentTypeNameResult = Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
-                }
-            }
-            else
-            {
-                parentTypeNameResult = Result.Success(property.ParentTypeFullName);
-            }
+            var parentTypeNameResult = GetParentTypeNameResult(context, property);
 
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
@@ -118,6 +70,38 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
+
+    private Result<string> GetParentTypeNameResult(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
+    {
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        {
+            return Result.Success(property.ParentTypeFullName);
+        }
+
+        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings.TypeSettings);
+        var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
+
+        if (string.IsNullOrEmpty(ns))
+        {
+            return Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+        }
+
+        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
+
+        if (property.TypeName.IsCollectionTypeName())
+        {
+            newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
+        }
+
+        var newFullName = $"{ns}.{newTypeName}";
+
+        return _formattableStringParser.Parse
+        (
+            newFullName,
+            context.Context.FormatProvider,
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
+        );
+    }
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
         Property property,

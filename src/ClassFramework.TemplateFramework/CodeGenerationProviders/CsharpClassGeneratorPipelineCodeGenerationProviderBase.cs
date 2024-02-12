@@ -140,7 +140,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(interfacesNamespace);
 
-        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics(), InheritanceComparisonDelegate)).ToArray();
+        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics())).ToArray();
     }
 
     protected TypeBase[] GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -185,7 +185,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return GetBuilders(models, buildersNamespace, entitiesNamespace)
-            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), /* null */ InheritanceComparisonDelegate, "I{Class.Name}"))
+            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), "I{Class.Name}"))
             .ToArray();
     }
 
@@ -389,7 +389,6 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
             new Metadata("{TypeName.ClassName}Builder", Pipelines.MetadataNames.CustomBuilderInterfaceName),
             new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderParentTypeNamespace),
-            //new Metadata("{TypeName.ClassName.NoInterfacePrefix}Builder", Pipelines.MetadataNames.CustomBuilderName),
             new Metadata("{ParentTypeName.ClassName}Builder", Pipelines.MetadataNames.CustomBuilderParentTypeName),
         });
 
@@ -514,12 +513,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         TypeBase typeBase,
         string interfacesNamespace,
         string newCollectionTypeName,
-        Func<IParentTypeContainer, IType, bool>?  inheritanceComparisonDelegate,
         string nameFormatString = "{Class.Name}")
     {
         var builder = new InterfaceBuilder();
         _ = _interfacePipeline
-            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, inheritanceComparisonDelegate, nameFormatString), CultureInfo.InvariantCulture))
+            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, InheritanceComparisonDelegate, nameFormatString), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
