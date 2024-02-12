@@ -1,1 +1,2 @@
 *Use deferred interpolation instead of [ ]
+*Create extension methods for abstraction builders, so WithName is a generic extension method with type constraints (like in ClassFramework.Domain)
