@@ -67,11 +67,11 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             ).BuildTyped();
     }
 
-    protected static bool IsInterfacedMethod(string methodName, ModelFramework.Objects.Builders.ClassBuilder classBuilder)
+    protected bool IsInterfacedMethod(string methodName, ModelFramework.Objects.Builders.ClassBuilder classBuilder)
         => classBuilder.IsNotNull(nameof(classBuilder)).Properties
             .Where(x => x.ParentTypeFullName.StartsWith("ClassFramework.CodeGeneration.Models.Abstractions.", StringComparison.Ordinal))
             .Select(x => x.Name)
-            .Any(x => methodName == $"Set{x}" || methodName == $"Add{x}");
+            .Any(x => methodName == $"{SetMethodNameFormatString.Replace("{0}", string.Empty, StringComparison.Ordinal)}{x}" || methodName == $"{AddMethodNameFormatString.Replace("{0}", string.Empty, StringComparison.Ordinal)}{x}");
 
     private void FixBuilder<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
