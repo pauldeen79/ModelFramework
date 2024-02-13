@@ -17,7 +17,7 @@ public class AbstractBuilders : TestCodeGenerationProviderBase
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
 
-    // Do nog generate 'With' methods. Do this on the interfaces instead.
+    // Do not generate 'With' methods. Do this on the interfaces instead.
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
 }

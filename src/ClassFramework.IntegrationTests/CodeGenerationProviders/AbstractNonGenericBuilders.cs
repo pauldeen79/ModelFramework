@@ -19,7 +19,7 @@ public class AbstractNonGenericBuilders : TestCodeGenerationProviderBase
 
     protected override string FilenameSuffix => ".nongeneric.template.generated";
 
-    // Do nog generate 'With' methods. Do this on the interfaces instead.
+    // Do not generate 'With' methods. Do this on the interfaces instead.
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
 }
