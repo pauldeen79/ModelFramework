@@ -67,4 +67,28 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
         
         return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
+
+    public bool IsValidForFluentMethod(Property property)
+    {
+        property = property.IsNotNull(nameof(property));
+
+        if (!Settings.EntitySettings.CopySettings.CopyInterfaces)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        {
+            return true;
+        }
+
+        if (property.ParentTypeFullName == SourceModel.GetFullName())
+        {
+            return true;
+        }
+
+        var isInterfaced = SourceModel.Interfaces.Any(x => x == property.ParentTypeFullName);
+
+        return !isInterfaced;
+    }
 }

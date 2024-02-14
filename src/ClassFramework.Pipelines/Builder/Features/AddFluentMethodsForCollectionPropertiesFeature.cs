@@ -31,7 +31,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        foreach (var property in context.Context.GetSourceProperties().Where(x => x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Context.GetSourceProperties().Where(x => context.Context.IsValidForFluentMethod(x) && x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
             var childContext = CreateParentChildContext(context, property);
 
