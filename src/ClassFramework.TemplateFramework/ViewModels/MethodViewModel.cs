@@ -25,6 +25,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
     public string GenericTypeArguments
         => GetModel().GetGenericTypeArgumentsString();
 
+    public string GenericTypeArgumentConstraints
+        => GetModel().GetGenericTypeArgumentConstraintsString(12 + ((GetContext().GetIndentCount() - 1) * 4));
+
     public bool ExtensionMethod
         => GetModel().ExtensionMethod;
 

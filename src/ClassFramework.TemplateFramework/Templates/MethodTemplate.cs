@@ -31,6 +31,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
         RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
 
         builder.Append(")");
+        builder.Append(Model.GenericTypeArgumentConstraints);
 
         if (Model.OmitCode)
         {
