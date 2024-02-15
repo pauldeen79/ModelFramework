@@ -12,4 +12,5 @@ public class AbstractionsBuildersInterfaces : TestCodeGenerationProviderBase
     public override string Path => "ClassFramework.Domain.POC/Builders/Abstractions";
 
     protected override bool EnableEntityInheritance => true;
+    protected override bool AddSetters => true;
 }
