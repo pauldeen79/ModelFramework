@@ -527,6 +527,45 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         {
             if (property.TypeName.FixTypeName().IsCollectionTypeName())
             {
+
+                builder.AddMethods(new MethodBuilder()
+                    .WithName($"Add{property.Name}")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddParameter("instance", $"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .AddParameters
+                    (
+                        new ParameterBuilder()
+                            .WithName(property.Name.ToPascalCase(CultureInfo.InvariantCulture))
+                            .WithTypeName(property.TypeName.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
+                            .WithIsNullable(property.IsNullable)
+                            .WithIsValueType(property.IsValueType)
+                    )
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    //.AddStringCodeStatements($"return instance.Add{property.Name}({property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}.ToArray());")
+                );
+
+                builder.AddMethods(new MethodBuilder()
+                    .WithName($"Add{property.Name}")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddParameter("instance", $"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .AddParameters
+                    (
+                        new ParameterBuilder()
+                            .WithName(property.Name.ToPascalCase(CultureInfo.InvariantCulture))
+                            .WithTypeName(property.TypeName.FixTypeName().ConvertTypeNameToArray())
+                            .WithIsParamArray()
+                            .WithIsNullable(property.IsNullable)
+                            .WithIsValueType(property.IsValueType)
+                    )
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    //.AddStringCodeStatements($"return instance.Add{property.Name}({property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}.AsEnumerable());")
+                );
             }
             else
             {
