@@ -544,7 +544,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                     .AddGenericTypeArguments("T")
                     .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
                     .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    //.AddStringCodeStatements($"return instance.Add{property.Name}({property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}.ToArray());")
+                    .AddStringCodeStatements($"return instance.Add{property.Name}<T>({property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}.ToArray());")
                 );
 
                 builder.AddMethods(new MethodBuilder()
@@ -564,7 +564,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                     .AddGenericTypeArguments("T")
                     .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
                     .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    //.AddStringCodeStatements($"return instance.Add{property.Name}({property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}.AsEnumerable());")
+                    .AddStringCodeStatements($"foreach (var item in {property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}) instance.{property.Name}.Add(item);", "return instance;")
                 );
             }
             else
