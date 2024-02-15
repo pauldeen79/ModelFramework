@@ -160,6 +160,23 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }).ToArray();
     }
 
+    protected TypeBase[] GetBuilderExtensions(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
+    {
+        Guard.IsNotNull(models);
+        Guard.IsNotNull(buildersNamespace);
+        Guard.IsNotNull(entitiesNamespace);
+
+        return models.Select(x =>
+        {
+            var entityBuilder = new ClassBuilder();
+            _ = _entityPipeline
+                .Process(entityBuilder, new EntityContext(x, CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture))
+                .GetValueOrThrow();
+
+            return CreateBuilderExtensionsClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
+        }).ToArray();
+    }
+
     protected TypeBase[] GetNonGenericBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
     {
         Guard.IsNotNull(models);
@@ -485,6 +502,47 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         _ = _builderPipeline
             .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
+
+        return builder.Build();
+    }
+
+    private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
+    {
+        var sourceBuilder = new ClassBuilder();
+
+        // hacking here... need to create a dedicated pipeline for this.
+        var settings = CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace);
+        var context = new BuilderContext(typeBase, settings, CultureInfo.InvariantCulture);
+        _ = _builderPipeline
+            .Process(sourceBuilder, context)
+            .GetValueOrThrow();
+
+        var builder = new ClassBuilder()
+            .WithName($"{sourceBuilder.Name}Extensions")
+            .WithNamespace(sourceBuilder.Namespace)
+            .WithStatic()
+            .WithPartial();
+
+        foreach (var property in sourceBuilder.Properties.Where(x => context.IsValidForFluentMethod(x.Build())))
+        {
+            if (property.TypeName.FixTypeName().IsCollectionTypeName())
+            {
+            }
+            else
+            {
+                builder.AddMethods(new MethodBuilder()
+                    .WithName($"With{property.Name}")
+                    .WithStatic()
+                    .WithExtensionMethod()
+                    .AddParameter("instance", $"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .AddParameter(property.Name.ToPascalCase(CultureInfo.InvariantCulture), property.TypeName)
+                    .AddGenericTypeArguments("T")
+                    .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
+                    .AddStringCodeStatements($"instance.{property.Name} = {property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()};", "return instance;")
+                    );
+            }
+        }
 
         return builder.Build();
     }
