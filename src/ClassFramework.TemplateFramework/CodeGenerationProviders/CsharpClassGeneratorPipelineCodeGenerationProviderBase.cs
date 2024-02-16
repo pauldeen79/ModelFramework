@@ -140,7 +140,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(models);
         Guard.IsNotNull(interfacesNamespace);
 
-        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics())).ToArray();
+        return models.Select(x => CreateInterface(x, interfacesNamespace, RecordCollectionType.WithoutGenerics(), AddSetters)).ToArray();
     }
 
     protected TypeBase[] GetBuilders(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
@@ -202,7 +202,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         Guard.IsNotNull(interfacesNamespace);
 
         return GetBuilders(models, buildersNamespace, entitiesNamespace)
-            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), "I{Class.Name}"))
+            .Select(x => CreateInterface(x, interfacesNamespace, RecordConcreteCollectionType.WithoutGenerics(), true, "I{Class.Name}"))
             .ToArray();
     }
 
@@ -370,6 +370,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         string interfacesNamespace,
         string newCollectionTypeName,
         Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate,
+        bool addSetters,
         string nameFormatString = "{Class.Name}")
         => new(
             nameSettings: new Pipelines.Interface.PipelineNameSettings(
@@ -388,7 +389,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 copyAttributes: CopyAttributes,
                 copyInterfaces: CopyInterfaces),
             generationSettings: new Pipelines.Interface.PipelineGenerationSettings(
-                addSetters: AddSetters,
+                addSetters: addSetters,
                 allowGenerationWithoutProperties: AllowGenerationWithoutProperties)
         );
 
@@ -610,11 +611,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         TypeBase typeBase,
         string interfacesNamespace,
         string newCollectionTypeName,
+        bool addSetters,
         string nameFormatString = "{Class.Name}")
     {
         var builder = new InterfaceBuilder();
         _ = _interfacePipeline
-            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, InheritanceComparisonDelegate, nameFormatString), CultureInfo.InvariantCulture))
+            .Process(builder, new InterfaceContext(typeBase, CreateInterfacePipelineSettings(interfacesNamespace, newCollectionTypeName, InheritanceComparisonDelegate, addSetters, nameFormatString), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
