@@ -20,16 +20,6 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static string GetGenericTypeArgumentConstraintsString(this IType instance)
-        => instance.GenericTypeArgumentConstraints.Count != 0
-            ? string.Concat
-            (
-                Environment.NewLine,
-                "        ",
-                string.Join(string.Concat(Environment.NewLine, "        "), instance.GenericTypeArgumentConstraints)
-            )
-            : string.Empty;
-
     public static Result<string> GetCustomValueForInheritedClass(
         this IType instance,
         bool enableInheritance,
@@ -43,8 +33,7 @@ public static class TypeBaseExtensions
             return Result.Success(string.Empty);
         }
 
-        var baseClassContainer = instance as IBaseClassContainer;
-        if (baseClassContainer is null)
+        if (instance is not IBaseClassContainer baseClassContainer)
         {
             // Type cannot have a base class
             return Result.Success(string.Empty);
@@ -65,8 +54,7 @@ public static class TypeBaseExtensions
     {
         context = context.IsNotNull(nameof(context));
 
-        var constructorsContainer = instance as IConstructorsContainer;
-        if (constructorsContainer is null)
+        if (instance is not IConstructorsContainer constructorsContainer)
         {
             throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors", nameof(context));
         }
@@ -116,7 +104,7 @@ public static class TypeBaseExtensions
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
             && x.HasBackingFieldOnBuilder(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields)))
         {
-            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context, formattableStringParser);
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {

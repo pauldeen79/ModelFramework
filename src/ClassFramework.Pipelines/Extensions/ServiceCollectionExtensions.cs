@@ -5,6 +5,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddPipelines(this IServiceCollection services)
         => services
             .AddBuilderPipeline()
+            .AddBuilderInterfacePipeline()
             .AddEntityPipeline()
             .AddOverrideEntityPipeline()
             .AddReflectionPipeline()
@@ -39,6 +40,16 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.ObservableFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.SetNameFeatureBuilder>()
             .AddScoped<IBuilderFeatureBuilder, Builder.Features.ValidatableObjectFeatureBuilder>();
+
+    private static IServiceCollection AddBuilderInterfacePipeline(this IServiceCollection services)
+        => services
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderInterfaceContext>>().Build())
+            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderInterfaceContext>, BuilderInterface.PipelineBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddMetadataFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.SetNameFeatureBuilder>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services

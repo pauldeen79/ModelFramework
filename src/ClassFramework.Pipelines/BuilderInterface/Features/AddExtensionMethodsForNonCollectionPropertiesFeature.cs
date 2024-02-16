@@ -1,28 +1,28 @@
-﻿namespace ClassFramework.Pipelines.Builder.Features;
+﻿namespace ClassFramework.Pipelines.BuilderInterface.Features;
 
-public class AddFluentMethodsForNonCollectionPropertiesFeatureBuilder : IBuilderFeatureBuilder
+public class AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder : IBuilderInterfaceFeatureBuilder
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
-    public AddFluentMethodsForNonCollectionPropertiesFeatureBuilder(IFormattableStringParser formattableStringParser)
+    public AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder(IFormattableStringParser formattableStringParser)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<IConcreteTypeBuilder, BuilderContext> Build()
-        => new AddFluentMethodsForNonCollectionPropertiesFeature(_formattableStringParser);
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext> Build()
+        => new AddExtensionMethodsForNonCollectionPropertiesFeature(_formattableStringParser);
 }
 
-public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderContext>
+public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
-    public AddFluentMethodsForNonCollectionPropertiesFeature(IFormattableStringParser formattableStringParser)
+    public AddExtensionMethodsForNonCollectionPropertiesFeature(IFormattableStringParser formattableStringParser)
     {
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -31,13 +31,13 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        foreach (var property in context.Context.GetSourceProperties().Where(x => context.Context.IsValidForFluentMethod(x) && !x.TypeName.FixTypeName().IsCollectionTypeName()))
+        foreach (var property in context.Context.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings);
+            var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings);
 
             var results = new[]
             {
-                new { Name = "TypeName", LazyResult = new Lazy<Result<string>>(() => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser)) },
+                new { Name = "TypeName", LazyResult = new Lazy<Result<string>>(() => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser)) },
                 new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext)) },
                 new { Name = "BuilderName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext)) },
                 new { Name = "ArgumentNullCheck", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext)) },
@@ -53,9 +53,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
-                .WithReturnTypeName(context.Context.IsBuilderForAbstractEntity
-                      ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.First(x => x.Name == "BuilderName").LazyResult.Value.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                .WithReturnTypeName($"{results.First(x => x.Name == "BuilderName").LazyResult.Value.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -78,7 +76,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             builder.AddStringCodeStatements
             (
                 results.First(x => x.Name == "BuilderWithExpression").LazyResult.Value.Value!,
-                $"return {GetReturnValue(context.Context)};"
+                "return instance;"
             );
 
             context.Model.AddMethods(builder);
@@ -87,19 +85,9 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
+    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context, Property property)
         => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings);
 
-    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
-        => new AddFluentMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
-
-    private static string GetReturnValue(BuilderContext context)
-    {
-        if (context.IsBuilderForAbstractEntity)
-        {
-            return "(TBuilder)this";
-        }
-
-        return "this";
-    }
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>> ToBuilder()
+        => new AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
 }

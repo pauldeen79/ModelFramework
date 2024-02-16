@@ -134,15 +134,71 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
     public class GetBuilderClassConstructorInitializer : PropertyExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_Context()
+        public void Throws_On_Null_TypeSettings()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context: default(PipelineContext<TypeBaseBuilder, BuilderContext>)!, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("context");
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings: default!, formatProvider, new object(), string.Empty, string.Empty, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("typeSettings");
+        }
+
+        [Fact]
+        public void Throws_On_Null_FormatProvider()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider: default!, new object(), string.Empty, string.Empty, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
+        }
+
+        [Fact]
+        public void Throws_On_Null_ParentChildContext()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, parentChildContext: default!, string.Empty, string.Empty, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("parentChildContext");
+        }
+
+        [Fact]
+        public void Throws_On_Null_MappedTypeName()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), mappedTypeName: default!, string.Empty, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("mappedTypeName");
+        }
+
+        [Fact]
+        public void Throws_On_Null_NewCollectionTypeName()
+        {
+            // Arrange
+            var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
+            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
+            var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
+
+            // Act & Assert
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, newCollectionTypeName: default!, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("newCollectionTypeName");
         }
 
         [Fact]
@@ -150,10 +206,11 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(new ClassBuilder(), new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture));
+            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var formatProvider = Fixture.Freeze<IFormatProvider>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(context, formattableStringParser: null!))
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings, formatProvider, new object(), string.Empty, string.Empty, formattableStringParser: null!))
                .Should().Throw<ArgumentNullException>().WithParameterName("formattableStringParser");
         }
     }

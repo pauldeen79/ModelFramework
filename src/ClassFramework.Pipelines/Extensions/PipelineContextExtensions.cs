@@ -12,9 +12,8 @@ public static class PipelineContextExtensions
             return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
         }
 
-        var constructorsContainer = context.Context.SourceModel as IConstructorsContainer;
 
-        if (constructorsContainer is null)
+        if (context.Context.SourceModel is not IConstructorsContainer constructorsContainer)
         {
             return Result.Invalid<string>("Cannot create an instance of a type that does not have constructors");
         }

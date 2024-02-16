@@ -140,7 +140,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .Select(x => new Tuple<string, Result<string>>
             (
                 x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo()),
-                x.GetBuilderConstructorInitializer(context, _formattableStringParser)
+                x.GetBuilderConstructorInitializer(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, x, context.Context.Settings), context.Context.MapTypeName(x.TypeName), context.Context.Settings.TypeSettings.NewCollectionTypeName, _formattableStringParser)
             ))
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();

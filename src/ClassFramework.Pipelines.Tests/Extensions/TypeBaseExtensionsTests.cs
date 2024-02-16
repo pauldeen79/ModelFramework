@@ -61,49 +61,6 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         }
     }
 
-    public class GetGenericTypeArgumentConstraintsString : TypeBaseExtensionsTests
-    {
-        [Fact]
-        public void Returns_Empty_String_When_No_GenericArguments_Are_Present()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyClass").Build();
-
-            // Act
-            var result = sut.GetGenericTypeArgumentConstraintsString();
-
-            // Assert
-            result.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Returns_Empty_String_When_No_GenericArgumentConstraints_Are_Present()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyClass").AddGenericTypeArguments("T").Build();
-
-            // Act
-            var result = sut.GetGenericTypeArgumentConstraintsString();
-
-            // Assert
-            result.Should().BeEmpty();
-        }
-
-        [Fact]
-        public void Returns_Correct_Result_When_GenericArguments_Are_Present()
-        {
-            // Arrange
-            var sut = CreateSut().WithName("MyClass").AddGenericTypeArguments("T").AddGenericTypeArgumentConstraints("where T : class").Build();
-
-            // Act
-            var result = sut.GetGenericTypeArgumentConstraintsString();
-
-            // Assert
-            result.Should().Be(@"
-        where T : class");
-        }
-    }
-
     public class GetCustomValueForInheritedClass : TypeBaseExtensionsTests
     {
         [Fact]

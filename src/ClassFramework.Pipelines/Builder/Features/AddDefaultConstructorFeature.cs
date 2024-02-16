@@ -56,7 +56,7 @@ public class AddDefaultConstructorFeature : IPipelineFeature<IConcreteTypeBuilde
             .Select(x => new
             {
                 Name = x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo()),
-                Result = x.GetBuilderConstructorInitializer(context, _formattableStringParser)
+                Result = x.GetBuilderConstructorInitializer(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, x, context.Context.Settings), context.Context.MapTypeName(x.TypeName), context.Context.Settings.TypeSettings.NewCollectionTypeName, _formattableStringParser)
             })
             .TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful())
             .ToArray();

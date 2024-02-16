@@ -62,15 +62,23 @@ public static class PropertyExtensions
         && !property.IsNullable(enableNullableReferenceTypes)
         && argumentValidation != ArgumentValidationType.Shared) || addBackingFields;
 
-    public static Result<string> GetBuilderConstructorInitializer<TModel>(
+    public static Result<string> GetBuilderConstructorInitializer(
         this Property property,
-        PipelineContext<TModel, BuilderContext> context,
+        IPipelineBuilderTypeSettings typeSettings,
+        IFormatProvider formatProvider,
+        object parentChildContext,
+        string mappedTypeName,
+        string newCollectionTypeName,
         IFormattableStringParser formattableStringParser)
     {
+        typeSettings = typeSettings.IsNotNull(nameof(typeSettings));
+        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
+        mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
+        newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-        context = context.IsNotNull(nameof(context));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, context, formattableStringParser);
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, typeSettings, formatProvider, parentChildContext, mappedTypeName, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -78,17 +86,26 @@ public static class PropertyExtensions
         }
 
         return Result.Success(builderArgumentTypeResult.Value!
-            .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+            .FixCollectionTypeName(newCollectionTypeName)
             .GetCollectionInitializeStatement()
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Result<string> GetBuilderArgumentTypeName<TModel>(this Property property, PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    public static Result<string> GetBuilderArgumentTypeName(
+        this Property property,
+        IPipelineBuilderTypeSettings typeSettings,
+        IFormatProvider formatProvider,
+        object parentChildContext,
+        string mappedTypeName,
+        IFormattableStringParser formattableStringParser)
     {
-        context = context.IsNotNull(nameof(context));
+        typeSettings = typeSettings.IsNotNull(nameof(typeSettings));
+        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
+        mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings);
+        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), typeSettings);
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
 
         if (!string.IsNullOrEmpty(ns))
@@ -107,16 +124,16 @@ public static class PropertyExtensions
             return formattableStringParser.Parse
             (
                 newFullName,
-                context.Context.FormatProvider,
-                new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
+                formatProvider,
+                parentChildContext
             );
         }
 
         return formattableStringParser.Parse
         (
-            metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(property.TypeName)),
-            context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
+            metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
+            formatProvider,
+            parentChildContext
         );
     }
 

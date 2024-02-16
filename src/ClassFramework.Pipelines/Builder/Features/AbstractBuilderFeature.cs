@@ -34,8 +34,7 @@ public class AbstractBuilderFeature : IPipelineFeature<IConcreteTypeBuilder, Bui
                 return Result.FromExistingResult<IConcreteTypeBuilder>(nameResult);
             }
 
-            var classBuilder = context.Model as ClassBuilder;
-            if (classBuilder is null)
+            if (context.Model is not ClassBuilder classBuilder)
             {
                 return Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder");
             }
