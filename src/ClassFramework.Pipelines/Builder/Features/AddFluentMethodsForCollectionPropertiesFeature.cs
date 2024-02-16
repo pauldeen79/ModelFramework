@@ -42,21 +42,21 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
                 return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
-            var namespaceResult = _formattableStringParser.Parse
+            var nameResult = _formattableStringParser.Parse
             (
                 context.Context.Settings.NameSettings.BuilderNameFormatString,
                 context.Context.FormatProvider,
                 childContext
             );
 
-            if (!namespaceResult.IsSuccessful())
+            if (!nameResult.IsSuccessful())
             {
-                return Result.FromExistingResult<IConcreteTypeBuilder>(namespaceResult);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(nameResult);
             }
 
             var returnType = context.Context.IsBuilderForAbstractEntity
                 ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{namespaceResult.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+                : $"{nameResult.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
 
             var enumerableOverloadResults = GetCodeStatementsForEnumerableOverload(context, property)
                 .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())

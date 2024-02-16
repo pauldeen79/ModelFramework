@@ -49,7 +49,8 @@ public static class ServiceCollectionExtensions
             .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
             .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddMetadataFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.SetNameFeatureBuilder>();
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.SetNameFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.SetStaticFeatureBuilder>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services
@@ -115,6 +116,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddParserComponents(this IServiceCollection services)
         => services
             .AddScoped<IPlaceholderProcessor, BuilderPipelinePlaceholderProcessor>()
+            .AddScoped<IPlaceholderProcessor, BuilderInterfacePipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, EntityPipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, InterfacePipelinePlaceholderProcessor>()
             .AddScoped<IPlaceholderProcessor, OverrideEntityPipelinePlaceholderProcessor>()

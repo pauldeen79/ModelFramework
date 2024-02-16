@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.Builder;
+﻿namespace ClassFramework.Pipelines.BuilderInterface;
 
 public class BuilderInterfaceContext : ContextBase<IType, PipelineSettings>
 {
@@ -16,12 +16,13 @@ public class BuilderInterfaceContext : ContextBase<IType, PipelineSettings>
     public string MapNamespace(string? ns)
         => ns.MapNamespace(Settings.TypeSettings);
 
-    public Domain.Attribute MapAttribute(Domain.Attribute attribute)
+    public string CreateArgumentNullException(string argumentName)
     {
-        attribute = attribute.IsNotNull(nameof(attribute));
+        if (Settings.EntitySettings.NullCheckSettings.UseExceptionThrowIfNull)
+        {
+            return $"{typeof(ArgumentNullException).FullName}.ThrowIfNull({argumentName});";
+        }
 
-        return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name.FixTypeName()))
-            .Build();
+        return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
     }
 }

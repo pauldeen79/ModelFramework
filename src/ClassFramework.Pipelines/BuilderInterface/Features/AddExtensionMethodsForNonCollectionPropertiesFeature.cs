@@ -41,7 +41,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
                 new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext)) },
                 new { Name = "BuilderName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext)) },
                 new { Name = "ArgumentNullCheck", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext)) },
-                new { Name = "BuilderWithExpression", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext)) },
+                new { Name = "BuilderWithExpression", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "instance.{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext)) },
             }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
 
             var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
@@ -54,6 +54,11 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
             var builder = new MethodBuilder()
                 .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
                 .WithReturnTypeName($"{results.First(x => x.Name == "BuilderName").LazyResult.Value.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                .WithStatic()
+                .WithExtensionMethod()
+                .AddGenericTypeArguments("T")
+                .AddGenericTypeArgumentConstraints($"where T : {results.First(x => x.Name == "BuilderName").LazyResult.Value.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                .AddParameter("instance", results.First(x => x.Name == "BuilderName").LazyResult.Value.Value!)
                 .AddParameters
                 (
                     new ParameterBuilder()

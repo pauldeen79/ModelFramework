@@ -5,18 +5,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(
         ICsharpExpressionCreator csharpExpressionCreator,
         IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline,
+        IPipeline<IConcreteTypeBuilder, BuilderInterfaceContext> builderInterfacePipeline,
         IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline,
         IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline,
         IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline,
         IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator)
     {
         Guard.IsNotNull(builderPipeline);
+        Guard.IsNotNull(builderInterfacePipeline);
         Guard.IsNotNull(entityPipeline);
         Guard.IsNotNull(overrideEntityPipeline);
         Guard.IsNotNull(reflectionPipeline);
         Guard.IsNotNull(interfacePipeline);
 
         _builderPipeline = builderPipeline;
+        _builderInterfacePipeline = builderInterfacePipeline;
         _entityPipeline = entityPipeline;
         _overrideEntityPipeline = overrideEntityPipeline;
         _reflectionPipeline = reflectionPipeline;
@@ -24,6 +27,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     private readonly IPipeline<IConcreteTypeBuilder, BuilderContext> _builderPipeline;
+    private readonly IPipeline<IConcreteTypeBuilder, BuilderInterfaceContext> _builderInterfacePipeline;
     private readonly IPipeline<IConcreteTypeBuilder, EntityContext> _entityPipeline;
     private readonly IPipeline<IConcreteTypeBuilder, OverrideEntityContext> _overrideEntityPipeline;
     private readonly IPipeline<TypeBaseBuilder, ReflectionContext> _reflectionPipeline;
@@ -168,12 +172,12 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
         return models.Select(x =>
         {
-            var entityBuilder = new ClassBuilder();
-            _ = _entityPipeline
-                .Process(entityBuilder, new EntityContext(x, CreateEntityPipelineSettings(entitiesNamespace), CultureInfo.InvariantCulture))
+            var interfaceBuilder = new InterfaceBuilder();
+            _ = _interfacePipeline
+                .Process(interfaceBuilder, new InterfaceContext(x, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, InheritanceComparisonDelegate, true), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
-            return CreateBuilderExtensionsClass(entityBuilder.Build(), buildersNamespace, entitiesNamespace);
+            return CreateBuilderExtensionsClass(interfaceBuilder.Build(), buildersNamespace, entitiesNamespace);
         }).ToArray();
     }
 
@@ -487,6 +491,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             constructorSettings: new Pipelines.Builder.PipelineConstructorSettings(addCopyConstructor: AddCopyConstructor, setDefaultValues: SetDefaultValues)
         );
 
+    private Pipelines.BuilderInterface.PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace)
+        => new(
+            entitySettings: CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
+            typeSettings: new Pipelines.BuilderInterface.PipelineTypeSettings(
+                newCollectionTypeName: BuilderCollectionType.WithoutGenerics(),
+                enableNullableReferenceTypes: true,
+                namespaceMappings: CreateNamespaceMappings(),
+                typenameMappings: CreateTypenameMappings()),
+            nameSettings: new Pipelines.BuilderInterface.PipelineNameSettings(
+                builderNamespaceFormatString: buildersNamespace,
+                setMethodNameFormatString: SetMethodNameFormatString,
+                addMethodNameFormatString: AddMethodNameFormatString),
+            inheritanceSettings: new Pipelines.BuilderInterface.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, InheritanceComparisonDelegate)
+        );
+
     private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
@@ -509,80 +528,10 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
 
     private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
-        var sourceBuilder = new ClassBuilder();
-
-        // hacking here... need to create a dedicated pipeline for this.
-        var settings = CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace);
-        var context = new BuilderContext(typeBase, settings, CultureInfo.InvariantCulture);
-        _ = _builderPipeline
-            .Process(sourceBuilder, context)
+        var builder = new ClassBuilder();
+        _ = _builderInterfacePipeline
+            .Process(builder, new BuilderInterfaceContext(typeBase, CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
-
-        var builder = new ClassBuilder()
-            .WithName($"{sourceBuilder.Name}Extensions")
-            .WithNamespace(sourceBuilder.Namespace)
-            .WithStatic()
-            .WithPartial();
-
-        foreach (var property in sourceBuilder.Properties.Where(x => context.IsValidForFluentMethod(x.Build())))
-        {
-            if (property.TypeName.FixTypeName().IsCollectionTypeName())
-            {
-
-                builder.AddMethods(new MethodBuilder()
-                    .WithName($"Add{property.Name}")
-                    .WithStatic()
-                    .WithExtensionMethod()
-                    .AddParameter("instance", $"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .AddParameters
-                    (
-                        new ParameterBuilder()
-                            .WithName(property.Name.ToPascalCase(CultureInfo.InvariantCulture))
-                            .WithTypeName(property.TypeName.FixCollectionTypeName(typeof(IEnumerable<>).WithoutGenerics()))
-                            .WithIsNullable(property.IsNullable)
-                            .WithIsValueType(property.IsValueType)
-                    )
-                    .AddGenericTypeArguments("T")
-                    .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .AddStringCodeStatements($"return instance.Add{property.Name}<T>({property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}.ToArray());")
-                );
-
-                builder.AddMethods(new MethodBuilder()
-                    .WithName($"Add{property.Name}")
-                    .WithStatic()
-                    .WithExtensionMethod()
-                    .AddParameter("instance", $"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .AddParameters
-                    (
-                        new ParameterBuilder()
-                            .WithName(property.Name.ToPascalCase(CultureInfo.InvariantCulture))
-                            .WithTypeName(property.TypeName.FixTypeName().ConvertTypeNameToArray())
-                            .WithIsParamArray()
-                            .WithIsNullable(property.IsNullable)
-                            .WithIsValueType(property.IsValueType)
-                    )
-                    .AddGenericTypeArguments("T")
-                    .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .AddStringCodeStatements($"foreach (var item in {property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()}) instance.{property.Name}.Add(item);", "return instance;")
-                );
-            }
-            else
-            {
-                builder.AddMethods(new MethodBuilder()
-                    .WithName($"With{property.Name}")
-                    .WithStatic()
-                    .WithExtensionMethod()
-                    .AddParameter("instance", $"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .AddParameter(property.Name.ToPascalCase(CultureInfo.InvariantCulture), property.TypeName)
-                    .AddGenericTypeArguments("T")
-                    .AddGenericTypeArgumentConstraints($"where T : {sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .WithReturnTypeName($"{sourceBuilder.Namespace}.I{sourceBuilder.Name}")
-                    .AddStringCodeStatements($"instance.{property.Name} = {property.Name.ToPascalCase(CultureInfo.InvariantCulture).GetCsharpFriendlyName()};", "return instance;")
-                    );
-            }
-        }
 
         return builder.Build();
     }

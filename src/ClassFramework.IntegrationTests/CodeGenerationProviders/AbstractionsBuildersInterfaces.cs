@@ -1,9 +1,8 @@
-﻿
-namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
+﻿namespace ClassFramework.IntegrationTests.CodeGenerationProviders;
 
 public class AbstractionsBuildersInterfaces : TestCodeGenerationProviderBase
 {
-    public AbstractionsBuildersInterfaces(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
+    public AbstractionsBuildersInterfaces(ICsharpExpressionCreator csharpExpressionCreator, IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline, IPipeline<IConcreteTypeBuilder, BuilderInterfaceContext> builderInterfacePipeline, IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline, IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline, IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline, IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator, builderPipeline, builderInterfacePipeline, entityPipeline, overrideEntityPipeline, reflectionPipeline, interfacePipeline)
     {
     }
 
