@@ -26,31 +26,30 @@ public class AddToBuilderMethodFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new[]
-        {
-            new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context)) },
-            new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context))) },
-            new { Name = "ToBuilderMethodName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToBuilderFormatString, context.Context.FormatProvider, context)) },
-            new { Name = "ToTypedBuilderMethodName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToTypedBuilderFormatString, context.Context.FormatProvider, context)) }
-        }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
+        var resultSetBuilder = new NamedResultSetBuilder<string>();
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("ToBuilderMethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToBuilderFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("ToTypedBuilderMethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.ToTypedBuilderFormatString, context.Context.FormatProvider, context));
+        var results = resultSetBuilder.Build();
 
-        var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
+            return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
         }
 
-        var methodName = results.First(x => x.Name == "ToBuilderMethodName").LazyResult.Value.Value!;
+        var methodName = results.First(x => x.Name == "ToBuilderMethodName").Result.Value!;
         if (string.IsNullOrEmpty(methodName))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").LazyResult.Value.Value!;
+        var typedMethodName = results.First(x => x.Name == "ToTypedBuilderMethodName").Result.Value!;
 
-        var ns = results.First(x => x.Name == "Namespace").LazyResult.Value.Value!;
-        var name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
+        var ns = results.First(x => x.Name == "Namespace").Result.Value!;
+        var name = results.First(x => x.Name == "Name").Result.Value!;
 
         var entityFullName = $"{ns.AppendWhenNotNullOrEmpty(".")}{name}";
         if (context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null)

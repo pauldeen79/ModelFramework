@@ -56,6 +56,19 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
     private Result<ConstructorBuilder> CreateCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
     {
+        var resultSetBuilder = new NamedResultSetBuilder<string>();
+        resultSetBuilder.Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        var results = resultSetBuilder.Build();
+
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
+        if (error is not null)
+        {
+            // Error in formattable string parsing
+            return Result.FromExistingResult<ConstructorBuilder>(error.Result);
+        }
+
         var initializationCodeResults = GetInitializationCodeResults(context);
         var initializationCodeErrorResult = Array.Find(initializationCodeResults, x => !x.Item2.IsSuccessful());
         if (initializationCodeErrorResult is not null)
@@ -70,21 +83,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return Result.FromExistingResult<ConstructorBuilder>(initializerErrorResult.Item2);
         }
 
-        var results = new[]
-        {
-            new { Name = "NullCheck.Source", LazyResult = new Lazy<Result<string>>(() =>_formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context)) },
-            new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context)) },
-            new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context))) }
-        }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
-
-        var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
-        if (error is not null)
-        {
-            // Error in formattable string parsing
-            return Result.FromExistingResult<ConstructorBuilder>(error.LazyResult.Value);
-        }
-
-        var name = results.First(x => x.Name == "Name").LazyResult.Value.Value!;
+        var name = results.First(x => x.Name == "Name").Result.Value!;
         name = FixEntityName(context, name);
 
         return Result.Success(new ConstructorBuilder()
@@ -92,13 +91,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .WithProtected(context.Context.IsBuilderForAbstractEntity)
             .AddStringCodeStatements
             (
-                new[] { results.First(x => x.Name == "NullCheck.Source").LazyResult.Value.Value! }.Where(x => !string.IsNullOrEmpty(x))
+                new[] { results.First(x => x.Name == "NullCheck.Source").Result.Value! }.Where(x => !string.IsNullOrEmpty(x))
             )
             .AddParameters
             (
                 new ParameterBuilder()
                     .WithName("source")
-                    .WithTypeName($"{results.First(x => x.Name == "Namespace").LazyResult.Value.Value.AppendWhenNotNullOrEmpty(".")}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                    .WithTypeName($"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{name}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
             )
             .AddParameters
             (

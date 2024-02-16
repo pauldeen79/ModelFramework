@@ -53,6 +53,7 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
                 }
                 return Result.Success(context.Context.MapTypeName(x.FixTypeName()));
             })
+            .TakeWhileWithFirstNonMatching(x => x.IsSuccessful())
             .ToArray();
 
         var error = Array.Find(results, x => !x.IsSuccessful());

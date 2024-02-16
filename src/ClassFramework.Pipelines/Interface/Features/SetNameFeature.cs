@@ -26,22 +26,21 @@ public class SetNameFeature : IPipelineFeature<InterfaceBuilder, InterfaceContex
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new[]
-        {
-            new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NameFormatString, context.Context.FormatProvider, context)) },
-            new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NamespaceFormatString, context.Context.FormatProvider, context))) },
-        }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
+        var resultSetBuilder = new NamedResultSetBuilder<string>();
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NamespaceFormatString, context.Context.FormatProvider, context)));
+        var results = resultSetBuilder.Build();
 
-        var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<InterfaceBuilder>(error.LazyResult.Value);
+            return Result.FromExistingResult<InterfaceBuilder>(error.Result);
         }
 
         context.Model
-            .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
-            .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!));
+            .WithName(results.First(x => x.Name == "Name").Result.Value!)
+            .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == "Namespace").Result.Value!));
 
         return Result.Continue<InterfaceBuilder>();
     }

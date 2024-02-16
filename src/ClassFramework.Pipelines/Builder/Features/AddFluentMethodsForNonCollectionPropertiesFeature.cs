@@ -35,32 +35,30 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
         {
             var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings);
 
-            var results = new[]
-            {
-                new { Name = "TypeName", LazyResult = new Lazy<Result<string>>(() => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser)) },
-                new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext)) },
-                new { Name = "BuilderName", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext)) },
-                new { Name = "ArgumentNullCheck", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext)) },
-                new { Name = "BuilderWithExpression", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext)) },
-            }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
-
-            var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
+            var resultSetBuilder = new NamedResultSetBuilder<string>();
+            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
+            resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("ArgumentNullCheck", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("BuilderWithExpression", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext));
+            var results = resultSetBuilder.Build();
+            var error = Array.Find(results, x => !x.Result.IsSuccessful());
             if (error is not null)
             {
                 // Error in formattable string parsing
-                return Result.FromExistingResult<IConcreteTypeBuilder>(error.LazyResult.Value);
+                return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
             }
 
             var builder = new MethodBuilder()
-                .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
+                .WithName(results.First(x => x.Name == "Name").Result.Value!)
                 .WithReturnTypeName(context.Context.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                      : $"{results.First(x => x.Name == "BuilderName").LazyResult.Value.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                      : $"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
                 .AddParameters
                 (
                     new ParameterBuilder()
                         .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                        .WithTypeName(results.First(x => x.Name == "TypeName").LazyResult.Value.Value!)
+                        .WithTypeName(results.First(x => x.Name == "TypeName").Result.Value!)
                         .WithIsNullable(property.IsNullable)
                         .WithIsValueType(property.IsValueType)
                         .WithDefaultValue(GetMetadata(context, property).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
@@ -68,7 +66,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
             if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
             {
-                var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").LazyResult.Value.Value!;
+                var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
                 if (!string.IsNullOrEmpty(nullCheckStatement))
                 {
                     builder.AddStringCodeStatements(nullCheckStatement);
@@ -77,7 +75,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
             builder.AddStringCodeStatements
             (
-                results.First(x => x.Name == "BuilderWithExpression").LazyResult.Value.Value!,
+                results.First(x => x.Name == "BuilderWithExpression").Result.Value!,
                 $"return {GetReturnValue(context.Context)};"
             );
 

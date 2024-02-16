@@ -67,14 +67,14 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                 .Select
                 (
                     property =>new FieldBuilder()
-                            .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                            .WithTypeName(context.Context.MapTypeName(property.TypeName)
-                                .FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName
-                                    .WhenNullOrEmpty(context.Context.Settings.TypeSettings.NewCollectionTypeName)
-                                    .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))
-                            .FixNullableTypeName(property))
-                            .WithIsNullable(property.IsNullable)
-                            .WithIsValueType(property.IsValueType)
+                        .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
+                        .WithTypeName(context.Context.MapTypeName(property.TypeName)
+                            .FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName
+                                .WhenNullOrEmpty(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                                .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))
+                        .FixNullableTypeName(property))
+                        .WithIsNullable(property.IsNullable)
+                        .WithIsValueType(property.IsValueType)
                 )
         );
 
