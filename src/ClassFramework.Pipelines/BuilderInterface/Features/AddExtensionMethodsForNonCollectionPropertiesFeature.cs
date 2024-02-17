@@ -37,7 +37,8 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
             resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
-            resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNamespaceFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("ArgumentNullCheck", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("BuilderWithExpression", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "instance.{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext));
@@ -50,14 +51,18 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
                 return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
             }
 
+            var returnType = string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").Result.Value)
+                ? $"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
+                : $"{results.First(x => x.Name == "Namespace").Result.Value}.{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+
             var builder = new MethodBuilder()
-                .WithName(results.First(x => x.Name == "Name").Result.Value!)
-                .WithReturnTypeName($"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
+                .WithReturnTypeName($"{returnType}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
-                .AddParameter("instance", results.First(x => x.Name == "BuilderName").Result.Value!)
+                .AddParameter("instance", returnType)
                 .AddParameters
                 (
                     new ParameterBuilder()

@@ -38,7 +38,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
             var resultSetBuilder = new NamedResultSetBuilder<string>();
             resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
             resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNamespaceFormatString, context.Context.FormatProvider, childContext));
-            resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.AddMethodNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.AddRange("EnumerableOverload", () => GetCodeStatementsForEnumerableOverload(context, property));
             resultSetBuilder.AddRange("ArrayOverload", () => GetCodeStatementsForArrayOverload(context, property));
@@ -52,8 +52,8 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
             }
 
             var returnType = string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").Result.Value)
-                ? $"{results.First(x => x.Name == "Name").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{results.First(x => x.Name == "Namespace").Result.Value}.{results.First(x => x.Name == "Name").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+                ? $"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
+                : $"{results.First(x => x.Name == "Namespace").Result.Value}.{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)

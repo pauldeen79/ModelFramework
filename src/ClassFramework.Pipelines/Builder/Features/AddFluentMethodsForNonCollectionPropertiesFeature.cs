@@ -37,7 +37,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
             resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
-            resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("ArgumentNullCheck", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("BuilderWithExpression", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext));
@@ -50,7 +50,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             }
 
             var builder = new MethodBuilder()
-                .WithName(results.First(x => x.Name == "Name").Result.Value!)
+                .WithName(results.First(x => x.Name == "MethodName").Result.Value!)
                 .WithReturnTypeName(context.Context.IsBuilderForAbstractEntity
                       ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
                       : $"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
