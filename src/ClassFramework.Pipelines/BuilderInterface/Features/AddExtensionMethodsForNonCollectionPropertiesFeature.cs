@@ -61,7 +61,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
-                .AddGenericTypeArgumentConstraints($"where T : {results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}")
+                .AddGenericTypeArgumentConstraints($"where T : {returnType}")
                 .AddParameter("instance", returnType)
                 .AddParameters
                 (
