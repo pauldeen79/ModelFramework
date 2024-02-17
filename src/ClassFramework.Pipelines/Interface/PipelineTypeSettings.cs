@@ -6,7 +6,7 @@ public class PipelineTypeSettings : PipelineBuilderTypeSettingsBase
         string newCollectionTypeName = "System.Collections.Generic.List",
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null)
-        : base(newCollectionTypeName, default, namespaceMappings, typenameMappings)
+        : base(newCollectionTypeName, string.Empty, string.Empty, string.Empty, default, namespaceMappings, typenameMappings)
     {
     }
 }

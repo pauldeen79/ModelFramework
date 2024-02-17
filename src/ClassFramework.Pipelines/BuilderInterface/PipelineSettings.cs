@@ -1,10 +1,10 @@
 ﻿namespace ClassFramework.Pipelines.BuilderInterface;
 
-public sealed class PipelineSettings : IPipelineGenerationSettings
+public sealed class PipelineSettings : IBuilderPipelineGenerationSettings
 {
     public PipelineNameSettings NameSettings { get; }
     public PipelineInheritanceSettings InheritanceSettings { get; }
-    public PipelineTypeSettings TypeSettings { get; }
+    public IPipelineBuilderTypeSettings TypeSettings { get; }
     public Entity.PipelineSettings EntitySettings { get; }
 
     public bool EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;

@@ -10,14 +10,7 @@ public class PipelineTypeSettings : PipelineBuilderTypeSettingsBase
         bool enableNullableReferenceTypes = false,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null)
-        : base(newCollectionTypeName, enableNullableReferenceTypes, namespaceMappings, typenameMappings)
+        : base(newCollectionTypeName, collectionCopyStatementFormatString, collectionInitializationStatementFormatString, nonCollectionInitializationStatementFormatString, enableNullableReferenceTypes, namespaceMappings, typenameMappings)
     {
-        CollectionInitializationStatementFormatString = collectionInitializationStatementFormatString;
-        CollectionCopyStatementFormatString = collectionCopyStatementFormatString;
-        NonCollectionInitializationStatementFormatString = nonCollectionInitializationStatementFormatString;
     }
-
-    public string CollectionInitializationStatementFormatString { get; }
-    public string CollectionCopyStatementFormatString { get; }
-    public string NonCollectionInitializationStatementFormatString { get; }
 }

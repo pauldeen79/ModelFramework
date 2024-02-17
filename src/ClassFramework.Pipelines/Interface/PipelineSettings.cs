@@ -4,7 +4,7 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
 {
     public PipelineNameSettings NameSettings { get; }
     public PipelineInheritanceSettings InheritanceSettings { get; }
-    public PipelineTypeSettings TypeSettings { get; }
+    public IPipelineBuilderTypeSettings TypeSettings { get; }
     public PipelineBuilderCopySettings CopySettings { get; }
     public PipelineGenerationSettings GenerationSettings { get; }
 

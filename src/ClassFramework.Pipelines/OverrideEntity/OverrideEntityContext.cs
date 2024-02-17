@@ -10,10 +10,4 @@ public class OverrideEntityContext : ContextBase<IType, PipelineSettings>
     public bool IsAbstract
         => Settings.InheritanceSettings.EnableInheritance
         && Settings.InheritanceSettings.IsAbstract;
-
-    public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
-
-    public string MapNamespace(string? ns)
-        => ns.MapNamespace(Settings.TypeSettings);
 }

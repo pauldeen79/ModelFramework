@@ -10,4 +10,5 @@ public interface IPipelineGenerationSettings
     string CollectionTypeName { get; }
     ArgumentValidationType ValidateArguments { get; }
     Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate { get; }
+    IPipelineBuilderTypeSettings TypeSettings { get; }
 }

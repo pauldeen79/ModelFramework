@@ -8,10 +8,7 @@ public class PipelineTypeSettings : PipelineBuilderTypeSettingsBase
         bool enableNullableReferenceTypes = false,
         IEnumerable<NamespaceMapping>? namespaceMappings = null,
         IEnumerable<TypenameMapping>? typenameMappings = null)
-        : base(newCollectionTypeName, enableNullableReferenceTypes, namespaceMappings, typenameMappings)
+        : base(newCollectionTypeName, collectionCopyStatementFormatString, string.Empty, string.Empty, enableNullableReferenceTypes, namespaceMappings, typenameMappings)
     {
-        CollectionCopyStatementFormatString = collectionCopyStatementFormatString;
     }
-
-    public string CollectionCopyStatementFormatString { get; }
 }

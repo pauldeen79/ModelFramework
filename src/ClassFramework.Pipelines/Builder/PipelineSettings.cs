@@ -5,7 +5,7 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
     public PipelineNameSettings NameSettings { get; }
     public PipelineInheritanceSettings InheritanceSettings { get; }
     public PipelineConstructorSettings ConstructorSettings { get; }
-    public PipelineTypeSettings TypeSettings { get; }
+    public IPipelineBuilderTypeSettings TypeSettings { get; }
     public Entity.PipelineSettings EntitySettings { get; }
 
     public bool IsForAbstractBuilder { get; }
@@ -46,5 +46,5 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
     }
 
     public PipelineSettings ForAbstractBuilder()
-        => new(NameSettings, InheritanceSettings, ConstructorSettings, TypeSettings, EntitySettings, true);
+        => new(NameSettings, InheritanceSettings, ConstructorSettings, (PipelineTypeSettings)TypeSettings, EntitySettings, true);
 }

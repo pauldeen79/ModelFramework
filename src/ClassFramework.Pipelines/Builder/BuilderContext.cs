@@ -32,21 +32,6 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
             ]
             : Array.Empty<string>();
 
-    public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
-
-    public string MapNamespace(string? ns)
-        => ns.MapNamespace(Settings.TypeSettings);
-
-    public Domain.Attribute MapAttribute(Domain.Attribute attribute)
-    {
-        attribute = attribute.IsNotNull(nameof(attribute));
-
-        return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name.FixTypeName()))
-            .Build();
-    }
-
     public bool HasBackingFields()
         => !(IsAbstractBuilder
         || !Settings.EntitySettings.NullCheckSettings.AddNullChecks
@@ -57,16 +42,6 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
         => Settings.TypeSettings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
         && !Settings.EntitySettings.NullCheckSettings.AddNullChecks;
-
-    public string CreateArgumentNullException(string argumentName)
-    {
-        if (Settings.EntitySettings.NullCheckSettings.UseExceptionThrowIfNull)
-        {
-            return $"{typeof(ArgumentNullException).FullName}.ThrowIfNull({argumentName});";
-        }
-        
-        return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
-    }
 
     public bool IsValidForFluentMethod(Property property)
     {
