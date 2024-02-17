@@ -6,8 +6,6 @@ public class NamedResultSetBuilder<T>
 
     public void Add(string name, Func<Result<T>> value) => _resultset.Add(new(name, value));
 
-    //public void AddRange(string name, IEnumerable<Func<Result<T>>> value) => _resultset.AddRange(value.Select(x => new NamedResult<Func<Result<T>>>(name, x)));
-
     public void AddRange(string name, Func<IEnumerable<Result<T>>> value) => _resultset.AddRange(value.IsNotNull(nameof(value)).Invoke().TakeWhileWithFirstNonMatching(x => x.IsSuccessful()).Select(x => new NamedResult<Func<Result<T>>>(name, () => x)));
 
     public NamedResult<Result<T>>[] Build()
