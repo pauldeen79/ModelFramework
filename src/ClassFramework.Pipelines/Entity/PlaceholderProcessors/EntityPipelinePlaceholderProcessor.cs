@@ -36,7 +36,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.EntityNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
-            "EntityNameSuffix" => Result.Success(pipelineContext.Context.Settings.ConstructorSettings.ValidateArguments == ArgumentValidationType.Shared
+            "EntityNameSuffix" => Result.Success(pipelineContext.Context.Settings.ValidateArguments == ArgumentValidationType.Shared
                 ? "Base"
                 : string.Empty),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
@@ -51,7 +51,7 @@ public class EntityPipelinePlaceholderProcessor : IPlaceholderProcessor
         => value switch
         {
             "EntityNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.EntityNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
-            "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.NullCheckSettings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes
+            "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes
                 ? "!"
                 : string.Empty),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName)), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)

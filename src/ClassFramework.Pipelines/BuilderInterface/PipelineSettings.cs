@@ -7,13 +7,14 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
     public PipelineTypeSettings TypeSettings { get; }
     public Entity.PipelineSettings EntitySettings { get; }
 
-    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
-    bool IPipelineGenerationSettings.AddNullChecks => EntitySettings.NullCheckSettings.AddNullChecks;
-    bool IPipelineGenerationSettings.EnableInheritance => EntitySettings.InheritanceSettings.EnableInheritance;
-    bool IPipelineGenerationSettings.AddBackingFields => EntitySettings.GenerationSettings.AddBackingFields;
-    string IPipelineGenerationSettings.CollectionTypeName => TypeSettings.NewCollectionTypeName;
-    ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => EntitySettings.ConstructorSettings.OriginalValidateArguments;
-    Func<IParentTypeContainer, IType, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
+    public bool EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
+    public bool AddNullChecks => EntitySettings.NullCheckSettings.AddNullChecks;
+    public bool UseExceptionThrowIfNull => EntitySettings.NullCheckSettings.UseExceptionThrowIfNull;
+    public bool EnableInheritance => EntitySettings.InheritanceSettings.EnableInheritance;
+    public bool AddBackingFields => EntitySettings.GenerationSettings.AddBackingFields;
+    public string CollectionTypeName => TypeSettings.NewCollectionTypeName;
+    public ArgumentValidationType ValidateArguments => EntitySettings.ConstructorSettings.OriginalValidateArguments;
+    public Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
 
     public PipelineSettings(
         PipelineNameSettings? nameSettings,

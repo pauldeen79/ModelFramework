@@ -10,13 +10,14 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
     public PipelineGenerationSettings GenerationSettings { get; }
     public PipelineBuilderNullCheckSettings NullCheckSettings { get; }
 
-    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
-    bool IPipelineGenerationSettings.AddNullChecks => NullCheckSettings.AddNullChecks;
-    bool IPipelineGenerationSettings.EnableInheritance => InheritanceSettings.EnableInheritance;
-    bool IPipelineGenerationSettings.AddBackingFields => GenerationSettings.AddBackingFields;
-    string IPipelineGenerationSettings.CollectionTypeName => ConstructorSettings.CollectionTypeName;
-    ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => ConstructorSettings.ValidateArguments;
-    Func<IParentTypeContainer, IType, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
+    public bool EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
+    public bool AddNullChecks => NullCheckSettings.AddNullChecks;
+    public bool UseExceptionThrowIfNull => NullCheckSettings.UseExceptionThrowIfNull;
+    public bool EnableInheritance => InheritanceSettings.EnableInheritance;
+    public bool AddBackingFields => GenerationSettings.AddBackingFields;
+    public string CollectionTypeName => ConstructorSettings.CollectionTypeName;
+    public ArgumentValidationType ValidateArguments => ConstructorSettings.ValidateArguments;
+    public Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
 
     public ArgumentValidationType AddValidationCode
     {

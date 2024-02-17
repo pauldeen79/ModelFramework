@@ -4,6 +4,7 @@ public interface IPipelineGenerationSettings
 {
     bool EnableNullableReferenceTypes { get; }
     bool AddNullChecks { get; }
+    bool UseExceptionThrowIfNull { get; }
     bool EnableInheritance { get; }
     bool AddBackingFields { get; }
     string CollectionTypeName { get; }

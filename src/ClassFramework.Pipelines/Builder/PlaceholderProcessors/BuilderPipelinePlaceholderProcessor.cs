@@ -20,7 +20,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
             return GetResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext);
         }
 
-        if (context is ParentChildContext< PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
         {
             return GetResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext);
         }
@@ -31,7 +31,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     private Result<string> GetResultForPipelineContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, PipelineContext<IConcreteTypeBuilder, BuilderContext> pipelineContext)
         => value switch
         {
-            "NullCheck.Source" => Result.Success(pipelineContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks
+            "NullCheck.Source" => Result.Success(pipelineContext.Context.Settings.AddNullChecks
                 ? pipelineContext.Context.CreateArgumentNullException("source")
                 : string.Empty),
             "BuildersNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
@@ -42,13 +42,13 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
         => value switch
         {
-            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.EntitySettings.AddValidationCode == ArgumentValidationType.None && !parentChildContext.ChildContext.IsNullable && !parentChildContext.ChildContext.IsValueType // only if the source entity does not use validation...
+            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.EntitySettings.AddValidationCode == ArgumentValidationType.None && !parentChildContext.ChildContext.IsNullable && !parentChildContext.ChildContext.IsValueType // only if the source entity does not use validation...
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
-            "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable
+            "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable
                 ? parentChildContext.ParentContext.Context.CreateArgumentNullException(parentChildContext.ChildContext.Name.ToPascalCase(formatProvider.ToCultureInfo()).GetCsharpFriendlyName())
                 : string.Empty),
-            "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes
+            "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes
                 ? "!"
                 : string.Empty),
             "NullableSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable && (parentChildContext.ChildContext.IsValueType || parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes)

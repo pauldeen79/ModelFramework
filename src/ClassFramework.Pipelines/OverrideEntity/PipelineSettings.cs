@@ -8,13 +8,14 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
     public PipelineGenerationSettings GenerationSettings { get; }
     public PipelineBuilderNullCheckSettings NullCheckSettings { get; }
 
-    bool IPipelineGenerationSettings.EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
-    bool IPipelineGenerationSettings.AddNullChecks => NullCheckSettings.AddNullChecks;
-    bool IPipelineGenerationSettings.EnableInheritance => InheritanceSettings.EnableInheritance;
-    bool IPipelineGenerationSettings.AddBackingFields => default;
-    string IPipelineGenerationSettings.CollectionTypeName => string.Empty;
-    ArgumentValidationType IPipelineGenerationSettings.ValidateArguments => default;
-    Func<IParentTypeContainer, IType, bool>? IPipelineGenerationSettings.InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
+    public bool EnableNullableReferenceTypes => TypeSettings.EnableNullableReferenceTypes;
+    public bool AddNullChecks => NullCheckSettings.AddNullChecks;
+    public bool UseExceptionThrowIfNull => NullCheckSettings.UseExceptionThrowIfNull;
+    public bool EnableInheritance => InheritanceSettings.EnableInheritance;
+    public bool AddBackingFields => default;
+    public string CollectionTypeName => string.Empty;
+    public ArgumentValidationType ValidateArguments => default;
+    public Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
 
     public PipelineSettings(
         PipelineNameSettings? nameSettings = null, 
