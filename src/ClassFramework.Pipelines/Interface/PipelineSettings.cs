@@ -14,6 +14,8 @@ public sealed class PipelineSettings : IPipelineGenerationSettings
     public bool EnableInheritance => InheritanceSettings.EnableInheritance;
     public bool AddBackingFields => false;
     public string CollectionTypeName => string.Empty;
+    public string NamespaceFormatString => NameSettings.NamespaceFormatString;
+    public string NameFormatString => NameSettings.NameFormatString;
     public ArgumentValidationType ValidateArguments => default;
     public Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate => InheritanceSettings.InheritanceComparisonDelegate;
 

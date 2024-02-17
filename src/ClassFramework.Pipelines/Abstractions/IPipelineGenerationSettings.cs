@@ -8,6 +8,9 @@ public interface IPipelineGenerationSettings
     bool EnableInheritance { get; }
     bool AddBackingFields { get; }
     string CollectionTypeName { get; }
+    string NamespaceFormatString { get; }
+    string NameFormatString { get; }
+
     ArgumentValidationType ValidateArguments { get; }
     Func<IParentTypeContainer, IType, bool>? InheritanceComparisonDelegate { get; }
     IPipelineBuilderTypeSettings TypeSettings { get; }
