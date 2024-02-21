@@ -4,7 +4,7 @@
 public class TemplateFrameworkBuilders : ClassFrameworkCSharpClassBase
 {
     public override string Path => Constants.Paths.TemplateFrameworkBuilders;
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
+    protected override ModelFramework.Objects.Settings.ArgumentValidationType ValidateArgumentsInConstructor => ModelFramework.Objects.Settings.ArgumentValidationType.DomainOnly;
 
     public override object CreateModel()
         => GetImmutableBuilderClasses(
