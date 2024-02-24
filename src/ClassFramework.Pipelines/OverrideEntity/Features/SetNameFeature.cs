@@ -26,23 +26,7 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, OverrideEnt
     {
         context = context.IsNotNull(nameof(context));
 
-        var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
-        var results = resultSetBuilder.Build();
-
-        var error = Array.Find(results, x => !x.Result.IsSuccessful());
-        if (error is not null)
-        {
-            // Error in formattable string parsing
-            return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
-        }
-
-        context.Model
-            .WithName(results.First(x => x.Name == "Name").Result.Value!)
-            .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == "Namespace").Result.Value!));
-
-        return Result.Continue<IConcreteTypeBuilder>();
+        return context.Context.SetEntityName(context.Context.SourceModel, context.Model, _formattableStringParser, context);
     }
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, OverrideEntityContext>> ToBuilder()
