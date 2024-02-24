@@ -55,6 +55,11 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         return result;
     }
 
+    protected override IEnumerable<KeyValuePair<string, string>> GetCustomBuilderNamespaceMapping()
+    {
+        yield return new KeyValuePair<string, string>("ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders");
+    }
+
     protected ModelFramework.Objects.Contracts.ITypeBase[] GetPipelinesModels()
         => MapCodeGenerationModelsToDomain(
             GetType().Assembly.GetTypes()

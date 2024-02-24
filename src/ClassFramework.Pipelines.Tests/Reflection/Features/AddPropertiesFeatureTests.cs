@@ -22,8 +22,8 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection();
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

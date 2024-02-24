@@ -26,12 +26,12 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.ConstructorSettings.AddCopyConstructor)
+        if (!context.Context.Settings.AddCopyConstructor)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
+        if (context.Context.Settings.EnableBuilderInheritance
             && context.Context.IsAbstractBuilder
             && !context.Context.Settings.IsForAbstractBuilder)
         {
@@ -58,8 +58,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         var resultSetBuilder = new NamedResultSetBuilder<string>();
         resultSetBuilder.Add("NullCheck.Source", () => _formattableStringParser.Parse("{NullCheck.Source}", context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntitySettings.NameSettings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.EntityNamespaceFormatString, context.Context.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());
@@ -102,7 +102,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .AddParameters
             (
                 context.Context.SourceModel.Metadata
-                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings)
+                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings)
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             )
@@ -113,8 +113,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
 
     private static string FixEntityName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, string name)
     {
-        if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared
-            && !context.Context.Settings.InheritanceSettings.EnableBuilderInheritance)
+        if (context.Context.Settings.OriginalValidateArguments == ArgumentValidationType.Shared
+            && !context.Context.Settings.EnableBuilderInheritance)
         {
             return $"{name}Base";
         }
@@ -138,8 +138,8 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings) && x.TypeName.FixTypeName().IsCollectionTypeName())
             .Select(x => new Tuple<string, Result<string>>
             (
-                x.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo()),
-                x.GetBuilderConstructorInitializer(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, x, context.Context.Settings), context.Context.MapTypeName(x.TypeName), context.Context.Settings.TypeSettings.NewCollectionTypeName, _formattableStringParser)
+                x.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo()),
+                x.GetBuilderConstructorInitializer(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, x, context.Context.Settings), context.Context.MapTypeName(x.TypeName), context.Context.Settings.BuilderNewCollectionTypeName, _formattableStringParser)
             ))
             .TakeWhileWithFirstNonMatching(x => x.Item2.IsSuccessful())
             .ToArray();
@@ -148,13 +148,13 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         => _formattableStringParser.Parse
         (
             property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings)
                 .GetStringValue
                 (
                     MetadataNames.CustomBuilderConstructorInitializeExpression,
                     () => property.TypeName.FixTypeName().IsCollectionTypeName()
-                        ? context.Context.Settings.TypeSettings.CollectionInitializationStatementFormatString
-                        : context.Context.Settings.TypeSettings.NonCollectionInitializationStatementFormatString
+                        ? context.Context.Settings.CollectionInitializationStatementFormatString
+                        : context.Context.Settings.NonCollectionInitializationStatementFormatString
                 ),
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
@@ -172,14 +172,14 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             return sourceProperty.Name;
         }
 
-        var metadata = sourceProperty.Metadata.WithMappingMetadata(sourceProperty.TypeName.GetCollectionItemType().WhenNullOrEmpty(sourceProperty.TypeName), context.Context.Settings.TypeSettings);
+        var metadata = sourceProperty.Metadata.WithMappingMetadata(sourceProperty.TypeName.GetCollectionItemType().WhenNullOrEmpty(sourceProperty.TypeName), context.Context.Settings);
         var sourceExpression = metadata.GetStringValue(MetadataNames.CustomBuilderSourceExpression, "[Name]");
         return sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
             ? value.Replace("[SourceExpression]", $"{sourceProperty.Name}.Select(x => {sourceExpression})").Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty).Replace(".Select(x => x)", string.Empty)
-            : value.Replace("[SourceExpression]", sourceExpression).Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", sourceProperty.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes));
+            : value.Replace("[SourceExpression]", sourceExpression).Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", sourceProperty.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes));
     }
     private static string CreateBuilderClassCopyConstructorChainCall(IType instance, PipelineSettings settings)
-        => instance.GetCustomValueForInheritedClass(settings.EntitySettings.InheritanceSettings.EnableInheritance, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
+        => instance.GetCustomValueForInheritedClass(settings.EnableInheritance, _ => Result.Success("base(source)")).Value!; //note that the delegate always returns success, so we can simply use the Value here
 
     private static ConstructorBuilder CreateInheritanceCopyConstructor(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => new ConstructorBuilder()
@@ -194,7 +194,7 @@ public class AddCopyConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
             .AddParameters
             (
                 context.Context.SourceModel.Metadata
-                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings)
+                    .WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings)
                     .GetValues<Parameter>(MetadataNames.CustomBuilderCopyConstructorParameter)
                     .Select(x => x.ToBuilder())
             );

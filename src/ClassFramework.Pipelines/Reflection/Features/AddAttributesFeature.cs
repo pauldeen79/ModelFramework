@@ -12,15 +12,15 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyAttributes)
+        if (!context.Context.Settings.CopyAttributes)
         {
             return Result.Continue<TypeBaseBuilder>();
         }
 
         context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true).ToAttributes(
-            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate)),
-            context.Context.Settings.CopySettings.CopyAttributes,
-            context.Context.Settings.CopySettings.CopyAttributePredicate));
+            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate)),
+            context.Context.Settings.CopyAttributes,
+            context.Context.Settings.CopyAttributePredicate));
 
         return Result.Continue<TypeBaseBuilder>();
     }

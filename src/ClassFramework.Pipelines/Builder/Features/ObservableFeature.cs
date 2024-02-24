@@ -12,14 +12,14 @@ public class ObservableFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderC
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.EntitySettings.GenerationSettings.CreateAsObservable
+        if (!context.Context.Settings.CreateAsObservable
             && !context.Context.SourceModel.Interfaces.Any(x => x == typeof(INotifyPropertyChanged).FullName))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        if (context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
-            && context.Context.Settings.EntitySettings.InheritanceSettings.BaseClass is not null)
+        if (context.Context.Settings.EnableInheritance
+            && context.Context.Settings.BaseClass is not null)
         {
             // Already present in base class
             return Result.Continue<IConcreteTypeBuilder>();

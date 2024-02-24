@@ -23,10 +23,10 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Entity.Features.SetBa
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 baseClass:  null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -46,10 +46,10 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Entity.Features.SetBa
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 baseClass: new ClassBuilder().WithName("MyBaseClass").WithNamespace("MyBaseNamespace").BuildTyped(),
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -67,10 +67,10 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Entity.Features.SetBa
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 baseClass: null,
                 enableEntityInheritance: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

@@ -64,21 +64,21 @@ public static class PropertyExtensions
 
     public static Result<string> GetBuilderConstructorInitializer(
         this Property property,
-        IPipelineBuilderTypeSettings typeSettings,
+        PipelineSettings settings,
         IFormatProvider formatProvider,
         object parentChildContext,
         string mappedTypeName,
         string newCollectionTypeName,
         IFormattableStringParser formattableStringParser)
     {
-        typeSettings = typeSettings.IsNotNull(nameof(typeSettings));
+        settings = settings.IsNotNull(nameof(settings));
         formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, typeSettings, formatProvider, parentChildContext, mappedTypeName, formattableStringParser);
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, settings, formatProvider, parentChildContext, mappedTypeName, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -93,19 +93,19 @@ public static class PropertyExtensions
 
     public static Result<string> GetBuilderArgumentTypeName(
         this Property property,
-        IPipelineBuilderTypeSettings typeSettings,
+        PipelineSettings settings,
         IFormatProvider formatProvider,
         object parentChildContext,
         string mappedTypeName,
         IFormattableStringParser formattableStringParser)
     {
-        typeSettings = typeSettings.IsNotNull(nameof(typeSettings));
+        settings = settings.IsNotNull(nameof(settings));
         formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
         parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
         mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), typeSettings);
+        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings);
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
 
         if (!string.IsNullOrEmpty(ns))
@@ -147,7 +147,7 @@ public static class PropertyExtensions
             return Result.Success(property.ParentTypeFullName);
         }
 
-        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings.TypeSettings);
+        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings);
         var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
 
         if (string.IsNullOrEmpty(ns))

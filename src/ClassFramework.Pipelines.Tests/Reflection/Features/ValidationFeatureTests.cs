@@ -22,8 +22,8 @@ public class ValidationFeatureTests : TestBase<Pipelines.Reflection.Features.Val
             var sourceModel = typeof(MyClass);
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection();
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -39,8 +39,8 @@ public class ValidationFeatureTests : TestBase<Pipelines.Reflection.Features.Val
             var sourceModel = typeof(MyClass);
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(allowGenerationWithoutProperties: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(allowGenerationWithoutProperties: true);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

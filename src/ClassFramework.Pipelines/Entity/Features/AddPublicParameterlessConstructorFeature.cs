@@ -26,7 +26,7 @@ public class AddPublicParameterlessConstructorFeature : IPipelineFeature<IConcre
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.ConstructorSettings.AddPublicParameterlessConstructor)
+        if (!context.Context.Settings.AddPublicParameterlessConstructor)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }

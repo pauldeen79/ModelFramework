@@ -23,7 +23,7 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(enableEntityInheritance: true);
+            var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -43,7 +43,7 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -64,7 +64,7 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(enableEntityInheritance: true, builderNameFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(enableEntityInheritance: true, builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -83,7 +83,7 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             InitializeParser();
             var sut = CreateSut();
             var model = new StructBuilder();
-            var settings = CreateBuilderSettings(enableEntityInheritance: true);
+            var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -94,7 +94,7 @@ public class AbstractBuilderFeatureTests : TestBase<Pipelines.Builder.Features.A
             result.ErrorMessage.Should().Be("You can only create abstract classes. The type of model (ClassFramework.Domain.Builders.Types.StructBuilder) is not a ClassBuilder");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, IConcreteTypeBuilder model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, IConcreteTypeBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

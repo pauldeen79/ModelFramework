@@ -246,24 +246,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         var typeBase = _reflectionPipeline.Process(new InterfaceBuilder(), new ReflectionContext(type, reflectionSettings, CultureInfo.InvariantCulture)).GetValueOrThrow().Build();
 
         var builder = new ClassBuilder();
-        var entitySettings = new Pipelines.Entity.PipelineSettings(
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
-                addSetters: AddSetters,
-                addBackingFields: AddBackingFields,
-                setterVisibility: SetterVisibility,
-                createAsObservable: CreateAsObservable,
-                createRecord: CreateRecord,
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: CopyAttributes,
-                copyInterfaces: CopyInterfaces),
-            nameSettings: new Pipelines.Entity.PipelineNameSettings(
-                entityNameFormatString: "{Class.NameNoInterfacePrefix}",
-                entityNamespaceFormatString: @namespace),
-            inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
-                enableInheritance: true,
-                isAbstract: true,
-                baseClass: null,
+        var entitySettings = new PipelineSettingsBuilder()
+            .WithAddSetters(AddSetters)
+            .WithAddBackingFields(AddBackingFields)
+            .WithSetterVisibility(SetterVisibility)
+            .WithCreateAsObservable(CreateAsObservable)
+            .WithCreateRecord(CreateRecord)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .WithEntityNameFormatString("{Class.NameNoInterfacePrefix}")
+            .WithEntityNamespaceFormatString(@namespace)
+            .WithEnableInheritance()
+            .WithIsAbstract()
+            .WithBaseClass(null)
+            .WithInheritanceComparisonDelegate(
                 (parentNameContainer, typeBase)
                     => parentNameContainer is not null
                     && typeBase is not null
@@ -271,15 +268,15 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                         || parentNameContainer.ParentTypeFullName.GetClassName().In(typeBase.Name, $"I{typeBase.Name}")
                         || Array.Exists(GetModelAbstractBaseTyped(), x => x == parentNameContainer.ParentTypeFullName.GetClassName())
                         || (parentNameContainer.ParentTypeFullName.StartsWith($"{RootNamespace}.Abstractions.") && typeBase.Namespace == RootNamespace)
-                    )),
-            typeSettings: new Pipelines.Entity.PipelineTypeSettings(
-                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-                enableNullableReferenceTypes: true,
-                typenameMappings: CreateTypenameMappings(),
-                namespaceMappings: CreateNamespaceMappings()),
-            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(ValidateArgumentsInConstructor),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(AddNullChecks, UseExceptionThrowIfNull)
-            );
+                    ))
+            .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+            .WithEnableNullableReferenceTypes()
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithValidateArguments(ValidateArgumentsInConstructor)
+            .WithAddNullChecks(AddNullChecks)
+            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+            .Build();
         _ = _entityPipeline.Process(builder, new EntityContext(typeBase, entitySettings, CultureInfo.InvariantCulture)).GetValueOrThrow();
         return builder.BuildTyped();
     }
@@ -289,139 +286,120 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             ? validateArgumentsInConstructor
             : ArgumentValidationType.None;
 
-    private Pipelines.Reflection.PipelineSettings CreateReflectionPipelineSettings()
-        => new(
-            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: CopyAttributes,
-                copyInterfaces: CopyInterfaces),
-            typeSettings: new Pipelines.Reflection.PipelineTypeSettings(
-                namespaceMappings: CreateNamespaceMappings(),
-                typenameMappings: CreateTypenameMappings())
-            );
+    private PipelineSettings CreateReflectionPipelineSettings()
+        => new PipelineSettingsBuilder()
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .AddTypenameMappings(CreateTypenameMappings())
+            .Build();
 
-    private Pipelines.Entity.PipelineSettings CreateEntityPipelineSettings(
+    private PipelineSettings CreateEntityPipelineSettings(
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
         string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
-        => new(
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
-                addSetters: AddSetters,
-                addBackingFields: AddBackingFields,
-                setterVisibility: SetterVisibility,
-                createAsObservable: CreateAsObservable,
-                createRecord: CreateRecord,
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: CopyAttributes,
-                copyInterfaces: CopyInterfaces),
-            nameSettings: new Pipelines.Entity.PipelineNameSettings(
-                entityNameFormatString: entityNameFormatString,
-                entityNamespaceFormatString: entitiesNamespace,
-                toBuilderFormatString: ToBuilderFormatString,
-                toTypedBuilderFormatString: ToTypedBuilderFormatString),
-            inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
-                EnableEntityInheritance,
-                IsAbstract,
-                BaseClass,
-                InheritanceComparisonDelegate),
-            typeSettings: new Pipelines.Entity.PipelineTypeSettings(
-                newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-                enableNullableReferenceTypes: true,
-                typenameMappings: CreateTypenameMappings(),
-                namespaceMappings: CreateNamespaceMappings()),
-            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
-                validateArguments: forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)),
-                originalValidateArguments: ValidateArgumentsInConstructor,
-                collectionTypeName: RecordConcreteCollectionType.WithoutGenerics(),
-                addFullConstructor: AddFullConstructor,
-                addPublicParameterlessConstructor: AddPublicParameterlessConstructor),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
-                addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
-                useExceptionThrowIfNull: UseExceptionThrowIfNull)
-            );
+        => new PipelineSettingsBuilder()
+                .WithAddSetters(AddSetters)
+                .WithAddBackingFields(AddBackingFields)
+                .WithSetterVisibility(SetterVisibility)
+                .WithCreateAsObservable(CreateAsObservable)
+                .WithCreateRecord(CreateRecord)
+                .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+                .WithCopyAttributes(CopyAttributes)
+                .WithCopyInterfaces(CopyInterfaces)
+                .WithEntityNameFormatString(entityNameFormatString)
+                .WithEntityNamespaceFormatString(entitiesNamespace)
+                .WithToBuilderFormatString(ToBuilderFormatString)
+                .WithToTypedBuilderFormatString(ToTypedBuilderFormatString)
+                .WithEnableInheritance(EnableEntityInheritance)
+                .WithIsAbstract(IsAbstract)
+                .WithBaseClass(BaseClass?.ToBuilder())
+                .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
+                .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+                .WithEnableNullableReferenceTypes()
+                .AddTypenameMappings(CreateTypenameMappings())
+                .AddNamespaceMappings(CreateNamespaceMappings())
+                .WithValidateArguments(forceValidateArgumentsInConstructor ?? CombineValidateArguments(ValidateArgumentsInConstructor, !(EnableEntityInheritance && BaseClass is null)))
+                .WithOriginalValidateArguments(ValidateArgumentsInConstructor)
+                .WithCollectionTypeName(RecordConcreteCollectionType.WithoutGenerics())
+                .WithAddFullConstructor(AddFullConstructor)
+                .WithAddPublicParameterlessConstructor(AddPublicParameterlessConstructor)
+                .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
+                .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+                .Build();
 
-    private Pipelines.OverrideEntity.PipelineSettings CreateOverrideEntityPipelineSettings(
+    private PipelineSettings CreateOverrideEntityPipelineSettings(
         string entitiesNamespace,
         ArgumentValidationType? forceValidateArgumentsInConstructor = null,
         bool? overrideAddNullChecks = null,
         string entityNameFormatString = "{Class.NameNoInterfacePrefix}")
-        => new(
-        generationSettings: new Pipelines.OverrideEntity.PipelineGenerationSettings(
-            createRecord: CreateRecord,
-            allowGenerationWithoutProperties: AllowGenerationWithoutProperties),
-        nameSettings: new Pipelines.OverrideEntity.PipelineNameSettings(
-            entityNameFormatString: entityNameFormatString,
-            entityNamespaceFormatString: entitiesNamespace),
-        inheritanceSettings: new Pipelines.OverrideEntity.PipelineInheritanceSettings(
-            EnableEntityInheritance,
-            IsAbstract,
-            BaseClass,
-            InheritanceComparisonDelegate),
-        typeSettings: new Pipelines.OverrideEntity.PipelineTypeSettings(
-            newCollectionTypeName: RecordCollectionType.WithoutGenerics(),
-            enableNullableReferenceTypes: true,
-            typenameMappings: CreateTypenameMappings(),
-            namespaceMappings: CreateNamespaceMappings()),
-        nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
-            addNullChecks: forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false),
-            useExceptionThrowIfNull: UseExceptionThrowIfNull)
-        );
+        => new PipelineSettingsBuilder()
+            .WithCreateRecord(CreateRecord)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .WithEntityNameFormatString(entityNameFormatString)
+            .WithEntityNamespaceFormatString(entitiesNamespace)
+            .WithEnableInheritance(EnableEntityInheritance)
+            .WithIsAbstract(IsAbstract)
+            .WithBaseClass(BaseClass?.ToBuilder())
+            .WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
+            .WithEntityNewCollectionTypeName(RecordCollectionType.WithoutGenerics())
+            .WithEnableNullableReferenceTypes()
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithAddNullChecks(forceValidateArgumentsInConstructor != ArgumentValidationType.Shared && (overrideAddNullChecks ?? false))
+            .WithUseExceptionThrowIfNull(UseExceptionThrowIfNull)
+            .Build();
 
-    private Pipelines.Interface.PipelineSettings CreateInterfacePipelineSettings(
+    private PipelineSettings CreateInterfacePipelineSettings(
         string interfacesNamespace,
         string newCollectionTypeName,
         Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate,
         bool addSetters,
         string nameFormatString = "{Class.Name}")
-        => new(
-            nameSettings: new Pipelines.Interface.PipelineNameSettings(
-                namespaceFormatString: interfacesNamespace,
-                nameFormatString: nameFormatString),
-            inheritanceSettings: new Pipelines.Interface.PipelineInheritanceSettings(
-                EnableEntityInheritance,
-                IsAbstract,
-                BaseClass,
-                inheritanceComparisonDelegate),
-            typeSettings: new Pipelines.Interface.PipelineTypeSettings(
-                newCollectionTypeName: newCollectionTypeName,
-                typenameMappings: CreateTypenameMappings(),
-                namespaceMappings: CreateNamespaceMappings()),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: CopyAttributes,
-                copyInterfaces: CopyInterfaces),
-            generationSettings: new Pipelines.Interface.PipelineGenerationSettings(
-                addSetters: addSetters,
-                allowGenerationWithoutProperties: AllowGenerationWithoutProperties)
-        );
+        => new PipelineSettingsBuilder()
+            .WithNamespaceFormatString(interfacesNamespace)
+            .WithNameFormatString(nameFormatString)
+            .WithEnableInheritance(EnableEntityInheritance)
+            .WithIsAbstract(IsAbstract)
+            .WithBaseClass(BaseClass?.ToBuilder())
+            .WithInheritanceComparisonDelegate(inheritanceComparisonDelegate)
+            .WithEntityNewCollectionTypeName(newCollectionTypeName)
+            .AddTypenameMappings(CreateTypenameMappings())
+            .AddNamespaceMappings(CreateNamespaceMappings())
+            .WithCopyAttributes(CopyAttributes)
+            .WithCopyInterfaces(CopyInterfaces)
+            .WithAddSetters(addSetters)
+            .WithAllowGenerationWithoutProperties(AllowGenerationWithoutProperties)
+            .Build();
 
-    private IEnumerable<NamespaceMapping>? CreateNamespaceMappings()
+    private IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings()
     {
         // From models to domain entities
-        yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models", CoreNamespace, Enumerable.Empty<Metadata>());
-        yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Domains", $"{CoreNamespace}.Domains", Enumerable.Empty<Metadata>());
-        yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.Abstractions", $"{CoreNamespace}.Abstractions", Enumerable.Empty<Metadata>());
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Domains").WithTargetNamespace($"{CoreNamespace}.Domains");
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace("{CoreNamespace}.Abstractions");
 
         // From domain entities to builders
-        yield return new NamespaceMapping(CoreNamespace, CoreNamespace, Enumerable.Empty<Metadata>());
-        yield return new NamespaceMapping($"{CoreNamespace}.Abstractions", $"{CoreNamespace}.Abstractions", new[]
-        {
-            new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
-            new Metadata("{TypeName.ClassName}Builder", Pipelines.MetadataNames.CustomBuilderInterfaceName),
-            new Metadata($"{CoreNamespace}.Builders.Abstractions", Pipelines.MetadataNames.CustomBuilderParentTypeNamespace),
-            new Metadata("{ParentTypeName.ClassName}Builder", Pipelines.MetadataNames.CustomBuilderParentTypeName),
-        });
+        yield return new NamespaceMappingBuilder().WithSourceNamespace(CoreNamespace).WithTargetNamespace(CoreNamespace);
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions")
+            .AddMetadata
+            (
+                new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(Pipelines.MetadataNames.CustomBuilderInterfaceNamespace),
+                new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderInterfaceName),
+                new MetadataBuilder().WithValue($"{CoreNamespace}.Builders.Abstractions").WithName(Pipelines.MetadataNames.CustomBuilderParentTypeNamespace),
+                new MetadataBuilder().WithValue("{ParentTypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderParentTypeName)
+            );
 
         foreach (var entityClassName in GetPureAbstractModels().Select(x => x.GetEntityClassName().ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)))
         {
-            yield return new NamespaceMapping($"{CodeGenerationRootNamespace}.Models.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", Enumerable.Empty<Metadata>());
-            yield return new NamespaceMapping($"{CoreNamespace}.{entityClassName}s", $"{CoreNamespace}.{entityClassName}s", Enumerable.Empty<Metadata>());
+            yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
+            yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CoreNamespace}.{entityClassName}s").WithTargetNamespace($"{CoreNamespace}.{entityClassName}s");
         }
     }
 
-    private TypenameMapping[] CreateTypenameMappings()
+    private TypenameMappingBuilder[] CreateTypenameMappings()
         => GetType().Assembly.GetTypes()
             .Where(x => x.IsInterface
                 && x.Namespace?.StartsWith($"{CodeGenerationRootNamespace}.Models", StringComparison.Ordinal) == true
@@ -431,30 +409,31 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .SelectMany(x =>
                 new[]
                 {
-                    new TypenameMapping(x.FullName!, $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}", Enumerable.Empty<Metadata>()),
-                    new TypenameMapping($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}", $"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}", new[]
-                    {
-                        new Metadata($"{CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}", Pipelines.MetadataNames.CustomBuilderNamespace),
-                        new Metadata("{TypeName.ClassName}Builder", Pipelines.MetadataNames.CustomBuilderName),
-                        new Metadata(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
-                            ? $"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
-                            : "[Name][NullableSuffix].ToBuilder()", Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                            //: $"builderFactory.Create<{CoreNamespace}.Builders.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}Builder>([Name])", Pipelines.MetadataNames.CustomBuilderSourceExpression),
-                        new Metadata(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
-                            ? "[Name].BuildTyped()"
-                            : "[Name].Build()", Pipelines.MetadataNames.CustomBuilderMethodParameterExpression),
-                        //new Metadata(new ParameterBuilder().WithName("builderFactory").WithTypeName($"{CoreNamespace}.Builders.Abstractions.IBuilderFactory").Build(), Pipelines.MetadataNames.CustomBuilderCopyConstructorParameter),
-                    })
+                    new TypenameMappingBuilder().WithSourceTypeName(x.FullName!).WithTargetTypeName($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}"),
+                    new TypenameMappingBuilder().WithSourceTypeName($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}").WithTargetTypeName($"{CoreNamespace}.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}")
+                        .AddMetadata
+                        (
+                            new MetadataBuilder().WithValue($"{CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}").WithName(Pipelines.MetadataNames.CustomBuilderNamespace),
+                            new MetadataBuilder().WithValue("{TypeName.ClassName}Builder").WithName(Pipelines.MetadataNames.CustomBuilderName),
+                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
+                                ? $"new {CoreNamespace}.Builders{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", false)}.{x.GetEntityClassName()}Builder([Name])"
+                                : "[Name][NullableSuffix].ToBuilder()").WithName(Pipelines.MetadataNames.CustomBuilderSourceExpression),
+                                //: $"builderFactory.Create<{CoreNamespace}.Builders.{ReplaceStart(x.Namespace ?? string.Empty, $"{CodeGenerationRootNamespace}.Models", true)}{x.GetEntityClassName()}Builder>([Name])", Pipelines.MetadataNames.CustomBuilderSourceExpression),
+                            new MetadataBuilder().WithValue(x.Namespace != $"{CodeGenerationRootNamespace}.Models" && x.Namespace != $"{CodeGenerationRootNamespace}.Models.Abstractions"
+                                ? "[Name].BuildTyped()"
+                                : "[Name].Build()").WithName(Pipelines.MetadataNames.CustomBuilderMethodParameterExpression)
+                            //new MetadataBuilder().WithValue(new ParameterBuilder().WithName("builderFactory").WithTypeName($"{CoreNamespace}.Builders.Abstractions.IBuilderFactory").Build()).WithName(Pipelines.MetadataNames.CustomBuilderCopyConstructorParameter),
+                        )
                 })
             .Concat(new[]
             {
-                new TypenameMapping(typeof(bool).FullName!, typeof(bool).FullName!, new[] { new Metadata(true, Pipelines.MetadataNames.CustomBuilderWithDefaultPropertyValue) }),
-                new TypenameMapping(typeof(List<>).WithoutGenerics(), typeof(List<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
-                new TypenameMapping(typeof(Collection<>).WithoutGenerics(), typeof(Collection<>).WithoutGenerics(), new[] { new Metadata("new [Type]<[Generics]>([Expression].ToList())", Pipelines.MetadataNames.CustomCollectionInitialization) }),
-                new TypenameMapping(typeof(ObservableCollection<>).WithoutGenerics(), typeof(ObservableCollection<>).WithoutGenerics(), new[] { new Metadata("new [Type]<[Generics]>([Expression])", Pipelines.MetadataNames.CustomCollectionInitialization) }),
-                new TypenameMapping(typeof(IReadOnlyCollection<>).WithoutGenerics(), typeof(IReadOnlyCollection<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList().AsReadOnly()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
-                new TypenameMapping(typeof(IList<>).WithoutGenerics(), typeof(IList<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
-                new TypenameMapping(typeof(ICollection<>).WithoutGenerics(), typeof(ICollection<>).WithoutGenerics(), new[] { new Metadata("[Expression].ToList()", Pipelines.MetadataNames.CustomCollectionInitialization) }),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(bool).FullName!).WithTargetTypeName(typeof(bool).FullName!),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(Collection<>).WithoutGenerics()).WithTargetTypeName(typeof(Collection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("new [Type]<[Generics]>([Expression].ToList())").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(ObservableCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ObservableCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("new [Type]<[Generics]>([Expression])").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).WithTargetTypeName(typeof(IReadOnlyCollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList().AsReadOnly()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
+                new TypenameMappingBuilder().WithSourceTypeName(typeof(ICollection<>).WithoutGenerics()).WithTargetTypeName(typeof(ICollection<>).WithoutGenerics()).AddMetadata(new MetadataBuilder().WithValue("[Expression].ToList()").WithName(Pipelines.MetadataNames.CustomCollectionInitialization)),
             })
             .ToArray();
 
@@ -475,36 +454,38 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return string.Empty;
     }
 
-    private Pipelines.Builder.PipelineSettings CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
-        => new(
-            entitySettings: CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
-            typeSettings: new Pipelines.Builder.PipelineTypeSettings(
-                newCollectionTypeName: BuilderCollectionType.WithoutGenerics(),
-                enableNullableReferenceTypes: true,
-                namespaceMappings: CreateNamespaceMappings(),
-                typenameMappings: CreateTypenameMappings()),
-            nameSettings: new Pipelines.Builder.PipelineNameSettings(
-                builderNamespaceFormatString: buildersNamespace,
-                setMethodNameFormatString: SetMethodNameFormatString,
-                addMethodNameFormatString: AddMethodNameFormatString),
-            inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, BaseClass, BaseClassBuilderNamespace, InheritanceComparisonDelegate),
-            constructorSettings: new Pipelines.Builder.PipelineConstructorSettings(addCopyConstructor: AddCopyConstructor, setDefaultValues: SetDefaultValues)
-        );
+    private PipelineSettings CreateBuilderPipelineSettings(string buildersNamespace, string entitiesNamespace)
+        => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
+            .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
+            //.WithEnableNullableReferenceTypes()
+            //.AddNamespaceMappings(CreateNamespaceMappings())
+            //.AddTypenameMappings(CreateTypenameMappings())
+            .WithBuilderNamespaceFormatString(buildersNamespace)
+            .WithSetMethodNameFormatString(SetMethodNameFormatString)
+            .WithAddMethodNameFormatString(AddMethodNameFormatString)
+            .WithEnableBuilderInheritance(EnableBuilderInhericance)
+            //.WithIsAbstract(IsAbstract)
+            //.WithBaseClass(BaseClass?.ToBuilder())
+            .WithBaseClassBuilderNameSpace(BaseClassBuilderNamespace)
+            //.WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
+            .WithAddCopyConstructor(AddCopyConstructor)
+            .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
+            .Build();
 
-    private Pipelines.BuilderInterface.PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace)
-        => new(
-            entitySettings: CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()),
-            typeSettings: new Pipelines.BuilderInterface.PipelineTypeSettings(
-                newCollectionTypeName: BuilderCollectionType.WithoutGenerics(),
-                enableNullableReferenceTypes: true,
-                namespaceMappings: CreateNamespaceMappings(),
-                typenameMappings: CreateTypenameMappings()),
-            nameSettings: new Pipelines.BuilderInterface.PipelineNameSettings(
-                builderNamespaceFormatString: buildersNamespace,
-                setMethodNameFormatString: SetMethodNameFormatString,
-                addMethodNameFormatString: AddMethodNameFormatString),
-            inheritanceSettings: new Pipelines.BuilderInterface.PipelineInheritanceSettings(EnableBuilderInhericance, IsAbstract, InheritanceComparisonDelegate)
-        );
+    private PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace)
+        => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
+            .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
+            //.WithEnableNullableReferenceTypes()
+            //.AddNamespaceMappings(CreateNamespaceMappings())
+            //.AddTypenameMappings(CreateTypenameMappings())
+            .WithBuilderNamespaceFormatString(buildersNamespace)
+            .WithSetMethodNameFormatString(SetMethodNameFormatString)
+            .WithAddMethodNameFormatString(AddMethodNameFormatString)
+            .WithEnableBuilderInheritance(EnableBuilderInhericance)
+            //.WithIsAbstract(IsAbstract)
+            //.WithBaseClass(BaseClass?.ToBuilder())
+            //.WithInheritanceComparisonDelegate(InheritanceComparisonDelegate)
+            .Build();
 
     private TypeBase CreateImmutableClass(TypeBase typeBase, string entitiesNamespace)
     {
@@ -540,7 +521,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     {
         var builder = new ClassBuilder();
         _ = _builderPipeline
-            .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ForAbstractBuilder(), CultureInfo.InvariantCulture))
+            .Process(builder, new BuilderContext(typeBase, CreateBuilderPipelineSettings(buildersNamespace, entitiesNamespace).ToBuilder().WithIsForAbstractBuilder().Build(), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();

@@ -27,8 +27,8 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInte
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomBuilderNamespace, () => _formattableStringParser.Parse(context.Context.Settings.BuilderExtensionsNamespaceFormatString, context.Context.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

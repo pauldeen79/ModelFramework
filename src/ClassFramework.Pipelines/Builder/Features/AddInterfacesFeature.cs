@@ -26,16 +26,16 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.EntitySettings.CopySettings.CopyInterfaces)
+        if (!context.Context.Settings.CopyInterfaces)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
         var results = context.Context.SourceModel.Interfaces
-            .Where(x => context.Context.Settings.EntitySettings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Select(x =>
             {
-                var metadata = Enumerable.Empty<Metadata>().WithMappingMetadata(x, context.Context.Settings.TypeSettings);
+                var metadata = Enumerable.Empty<Metadata>().WithMappingMetadata(x, context.Context.Settings);
                 var ns = metadata.GetStringValue(MetadataNames.CustomBuilderInterfaceNamespace);
 
                 if (!string.IsNullOrEmpty(ns))

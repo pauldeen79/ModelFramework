@@ -23,8 +23,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sourceModel = GetType();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(copyAttributePredicate: _ => true, copyAttributes: true);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -41,8 +41,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sourceModel = GetType();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(copyAttributePredicate: null, copyAttributes: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(copyAttributePredicate: null, copyAttributes: true);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -59,8 +59,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sourceModel = GetType();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(copyAttributes: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(copyAttributes: false);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

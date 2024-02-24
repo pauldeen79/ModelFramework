@@ -14,7 +14,7 @@ public class SetBaseClassFeature : IPipelineFeature<TypeBaseBuilder, ReflectionC
 
         if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
         {
-            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.GenerationSettings.UseBaseClassFromSourceModel, context.Context.Settings.InheritanceSettings.EnableInheritance, context.Context.Settings.InheritanceSettings.BaseClass));
+            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.UseBaseClassFromSourceModel, context.Context.Settings.EnableInheritance, context.Context.Settings.BaseClass));
         }
 
         return Result.Continue<TypeBaseBuilder>();

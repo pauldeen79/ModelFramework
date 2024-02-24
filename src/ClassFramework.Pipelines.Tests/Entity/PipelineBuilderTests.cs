@@ -7,10 +7,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private EntityContext CreateContext(bool addProperties = true) => new EntityContext
         (
             CreateGenericModel(addProperties),
-            CreateEntitySettings
+            CreateSettingsForEntity
             (
                 allowGenerationWithoutProperties: false
-            ),
+            ).Build(),
             CultureInfo.InvariantCulture
         );
 
@@ -72,7 +72,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 namespaceMappings: namespaceMappings,
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
@@ -164,7 +164,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var typenameMappings = CreateTypenameMappings();
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 namespaceMappings: namespaceMappings,
                 typenameMappings: typenameMappings,
                 addNullChecks: true,
@@ -319,7 +319,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             );
         }
 
-        private static EntityContext CreateContext(IConcreteType model, Pipelines.Entity.PipelineSettings settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+        private static EntityContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
+            => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

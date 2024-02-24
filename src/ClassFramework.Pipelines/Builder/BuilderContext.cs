@@ -1,6 +1,6 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public class BuilderContext : ContextBase<IType, PipelineSettings>
+public class BuilderContext : ContextBase<IType>
 {
     public BuilderContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
@@ -10,9 +10,11 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
     public IEnumerable<Property> GetSourceProperties()
         => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
 
-    public bool IsBuilderForAbstractEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
-    public bool IsBuilderForOverrideEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && Settings.InheritanceSettings.BaseClass is not null;
-    public bool IsAbstractBuilder => Settings.InheritanceSettings.EnableBuilderInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract) && !Settings.IsForAbstractBuilder;
+    public bool IsBuilderForAbstractEntity => Settings.EnableInheritance && (Settings.BaseClass is null || Settings.IsAbstract);
+    public bool IsBuilderForOverrideEntity => Settings.EnableInheritance && Settings.BaseClass is not null;
+    public bool IsAbstractBuilder => Settings.EnableBuilderInheritance && (Settings.BaseClass is null || Settings.IsAbstract) && !Settings.IsForAbstractBuilder;
+
+    protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
     public string[] CreatePragmaWarningDisableStatements()
         => NeedsPragmas()
@@ -34,20 +36,20 @@ public class BuilderContext : ContextBase<IType, PipelineSettings>
 
     public bool HasBackingFields()
         => !(IsAbstractBuilder
-        || !Settings.EntitySettings.NullCheckSettings.AddNullChecks
-        || Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
-        || Settings.EntitySettings.GenerationSettings.AddBackingFields;
+        || !Settings.AddNullChecks
+        || Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
+        || Settings.AddBackingFields;
 
     private bool NeedsPragmas()
-        => Settings.TypeSettings.EnableNullableReferenceTypes
+        => Settings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
-        && !Settings.EntitySettings.NullCheckSettings.AddNullChecks;
+        && !Settings.AddNullChecks;
 
     public bool IsValidForFluentMethod(Property property)
     {
         property = property.IsNotNull(nameof(property));
 
-        if (!Settings.EntitySettings.CopySettings.CopyInterfaces)
+        if (!Settings.CopyInterfaces)
         {
             return true;
         }

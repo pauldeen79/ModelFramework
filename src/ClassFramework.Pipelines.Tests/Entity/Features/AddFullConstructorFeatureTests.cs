@@ -23,8 +23,8 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(addNullChecks: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(addNullChecks: false);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -54,8 +54,8 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(addNullChecks: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(addNullChecks: true);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -87,8 +87,8 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(addNullChecks: true, useExceptionThrowIfNull: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(addNullChecks: true, useExceptionThrowIfNull: true);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -120,8 +120,8 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(addNullChecks: true, addBackingFields: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(addNullChecks: true, addBackingFields: true);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -153,8 +153,8 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(validateArguments: ArgumentValidationType.DomainOnly);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(validateArguments: ArgumentValidationType.DomainOnly);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -185,8 +185,8 @@ public class AddFullConstructorFeatureTests : TestBase<Pipelines.Entity.Features
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(namespaceMappings: CreateNamespaceMappings());
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(namespaceMappings: CreateNamespaceMappings());
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

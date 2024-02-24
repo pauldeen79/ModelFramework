@@ -33,7 +33,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser);
+            var typeNameResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
@@ -45,13 +45,13 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(typeNameResult.Value!
-                    .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                    .FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
                 .WithParentTypeFullName(parentTypeNameResult.Value!)
                 .AddAttributes(property.Attributes
-                    .Where(_ => context.Context.Settings.EntitySettings.CopySettings.CopyAttributes)
+                    .Where(_ => context.Context.Settings.CopyAttributes)
                     .Select(x => context.Context.MapAttribute(x).ToBuilder()))
                 .AddMetadata(property.Metadata.Select(x => x.ToBuilder()))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
@@ -73,7 +73,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Settings.EntitySettings.GenerationSettings.AddBackingFields))
+        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -81,10 +81,10 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
     private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, BuilderContext context)
     {
-        if (property.HasBackingFieldOnBuilder(context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Settings.EntitySettings.GenerationSettings.AddBackingFields))
+        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)};");
-            if (context.Settings.EntitySettings.GenerationSettings.CreateAsObservable)
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks)};");
+            if (context.Settings.CreateAsObservable)
             {
                 yield return new StringCodeStatementBuilder().WithStatement($"HandlePropertyChanged(nameof({property.Name}));");
             }

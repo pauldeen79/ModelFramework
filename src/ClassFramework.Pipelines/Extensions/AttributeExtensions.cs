@@ -2,7 +2,7 @@
 
 public static class AttributeExtensions
 {
-    public static Domain.Attribute ConvertToDomainAttribute(this System.Attribute instance, Func<System.Attribute, AttributeBuilder> initializeDelegate)
+    public static Domain.Attribute ConvertToDomainAttribute(this System.Attribute instance, Func<System.Attribute, Domain.Attribute> initializeDelegate)
     {
         initializeDelegate = initializeDelegate.IsNotNull(nameof(initializeDelegate));
 
@@ -10,8 +10,8 @@ public static class AttributeExtensions
 
         return new AttributeBuilder()
             .WithName(prefilled.Name)
-            .AddParameters(prefilled.Parameters)
-            .AddMetadata(prefilled.Metadata)
+            .AddParameters(prefilled.Parameters.Select(x => x.ToBuilder()))
+            .AddMetadata(prefilled.Metadata.Select(x => x.ToBuilder()))
             .Build();
     }
 }

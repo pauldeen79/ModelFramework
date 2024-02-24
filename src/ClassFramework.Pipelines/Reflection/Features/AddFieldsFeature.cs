@@ -34,8 +34,8 @@ public class AddFieldsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCont
                 .WithIsValueType(f.FieldType.IsValueType())
                 .WithVisibility(f.IsPublic.ToVisibility())
                 .AddAttributes(f.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
-                    context.Context.Settings.CopySettings.CopyAttributes,
-                    context.Context.Settings.CopySettings.CopyAttributePredicate))
+                    x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                    context.Context.Settings.CopyAttributes,
+                    context.Context.Settings.CopyAttributePredicate))
         );
 }

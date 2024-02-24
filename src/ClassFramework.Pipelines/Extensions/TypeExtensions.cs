@@ -55,7 +55,7 @@ public static class TypeExtensions
     public static bool IsValueType(this Type type)
         => type.IsValueType || type.IsEnum;
 
-    public static string GetEntityBaseClass(this Type instance, bool useBaseClassFromSourceModel, bool enableInheritance, Class? baseClass)
+    public static string GetEntityBaseClass(this Type instance, bool useBaseClassFromSourceModel, bool enableInheritance, IType? baseClass)
     {
         if (useBaseClassFromSourceModel)
         {

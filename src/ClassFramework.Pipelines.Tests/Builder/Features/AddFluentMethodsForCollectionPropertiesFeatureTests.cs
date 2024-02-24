@@ -23,7 +23,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: string.Empty);
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: "Add{Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -73,7 +73,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: "Add{Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -104,7 +104,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -138,7 +138,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -172,7 +172,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 validateArguments: ArgumentValidationType.Shared,
                 addMethodNameFormatString: "Add{Name}");
@@ -208,7 +208,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
                 addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -245,7 +245,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: addNullChecks, validateArguments: validateArguments);
+            var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -264,7 +264,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(builderNameFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -283,7 +283,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -302,7 +302,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: true);
+            var settings = CreateSettingsForBuilder(addNullChecks: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -321,7 +321,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
+            var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -332,7 +332,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

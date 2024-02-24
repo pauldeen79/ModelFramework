@@ -11,9 +11,9 @@ public class ValidationFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderI
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.EntitySettings.GenerationSettings.AllowGenerationWithoutProperties
+        if (!context.Context.Settings.AllowGenerationWithoutProperties
             && context.Context.SourceModel.Properties.Count == 0
-            && !context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance)
+            && !context.Context.Settings.EnableInheritance)
         {
             return Result.Invalid<IConcreteTypeBuilder>("To create a builder extensions class, there must be at least one property");
         }

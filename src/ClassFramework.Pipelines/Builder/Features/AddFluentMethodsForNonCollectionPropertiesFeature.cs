@@ -26,7 +26,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
     {
         context = context.IsNotNull(nameof(context));
 
-        if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.SetMethodNameFormatString))
+        if (string.IsNullOrEmpty(context.Context.Settings.SetMethodNameFormatString))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
@@ -36,9 +36,9 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
             var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings);
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
-            resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
-            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
+            resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("ArgumentNullCheck", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("BuilderWithExpression", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext));
             var results = resultSetBuilder.Build();
@@ -64,7 +64,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
                         .WithDefaultValue(GetMetadata(context, property).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
-            if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
+            if (context.Context.Settings.AddNullChecks)
             {
                 var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
                 if (!string.IsNullOrEmpty(nullCheckStatement))
@@ -86,7 +86,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeature : IPipelineFeatur
     }
 
     private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
-        => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings);
+        => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings);
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddFluentMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);

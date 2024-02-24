@@ -38,7 +38,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             var externalResult = Result.NoContent<string>();
             propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new Pipelines.Entity.PipelineSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -55,7 +55,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("MyEntityNamespaceFormatString", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace"));
             var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new Pipelines.Entity.PipelineSettings(nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNamespaceFormatString: "MyEntityNamespaceFormatString")), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().WithEntityNamespaceFormatString("MyEntityNamespaceFormatString").Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, formattableStringParser);
@@ -74,7 +74,7 @@ public class EntityPipelinePlaceholderProcessorTests : TestBase<EntityPipelinePl
             // Arrange
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new Pipelines.Entity.PipelineSettings(constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(validateArguments: validateArguments)), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(CreateModel(), new EntityContext(CreateModel().BuildTyped(), new PipelineSettingsBuilder().WithValidateArguments(validateArguments).Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("EntityNameSuffix", CultureInfo.InvariantCulture, context, formattableStringParser);

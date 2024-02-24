@@ -22,7 +22,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(enableBuilderInheritance: true, isAbstract: true);
+            var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -68,7 +68,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(enableEntityInheritance: true);
+            var settings = CreateSettingsForBuilder(enableEntityInheritance: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -103,7 +103,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -114,7 +114,7 @@ public class AddBuildMethodFeatureTests : TestBase<Pipelines.Builder.Features.Ad
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

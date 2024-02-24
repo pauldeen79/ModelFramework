@@ -26,7 +26,7 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.Settings.InheritanceSettings.EnableBuilderInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
+        if (context.Context.Settings.EnableBuilderInheritance && context.Context.Settings.IsAbstract)
         {
             if (context.Context.Settings.IsForAbstractBuilder)
             {
@@ -74,12 +74,12 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
 
         if (context.Context.IsBuilderForAbstractEntity)
         {
-            var baseClass = context.Context.Settings.InheritanceSettings.BaseClass ?? context.Context.SourceModel;
+            var baseClass = context.Context.Settings.BaseClass ?? context.Context.SourceModel;
             context.Model.AddMethods(new MethodBuilder()
-                .WithName(context.Context.Settings.NameSettings.BuildMethodName)
+                .WithName(context.Context.Settings.BuildMethodName)
                 .WithOverride()
                 .WithReturnTypeName($"{baseClass.GetFullName()}{baseClass.GetGenericTypeArgumentsString()}")
-                .AddStringCodeStatements($"return {context.Context.Settings.NameSettings.BuildTypedMethodName}();"));
+                .AddStringCodeStatements($"return {context.Context.Settings.BuildTypedMethodName}();"));
         }
 
         return Result.Continue<IConcreteTypeBuilder>();
@@ -90,8 +90,8 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
 
     private static string GetName(PipelineContext<IConcreteTypeBuilder, BuilderContext> context)
         => context.Context.IsBuilderForAbstractEntity || context.Context.IsBuilderForOverrideEntity
-            ? context.Context.Settings.NameSettings.BuildTypedMethodName
-            : context.Context.Settings.NameSettings.BuildMethodName;
+            ? context.Context.Settings.BuildTypedMethodName
+            : context.Context.Settings.BuildMethodName;
 
     private static string GetBuilderBuildMethodReturnType(BuilderContext context)
         => context.IsBuilderForAbstractEntity

@@ -7,10 +7,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private OverrideEntityContext CreateContext(bool addProperties = true) => new OverrideEntityContext
         (
             CreateGenericModel(addProperties),
-            CreateOverrideEntitySettings
+            CreateSettingsForOverrideEntity
             (
                 allowGenerationWithoutProperties: false
-            ),
+            ).Build(),
             CultureInfo.InvariantCulture
         );
 
@@ -72,7 +72,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
-            var settings = CreateOverrideEntitySettings(
+            var settings = CreateSettingsForOverrideEntity(
                 namespaceMappings: namespaceMappings,
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
@@ -93,7 +93,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.Value.Interfaces.Should().BeEmpty();
         }
        
-        private static OverrideEntityContext CreateContext(IConcreteType model, Pipelines.OverrideEntity.PipelineSettings settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+        private static OverrideEntityContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
+            => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

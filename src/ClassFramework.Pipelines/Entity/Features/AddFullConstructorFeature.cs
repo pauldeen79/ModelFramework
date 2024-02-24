@@ -26,7 +26,7 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.ConstructorSettings.AddFullConstructor)
+        if (!context.Context.Settings.AddFullConstructor)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
@@ -60,13 +60,13 @@ public class AddFullConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, 
         }
 
         return Result.Success(new ConstructorBuilder()
-            .WithProtected(context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
-            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings.TypeSettings, context.Context.MapTypeName))
+            .WithProtected(context.Context.Settings.EnableInheritance && context.Context.Settings.IsAbstract)
+            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName))
             .AddStringCodeStatements
             (
                 context.Context.SourceModel.Properties
                     .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
-                    .Where(property => context.Context.Settings.NullCheckSettings.AddNullChecks && context.Context.Settings.AddValidationCode == ArgumentValidationType.None && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
+                    .Where(property => context.Context.Settings.AddNullChecks && context.Context.Settings.AddValidationCode == ArgumentValidationType.None && property.Metadata.GetValue(MetadataNames.EntityNullCheck, () => !property.IsNullable && !property.IsValueType))
                     .Select(property => context.Context.CreateArgumentNullException(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()))
             )
             .AddStringCodeStatements(initializationResults.Select(x => x.Value!))

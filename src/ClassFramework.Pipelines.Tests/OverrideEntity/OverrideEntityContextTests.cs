@@ -8,7 +8,7 @@ public class OverrideEntityContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: null!, new Pipelines.Entity.PipelineSettings(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new EntityContext(sourceModel: null!, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
         }
 
@@ -24,7 +24,7 @@ public class OverrideEntityContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: CreateModel(), new Pipelines.Entity.PipelineSettings(), formatProvider: null!))
+            this.Invoking(_ => new EntityContext(sourceModel: CreateModel(), new PipelineSettingsBuilder().Build(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }
@@ -35,7 +35,7 @@ public class OverrideEntityContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert
@@ -51,7 +51,7 @@ public class OverrideEntityContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false).Build();
             var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
 
             // Act & Assert

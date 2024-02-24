@@ -23,7 +23,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Reflection.Features.SetNam
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings();
+            var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Reflection.Features.SetNam
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings();
+            var settings = CreateSettingsForReflection();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -61,7 +61,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Reflection.Features.SetNam
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(nameFormatString: "{Error}");
+            var settings = CreateSettingsForReflection(nameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -80,7 +80,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Reflection.Features.SetNam
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(namespaceFormatString: "{Error}");
+            var settings = CreateSettingsForReflection(namespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -91,7 +91,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Reflection.Features.SetNam
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<TypeBaseBuilder, ReflectionContext> CreateContext(Type sourceModel, ClassBuilder model, Pipelines.Reflection.PipelineSettings settings)
-            => new(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<TypeBaseBuilder, ReflectionContext> CreateContext(Type sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

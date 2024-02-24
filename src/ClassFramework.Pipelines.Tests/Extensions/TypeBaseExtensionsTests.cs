@@ -11,7 +11,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             var sut = CreateSut().WithName("MyClass").Build();
 
             // Act & Assert
-            sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateBuilderSettings()))
+            sut.Invoking(x => x.IsMemberValidForBuilderClass(parentTypeContainer: null!, CreateSettingsForBuilder().Build()))
                .Should().Throw<ArgumentNullException>().WithParameterName("parentTypeContainer");
         }
 
@@ -33,7 +33,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
-            var settings = CreateBuilderSettings(enableBuilderInheritance: false);
+            var settings = CreateSettingsForBuilder(enableBuilderInheritance: false).Build();
 
             // Act
             var result = sut.IsMemberValidForBuilderClass(parentTypeContainer, settings);
@@ -48,10 +48,10 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var parentTypeContainer = Fixture.Freeze<IParentTypeContainer>();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 inheritanceComparisonDelegate: (_, _) => false,
                 enableEntityInheritance: true
-            );
+            ).Build();
 
             // Act
             var result = sut.IsMemberValidForBuilderClass(parentTypeContainer, settings);
@@ -145,8 +145,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
         {
             // Arrange
             var sut = new InterfaceBuilder().WithName("MyClass").Build();
-            var settings = CreateBuilderSettings();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder();
+            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderConstructorProperties(context))
@@ -167,8 +167,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     new PropertyBuilder().WithName("Property3").WithType(typeof(int)).WithHasSetter(false).WithHasInitializer(false) // this property should be skipped, because it does not have a setter or initializer
                 )
                 .Build();
-            var settings = CreateBuilderSettings();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder();
+            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -190,8 +190,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 )
                 .AddConstructors(new ConstructorBuilder().WithVisibility(Visibility.Private)) // only private constructor present :)
                 .Build();
-            var settings = CreateBuilderSettings();
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder();
+            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -210,12 +210,12 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property2").WithType(typeof(int))).BuildTyped(),
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -237,12 +237,12 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -264,12 +264,12 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     .AddParameter("property2", typeof(int))
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 baseClass: null,
                 enableEntityInheritance: true
             );
-            var context = new BuilderContext(sut, settings, CultureInfo.InvariantCulture);
+            var context = new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture);
 
             // Act
             var result = sut.GetBuilderConstructorProperties(context);
@@ -299,7 +299,8 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
             // Arrange
             var sut = CreateSut().WithName("MyClass").Build();
             var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, CreateBuilderSettings(), CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForBuilder();
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act & Assert
             sut.Invoking(x => x.GetBuilderClassFields(context, formattableStringParser: null!).ToArray())
@@ -318,14 +319,14 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     new PropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableBuilderInheritance: true,
                 baseClass: null,
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -347,14 +348,14 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     new PropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: false,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -376,14 +377,14 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     new PropertyBuilder().WithName("Property3").WithType(typeof(int))
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped(),
                 validateArguments: ArgumentValidationType.Shared
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -405,7 +406,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     new PropertyBuilder().WithName("Property2").WithType(typeof(string)).WithIsNullable()
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
@@ -413,7 +414,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act
@@ -438,7 +439,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                     new PropertyBuilder().WithName("Property3").WithType(typeof(string)).WithIsNullable()
                 )
                 .Build();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 enableBuilderInheritance: true,
@@ -446,7 +447,7 @@ public class TypeBaseExtensionsTests : TestBase<ClassBuilder>
                 validateArguments: ArgumentValidationType.DomainOnly
             );
             var model = new ClassBuilder();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sut, settings.Build(), CultureInfo.InvariantCulture));
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act

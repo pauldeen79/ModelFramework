@@ -24,7 +24,7 @@ public class TypeBaseProcessorTests : TestBase<TypeBaseProcessor>
         {
             // Arrange
             var sut = CreateSut();
-            var context = new PipelineContext<ClassBuilder, BuilderContext>(Model, new BuilderContext(CreateModel(), new Pipelines.Builder.PipelineSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<ClassBuilder, BuilderContext>(Model, new BuilderContext(CreateModel(), new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

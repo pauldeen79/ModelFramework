@@ -22,8 +22,8 @@ public class AddInterfacesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(copyInterfaces: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(copyInterfaces: false);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -40,8 +40,8 @@ public class AddInterfacesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(copyInterfaces: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(copyInterfaces: true);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -58,8 +58,8 @@ public class AddInterfacesFeatureTests : TestBase<Pipelines.Reflection.Features.
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(copyInterfaces: false, copyInterfacePredicate: _ => false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(copyInterfaces: false, copyInterfacePredicate: _ => false);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

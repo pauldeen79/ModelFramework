@@ -134,7 +134,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
     public class GetBuilderClassConstructorInitializer : PropertyExtensionsTests
     {
         [Fact]
-        public void Throws_On_Null_TypeSettings()
+        public void Throws_On_Null_Settings()
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
@@ -142,8 +142,8 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
-            sut.Invoking(x => x.GetBuilderConstructorInitializer(typeSettings: default!, formatProvider, new object(), string.Empty, string.Empty, formattableStringParser))
-               .Should().Throw<ArgumentNullException>().WithParameterName("typeSettings");
+            sut.Invoking(x => x.GetBuilderConstructorInitializer(settings: default!, formatProvider, new object(), string.Empty, string.Empty, formattableStringParser))
+               .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
         [Fact]
@@ -151,7 +151,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var typeSettings = new PipelineSettingsBuilder().Build();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
             // Act & Assert
@@ -164,7 +164,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var typeSettings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
@@ -178,7 +178,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var typeSettings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
@@ -192,7 +192,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var typeSettings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
 
@@ -206,7 +206,7 @@ public class PropertyExtensionsTests : TestBase<PropertyBuilder>
         {
             // Arrange
             var sut = CreateSut().WithName("MyProperty").WithType(typeof(string)).WithIsNullable().Build();
-            var typeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var typeSettings = new PipelineSettingsBuilder().Build();
             var formatProvider = Fixture.Freeze<IFormatProvider>();
 
             // Act & Assert

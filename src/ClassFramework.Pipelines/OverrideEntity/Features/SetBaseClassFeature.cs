@@ -28,7 +28,7 @@ public class SetBaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, Overri
 
         if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
         {
-            var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.EntityNameFormatString, context.Context.FormatProvider, context);
+            var nameResult = _formattableStringParser.Parse(context.Context.Settings.EntityNameFormatString, context.Context.FormatProvider, context);
             if (!nameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<IConcreteTypeBuilder>(nameResult);

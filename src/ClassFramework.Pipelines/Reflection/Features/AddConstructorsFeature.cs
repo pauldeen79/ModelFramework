@@ -12,7 +12,7 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.GenerationSettings.CreateConstructors
+        if (!context.Context.Settings.CreateConstructors
             || context.Model is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
             return Result.Continue<TypeBaseBuilder>();
@@ -40,14 +40,14 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
                             .WithIsNullable(p.IsNullable())
                             .WithIsValueType(p.ParameterType.IsValueType())
                             .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
-                                x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
-                                context.Context.Settings.CopySettings.CopyAttributes,
-                                context.Context.Settings.CopySettings.CopyAttributePredicate))
+                                x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                                context.Context.Settings.CopyAttributes,
+                                context.Context.Settings.CopyAttributePredicate))
                     )
                 )
                 .AddAttributes(x.GetCustomAttributes(true).ToAttributes(
-                    x => x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate),
-                    context.Context.Settings.CopySettings.CopyAttributes,
-                    context.Context.Settings.CopySettings.CopyAttributePredicate))
+                    x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                    context.Context.Settings.CopyAttributes,
+                    context.Context.Settings.CopyAttributePredicate))
         );
 }

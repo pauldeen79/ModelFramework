@@ -26,7 +26,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
     {
         context = context.IsNotNull(nameof(context));
 
-        if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.AddMethodNameFormatString))
+        if (string.IsNullOrEmpty(context.Context.Settings.AddMethodNameFormatString))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
@@ -36,9 +36,9 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
             var childContext = CreateParentChildContext(context, property);
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, childContext, context.Context.MapTypeName(property.TypeName), _formattableStringParser));
-            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameFormatString, context.Context.FormatProvider, childContext));
-            resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.AddMethodNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, childContext, context.Context.MapTypeName(property.TypeName), _formattableStringParser));
+            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.AddMethodNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.AddRange("EnumerableOverload", () => GetCodeStatementsForEnumerableOverload(context, property));
             resultSetBuilder.AddRange("ArrayOverload", () => GetCodeStatementsForArrayOverload(context, property));
             var results = resultSetBuilder.Build();
@@ -92,7 +92,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
     private IEnumerable<Result<string>> GetCodeStatementsForEnumerableOverload(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
     {
-        if (context.Context.Settings.TypeSettings.NewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
+        if (context.Context.Settings.BuilderNewCollectionTypeName == typeof(IEnumerable<>).WithoutGenerics())
         {
             // When using IEnumerable<>, do not call ToArray because we want lazy evaluation
             foreach (var statement in GetCodeStatementsForArrayOverload(context, property))
@@ -105,14 +105,14 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
         // When not using IEnumerable<>, we can simply force ToArray because it's stored in a generic list or collection of some sort anyway.
         // (in other words, materialization is always performed)
-        yield return Result.Success(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks
+        yield return Result.Success(context.Context.Settings.AddNullChecks
             ? $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()})));"
             : $"return Add{property.Name}({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}.ToArray());");
     }
 
     private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<IConcreteTypeBuilder, BuilderContext> context, Property property)
     {
-        if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
+        if (context.Context.Settings.AddNullChecks)
         {
             var argumentNullCheckResult = _formattableStringParser.Parse
             (
@@ -122,16 +122,16 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
             );
             yield return argumentNullCheckResult;
             
-            if (context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared)
+            if (context.Context.Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
             {
-                var constructorInitializerResult = property.GetBuilderConstructorInitializer(context.Context.Settings.TypeSettings, context.Context.FormatProvider, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName), context.Context.Settings.TypeSettings.NewCollectionTypeName, _formattableStringParser); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
+                var constructorInitializerResult = property.GetBuilderConstructorInitializer(context.Context.Settings, context.Context.FormatProvider, CreateParentChildContext(context, property), context.Context.MapTypeName(property.TypeName), context.Context.Settings.BuilderNewCollectionTypeName, _formattableStringParser); // note that we're not checking the status of this result, because it is using the same expression that we heve already checked before (typeNameResult, see above in this class)
                 if (!constructorInitializerResult.IsSuccessful())
                 {
                     yield return constructorInitializerResult;
                 }
                 else
                 {
-                    yield return Result.Success($"if ({property.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} is null) {property.GetBuilderMemberName(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.Value};");
+                    yield return Result.Success($"if ({property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} is null) {property.GetBuilderMemberName(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields, context.Context.FormatProvider.ToCultureInfo())} = {constructorInitializerResult.Value};");
                 }
             }
         }
@@ -139,8 +139,8 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
         var builderAddExpressionResult = _formattableStringParser.Parse
         (
             property.Metadata
-                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Context.Settings.TypeSettings.CollectionCopyStatementFormatString),
+                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings)
+                .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Context.Settings.CollectionCopyStatementFormatString),
             context.Context.FormatProvider,
             new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
         );

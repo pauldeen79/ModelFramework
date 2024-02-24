@@ -25,7 +25,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null,
                 isAbstract: hasBaseClass,
@@ -57,7 +57,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
@@ -94,7 +94,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
@@ -131,7 +131,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
@@ -170,7 +170,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
@@ -192,7 +192,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
@@ -206,7 +206,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

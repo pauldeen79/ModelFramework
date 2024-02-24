@@ -5,7 +5,7 @@ public static class TypeBaseExtensions
     public static bool IsMemberValidForBuilderClass(
         this IType parent,
         IParentTypeContainer parentTypeContainer,
-        IPipelineGenerationSettings settings)
+        PipelineSettings settings)
     {
         parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
         settings = settings.IsNotNull(nameof(settings));
@@ -71,13 +71,13 @@ public static class TypeBaseExtensions
             return Enumerable.Empty<Property>();
         }
 
-        if (context.IsBuilderForOverrideEntity && context.Settings.InheritanceSettings.BaseClass is not null)
+        if (context.IsBuilderForOverrideEntity && context.Settings.BaseClass is not null)
         {
             // Try to get property from either the base class c'tor or the class c'tor itself
             return ctor
                 .Parameters
                 .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
-                    ?? context.Settings.InheritanceSettings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                    ?? context.Settings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
                 .Where(x => x is not null);
         }
 
@@ -102,9 +102,9 @@ public static class TypeBaseExtensions
 
         foreach (var property in instance.Properties.Where(x =>
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
-            && x.HasBackingFieldOnBuilder(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments, context.Context.Settings.EntitySettings.GenerationSettings.AddBackingFields)))
+            && x.HasBackingFieldOnBuilder(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields)))
         {
-            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), formattableStringParser);
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {
@@ -114,13 +114,13 @@ public static class TypeBaseExtensions
 
             yield return Result.Success(new FieldBuilder()
                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName).FixNullableTypeName(property))
+                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType));
         }
     }
 
-    public static string GetEntityBaseClass(this IType instance, bool enableInheritance, Class? baseClass)
+    public static string GetEntityBaseClass(this IType instance, bool enableInheritance, IType? baseClass)
         => enableInheritance
         && baseClass is not null
             ? baseClass.GetFullName()

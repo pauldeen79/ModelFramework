@@ -23,7 +23,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: string.Empty);
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -74,7 +74,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -104,7 +104,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, model, settings);
@@ -139,7 +139,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, model, settings);
@@ -175,7 +175,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
                 setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -209,7 +209,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -244,7 +244,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -268,7 +268,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -296,7 +296,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(builderNameFormatString: "My{Class.Name}Builder");
+            var settings = CreateSettingsForBuilder(builderNameFormatString: "My{Class.Name}Builder");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -316,7 +316,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -327,7 +327,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

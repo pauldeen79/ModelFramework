@@ -63,9 +63,9 @@ public class PropertyProcessorTests : TestBase<PropertyProcessor>
             // Arrange
             var formattableStringParser = InitializeParser();
             var sut = CreateSut();
-            var settings = Fixture.Freeze<IPipelineGenerationSettings>();
+            var settings = new PipelineSettingsBuilder().Build();
             var model = CreateModel();
-            var context = new PropertyContext(model, settings, CultureInfo.InvariantCulture, model.TypeName);
+            var context = new PropertyContext(model, settings, CultureInfo.InvariantCulture, model.TypeName, string.Empty);
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, formattableStringParser);

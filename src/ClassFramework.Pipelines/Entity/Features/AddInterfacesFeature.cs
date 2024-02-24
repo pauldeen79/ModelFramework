@@ -12,15 +12,15 @@ public class AddInterfacesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyInterfaces)
+        if (!context.Context.Settings.CopyInterfaces)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
 
-        var baseClass = context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.InheritanceSettings.EnableInheritance, context.Context.Settings.InheritanceSettings.BaseClass);
+        var baseClass = context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.EnableInheritance, context.Context.Settings.BaseClass);
 
         context.Model.AddInterfaces(context.Context.SourceModel.Interfaces
-            .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
+            .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
             .Where(x => x != baseClass)
             .Select(x => context.Context.MapTypeName(x.FixTypeName())));
 

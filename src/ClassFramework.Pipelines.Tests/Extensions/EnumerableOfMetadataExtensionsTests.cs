@@ -9,23 +9,23 @@ public class EnumerableOfMetadataExtensionsTests : TestBase
         {
             // Arrange
             var metadata = new[] { new MetadataBuilder().WithName("MyName").Build() };
-            var pipelineBuilderTypeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var pipelineBuilderTypeSettings = new PipelineSettingsBuilder();
 
             // Act & Assert
-            metadata.Invoking(x => x.WithMappingMetadata(typeName: null!, pipelineBuilderTypeSettings))
+            metadata.Invoking(x => x.WithMappingMetadata(typeName: null!, pipelineBuilderTypeSettings.Build()))
                     .Should().Throw<ArgumentNullException>().WithParameterName("typeName");
         }
 
         [Fact]
-        public void Throws_On_Null_PipelineBuilderTypeSettings()
+        public void Throws_On_Null_Settings()
         {
             // Arrange
             var metadata = new[] { new MetadataBuilder().WithName("MyName").Build() };
             var typeName = "MyNamespace.MyClass";
 
             // Act & Assert
-            metadata.Invoking(x => x.WithMappingMetadata(typeName, pipelineBuilderTypeSettings: null!))
-                    .Should().Throw<ArgumentNullException>().WithParameterName("pipelineBuilderTypeSettings");
+            metadata.Invoking(x => x.WithMappingMetadata(typeName, settings: null!))
+                    .Should().Throw<ArgumentNullException>().WithParameterName("settings");
         }
 
         [Fact]
@@ -34,10 +34,10 @@ public class EnumerableOfMetadataExtensionsTests : TestBase
             // Arrange
             var metadata = new[] { new MetadataBuilder().WithName("MyName").Build() };
             var typeName = "MyNamespace.MyClass";
-            var pipelineBuilderTypeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
+            var pipelineBuilderTypeSettings = new PipelineSettingsBuilder();
 
             // Act
-            var result = metadata.WithMappingMetadata(typeName, pipelineBuilderTypeSettings);
+            var result = metadata.WithMappingMetadata(typeName, pipelineBuilderTypeSettings.Build());
 
             // Assert
             result.Should().BeEquivalentTo(metadata);
@@ -48,17 +48,17 @@ public class EnumerableOfMetadataExtensionsTests : TestBase
         {
             // Arrange
             var metadata = new[] { new MetadataBuilder().WithName("MyName").Build() };
-            var additionalMetadata = new[] { new MetadataBuilder().WithName("MyName2").Build() };
+            var additionalMetadata = new[] { new MetadataBuilder().WithName("MyName2") };
             var typeName = "MyNamespace.MyClass";
-            var pipelineBuilderTypeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
-            pipelineBuilderTypeSettings.NamespaceMappings.Returns(new[] { new NamespaceMapping("MyNamespace", "IgnoredNamespace", additionalMetadata) }.ToList().AsReadOnly()); // this one gets ignored, as typename gets precedence
-            pipelineBuilderTypeSettings.TypenameMappings.Returns(new[] { new TypenameMapping("MyNamespace.MyClass", "MappedNamespace.MappedClass", additionalMetadata) }.ToList().AsReadOnly());
+            var pipelineBuilderTypeSettings = new PipelineSettingsBuilder();
+            pipelineBuilderTypeSettings.AddNamespaceMappings(new NamespaceMappingBuilder().WithSourceNamespace("MyNamespace").WithTargetNamespace("IgnoredNamespace").AddMetadata(additionalMetadata)); // this one gets ignored, as typename gets precedence
+            pipelineBuilderTypeSettings.AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass").AddMetadata(additionalMetadata));
 
             // Act
-            var result = metadata.WithMappingMetadata(typeName, pipelineBuilderTypeSettings);
+            var result = metadata.WithMappingMetadata(typeName, pipelineBuilderTypeSettings.Build());
 
             // Assert
-            result.Should().BeEquivalentTo(metadata.Concat(additionalMetadata));
+            result.Should().BeEquivalentTo(metadata.Concat(additionalMetadata.Select(x => x.Build())));
         }
 
         [Fact]
@@ -66,16 +66,16 @@ public class EnumerableOfMetadataExtensionsTests : TestBase
         {
             // Arrange
             var metadata = new[] { new MetadataBuilder().WithName("MyName").Build() };
-            var additionalMetadata = new[] { new MetadataBuilder().WithName("MyName2").Build() };
+            var additionalMetadata = new[] { new MetadataBuilder().WithName("MyName2") };
             var typeName = "MyNamespace.MyClass";
-            var pipelineBuilderTypeSettings = Fixture.Freeze<IPipelineBuilderTypeSettings>();
-            pipelineBuilderTypeSettings.TypenameMappings.Returns(new[] { new TypenameMapping("MyNamespace.MyClass", "MappedNamespace.MappedClass", additionalMetadata) }.ToList().AsReadOnly());
+            var pipelineBuilderTypeSettings = new PipelineSettingsBuilder();
+            pipelineBuilderTypeSettings.AddTypenameMappings(new TypenameMappingBuilder().WithSourceTypeName("MyNamespace.MyClass").WithTargetTypeName("MappedNamespace.MappedClass").AddMetadata(additionalMetadata));
 
             // Act
-            var result = metadata.WithMappingMetadata(typeName, pipelineBuilderTypeSettings);
+            var result = metadata.WithMappingMetadata(typeName, pipelineBuilderTypeSettings.Build());
 
             // Assert
-            result.Should().BeEquivalentTo(metadata.Concat(additionalMetadata));
+            result.Should().BeEquivalentTo(metadata.Concat(additionalMetadata.Select(x => x.Build())));
         }
     }
 }

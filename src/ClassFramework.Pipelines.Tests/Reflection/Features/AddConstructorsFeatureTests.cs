@@ -22,8 +22,8 @@ public class AddConstructorsFeatureTests : TestBase<Pipelines.Reflection.Feature
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(createConstructors: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(createConstructors: false);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -40,8 +40,8 @@ public class AddConstructorsFeatureTests : TestBase<Pipelines.Reflection.Feature
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var model = new InterfaceBuilder();
-            var settings = CreateReflectionSettings(createConstructors: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(createConstructors: false);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -58,8 +58,8 @@ public class AddConstructorsFeatureTests : TestBase<Pipelines.Reflection.Feature
             var sut = CreateSut();
             var sourceModel = typeof(MyConstructorTestClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(createConstructors: true);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(createConstructors: true);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

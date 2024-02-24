@@ -22,7 +22,7 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -39,7 +39,7 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(allowGenerationWithoutProperties: true);
+            var settings = CreateSettingsForBuilder(allowGenerationWithoutProperties: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -56,7 +56,7 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             var sourceModel = new ClassBuilder().WithName("MyClass").BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 allowGenerationWithoutProperties: false,
                 enableEntityInheritance: true);
             var context = CreateContext(sourceModel, model, settings);
@@ -68,7 +68,7 @@ public class ValidationFeatureTests : TestBase<Pipelines.Builder.Features.Valida
             result.Status.Should().Be(ResultStatus.Continue);
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

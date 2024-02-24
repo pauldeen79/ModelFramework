@@ -26,7 +26,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
     {
         context = context.IsNotNull(nameof(context));
 
-        if (string.IsNullOrEmpty(context.Context.Settings.NameSettings.SetMethodNameFormatString))
+        if (string.IsNullOrEmpty(context.Context.Settings.SetMethodNameFormatString))
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
@@ -36,10 +36,10 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
             var childContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings);
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings.TypeSettings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
-            resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNamespaceFormatString, context.Context.FormatProvider, childContext));
-            resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
-            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
+            resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNamespaceFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.SetMethodNameFormatString, context.Context.FormatProvider, childContext));
+            resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("ArgumentNullCheck", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"), context.Context.FormatProvider, childContext));
             resultSetBuilder.Add("BuilderWithExpression", () => _formattableStringParser.Parse(property.Metadata.GetStringValue(MetadataNames.CustomBuilderWithExpression, "instance.{Name} = {NamePascalCsharpFriendlyName};"), context.Context.FormatProvider, childContext));
             var results = resultSetBuilder.Build();
@@ -73,7 +73,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
                         .WithDefaultValue(GetMetadata(context, property).GetValue<object?>(MetadataNames.CustomBuilderWithDefaultPropertyValue, () => null))
                 );
 
-            if (context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)
+            if (context.Context.Settings.AddNullChecks)
             {
                 var nullCheckStatement = results.First(x => x.Name == "ArgumentNullCheck").Result.Value!;
                 if (!string.IsNullOrEmpty(nullCheckStatement))
@@ -95,7 +95,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
     }
 
     private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context, Property property)
-        => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings);
+        => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings);
 
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>> ToBuilder()
         => new AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);

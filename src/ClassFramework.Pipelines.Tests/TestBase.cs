@@ -130,7 +130,7 @@ public abstract class TestBase : IDisposable
             .AddProperties(new PropertyBuilder().WithName("Delegate").WithType(propertyType))
             .BuildTyped();
 
-    protected static Pipelines.Builder.PipelineSettings CreateBuilderSettings(
+    protected static PipelineSettingsBuilder CreateSettingsForBuilder(
         bool enableBuilderInheritance = false,
         bool isAbstract = false,
         bool enableEntityInheritance = false,
@@ -142,8 +142,8 @@ public abstract class TestBase : IDisposable
         bool addCopyConstructor = false,
         bool setDefaultValues = true,
         string newCollectionTypeName = "System.Collections.Generic.List",
-        IEnumerable<NamespaceMapping>? namespaceMappings = null,
-        IEnumerable<TypenameMapping>? typenameMappings = null,
+        IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
+        IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         string setMethodNameFormatString = "With{Name}",
         string addMethodNameFormatString = "Add{Name}",
         string builderNamespaceFormatString = "{Namespace}.Builders",
@@ -158,20 +158,7 @@ public abstract class TestBase : IDisposable
         Func<IParentTypeContainer, IType, bool>? inheritanceComparisonDelegate = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
-        => new Pipelines.Builder.PipelineSettings(
-            typeSettings: new Pipelines.Builder.PipelineTypeSettings(
-                newCollectionTypeName: newCollectionTypeName,
-                enableNullableReferenceTypes: enableNullableReferenceTypes,
-                namespaceMappings: namespaceMappings,
-                typenameMappings: typenameMappings),
-            constructorSettings: new Pipelines.Builder.PipelineConstructorSettings(addCopyConstructor, setDefaultValues),
-            inheritanceSettings: new Pipelines.Builder.PipelineInheritanceSettings(
-                enableBuilderInheritance: enableBuilderInheritance,
-                isAbstract: isAbstract,
-                baseClass: baseClass,
-                baseClassBuilderNameSpace: baseClassBuilderNameSpace,
-                inheritanceComparisonDelegate: inheritanceComparisonDelegate),
-            entitySettings: CreateEntitySettings
+        =>  CreateSettingsForEntity
             (
                 enableEntityInheritance: enableEntityInheritance,
                 addNullChecks: addNullChecks,
@@ -183,11 +170,27 @@ public abstract class TestBase : IDisposable
                 copyInterfaces: copyInterfaces,
                 copyAttributePredicate: copyAttributePredicate,
                 copyInterfacePredicate: copyInterfacePredicate
-            ),
-            nameSettings: new Pipelines.Builder.PipelineNameSettings(setMethodNameFormatString, addMethodNameFormatString, builderNamespaceFormatString, builderNameFormatString, buildMethodName, buildTypedMethodName, setDefaultValuesMethodName)
-        );
+            )
+            .WithBuilderNewCollectionTypeName(newCollectionTypeName)
+            .WithEnableNullableReferenceTypes(enableNullableReferenceTypes)
+            .AddNamespaceMappings(namespaceMappings.DefaultWhenNull())
+            .AddTypenameMappings(typenameMappings.DefaultWhenNull())
+            .WithAddCopyConstructor(addCopyConstructor)
+            .WithSetDefaultValuesInEntityConstructor(setDefaultValues)
+            .WithEnableBuilderInheritance(enableBuilderInheritance)
+            .WithIsAbstract(isAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithBaseClassBuilderNameSpace(baseClassBuilderNameSpace ?? string.Empty)
+            .WithInheritanceComparisonDelegate(inheritanceComparisonDelegate)
+            .WithSetMethodNameFormatString(setMethodNameFormatString)
+            .WithAddMethodNameFormatString(addMethodNameFormatString)
+            .WithBuilderNamespaceFormatString(builderNamespaceFormatString)
+            .WithBuilderNameFormatString(builderNameFormatString)
+            .WithBuildMethodName(buildMethodName)
+            .WithBuildTypedMethodName(buildTypedMethodName)
+            .WithSetDefaultValuesMethodName(setDefaultValuesMethodName);
 
-    protected static Pipelines.Entity.PipelineSettings CreateEntitySettings(
+    protected static PipelineSettingsBuilder CreateSettingsForEntity(
         bool enableEntityInheritance = false,
         bool addNullChecks = false,
         bool useExceptionThrowIfNull = false,
@@ -211,44 +214,41 @@ public abstract class TestBase : IDisposable
         bool addBackingFields = false,
         bool createAsObservable = false,
         SubVisibility setterVisibility = SubVisibility.InheritFromParent,
-        IEnumerable<NamespaceMapping>? namespaceMappings = null,
-        IEnumerable<TypenameMapping>? typenameMappings = null,
+        IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
+        IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
-        => new Pipelines.Entity.PipelineSettings(
-            generationSettings: new Pipelines.Entity.PipelineGenerationSettings(
-                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
-                addSetters: addSetters,
-                setterVisibility: setterVisibility,
-                createRecord: createRecord,
-                addBackingFields: addBackingFields,
-                createAsObservable: createAsObservable),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
-                addNullChecks: addNullChecks,
-                useExceptionThrowIfNull: useExceptionThrowIfNull),
-            inheritanceSettings: new Pipelines.Entity.PipelineInheritanceSettings(
-                enableInheritance: enableEntityInheritance,
-                isAbstract: isAbstract,
-                baseClass: baseClass),
-            constructorSettings: new Pipelines.Entity.PipelineConstructorSettings(
-                validateArguments: validateArguments,
-                collectionTypeName: collectionTypeName,
-                addFullConstructor: addFullConstructor,
-                addPublicParameterlessConstructor: addPublicParameterlessConstructor),
-            nameSettings: new Pipelines.Entity.PipelineNameSettings(entityNamespaceFormatString, entityNameFormatString, toBuilderFormatString, toTypedBuilderFormatString),
-            typeSettings: new Pipelines.Entity.PipelineTypeSettings(
-                newCollectionTypeName,
-                enableNullableReferenceTypes,
-                namespaceMappings,
-                typenameMappings),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: copyAttributes,
-                copyInterfaces: copyInterfaces,
-                copyAttributePredicate: copyAttributePredicate,
-                copyInterfacePredicate: copyInterfacePredicate)
-        );
+        => new PipelineSettingsBuilder()
+            .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)
+            .WithAddSetters(addSetters)
+            .WithSetterVisibility(setterVisibility)
+            .WithCreateRecord(createRecord)
+            .WithAddBackingFields(addBackingFields)
+            .WithCreateAsObservable(createAsObservable)
+            .WithAddNullChecks(addNullChecks)
+            .WithUseExceptionThrowIfNull(useExceptionThrowIfNull)
+            .WithEnableInheritance(enableEntityInheritance)
+            .WithIsAbstract(isAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithValidateArguments(validateArguments)
+            .WithOriginalValidateArguments(validateArguments)
+            .WithCollectionTypeName(collectionTypeName)
+            .WithAddFullConstructor(addFullConstructor)
+            .WithAddPublicParameterlessConstructor(addPublicParameterlessConstructor)
+            .WithEntityNamespaceFormatString(entityNamespaceFormatString)
+            .WithEntityNameFormatString(entityNameFormatString)
+            .WithToBuilderFormatString(toBuilderFormatString)
+            .WithToTypedBuilderFormatString(toTypedBuilderFormatString)
+            .WithEntityNewCollectionTypeName(newCollectionTypeName)
+            .WithEnableNullableReferenceTypes(enableNullableReferenceTypes)
+            .AddNamespaceMappings(namespaceMappings.DefaultWhenNull())
+            .AddTypenameMappings(typenameMappings.DefaultWhenNull())
+            .WithCopyAttributes(copyAttributes)
+            .WithCopyInterfaces(copyInterfaces)
+            .WithCopyAttributePredicate(copyAttributePredicate)
+            .WithCopyInterfacePredicate(copyInterfacePredicate);
 
-    protected static Pipelines.OverrideEntity.PipelineSettings CreateOverrideEntitySettings(
+    protected static PipelineSettingsBuilder CreateSettingsForOverrideEntity(
         bool enableEntityInheritance = false,
         bool addNullChecks = false,
         bool useExceptionThrowIfNull = false,
@@ -260,28 +260,24 @@ public abstract class TestBase : IDisposable
         string entityNameFormatString = "{Class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         bool createRecord = false,
-        IEnumerable<NamespaceMapping>? namespaceMappings = null,
-        IEnumerable<TypenameMapping>? typenameMappings = null)
-        => new Pipelines.OverrideEntity.PipelineSettings(
-            generationSettings: new Pipelines.OverrideEntity.PipelineGenerationSettings(
-                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
-                createRecord: createRecord),
-            nullCheckSettings: new Pipelines.Shared.PipelineBuilderNullCheckSettings(
-                addNullChecks: addNullChecks,
-                useExceptionThrowIfNull: useExceptionThrowIfNull),
-            inheritanceSettings: new Pipelines.OverrideEntity.PipelineInheritanceSettings(
-                enableInheritance: enableEntityInheritance,
-                isAbstract: isAbstract,
-                baseClass: baseClass),
-            nameSettings: new Pipelines.OverrideEntity.PipelineNameSettings(entityNamespaceFormatString, entityNameFormatString),
-            typeSettings: new Pipelines.OverrideEntity.PipelineTypeSettings(
-                newCollectionTypeName,
-                enableNullableReferenceTypes,
-                namespaceMappings,
-                typenameMappings)
-        );
+        IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
+        IEnumerable<TypenameMappingBuilder>? typenameMappings = null)
+        => new PipelineSettingsBuilder()
+            .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)
+            .WithCreateRecord(createRecord)
+            .WithAddNullChecks(addNullChecks)
+            .WithUseExceptionThrowIfNull(useExceptionThrowIfNull)
+            .WithEnableInheritance(enableEntityInheritance)
+            .WithIsAbstract(isAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithEntityNamespaceFormatString(entityNamespaceFormatString)
+            .WithEntityNameFormatString(entityNameFormatString)
+            .WithEntityNewCollectionTypeName(newCollectionTypeName)
+            .WithEnableNullableReferenceTypes(enableNullableReferenceTypes)
+            .AddNamespaceMappings(namespaceMappings.DefaultWhenNull())
+            .AddTypenameMappings(typenameMappings.DefaultWhenNull());
 
-    protected static Pipelines.Reflection.PipelineSettings CreateReflectionSettings(
+    protected static PipelineSettingsBuilder CreateSettingsForReflection(
         bool copyAttributes = false,
         bool copyInterfaces = false,
         bool allowGenerationWithoutProperties = false,
@@ -293,32 +289,28 @@ public abstract class TestBase : IDisposable
         string namespaceFormatString = "{Namespace}",
         string nameFormatString = "{Class.Name}",
         Class? baseClass = null,
-        IEnumerable<NamespaceMapping>? namespaceMappings = null,
-        IEnumerable<TypenameMapping>? typenameMappings = null,
+        IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
+        IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
-        => new Pipelines.Reflection.PipelineSettings(
-            generationSettings: new Pipelines.Reflection.PipelineGenerationSettings(
-                allowGenerationWithoutProperties: allowGenerationWithoutProperties,
-                useBaseClassFromSourceModel: useBaseClassFromSourceModel,
-                partial: partial,
-                createConstructors: createConstructors),
-            nameSettings: new Pipelines.Reflection.PipelineNameSettings(namespaceFormatString, nameFormatString),
-            typeSettings: new Pipelines.Reflection.PipelineTypeSettings(
-                namespaceMappings,
-                typenameMappings),
-            inheritanceSettings: new Pipelines.Reflection.PipelineInheritanceSettings(
-                enableInheritance: enableEntityInheritance,
-                isAbstract: isAbstract,
-                baseClass: baseClass),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: copyAttributes,
-                copyInterfaces: copyInterfaces,
-                copyAttributePredicate: copyAttributePredicate,
-                copyInterfacePredicate: copyInterfacePredicate)
-        );
+        => new PipelineSettingsBuilder()
+            .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)
+            .WithUseBaseClassFromSourceModel(useBaseClassFromSourceModel)
+            .WithCreateAsPartial(partial)
+            .WithCreateConstructors(createConstructors)
+            .WithNamespaceFormatString(namespaceFormatString)
+            .WithNameFormatString(nameFormatString)
+            .AddNamespaceMappings(namespaceMappings.DefaultWhenNull())
+            .AddTypenameMappings(typenameMappings.DefaultWhenNull())
+            .WithEnableInheritance(enableEntityInheritance)
+            .WithIsAbstract(isAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithCopyAttributes(copyAttributes)
+            .WithCopyInterfaces(copyInterfaces)
+            .WithCopyAttributePredicate(copyAttributePredicate)
+            .WithCopyInterfacePredicate(copyInterfacePredicate);
 
-    protected static Pipelines.Interface.PipelineSettings CreateInterfaceSettings(
+    protected static PipelineSettingsBuilder CreateSettingsForInterface(
         bool addSetters = false,
         bool copyAttributes = false,
         bool copyInterfaces = false,
@@ -329,33 +321,27 @@ public abstract class TestBase : IDisposable
         string nameFormatString = "{Class.Name}",
         string newCollectionTypeName = "System.Collections.Generic.IReadOnlyCollection",
         Class? baseClass = null,
-        IEnumerable<NamespaceMapping>? namespaceMappings = null,
-        IEnumerable<TypenameMapping>? typenameMappings = null,
+        IEnumerable<NamespaceMappingBuilder>? namespaceMappings = null,
+        IEnumerable<TypenameMappingBuilder>? typenameMappings = null,
         Predicate<Domain.Attribute>? copyAttributePredicate = null,
         Predicate<string>? copyInterfacePredicate = null)
-        => new Pipelines.Interface.PipelineSettings(
-            generationSettings: new Pipelines.Interface.PipelineGenerationSettings(
-                addSetters: addSetters,
-                allowGenerationWithoutProperties: allowGenerationWithoutProperties),
-            nameSettings: new Pipelines.Interface.PipelineNameSettings(
-                namespaceFormatString,
-                nameFormatString),
-            inheritanceSettings: new Pipelines.Interface.PipelineInheritanceSettings(
-                enableInheritance: enableEntityInheritance,
-                isAbstract: isAbstract,
-                baseClass: baseClass),
-            typeSettings: new Pipelines.Interface.PipelineTypeSettings(
-                newCollectionTypeName,
-                namespaceMappings,
-                typenameMappings),
-            copySettings: new Pipelines.Shared.PipelineBuilderCopySettings(
-                copyAttributes: copyAttributes,
-                copyInterfaces: copyInterfaces,
-                copyAttributePredicate: copyAttributePredicate,
-                copyInterfacePredicate: copyInterfacePredicate)
-        );
+        => new PipelineSettingsBuilder()
+            .WithAddSetters(addSetters)
+            .WithAllowGenerationWithoutProperties(allowGenerationWithoutProperties)
+            .WithNamespaceFormatString(namespaceFormatString)
+            .WithNameFormatString(nameFormatString)
+            .WithEnableInheritance(enableEntityInheritance)
+            .WithIsAbstract(isAbstract)
+            .WithBaseClass(baseClass?.ToBuilder())
+            .WithEntityNewCollectionTypeName(newCollectionTypeName)
+            .AddNamespaceMappings(namespaceMappings.DefaultWhenNull())
+            .AddTypenameMappings(typenameMappings.DefaultWhenNull())
+            .WithCopyAttributes(copyAttributes)
+            .WithCopyInterfaces(copyInterfaces)
+            .WithCopyAttributePredicate(copyAttributePredicate)
+            .WithCopyInterfacePredicate(copyInterfacePredicate);
 
-    protected static IEnumerable<NamespaceMapping> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
+    protected static IEnumerable<NamespaceMappingBuilder> CreateNamespaceMappings(string sourceNamespace = "MySourceNamespace")
         => new[]
         {
             new NamespaceMappingBuilder().WithSourceNamespace(sourceNamespace).WithTargetNamespace("MyNamespace")
@@ -364,14 +350,14 @@ public abstract class TestBase : IDisposable
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomEntityNamespace).WithValue("MyNamespace"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderSourceExpression).WithValue("[Name][NullableSuffix].ToBuilder()"))
                 .AddMetadata(new MetadataBuilder().WithName(MetadataNames.CustomBuilderMethodParameterExpression).WithValue("[Name][NullableSuffix].Build()"))
-        }.Select(x => x.Build());
+        };
 
-    protected static IEnumerable<TypenameMapping> CreateTypenameMappings()
+    protected static IEnumerable<TypenameMappingBuilder> CreateTypenameMappings()
         => new[]
         {
             new TypenameMappingBuilder().WithSourceTypeName(typeof(List<>).WithoutGenerics()).WithTargetTypeName(typeof(List<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "new [Type]<[Generics]>([Expression])"), //"[Expression].ToList()"
             new TypenameMappingBuilder().WithSourceTypeName(typeof(IList<>).WithoutGenerics()).WithTargetTypeName(typeof(IList<>).WithoutGenerics()).AddMetadata(MetadataNames.CustomCollectionInitialization, "[Expression].ToList()"),
-        }.Select(x => x.Build());
+        };
 
     protected virtual void Dispose(bool disposing)
     {

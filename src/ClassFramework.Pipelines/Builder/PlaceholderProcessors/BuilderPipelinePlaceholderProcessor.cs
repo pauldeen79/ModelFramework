@@ -34,7 +34,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
             "NullCheck.Source" => Result.Success(pipelineContext.Context.Settings.AddNullChecks
                 ? pipelineContext.Context.CreateArgumentNullException("source")
                 : string.Empty),
-            "BuildersNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
+            "BuildersNamespace" => formattableStringParser.Parse(pipelineContext.Context.Settings.BuilderNamespaceFormatString, pipelineContext.Context.FormatProvider, pipelineContext.Context),
             _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(pipelineContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };
@@ -42,7 +42,7 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
     private Result<string> GetResultForParentChildContext(string value, IFormatProvider formatProvider, IFormattableStringParser formattableStringParser, ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property> parentChildContext)
         => value switch
         {
-            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.EntitySettings.AddValidationCode == ArgumentValidationType.None && !parentChildContext.ChildContext.IsNullable && !parentChildContext.ChildContext.IsValueType // only if the source entity does not use validation...
+            "NullCheck.Source.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.AddNullChecks && parentChildContext.ParentContext.Context.Settings.AddValidationCode == ArgumentValidationType.None && !parentChildContext.ChildContext.IsNullable && !parentChildContext.ChildContext.IsValueType // only if the source entity does not use validation...
                 ? $"if (source.{parentChildContext.ChildContext.Name} is not null) "
                 : string.Empty),
             "NullCheck.Argument" => Result.Success(parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && !parentChildContext.ChildContext.IsNullable
@@ -51,11 +51,11 @@ public class BuilderPipelinePlaceholderProcessor : IPlaceholderProcessor
             "NullableRequiredSuffix" => Result.Success(!parentChildContext.ParentContext.Context.Settings.AddNullChecks && !parentChildContext.ChildContext.IsValueType && parentChildContext.ChildContext.IsNullable && parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes
                 ? "!"
                 : string.Empty),
-            "NullableSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable && (parentChildContext.ChildContext.IsValueType || parentChildContext.ParentContext.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
+            "NullableSuffix" => Result.Success(parentChildContext.ChildContext.IsNullable && (parentChildContext.ChildContext.IsValueType || parentChildContext.ParentContext.Context.Settings.EnableNullableReferenceTypes)
                 ? "?"
                 : string.Empty),
-            "BuildersNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.NameSettings.BuilderNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
-            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName)), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
+            "BuildersNamespace" => formattableStringParser.Parse(parentChildContext.ParentContext.Context.Settings.BuilderNamespaceFormatString, parentChildContext.ParentContext.Context.FormatProvider, parentChildContext.ParentContext.Context),
+            _ => _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PropertyContext(parentChildContext.ChildContext, parentChildContext.Settings, formatProvider, parentChildContext.ParentContext.Context.MapTypeName(parentChildContext.ChildContext.TypeName), parentChildContext.Settings.BuilderNewCollectionTypeName), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? _pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(parentChildContext.ParentContext.Context.SourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>()
         };

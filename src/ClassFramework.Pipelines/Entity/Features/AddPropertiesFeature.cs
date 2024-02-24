@@ -23,12 +23,12 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                 property => new PropertyBuilder()
                     .WithName(property.Name)
                     .WithTypeName(context.Context.MapTypeName(property.TypeName
-                        .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                        .FixCollectionTypeName(context.Context.Settings.EntityNewCollectionTypeName)
                         .FixNullableTypeName(property)))
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
                     .AddAttributes(property.Attributes
-                        .Where(x => context.Context.Settings.CopySettings.CopyAttributes && (context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true))
+                        .Where(x => context.Context.Settings.CopyAttributes && (context.Context.Settings.CopyAttributePredicate?.Invoke(x) ?? true))
                         .Select(x => context.Context.MapAttribute(x).ToBuilder()))
                     .WithStatic(property.Static)
                     .WithVirtual(property.Virtual)
@@ -36,13 +36,13 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                     .WithProtected(property.Protected)
                     .WithOverride(property.Override)
                     .WithHasGetter(property.HasGetter)
-                    .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.GenerationSettings.AddSetters || context.Context.Settings.GenerationSettings.AddBackingFields))
-                    .WithHasSetter(context.Context.Settings.GenerationSettings.AddSetters || context.Context.Settings.GenerationSettings.AddBackingFields)
+                    .WithHasInitializer(property.HasInitializer && !(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields))
+                    .WithHasSetter(context.Context.Settings.AddSetters || context.Context.Settings.AddBackingFields)
                     .WithIsNullable(property.IsNullable)
                     .WithIsValueType(property.IsValueType)
                     .WithVisibility(property.Visibility)
                     .WithGetterVisibility(property.GetterVisibility)
-                    .WithSetterVisibility(context.Context.Settings.GenerationSettings.SetterVisibility)
+                    .WithSetterVisibility(context.Context.Settings.SetterVisibility)
                     .WithInitializerVisibility(property.InitializerVisibility)
                     .WithExplicitInterfaceName(property.ExplicitInterfaceName)
                     .WithParentTypeFullName(property.ParentTypeFullName)
@@ -52,7 +52,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
             )
         );
 
-        if (context.Context.Settings.GenerationSettings.AddBackingFields)
+        if (context.Context.Settings.AddBackingFields)
         {
             AddBackingFields(context, properties);
         }
@@ -69,8 +69,8 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
                     property =>new FieldBuilder()
                         .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
                         .WithTypeName(context.Context.MapTypeName(property.TypeName)
-                            .FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName
-                                .WhenNullOrEmpty(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                            .FixCollectionTypeName(context.Context.Settings.CollectionTypeName
+                                .WhenNullOrEmpty(context.Context.Settings.EntityNewCollectionTypeName)
                                 .WhenNullOrEmpty(typeof(List<>).WithoutGenerics()))
                         .FixNullableTypeName(property))
                         .WithIsNullable(property.IsNullable)
@@ -85,7 +85,7 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         Property property,
         EntityContext context)
     {
-        if (context.Settings.GenerationSettings.AddBackingFields)
+        if (context.Settings.AddBackingFields)
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
@@ -95,10 +95,10 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Entit
         Property property,
         EntityContext context)
     {
-        if (context.Settings.GenerationSettings.AddBackingFields)
+        if (context.Settings.AddBackingFields)
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.NullCheckSettings.AddNullChecks)};");
-            if (context.Settings.GenerationSettings.CreateAsObservable)
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks)};");
+            if (context.Settings.CreateAsObservable)
             {
                 yield return new StringCodeStatementBuilder().WithStatement($"HandlePropertyChanged(nameof({property.Name}));");
             }

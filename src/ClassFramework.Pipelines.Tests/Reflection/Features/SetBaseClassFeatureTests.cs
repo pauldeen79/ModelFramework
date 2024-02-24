@@ -22,8 +22,8 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Reflection.Features.S
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection();
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -40,8 +40,8 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Reflection.Features.S
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder().WithBaseClass("Old value");
-            var settings = CreateReflectionSettings();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection();
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -58,11 +58,11 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Reflection.Features.S
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(
+            var settings = CreateSettingsForReflection(
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").BuildTyped());
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -79,11 +79,11 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Reflection.Features.S
             var sut = CreateSut();
             var sourceModel = typeof(MyClass);
             var model = new ClassBuilder();
-            var settings = CreateReflectionSettings(
+            var settings = CreateSettingsForReflection(
                 useBaseClassFromSourceModel: false,
                 enableEntityInheritance: true,
                 baseClass: null);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -100,8 +100,8 @@ public class SetBaseClassFeatureTests : TestBase<Pipelines.Reflection.Features.S
             var sut = CreateSut();
             var sourceModel = typeof(MyBaseClassTestClass);
             var model = new ClassBuilder().WithBaseClass("Old value");
-            var settings = CreateReflectionSettings(useBaseClassFromSourceModel: false);
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForReflection(useBaseClassFromSourceModel: false);
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(model, new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

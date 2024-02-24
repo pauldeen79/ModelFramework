@@ -26,7 +26,7 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.OriginalValidateArguments != ArgumentValidationType.Shared)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }

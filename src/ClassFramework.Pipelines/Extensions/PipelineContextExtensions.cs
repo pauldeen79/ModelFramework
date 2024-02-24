@@ -33,7 +33,7 @@ public static class PipelineContextExtensions
             return parametersResult;
         }
 
-        var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
+        var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
         var ns = context.Context.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
         return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
@@ -48,9 +48,9 @@ public static class PipelineContextExtensions
             return $"base({CreateImmutableClassCtorParameterNames(context)})";
         }
 
-        return context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
-            ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.InheritanceSettings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
-            : context.Context.SourceModel.GetCustomValueForInheritedClass(context.Context.Settings.InheritanceSettings.EnableInheritance,
+        return context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null
+            ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
+            : context.Context.SourceModel.GetCustomValueForInheritedClass(context.Context.Settings.EnableInheritance,
             cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
@@ -59,7 +59,7 @@ public static class PipelineContextExtensions
 
     private static string CreateImmutableClassCtorParameterNames<TModel>(
         PipelineContext<TModel, EntityContext> context)
-        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings.TypeSettings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
+        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
@@ -77,7 +77,7 @@ public static class PipelineContextExtensions
                         .WithMappingMetadata
                         (
                             property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName),
-                            context.Context.Settings.TypeSettings
+                            context.Context.Settings
                         ).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
                     new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
@@ -86,9 +86,9 @@ public static class PipelineContextExtensions
                     .WithMappingMetadata
                     (
                         property.TypeName.FixTypeName().WithoutProcessedGenerics(), // i.e. List<> etc.
-                        context.Context.Settings.TypeSettings
+                        context.Context.Settings
                     ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
-                Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
+                Suffix = property.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 

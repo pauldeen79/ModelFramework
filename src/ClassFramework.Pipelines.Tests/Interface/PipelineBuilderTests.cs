@@ -7,10 +7,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
         private InterfaceContext CreateContext(bool addProperties = true) => new InterfaceContext
         (
             CreateInterfaceModel(addProperties),
-            CreateInterfaceSettings
+            CreateSettingsForInterface
             (
                 allowGenerationWithoutProperties: false
-            ),
+            ).Build(),
             CultureInfo.InvariantCulture
         );
 
@@ -57,7 +57,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             // Arrange
             var model = CreateInterfaceModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
-            var settings = CreateInterfaceSettings(
+            var settings = CreateSettingsForInterface(
                 namespaceMappings: namespaceMappings);
             var context = CreateContext(model, settings);
 
@@ -119,7 +119,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<Interfa
             result.Value.Properties.SelectMany(x => x.SetterCodeStatements).Should().BeEmpty();
         }
 
-        private static InterfaceContext CreateContext(IType model, Pipelines.Interface.PipelineSettings settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+        private static InterfaceContext CreateContext(IType model, PipelineSettingsBuilder settings)
+            => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

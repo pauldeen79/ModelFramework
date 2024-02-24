@@ -8,7 +8,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_SourceModel()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: null!, new Pipelines.Entity.PipelineSettings(), CultureInfo.InvariantCulture))
+            this.Invoking(_ => new EntityContext(sourceModel: null!, new PipelineSettingsBuilder().Build(), CultureInfo.InvariantCulture))
                 .Should().Throw<ArgumentNullException>().WithParameterName("sourceModel");
         }
 
@@ -24,7 +24,7 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_FormatProvider()
         {
             // Act & Assert
-            this.Invoking(_ => new EntityContext(sourceModel: CreateModel(), new Pipelines.Entity.PipelineSettings(), formatProvider: null!))
+            this.Invoking(_ => new EntityContext(sourceModel: CreateModel(), new PipelineSettingsBuilder().Build(), formatProvider: null!))
                 .Should().Throw<ArgumentNullException>().WithParameterName("formatProvider");
         }
     }
@@ -35,8 +35,8 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
+            var sut = new BuilderContext(CreateModel(), settings.Build(), CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapTypeName(typeName: null!))
@@ -51,8 +51,8 @@ public class EntityContextTests : TestBase
         public void Throws_On_Null_TypeName()
         {
             // Arrange
-            var settings = CreateBuilderSettings(enableNullableReferenceTypes: false);
-            var sut = new BuilderContext(CreateModel(), settings, CultureInfo.InvariantCulture);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: false);
+            var sut = new BuilderContext(CreateModel(), settings.Build(), CultureInfo.InvariantCulture);
 
             // Act & Assert
             sut.Invoking(x => x.MapAttribute(attribute: null!))

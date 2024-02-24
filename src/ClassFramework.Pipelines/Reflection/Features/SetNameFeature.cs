@@ -27,8 +27,8 @@ public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, ReflectionContex
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NamespaceFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.NamespaceFormatString, context.Context.FormatProvider, context));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

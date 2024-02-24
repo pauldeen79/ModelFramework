@@ -40,8 +40,8 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var externalResult = Result.NoContent<string>();
             propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
-            var settings = CreateReflectionSettings();
-            var context = new ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property>(new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForReflection();
+            var context = new ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property>(new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -58,8 +58,8 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Success("MyResult"));
             var sut = CreateSut();
-            var settings = CreateReflectionSettings();
-            var context = new ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property>(new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForReflection();
+            var context = new ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property>(new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -77,8 +77,8 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Continue<string>());
             var sut = CreateSut();
-            var settings = CreateReflectionSettings();
-            var context = new ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property>(new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForReflection();
+            var context = new ParentChildContext<PipelineContext<TypeBaseBuilder, ReflectionContext>, Property>(new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -95,7 +95,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Success("MyResult"));
             var sut = CreateSut();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, CreateReflectionSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, CreateSettingsForReflection().Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -113,7 +113,7 @@ public class ReflectionPipelinePlaceholderProcessorTests : TestBase<ReflectionPi
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Continue<string>());
             var sut = CreateSut();
-            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, CreateReflectionSettings(), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<TypeBaseBuilder, ReflectionContext>(CreateModel(), new ReflectionContext(sourceModel, CreateSettingsForReflection().Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

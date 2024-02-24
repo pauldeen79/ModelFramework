@@ -27,8 +27,8 @@ public class SetNameFeature : IPipelineFeature<InterfaceBuilder, InterfaceContex
         context = context.IsNotNull(nameof(context));
 
         var resultSetBuilder = new NamedResultSetBuilder<string>();
-        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NameFormatString, context.Context.FormatProvider, context));
-        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings.TypeSettings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NamespaceFormatString, context.Context.FormatProvider, context)));
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringResult(MetadataNames.CustomEntityNamespace, () => _formattableStringParser.Parse(context.Context.Settings.NamespaceFormatString, context.Context.FormatProvider, context)));
         var results = resultSetBuilder.Build();
 
         var error = Array.Find(results, x => !x.Result.IsSuccessful());

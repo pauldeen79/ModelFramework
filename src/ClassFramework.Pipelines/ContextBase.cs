@@ -1,17 +1,18 @@
 ﻿namespace ClassFramework.Pipelines;
 
-public abstract class ContextBase<TModel, TSettings>
-    where TSettings : IPipelineGenerationSettings
+public abstract class ContextBase<TModel>
 {
-    protected ContextBase(TModel sourceModel, TSettings settings, IFormatProvider formatProvider)
+    protected ContextBase(TModel sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
     {
         SourceModel = sourceModel.IsNotNull(nameof(sourceModel));
         Settings = settings.IsNotNull(nameof(settings));
         FormatProvider = formatProvider.IsNotNull(nameof(formatProvider));
     }
 
+    protected abstract string NewCollectionTypeName { get; }
+
     public TModel SourceModel { get; }
-    public TSettings Settings { get; }
+    public PipelineSettings Settings { get; }
     public IFormatProvider FormatProvider { get; }
 
     public string CreateArgumentNullException(string argumentName)
@@ -25,10 +26,10 @@ public abstract class ContextBase<TModel, TSettings>
     }
 
     public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
+        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings, NewCollectionTypeName);
 
     public string MapNamespace(string? ns)
-        => ns.MapNamespace(Settings.TypeSettings);
+        => ns.MapNamespace(Settings);
 
     public Domain.Attribute MapAttribute(Domain.Attribute attribute)
     {

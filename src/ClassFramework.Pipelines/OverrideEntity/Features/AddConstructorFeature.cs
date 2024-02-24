@@ -45,9 +45,9 @@ public class AddConstructorFeature : IPipelineFeature<IConcreteTypeBuilder, Over
         var parameters = string.Join(", ", context.Context.SourceModel.Properties.Select(x => x.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()));
 
         return Result.Success(new ConstructorBuilder()
-            .WithProtected(context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.IsAbstract)
+            .WithProtected(context.Context.Settings.EnableInheritance && context.Context.Settings.IsAbstract)
             .WithChainCall($"base({parameters})")
-            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings.TypeSettings, context.Context.MapTypeName))
+            .AddParameters(context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName))
             );
     }
 }

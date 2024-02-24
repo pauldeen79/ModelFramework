@@ -11,7 +11,7 @@ public class ValidationFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.GenerationSettings.AllowGenerationWithoutProperties
+        if (!context.Context.Settings.AllowGenerationWithoutProperties
             && context.Context.SourceModel.GetProperties().Length == 0)
         {
             return Result.Invalid<TypeBaseBuilder>("To create a class, there must be at least one property");

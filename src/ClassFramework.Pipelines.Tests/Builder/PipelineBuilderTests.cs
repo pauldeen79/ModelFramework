@@ -27,12 +27,12 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             => new BuilderContext
             (
                 CreateGenericModel(addProperties),
-                CreateBuilderSettings
+                CreateSettingsForBuilder
                 (
                     builderNamespaceFormatString: "{Namespace}.Builders",
                     allowGenerationWithoutProperties: false,
                     copyAttributes: true
-                ),
+                ).Build(),
                 CultureInfo.InvariantCulture
             );
 
@@ -237,7 +237,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
             var typenameMappings = CreateTypenameMappings();
-            var settings = CreateBuilderSettings(addCopyConstructor: true, typenameMappings: typenameMappings, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
+            var settings = CreateSettingsForBuilder(addCopyConstructor: true, typenameMappings: typenameMappings, namespaceMappings: namespaceMappings, addNullChecks: true, enableNullableReferenceTypes: true);
             var context = CreateContext(model, settings);
 
             var sut = CreateSut().Build();
@@ -329,7 +329,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             );
         }
 
-        private static BuilderContext CreateContext(IConcreteType model, Pipelines.Builder.PipelineSettings settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+        private static BuilderContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
+            => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

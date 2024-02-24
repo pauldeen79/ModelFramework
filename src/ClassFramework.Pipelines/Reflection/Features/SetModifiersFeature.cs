@@ -17,7 +17,7 @@ public class SetModifiersFeature : IPipelineFeature<TypeBaseBuilder, ReflectionC
             referenceTypeBuilder
                 .WithStatic(context.Context.SourceModel.IsAbstract && context.Context.SourceModel.IsSealed)
                 .WithSealed(context.Context.SourceModel.IsSealed)
-                .WithPartial(context.Context.Settings.GenerationSettings.Partial)
+                .WithPartial(context.Context.Settings.CreateAsPartial)
                 .WithAbstract(context.Context.SourceModel.IsAbstract);
         }
         
