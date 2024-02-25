@@ -1,8 +1,4 @@
-﻿using ClassFramework.Pipelines.Abstractions;
-using CrossCutting.Common;
-using CrossCutting.ProcessingPipeline;
-
-namespace ClassFramework.Pipelines;
+﻿namespace ClassFramework.Pipelines;
 
 public abstract class ContextBase<TModel>
 {
@@ -126,5 +122,27 @@ public abstract class ContextBase<TModel>
                 ?? pipelinePlaceholderProcessors.Select(x => x.Process(value, formatProvider, new PipelineContext<IType>(sourceModel), formattableStringParser)).FirstOrDefault(x => x.Status != ResultStatus.Continue)
                 ?? Result.Continue<string>();
         }
+    }
+
+    public PropertyBuilder CreatePropertyForEntity(Property property)
+    {
+        property = property.IsNotNull(nameof(property));
+
+        return new PropertyBuilder()
+            .WithName(property.Name)
+            .WithTypeName(MapTypeName(property.TypeName
+                .FixCollectionTypeName(Settings.EntityNewCollectionTypeName)
+                .FixNullableTypeName(property)))
+            .WithIsNullable(property.IsNullable)
+            .WithIsValueType(property.IsValueType)
+            .AddAttributes(property.Attributes
+                .Where(x => Settings.CopyAttributes && (Settings.CopyAttributePredicate?.Invoke(x) ?? true))
+                .Select(x => MapAttribute(x).ToBuilder()))
+            .WithStatic(property.Static)
+            .WithIsNullable(property.IsNullable)
+            .WithIsValueType(property.IsValueType)
+            .WithVisibility(property.Visibility)
+            .WithParentTypeFullName(property.ParentTypeFullName)
+            .AddMetadata(property.Metadata.Select(x => x.ToBuilder()));
     }
 }

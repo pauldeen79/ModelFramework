@@ -17,28 +17,14 @@ public class AddPropertiesFeature : IPipelineFeature<InterfaceBuilder, Interface
             .Where(property => context.Context.SourceModel.IsMemberValidForBuilderClass(property, context.Context.Settings))
             .ToArray();
 
-        context.Model.AddProperties(
+        context.Model.AddProperties
+        (
             properties.Select
             (
-                property => new PropertyBuilder()
-                    .WithName(property.Name)
-                    .WithTypeName(context.Context.MapTypeName(property.TypeName
-                        .FixCollectionTypeName(context.Context.Settings.EntityNewCollectionTypeName)
-                        .FixNullableTypeName(property)))
-                    .WithIsNullable(property.IsNullable)
-                    .WithIsValueType(property.IsValueType)
-                    .AddAttributes(property.Attributes
-                        .Where(x => context.Context.Settings.CopyAttributes && (context.Context.Settings.CopyAttributePredicate?.Invoke(x) ?? true))
-                        .Select(x => context.Context.MapAttribute(x).ToBuilder()))
-                    .WithStatic(property.Static)
+                property => context.Context.CreatePropertyForEntity(property)
                     .WithHasGetter(property.HasGetter)
                     .WithHasInitializer(false)
                     .WithHasSetter(property.HasSetter && context.Context.Settings.AddSetters)
-                    .WithIsNullable(property.IsNullable)
-                    .WithIsValueType(property.IsValueType)
-                    .WithVisibility(property.Visibility)
-                    .WithParentTypeFullName(property.ParentTypeFullName)
-                    .AddMetadata(property.Metadata.Select(x => x.ToBuilder()))
             )
         );
 
