@@ -24,7 +24,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB21E818-ACA6-4942-BBB6-51787189DF42}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelFramework.Database.Tests", "src\ModelFramework.Database.Tests\ModelFramework.Database.Tests.csproj", "{10480F4C-ABED-4B2C-9BF4-F721406D63E6}"

@@ -39,9 +39,6 @@ jobs:
         run: |
           dotnet-sonarscanner begin /k:"pauldeen79_ModelFramework" /n:"ModelFramework" /o:"pauldeen79" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
           dotnet build src/ClassFramework.CodeGeneration/ClassFramework.CodeGeneration.csproj -c Release
-          #dotnet src/ClassFramework.CodeGeneration/bin/Release/net8.0/ClassFramework.CodeGeneration.dll
-          #dotnet build ModelFrameworkFull.sln
-          #dotnet test ModelFrameworkFull.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           dotnet build ModelFramework.sln
           dotnet test ModelFramework.sln --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
