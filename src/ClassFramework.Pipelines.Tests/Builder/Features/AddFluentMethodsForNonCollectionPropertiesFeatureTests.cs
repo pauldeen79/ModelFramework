@@ -52,7 +52,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -84,7 +84,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().ContainSingle();
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithDelegate");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -116,7 +116,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -151,7 +151,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -219,7 +219,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("CustomProperty1", "CustomProperty2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -254,7 +254,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeOfType<Literal>();
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).OfType<Literal>().Select(x => x.Value).Should().AllBeEquivalentTo("customDefaultValue");

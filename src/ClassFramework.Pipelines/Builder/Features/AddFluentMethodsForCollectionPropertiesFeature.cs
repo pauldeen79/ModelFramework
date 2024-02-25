@@ -37,6 +37,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
             resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, parentChildContext, context.Context.MapTypeName(property.TypeName), _formattableStringParser));
+            resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNamespaceFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.Add("AddMethodName", () => _formattableStringParser.Parse(context.Context.Settings.AddMethodNameFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.AddRange("EnumerableOverload", () => GetCodeStatementsForEnumerableOverload(context, property));
@@ -52,7 +53,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
             var returnType = context.Context.IsBuilderForAbstractEntity
                 ? $"TBuilder{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+                : $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)

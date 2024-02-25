@@ -51,9 +51,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
                 return Result.FromExistingResult<IConcreteTypeBuilder>(error.Result);
             }
 
-            var returnType = string.IsNullOrEmpty(results.First(x => x.Name == "Namespace").Result.Value)
-                ? $"{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}"
-                : $"{results.First(x => x.Name == "Namespace").Result.Value}.{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
+            var returnType = $"{results.First(x => x.Name == "Namespace").Result.Value.AppendWhenNotNullOrEmpty(".")}{results.First(x => x.Name == "BuilderName").Result.Value}{context.Context.SourceModel.GetGenericTypeArgumentsString()}";
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
