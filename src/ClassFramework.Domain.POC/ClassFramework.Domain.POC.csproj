@@ -9,18 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\ClassFramework.Domain\Domains\SubVisibility.cs" Link="Domains\SubVisibility.cs" />
-    <Compile Include="..\ClassFramework.Domain\Domains\Visibility.cs" Link="Domains\Visibility.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="pauldeen79.CrossCutting.Common" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\" />
     <Folder Include="CodeStatements\" />
-    <Folder Include="Domains\" />
     <Folder Include="Types\" />
   </ItemGroup>
 
