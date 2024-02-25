@@ -55,12 +55,12 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
-                .WithReturnTypeName(returnType)
+                .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                .AddParameter("instance", returnType)
+                .AddParameter("instance", "T")
                 .AddParameters
                 (
                     new ParameterBuilder()
@@ -74,12 +74,12 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
 
             context.Model.AddMethods(new MethodBuilder()
                 .WithName(results.First(x => x.Name == "AddMethodName").Result.Value!)
-                .WithReturnTypeName(returnType)
+                .WithReturnTypeName("T")
                 .WithStatic()
                 .WithExtensionMethod()
                 .AddGenericTypeArguments("T")
                 .AddGenericTypeArgumentConstraints($"where T : {returnType}")
-                .AddParameter("instance", returnType)
+                .AddParameter("instance", "T")
                 .AddParameters
                 (
                     new ParameterBuilder()

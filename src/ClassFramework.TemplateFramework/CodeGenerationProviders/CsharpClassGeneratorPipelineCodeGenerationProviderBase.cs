@@ -164,7 +164,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         }).ToArray();
     }
 
-    protected TypeBase[] GetBuilderExtensions(TypeBase[] models, string buildersNamespace, string entitiesNamespace)
+    protected TypeBase[] GetBuilderExtensions(TypeBase[] models, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
     {
         Guard.IsNotNull(models);
         Guard.IsNotNull(buildersNamespace);
@@ -177,7 +177,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
                 .Process(interfaceBuilder, new InterfaceContext(x, CreateInterfacePipelineSettings(entitiesNamespace, string.Empty, InheritanceComparisonDelegate, true), CultureInfo.InvariantCulture))
                 .GetValueOrThrow();
 
-            return CreateBuilderExtensionsClass(interfaceBuilder.Build(), buildersNamespace, entitiesNamespace);
+            return CreateBuilderExtensionsClass(interfaceBuilder.Build(), buildersNamespace, entitiesNamespace, buildersExtensionsNamespace);
         }).ToArray();
     }
 
@@ -472,13 +472,14 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
             .WithSetDefaultValuesInEntityConstructor(SetDefaultValues)
             .Build();
 
-    private PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace)
+    private PipelineSettings CreateBuilderInterfacePipelineSettings(string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
         => new PipelineSettingsBuilder(CreateEntityPipelineSettings(entitiesNamespace, forceValidateArgumentsInConstructor: ArgumentValidationType.None, overrideAddNullChecks: GetOverrideAddNullChecks()))
             .WithBuilderNewCollectionTypeName(BuilderCollectionType.WithoutGenerics())
             //.WithEnableNullableReferenceTypes()
             //.AddNamespaceMappings(CreateNamespaceMappings())
             //.AddTypenameMappings(CreateTypenameMappings())
             .WithBuilderNamespaceFormatString(buildersNamespace)
+            .WithBuilderExtensionsNamespaceFormatString(buildersExtensionsNamespace)
             .WithSetMethodNameFormatString(SetMethodNameFormatString)
             .WithAddMethodNameFormatString(AddMethodNameFormatString)
             .WithEnableBuilderInheritance(EnableBuilderInhericance)
@@ -507,11 +508,11 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         return builder.Build();
     }
 
-    private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
+    private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace, string buildersExtensionsNamespace)
     {
         var builder = new ClassBuilder();
         _ = _builderExtensionPipeline
-            .Process(builder, new BuilderExtensionContext(typeBase, CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
+            .Process(builder, new BuilderExtensionContext(typeBase, CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace, buildersExtensionsNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
