@@ -66,9 +66,9 @@ public class AddBuildMethodFeature : IPipelineFeature<IConcreteTypeBuilder, Buil
             .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
             .AddStringCodeStatements
             (
-                !context.Context.IsBuilderForAbstractEntity
-                    ? [$"return {instanciationResult.Value};"]
-                    : Array.Empty<string>()
+                context.Context.IsBuilderForAbstractEntity
+                    ? Array.Empty<string>()
+                    : [$"return {instanciationResult.Value};"]
             )
             .AddStringCodeStatements(context.Context.CreatePragmaWarningRestoreStatements()));
 

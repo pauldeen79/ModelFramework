@@ -148,7 +148,7 @@ public class AddFluentMethodsForCollectionPropertiesFeature : IPipelineFeature<I
 
         yield return builderAddExpressionResult;
 
-        yield return  Result.Success($"return {GetReturnValue(context.Context)};");
+        yield return Result.Success($"return {GetReturnValue(context.Context)};");
     }
 
     private static string GetReturnValue(BuilderContext context)
