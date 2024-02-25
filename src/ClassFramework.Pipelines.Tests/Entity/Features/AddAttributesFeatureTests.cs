@@ -22,8 +22,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(copyAttributePredicate: _ => true, copyAttributes: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(copyAttributePredicate: _ => true, copyAttributes: true);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -40,8 +40,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(copyAttributePredicate: null, copyAttributes: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(copyAttributePredicate: null, copyAttributes: true);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -58,8 +58,8 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Entity.Features.AddA
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).BuildTyped();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateEntitySettings(copyAttributes: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var settings = CreateSettingsForEntity(copyAttributes: false);
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

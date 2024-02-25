@@ -23,7 +23,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: string.Empty);
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -52,7 +52,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -74,7 +74,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -84,7 +84,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().ContainSingle();
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithDelegate");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -104,7 +104,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, model, settings);
@@ -116,14 +116,13 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
             model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "if (property1 is null) throw new System.ArgumentNullException(nameof(property1));",
                 "Property1 = property1;",
                 "return this;",
                 "if (property2 is null) throw new System.ArgumentNullException(nameof(property2));",
@@ -140,7 +139,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 setMethodNameFormatString: "With{Name}",
                 addNullChecks: true);
             var context = CreateContext(sourceModel, model, settings);
@@ -152,7 +151,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -176,7 +175,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
                 setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -188,7 +187,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("TBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("TBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Int32", "System.String");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -210,7 +209,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -220,7 +219,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("CustomProperty1", "CustomProperty2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -241,11 +240,11 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             // Note that this doesn't seem logical for this unit test, but in code generation the Literal is needed for correct formatting of literal values.
             // If you would use a string without wrapping it in a Literal, then it will get formatted to "customDefaultValue" which may not be what you want.
             // Or, in case you just want a default boolean value, you might also use true and false directly, without wrapping it in a Literal...
-            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue")));
+            var sourceModel = CreateModel(propertyMetadataBuilders: new MetadataBuilder().WithName(MetadataNames.CustomBuilderWithDefaultPropertyValue).WithValue(new Literal("customDefaultValue", null)));
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -255,7 +254,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("WithProperty1", "WithProperty2");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property1", "property2");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeOfType<Literal>();
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).OfType<Literal>().Select(x => x.Value).Should().AllBeEquivalentTo("customDefaultValue");
@@ -269,7 +268,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(setMethodNameFormatString: "With{Name}");
+            var settings = CreateSettingsForBuilder(setMethodNameFormatString: "With{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -297,7 +296,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(builderNameFormatString: "My{Class.Name}Builder");
+            var settings = CreateSettingsForBuilder(builderNameFormatString: "My{Class.Name}Builder");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -317,7 +316,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -328,7 +327,7 @@ public class AddFluentMethodsForNonCollectionPropertiesFeatureTests : TestBase<P
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

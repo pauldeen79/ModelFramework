@@ -25,7 +25,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: hasBaseClass ? new ClassBuilder().WithName("BaseClass").BuildTyped() : null,
                 isAbstract: hasBaseClass,
@@ -57,7 +57,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
@@ -82,7 +82,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "Property3.AddRange(source.Property3);"
+                "foreach (var item in source.Property3) Property3.Add(item);"
             );
         }
 
@@ -94,7 +94,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: true);
@@ -119,7 +119,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "Property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "Property2 = source.Property2;",
-                "Property3.AddRange(source.Property3);"
+                "foreach (var item in source.Property3) Property3.Add(item);"
             );
         }
 
@@ -131,7 +131,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
@@ -158,45 +158,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
                 "_property3 = new System.Collections.Generic.List<int>();",
                 "Property1 = source.Property1;",
                 "_property2 = source.Property2;",
-                "if (source.Property3 is not null) Property3.AddRange(source.Property3);"
-            );
-        }
-
-        [Fact]
-        public void Creates_Correct_Copy_Constructor_Code_For_Non_Abstract_Builder_With_CollectionType_Enumerable()
-        {
-            // Arrange
-            var sourceModel = CreateModel();
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
-                enableBuilderInheritance: false,
-                addCopyConstructor: true,
-                newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
-                enableEntityInheritance: false);
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Constructors.Should().ContainSingle();
-            var ctor = model.Constructors.Single();
-            ctor.Protected.Should().BeFalse();
-            ctor.ChainCall.Should().BeEmpty();
-            ctor.Parameters.Should().ContainSingle();
-            var parameter = ctor.Parameters.Single();
-            parameter.Name.Should().Be("source");
-            parameter.TypeName.Should().Be("SomeNamespace.SomeClass");
-            ctor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            ctor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
-            (
-                "Property3 = System.Linq.Enumerable.Empty<int>();",
-                "Property1 = source.Property1;",
-                "Property2 = source.Property2;",
-                "Property3 = Property3.Concat(source.Property3);"
+                "if (source.Property3 is not null) foreach (var item in source.Property3) _property3.Add(item);"
             );
         }
 
@@ -208,7 +170,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
@@ -230,7 +192,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
                 addCopyConstructor: true,
                 enableEntityInheritance: false);
@@ -244,7 +206,7 @@ public class AddCopyConstructorFeatureTests : TestBase<Pipelines.Builder.Feature
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

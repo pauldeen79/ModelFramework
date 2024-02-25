@@ -1,14 +1,14 @@
 ﻿namespace ClassFramework.Domain.Tests.Builders.Extensions;
 
-public class CodeStatementsContainerBuilderExtensionsTests
+public class CodeStatementsContainerBuilderExtensionsTests : TestBase<ConstructorBuilder>
 {
-    public class AddStringCodeStatements
+    public class AddStringCodeStatements : CodeStatementsContainerBuilderExtensionsTests
     {
         [Fact]
         public void Can_Add_String_CodeStatements_Using_Array()
         {
             // Arrange
-            var sut = new ConstructorBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddStringCodeStatements("StatementOne();", "StatementTwo();");
@@ -22,7 +22,7 @@ public class CodeStatementsContainerBuilderExtensionsTests
         public void Can_Add_String_CodeStatements_Using_Enumerable()
         {
             // Arrange
-            var sut = new ConstructorBuilder();
+            var sut = CreateSut();
 
             // Act
             var result = sut.AddStringCodeStatements(new[] { "StatementOne();", "StatementTwo();" }.AsEnumerable());
@@ -36,7 +36,7 @@ public class CodeStatementsContainerBuilderExtensionsTests
         public void Throws_On_Null_Statements_Using_Array()
         {
             // Arrange
-            var sut = new ConstructorBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.AddStringCodeStatements(statements: null!))
@@ -47,7 +47,7 @@ public class CodeStatementsContainerBuilderExtensionsTests
         public void Throws_On_Null_Statements_Using_Enumerable()
         {
             // Arrange
-            var sut = new ConstructorBuilder();
+            var sut = CreateSut();
 
             // Act & Assert
             sut.Invoking(x => x.AddStringCodeStatements(statements: (IEnumerable<string>)null!))

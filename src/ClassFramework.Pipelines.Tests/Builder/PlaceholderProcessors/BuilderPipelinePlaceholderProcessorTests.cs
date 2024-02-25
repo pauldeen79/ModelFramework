@@ -39,8 +39,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var externalResult = Result.NoContent<string>();
             propertyPlaceholderProcessor.Process(Arg.Any<string>(), Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(externalResult);
             var sut = CreateSut();
-            var settings = CreateBuilderSettings();
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForBuilder();
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process("Placeholder", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -59,8 +59,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var settings = CreateBuilderSettings(addNullChecks: true, validateArguments: ArgumentValidationType.None);
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.None);
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -78,8 +78,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var settings = CreateBuilderSettings(addNullChecks: true, validateArguments: ArgumentValidationType.DomainOnly);
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForBuilder(addNullChecks: true, validateArguments: ArgumentValidationType.DomainOnly);
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -98,8 +98,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var settings = CreateBuilderSettings(addNullChecks: false);
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForBuilder(addNullChecks: false);
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -117,7 +117,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), CreateBuilderSettings(addNullChecks: true), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -128,8 +128,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
         }
 
         [Theory]
-        [InlineData("NullableRequiredSuffix", true, "")]
-        [InlineData("NullableRequiredSuffix", false, "!")]
+        [InlineData("NullableRequiredSuffix", true, "!")]
+        [InlineData("NullableRequiredSuffix", false, "")]
         [InlineData("NullableSuffix", true, "?")]
         [InlineData("NullableSuffix", false, "")]
         public void Returns_Ok_With_Correct_Value_On_Known_Value_Depending_On_IsNullable(string value, bool isNullable, string expectedResult)
@@ -138,8 +138,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var formattableStringParser = Fixture.Freeze<IFormattableStringParser>();
             formattableStringParser.Parse("{Namespace}.Builders", Arg.Any<IFormatProvider>(), Arg.Any<object?>()).Returns(Result.Success("MyNamespace.Builders"));
             var sut = CreateSut();
-            var settings = CreateBuilderSettings(enableNullableReferenceTypes: true);
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable), settings);
+            var settings = CreateSettingsForBuilder(enableNullableReferenceTypes: true);
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(isNullable), settings.Build());
 
             // Act
             var result = sut.Process(value, CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -156,8 +156,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Success("MyResult"));
             var sut = CreateSut();
-            var settings = CreateBuilderSettings(addNullChecks: true);
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForBuilder(addNullChecks: true);
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -174,8 +174,8 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Continue<string>());
             var sut = CreateSut();
-            var settings = CreateBuilderSettings(addNullChecks: true);
-            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings, CultureInfo.InvariantCulture)), CreatePropertyModel(), settings);
+            var settings = CreateSettingsForBuilder(addNullChecks: true);
+            var context = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), settings.Build(), CultureInfo.InvariantCulture)), CreatePropertyModel(), settings.Build());
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -191,7 +191,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Success("MyResult"));
             var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), CreateBuilderSettings(addNullChecks: true), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());
@@ -208,7 +208,7 @@ public class BuilderPipelinePlaceholderProcessorTests : TestBase<BuilderPipeline
             var pipelinePlaceholderProcessor = Fixture.Freeze<IPipelinePlaceholderProcessor>();
             pipelinePlaceholderProcessor.Process("Value", Arg.Any<IFormatProvider>(), Arg.Any<object?>(), Arg.Any<IFormattableStringParser>()).Returns(Result.Continue<string>());
             var sut = CreateSut();
-            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), CreateBuilderSettings(addNullChecks: true), CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(CreateModel(), new BuilderContext(CreateModel().Build(), CreateSettingsForBuilder(addNullChecks: true).Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process("Value", CultureInfo.InvariantCulture, context, Fixture.Freeze<IFormattableStringParser>());

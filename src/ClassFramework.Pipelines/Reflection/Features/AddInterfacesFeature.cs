@@ -12,7 +12,7 @@ public class AddInterfacesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyInterfaces)
+        if (!context.Context.Settings.CopyInterfaces)
         {
             return Result.Continue<TypeBaseBuilder>();
         }
@@ -20,7 +20,7 @@ public class AddInterfacesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
         context.Model.AddInterfaces(
             context.Context.SourceModel.GetInterfaces()
                 .Select(x => x.FullName.FixTypeName())
-                .Where(x => context.Context.Settings.CopySettings.CopyInterfacePredicate?.Invoke(x) ?? true)
+                .Where(x => context.Context.Settings.CopyInterfacePredicate?.Invoke(x) ?? true)
                 .Select(context.Context.MapTypeName)
         );
 

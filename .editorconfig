@@ -149,6 +149,8 @@ dotnet_diagnostic.CA1506.severity = warning
 dotnet_diagnostic.CA1507.severity = warning
 #Avoid dead conditional code (does not seem to work on using statement?)
 dotnet_diagnostic.CA1508.severity = none
+# 'x' is coupled with 'y' different types from 'z' different namespaces. Rewrite or refactor the code to decrease its class coupling below '41'.
+dotnet_diagnostic.CA1506.severity = none
 
 # CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none

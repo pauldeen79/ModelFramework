@@ -11,9 +11,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
         => string.IsNullOrEmpty(GetModel().ExplicitInterfaceName) && GetParentModel() is not Interface;
 
     public string ReturnTypeName
-        => GetModel().TypeName
+        => GetModel().ReturnTypeName
             .GetCsharpFriendlyTypeName()
-            .AppendNullableAnnotation(Model!.IsNullable, Settings.EnableNullableContext)
+            .AppendNullableAnnotation(Model!.ReturnTypeIsNullable, Settings.EnableNullableContext)
             .AbbreviateNamespaces(Model.Metadata.GetStringValues(MetadataNames.NamespaceToAbbreviate))
             .WhenNullOrEmpty("void");
 
@@ -24,6 +24,9 @@ public class MethodViewModel : MethodViewModelBase<Method>
 
     public string GenericTypeArguments
         => GetModel().GetGenericTypeArgumentsString();
+
+    public string GenericTypeArgumentConstraints
+        => GetModel().GetGenericTypeArgumentConstraintsString(12 + ((GetContext().GetIndentCount() - 1) * 4));
 
     public bool ExtensionMethod
         => GetModel().ExtensionMethod;
@@ -40,7 +43,7 @@ public class MethodViewModel : MethodViewModelBase<Method>
             
             if (model.IsInterfaceMethod())
             {
-                return model.Name.RemoveInterfacePrefix().Sanitize().GetCsharpFriendlyName();
+                return model.Name.RemoveInterfacePrefix().Sanitize();
             }
             
             return model.Name.Sanitize().GetCsharpFriendlyName();

@@ -6,7 +6,6 @@ public sealed class AttributeTemplate : CsharpClassGeneratorBase<AttributeViewMo
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
 
         if (!Model.IsSingleLineAttributeContainer)
         {

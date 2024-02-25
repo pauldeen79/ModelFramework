@@ -7,10 +7,10 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
         private EntityContext CreateContext(bool addProperties = true) => new EntityContext
         (
             CreateGenericModel(addProperties),
-            CreateEntitySettings
+            CreateSettingsForEntity
             (
                 allowGenerationWithoutProperties: false
-            ),
+            ).Build(),
             CultureInfo.InvariantCulture
         );
 
@@ -72,7 +72,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 namespaceMappings: namespaceMappings,
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
@@ -89,7 +89,7 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.IsSuccessful().Should().BeTrue();
             result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("SomeClass");
+            result.Value!.Name.Should().Be("MyClass");
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEmpty();
 
@@ -108,8 +108,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "this.Property4 = property4;",
                 "this.Property5 = property5;",
                 "this.Property6 = property6;",
-                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MySourceNamespace.MyClass>(property8);"
+                "this.Property7 = new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property7);",
+                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ReadOnlyValueCollection<MyNamespace.MyClass>(property8);"
             );
 
             result.Value.Fields.Should().BeEmpty();
@@ -163,12 +163,17 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             // Arrange
             var model = CreateModelWithCustomTypeProperties();
             var namespaceMappings = CreateNamespaceMappings();
-            var settings = CreateEntitySettings(
+            var typenameMappings = CreateTypenameMappings();
+            var settings = CreateSettingsForEntity(
                 namespaceMappings: namespaceMappings,
+                typenameMappings: typenameMappings,
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 addBackingFields: true,
+                addSetters: true,
                 createAsObservable: true,
+                addPublicParameterlessConstructor: true,
+                addFullConstructor: false,
                 newCollectionTypeName: typeof(ObservableCollection<>).WithoutGenerics(),
                 collectionTypeName: typeof(ObservableValueCollection<>).WithoutGenerics());
             var context = CreateContext(model, settings);
@@ -182,27 +187,25 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
             result.IsSuccessful().Should().BeTrue();
             result.Value.Should().NotBeNull();
 
-            result.Value!.Name.Should().Be("SomeClass");
+            result.Value!.Name.Should().Be("MyClass");
             result.Value.Namespace.Should().Be("MyNamespace");
             result.Value.Interfaces.Should().BeEquivalentTo("System.ComponentModel.INotifyPropertyChanged");
 
             var ctors = (result.Value as IConstructorsContainerBuilder)?.Constructors;
             ctors.Should().ContainSingle();
-            var copyConstructor = ctors!.Single();
-            copyConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
-            copyConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
+            var publicParameterlessConstructor = ctors!.Single();
+            publicParameterlessConstructor.Parameters.Should().BeEmpty();
+            publicParameterlessConstructor.CodeStatements.Should().AllBeOfType<StringCodeStatementBuilder>();
+            publicParameterlessConstructor.CodeStatements.OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
-                "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "if (property5 is null) throw new System.ArgumentNullException(nameof(property5));",
-                "if (property7 is null) throw new System.ArgumentNullException(nameof(property7));",
-                "this._property1 = property1;",
-                "this._property2 = property2;",
-                "this._property3 = property3;",
-                "this._property4 = property4;",
-                "this._property5 = property5;",
-                "this._property6 = property6;",
-                "this.Property7 = new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property7);",
-                "this.Property8 = property8 is null ? null : new CrossCutting.Common.ObservableValueCollection<MySourceNamespace.MyClass>(property8);"
+                "_property1 = default(System.Int32);",
+                "_property2 = default(System.Int32?);",
+                "_property3 = string.Empty;",
+                "_property4 = default(System.String?);",
+                "_property5 = default(MyNamespace.MyClass)!;",
+                "_property6 = default(MyNamespace.MyClass?);",
+                "_property7 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>();",
+                "_property8 = new CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>();"
             );
 
             // non collection type properties have a backing field, so we can implement INotifyPropertyChanged
@@ -214,16 +217,19 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "_property4",
                 "_property5",
                 "_property6",
+                "_property7",
+                "_property8",
                 "PropertyChanged"
             );
             result.Value.Fields.Select(x => x.TypeName).Should().BeEquivalentTo
             (
                 "System.Int32",
                 "System.Nullable<System.Int32>",
-                "System.String",
-                "System.String",
+                "System.String", "System.String",
                 "MyNamespace.MyClass",
                 "MyNamespace.MyClass",
+                "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
+                "CrossCutting.Common.ObservableValueCollection<MyNamespace.MyClass>",
                 "System.ComponentModel.PropertyChangedEventHandler"
             );
             result.Value.Fields.Select(x => x.IsNullable).Should().BeEquivalentTo
@@ -236,6 +242,8 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                     true,
                     false,
                     true,
+                    true,
+                    false,
                     true
                 }
             );
@@ -284,41 +292,34 @@ public class PipelineBuilderTests : IntegrationTestBase<IPipelineBuilder<IConcre
                 "return _property3;",
                 "return _property4;",
                 "return _property5;",
-                "return _property6;"
+                "return _property6;",
+                "return _property7;",
+                "return _property8;"
             );
             result.Value.Properties.Select(x => x.HasInitializer).Should().AllBeEquivalentTo(false);
-            result.Value.Properties.Select(x => x.HasSetter).Should().BeEquivalentTo
-            (
-                new[]
-                {
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    false,
-                    false
-                }
-            );
+            result.Value.Properties.Select(x => x.HasSetter).Should().AllBeEquivalentTo(true);
             result.Value.Properties.SelectMany(x => x.SetterCodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "_property1 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property1)));",
+                "HandlePropertyChanged(nameof(Property1));",
                 "_property2 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property2)));",
+                "HandlePropertyChanged(nameof(Property2));",
                 "_property3 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property3)));",
+                "HandlePropertyChanged(nameof(Property3));",
                 "_property4 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property4)));",
+                "HandlePropertyChanged(nameof(Property4));",
                 "_property5 = value ?? throw new System.ArgumentNullException(nameof(value));",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property5)));",
+                "HandlePropertyChanged(nameof(Property5));",
                 "_property6 = value;",
-                "PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Property6)));"
+                "HandlePropertyChanged(nameof(Property6));",
+                "_property7 = value ?? throw new System.ArgumentNullException(nameof(value));",
+                "HandlePropertyChanged(nameof(Property7));",
+                "_property8 = value;",
+                "HandlePropertyChanged(nameof(Property8));"
             );
         }
 
-        private static EntityContext CreateContext(IConcreteType model, Pipelines.Entity.PipelineBuilderSettings settings)
-            => new(model, settings, CultureInfo.InvariantCulture);
+        private static EntityContext CreateContext(IConcreteType model, PipelineSettingsBuilder settings)
+            => new(model, settings.Build(), CultureInfo.InvariantCulture);
     }
 }

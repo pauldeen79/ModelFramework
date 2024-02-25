@@ -1,15 +1,20 @@
 ﻿namespace ClassFramework.Pipelines.Builder;
 
-public record BuilderContext : ContextBase<IType, PipelineBuilderSettings>
+public class BuilderContext : ContextBase<IType>
 {
-    public BuilderContext(IType sourceModel, PipelineBuilderSettings settings, IFormatProvider formatProvider)
+    public BuilderContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }
 
-    public bool IsBuilderForAbstractEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract);
-    public bool IsBuilderForOverrideEntity => Settings.EntitySettings.InheritanceSettings.EnableInheritance && Settings.InheritanceSettings.BaseClass is not null;
-    public bool IsAbstractBuilder => Settings.InheritanceSettings.EnableBuilderInheritance && (Settings.InheritanceSettings.BaseClass is null || Settings.InheritanceSettings.IsAbstract) && !Settings.IsForAbstractBuilder;
+    public IEnumerable<Property> GetSourceProperties()
+        => SourceModel.Properties.Where(x => SourceModel.IsMemberValidForBuilderClass(x, Settings));
+
+    public bool IsBuilderForAbstractEntity => Settings.EnableInheritance && (Settings.BaseClass is null || Settings.IsAbstract);
+    public bool IsBuilderForOverrideEntity => Settings.EnableInheritance && Settings.BaseClass is not null;
+    public bool IsAbstractBuilder => Settings.EnableBuilderInheritance && (Settings.BaseClass is null || Settings.IsAbstract) && !Settings.IsForAbstractBuilder;
+
+    protected override string NewCollectionTypeName => Settings.BuilderNewCollectionTypeName;
 
     public string[] CreatePragmaWarningDisableStatements()
         => NeedsPragmas()
@@ -29,38 +34,38 @@ public record BuilderContext : ContextBase<IType, PipelineBuilderSettings>
             ]
             : Array.Empty<string>();
 
-    public string MapTypeName(string typeName)
-        => typeName.IsNotNull(nameof(typeName)).MapTypeName(Settings.TypeSettings);
-
-    public string MapNamespace(string? ns)
-        => ns.MapNamespace(Settings.TypeSettings);
-
-    public Domain.Attribute MapAttribute(Domain.Attribute attribute)
-    {
-        attribute = attribute.IsNotNull(nameof(attribute));
-
-        return new AttributeBuilder(attribute)
-            .WithName(MapTypeName(attribute.Name.FixTypeName()))
-            .Build();
-    }
-
     public bool HasBackingFields()
         => !(IsAbstractBuilder
-        || !Settings.EntitySettings.NullCheckSettings.AddNullChecks
-        || Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments == ArgumentValidationType.Shared);
+        || !Settings.AddNullChecks
+        || Settings.OriginalValidateArguments == ArgumentValidationType.Shared)
+        || Settings.AddBackingFields;
 
     private bool NeedsPragmas()
-        => Settings.TypeSettings.EnableNullableReferenceTypes
+        => Settings.EnableNullableReferenceTypes
         && !IsBuilderForAbstractEntity
-        && !Settings.EntitySettings.NullCheckSettings.AddNullChecks;
+        && !Settings.AddNullChecks;
 
-    public string CreateArgumentNullException(string argumentName)
+    public bool IsValidForFluentMethod(Property property)
     {
-        if (Settings.EntitySettings.NullCheckSettings.UseExceptionThrowIfNull)
+        property = property.IsNotNull(nameof(property));
+
+        if (!Settings.CopyInterfaces)
         {
-            return $"System.ArgumentNullException.ThrowIfNull({argumentName});";
+            return true;
         }
-        
-        return $"if ({argumentName} is null) throw new {typeof(ArgumentNullException).FullName}(nameof({argumentName}));";
+
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        {
+            return true;
+        }
+
+        if (property.ParentTypeFullName == SourceModel.GetFullName())
+        {
+            return true;
+        }
+
+        var isInterfaced = SourceModel.Interfaces.Any(x => x == property.ParentTypeFullName);
+
+        return !isInterfaced;
     }
 }

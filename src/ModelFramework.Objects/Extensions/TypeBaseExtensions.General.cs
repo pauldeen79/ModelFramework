@@ -179,4 +179,21 @@ public static partial class TypeBaseExtensions
         => !instance.Interfaces.Any()
             ? string.Empty
             : $" : {string.Join(", ", instance.Interfaces.Select(x => x.GetCsharpFriendlyTypeName()))}";
+
+    private static string FormatInstanceName(
+        ITypeBase instance,
+        bool forCreate,
+        Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
+    {
+        if (formatInstanceTypeNameDelegate != null)
+        {
+            var retVal = formatInstanceTypeNameDelegate(instance, forCreate);
+            if (!string.IsNullOrEmpty(retVal))
+            {
+                return retVal;
+            }
+        }
+
+        return instance.GetFullName().GetCsharpFriendlyTypeName();
+    }
 }

@@ -10,18 +10,13 @@ public class ConstructorViewModel : MethodViewModelBase<Constructor>
     public string Name
     {
         get
-        {
+        {   
             var parentModel = GetParentModel();
-            var modelProperty = parentModel?.GetType().GetProperty(nameof(IModelContainer<object>.Model));
-            if (modelProperty is not null)
-            {
-                parentModel = modelProperty.GetValue(parentModel);
-            }
 
-            var nameContainer = parentModel as INameContainer;
+            var nameContainer = parentModel as IType;
             if (nameContainer is null)
             {
-                throw new InvalidOperationException("Could not get name from parent context");
+                throw new NotSupportedException($"Type {parentModel?.GetType().FullName ?? "NULL"} is not supported for constructors. Only class implementing IType are supported.");
             }
 
             return nameContainer.Name.Sanitize().GetCsharpFriendlyName();

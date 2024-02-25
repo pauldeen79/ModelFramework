@@ -15,13 +15,26 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
     protected override bool UseLazyInitialization => false; // we don't want lazy stuff, just getters and setters
     protected override bool AddBackingFieldsForCollectionProperties => false; // we just want static stuff - else you need to choose builders or models instead of entities
     protected override bool AddPrivateSetters => false; // we just want static stuff - else you need to choose builders or models instead of entities
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.Shared;
+    protected override ModelFramework.Objects.Settings.ArgumentValidationType ValidateArgumentsInConstructor => ModelFramework.Objects.Settings.ArgumentValidationType.DomainOnly; // note that for now, we don't have any custom validation, so we can simply use domain validation and copy the attributes to the builder
     protected override bool ConvertStringToStringBuilderOnBuilders => false; // we don't want string builders, just strings
     protected override bool AddNullChecks => true;
+    protected override bool CopyAttributes => true; // Copy validation attributes to builders (note: set to false in case of shared validation!)
 
     protected override void Visit<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
     {
         Guard.IsNotNull(typeBaseBuilder);
+
+        foreach (var property in typeBaseBuilder.Properties)
+        {
+            if (property.TypeName == "ClassFramework.Domain.Domains.ArgumentValidationType")
+            {
+                property.TypeName = "ClassFramework.Pipelines.Domains.ArgumentValidationType";
+            }
+            else if (property.TypeName == "System.Nullable<ClassFramework.Domain.Domains.ArgumentValidationType>")
+            {
+                property.TypeName = "System.Nullable<ClassFramework.Pipelines.Domains.ArgumentValidationType>";
+            }
+        }
 
         if (typeBaseBuilder.Name.EndsWith(BuilderName))
         {
@@ -31,6 +44,20 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         {
             FixEntity(typeBaseBuilder);
         }
+    }
+
+    protected override Dictionary<string, string> GetModelMappings()
+    {
+        var result = base.GetModelMappings();
+
+        result.Add($"{CodeGenerationRootNamespace}.Models.Pipelines.I", $"ClassFramework.Pipelines.");
+
+        return result;
+    }
+
+    protected override IEnumerable<KeyValuePair<string, string>> GetCustomBuilderNamespaceMapping()
+    {
+        yield return new KeyValuePair<string, string>("ClassFramework.Pipelines", "ClassFramework.Pipelines.Builders");
     }
 
     protected ModelFramework.Objects.Contracts.ITypeBase[] GetPipelinesModels()
@@ -48,15 +75,29 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
         cls = cls.IsNotNull(nameof(cls));
 
         return new ModelFramework.Objects.Builders.ClassBuilder(cls)
-            .AddMethods(new ModelFramework.Objects.Builders.ClassMethodBuilder()
-                .WithName("ToBuilder")
-                .WithOverride()
-                .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{entityName}BaseBuilder")
-                .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
-                    ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
-                    : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
+            .AddMethods
+            (
+                new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                    .WithName("ToBuilder")
+                    .WithTypeName($"{Constants.Namespaces.DomainBuilders}.{entityName}BaseBuilder")
+                    .WithOverride()
+                    .AddLiteralCodeStatements("return ToTypedBuilder();"),
+                new ModelFramework.Objects.Builders.ClassMethodBuilder()
+                    .WithName("ToTypedBuilder")
+                    .WithTypeName($"{buildersNamespace}.{cls.Name.ReplaceSuffix("Base", string.Empty, StringComparison.Ordinal)}Builder")
+                    .WithOverride(!cls.Name.EndsWith("Base") && ValidateArgumentsInConstructor == ModelFramework.Objects.Settings.ArgumentValidationType.Shared)
+                    .WithVirtual(cls.Name.EndsWith("Base"))
+                    .AddLiteralCodeStatements(cls.Name.EndsWith("Base")
+                        ? $"throw new {typeof(NotSupportedException).FullName}(\"You can't convert a base class to builder\");"
+                        : $"return new {buildersNamespace}.{cls.Name}Builder(this);")
             ).BuildTyped();
     }
+
+    protected bool IsInterfacedMethod(string methodName, ModelFramework.Objects.Builders.ClassBuilder classBuilder)
+        => classBuilder.IsNotNull(nameof(classBuilder)).Properties
+            .Where(x => x.ParentTypeFullName.StartsWith("ClassFramework.CodeGeneration.Models.Abstractions.", StringComparison.Ordinal))
+            .Select(x => x.Name)
+            .Any(x => methodName == $"{SetMethodNameFormatString.Replace("{0}", string.Empty, StringComparison.Ordinal)}{x}" || methodName == $"{AddMethodNameFormatString.Replace("{0}", string.Empty, StringComparison.Ordinal)}{x}");
 
     private void FixBuilder<TBuilder, TEntity>(ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity> typeBaseBuilder)
         where TBuilder : ModelFramework.Objects.Builders.TypeBaseBuilder<TBuilder, TEntity>
@@ -115,8 +156,8 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName)))
             {
                 var value = property.IsNullable
-                    ? "if (source.{0} is not null) {0} = source.{0}.ToBuilder()"
-                    : "{0} = source.{0}.ToBuilder()";
+                    ? "if (source.{0} is not null) _{1} = source.{0}.ToBuilder()"
+                    : "_{1} = source.{0}.ToBuilder()";
 
                 property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
             }
@@ -124,8 +165,8 @@ public abstract class ClassFrameworkCSharpClassBase : CSharpClassBase
             if (!string.IsNullOrEmpty(GetEntityClassName(property.TypeName.GetGenericArguments())))
             {
                 var value = property.IsNullable
-                    ? "if (source.{0} is not null) {0}.AddRange(source.{0}.Select(x => x.ToBuilder()))"
-                    : "{0}.AddRange(source.{0}.Select(x => x.ToBuilder()))";
+                    ? "if (source.{0} is not null) _{1}.AddRange(source.{0}.Select(x => x.ToBuilder()))"
+                    : "_{1}.AddRange(source.{0}.Select(x => x.ToBuilder()))";
 
                 property.Metadata.Replace(ModelFramework.Objects.MetadataNames.CustomBuilderConstructorInitializeExpression, value);
             }

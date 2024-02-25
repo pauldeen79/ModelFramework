@@ -22,7 +22,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sourceModel = CreateModel();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(enableBuilderInheritance: true, isAbstract: true);
+            var settings = CreateSettingsForBuilder(enableBuilderInheritance: true, isAbstract: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -41,7 +41,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
@@ -66,7 +66,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped());
@@ -89,7 +89,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 isAbstract: false,
                 baseClass: new ClassBuilder().WithName("MyBaseClass").AddProperties(new PropertyBuilder().WithName("Property4").WithType(typeof(int))).BuildTyped(),
@@ -113,7 +113,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -132,7 +132,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: true);
+            var settings = CreateSettingsForBuilder(copyAttributes: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -152,7 +152,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: false);
+            var settings = CreateSettingsForBuilder(copyAttributes: false);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -171,7 +171,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: false);
+            var settings = CreateSettingsForBuilder(addNullChecks: false);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -191,7 +191,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 validateArguments: ArgumentValidationType.Shared);
             var context = CreateContext(sourceModel, model, settings);
@@ -220,7 +220,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
@@ -253,7 +253,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
@@ -286,7 +286,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 enableNullableReferenceTypes: true,
                 validateArguments: validateArguments);
@@ -308,7 +308,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -319,7 +319,7 @@ public class AddPropertiesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             result.ErrorMessage.Should().Be("Kaboom");
         }
         
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

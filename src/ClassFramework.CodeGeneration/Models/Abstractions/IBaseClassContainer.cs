@@ -2,5 +2,5 @@
 
 internal interface IBaseClassContainer
 {
-    string? BaseClass { get; }
+    [Required(AllowEmptyStrings = true)] string BaseClass { get; }
 }

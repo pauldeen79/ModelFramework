@@ -14,7 +14,7 @@ public class SetBaseClassFeature : IPipelineFeature<TypeBaseBuilder, ReflectionC
 
         if (context.Model is IBaseClassContainerBuilder baseClassContainerBuilder)
         {
-            baseClassContainerBuilder.WithBaseClass(GetEntityBaseClass(context.Context.SourceModel, context));
+            baseClassContainerBuilder.WithBaseClass(context.Context.SourceModel.GetEntityBaseClass(context.Context.Settings.UseBaseClassFromSourceModel, context.Context.Settings.EnableInheritance, context.Context.Settings.BaseClass));
         }
 
         return Result.Continue<TypeBaseBuilder>();
@@ -22,25 +22,4 @@ public class SetBaseClassFeature : IPipelineFeature<TypeBaseBuilder, ReflectionC
 
     public IBuilder<IPipelineFeature<TypeBaseBuilder, ReflectionContext>> ToBuilder()
         => new SetBaseClassFeatureBuilder();
-
-    private string? GetEntityBaseClass(Type instance, PipelineContext<TypeBaseBuilder, ReflectionContext> context)
-    {
-        if (context.Context.Settings.GenerationSettings.UseBaseClassFromSourceModel)
-        {
-            if (instance.BaseType is null || instance.BaseType == typeof(object))
-            {
-                return null;
-            }
-
-            return instance.BaseType.FullName.FixTypeName();
-        }
-
-        if (context.Context.Settings.InheritanceSettings.EnableInheritance
-            && context.Context.Settings.InheritanceSettings.BaseClass is not null)
-        {
-            return context.Context.Settings.InheritanceSettings.BaseClass.GetFullName();
-        }
-
-        return null;
-    }
 }

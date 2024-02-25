@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB21E818-ACA6-4942-BBB6-51787189DF42}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelFramework.Database.Tests", "src\ModelFramework.Database.Tests\ModelFramework.Database.Tests.csproj", "{10480F4C-ABED-4B2C-9BF4-F721406D63E6}"
@@ -48,9 +49,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.CsharpExpres
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.CsharpExpressionCreator.Tests", "src\ClassFramework.CsharpExpressionCreator.Tests\ClassFramework.CsharpExpressionCreator.Tests.csproj", "{7ABF1F26-68CA-48BA-B622-FDF795522CD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.TemplateFramework", "src\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj", "{C4101D16-F4C8-4805-93FA-44415151E518}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFramework", "src\ClassFramework.TemplateFramework\ClassFramework.TemplateFramework.csproj", "{C4101D16-F4C8-4805-93FA-44415151E518}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassFramework.TemplateFramework.Tests", "src\ClassFramework.TemplateFramework.Tests\ClassFramework.TemplateFramework.Tests.csproj", "{A64F2CE5-6275-4255-9845-420ECF50D786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.TemplateFramework.Tests", "src\ClassFramework.TemplateFramework.Tests\ClassFramework.TemplateFramework.Tests.csproj", "{A64F2CE5-6275-4255-9845-420ECF50D786}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.IntegrationTests", "src\ClassFramework.IntegrationTests\ClassFramework.IntegrationTests.csproj", "{533B3E27-06DC-4298-99EB-50C53ED420F5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassFramework.Domain.POC", "src\ClassFramework.Domain.POC\ClassFramework.Domain.POC.csproj", "{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,6 +151,14 @@ Global
 		{A64F2CE5-6275-4255-9845-420ECF50D786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A64F2CE5-6275-4255-9845-420ECF50D786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A64F2CE5-6275-4255-9845-420ECF50D786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{533B3E27-06DC-4298-99EB-50C53ED420F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1302CD4A-67DA-4A81-8348-E640C4ACC0D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

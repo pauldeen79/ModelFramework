@@ -1,6 +1,6 @@
 ﻿namespace ModelFramework.Objects.Extensions;
 
-public static partial class TypeBaseEtensions
+public static partial class TypeBaseExtensions
 {
     public static IClass ToImmutableBuilderClass(this ITypeBase instance, ImmutableBuilderClassSettings settings)
         => instance.ToImmutableBuilderClassBuilder(settings).BuildTyped();
@@ -938,22 +938,6 @@ public static partial class TypeBaseEtensions
             ? " { "
             : "(";
 
-    private static string FormatInstanceName(ITypeBase instance,
-                                             bool forCreate,
-                                             Func<ITypeBase, bool, string>? formatInstanceTypeNameDelegate)
-    {
-        if (formatInstanceTypeNameDelegate != null)
-        {
-            var retVal = formatInstanceTypeNameDelegate(instance, forCreate);
-            if (!string.IsNullOrEmpty(retVal))
-            {
-                return retVal;
-            }
-        }
-
-        return instance.GetFullName().GetCsharpFriendlyTypeName();
-    }
-
     private static IEnumerable<ClassPropertyBuilder> GetImmutableBuilderClassProperties(ITypeBase instance,
                                                                                         ImmutableBuilderClassSettings settings)
         => instance.Properties
@@ -976,6 +960,7 @@ public static partial class TypeBaseEtensions
                 )
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
+                .WithParentTypeFullName(property.ParentTypeFullName)
                 .AddAttributes(property.Attributes.Where(_ => settings.GenerationSettings.CopyAttributes).Select(x => new AttributeBuilder(x)))
                 .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
                 .AddGetterCodeStatements(CreateImmutableBuilderPropertyGetterStatements(property, settings))

@@ -26,7 +26,7 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared)
+        if (context.Context.IsBuilderForAbstractEntity || context.Context.Settings.OriginalValidateArguments != ArgumentValidationType.Shared)
         {
             return Result.Continue<IConcreteTypeBuilder>();
         }
@@ -41,7 +41,7 @@ public class ValidatableObjectFeature : IPipelineFeature<IConcreteTypeBuilder, B
             .AddInterfaces(typeof(IValidatableObject))
             .AddMethods(new MethodBuilder()
                 .WithName(nameof(IValidatableObject.Validate))
-                .WithType(typeof(IEnumerable<ValidationResult>))
+                .WithReturnType(typeof(IEnumerable<ValidationResult>))
                 .AddParameter("validationContext", typeof(ValidationContext))
                 .AddStringCodeStatements(context.Context.CreatePragmaWarningDisableStatements())
                 .AddStringCodeStatements($"var instance = {instanciationResult.Value};")

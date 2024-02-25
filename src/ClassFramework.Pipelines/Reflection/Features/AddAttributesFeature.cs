@@ -12,19 +12,15 @@ public class AddAttributesFeature : IPipelineFeature<TypeBaseBuilder, Reflection
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.CopySettings.CopyAttributes)
+        if (!context.Context.Settings.CopyAttributes)
         {
             return Result.Continue<TypeBaseBuilder>();
         }
 
-        context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true)
-            .OfType<System.Attribute>()
-            .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                     && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-            .Select(x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate)))
-            .Where(x => context.Context.Settings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-            .Select(x => new AttributeBuilder(x))
-        );
+        context.Model.AddAttributes(context.Context.SourceModel.GetCustomAttributes(true).ToAttributes(
+            x => context.Context.MapAttribute(x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate)),
+            context.Context.Settings.CopyAttributes,
+            context.Context.Settings.CopyAttributePredicate));
 
         return Result.Continue<TypeBaseBuilder>();
     }

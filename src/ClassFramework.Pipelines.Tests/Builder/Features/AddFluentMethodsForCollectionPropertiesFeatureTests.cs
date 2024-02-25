@@ -23,7 +23,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: string.Empty);
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: string.Empty);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: "Add{Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -52,7 +52,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -60,7 +60,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3.ToArray());",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -73,7 +73,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: "Add{Name}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -83,7 +83,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<MyCustomType>", "MyCustomType[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -91,7 +91,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3.ToArray());",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -104,7 +104,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -116,7 +116,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -125,7 +125,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             (
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -138,7 +138,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -150,7 +150,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddDelegate", "AddDelegate");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("delegate", "delegate");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -159,41 +159,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             (
                 "return AddDelegate(@delegate?.ToArray() ?? throw new System.ArgumentNullException(nameof(@delegate)));",
                 "if (@delegate is null) throw new System.ArgumentNullException(nameof(@delegate));",
-                "Delegate.AddRange(@delegate);",
-                "return this;"
-            );
-        }
-
-        [Fact]
-        public void Adds_Methods_With_Enumerable()
-        {
-            // Arrange
-            var sourceModel = CreateModel();
-            InitializeParser();
-            var sut = CreateSut();
-            var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
-                newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics(),
-                addMethodNameFormatString: "Add{Name}");
-            var context = CreateContext(sourceModel, model, settings);
-
-            // Act
-            var result = sut.Process(context);
-
-            // Assert
-            result.IsSuccessful().Should().BeTrue();
-            model.Methods.Should().HaveCount(2);
-            model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
-            model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
-            model.Methods.SelectMany(x => x.CodeStatements).Should().AllBeOfType<StringCodeStatementBuilder>();
-            model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
-            (
-                "Property3 = Property3.Concat(property3);",
-                "return this;",
-                "Property3 = Property3.Concat(property3);",
+                "foreach (var item in @delegate) Delegate.Add(item);",
                 "return this;"
             );
         }
@@ -206,7 +172,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 addNullChecks: true,
                 validateArguments: ArgumentValidationType.Shared,
                 addMethodNameFormatString: "Add{Name}");
@@ -219,7 +185,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("SomeClassBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("SomeNamespace.Builders.SomeClassBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -229,7 +195,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
                 "return AddProperty3(property3?.ToArray() ?? throw new System.ArgumentNullException(nameof(property3)));",
                 "if (property3 is null) throw new System.ArgumentNullException(nameof(property3));",
                 "if (Property3 is null) Property3 = new System.Collections.Generic.List<int>();",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return this;"
             );
         }
@@ -242,7 +208,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableEntityInheritance: true,
                 addMethodNameFormatString: "Add{Name}");
             var context = CreateContext(sourceModel, model, settings);
@@ -254,7 +220,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.IsSuccessful().Should().BeTrue();
             model.Methods.Should().HaveCount(2);
             model.Methods.Select(x => x.Name).Should().BeEquivalentTo("AddProperty3", "AddProperty3");
-            model.Methods.Select(x => x.TypeName).Should().AllBe("TBuilder");
+            model.Methods.Select(x => x.ReturnTypeName).Should().AllBe("TBuilder");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.Name).Should().BeEquivalentTo("property3", "property3");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.TypeName).Should().BeEquivalentTo("System.Collections.Generic.IEnumerable<System.Int32>", "System.Int32[]");
             model.Methods.SelectMany(x => x.Parameters).Select(x => x.DefaultValue).Should().AllBeEquivalentTo(default(object));
@@ -262,7 +228,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             model.Methods.SelectMany(x => x.CodeStatements).OfType<StringCodeStatementBuilder>().Select(x => x.Statement).Should().BeEquivalentTo
             (
                 "return AddProperty3(property3.ToArray());",
-                "Property3.AddRange(property3);",
+                "foreach (var item in property3) Property3.Add(item);",
                 "return (TBuilder)this;"
             );
         }
@@ -279,7 +245,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: addNullChecks, validateArguments: validateArguments);
+            var settings = CreateSettingsForBuilder(addNullChecks: addNullChecks, validateArguments: validateArguments);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -298,7 +264,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(builderNameFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -317,7 +283,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addMethodNameFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(addMethodNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -336,7 +302,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: true);
+            var settings = CreateSettingsForBuilder(addNullChecks: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -355,7 +321,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
+            var settings = CreateSettingsForBuilder(addNullChecks: true, newCollectionTypeName: typeof(IEnumerable<>).WithoutGenerics());
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -366,7 +332,7 @@ public class AddFluentMethodsForCollectionPropertiesFeatureTests : TestBase<Pipe
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

@@ -46,4 +46,40 @@ public static class TypeExtensions
 
         return results;
     }
+
+    public static string GetParentTypeFullName(this Type declaringType)
+        => declaringType.FullName == "System.Object"
+            ? string.Empty
+            : declaringType.FullName;
+
+    public static bool IsValueType(this Type type)
+        => type.IsValueType || type.IsEnum;
+
+    public static string GetEntityBaseClass(this Type instance, bool useBaseClassFromSourceModel, bool enableInheritance, IType? baseClass)
+    {
+        if (useBaseClassFromSourceModel)
+        {
+            if (instance.BaseType is null || instance.BaseType == typeof(object))
+            {
+                return string.Empty;
+            }
+
+            return instance.BaseType.FullName.FixTypeName();
+        }
+
+        if (enableInheritance && baseClass is not null)
+        {
+            return baseClass.GetFullName();
+        }
+
+        return string.Empty;
+    }
+
+    public static string WithoutInterfacePrefix(this Type instance)
+        => instance.IsInterface
+            && instance.Name.StartsWith("I")
+            && instance.Name.Length >= 2
+            && instance.Name.Substring(1, 1).Equals(instance.Name.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
+                ? instance.Name.Substring(1)
+                : instance.Name;
 }

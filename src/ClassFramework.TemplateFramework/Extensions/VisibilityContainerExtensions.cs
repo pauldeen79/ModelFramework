@@ -37,12 +37,12 @@ public static class VisibilityContainerExtensions
         {
             builder.Append(instance.Visibility.ToString().ToLower(cultureInfo));
 
-            var cls = instance as Class;
+            var cls = instance as IReferenceType;
             builder.AppendWithCondition("sealed", cls?.Sealed == true);
             builder.AppendWithCondition("abstract", cls?.Abstract == true);
             builder.AppendWithCondition("static", cls?.Static == true);
 
-            var typeBase = instance as TypeBase;
+            var typeBase = instance as IType;
             builder.AppendWithCondition("partial", typeBase?.Partial == true);
         }
 

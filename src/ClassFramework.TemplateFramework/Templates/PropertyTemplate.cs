@@ -27,6 +27,15 @@ public class PropertyTemplate : CsharpClassGeneratorBase<PropertyViewModel>, ISt
         RenderChildTemplatesByModel(Model.GetCodeBodyModels(), builder);
 
         builder.Append(Model.CreateIndentation(1));
-        builder.AppendLine("}");
+        builder.Append("}");
+
+        if (Model.ShouldRenderDefaultValue)
+        {
+            builder.Append(" = ");
+            builder.Append(Model.DefaultValueExpression);
+            builder.Append(";");
+        }
+
+        builder.AppendLine();
     }
 }

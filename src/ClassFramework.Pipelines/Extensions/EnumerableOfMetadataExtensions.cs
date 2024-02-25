@@ -5,12 +5,12 @@ public static class EnumerableOfMetadataExtensions
     public static IEnumerable<Metadata> WithMappingMetadata(
         this IEnumerable<Metadata> metadata,
         string typeName,
-        IPipelineBuilderTypeSettings pipelineBuilderTypeSettings)
+        PipelineSettings settings)
     {
         typeName = typeName.IsNotNull(nameof(typeName)).FixTypeName();
-        pipelineBuilderTypeSettings = pipelineBuilderTypeSettings.IsNotNull(nameof(pipelineBuilderTypeSettings));
+        settings = settings.IsNotNull(nameof(settings));
 
-        var typeNameMapping = pipelineBuilderTypeSettings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
         if (typeNameMapping is not null)
         {
             return metadata.Concat(typeNameMapping.Metadata);
@@ -19,7 +19,7 @@ public static class EnumerableOfMetadataExtensions
         var ns = typeName.GetNamespaceWithDefault();
         if (!string.IsNullOrEmpty(ns))
         {
-            var namespaceMapping = pipelineBuilderTypeSettings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
             if (namespaceMapping is not null)
             {
                 return metadata.Concat(namespaceMapping.Metadata);

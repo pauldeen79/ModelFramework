@@ -73,6 +73,31 @@ public static class MetadataNames
     public const string CustomBuilderNamespace = "ClassFramework.Builder.Namespace";
 
     /// <summary>
+    /// Metadata name for defining a custom builder name. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderName = "ClassFramework.Builder.Name";
+
+    /// <summary>
+    /// Metadata name for defining a custom builder interface namespace. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderInterfaceNamespace = "ClassFramework.Builder.Interface.Namespace";
+
+    /// <summary>
+    /// Metadata name for defining a custom builder interface name. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderInterfaceName = "ClassFramework.Builder.Interface.Name";
+
+    /// <summary>
+    /// Metadata name for defining a custom builder parent type namespace. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderParentTypeNamespace = "ClassFramework.Builder.ParentType.Namespace";
+
+    /// <summary>
+    /// Metadata name for defining a custom builder parent type name. Note that the value will be converted to string.
+    /// </summary>
+    public const string CustomBuilderParentTypeName = "ClassFramework.Builder.ParentType.Name";
+
+    /// <summary>
     /// Metadata name for defining a custom entity namespace. Note that the value will be converted to string.
     /// </summary>
     public const string CustomEntityNamespace = "ClassFramework.Entity.Namespace";
@@ -81,4 +106,14 @@ public static class MetadataNames
     /// Metadata name for defining if the entity should be checked for null. Value needs to be a boolean.
     /// </summary>
     public const string EntityNullCheck = "ClassFramework.Entity.NullCheck";
+
+    /// <summary>
+    /// Metadata name for defining custom initialization of collections. Value will be converted to string.
+    /// </summary>
+    public const string CustomCollectionInitialization = "ClassFramework.Entity.Collection.Type.For.Initialization";
+
+    /// <summary>
+    /// Metadata name for defining custom parameters for copy constructors. Value needs to be of type Parameter.
+    /// </summary>
+    public const string CustomBuilderCopyConstructorParameter = "ClassFramework.Builder.CopyConstructor.Parameter";
 }

@@ -23,7 +23,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Builder.Features.SetNameFe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -42,7 +42,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Builder.Features.SetNameFe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -61,7 +61,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Builder.Features.SetNameFe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(builderNameFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(builderNameFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -80,7 +80,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Builder.Features.SetNameFe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(builderNamespaceFormatString: "{Error}");
+            var settings = CreateSettingsForBuilder(builderNamespaceFormatString: "{Error}");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -91,7 +91,7 @@ public class SetNameFeatureTests : TestBase<Pipelines.Builder.Features.SetNameFe
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

@@ -5,7 +5,7 @@ public static class TypeBaseExtensions
     public static bool IsMemberValidForBuilderClass(
         this IType parent,
         IParentTypeContainer parentTypeContainer,
-        IPipelineGenerationSettings settings)
+        PipelineSettings settings)
     {
         parentTypeContainer = parentTypeContainer.IsNotNull(nameof(parentTypeContainer));
         settings = settings.IsNotNull(nameof(settings));
@@ -20,32 +20,20 @@ public static class TypeBaseExtensions
         return parentTypeContainer.IsDefinedOn(parent, settings.InheritanceComparisonDelegate);
     }
 
-    public static string GetGenericTypeArgumentConstraintsString(this IType instance)
-        => instance.GenericTypeArgumentConstraints.Count != 0
-            ? string.Concat
-            (
-                Environment.NewLine,
-                "        ",
-                string.Join(string.Concat(Environment.NewLine, "        "), instance.GenericTypeArgumentConstraints)
-            )
-            : string.Empty;
-
     public static Result<string> GetCustomValueForInheritedClass(
         this IType instance,
-        Entity.PipelineBuilderSettings settings,
+        bool enableInheritance,
         Func<IBaseClassContainer, Result<string>> customValue)
     {
-        settings = settings.IsNotNull(nameof(settings));
         customValue = customValue.IsNotNull(nameof(customValue));
 
-        if (!settings.InheritanceSettings.EnableInheritance)
+        if (!enableInheritance)
         {
             // Inheritance is not enabled
             return Result.Success(string.Empty);
         }
 
-        var baseClassContainer = instance as IBaseClassContainer;
-        if (baseClassContainer is null)
+        if (instance is not IBaseClassContainer baseClassContainer)
         {
             // Type cannot have a base class
             return Result.Success(string.Empty);
@@ -66,8 +54,7 @@ public static class TypeBaseExtensions
     {
         context = context.IsNotNull(nameof(context));
 
-        var constructorsContainer = instance as IConstructorsContainer;
-        if (constructorsContainer is null)
+        if (instance is not IConstructorsContainer constructorsContainer)
         {
             throw new ArgumentException("Cannot get immutable builder constructor properties for type that does not have constructors", nameof(context));
         }
@@ -84,13 +71,13 @@ public static class TypeBaseExtensions
             return Enumerable.Empty<Property>();
         }
 
-        if (context.IsBuilderForOverrideEntity && context.Settings.InheritanceSettings.BaseClass is not null)
+        if (context.IsBuilderForOverrideEntity && context.Settings.BaseClass is not null)
         {
             // Try to get property from either the base class c'tor or the class c'tor itself
             return ctor
                 .Parameters
                 .Select(x => instance.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase))
-                    ?? context.Settings.InheritanceSettings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
+                    ?? context.Settings.BaseClass!.Properties.FirstOrDefault(y => y.Name.Equals(x.Name, StringComparison.OrdinalIgnoreCase)))
                 .Where(x => x is not null);
         }
 
@@ -115,16 +102,9 @@ public static class TypeBaseExtensions
 
         foreach (var property in instance.Properties.Where(x =>
             instance.IsMemberValidForBuilderClass(x, context.Context.Settings)
-            && x.HasBackingFieldOnBuilder(context.Context.Settings.EntitySettings.NullCheckSettings.AddNullChecks, context.Context.Settings.TypeSettings.EnableNullableReferenceTypes, context.Context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments)))
+            && x.HasBackingFieldOnBuilder(context.Context.Settings.AddNullChecks, context.Context.Settings.EnableNullableReferenceTypes, context.Context.Settings.OriginalValidateArguments, context.Context.Settings.AddBackingFields)))
         {
-            var builderArgumentTypeResult = formattableStringParser.Parse
-            (
-                property.Metadata
-                    .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                    .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
-                context.Context.FormatProvider,
-                context
-            );
+            var builderArgumentTypeResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), formattableStringParser);
 
             if (!builderArgumentTypeResult.IsSuccessful())
             {
@@ -134,24 +114,23 @@ public static class TypeBaseExtensions
 
             yield return Result.Success(new FieldBuilder()
                 .WithName($"_{property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo())}")
-                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName).FixNullableTypeName(property))
+                .WithTypeName(builderArgumentTypeResult.Value!.FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName).FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType));
         }
     }
 
-    public static IEnumerable<Property> GetPropertiesFromClassAndBaseClass(
-        this IType instance,
-        Builder.PipelineBuilderSettings settings)
-    {
-        settings = settings.IsNotNull(nameof(settings));
+    public static string GetEntityBaseClass(this IType instance, bool enableInheritance, IType? baseClass)
+        => enableInheritance
+        && baseClass is not null
+            ? baseClass.GetFullName()
+            : instance.GetCustomValueForInheritedClass(enableInheritance, cls => Result.Success(cls.BaseClass!)).Value!; // we're always returning Success here, so we can shortcut the validation of the result by getting .Value
 
-        var properties = instance.Properties.AsEnumerable();
-        if (settings.InheritanceSettings.BaseClass is not null)
-        {
-            properties = properties.Concat(settings.InheritanceSettings.BaseClass.Properties);
-        }
-
-        return properties.Where(x => instance.IsMemberValidForBuilderClass(x, settings));
-    }
+    public static string WithoutInterfacePrefix(this IType instance)
+        => instance is Domain.Types.Interface
+            && instance.Name.StartsWith("I")
+            && instance.Name.Length >= 2
+            && instance.Name.Substring(1, 1).Equals(instance.Name.Substring(1, 1).ToUpperInvariant(), StringComparison.Ordinal)
+                ? instance.Name.Substring(1)
+                : instance.Name;
 }

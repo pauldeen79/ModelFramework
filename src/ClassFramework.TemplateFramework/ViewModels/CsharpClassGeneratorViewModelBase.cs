@@ -2,7 +2,14 @@
 
 public abstract class CsharpClassGeneratorViewModelBase : ICsharpClassGeneratorSettingsContainer, IViewModel
 {
-    public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateViewModel method
+    public CsharpClassGeneratorSettings Settings { get; set; } = default!; // will always be injected in CreateModel (root viewmodel) or OnSetContext (child viewmodels) method
+
+    protected CsharpClassGeneratorSettings GetSettings()
+    {
+        Guard.IsNotNull(Settings);
+
+        return Settings;
+    }
 }
 
 public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer
@@ -16,10 +23,16 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
 
     public TModel? Model { get; set; }
     public ICsharpExpressionCreator CsharpExpressionCreator { get; set; }
-    
-    public ITemplateContext Context { get; set; } = default!; // will always be injected in CreateViewModel method
+    public ITemplateContext Context { get; set; } = default!; // will always be injected in OnSetContext method
 
-    public TModel GetModel()
+    protected ITemplateContext GetContext()
+    {
+        Guard.IsNotNull(Context);
+
+        return Context;
+    }
+
+    protected TModel GetModel()
     {
         Guard.IsNotNull(Model);
 
@@ -27,16 +40,8 @@ public abstract class CsharpClassGeneratorViewModelBase<TModel> : CsharpClassGen
     }
 
     protected object? GetParentModel()
-    {
-        Guard.IsNotNull(Context);
-        
-        return Context.ParentContext?.Model;
-    }
+        => GetContext().ParentContext?.Model;
 
     public string CreateIndentation(int additionalIndents = 0)
-    {
-        Guard.IsNotNull(Context);
-
-        return new string(' ', 4 * (Context.GetIndentCount() + additionalIndents));
-    }
+        => new string(' ', 4 * (GetContext().GetIndentCount() + additionalIndents));
 }

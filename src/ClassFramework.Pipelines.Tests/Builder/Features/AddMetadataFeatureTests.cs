@@ -23,7 +23,7 @@ public class AddMetadataFeatureTests : TestBase<Pipelines.Builder.Features.AddMe
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings();
+            var settings = CreateSettingsForBuilder().Build();
             var context = new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
 
             // Act

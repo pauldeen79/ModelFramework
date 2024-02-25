@@ -28,18 +28,14 @@ public class AddFieldsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCont
                 .WithTypeName(f.FieldType.GetTypeName(f))
                 .WithStatic(f.IsStatic)
                 .WithConstant(f.IsLiteral)
-                .WithParentTypeFullName(f.DeclaringType.FullName == "System.Object"
-                    ? string.Empty
-                    : f.DeclaringType.FullName)
+                .WithReadOnly(f.IsInitOnly)
+                .WithParentTypeFullName(f.DeclaringType.GetParentTypeFullName())
                 .WithIsNullable(f.IsNullable())
-                .WithIsValueType(f.FieldType.IsValueType || f.FieldType.IsEnum)
-                .WithVisibility(f.IsPublic
-                    ? Visibility.Public
-                    : Visibility.Private)
-                .AddAttributes(f.GetCustomAttributes(true)
-                    .OfType<System.Attribute>()
-                    .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                             && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                    .Select(x => new AttributeBuilder(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))))
+                .WithIsValueType(f.FieldType.IsValueType())
+                .WithVisibility(f.IsPublic.ToVisibility())
+                .AddAttributes(f.GetCustomAttributes(true).ToAttributes(
+                    x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                    context.Context.Settings.CopyAttributes,
+                    context.Context.Settings.CopyAttributePredicate))
         );
 }

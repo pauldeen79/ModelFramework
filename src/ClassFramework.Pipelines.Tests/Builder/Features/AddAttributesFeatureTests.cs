@@ -22,7 +22,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: true);
+            var settings = CreateSettingsForBuilder(copyAttributes: true);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -46,7 +46,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
                 .Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: true, copyAttributePredicate: x => x.Name == "MyAttribute2");
+            var settings = CreateSettingsForBuilder(copyAttributes: true, copyAttributePredicate: x => x.Name == "MyAttribute2");
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -64,7 +64,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             var sourceModel = new ClassBuilder().WithName("SomeClass").WithNamespace("SomeNamespace").AddAttributes(new AttributeBuilder().WithName("MyAttribute")).Build();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(copyAttributes: false);
+            var settings = CreateSettingsForBuilder(copyAttributes: false);
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -75,7 +75,7 @@ public class AddAttributesFeatureTests : TestBase<Pipelines.Builder.Features.Add
             model.Attributes.Should().BeEmpty();
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(TypeBase sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

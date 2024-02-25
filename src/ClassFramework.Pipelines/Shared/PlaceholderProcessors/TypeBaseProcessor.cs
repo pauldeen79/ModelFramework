@@ -9,23 +9,15 @@ public class TypeBaseProcessor : IPipelinePlaceholderProcessor
             return Result.Continue<string>();
         }
 
-        var name = pipelineContext.Model.Name;
-        var nameNoInterfacePrefix = pipelineContext.Model is Interface && pipelineContext.Model.Name.StartsWith("I")
-            ? name.Substring(1)
-            : name;
-
-        var fullName = pipelineContext.Model.GetFullName();
-        var ns = pipelineContext.Model.Namespace;
-
         return value switch
         {
-            nameof(IType.Name) or $"Class.{nameof(IType.Name)}" => Result.Success(name),
-            $"{nameof(IType.Name)}Lower" or $"Class.{nameof(IType.Name)}Lower" => Result.Success(name.ToLower(formatProvider.ToCultureInfo())),
-            $"{nameof(IType.Name)}Upper" or $"Class.{nameof(IType.Name)}Upper" => Result.Success(name.ToUpper(formatProvider.ToCultureInfo())),
-            $"{nameof(IType.Name)}Pascal" or $"Class.{nameof(IType.Name)}Pascal" => Result.Success(name.ToPascalCase(formatProvider.ToCultureInfo())),
-            $"{nameof(IType.Namespace)}" or $"Class.{nameof(IType.Namespace)}" => Result.Success(ns),
-            $"FullName" or "Class.FullName" => Result.Success(fullName),
-            $"{nameof(IType.Name)}NoInterfacePrefix" or $"Class.{nameof(IType.Name)}NoInterfacePrefix" => Result.Success(nameNoInterfacePrefix),
+            nameof(IType.Name) or $"Class.{nameof(IType.Name)}" => Result.Success(pipelineContext.Model.Name),
+            $"{nameof(IType.Name)}Lower" or $"Class.{nameof(IType.Name)}Lower" => Result.Success(pipelineContext.Model.Name.ToLower(formatProvider.ToCultureInfo())),
+            $"{nameof(IType.Name)}Upper" or $"Class.{nameof(IType.Name)}Upper" => Result.Success(pipelineContext.Model.Name.ToUpper(formatProvider.ToCultureInfo())),
+            $"{nameof(IType.Name)}Pascal" or $"Class.{nameof(IType.Name)}Pascal" => Result.Success(pipelineContext.Model.Name.ToPascalCase(formatProvider.ToCultureInfo())),
+            $"{nameof(IType.Namespace)}" or $"Class.{nameof(IType.Namespace)}" => Result.Success(pipelineContext.Model.Namespace),
+            $"FullName" or "Class.FullName" => Result.Success(pipelineContext.Model.GetFullName()),
+            $"{nameof(IType.Name)}NoInterfacePrefix" or $"Class.{nameof(IType.Name)}NoInterfacePrefix" => Result.Success(pipelineContext.Model.WithoutInterfacePrefix()),
             _ => Result.Continue<string>()
         };
     }

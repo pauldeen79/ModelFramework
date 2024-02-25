@@ -23,7 +23,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass:  null,
                 enableEntityInheritance: true);
@@ -45,7 +45,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: true,
@@ -68,7 +68,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: false,
@@ -91,7 +91,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: new ClassBuilder().WithName("BaseClass").BuildTyped(),
                 isAbstract: false,
@@ -115,9 +115,9 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
-                enableEntityInheritance: true).ForAbstractBuilder();
+                enableEntityInheritance: true).WithIsForAbstractBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -136,9 +136,9 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: false,
-                enableEntityInheritance: true).ForAbstractBuilder();
+                enableEntityInheritance: true).WithIsForAbstractBuilder();
             var context = CreateContext(sourceModel, model, settings);
 
             // Act
@@ -157,7 +157,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             InitializeParser();
             var sut = CreateSut();
             var model = new ClassBuilder();
-            var settings = CreateBuilderSettings(
+            var settings = CreateSettingsForBuilder(
                 enableBuilderInheritance: true,
                 baseClass: null,
                 enableEntityInheritance: true,
@@ -172,7 +172,7 @@ public class BaseClassFeatureTests : TestBase<Pipelines.Builder.Features.BaseCla
             result.ErrorMessage.Should().Be("Kaboom");
         }
 
-        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, Pipelines.Builder.PipelineBuilderSettings settings)
-            => new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings, CultureInfo.InvariantCulture));
+        private static PipelineContext<IConcreteTypeBuilder, BuilderContext> CreateContext(IConcreteType sourceModel, ClassBuilder model, PipelineSettingsBuilder settings)
+            => new PipelineContext<IConcreteTypeBuilder, BuilderContext>(model, new BuilderContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
     }
 }

@@ -32,7 +32,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
             return Result.FromExistingResult<IConcreteTypeBuilder>(baseClassResult);
         }
 
-        context.Model.WithBaseClass(baseClassResult.Value);
+        context.Model.WithBaseClass(baseClassResult.Value!);
 
         return Result.Continue<IConcreteTypeBuilder>();
     }
@@ -44,18 +44,18 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
     {
         var genericTypeArgumentsString = instance.GetGenericTypeArgumentsString();
 
-        var isNotForAbstractBuilder = context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
-            && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
-            && context.Context.Settings.InheritanceSettings.BaseClass is null
+        var isNotForAbstractBuilder = context.Context.Settings.EnableInheritance
+            && context.Context.Settings.EnableBuilderInheritance
+            && context.Context.Settings.BaseClass is null
             && !context.Context.Settings.IsForAbstractBuilder;
 
-        var isAbstract = context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
-            && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
-            && context.Context.Settings.InheritanceSettings.BaseClass is not null
+        var isAbstract = context.Context.Settings.EnableInheritance
+            && context.Context.Settings.EnableBuilderInheritance
+            && context.Context.Settings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder
-            && context.Context.Settings.InheritanceSettings.IsAbstract;
+            && context.Context.Settings.IsAbstract;
 
-        var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context);
+        var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
         if (!nameResult.IsSuccessful())
         {
             return nameResult;
@@ -66,32 +66,28 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
             return Result.Success($"{nameResult.Value}{genericTypeArgumentsString}");
         }
 
-        if (context.Context.Settings.EntitySettings.InheritanceSettings.EnableInheritance
-            && context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
-            && context.Context.Settings.InheritanceSettings.BaseClass is not null
+        if (context.Context.Settings.EnableInheritance
+            && context.Context.Settings.EnableBuilderInheritance
+            && context.Context.Settings.BaseClass is not null
             && !context.Context.Settings.IsForAbstractBuilder) // note that originally, this was only enabled when RemoveDuplicateWithMethods was true. But I don't know why you don't want this... The generics ensure that we don't have to duplicate them, right?
         {
-            var ns = string.IsNullOrEmpty(context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace)
-                ? string.Empty
-                : $"{context.Context.Settings.InheritanceSettings.BaseClassBuilderNameSpace}.";
-
             var inheritanceNameResult = _formattableStringParser.Parse
             (
-                context.Context.Settings.NameSettings.BuilderNameFormatString,
+                context.Context.Settings.BuilderNameFormatString,
                 context.Context.FormatProvider,
-                new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.InheritanceSettings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))
+                new PipelineContext<IConcreteTypeBuilder, BuilderContext>(context.Model, new BuilderContext(context.Context.Settings.BaseClass!, context.Context.Settings, context.Context.FormatProvider))
             );
             if (!inheritanceNameResult.IsSuccessful())
             {
                 return inheritanceNameResult;
             }
 
-            return Result.Success($"{ns}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
+            return Result.Success($"{context.Context.Settings.BaseClassBuilderNameSpace.AppendWhenNotNullOrEmpty(".")}{inheritanceNameResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
         }
 
         return instance.GetCustomValueForInheritedClass
         (
-            context.Context.Settings.EntitySettings,
+            context.Context.Settings.EnableInheritance,
             baseClassContainer =>
             {
                 var baseClassResult = GetBaseClassName(context, baseClassContainer);
@@ -100,7 +96,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
                     return baseClassResult;
                 }
 
-                return Result.Success(context.Context.Settings.InheritanceSettings.EnableBuilderInheritance
+                return Result.Success(context.Context.Settings.EnableBuilderInheritance
                     ? $"{baseClassResult.Value}{genericTypeArgumentsString}"
                     : $"{baseClassResult.Value}<{nameResult.Value}{genericTypeArgumentsString}, {instance.GetFullName()}{genericTypeArgumentsString}>");
                 }
@@ -115,7 +111,7 @@ public class BaseClassFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderCo
             new BuilderContext(CreateTypeBase(context.Context.MapTypeName(baseClassContainer.BaseClass!)), context.Context.Settings, context.Context.FormatProvider)
         );
 
-        return _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, newContext);
+        return _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, newContext);
     }
 
     private static TypeBase CreateTypeBase(string baseClass)

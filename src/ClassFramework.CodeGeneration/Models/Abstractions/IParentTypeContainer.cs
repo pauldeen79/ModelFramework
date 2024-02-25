@@ -2,5 +2,5 @@
 
 internal interface IParentTypeContainer
 {
-    string? ParentTypeFullName { get; }
+    [Required(AllowEmptyStrings = true)] string ParentTypeFullName { get; }
 }

@@ -9,7 +9,7 @@ public class AbstractBuilders : ClassFrameworkCSharpClassBase
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
     
-    // Do nog generate 'With' methods. Do this on the interfaces instead.
+    // Do not generate 'With' methods. Do this on the interfaces instead.
     protected override string SetMethodNameFormatString => string.Empty;
     protected override string AddMethodNameFormatString => string.Empty;
 
@@ -17,5 +17,10 @@ public class AbstractBuilders : ClassFrameworkCSharpClassBase
         => GetImmutableBuilderClasses(
             GetAbstractModels(),
             Constants.Namespaces.Domain,
-            Constants.Namespaces.DomainBuilders);
+            Constants.Namespaces.DomainBuilders)
+        .OfType<ModelFramework.Objects.Contracts.IClass>()
+        .Select(x => new ModelFramework.Objects.Builders.ClassBuilder(x)
+            .Chain(y => y.Methods.RemoveAll(z => IsInterfacedMethod(z.Name, y)))
+            .Build()
+        ).ToArray();
 }

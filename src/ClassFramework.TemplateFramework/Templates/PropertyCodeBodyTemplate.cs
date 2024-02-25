@@ -7,11 +7,6 @@ public class PropertyCodeBodyTemplate : CsharpClassGeneratorBase<PropertyCodeBod
         Guard.IsNotNull(Model);
         Guard.IsNotNull(builder);
 
-        if (!Model.IsAvailable)
-        {
-            return;
-        }
-
         builder.Append(Model.CreateIndentation(2));
         builder.Append(Model.Modifiers);
         builder.Append(Model.Verb);

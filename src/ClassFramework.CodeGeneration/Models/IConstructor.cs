@@ -2,5 +2,5 @@
 
 internal interface IConstructor : IMetadataContainer, IExtendedVisibilityContainer, IAttributesContainer, ICodeStatementsContainer, IParametersContainer
 {
-    string? ChainCall { get; }
+    [Required(AllowEmptyStrings = true)] string ChainCall { get; }
 }

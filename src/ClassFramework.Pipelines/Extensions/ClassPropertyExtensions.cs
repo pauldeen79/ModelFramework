@@ -30,11 +30,11 @@ public static class PropertyExtensions
         return $" ?? throw new {typeof(ArgumentNullException).FullName}(nameof({name}))";
     }
 
-    public static string GetBuilderMemberName(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, CultureInfo cultureInfo)
+    public static string GetBuilderMemberName(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, bool addBackingFields, CultureInfo cultureInfo)
     {
         cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
 
-        if (property.HasBackingFieldOnBuilder(addNullChecks, enableNullableReferenceTypes, argumentValidation))
+        if (property.HasBackingFieldOnBuilder(addNullChecks, enableNullableReferenceTypes, argumentValidation, addBackingFields))
         {
             return $"_{property.Name.ToPascalCase(cultureInfo)}";
         }
@@ -46,7 +46,7 @@ public static class PropertyExtensions
     {
         cultureInfo = cultureInfo.IsNotNull(nameof(cultureInfo));
 
-        if (addBackingFields && !property.TypeName.FixTypeName().IsCollectionTypeName())
+        if (addBackingFields)
         {
             return $"_{property.Name.ToPascalCase(cultureInfo)}";
         }
@@ -56,28 +56,29 @@ public static class PropertyExtensions
 
     // For now, only add backing fields for non nullable fields.
     // Nullable fields can simply have auto properties, as null checks are not needed
-    public static bool HasBackingFieldOnBuilder(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation)
-        => addNullChecks
+    public static bool HasBackingFieldOnBuilder(this Property property, bool addNullChecks, bool enableNullableReferenceTypes, ArgumentValidationType argumentValidation, bool addBackingFields)
+        => (addNullChecks
         && !property.IsValueType
         && !property.IsNullable(enableNullableReferenceTypes)
-        && argumentValidation != ArgumentValidationType.Shared;
+        && argumentValidation != ArgumentValidationType.Shared) || addBackingFields;
 
-    public static Result<string> GetBuilderConstructorInitializer<TModel>(
+    public static Result<string> GetBuilderConstructorInitializer(
         this Property property,
-        PipelineContext<TModel, BuilderContext> context,
-        IFormattableStringParser formattableStringParser,
-        string typeName)
+        PipelineSettings settings,
+        IFormatProvider formatProvider,
+        object parentChildContext,
+        string mappedTypeName,
+        string newCollectionTypeName,
+        IFormattableStringParser formattableStringParser)
     {
+        settings = settings.IsNotNull(nameof(settings));
+        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
+        mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
+        newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
-        context = context.IsNotNull(nameof(context));
-        typeName = typeName.IsNotNull(nameof(typeName));
 
-        var builderArgumentTypeResult = formattableStringParser.Parse
-        (
-            property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, context.Context.MapTypeName(typeName)),
-            context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
-        );
+        var builderArgumentTypeResult = GetBuilderArgumentTypeName(property, settings, formatProvider, parentChildContext, mappedTypeName, formattableStringParser);
 
         if (!builderArgumentTypeResult.IsSuccessful())
         {
@@ -85,37 +86,94 @@ public static class PropertyExtensions
         }
 
         return Result.Success(builderArgumentTypeResult.Value!
-            .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+            .FixCollectionTypeName(newCollectionTypeName)
             .GetCollectionInitializeStatement()
             .GetCsharpFriendlyTypeName());
     }
 
-    public static Property EnsureParentTypeFullName(this Property property, Class parentClass)
-        => new PropertyBuilder(property)
-            .WithParentTypeFullName(property.ParentTypeFullName.WhenNullOrEmpty(() => parentClass.IsNotNull(nameof(parentClass)).GetFullName().WithoutGenerics()))
-            .Build();
+    public static Result<string> GetBuilderArgumentTypeName(
+        this Property property,
+        PipelineSettings settings,
+        IFormatProvider formatProvider,
+        object parentChildContext,
+        string mappedTypeName,
+        IFormattableStringParser formattableStringParser)
+    {
+        settings = settings.IsNotNull(nameof(settings));
+        formatProvider = formatProvider.IsNotNull(nameof(formatProvider));
+        parentChildContext = parentChildContext.IsNotNull(nameof(parentChildContext));
+        mappedTypeName = mappedTypeName.IsNotNull(nameof(mappedTypeName));
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        var metadata = property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), settings);
+        var ns = metadata.GetStringValue(MetadataNames.CustomBuilderNamespace);
+
+        if (!string.IsNullOrEmpty(ns))
+        {
+            var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderName, "{TypeName}");
+            var newFullName = $"{ns}.{newTypeName}";
+            if (property.TypeName.IsCollectionTypeName())
+            {
+                var idx = property.TypeName.IndexOf('<');
+                if (idx > -1)
+                {
+                    newFullName = $"{property.TypeName.Substring(0, idx)}<{newFullName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}")}>";
+                }
+            }
+
+            return formattableStringParser.Parse
+            (
+                newFullName,
+                formatProvider,
+                parentChildContext
+            );
+        }
+
+        return formattableStringParser.Parse
+        (
+            metadata.GetStringValue(MetadataNames.CustomBuilderArgumentType, mappedTypeName),
+            formatProvider,
+            parentChildContext
+        );
+    }
+
+    public static Result<string> GetBuilderParentTypeName(this Property property, PipelineContext<IConcreteTypeBuilder, BuilderContext> context, IFormattableStringParser formattableStringParser)
+    {
+        context = context.IsNotNull(nameof(context));
+        formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
+
+        if (string.IsNullOrEmpty(property.ParentTypeFullName))
+        {
+            return Result.Success(property.ParentTypeFullName);
+        }
+
+        var metadata = property.Metadata.WithMappingMetadata(property.ParentTypeFullName.GetCollectionItemType().WhenNullOrEmpty(property.ParentTypeFullName), context.Context.Settings);
+        var ns = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeNamespace);
+
+        if (string.IsNullOrEmpty(ns))
+        {
+            return Result.Success(context.Context.MapTypeName(property.ParentTypeFullName.FixTypeName()));
+        }
+
+        var newTypeName = metadata.GetStringValue(MetadataNames.CustomBuilderParentTypeName, "{ParentTypeName.ClassName}");
+
+        if (property.TypeName.IsCollectionTypeName())
+        {
+            newTypeName = newTypeName.Replace("{TypeName.ClassName}", "{TypeName.GenericArguments.ClassName}");
+        }
+
+        var newFullName = $"{ns}.{newTypeName}";
+
+        return formattableStringParser.Parse
+        (
+            newFullName,
+            context.Context.FormatProvider,
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
+        );
+    }
 
     public static string GetSuffix(this Property source, bool enableNullableReferenceTypes)
-        => !source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType
+        => !source.IsNullable(enableNullableReferenceTypes) && !source.IsValueType && !source.TypeName.IsCollectionTypeName()
             ? "?"
             : string.Empty;
-
-    public static string GetInitializationExpression(this Property property, string collectionTypeName, CultureInfo cultureInfo)
-    {
-        collectionTypeName = collectionTypeName.IsNotNull(nameof(collectionTypeName));
-
-        return property.TypeName.FixTypeName().IsCollectionTypeName()
-            && (collectionTypeName.Length == 0 || collectionTypeName != property.TypeName.WithoutGenerics())
-                ? GetCollectionFormatStringForInitialization(property, cultureInfo, collectionTypeName)
-                : property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName();
-    }
-
-    private static string GetCollectionFormatStringForInitialization(Property property, CultureInfo cultureInfo, string collectionTypeName)
-    {
-        collectionTypeName = collectionTypeName.WhenNullOrEmpty(() => typeof(List<>).WithoutGenerics());
-
-        return property.IsNullable
-            ? $"{property.Name.ToPascalCase(cultureInfo)} is null ? null : new {collectionTypeName}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})"
-            : $"new {collectionTypeName}<{property.TypeName.GetGenericArguments()}>({property.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()})";
-    }
 }

@@ -12,14 +12,7 @@ public class AddAttributesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.EntitySettings.CopySettings.CopyAttributes)
-        {
-            return Result.Continue<IConcreteTypeBuilder>();
-        }
-
-        context.Model.AddAttributes(context.Context.SourceModel.Attributes
-            .Where(x => context.Context.Settings.EntitySettings.CopySettings.CopyAttributePredicate?.Invoke(x) ?? true)
-            .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))));
+        context.Model.AddAttributes(context.Context.GetAtributes(context.Context.SourceModel.Attributes));
 
         return Result.Continue<IConcreteTypeBuilder>();
     }

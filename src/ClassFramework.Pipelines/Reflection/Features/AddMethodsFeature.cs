@@ -22,40 +22,40 @@ public class AddMethodsFeature : IPipelineFeature<TypeBaseBuilder, ReflectionCon
 
     private static IEnumerable<MethodBuilder> GetMethods(PipelineContext<TypeBaseBuilder, ReflectionContext> context)
         => context.Context.SourceModel.GetMethodsRecursively()
-            .Where(m => m.Name != "<Clone>$" && !m.Name.StartsWith("get_") && !m.Name.StartsWith("set_") && m.Name != "GetType")
+            .Where(m =>
+                m.Name != "<Clone>$"
+                && !m.Name.StartsWith("get_")
+                && !m.Name.StartsWith("set_")
+                && m.DeclaringType != typeof(object)
+                && m.DeclaringType == context.Context.SourceModel)
             .Select
             (
                 m => new MethodBuilder()
                     .WithName(m.Name)
-                    .WithTypeName(m.ReturnType.GetTypeName(m))
-                    .WithVisibility(m.IsPublic
-                        ? Visibility.Public
-                        : Visibility.Private)
+                    .WithReturnTypeName(m.ReturnType.GetTypeName(m))
+                    .WithVisibility(m.IsPublic.ToVisibility())
                     .WithStatic(m.IsStatic)
                     .WithVirtual(m.IsVirtual)
                     .WithAbstract(m.IsAbstract)
-                    .WithParentTypeFullName(m.DeclaringType.FullName == "System.Object"
-                        ? string.Empty
-                        : m.DeclaringType.FullName)
-                    .WithIsNullable(m.ReturnTypeIsNullable())
-                    .WithIsValueType(m.ReturnType.IsValueType || m.ReturnType.IsEnum)
+                    .WithParentTypeFullName(m.DeclaringType.GetParentTypeFullName())
+                    .WithReturnTypeIsNullable(m.ReturnTypeIsNullable())
+                    .WithReturnTypeIsValueType(m.ReturnType.IsValueType())
                     .AddParameters(m.GetParameters().Select
                     (
                         p => new ParameterBuilder()
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.GetTypeName(m))
                             .WithIsNullable(p.IsNullable())
-                            .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
-                            .AddAttributes(p.GetCustomAttributes(true)
-                                .OfType<System.Attribute>()
-                                .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                            && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                                .Select(x => new AttributeBuilder(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))))
+                            .WithIsValueType(p.ParameterType.IsValueType())
+                            .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
+                                x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                                context.Context.Settings.CopyAttributes,
+                                context.Context.Settings.CopyAttributePredicate))
+
                     ))
-                    .AddAttributes(m.GetCustomAttributes(true)
-                        .OfType<System.Attribute>()
-                        .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                    && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                        .Select(x => new AttributeBuilder(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))))
+                    .AddAttributes(m.GetCustomAttributes(true).ToAttributes(
+                        x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                        context.Context.Settings.CopyAttributes,
+                        context.Context.Settings.CopyAttributePredicate))
             );
 }

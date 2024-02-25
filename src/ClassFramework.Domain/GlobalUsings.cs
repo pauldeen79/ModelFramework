@@ -8,6 +8,7 @@ global using System.Text.RegularExpressions;
 global using ClassFramework.Domain.Abstractions;
 global using ClassFramework.Domain.Builders.Abstractions;
 global using ClassFramework.Domain.Builders.CodeStatements;
+global using ClassFramework.Domain.Builders.Extensions;
 global using ClassFramework.Domain.Domains;
 global using ClassFramework.Domain.Extensions;
 global using CrossCutting.Common;

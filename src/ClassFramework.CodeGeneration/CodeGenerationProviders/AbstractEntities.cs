@@ -9,7 +9,8 @@ public class AbstractEntities : ClassFrameworkCSharpClassBase
     protected override bool EnableBuilderInhericance => true;
     protected override bool IsAbstract => true;
 
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
+    protected override ModelFramework.Objects.Settings.ArgumentValidationType ValidateArgumentsInConstructor => ModelFramework.Objects.Settings.ArgumentValidationType.None; // not needed for abstract entities, because each derived class will do its own validation
+    protected override bool AddNullChecks => false; // not needed for abstract entities, because each derived class will do its own validation
 
     public override object CreateModel()
         => GetImmutableClasses(GetAbstractModels(), Constants.Namespaces.Domain)

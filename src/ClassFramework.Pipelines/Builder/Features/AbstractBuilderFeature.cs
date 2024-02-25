@@ -26,25 +26,29 @@ public class AbstractBuilderFeature : IPipelineFeature<IConcreteTypeBuilder, Bui
     {
         context = context.IsNotNull(nameof(context));
 
-        if (context.Context.IsBuilderForAbstractEntity)
+        if (context.Context.IsBuilderForAbstractEntity /*&& context.Context.IsAbstractBuilder*/)
         {
-            var nameResult = _formattableStringParser.Parse(context.Context.Settings.NameSettings.BuilderNameFormatString, context.Context.FormatProvider, context);
+            var nameResult = _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, context);
             if (!nameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<IConcreteTypeBuilder>(nameResult);
             }
 
-            var classBuilder = context.Model as ClassBuilder;
-            if (classBuilder is null)
+            if (context.Model is not ClassBuilder classBuilder)
             {
                 return Result.Invalid<IConcreteTypeBuilder>($"You can only create abstract classes. The type of model ({context.Model.GetType().FullName}) is not a ClassBuilder");
             }
 
-            classBuilder
-                .AddGenericTypeArguments("TBuilder", "TEntity")
-                .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
-                .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
-                .WithAbstract();
+            classBuilder.WithAbstract();
+
+            if (!context.Context.Settings.IsForAbstractBuilder)
+            {
+                classBuilder
+                    .AddGenericTypeArguments("TBuilder", "TEntity")
+                    .AddGenericTypeArgumentConstraints($"where TEntity : {context.Context.SourceModel.GetFullName()}")
+                    .AddGenericTypeArgumentConstraints($"where TBuilder : {nameResult.Value}<TBuilder, TEntity>")
+                    .WithAbstract();
+            }
         }
 
         return Result.Continue<IConcreteTypeBuilder>();

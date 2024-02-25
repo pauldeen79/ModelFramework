@@ -12,9 +12,8 @@ public static class PipelineContextExtensions
             return formattableStringParser.Parse(customEntityInstanciation, context.Context.FormatProvider, context);
         }
 
-        var constructorsContainer = context.Context.SourceModel as IConstructorsContainer;
 
-        if (constructorsContainer is null)
+        if (context.Context.SourceModel is not IConstructorsContainer constructorsContainer)
         {
             return Result.Invalid<string>("Cannot create an instance of a type that does not have constructors");
         }
@@ -29,16 +28,13 @@ public static class PipelineContextExtensions
         var closeSign = GetBuilderPocoCloseSign(hasPublicParameterlessConstructor && context.Context.SourceModel.Properties.Count != 0);
 
         var parametersResult = GetConstructionMethodParameters(context, formattableStringParser, hasPublicParameterlessConstructor);
-
         if (!parametersResult.IsSuccessful())
         {
             return parametersResult;
         }
 
-        var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName()), context.Context.Settings.TypeSettings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
-        var ns = string.IsNullOrEmpty(entityNamespace)
-            ? string.Empty
-            : $"{context.Context.MapNamespace(entityNamespace)}.";
+        var entityNamespace = context.Context.SourceModel.Metadata.WithMappingMetadata(context.Context.SourceModel.GetFullName().GetCollectionItemType().WhenNullOrEmpty(context.Context.SourceModel.GetFullName), context.Context.Settings).GetStringValue(MetadataNames.CustomEntityNamespace, () => context.Context.SourceModel.Namespace);
+        var ns = context.Context.MapNamespace(entityNamespace).AppendWhenNotNullOrEmpty(".");
 
         return Result.Success($"new {ns}{context.Context.SourceModel.Name}{classNameSuffix}{context.Context.SourceModel.GetGenericTypeArgumentsString()}{openSign}{parametersResult.Value}{closeSign}");
     }
@@ -52,38 +48,18 @@ public static class PipelineContextExtensions
             return $"base({CreateImmutableClassCtorParameterNames(context)})";
         }
 
-        return context.Context.Settings.InheritanceSettings.EnableInheritance && context.Context.Settings.InheritanceSettings.BaseClass is not null
-            ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.InheritanceSettings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
-            : context.Context.SourceModel.GetCustomValueForInheritedClass(context.Context.Settings,
+        return context.Context.Settings.EnableInheritance && context.Context.Settings.BaseClass is not null
+            ? $"base({GetPropertyNamesConcatenated(context.Context.Settings.BaseClass.Properties, context.Context.FormatProvider.ToCultureInfo())})"
+            : context.Context.SourceModel.GetCustomValueForInheritedClass(context.Context.Settings.EnableInheritance,
             cls => Result.Success($"base({GetPropertyNamesConcatenated(context.Context.SourceModel.Properties.Where(x => x.ParentTypeFullName == cls.BaseClass), context.Context.FormatProvider.ToCultureInfo())})")).Value!; // we can simply shortcut the result evaluation, because we are injecting the Success in the delegate
     }
 
-    public static IEnumerable<ParameterBuilder> CreateImmutableClassCtorParameters<TModel>(
-        this PipelineContext<TModel, EntityContext> context)
-        => context.Context.SourceModel.Properties
-            .Select
-            (
-                property => new ParameterBuilder()
-                    .WithName(property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()))
-                    .WithTypeName
-                    (
-                        context.Context.MapTypeName
-                        (
-                            property.Metadata
-                                .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                                .GetStringValue(MetadataNames.CustomImmutableArgumentType, () => property.TypeName)
-                        ).FixCollectionTypeName(context.Context.Settings.ConstructorSettings.CollectionTypeName.WhenNullOrEmpty(typeof(IEnumerable<>).WithoutGenerics()))
-                    )
-                    .WithIsNullable(property.IsNullable)
-                    .WithIsValueType(property.IsValueType)
-            );
-    
     private static string GetPropertyNamesConcatenated(IEnumerable<Property> properties, CultureInfo cultureInfo)
         => string.Join(", ", properties.Select(x => x.Name.ToPascalCase(cultureInfo).GetCsharpFriendlyName()));
 
     private static string CreateImmutableClassCtorParameterNames<TModel>(
         PipelineContext<TModel, EntityContext> context)
-        => string.Join(", ", context.CreateImmutableClassCtorParameters().Select(x => x.Name.GetCsharpFriendlyName()));
+        => string.Join(", ", context.Context.SourceModel.Properties.CreateImmutableClassCtorParameters(context.Context.FormatProvider, context.Context.Settings, context.Context.MapTypeName).Select(x => x.Name.GetCsharpFriendlyName()));
 
     private static Result<string> GetConstructionMethodParameters<TModel>(PipelineContext<TModel, BuilderContext> context, IFormattableStringParser formattableStringParser, bool hasPublicParameterlessConstructor)
     {
@@ -98,12 +74,21 @@ public static class PipelineContextExtensions
                 Result = formattableStringParser.Parse
                 (
                     property.Metadata
-                        .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                        .GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
+                        .WithMappingMetadata
+                        (
+                            property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName),
+                            context.Context.Settings
+                        ).GetStringValue(MetadataNames.CustomBuilderMethodParameterExpression, "[Name]"),
                     context.Context.FormatProvider,
                     new ParentChildContext<PipelineContext<TModel, BuilderContext>, Property>(context, property, context.Context.Settings)
                 ),
-                Suffix = property.GetSuffix(context.Context.Settings.TypeSettings.EnableNullableReferenceTypes)
+                CollectionInitializer = property.Metadata
+                    .WithMappingMetadata
+                    (
+                        property.TypeName.FixTypeName().WithoutProcessedGenerics(), // i.e. List<> etc.
+                        context.Context.Settings
+                    ).GetStringValue(MetadataNames.CustomCollectionInitialization, () => "[Expression]"),
+                Suffix = property.GetSuffix(context.Context.Settings.EnableNullableReferenceTypes)
             }
         ).TakeWhileWithFirstNonMatching(x => x.Result.IsSuccessful()).ToArray();
 
@@ -114,11 +99,11 @@ public static class PipelineContextExtensions
         }
 
         return Result.Success(string.Join(", ", results.Select(x => hasPublicParameterlessConstructor
-            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix)}"
-            : GetBuilderPropertyExpression(x.Result.Value, x.Source, x.Suffix))));
+            ? $"{x.Name} = {GetBuilderPropertyExpression(x.Result.Value, x.Source, x.CollectionInitializer, x.Suffix)}"
+            : GetBuilderPropertyExpression(x.Result.Value, x.Source, x.CollectionInitializer, x.Suffix))));
     }
 
-    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string suffix)
+    private static string? GetBuilderPropertyExpression(this string? value, Property sourceProperty, string collectionInitializer, string suffix)
     {
         if (value is null || !value.Contains("[Name]"))
         {
@@ -130,10 +115,21 @@ public static class PipelineContextExtensions
             return sourceProperty.Name;
         }
 
-        return sourceProperty.TypeName.FixTypeName().IsCollectionTypeName()
-            ? $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})"
-            : value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
+        if (sourceProperty.TypeName.FixTypeName().IsCollectionTypeName())
+        {
+            return GetCollectionBuilderPropertyExpression(value, sourceProperty, collectionInitializer, suffix);
+        }
+        else
+        {
+            return value!.Replace("[Name]", sourceProperty.Name).Replace("[NullableSuffix]", suffix);
+        }
     }
+
+    private static string GetCollectionBuilderPropertyExpression(string? value, Property sourceProperty, string collectionInitializer, string suffix)
+        => collectionInitializer
+            .Replace("[Type]", sourceProperty.TypeName.FixTypeName().WithoutProcessedGenerics())
+            .Replace("[Generics]", sourceProperty.TypeName.FixTypeName().GetGenericArguments())
+            .Replace("[Expression]", $"{sourceProperty.Name}{suffix}.Select(x => {value!.Replace("[Name]", "x").Replace("[NullableSuffix]", string.Empty)})");
 
     private static string GetBuilderPocoCloseSign(bool poco)
         => poco

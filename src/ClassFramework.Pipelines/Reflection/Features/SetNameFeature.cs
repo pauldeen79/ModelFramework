@@ -26,22 +26,21 @@ public class SetNameFeature : IPipelineFeature<TypeBaseBuilder, ReflectionContex
     {
         context = context.IsNotNull(nameof(context));
 
-        var results = new[]
-        {
-            new { Name = "Name", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NameFormatString, context.Context.FormatProvider, context)) },
-            new { Name = "Namespace", LazyResult = new Lazy<Result<string>>(() => _formattableStringParser.Parse(context.Context.Settings.NameSettings.NamespaceFormatString, context.Context.FormatProvider, context)) }
-        }.TakeWhileWithFirstNonMatching(x => x.LazyResult.Value.IsSuccessful()).ToArray();
+        var resultSetBuilder = new NamedResultSetBuilder<string>();
+        resultSetBuilder.Add("Name", () => _formattableStringParser.Parse(context.Context.Settings.NameFormatString, context.Context.FormatProvider, context));
+        resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.NamespaceFormatString, context.Context.FormatProvider, context));
+        var results = resultSetBuilder.Build();
 
-        var error = Array.Find(results, x => !x.LazyResult.Value.IsSuccessful());
+        var error = Array.Find(results, x => !x.Result.IsSuccessful());
         if (error is not null)
         {
             // Error in formattable string parsing
-            return Result.FromExistingResult<TypeBaseBuilder>(error.LazyResult.Value);
+            return Result.FromExistingResult<TypeBaseBuilder>(error.Result);
         }
 
         context.Model
-            .WithName(results.First(x => x.Name == "Name").LazyResult.Value.Value!)
-            .WithNamespace(results.First(x => x.Name == "Namespace").LazyResult.Value.Value!);
+            .WithName(results.First(x => x.Name == "Name").Result.Value!)
+            .WithNamespace(context.Context.MapNamespace(results.First(x => x.Name == "Namespace").Result.Value!));
 
         return Result.Continue<TypeBaseBuilder>();
     }

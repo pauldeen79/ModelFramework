@@ -4,7 +4,7 @@
 public class TemplateFrameworkEntities : ClassFrameworkCSharpClassBase
 {
     public override string Path => Constants.Paths.TemplateFramework;
-    protected override ArgumentValidationType ValidateArgumentsInConstructor => ArgumentValidationType.DomainOnly;
+    protected override ModelFramework.Objects.Settings.ArgumentValidationType ValidateArgumentsInConstructor => ModelFramework.Objects.Settings.ArgumentValidationType.DomainOnly;
 
     public override object CreateModel()
         => GetImmutableClasses(GetTemplateFrameworkModels(), Constants.Namespaces.TemplateFramework)

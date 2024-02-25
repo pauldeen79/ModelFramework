@@ -2,19 +2,20 @@
 
 public static class StringExtensions
 {
-    public static string MapTypeName(this string typeName, IPipelineBuilderTypeSettings pipelineBuilderTypeSettings)
+    public static string MapTypeName(this string typeName, PipelineSettings settings, string newCollectionTypeName)
     {
-        pipelineBuilderTypeSettings = pipelineBuilderTypeSettings.IsNotNull(nameof(pipelineBuilderTypeSettings));
+        settings = settings.IsNotNull(nameof(settings));
+        newCollectionTypeName = newCollectionTypeName.IsNotNull(nameof(newCollectionTypeName));
 
         if (typeName.IsCollectionTypeName())
         {
             // i.e. IEnumerable<TSource> => IEnumerable<TTarget> (including collection typename mapping, when available)
             return typeName
-                .FixCollectionTypeName(pipelineBuilderTypeSettings.NewCollectionTypeName) // note that this always converts to a generic type :)
-                .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), pipelineBuilderTypeSettings)); // so we can safely use ReplaceGenericTypeName here
+                .FixCollectionTypeName(newCollectionTypeName) // note that this always converts to a generic type :)
+                .ReplaceGenericTypeName(MapTypeName(typeName.GetCollectionItemType(), settings, newCollectionTypeName)); // so we can safely use ReplaceGenericTypeName here
         }
 
-        var typeNameMapping = pipelineBuilderTypeSettings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
+        var typeNameMapping = settings.TypenameMappings.FirstOrDefault(x => x.SourceTypeName == typeName);
         if (typeNameMapping is not null)
         {
             // i.e. TSource => TTarget
@@ -25,7 +26,7 @@ public static class StringExtensions
         if (!string.IsNullOrEmpty(ns))
         {
             // i.e. SourceNamespace.T => TargetNamespace.T
-            var namespaceMapping = pipelineBuilderTypeSettings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
             if (namespaceMapping is not null)
             {
                 return $"{namespaceMapping.TargetNamespace}.{typeName.GetClassName()}";
@@ -35,14 +36,14 @@ public static class StringExtensions
         return typeName;
     }
 
-    public static string MapNamespace(this string? ns, IPipelineBuilderTypeSettings pipelineBuilderTypeSettings)
+    public static string MapNamespace(this string? ns, PipelineSettings settings)
     {
-        pipelineBuilderTypeSettings = pipelineBuilderTypeSettings.IsNotNull(nameof(pipelineBuilderTypeSettings));
+        settings = settings.IsNotNull(nameof(settings));
 
         if (!string.IsNullOrEmpty(ns))
         {
             // i.e. SourceNamespace.T => TargetNamespace.T
-            var namespaceMapping = pipelineBuilderTypeSettings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
+            var namespaceMapping = settings.NamespaceMappings.FirstOrDefault(x => x.SourceNamespace == ns);
             if (namespaceMapping is not null)
             {
                 return namespaceMapping.TargetNamespace;
@@ -62,5 +63,15 @@ public static class StringExtensions
         }
 
         return typeName;
+    }
+
+    public static string AppendWhenNotNullOrEmpty(this string? instance, string valueToAppend)
+    {
+        if (string.IsNullOrEmpty(instance))
+        {
+            return string.Empty;
+        }
+
+        return string.Concat(instance!, valueToAppend);
     }
 }

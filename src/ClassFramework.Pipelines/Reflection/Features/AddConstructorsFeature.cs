@@ -12,8 +12,8 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
     {
         context = context.IsNotNull(nameof(context));
 
-        if (!context.Context.Settings.GenerationSettings.CreateConstructors
-            || context.Context.SourceModel is not IConstructorsContainerBuilder constructorsContainerBuilder)
+        if (!context.Context.Settings.CreateConstructors
+            || context.Model is not IConstructorsContainerBuilder constructorsContainerBuilder)
         {
             return Result.Continue<TypeBaseBuilder>();
         }
@@ -38,14 +38,16 @@ public class AddConstructorsFeature : IPipelineFeature<TypeBaseBuilder, Reflecti
                             .WithName(p.Name)
                             .WithTypeName(p.ParameterType.FullName.FixTypeName())
                             .WithIsNullable(p.IsNullable())
-                            .WithIsValueType(p.ParameterType.IsValueType || p.ParameterType.IsEnum)
-                            .AddAttributes(p.GetCustomAttributes(true)
-                                .OfType<System.Attribute>()
-                                .Where(x => x.GetType().FullName != "System.Runtime.CompilerServices.NullableContextAttribute"
-                                         && x.GetType().FullName != "System.Runtime.CompilerServices.NullableAttribute")
-                                .Select(x => new AttributeBuilder(x.ConvertToDomainAttribute(context.Context.Settings.GenerationSettings.AttributeInitializeDelegate))))
-
+                            .WithIsValueType(p.ParameterType.IsValueType())
+                            .AddAttributes(p.GetCustomAttributes(true).ToAttributes(
+                                x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                                context.Context.Settings.CopyAttributes,
+                                context.Context.Settings.CopyAttributePredicate))
                     )
                 )
+                .AddAttributes(x.GetCustomAttributes(true).ToAttributes(
+                    x => x.ConvertToDomainAttribute(context.Context.Settings.AttributeInitializeDelegate),
+                    context.Context.Settings.CopyAttributes,
+                    context.Context.Settings.CopyAttributePredicate))
         );
 }

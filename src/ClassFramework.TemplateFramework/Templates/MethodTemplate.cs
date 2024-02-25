@@ -6,7 +6,6 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
 
         RenderChildTemplatesByModel(Model.GetAttributeModels(), builder);
 
@@ -32,6 +31,7 @@ public class MethodTemplate : CsharpClassGeneratorBase<MethodViewModel>, IString
         RenderChildTemplatesByModel(Model.GetParameterModels(), builder);
 
         builder.Append(")");
+        builder.Append(Model.GenericTypeArgumentConstraints);
 
         if (Model.OmitCode)
         {

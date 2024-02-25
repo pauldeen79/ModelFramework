@@ -22,10 +22,10 @@ public class AbstractEntityFeatureTests : TestBase<Pipelines.Entity.Features.Abs
             var sourceModel = CreateModel(baseClass: string.Empty);
             var sut = CreateSut();
             var model = new ClassBuilder().WithAbstract(false); // we want to make sure that the component updates the property
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -42,10 +42,10 @@ public class AbstractEntityFeatureTests : TestBase<Pipelines.Entity.Features.Abs
             var sourceModel = CreateModel(baseClass: string.Empty);
             var sut = CreateSut();
             var model = new ClassBuilder().WithAbstract(true); // we want to make sure that the component updates the property
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: false);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);
@@ -62,10 +62,10 @@ public class AbstractEntityFeatureTests : TestBase<Pipelines.Entity.Features.Abs
             var sourceModel = CreateModel(baseClass: string.Empty);
             var sut = CreateSut();
             var model = new StructBuilder(); // no ClassBuilder, so can't set Abstract
-            var settings = CreateEntitySettings(
+            var settings = CreateSettingsForEntity(
                 enableEntityInheritance: true,
                 isAbstract: true);
-            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings, CultureInfo.InvariantCulture));
+            var context = new PipelineContext<IConcreteTypeBuilder, EntityContext>(model, new EntityContext(sourceModel, settings.Build(), CultureInfo.InvariantCulture));
 
             // Act
             var result = sut.Process(context);

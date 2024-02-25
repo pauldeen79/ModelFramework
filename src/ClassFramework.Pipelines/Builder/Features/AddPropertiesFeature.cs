@@ -33,31 +33,27 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
 
         foreach (var property in context.Context.SourceModel.Properties.Where(x => context.Context.SourceModel.IsMemberValidForBuilderClass(x, context.Context.Settings)))
         {
-            var typeNameResult = _formattableStringParser.Parse
-            (
-                property.Metadata
-                    .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings.TypeSettings)
-                    .GetStringValue(MetadataNames.CustomBuilderArgumentType, () => context.Context.MapTypeName(property.TypeName)),
-                context.Context.FormatProvider,
-                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings)
-            );
+            var typeNameResult = property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser);
 
             if (!typeNameResult.IsSuccessful())
             {
                 return Result.FromExistingResult<IConcreteTypeBuilder>(typeNameResult);
             }
 
+            var parentTypeNameResult = property.GetBuilderParentTypeName(context, _formattableStringParser);
+
             context.Model.AddProperties(new PropertyBuilder()
                 .WithName(property.Name)
                 .WithTypeName(typeNameResult.Value!
-                    .FixCollectionTypeName(context.Context.Settings.TypeSettings.NewCollectionTypeName)
+                    .FixCollectionTypeName(context.Context.Settings.BuilderNewCollectionTypeName)
                     .FixNullableTypeName(property))
                 .WithIsNullable(property.IsNullable)
                 .WithIsValueType(property.IsValueType)
+                .WithParentTypeFullName(parentTypeNameResult.Value!)
                 .AddAttributes(property.Attributes
-                    .Where(_ => context.Context.Settings.EntitySettings.CopySettings.CopyAttributes)
-                    .Select(x => new AttributeBuilder(context.Context.MapAttribute(x))))
-                .AddMetadata(property.Metadata.Select(x => new MetadataBuilder(x)))
+                    .Where(_ => context.Context.Settings.CopyAttributes)
+                    .Select(x => context.Context.MapAttribute(x).ToBuilder()))
+                .AddMetadata(property.Metadata.Select(x => x.ToBuilder()))
                 .AddGetterCodeStatements(CreateBuilderPropertyGetterStatements(property, context.Context))
                 .AddSetterCodeStatements(CreateBuilderPropertySetterStatements(property, context.Context))
             );
@@ -75,23 +71,23 @@ public class AddPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, Build
     public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderContext>> ToBuilder()
         => new AddPropertiesFeatureBuilder(_formattableStringParser);
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(
-        Property property,
-        BuilderContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertyGetterStatements(Property property, BuilderContext context)
     {
-        if (context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
+        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields))
         {
             yield return new StringCodeStatementBuilder().WithStatement($"return _{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())};");
         }
     }
 
-    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(
-        Property property,
-        BuilderContext context)
+    private static IEnumerable<CodeStatementBaseBuilder> CreateBuilderPropertySetterStatements(Property property, BuilderContext context)
     {
-        if (context.Settings.EntitySettings.NullCheckSettings.AddNullChecks && context.Settings.EntitySettings.ConstructorSettings.OriginalValidateArguments != ArgumentValidationType.Shared && !property.IsNullable(context.Settings.TypeSettings.EnableNullableReferenceTypes))
+        if (property.HasBackingFieldOnBuilder(context.Settings.AddNullChecks, context.Settings.EnableNullableReferenceTypes, context.Settings.OriginalValidateArguments, context.Settings.AddBackingFields))
         {
-            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.EntitySettings.NullCheckSettings.AddNullChecks)};");
+            yield return new StringCodeStatementBuilder().WithStatement($"_{property.Name.ToPascalCase(context.FormatProvider.ToCultureInfo())} = value{property.GetNullCheckSuffix("value", context.Settings.AddNullChecks)};");
+            if (context.Settings.CreateAsObservable)
+            {
+                yield return new StringCodeStatementBuilder().WithStatement($"HandlePropertyChanged(nameof({property.Name}));");
+            }
         }
     }
 }

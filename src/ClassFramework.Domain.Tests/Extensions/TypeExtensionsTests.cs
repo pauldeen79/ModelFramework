@@ -92,4 +92,145 @@ public class TypeExtensionsTests
         public int? MyProperty2 { get; }
         public Tuple<TypeExtensionsTests, Lazy<TypeExtensionsTests>> MyProperty3 { get; } = null!;
     }
+
+    public class IsRecord
+    {
+        [Fact]
+        public void Returns_False_On_Class()
+        {
+            // Arrange
+            var sut = typeof(MyClass);
+
+            // Act
+            var result = sut.IsRecord();
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Returns_False_On_Struct()
+        {
+            // Arrange
+            var sut = typeof(MyStruct);
+
+            // Act
+            var result = sut.IsRecord();
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Returns_False_On_Interface()
+        {
+            // Arrange
+            var sut = typeof(IMyInterface);
+
+            // Act
+            var result = sut.IsRecord();
+
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Returns_True_On_Record()
+        {
+            // Arrange
+            var sut = typeof(MyRecord);
+
+            // Act
+            var result = sut.IsRecord();
+
+            // Assert
+            result.Should().BeTrue();
+        }
+
+#pragma warning disable S1144 // Unused private types or members should be removed
+#pragma warning disable S2094 // Classes should not be empty
+#pragma warning disable CA1812
+        private sealed class MyClass { }
+        private struct MyStruct { }
+        private interface IMyInterface { }
+        private sealed record MyRecord { }
+#pragma warning restore CA1812
+#pragma warning restore S2094 // Classes should not be empty
+#pragma warning restore S1144 // Unused private types or members should be removed
+    }
+
+    public class GetFullName
+    {
+        [Fact]
+        public void Returns_Full_Name_When_Namespace_Is_Present()
+        {
+            // Arrange
+            var sut = new Class
+            (
+                "MyNamespace",
+                default,
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Field>(),
+                Enumerable.Empty<Property>(),
+                Enumerable.Empty<Method>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Metadata>(),
+                default,
+                "MyClass",
+                Enumerable.Empty<Attribute>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                default,
+                default,
+                default,
+                Enumerable.Empty<Constructor>(),
+                default,
+                string.Empty,
+                Enumerable.Empty<Enumeration>(),
+                Enumerable.Empty<TypeBase>()
+            );
+
+            // Act
+            var result = sut.GetFullName();
+
+            // Assert
+            result.Should().Be("MyNamespace.MyClass");
+        }
+
+        [Fact]
+        public void Returns_Name_When_Namespace_Is_Not_Present()
+        {
+            // Arrange
+            var sut = new Class
+            (
+                string.Empty,
+                default,
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Field>(),
+                Enumerable.Empty<Property>(),
+                Enumerable.Empty<Method>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<Metadata>(),
+                default,
+                "MyClass",
+                Enumerable.Empty<Attribute>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                default,
+                default,
+                default,
+                Enumerable.Empty<Constructor>(),
+                default,
+                string.Empty,
+                Enumerable.Empty<Enumeration>(),
+                Enumerable.Empty<TypeBase>()
+            );
+
+            // Act
+            var result = sut.GetFullName();
+
+            // Assert
+            result.Should().Be("MyClass");
+        }
+    }
 }
