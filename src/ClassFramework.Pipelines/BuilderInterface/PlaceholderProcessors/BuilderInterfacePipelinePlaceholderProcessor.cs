@@ -22,6 +22,11 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
 
         if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property> parentChildContext)
         {
+            if (value == "InstancePrefix")
+            {
+                return Result.Success("instance.");
+            }
+
             return parentChildContext.ParentContext.Context.GetBuilderPlaceholderProcessorResultForParentChildContext(value, formatProvider, formattableStringParser, parentChildContext.ParentContext.Context, parentChildContext.ChildContext, parentChildContext.ParentContext.Context.SourceModel, _pipelinePlaceholderProcessors);
         }
 
