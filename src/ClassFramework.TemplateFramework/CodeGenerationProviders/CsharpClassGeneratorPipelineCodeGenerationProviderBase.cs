@@ -379,7 +379,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
         // From models to domain entities
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models").WithTargetNamespace(CoreNamespace);
         yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Domains").WithTargetNamespace($"{CoreNamespace}.Domains");
-        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace("{CoreNamespace}.Abstractions");
+        yield return new NamespaceMappingBuilder().WithSourceNamespace($"{CodeGenerationRootNamespace}.Models.Abstractions").WithTargetNamespace($"{CoreNamespace}.Abstractions");
 
         // From domain entities to builders
         yield return new NamespaceMappingBuilder().WithSourceNamespace(CoreNamespace).WithTargetNamespace(CoreNamespace);
