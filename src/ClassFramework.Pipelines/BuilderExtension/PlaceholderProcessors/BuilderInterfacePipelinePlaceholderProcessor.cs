@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.BuilderInterface.PlaceholderProcessors;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.PlaceholderProcessors;
 
 public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcessor
 {
@@ -15,12 +15,12 @@ public class BuilderInterfacePipelinePlaceholderProcessor : IPlaceholderProcesso
     {
         formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
 
-        if (context is PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> pipelineContext)
+        if (context is PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> pipelineContext)
         {
             return pipelineContext.Context.GetBuilderPlaceholderProcessorResultForPipelineContext(value, formatProvider, formattableStringParser, pipelineContext.Context, pipelineContext.Context.SourceModel,  _pipelinePlaceholderProcessors);
         }
 
-        if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property> parentChildContext)
+        if (context is ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property> parentChildContext)
         {
             if (value == "InstancePrefix")
             {

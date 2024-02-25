@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.BuilderInterface.Features;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
 public class SetNameFeatureBuilder : IBuilderInterfaceFeatureBuilder
 {
@@ -9,11 +9,11 @@ public class SetNameFeatureBuilder : IBuilderInterfaceFeatureBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build()
         => new SetNameFeature(_formattableStringParser);
 }
 
-public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>
+public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInte
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -45,6 +45,6 @@ public class SetNameFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInte
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>> ToBuilder()
         => new SetNameFeatureBuilder(_formattableStringParser);
 }

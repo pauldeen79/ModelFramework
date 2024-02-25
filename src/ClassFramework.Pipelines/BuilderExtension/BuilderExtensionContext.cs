@@ -1,8 +1,8 @@
-﻿namespace ClassFramework.Pipelines.BuilderInterface;
+﻿namespace ClassFramework.Pipelines.BuilderExtension;
 
-public class BuilderInterfaceContext : ContextBase<IType>
+public class BuilderExtensionContext : ContextBase<IType>
 {
-    public BuilderInterfaceContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
+    public BuilderExtensionContext(IType sourceModel, PipelineSettings settings, IFormatProvider formatProvider)
         : base(sourceModel, settings, formatProvider)
     {
     }

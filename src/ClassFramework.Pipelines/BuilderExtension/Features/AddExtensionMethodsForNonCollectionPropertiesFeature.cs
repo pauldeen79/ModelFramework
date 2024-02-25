@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.BuilderInterface.Features;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
 public class AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder : IBuilderInterfaceFeatureBuilder
 {
@@ -9,11 +9,11 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder : IBuil
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build()
         => new AddExtensionMethodsForNonCollectionPropertiesFeature(_formattableStringParser);
 }
 
-public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>
+public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -33,10 +33,10 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
 
         foreach (var property in context.Context.GetSourceProperties().Where(x => !x.TypeName.FixTypeName().IsCollectionTypeName()))
         {
-            var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings);
+            var parentChildContext = new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings);
 
             var resultSetBuilder = new NamedResultSetBuilder<string>();
-            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
+            resultSetBuilder.Add("TypeName", () => property.GetBuilderArgumentTypeName(context.Context.Settings, context.Context.FormatProvider, new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings), context.Context.MapTypeName(property.TypeName), _formattableStringParser));
             resultSetBuilder.Add("Namespace", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNamespaceFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.Add("MethodName", () => _formattableStringParser.Parse(context.Context.Settings.SetMethodNameFormatString, context.Context.FormatProvider, parentChildContext));
             resultSetBuilder.Add("BuilderName", () => _formattableStringParser.Parse(context.Context.Settings.BuilderNameFormatString, context.Context.FormatProvider, parentChildContext));
@@ -94,9 +94,9 @@ public class AddExtensionMethodsForNonCollectionPropertiesFeature : IPipelineFea
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context, Property property)
+    private static IEnumerable<Metadata> GetMetadata(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, Property property)
         => property.Metadata.WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings);
 
-    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>> ToBuilder()
         => new AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder(_formattableStringParser);
 }

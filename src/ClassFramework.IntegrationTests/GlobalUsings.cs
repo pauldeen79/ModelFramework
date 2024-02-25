@@ -14,7 +14,7 @@ global using ClassFramework.IntegrationTests.CodeGenerationProviders;
 global using ClassFramework.IntegrationTests.Models;
 global using ClassFramework.IntegrationTests.Models.Domains;
 global using ClassFramework.Pipelines.Builder;
-global using ClassFramework.Pipelines.BuilderInterface;
+global using ClassFramework.Pipelines.BuilderExtension;
 global using ClassFramework.Pipelines.Entity;
 global using ClassFramework.Pipelines.Extensions;
 global using ClassFramework.Pipelines.Interface;

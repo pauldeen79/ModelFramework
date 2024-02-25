@@ -1,4 +1,4 @@
-﻿namespace ClassFramework.Pipelines.BuilderInterface.Features;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
 public class AddExtensionMethodsForCollectionPropertiesFeatureBuilder : IBuilderInterfaceFeatureBuilder
 {
@@ -9,11 +9,11 @@ public class AddExtensionMethodsForCollectionPropertiesFeatureBuilder : IBuilder
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext> Build()
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build()
         => new AddExtensionMethodsForCollectionPropertiesFeature(_formattableStringParser);
 }
 
-public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>
+public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>
 {
     private readonly IFormattableStringParser _formattableStringParser;
 
@@ -22,7 +22,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
         _formattableStringParser = formattableStringParser.IsNotNull(nameof(formattableStringParser));
     }
 
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -98,17 +98,17 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>> ToBuilder()
         => new AddExtensionMethodsForCollectionPropertiesFeatureBuilder(_formattableStringParser);
 
-    private IEnumerable<Result<string>> GetCodeStatementsForEnumerableOverload(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context, Property property)
+    private IEnumerable<Result<string>> GetCodeStatementsForEnumerableOverload(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, Property property)
     {
         yield return Result.Success(context.Context.Settings.AddNullChecks
             ? $"return instance.Add{property.Name}<T>({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}?.ToArray() ?? throw new {typeof(ArgumentNullException).FullName}(nameof({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()})));"
             : $"return instance.Add{property.Name}<T>({property.Name.ToPascalCase(context.Context.FormatProvider.ToCultureInfo()).GetCsharpFriendlyName()}.ToArray());");
     }
 
-    private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context, Property property)
+    private IEnumerable<Result<string>> GetCodeStatementsForArrayOverload(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, Property property)
     {
         if (context.Context.Settings.AddNullChecks)
         {
@@ -116,7 +116,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
             (
                 property.Metadata.GetStringValue(MetadataNames.CustomBuilderArgumentNullCheckExpression, "{NullCheck.Argument}"),
                 context.Context.FormatProvider,
-                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings)
+                new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings)
             );
             yield return argumentNullCheckResult;
 
@@ -140,7 +140,7 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
                 .WithMappingMetadata(property.TypeName.GetCollectionItemType().WhenNullOrEmpty(property.TypeName), context.Context.Settings)
                 .GetStringValue(MetadataNames.CustomBuilderAddExpression, context.Context.Settings.CollectionCopyStatementFormatString),
             context.Context.FormatProvider,
-            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property>(context, property, context.Context.Settings)
+            new ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property>(context, property, context.Context.Settings)
         );
 
         yield return builderAddExpressionResult;
@@ -148,6 +148,6 @@ public class AddExtensionMethodsForCollectionPropertiesFeature : IPipelineFeatur
         yield return Result.Success("return instance;");
     }
 
-    private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context, Property property)
+    private static ParentChildContext<PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext>, Property> CreateParentChildContext(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context, Property property)
         => new(context, property, context.Context.Settings);
 }

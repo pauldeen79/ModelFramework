@@ -1,13 +1,13 @@
-﻿namespace ClassFramework.Pipelines.BuilderInterface.Features;
+﻿namespace ClassFramework.Pipelines.BuilderExtension.Features;
 
 public class ValidationFeatureBuilder : IBuilderInterfaceFeatureBuilder
 {
-    public IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext> Build() => new ValidationFeature();
+    public IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext> Build() => new ValidationFeature();
 }
 
-public class ValidationFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>
+public class ValidationFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>
 {
-    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderInterfaceContext> context)
+    public Result<IConcreteTypeBuilder> Process(PipelineContext<IConcreteTypeBuilder, BuilderExtensionContext> context)
     {
         context = context.IsNotNull(nameof(context));
 
@@ -21,6 +21,6 @@ public class ValidationFeature : IPipelineFeature<IConcreteTypeBuilder, BuilderI
         return Result.Continue<IConcreteTypeBuilder>();
     }
 
-    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderInterfaceContext>> ToBuilder()
+    public IBuilder<IPipelineFeature<IConcreteTypeBuilder, BuilderExtensionContext>> ToBuilder()
         => new ValidationFeatureBuilder();
 }

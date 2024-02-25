@@ -43,14 +43,14 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddBuilderInterfacePipeline(this IServiceCollection services)
         => services
-            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderInterfaceContext>>().Build())
-            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderInterfaceContext>, BuilderInterface.PipelineBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.AddMetadataFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.SetNameFeatureBuilder>()
-            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderInterface.Features.SetStaticFeatureBuilder>();
+            .AddScoped(services => services.GetRequiredService<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>>().Build())
+            .AddScoped<IPipelineBuilder<IConcreteTypeBuilder, BuilderExtensionContext>, BuilderExtension.PipelineBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.ValidationFeatureBuilder>() // important to register this one first, because validation should be performed first
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.AddExtensionMethodsForNonCollectionPropertiesFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.AddMetadataFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.SetNameFeatureBuilder>()
+            .AddScoped<IBuilderInterfaceFeatureBuilder, BuilderExtension.Features.SetStaticFeatureBuilder>();
 
     private static IServiceCollection AddEntityPipeline(this IServiceCollection services)
         => services

@@ -5,21 +5,21 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     protected CsharpClassGeneratorPipelineCodeGenerationProviderBase(
         ICsharpExpressionCreator csharpExpressionCreator,
         IPipeline<IConcreteTypeBuilder, BuilderContext> builderPipeline,
-        IPipeline<IConcreteTypeBuilder, BuilderInterfaceContext> builderInterfacePipeline,
+        IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> builderExtensionPipeline,
         IPipeline<IConcreteTypeBuilder, EntityContext> entityPipeline,
         IPipeline<IConcreteTypeBuilder, OverrideEntityContext> overrideEntityPipeline,
         IPipeline<TypeBaseBuilder, ReflectionContext> reflectionPipeline,
         IPipeline<InterfaceBuilder, InterfaceContext> interfacePipeline) : base(csharpExpressionCreator)
     {
         Guard.IsNotNull(builderPipeline);
-        Guard.IsNotNull(builderInterfacePipeline);
+        Guard.IsNotNull(builderExtensionPipeline);
         Guard.IsNotNull(entityPipeline);
         Guard.IsNotNull(overrideEntityPipeline);
         Guard.IsNotNull(reflectionPipeline);
         Guard.IsNotNull(interfacePipeline);
 
         _builderPipeline = builderPipeline;
-        _builderInterfacePipeline = builderInterfacePipeline;
+        _builderExtensionPipeline = builderExtensionPipeline;
         _entityPipeline = entityPipeline;
         _overrideEntityPipeline = overrideEntityPipeline;
         _reflectionPipeline = reflectionPipeline;
@@ -27,7 +27,7 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     }
 
     private readonly IPipeline<IConcreteTypeBuilder, BuilderContext> _builderPipeline;
-    private readonly IPipeline<IConcreteTypeBuilder, BuilderInterfaceContext> _builderInterfacePipeline;
+    private readonly IPipeline<IConcreteTypeBuilder, BuilderExtensionContext> _builderExtensionPipeline;
     private readonly IPipeline<IConcreteTypeBuilder, EntityContext> _entityPipeline;
     private readonly IPipeline<IConcreteTypeBuilder, OverrideEntityContext> _overrideEntityPipeline;
     private readonly IPipeline<TypeBaseBuilder, ReflectionContext> _reflectionPipeline;
@@ -510,8 +510,8 @@ public abstract class CsharpClassGeneratorPipelineCodeGenerationProviderBase : C
     private TypeBase CreateBuilderExtensionsClass(TypeBase typeBase, string buildersNamespace, string entitiesNamespace)
     {
         var builder = new ClassBuilder();
-        _ = _builderInterfacePipeline
-            .Process(builder, new BuilderInterfaceContext(typeBase, CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
+        _ = _builderExtensionPipeline
+            .Process(builder, new BuilderExtensionContext(typeBase, CreateBuilderInterfacePipelineSettings(buildersNamespace, entitiesNamespace), CultureInfo.InvariantCulture))
             .GetValueOrThrow();
 
         return builder.Build();
