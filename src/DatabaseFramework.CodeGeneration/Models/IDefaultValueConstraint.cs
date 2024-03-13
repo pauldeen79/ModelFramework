@@ -3,5 +3,5 @@
 internal interface IDefaultValueConstraint : INameContainer, IMetadataContainer
 {
     [Required] string FieldName { get; }
-    [Required(AllowEmptyStrings = true)] string DefaultValue { get; }
+    [Required] string DefaultValue { get; }
 }
