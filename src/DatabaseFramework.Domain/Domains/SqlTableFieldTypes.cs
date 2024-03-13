@@ -1,4 +1,4 @@
-﻿namespace DatabaseFramework.CodeGeneration.Models.Domains;
+﻿namespace DatabaseFramework.Domain.Domains;
 
 public static class SqlTableFieldTypes
 {

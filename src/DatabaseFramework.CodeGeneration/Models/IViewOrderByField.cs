@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface IViewOrderByField : IViewField
+internal interface IViewOrderByField : Abstractions.IViewField
 {
     bool IsDescending { get; }
 }
