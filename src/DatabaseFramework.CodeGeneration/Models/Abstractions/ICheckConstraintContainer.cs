@@ -1,4 +1,4 @@
-﻿namespace DatabaseFramework.CodeGeneration.Models;
+﻿namespace DatabaseFramework.CodeGeneration.Models.Abstractions;
 
 internal interface ICheckConstraintContainer
 {

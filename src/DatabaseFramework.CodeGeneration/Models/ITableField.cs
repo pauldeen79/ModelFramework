@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface ITableField : INameContainer, IMetadataContainer, ICheckConstraintContainer
+internal interface ITableField : Abstractions.INameContainer, Abstractions.IMetadataContainer, ICheckConstraintContainer
 {
     [Required] string Type { get; }
     bool IsIdentity { get; }

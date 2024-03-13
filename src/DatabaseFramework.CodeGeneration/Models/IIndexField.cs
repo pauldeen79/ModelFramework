@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface IIndexField : INameContainer, IMetadataContainer
+internal interface IIndexField : Abstractions.INameContainer, Abstractions.IMetadataContainer
 {
     bool IsDescending { get; }
 }

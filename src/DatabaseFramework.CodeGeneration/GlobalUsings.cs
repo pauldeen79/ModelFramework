@@ -22,6 +22,7 @@ global using CrossCutting.Utilities.Parsers.Extensions;
 global using CsharpExpressionDumper.Abstractions;
 global using CsharpExpressionDumper.Core.Extensions;
 global using DatabaseFramework.CodeGeneration.CodeGenerationProviders;
+global using DatabaseFramework.CodeGeneration.Models.Abstractions;
 global using DatabaseFramework.CodeGeneration.Models.Domains;
 global using Microsoft.Extensions.DependencyInjection;
 global using TemplateFramework.Abstractions.CodeGeneration;
