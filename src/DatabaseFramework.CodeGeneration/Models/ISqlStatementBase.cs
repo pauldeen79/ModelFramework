@@ -1,5 +1,5 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface ISqlStatementBase : Abstractions.IMetadataContainer
+internal interface ISqlStatementBase : IMetadataContainer
 {
 }

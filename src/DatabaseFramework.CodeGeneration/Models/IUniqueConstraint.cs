@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface IUniqueConstraint : Abstractions.INameContainer, Abstractions.IMetadataContainer, IFileGroupNameContainer
+internal interface IUniqueConstraint : INameContainer, IMetadataContainer, IFileGroupNameContainer
 {
     [Required] IReadOnlyCollection<IUniqueConstraintField> Fields { get; }
 }

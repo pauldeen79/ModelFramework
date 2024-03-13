@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface ICheckConstraint : Abstractions.INameContainer, Abstractions.IMetadataContainer
+internal interface ICheckConstraint : INameContainer, IMetadataContainer
 {
     [Required] string Expression { get; }
 }

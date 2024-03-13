@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface IStoredProcedure : Abstractions.INameContainer, Abstractions.IMetadataContainer
+internal interface IStoredProcedure : INameContainer, IMetadataContainer
 {
     [Required] IReadOnlyCollection<ISqlStatementBase> Statements { get; }
     [Required] IReadOnlyCollection<IStoredProcedureParameter> Parameters { get; }
