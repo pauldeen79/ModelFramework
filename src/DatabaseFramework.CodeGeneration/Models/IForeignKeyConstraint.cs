@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface IForeignKeyConstraint : INameContainer, IMetadataContainer
+internal interface IForeignKeyConstraint : INameContainer, IMetadataContainer
 {
     [Required] IReadOnlyCollection<IForeignKeyConstraintField> LocalFields { get; }
     [Required] IReadOnlyCollection<IForeignKeyConstraintField> ForeignFields { get; }

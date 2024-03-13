@@ -1,5 +1,5 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface IForeignKeyConstraintField : INameContainer, IMetadataContainer
+internal interface IForeignKeyConstraintField : INameContainer, IMetadataContainer
 {
 }

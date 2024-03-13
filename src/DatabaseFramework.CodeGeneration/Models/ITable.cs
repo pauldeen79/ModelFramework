@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface ITable : INameContainer, IMetadataContainer, IFileGroupNameContainer, ICheckConstraintContainer
+internal interface ITable : INameContainer, IMetadataContainer, IFileGroupNameContainer, ICheckConstraintContainer
 {
     [Required] IReadOnlyCollection<IPrimaryKeyConstraint> PrimaryKeyConstraints { get; }
     [Required] IReadOnlyCollection<IUniqueConstraint> UniqueConstraints { get; }

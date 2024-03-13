@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface IPrimaryKeyConstraintField : INameContainer, IMetadataContainer
+internal interface IPrimaryKeyConstraintField : INameContainer, IMetadataContainer
 {
     bool IsDescending { get; }
 }

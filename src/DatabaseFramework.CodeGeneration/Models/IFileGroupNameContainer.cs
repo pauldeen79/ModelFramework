@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface IFileGroupNameContainer
+internal interface IFileGroupNameContainer
 {
     [Required] string FileGroupName { get; }
 }

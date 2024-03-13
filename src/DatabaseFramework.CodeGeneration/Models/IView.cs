@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface IView : INameContainer, IMetadataContainer
+internal interface IView : INameContainer, IMetadataContainer
 {
     [Required] IReadOnlyCollection<IViewField> SelectFields { get; }
     [Required] IReadOnlyCollection<IViewOrderByField> OrderByFields { get; }

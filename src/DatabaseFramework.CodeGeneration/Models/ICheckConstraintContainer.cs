@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface ICheckConstraintContainer
+internal interface ICheckConstraintContainer
 {
     [Required] IReadOnlyCollection<ICheckConstraint> CheckConstraints { get; }
 }

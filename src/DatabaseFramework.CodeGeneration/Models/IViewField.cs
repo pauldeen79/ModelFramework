@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-public interface IViewField : INameContainer, IMetadataContainer
+internal interface IViewField : INameContainer, IMetadataContainer
 {
     [Required(AllowEmptyStrings = true)] string SourceSchemaName { get; }
     [Required(AllowEmptyStrings = true)] string SourceObjectName { get; } // when empty, use Name
