@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="pauldeen79.ClassFramework.Pipelines" Version="0.5.1" />
+    <PackageReference Include="pauldeen79.TemplateFramework.Core" Version="0.9.0" />
+    <PackageReference Include="pauldeen79.TemplateFramework.TemplateProviders.ChildTemplateProvider" Version="0.9.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DatabaseFramework.Domain\DatabaseFramework.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

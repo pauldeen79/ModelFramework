@@ -36,7 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelFramework.CodeGenerati
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseFramework.CodeGeneration", "src\DatabaseFramework.CodeGeneration\DatabaseFramework.CodeGeneration.csproj", "{7A9DEC1D-02D3-482D-8852-FEAEDF8D857B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseFramework.Domain", "src\DatabaseFramework.Domain\DatabaseFramework.Domain.csproj", "{1E0F8C67-AD15-4393-B280-D673B702094E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseFramework.Domain", "src\DatabaseFramework.Domain\DatabaseFramework.Domain.csproj", "{1E0F8C67-AD15-4393-B280-D673B702094E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseFramework.TemplateFramework", "src\DatabaseFramework.TemplateFramework\DatabaseFramework.TemplateFramework.csproj", "{BD8ACB49-CF23-40AE-A605-FEB7EDB585D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +106,10 @@ Global
 		{1E0F8C67-AD15-4393-B280-D673B702094E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E0F8C67-AD15-4393-B280-D673B702094E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E0F8C67-AD15-4393-B280-D673B702094E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD8ACB49-CF23-40AE-A605-FEB7EDB585D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD8ACB49-CF23-40AE-A605-FEB7EDB585D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD8ACB49-CF23-40AE-A605-FEB7EDB585D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD8ACB49-CF23-40AE-A605-FEB7EDB585D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
