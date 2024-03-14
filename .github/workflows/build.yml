@@ -31,6 +31,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Restore
         run: dotnet restore ModelFramework.sln
+      - name: Run code generation
+        run: dotnet run --project src/DatabaseFramework.CodeGeneration/DatabaseFramework.CodeGeneration.csproj --no-restore
       - name: Build
         run: dotnet build ModelFramework.sln -c Release --no-restore
       - name: Test
