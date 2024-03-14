@@ -16,7 +16,6 @@ public abstract class DatabaseFrameworkCSharpClassBase : CsharpClassGeneratorPip
     protected override Type BuilderCollectionType => typeof(ObservableCollection<>);
 
     protected override string ProjectName => "DatabaseFramework";
-    protected override string CodeGenerationRootNamespace => "DatabaseFramework.CodeGeneration";
     protected override string CoreNamespace => "DatabaseFramework.Domain";
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
