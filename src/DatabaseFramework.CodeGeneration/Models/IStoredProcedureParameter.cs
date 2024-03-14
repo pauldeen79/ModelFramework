@@ -1,7 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface IStoredProcedureParameter : INameContainer, IMetadataContainer
+internal interface IStoredProcedureParameter : INonViewField
 {
-    [Required] string Type { get; }
     [Required(AllowEmptyStrings = true)] string DefaultValue { get; }
 }
