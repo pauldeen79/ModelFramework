@@ -7,5 +7,5 @@ internal interface ITable : INameContainer, IMetadataContainer, IFileGroupNameCo
     [Required] IReadOnlyCollection<IDefaultValueConstraint> DefaultValueConstraints { get; }
     [Required] IReadOnlyCollection<IForeignKeyConstraint> ForeignKeyConstraints { get; }
     [Required] IReadOnlyCollection<IIndex> Indexes { get; }
-    [Required] IReadOnlyCollection<ITableField> Fields { get; }
+    [Required][MinCount(1)] IReadOnlyCollection<ITableField> Fields { get; }
 }
