@@ -2,5 +2,5 @@
 
 internal interface IUniqueConstraint : INameContainer, IMetadataContainer, IFileGroupNameContainer
 {
-    [Required] IReadOnlyCollection<IUniqueConstraintField> Fields { get; }
+    [Required][MinCount(1)] IReadOnlyCollection<IUniqueConstraintField> Fields { get; }
 }

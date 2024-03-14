@@ -2,5 +2,5 @@
 
 internal interface IPrimaryKeyConstraint : INameContainer, IMetadataContainer, IFileGroupNameContainer
 {
-    [Required] IReadOnlyCollection<IPrimaryKeyConstraintField> Fields { get; }
+    [Required][MinCount(1)] IReadOnlyCollection<IPrimaryKeyConstraintField> Fields { get; }
 }

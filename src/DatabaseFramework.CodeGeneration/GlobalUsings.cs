@@ -17,6 +17,7 @@ global using ClassFramework.Pipelines.Reflection;
 global using ClassFramework.TemplateFramework.CodeGenerationProviders;
 global using ClassFramework.TemplateFramework.Extensions;
 global using CrossCutting.Common;
+global using CrossCutting.Common.DataAnnotations;
 global using CrossCutting.ProcessingPipeline;
 global using CrossCutting.Utilities.Parsers.Extensions;
 global using CsharpExpressionDumper.Abstractions;
