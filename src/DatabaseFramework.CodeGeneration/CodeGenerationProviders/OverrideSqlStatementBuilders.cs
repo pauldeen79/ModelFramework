@@ -7,7 +7,7 @@ public class OverrideSqlStatementBuilders : DatabaseFrameworkCSharpClassBase
     {
     }
 
-    public override string Path => "DatabaseFramework.Domain/Builders/CodeStatements";
+    public override string Path => "DatabaseFramework.Domain/Builders/SqlStatements";
 
     protected override bool EnableEntityInheritance => true;
     protected override bool CreateAsObservable => true;
