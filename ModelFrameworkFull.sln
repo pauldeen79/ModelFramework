@@ -40,7 +40,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseFramework.Domain", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseFramework.TemplateFramework", "src\DatabaseFramework.TemplateFramework\DatabaseFramework.TemplateFramework.csproj", "{BD8ACB49-CF23-40AE-A605-FEB7EDB585D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseFramework.Domain.Tests", "src\DatabaseFramework.Domain.Tests\DatabaseFramework.Domain.Tests.csproj", "{953231D4-575D-403A-811C-E7A1CF946339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DatabaseFramework.Domain.Tests", "src\DatabaseFramework.Domain.Tests\DatabaseFramework.Domain.Tests.csproj", "{953231D4-575D-403A-811C-E7A1CF946339}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseFramework.TemplateFramework.Tests", "src\DatabaseFramework.TemplateFramework.Tests\DatabaseFramework.TemplateFramework.Tests.csproj", "{73CA4020-DF6E-411E-BA65-E5529F28320A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +118,10 @@ Global
 		{953231D4-575D-403A-811C-E7A1CF946339}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{953231D4-575D-403A-811C-E7A1CF946339}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{953231D4-575D-403A-811C-E7A1CF946339}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73CA4020-DF6E-411E-BA65-E5529F28320A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73CA4020-DF6E-411E-BA65-E5529F28320A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73CA4020-DF6E-411E-BA65-E5529F28320A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73CA4020-DF6E-411E-BA65-E5529F28320A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
