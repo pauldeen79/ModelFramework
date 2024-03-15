@@ -2,15 +2,15 @@
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddClassFrameworkTemplates(this IServiceCollection services)
+    public static IServiceCollection AddDatabaseFrameworkTemplates(this IServiceCollection services)
         => services
             // Add support for viewmodels in TemplateFramework
             .AddSingleton<ITemplateParameterConverter>(x => new ViewModelTemplateParameterConverter(() => x.GetServices<IViewModel>()))
 
-            //.AddTransient<CsharpClassGenerator>()
+            .AddTransient<DatabaseSchemaGenerator>()
             //.AddTransient<IViewModel, AttributeViewModel>()
             //...
-            //.AddChildTemplate<AttributeTemplate>(typeof(Domain.Attribute))
+            .AddChildTemplate<TableTemplate>(typeof(Table))
             //...
             ;
 }
