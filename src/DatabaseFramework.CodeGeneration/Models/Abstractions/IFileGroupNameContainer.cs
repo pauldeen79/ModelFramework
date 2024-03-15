@@ -2,5 +2,5 @@
 
 internal interface IFileGroupNameContainer
 {
-    [Required] string FileGroupName { get; }
+    [Required(AllowEmptyStrings = true)] string FileGroupName { get; }
 }
