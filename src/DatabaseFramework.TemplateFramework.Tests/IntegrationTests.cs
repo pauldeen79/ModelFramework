@@ -19,19 +19,6 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TestCodeGenerationProvider>()
             //.AddScoped<ImmutableCoreBuilders>()
-            //.AddScoped<ImmutableCoreEntities>()
-            //.AddScoped<ImmutablePrivateSettersCoreBuilders>()
-            //.AddScoped<ImmutablePrivateSettersCoreEntities>()
-            //.AddScoped<ImmutableSharedValidationCoreBuilders>()
-            //.AddScoped<ImmutableSharedValidationCoreEntities>()
-            //.AddScoped<ImmutableInheritFromInterfacesCoreBuilders>()
-            //.AddScoped<ImmutableInheritFromInterfacesCoreEntities>()
-            //.AddScoped<ImmutableInheritFromInterfacesAbstractionsInterfaces>()
-            //.AddScoped<ImmutableInheritFromInterfacesAbstractionsBuilderInterfaces>()
-            //.AddScoped<ImmutableNoToBuilderMethodCoreEntities>()
-            //.AddScoped<ObservableCoreBuilders>()
-            //.AddScoped<ObservableCoreEntities>()
-            //.AddScoped<TemplateFrameworkEntities>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -73,5 +60,14 @@ public sealed class IntegrationTests : TestBase, IDisposable
         public override bool RecurseOnDeleteGeneratedFiles => false;
         public override string LastGeneratedFilesFilename => string.Empty;
         public override Encoding Encoding => Encoding.UTF8;
+
+        public override DatabaseSchemaGeneratorSettings Settings => new DatabaseSchemaGeneratorSettingsBuilder()
+            .WithPath(Path)
+            .WithRecurseOnDeleteGeneratedFiles(RecurseOnDeleteGeneratedFiles)
+            .WithLastGeneratedFilesFilename(LastGeneratedFilesFilename)
+            .WithEncoding(Encoding)
+            .WithCultureInfo(CultureInfo.InvariantCulture)
+            .WithCreateCodeGenerationHeader()
+            .Build();
     }
 }

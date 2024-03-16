@@ -12,11 +12,13 @@ public abstract class DatabaseSchemaGeneratorCodeGenerationProviderBase : ICodeG
     public Type GetGeneratorType() => typeof(DatabaseSchemaGenerator);
 
     public abstract IEnumerable<IDatabaseObject> Model { get; }
+    public abstract DatabaseSchemaGeneratorSettings Settings { get; }
 
     public object? CreateModel()
         => new DatabaseSchemaGeneratorViewModel
         {
-            Model = Model
+            Model = Model,
+            Settings = Settings
             //Context is filled in base class, on the property setter of Context (propagated to Model)
         };
 }

@@ -20,4 +20,7 @@ public abstract class DatabaseFrameworkCSharpClassBase : CsharpClassGeneratorPip
     protected override bool CopyAttributes => true;
     protected override bool CopyInterfaces => true;
     protected override bool CreateRecord => true;
+
+    protected TypeBase[] GetTemplateFrameworkModels()
+        => GetNonCoreModels($"{CodeGenerationRootNamespace}.Models.TemplateFramework");
 }

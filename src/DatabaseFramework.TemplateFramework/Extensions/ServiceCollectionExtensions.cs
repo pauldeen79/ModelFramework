@@ -8,8 +8,14 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITemplateParameterConverter>(x => new ViewModelTemplateParameterConverter(() => x.GetServices<IViewModel>()))
 
             .AddTransient<DatabaseSchemaGenerator>()
-            //.AddTransient<IViewModel, AttributeViewModel>()
+            .AddTransient<IViewModel, CodeGenerationHeaderViewModel>()
+            .AddTransient<IViewModel, NewLineViewModel>()
+            .AddTransient<IViewModel, SpaceAndCommaViewModel>()
+            .AddTransient<IViewModel, TableViewModel>()
             //...
+            .AddChildTemplate<CodeGenerationHeaderTemplate>(typeof(CodeGenerationHeaderModel))
+            .AddChildTemplate<NewLineTemplate>(typeof(NewLineModel))
+            .AddChildTemplate<SpaceAndCommaTemplate>(typeof(SpaceAndCommaModel))
             .AddChildTemplate<TableTemplate>(typeof(Table))
             //...
             ;

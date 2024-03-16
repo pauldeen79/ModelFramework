@@ -1,9 +1,14 @@
 ﻿global using System.Collections;
 global using System.Text;
 global using CommunityToolkit.Diagnostics;
+global using CrossCutting.Common.Extensions;
+global using DatabaseFramework.Database.Extensions;
 global using DatabaseFramework.Domain;
 global using DatabaseFramework.Domain.Abstractions;
+global using DatabaseFramework.Domain.Domains;
 global using DatabaseFramework.TemplateFramework.Abstractions;
+global using DatabaseFramework.TemplateFramework.Extensions;
+global using DatabaseFramework.TemplateFramework.Models;
 global using DatabaseFramework.TemplateFramework.Templates;
 global using DatabaseFramework.TemplateFramework.ViewModels;
 global using Microsoft.Extensions.DependencyInjection;
