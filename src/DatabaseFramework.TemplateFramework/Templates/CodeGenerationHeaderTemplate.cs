@@ -12,6 +12,6 @@ public sealed class CodeGenerationHeaderTemplate : DatabaseSchemaGeneratorBase<C
             return;
         }
 
-        builder.AppendLine($"/****** Object:  {Model.ObjectType} [{Model.Schema.FormatAsDatabaseIdentifier()}].[{Model.Name.FormatAsDatabaseIdentifier()}] ******/");
+        builder.AppendLine($"/****** Object:  {Model.ObjectType} [{Model.Schema}].[{Model.Name}] ******/");
     }
 }

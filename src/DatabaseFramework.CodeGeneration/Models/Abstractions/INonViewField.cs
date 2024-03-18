@@ -7,5 +7,5 @@ internal interface INonViewField : INameContainer, IMetadataContainer
     byte? NumericScale { get; }
     int? StringLength { get; }
     [Required(AllowEmptyStrings = true)] string StringCollation { get; }
-    bool IsStringMaxLength { get; }
+    bool? IsStringMaxLength { get; }
 }

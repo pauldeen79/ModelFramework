@@ -3,13 +3,13 @@
 public class TableViewModel : DatabaseSchemaGeneratorViewModelBase<Table>
 {
     public string Schema
-        => GetModel().Schema;
+        => GetModel().Schema.FormatAsDatabaseIdentifier();
 
     public string Name
-        => GetModel().Name;
+        => GetModel().Name.FormatAsDatabaseIdentifier();
 
     public string FileGroupName
-        => GetModel().FileGroupName;
+        => GetModel().FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier();
 
     public IReadOnlyCollection<TableField> Fields
         => GetModel().Fields;

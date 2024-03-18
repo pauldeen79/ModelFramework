@@ -31,6 +31,9 @@ public sealed class TableTemplate : DatabaseSchemaGeneratorBase<TableViewModel>,
 
     public void Render(StringBuilder builder)
     {
+        Guard.IsNotNull(builder);
+        Guard.IsNotNull(Model);
+
         var generationEnvironment = new StringBuilderEnvironment(builder);
         RenderTable(generationEnvironment);
     }
@@ -45,7 +48,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-CREATE TABLE [{Model.Schema.FormatAsDatabaseIdentifier()}].[{Model.Name.FormatAsDatabaseIdentifier()}](
+CREATE TABLE [{Model.Schema}].[{Model.Name}](
 """);
 
         var fieldsAndPrimaryKeyConstraints = Model.Fields.Cast<IMetadataContainer>()
@@ -56,7 +59,7 @@ CREATE TABLE [{Model.Schema.FormatAsDatabaseIdentifier()}].[{Model.Name.FormatAs
         RenderChildTemplatesByModel(fieldsAndPrimaryKeyConstraints, generationEnvironment);
 
         generationEnvironment.Builder.AppendLine($"""
-) ON [{Model.FileGroupName.WhenNullOrEmpty("PRIMARY").FormatAsDatabaseIdentifier()}]
+) ON [{Model.FileGroupName}]
 GO
 SET ANSI_PADDING OFF
 GO

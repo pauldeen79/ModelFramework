@@ -6,10 +6,10 @@ public class CodeGenerationHeaderViewModel : DatabaseSchemaGeneratorViewModelBas
         => GetModel().CreateCodeGenerationHeader;
 
     public string Name
-        => GetModel().Name;
+        => GetModel().Name.FormatAsDatabaseIdentifier();
 
     public string Schema
-        => GetModel().Schema;
+        => GetModel().Schema.FormatAsDatabaseIdentifier();
 
     public string ObjectType
         => GetModel().ObjectType;

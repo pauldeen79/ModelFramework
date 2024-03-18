@@ -38,7 +38,20 @@ public sealed class IntegrationTests : TestBase, IDisposable
 
         // Assert
         generationEnvironment.Builder.Contents.Should().ContainSingle();
-        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"");
+        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[MyTable] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[MyTable](
+    MyField varchar(32) NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
     }
     public void Dispose()
     {

@@ -12,11 +12,13 @@ public static class ServiceCollectionExtensions
             .AddTransient<IViewModel, NewLineViewModel>()
             .AddTransient<IViewModel, SpaceAndCommaViewModel>()
             .AddTransient<IViewModel, TableViewModel>()
+            .AddTransient<IViewModel, TableFieldViewModel>()
             //...
             .AddChildTemplate<CodeGenerationHeaderTemplate>(typeof(CodeGenerationHeaderModel))
             .AddChildTemplate<NewLineTemplate>(typeof(NewLineModel))
             .AddChildTemplate<SpaceAndCommaTemplate>(typeof(SpaceAndCommaModel))
             .AddChildTemplate<TableTemplate>(typeof(Table))
+            .AddChildTemplate<TableFieldTemplate>(typeof(TableField))
             //...
             ;
 }
