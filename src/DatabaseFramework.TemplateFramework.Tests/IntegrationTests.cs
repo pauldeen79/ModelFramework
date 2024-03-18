@@ -817,9 +817,4 @@ GO
                 .Build()
         ];
     }
-
-    //private sealed class TemplateCodeGenerationProvider : TestCodeGenerationProviderBase
-    //{
-    //    public override IEnumerable<IDatabaseObject> Model => throw new NotImplementedException();
-    //}
 }

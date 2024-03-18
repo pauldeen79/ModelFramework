@@ -2,4 +2,5 @@
 global using DatabaseFramework.Domain.Builders;
 global using DatabaseFramework.Domain.Builders.SqlStatements;
 global using DatabaseFramework.Domain.Domains;
+global using DatabaseFramework.Domain.Validation;
 global using FluentAssertions;
