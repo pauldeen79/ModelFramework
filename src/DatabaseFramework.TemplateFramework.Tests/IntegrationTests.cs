@@ -1,10 +1,12 @@
-﻿
-namespace DatabaseFramework.TemplateFramework.Tests;
+﻿namespace DatabaseFramework.TemplateFramework.Tests;
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
     private readonly ServiceProvider _serviceProvider;
     private readonly IServiceScope _scope;
+
+    private MultipleContentBuilderEnvironment GenerationEnvironment { get; } = new MultipleContentBuilderEnvironment();
+    private CodeGenerationSettings CodeGenerationSettings { get; } = new CodeGenerationSettings(string.Empty, "GeneratedCode.sql", dryRun: true);
 
     public IntegrationTests()
     {
@@ -19,6 +21,19 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
             .AddScoped<TableCodeGenerationProvider>()
+            .AddScoped<TablesCodeGenerationProvider>()
+            .AddScoped<TableWithVarcharAndNumericFieldsCodeGenerationProvider>()
+            .AddScoped<TableWithCheckConstraintsOnFieldLevelCodeGenerationProvider>()
+            .AddScoped<TableWithCheckConstraintsOnTableLevelCodeGenerationProvider>()
+            .AddScoped<TableWithIndexesCodeGenerationProvider>()
+            .AddScoped<TableWithPrimaryKeyConstraintCodeGenerationProvider>()
+            .AddScoped<TableWithUniqueConstraintCodeGenerationProvider>()
+            .AddScoped<TableWithDefaultValueConstraintCodeGenerationProvider>()
+            .AddScoped<StoredProcedureContainingStatementsCodeGenerationProvider>()
+            .AddScoped<TableWithForeignKeyConstraintCodeGenerationProvider>()
+            .AddScoped<TableWithCascadeForeignKeyConstraintCodeGenerationProvider>()
+            .AddScoped<TableWithIdentityFieldCodeGenerationProvider>()
+            .AddScoped<ViewCodeGenerationProvider>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -30,15 +45,13 @@ public sealed class IntegrationTests : TestBase, IDisposable
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
         var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableCodeGenerationProvider>();
-        var generationEnvironment = new MultipleContentBuilderEnvironment();
-        var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.sql", dryRun: true);
 
         // Act
-        engine.Generate(codeGenerationProvider, generationEnvironment, codeGenerationSettings);
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
 
         // Assert
-        generationEnvironment.Builder.Contents.Should().ContainSingle();
-        generationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[MyTable] ******/
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[MyTable] ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -50,6 +63,466 @@ CREATE TABLE [dbo].[MyTable](
 ) ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Tables()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TablesCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field] INT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[Table2] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table2](
+	[Field] INT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[Table3] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table3](
+	[Field] INT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithFields()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithVarcharAndNumericFieldsCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] VARCHAR(32) COLLATE Latin1_General_CI_AS NULL,
+	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithCheckConstraintOnFieldLevel()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithCheckConstraintsOnFieldLevelCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL
+    CONSTRAINT [CHK1]
+    CHECK ([Field1] BETWEEN 1 AND 10),
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithCheckContraintOnTableLevel()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithCheckConstraintsOnTableLevelCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] INT NULL,
+    CONSTRAINT [MyCheckContraint1]
+    CHECK (Field1 > 10),
+    CONSTRAINT [MyCheckContraint2]
+    CHECK (Field2 > 20)
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithIndexes()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithIndexesCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [IX_Index1] ON [dbo].[Table1]
+(
+	[Field1] ASC,
+	[Field2] DESC
+) ON [PRIMARY]
+GO
+CREATE NONCLUSTERED INDEX [IX_Index2] ON [dbo].[Table1]
+(
+	[Field1] ASC,
+	[Field2] DESC
+) ON [PRIMARY]
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithPrimaryKeyConstraint()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithPrimaryKeyConstraintCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL,
+ CONSTRAINT [PK] PRIMARY KEY CLUSTERED
+(
+	[Field1] ASC
+) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithUniqueConstraint()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithUniqueConstraintCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL,
+ CONSTRAINT [UC] UNIQUE NONCLUSTERED
+(
+	[Field1]
+) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithDefaultValueConstraint()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithDefaultValueConstraintCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+ALTER TABLE [Table1] ADD CONSTRAINT [DVC] DEFAULT (2) FOR [Field1]
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_StoredProcedureContainingStatements()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<StoredProcedureContainingStatementsCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[usp_Test]
+	@Param1 int,
+	@Param2 int = 5
+AS
+BEGIN
+    --statement 1 goes here
+    --statement 2 goes here
+END
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithForeignKeyConstraint()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithForeignKeyConstraintCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+ALTER TABLE [dbo].[Table1]  WITH CHECK ADD  CONSTRAINT [FK] FOREIGN KEY([LocalField1],[LocalField2])
+REFERENCES [dbo].[ForeignTable] ([RemoteField1],[RemoteField2])
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
+GO
+ALTER TABLE [dbo].[Table1] CHECK CONSTRAINT [FK]
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithCascadeForeignKeyConstraint()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithCascadeForeignKeyConstraintCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT NULL,
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+ALTER TABLE [dbo].[Table1]  WITH CHECK ADD  CONSTRAINT [FK] FOREIGN KEY([LocalField1],[LocalField2])
+REFERENCES [dbo].[ForeignTable] ([RemoteField1],[RemoteField2])
+ON UPDATE CASCADE
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Table1] CHECK CONSTRAINT [FK]
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_TableWithIdentityField()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableWithIdentityFieldCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Table1](
+	[Field1] INT IDENTITY(1, 1) NULL,
+	[Field2] VARCHAR(32) NULL,
+	[Field3] NUMERIC(8,2) NOT NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+    }
+
+    [Fact]
+    public void Can_Generate_Code_For_Views()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<ViewCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().ContainSingle();
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[View1]
+AS
+SELECT
+    [Field1],
+    [Field2]
+FROM
+    [Table1]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[View2]
+AS
+SELECT TOP 50 PERCENT
+    [Field2] AS [Alias2]
+FROM
+    [Table1],
+    [Table2]
+WHERE
+    table1.Field1 = 'Value 1'
+    AND table1.Field1 = 'Value 2'
+GROUP BY
+    [Field1],
+    [Field2]
+ORDER BY
+    [table1.Field1] DESC,
+    [table1.Field2] ASC
 GO
 ");
     }
@@ -87,4 +560,256 @@ GO
                 .Build()
         ];
     }
+
+    private sealed class TablesCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlFieldType.Int)).Build(),
+            new TableBuilder().WithName("Table2").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlFieldType.Int)).Build(),
+            new TableBuilder().WithName("Table3").AddFields(new TableFieldBuilder().WithName("Field").WithType(SqlFieldType.Int)).Build()
+        ];
+    }
+
+    private sealed class TableWithVarcharAndNumericFieldsCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32).WithStringCollation("Latin1_General_CI_AS"),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithCheckConstraintsOnFieldLevelCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int).AddCheckConstraints(new CheckConstraintBuilder().WithName("CHK1").WithExpression("[Field1] BETWEEN 1 AND 10")),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithCheckConstraintsOnTableLevelCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.Int)
+            ).AddCheckConstraints
+            (
+                new CheckConstraintBuilder().WithName("MyCheckContraint1").WithExpression("Field1 > 10"),
+                new CheckConstraintBuilder().WithName("MyCheckContraint2").WithExpression("Field2 > 20")
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithIndexesCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int)
+            ).AddIndexes
+            (
+                new IndexBuilder().WithName("IX_Index1").WithUnique().AddFields
+                (
+                    new IndexFieldBuilder().WithName("Field1"),
+                    new IndexFieldBuilder().WithName("Field2").WithIsDescending()
+                ),
+                new IndexBuilder().WithName("IX_Index2").AddFields
+                (
+                    new IndexFieldBuilder().WithName("Field1"),
+                    new IndexFieldBuilder().WithName("Field2").WithIsDescending()
+                )
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithPrimaryKeyConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).AddPrimaryKeyConstraints
+            (
+                new PrimaryKeyConstraintBuilder().WithName("PK").AddFields
+                (
+                    new PrimaryKeyConstraintFieldBuilder().WithName("Field1")
+                )
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithUniqueConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).AddUniqueConstraints
+            (
+                new UniqueConstraintBuilder().WithName("UC").AddFields
+                (
+                    new UniqueConstraintFieldBuilder().WithName("Field1")
+                )
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithDefaultValueConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).AddDefaultValueConstraints
+            (
+                new DefaultValueConstraintBuilder().WithFieldName("Field1").WithDefaultValue("2").WithName("DVC")
+            ).Build()
+        ];
+    }
+
+    private sealed class StoredProcedureContainingStatementsCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new StoredProcedureBuilder().WithName("usp_Test").AddParameters
+            (
+                new StoredProcedureParameterBuilder().WithName("Param1").WithType(SqlFieldType.Int),
+                new StoredProcedureParameterBuilder().WithName("Param2").WithType(SqlFieldType.Int).WithDefaultValue("5")
+            ).AddStatements
+            (
+                new StringSqlStatementBuilder().WithStatement("--statement 1 goes here"),
+                new StringSqlStatementBuilder().WithStatement("--statement 2 goes here")
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithForeignKeyConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).AddForeignKeyConstraints
+            (
+                new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
+                (
+                    new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
+                    new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
+                ).AddForeignFields
+                (
+                    new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
+                    new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
+                )
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithCascadeForeignKeyConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).AddForeignKeyConstraints
+            (
+                new ForeignKeyConstraintBuilder().WithName("FK").WithForeignTableName("ForeignTable").AddLocalFields
+                (
+                    new ForeignKeyConstraintFieldBuilder().WithName("LocalField1"),
+                    new ForeignKeyConstraintFieldBuilder().WithName("LocalField2")
+                ).AddForeignFields
+                (
+                    new ForeignKeyConstraintFieldBuilder().WithName("RemoteField1"),
+                    new ForeignKeyConstraintFieldBuilder().WithName("RemoteField2")
+                ).WithCascadeUpdate(CascadeAction.Cascade).WithCascadeDelete(CascadeAction.Cascade)
+            ).Build()
+        ];
+    }
+
+    private sealed class TableWithIdentityFieldCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder().WithName("Table1").AddFields
+            (
+                new TableFieldBuilder().WithName("Field1").WithType(SqlFieldType.Int).WithIsIdentity(),
+                new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.VarChar).WithStringLength(32),
+                new TableFieldBuilder().WithName("Field3").WithType(SqlFieldType.Numeric).WithIsRequired().WithNumericPrecision(8).WithNumericScale(2)
+            ).Build()
+        ];
+    }
+
+    private sealed class ViewCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new ViewBuilder().WithName("View1")
+                .AddSources
+                (
+                    new ViewSourceBuilder().WithName("Table1")
+                ).AddSelectFields
+                (
+                    new ViewFieldBuilder().WithName("Field1"),
+                    new ViewFieldBuilder().WithName("Field2")
+                )
+                .Build(),
+            new ViewBuilder().WithName("View2")
+                .AddSources
+                (
+                    new ViewSourceBuilder().WithName("Table1"),
+                    new ViewSourceBuilder().WithName("Table2")
+                ).AddSelectFields
+                (
+                    new ViewFieldBuilder().WithName("Field2").WithAlias("Alias2")
+                ).AddConditions
+                (
+                    new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
+                    new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
+                ).AddOrderByFields
+                (
+                    new ViewOrderByFieldBuilder().WithName("table1.Field1").WithIsDescending(),
+                    new ViewOrderByFieldBuilder().WithName("table1.Field2")
+                ).AddGroupByFields
+                (
+                    new ViewFieldBuilder().WithName("Field1"),
+                    new ViewFieldBuilder().WithName("Field2")
+                )
+                .WithTop(50)
+                .WithTopPercent()
+                .Build()
+        ];
+    }
+
+    //private sealed class TemplateCodeGenerationProvider : TestCodeGenerationProviderBase
+    //{
+    //    public override IEnumerable<IDatabaseObject> Model => throw new NotImplementedException();
+    //}
 }
