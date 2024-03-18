@@ -1,4 +1,5 @@
-﻿namespace DatabaseFramework.TemplateFramework.Tests;
+﻿
+namespace DatabaseFramework.TemplateFramework.Tests;
 
 public sealed class IntegrationTests : TestBase, IDisposable
 {
@@ -17,8 +18,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddParsers()
             .AddScoped(_ => templateFactory)
             .AddScoped(_ => templateProviderPluginFactory)
-            .AddScoped<TestCodeGenerationProvider>()
-            //.AddScoped<ImmutableCoreBuilders>()
+            .AddScoped<TableCodeGenerationProvider>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -29,7 +29,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
-        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TestCodeGenerationProvider>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<TableCodeGenerationProvider>();
         var generationEnvironment = new MultipleContentBuilderEnvironment();
         var codeGenerationSettings = new CodeGenerationSettings(string.Empty, "GeneratedCode.sql", dryRun: true);
 
@@ -53,22 +53,15 @@ SET ANSI_PADDING OFF
 GO
 ");
     }
+
     public void Dispose()
     {
         _scope.Dispose();
         _serviceProvider.Dispose();
     }
 
-    private sealed class TestCodeGenerationProvider : DatabaseSchemaGeneratorCodeGenerationProviderBase
+    private abstract class TestCodeGenerationProviderBase : DatabaseSchemaGeneratorCodeGenerationProviderBase
     {
-        public override IEnumerable<IDatabaseObject> Model =>
-        [
-            new TableBuilder()
-                .WithName("MyTable")
-                .AddFields(new TableFieldBuilder().WithName("MyField").WithType(SqlFieldType.VarChar).WithStringLength(32))
-                .Build()
-        ];
-
         public override string Path => string.Empty;
         public override bool RecurseOnDeleteGeneratedFiles => false;
         public override string LastGeneratedFilesFilename => string.Empty;
@@ -82,5 +75,16 @@ GO
             .WithCultureInfo(CultureInfo.InvariantCulture)
             .WithCreateCodeGenerationHeader()
             .Build();
+    }
+
+    private sealed class TableCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder()
+                .WithName("MyTable")
+                .AddFields(new TableFieldBuilder().WithName("MyField").WithType(SqlFieldType.VarChar).WithStringLength(32))
+                .Build()
+        ];
     }
 }
