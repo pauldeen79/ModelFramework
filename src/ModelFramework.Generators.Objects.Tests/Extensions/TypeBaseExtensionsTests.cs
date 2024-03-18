@@ -34,7 +34,7 @@ namespace MyNamespace
     }
 
     [Fact]
-    public void Can_Generate_Interface_From_Class_With_GenericTypeContraints()
+    public void Can_Generate_Interface_From_Class_With_GenericTypeConstraints()
     {
         // Arrange
         var input = new ClassBuilder()

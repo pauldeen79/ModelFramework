@@ -145,7 +145,7 @@ GO
     }
 
     [Fact]
-    public void CanGenerateSchemaForTableWithCheckContraintOnTableLevel()
+    public void CanGenerateSchemaForTableWithCheckConstraintOnTableLevel()
     {
         // Arrange
         var sut = new SqlServerDatabaseSchemaGenerator();
@@ -159,8 +159,8 @@ GO
                     new TableFieldBuilder().WithName("Field2").WithType(SqlTableFieldTypes.Int)
                 ).AddCheckConstraints
                 (
-                    new CheckConstraintBuilder().WithName("MyCheckContraint1").WithExpression("Field1 > 10"),
-                    new CheckConstraintBuilder().WithName("MyCheckContraint2").WithExpression("Field2 > 20")
+                    new CheckConstraintBuilder().WithName("MyCheckConstraint1").WithExpression("Field1 > 10"),
+                    new CheckConstraintBuilder().WithName("MyCheckConstraint2").WithExpression("Field2 > 20")
                 )
             ).Build()
         };
@@ -178,9 +178,9 @@ GO
 CREATE TABLE [dbo].[Table1](
 	[Field1] INT NULL,
 	[Field2] INT NULL,
-    CONSTRAINT [MyCheckContraint1]
+    CONSTRAINT [MyCheckConstraint1]
     CHECK (Field1 > 10),
-    CONSTRAINT [MyCheckContraint2]
+    CONSTRAINT [MyCheckConstraint2]
     CHECK (Field2 > 20)
 ) ON [PRIMARY]
 GO
