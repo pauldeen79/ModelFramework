@@ -2,5 +2,5 @@
 
 internal interface ISchemaContainer
 {
-    [Required] string Schema { get; }
+    [Required] [DefaultValue("dbo")] string Schema { get; }
 }
