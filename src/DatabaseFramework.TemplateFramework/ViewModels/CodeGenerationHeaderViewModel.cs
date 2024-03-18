@@ -8,8 +8,8 @@ public class CodeGenerationHeaderViewModel : DatabaseSchemaGeneratorViewModelBas
     public string Name
         => GetModel().Name.FormatAsDatabaseIdentifier();
 
-    public string Schema
-        => GetModel().Schema.FormatAsDatabaseIdentifier();
+    public string? Schema
+        => GetModel().Schema?.FormatAsDatabaseIdentifier();
 
     public string ObjectType
         => GetModel().ObjectType;

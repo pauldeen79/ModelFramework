@@ -16,7 +16,7 @@ public class DatabaseSchemaGeneratorViewModel : DatabaseSchemaGeneratorViewModel
         {
             foreach (var fk in table.ForeignKeyConstraints)
             {
-                yield return fk;
+                yield return new ForeignKeyConstraintModel(fk, table);
             }
         }
     }

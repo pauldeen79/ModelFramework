@@ -2,12 +2,12 @@
 
 public class CodeGenerationHeaderModel
 {
-    public CodeGenerationHeaderModel(IDatabaseObject databaseObject, bool createCodeGenerationHeader)
+    public CodeGenerationHeaderModel(INameContainer databaseObject, bool createCodeGenerationHeader)
     {
         Guard.IsNotNull(databaseObject);
         CreateCodeGenerationHeader = createCodeGenerationHeader;
         Name = databaseObject.Name;
-        Schema = databaseObject.Schema;
+        Schema = (databaseObject as ISchemaContainer)?.Schema;
         ObjectType = databaseObject switch
         {
             Table => "Table",
@@ -20,6 +20,6 @@ public class CodeGenerationHeaderModel
 
     public bool CreateCodeGenerationHeader { get; }
     public string Name { get; }
-    public string Schema { get; }
+    public string? Schema { get; }
     public string ObjectType { get;}
 }

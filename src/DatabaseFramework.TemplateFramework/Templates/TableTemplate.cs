@@ -41,15 +41,13 @@ public sealed class TableTemplate : DatabaseSchemaGeneratorBase<TableViewModel>,
     private void RenderTable(StringBuilderEnvironment generationEnvironment)
     {
         RenderChildTemplateByModel(Model!.CodeGenerationHeaders, generationEnvironment);
-        generationEnvironment.Builder.AppendLine($"""
-SET ANSI_NULLS ON
+        generationEnvironment.Builder.AppendLine(@$"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_PADDING ON
 GO
-CREATE TABLE [{Model.Schema}].[{Model.Name}](
-""");
+CREATE TABLE [{Model.Schema}].[{Model.Name}](");
 
         var fieldsAndPrimaryKeyConstraints = Model.Fields.Cast<IMetadataContainer>()
             .Concat(Model.PrimaryKeyConstraints.Cast<IMetadataContainer>())
@@ -58,12 +56,10 @@ CREATE TABLE [{Model.Schema}].[{Model.Name}](
 
         RenderChildTemplatesByModel(fieldsAndPrimaryKeyConstraints, generationEnvironment);
 
-        generationEnvironment.Builder.AppendLine($"""
-) ON [{Model.FileGroupName}]
+        generationEnvironment.Builder.AppendLine(@$") ON [{Model.FileGroupName}]
 GO
 SET ANSI_PADDING OFF
-GO
-""");
+GO");
 
         RenderChildTemplatesByModel(Model.Indexes, generationEnvironment);
         RenderChildTemplatesByModel(Model.DefaultValueConstraints, generationEnvironment);

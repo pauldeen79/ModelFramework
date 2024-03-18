@@ -12,6 +12,13 @@ public sealed class CodeGenerationHeaderTemplate : DatabaseSchemaGeneratorBase<C
             return;
         }
 
-        builder.AppendLine($"/****** Object:  {Model.ObjectType} [{Model.Schema}].[{Model.Name}] ******/");
+        if (Model.Schema is not null)
+        {
+            builder.AppendLine($"/****** Object:  {Model.ObjectType} [{Model.Schema}].[{Model.Name}] ******/");
+        }
+        else
+        {
+            builder.AppendLine($"/****** Object:  {Model.ObjectType} [{Model.Name}] ******/");
+        }
     }
 }

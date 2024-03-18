@@ -426,7 +426,8 @@ GO
 
         // Assert
         GenerationEnvironment.Builder.Contents.Should().ContainSingle();
-        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"SET ANSI_NULLS ON
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[Table1] ******/
+SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -440,6 +441,7 @@ CREATE TABLE [dbo].[Table1](
 GO
 SET ANSI_PADDING OFF
 GO
+/****** Object:  ForeignKey [FK] ******/
 ALTER TABLE [dbo].[Table1]  WITH CHECK ADD  CONSTRAINT [FK] FOREIGN KEY([LocalField1],[LocalField2])
 REFERENCES [dbo].[ForeignTable] ([RemoteField1],[RemoteField2])
 ON UPDATE CASCADE
@@ -718,6 +720,8 @@ GO
 
     private sealed class TableWithForeignKeyConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields
