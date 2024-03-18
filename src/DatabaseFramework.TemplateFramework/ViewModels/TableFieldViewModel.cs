@@ -31,7 +31,7 @@ public class TableFieldViewModel : DatabaseSchemaGeneratorViewModelBase<TableFie
         {
             var model = GetModel();
             var builder = new StringBuilder();
-            builder.Append($"{model.Type.ToString().ToLower(Settings.CultureInfo)}");
+            builder.Append($"{model.Type.ToString().ToUpper(Settings.CultureInfo)}");
 
             if (model.Type.IsDatabaseStringType())
             {

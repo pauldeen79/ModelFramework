@@ -59,7 +59,7 @@ GO
 SET ANSI_PADDING ON
 GO
 CREATE TABLE [dbo].[MyTable](
-    MyField varchar(32) NULL
+    [MyField] VARCHAR(32) NULL
 ) ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
