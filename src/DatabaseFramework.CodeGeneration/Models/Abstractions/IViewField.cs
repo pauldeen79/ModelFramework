@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models.Abstractions;
 
-internal interface IViewField
+internal interface IViewField : INameContainer, IMetadataContainer
 {
     [Required(AllowEmptyStrings = true)] string SourceSchemaName { get; }
     [Required(AllowEmptyStrings = true)] string SourceObjectName { get; } // when empty, use Name
