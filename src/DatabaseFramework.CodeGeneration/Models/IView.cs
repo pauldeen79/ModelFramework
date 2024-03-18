@@ -10,5 +10,5 @@ internal interface IView : IDatabaseObject
     int? Top { get; }
     bool TopPercent { get; }
     bool Distinct { get; }
-    [Required] string Definition { get; }
+    [Required(AllowEmptyStrings = true)] string Definition { get; }
 }
