@@ -182,7 +182,7 @@ GO
     }
 
     [Fact]
-    public void Can_Generate_Code_For_TableWithCheckContraintOnTableLevel()
+    public void Can_Generate_Code_For_TableWithCheckConstraintOnTableLevel()
     {
         // Arrange
         var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
@@ -202,9 +202,9 @@ GO
 CREATE TABLE [dbo].[Table1](
 	[Field1] INT NULL,
 	[Field2] INT NULL,
-    CONSTRAINT [MyCheckContraint1]
+    CONSTRAINT [MyCheckConstraint1]
     CHECK (Field1 > 10),
-    CONSTRAINT [MyCheckContraint2]
+    CONSTRAINT [MyCheckConstraint2]
     CHECK (Field2 > 20)
 ) ON [PRIMARY]
 GO
@@ -573,6 +573,8 @@ GO
 
     private sealed class TableWithVarcharAndNumericFieldsCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields
@@ -586,6 +588,8 @@ GO
 
     private sealed class TableWithCheckConstraintsOnFieldLevelCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields
@@ -599,6 +603,8 @@ GO
 
     private sealed class TableWithCheckConstraintsOnTableLevelCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields
@@ -607,14 +613,16 @@ GO
                 new TableFieldBuilder().WithName("Field2").WithType(SqlFieldType.Int)
             ).AddCheckConstraints
             (
-                new CheckConstraintBuilder().WithName("MyCheckContraint1").WithExpression("Field1 > 10"),
-                new CheckConstraintBuilder().WithName("MyCheckContraint2").WithExpression("Field2 > 20")
+                new CheckConstraintBuilder().WithName("MyCheckConstraint1").WithExpression("Field1 > 10"),
+                new CheckConstraintBuilder().WithName("MyCheckConstraint2").WithExpression("Field2 > 20")
             ).Build()
         ];
     }
 
     private sealed class TableWithIndexesCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields
@@ -756,6 +764,8 @@ GO
 
     private sealed class TableWithIdentityFieldCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields

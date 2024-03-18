@@ -9,16 +9,16 @@ public static class ServiceCollectionExtensions
 
             .AddTransient<DatabaseSchemaGenerator>()
             .AddTransient<IViewModel, CodeGenerationHeaderViewModel>()
+            .AddTransient<IViewModel, CheckConstraintViewModel>()
             .AddTransient<IViewModel, NewLineViewModel>()
             .AddTransient<IViewModel, SpaceAndCommaViewModel>()
             .AddTransient<IViewModel, TableViewModel>()
             .AddTransient<IViewModel, TableFieldViewModel>()
-            //...
             .AddChildTemplate<CodeGenerationHeaderTemplate>(typeof(CodeGenerationHeaderModel))
+            .AddChildTemplate<CheckConstraintTemplate>(typeof(CheckConstraint))
             .AddChildTemplate<NewLineTemplate>(typeof(NewLineModel))
             .AddChildTemplate<SpaceAndCommaTemplate>(typeof(SpaceAndCommaModel))
             .AddChildTemplate<TableTemplate>(typeof(Table))
             .AddChildTemplate<TableFieldTemplate>(typeof(TableField))
-            //...
             ;
 }
