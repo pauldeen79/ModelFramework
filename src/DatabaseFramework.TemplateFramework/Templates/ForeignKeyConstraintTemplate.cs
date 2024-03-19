@@ -7,7 +7,7 @@ public class ForeignKeyConstraintTemplate : DatabaseSchemaGeneratorBase<ForeignK
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        RenderChildTemplateByModel(Model!.CodeGenerationHeaders, builder);
+        RenderChildTemplateByModel(Model.CodeGenerationHeaders, builder);
 
         builder.Append($"ALTER TABLE [{Model.Schema}].[{Model.TableEntityName}]  WITH CHECK ADD  CONSTRAINT [{Model.Name}] FOREIGN KEY(");
 

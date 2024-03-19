@@ -648,6 +648,8 @@ GO
 
     private sealed class TableWithPrimaryKeyConstraintCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new TableBuilder().WithName("Table1").AddFields
