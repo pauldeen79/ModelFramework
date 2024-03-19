@@ -12,5 +12,5 @@ public class IndexFieldViewModel : DatabaseSchemaGeneratorViewModelBase<IndexFie
 
     public bool IsLastIndexField
         => Context.IsLastIteration
-            ?? throw new InvalidOperationException("Can only index fields as part of an index. There is no context with hierarchy.");
+            ?? throw new InvalidOperationException("Can only render index fields as part of an index. There is no context with hierarchy.");
 }
