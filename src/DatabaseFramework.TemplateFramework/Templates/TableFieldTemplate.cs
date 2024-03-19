@@ -7,7 +7,11 @@ public class TableFieldTemplate : DatabaseSchemaGeneratorBase<TableFieldViewMode
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        builder.Append($"\t[{Model.Name}] {Model.Type}{Model.Identity} {Model.NullOrNotNull}");
+        builder.Append($"\t[{Model.Name}] ");
+        
+        RenderChildTemplateByModel(Model.NonViewField, builder);
+        
+        builder.Append($"{Model.Identity} {Model.NullOrNotNull}");
 
         if (Model.HasCheckConstraints)
         {

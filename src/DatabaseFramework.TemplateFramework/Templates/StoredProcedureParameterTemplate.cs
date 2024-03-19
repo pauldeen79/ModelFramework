@@ -7,7 +7,14 @@ public class StoredProcedureParameterTemplate : DatabaseSchemaGeneratorBase<Stor
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        builder.Append($"\t@{Model.Name} {Model.Type}{Model.DefaultValue}");
+        builder.Append($"\t@{Model.Name} ");
+
+        RenderChildTemplateByModel(Model.NonViewField, builder);
+
+        if (Model.HasDefaultValue)
+        {
+            builder.Append($" = {Model.DefaultValue}");
+        }
 
         if (!Model.IsLastParameter)
         {

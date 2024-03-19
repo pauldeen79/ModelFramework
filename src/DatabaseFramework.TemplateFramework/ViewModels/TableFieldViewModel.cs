@@ -25,6 +25,6 @@ public class TableFieldViewModel : DatabaseSchemaGeneratorViewModelBase<TableFie
     public IReadOnlyCollection<CheckConstraint> CheckConstraints
         => GetModel().CheckConstraints;
 
-    public string Type
-        => GetTypeString(GetModel());
+    public NonViewFieldModel NonViewField
+        => new NonViewFieldModel(GetModel());
 }

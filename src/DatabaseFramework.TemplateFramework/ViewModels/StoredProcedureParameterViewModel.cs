@@ -5,24 +5,16 @@ public class StoredProcedureParameterViewModel : DatabaseSchemaGeneratorViewMode
     public string Name
         => GetModel().Name.FormatAsDatabaseIdentifier();
 
-    public string Type
-        => GetTypeString(GetModel());
+    public bool HasDefaultValue
+        => !string.IsNullOrEmpty(GetModel().DefaultValue);
 
     public string DefaultValue
-    {
-        get
-        {
-            var model = GetModel();
-            if (!string.IsNullOrEmpty(model.DefaultValue))
-            {
-                return $" = {model.DefaultValue}";
-            }
-
-            return string.Empty;
-        }
-    }
+        => GetModel().DefaultValue;
 
     public bool IsLastParameter
         => Context.IsLastIteration
             ?? throw new InvalidOperationException("Can only render stored procedure parameters as part of a stored procedure. There is no context with hierarchy.");
+
+    public NonViewFieldModel NonViewField
+        => new NonViewFieldModel(GetModel());
 }
