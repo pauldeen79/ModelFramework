@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models;
 
-internal interface IViewSource : INameContainer, IMetadataContainer
+internal interface IViewSource : INameContainer
 {
     [Required(AllowEmptyStrings = true)] string Alias { get; }
     [Required(AllowEmptyStrings = true)] string SourceSchemaName { get; }

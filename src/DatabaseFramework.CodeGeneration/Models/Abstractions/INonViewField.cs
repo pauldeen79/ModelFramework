@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.CodeGeneration.Models.Abstractions;
 
-internal interface INonViewField : INameContainer, IMetadataContainer
+internal interface INonViewField : INameContainer
 {
     SqlFieldType Type { get; }
     byte? NumericPrecision { get; }

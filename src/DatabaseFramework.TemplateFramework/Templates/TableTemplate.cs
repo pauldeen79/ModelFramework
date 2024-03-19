@@ -49,10 +49,10 @@ SET ANSI_PADDING ON
 GO
 CREATE TABLE [{Model.Schema}].[{Model.Name}](");
 
-        var fieldsAndPrimaryKeyConstraints = Model.Fields.Cast<IMetadataContainer>()
-            .Concat(Model.PrimaryKeyConstraints.Cast<IMetadataContainer>())
-            .Concat(Model.UniqueConstraints.Cast<IMetadataContainer>())
-            .Concat(Model.CheckConstraints.Cast<IMetadataContainer>());
+        var fieldsAndPrimaryKeyConstraints = Model.Fields.Cast<object>()
+            .Concat(Model.PrimaryKeyConstraints.Cast<object>())
+            .Concat(Model.UniqueConstraints.Cast<object>())
+            .Concat(Model.CheckConstraints.Cast<object>());
 
         RenderChildTemplatesByModel(fieldsAndPrimaryKeyConstraints, generationEnvironment);
 
