@@ -1,8 +1,8 @@
 ﻿namespace DatabaseFramework.TemplateFramework.Templates;
 
-public class StoredProcedureTemplate : DatabaseSchemaGeneratorBase<StoredProcedureViewModel>, IStringBuilderTemplate
+public class StoredProcedureTemplate : DatabaseObjectTemplateBase<StoredProcedureViewModel>
 {
-    public void Render(StringBuilder builder)
+    protected override void RenderDatabaseObject(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);

@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.TemplateFramework.ViewModels;
 
-public class TableViewModel : DatabaseSchemaGeneratorViewModelBase<Table>
+public class TableViewModel : DatabaseSchemaGeneratorViewModelBase<Table>, INameContainer
 {
     public string Schema
         => GetModel().Schema.FormatAsDatabaseIdentifier();

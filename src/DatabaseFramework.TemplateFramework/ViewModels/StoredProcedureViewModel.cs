@@ -1,6 +1,6 @@
 ﻿namespace DatabaseFramework.TemplateFramework.ViewModels;
 
-public class StoredProcedureViewModel : DatabaseSchemaGeneratorViewModelBase<StoredProcedure>
+public class StoredProcedureViewModel : DatabaseSchemaGeneratorViewModelBase<StoredProcedure>, INameContainer
 {
     public string Schema
         => GetModel().Schema.FormatAsDatabaseIdentifier();

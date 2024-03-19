@@ -48,7 +48,7 @@ public class ViewValidatorTests
         public void Returns_Success_When_Instance_Has_SelectFields_And_Sources()
         {
             // Arrange
-            object instance = new ViewBuilder().WithName("MyView").AddSelectFields(new ViewFieldBuilder().WithName("MyField")).AddSources(new ViewSourceBuilder().WithName("MyTable"));
+            object instance = new ViewBuilder().WithName("MyView").AddSelectFields(new ViewSelectFieldBuilder().WithName("MyField")).AddSources(new ViewSourceBuilder().WithName("MyTable"));
 
             // Act
             var result = ViewValidator.Validate(instance);
@@ -61,7 +61,7 @@ public class ViewValidatorTests
         public void Returns_Failure_When_Instance_Has_Only_SelectFields()
         {
             // Arrange
-            object instance = new ViewBuilder().WithName("MyView").AddSelectFields(new ViewFieldBuilder().WithName("MyField")); // missing sources here!
+            object instance = new ViewBuilder().WithName("MyView").AddSelectFields(new ViewSelectFieldBuilder().WithName("MyField")); // missing sources here!
 
             // Act
             var result = ViewValidator.Validate(instance);
@@ -100,7 +100,7 @@ public class ViewValidatorTests
         public void Returns_Failure_When_Instance_Has_SelectFields_And_Definition()
         {
             // Arrange
-            object instance = new ViewBuilder().WithName("MyView").WithDefinition("SELECT * FROM MyTable").AddSources(new ViewSourceBuilder().WithName("MyTable")).AddSelectFields(new ViewFieldBuilder().WithName("MyField"));
+            object instance = new ViewBuilder().WithName("MyView").WithDefinition("SELECT * FROM MyTable").AddSources(new ViewSourceBuilder().WithName("MyTable")).AddSelectFields(new ViewSelectFieldBuilder().WithName("MyField"));
 
             // Act
             var result = ViewValidator.Validate(instance);
@@ -113,7 +113,7 @@ public class ViewValidatorTests
         public void Returns_Failure_When_Instance_Has_Sources_And_SelectFields_And_Definition()
         {
             // Arrange
-            object instance = new ViewBuilder().WithName("MyView").WithDefinition("SELECT * FROM MyTable").AddSelectFields(new ViewFieldBuilder().WithName("MyField"));
+            object instance = new ViewBuilder().WithName("MyView").WithDefinition("SELECT * FROM MyTable").AddSelectFields(new ViewSelectFieldBuilder().WithName("MyField"));
 
             // Act
             var result = ViewValidator.Validate(instance);

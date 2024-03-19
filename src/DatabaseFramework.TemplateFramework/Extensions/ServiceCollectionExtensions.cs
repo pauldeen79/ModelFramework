@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
             .AddTransient<IViewModel, TableFieldViewModel>()
             .AddTransient<IViewModel, UniqueConstraintFieldViewModel>()
             .AddTransient<IViewModel, UniqueConstraintViewModel>()
+            .AddTransient<IViewModel, ViewViewModel>()
             .AddChildTemplate<CheckConstraintTemplate>(typeof(CheckConstraint))
             .AddChildTemplate<CodeGenerationHeaderTemplate>(typeof(CodeGenerationHeaderModel))
             .AddChildTemplate<DefaultValueConstraintTemplate>(typeof(DefaultValueConstraint))
@@ -42,5 +43,6 @@ public static class ServiceCollectionExtensions
             .AddChildTemplate<TableFieldTemplate>(typeof(TableField))
             .AddChildTemplate<UniqueConstraintFieldTemplate>(typeof(UniqueConstraintField))
             .AddChildTemplate<UniqueConstraintTemplate>(typeof(UniqueConstraint))
+            .AddChildTemplate<ViewTemplate>(typeof(View))
             ;
 }

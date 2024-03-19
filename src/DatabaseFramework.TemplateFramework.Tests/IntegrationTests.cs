@@ -789,6 +789,8 @@ GO
 
     private sealed class ViewCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new ViewBuilder().WithName("View1")
@@ -797,8 +799,8 @@ GO
                     new ViewSourceBuilder().WithName("Table1")
                 ).AddSelectFields
                 (
-                    new ViewFieldBuilder().WithName("Field1"),
-                    new ViewFieldBuilder().WithName("Field2")
+                    new ViewSelectFieldBuilder().WithName("Field1"),
+                    new ViewSelectFieldBuilder().WithName("Field2")
                 )
                 .Build(),
             new ViewBuilder().WithName("View2")
@@ -808,19 +810,19 @@ GO
                     new ViewSourceBuilder().WithName("Table2")
                 ).AddSelectFields
                 (
-                    new ViewFieldBuilder().WithName("Field2").WithAlias("Alias2")
+                    new ViewSelectFieldBuilder().WithName("Field2").WithAlias("Alias2")
                 ).AddConditions
                 (
-                    new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
-                    new ViewConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
+                    new ViewSelectConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
+                    new ViewSelectConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
                 ).AddOrderByFields
                 (
                     new ViewOrderByFieldBuilder().WithName("table1.Field1").WithIsDescending(),
                     new ViewOrderByFieldBuilder().WithName("table1.Field2")
                 ).AddGroupByFields
                 (
-                    new ViewFieldBuilder().WithName("Field1"),
-                    new ViewFieldBuilder().WithName("Field2")
+                    new ViewGroupByFieldBuilder().WithName("Field1"),
+                    new ViewGroupByFieldBuilder().WithName("Field2")
                 )
                 .WithTop(50)
                 .WithTopPercent()

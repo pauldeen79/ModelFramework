@@ -1,47 +1,14 @@
 ﻿namespace DatabaseFramework.TemplateFramework.Templates;
 
-public sealed class TableTemplate : DatabaseSchemaGeneratorBase<TableViewModel>, IMultipleContentBuilderTemplate, IStringBuilderTemplate
+public sealed class TableTemplate : DatabaseObjectTemplateBase<TableViewModel>
 {
-    public void Render(IMultipleContentBuilder builder)
-    {
-        Guard.IsNotNull(builder);
-        Guard.IsNotNull(Model);
-        Guard.IsNotNull(Context);
-
-        StringBuilderEnvironment generationEnvironment;
-
-        if (!Model.Settings.GenerateMultipleFiles)
-        {
-            if (!builder.Contents.Any())
-            {
-                builder.AddContent(Context.DefaultFilename, Model.Settings.SkipWhenFileExists);
-            }
-
-            generationEnvironment = new StringBuilderEnvironment(builder.Contents.Last().Builder);
-        }
-        else
-        {
-            var filename = $"{Model.FilenamePrefix}{Model.Name}{Model.Settings.FilenameSuffix}.cs";
-            var contentBuilder = builder.AddContent(filename, Model.Settings.SkipWhenFileExists);
-            generationEnvironment = new StringBuilderEnvironment(contentBuilder.Builder);
-        }
-
-        RenderTable(generationEnvironment);
-    }
-
-    public void Render(StringBuilder builder)
+    protected override void RenderDatabaseObject(StringBuilder builder)
     {
         Guard.IsNotNull(builder);
         Guard.IsNotNull(Model);
 
-        var generationEnvironment = new StringBuilderEnvironment(builder);
-        RenderTable(generationEnvironment);
-    }
-
-    private void RenderTable(StringBuilderEnvironment generationEnvironment)
-    {
-        RenderChildTemplateByModel(Model!.CodeGenerationHeaders, generationEnvironment);
-        generationEnvironment.Builder.AppendLine(@$"SET ANSI_NULLS ON
+        RenderChildTemplateByModel(Model.CodeGenerationHeaders, builder);
+        builder.AppendLine(@$"SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -54,14 +21,14 @@ CREATE TABLE [{Model.Schema}].[{Model.Name}](");
             .Concat(Model.UniqueConstraints.Cast<object>())
             .Concat(Model.CheckConstraints.Cast<object>());
 
-        RenderChildTemplatesByModel(fieldsAndPrimaryKeyConstraints, generationEnvironment);
+        RenderChildTemplatesByModel(fieldsAndPrimaryKeyConstraints, builder);
 
-        generationEnvironment.Builder.AppendLine(@$") ON [{Model.FileGroupName}]
+        builder.AppendLine(@$") ON [{Model.FileGroupName}]
 GO
 SET ANSI_PADDING OFF
 GO");
 
-        RenderChildTemplatesByModel(Model.Indexes, generationEnvironment);
-        RenderChildTemplatesByModel(Model.DefaultValueConstraints, generationEnvironment);
+        RenderChildTemplatesByModel(Model.Indexes, builder);
+        RenderChildTemplatesByModel(Model.DefaultValueConstraints, builder);
     }
 }
