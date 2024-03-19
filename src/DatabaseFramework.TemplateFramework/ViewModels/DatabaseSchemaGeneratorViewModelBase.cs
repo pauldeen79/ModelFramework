@@ -15,6 +15,38 @@ public abstract class DatabaseSchemaGeneratorViewModelBase : IDatabaseSchemaGene
         => string.IsNullOrEmpty(GetSettings().Path)
             ? string.Empty
             : $"{Settings.Path}{Path.DirectorySeparatorChar}";
+
+    protected string GetTypeString(INonViewField field)
+    {
+        Guard.IsNotNull(field);
+
+        var builder = new StringBuilder();
+        builder.Append($"{field.Type.ToString().ToUpper(Settings.CultureInfo)}");
+
+        if (field.Type.IsDatabaseStringType())
+        {
+            builder.Append("(");
+            if (field.IsStringMaxLength == true)
+            {
+                builder.Append("max");
+            }
+            else
+            {
+                builder.Append(field.StringLength.GetValueOrDefault(32).ToString(Settings.CultureInfo));
+            }
+            builder.Append(")");
+            if (!string.IsNullOrEmpty(field.StringCollation))
+            {
+                builder.Append($" COLLATE {field.StringCollation}");
+            }
+        }
+        else if (field.NumericPrecision is not null && field.NumericScale is not null)
+        {
+            builder.Append($"({field.NumericPrecision.GetValueOrDefault(8).ToString(Settings.CultureInfo)},{field.NumericScale.GetValueOrDefault(0).ToString(Settings.CultureInfo)})");
+        }
+
+        return builder.ToString();
+    }
 }
 
 public abstract class DatabaseSchemaGeneratorViewModelBase<TModel> : DatabaseSchemaGeneratorViewModelBase, IModelContainer<TModel>, ITemplateContextContainer

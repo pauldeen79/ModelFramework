@@ -26,36 +26,5 @@ public class TableFieldViewModel : DatabaseSchemaGeneratorViewModelBase<TableFie
         => GetModel().CheckConstraints;
 
     public string Type
-    {
-        get
-        {
-            var model = GetModel();
-            var builder = new StringBuilder();
-            builder.Append($"{model.Type.ToString().ToUpper(Settings.CultureInfo)}");
-
-            if (model.Type.IsDatabaseStringType())
-            {
-                builder.Append("(");
-                if (model.IsStringMaxLength == true)
-                {
-                    builder.Append("max");
-                }
-                else
-                {
-                    builder.Append(model.StringLength.GetValueOrDefault(32).ToString(Settings.CultureInfo));
-                }
-                builder.Append(")");
-                if (!string.IsNullOrEmpty(model.StringCollation))
-                {
-                    builder.Append($" COLLATE {model.StringCollation}");
-                }
-            }
-            else if (model.NumericPrecision is not null && model.NumericScale is not null)
-            {
-                builder.Append($"({model.NumericPrecision.GetValueOrDefault(8).ToString(Settings.CultureInfo)},{model.NumericScale.GetValueOrDefault(0).ToString(Settings.CultureInfo)})");
-            }
-
-            return builder.ToString();
-        }
-    }
+        => GetTypeString(GetModel());
 }

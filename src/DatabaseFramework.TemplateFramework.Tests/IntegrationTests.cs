@@ -367,8 +367,8 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 CREATE PROCEDURE [dbo].[usp_Test]
-	@Param1 int,
-	@Param2 int = 5
+	@Param1 INT,
+	@Param2 INT = 5
 AS
 BEGIN
     --statement 1 goes here
@@ -706,6 +706,8 @@ GO
 
     private sealed class StoredProcedureContainingStatementsCodeGenerationProvider : TestCodeGenerationProviderBase
     {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithCreateCodeGenerationHeader(false).Build();
+
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new StoredProcedureBuilder().WithName("usp_Test").AddParameters
