@@ -794,38 +794,27 @@ GO
         public override IEnumerable<IDatabaseObject> Model =>
         [
             new ViewBuilder().WithName("View1")
-                .AddSources
-                (
-                    new ViewSourceBuilder().WithName("Table1")
-                ).AddSelectFields
-                (
-                    new ViewSelectFieldBuilder().WithName("Field1"),
-                    new ViewSelectFieldBuilder().WithName("Field2")
-                )
+                .WithDefinition(@"SELECT
+    [Field1],
+    [Field2]
+FROM
+    [Table1]")
                 .Build(),
             new ViewBuilder().WithName("View2")
-                .AddSources
-                (
-                    new ViewSourceBuilder().WithName("Table1"),
-                    new ViewSourceBuilder().WithName("Table2")
-                ).AddSelectFields
-                (
-                    new ViewSelectFieldBuilder().WithName("Field2").WithAlias("Alias2")
-                ).AddConditions
-                (
-                    new ViewSelectConditionBuilder().WithExpression("table1.Field1 = 'Value 1'").WithCombination("AND"),
-                    new ViewSelectConditionBuilder().WithExpression("table1.Field1 = 'Value 2'").WithCombination("AND")
-                ).AddOrderByFields
-                (
-                    new ViewOrderByFieldBuilder().WithName("table1.Field1").WithIsDescending(),
-                    new ViewOrderByFieldBuilder().WithName("table1.Field2")
-                ).AddGroupByFields
-                (
-                    new ViewGroupByFieldBuilder().WithName("Field1"),
-                    new ViewGroupByFieldBuilder().WithName("Field2")
-                )
-                .WithTop(50)
-                .WithTopPercent()
+                .WithDefinition(@"SELECT TOP 50 PERCENT
+    [Field2] AS [Alias2]
+FROM
+    [Table1],
+    [Table2]
+WHERE
+    table1.Field1 = 'Value 1'
+    AND table1.Field1 = 'Value 2'
+GROUP BY
+    [Field1],
+    [Field2]
+ORDER BY
+    [table1.Field1] DESC,
+    [table1.Field2] ASC")
                 .Build()
         ];
     }
