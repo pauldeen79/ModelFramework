@@ -8,7 +8,7 @@ public static class MetadataNames
     public const string FieldTypeTemplateName = "ModelFramework.Database.FieldTypeTemplateName";
 
     /// <summary>
-    /// Metadata name for defining table or field check contraint template name.
+    /// Metadata name for defining table or field check constraint template name.
     /// </summary>
     public const string CheckConstraintTemplateName = "ModelFramework.Database.CheckConstraintTemplateName";
 
