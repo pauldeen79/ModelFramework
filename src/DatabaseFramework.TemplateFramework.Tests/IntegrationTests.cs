@@ -34,6 +34,7 @@ public sealed class IntegrationTests : TestBase, IDisposable
             .AddScoped<TableWithCascadeForeignKeyConstraintCodeGenerationProvider>()
             .AddScoped<TableWithIdentityFieldCodeGenerationProvider>()
             .AddScoped<ViewCodeGenerationProvider>()
+            .AddScoped<MultipleFilesCodeGenerationProvider>()
             .BuildServiceProvider();
         _scope = _serviceProvider.CreateScope();
         templateFactory.Create(Arg.Any<Type>()).Returns(x => _scope.ServiceProvider.GetRequiredService(x.ArgAt<Type>(0)));
@@ -529,6 +530,63 @@ GO
 ");
     }
 
+    [Fact]
+    public void Can_Generate_Code_To_Different_Files()
+    {
+        // Arrange
+        var engine = _scope.ServiceProvider.GetRequiredService<ICodeGenerationEngine>();
+        var codeGenerationProvider = _scope.ServiceProvider.GetRequiredService<MultipleFilesCodeGenerationProvider>();
+
+        // Act
+        engine.Generate(codeGenerationProvider, GenerationEnvironment, CodeGenerationSettings);
+
+        // Assert
+        GenerationEnvironment.Builder.Contents.Should().HaveCount(3);
+        GenerationEnvironment.Builder.Contents.First().Builder.ToString().Should().Be(@"/****** Object:  Table [dbo].[MyTable] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[MyTable](
+	[MyField] VARCHAR(32) NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+");
+        GenerationEnvironment.Builder.Contents.ElementAt(1).Builder.ToString().Should().Be(@"/****** Object:  Stored procedure [dbo].[usp_Test] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[usp_Test]
+	@Param1 INT,
+	@Param2 INT = 5
+AS
+BEGIN
+    --statement 1 goes here
+    --statement 2 goes here
+END
+GO
+");
+        GenerationEnvironment.Builder.Contents.Last().Builder.ToString().Should().Be(@"/****** Object:  View [dbo].[View1] ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[View1]
+AS
+SELECT
+    [Field1],
+    [Field2]
+FROM
+    [Table1]
+GO
+");
+    }
+
     public void Dispose()
     {
         _scope.Dispose();
@@ -816,6 +874,39 @@ ORDER BY
     [table1.Field1] DESC,
     [table1.Field2] ASC")
                 .Build()
+        ];
+    }
+
+    private sealed class MultipleFilesCodeGenerationProvider : TestCodeGenerationProviderBase
+    {
+        public override DatabaseSchemaGeneratorSettings Settings => base.Settings.ToBuilder().WithGenerateMultipleFiles().Build();
+
+        public override IEnumerable<IDatabaseObject> Model =>
+        [
+            new TableBuilder()
+                .WithName("MyTable")
+                .AddFields(new TableFieldBuilder().WithName("MyField").WithType(SqlFieldType.VarChar).WithStringLength(32))
+                .Build(),
+            new ViewBuilder().WithName("View1")
+                .WithDefinition(@"SELECT
+    [Field1],
+    [Field2]
+FROM
+    [Table1]")
+                .Build(),
+            new StoredProcedureBuilder()
+                .WithName("usp_Test")
+                .AddParameters
+                (
+                    new StoredProcedureParameterBuilder().WithName("Param1").WithType(SqlFieldType.Int),
+                    new StoredProcedureParameterBuilder().WithName("Param2").WithType(SqlFieldType.Int).WithDefaultValue("5")
+                )
+                .AddStatements
+                (
+                    new StringSqlStatementBuilder().WithStatement("--statement 1 goes here"),
+                    new StringSqlStatementBuilder().WithStatement("--statement 2 goes here")
+                )
+            .Build()
         ];
     }
 }
