@@ -5,7 +5,7 @@ public class ClassConstructorBuilderTests
     [Fact]
     public void Can_Set_ChainCall_With_Parameters()
     {
-        // Act
+        // Arrange
         var sut = new ClassConstructorBuilder()
             .AddParameter("param1", typeof(int))
             .AddParameter("param2", typeof(string))
